@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
@@ -32,12 +33,90 @@ namespace System.Text
 
             public static TransformationStatus ComputeEncodedBytesFromUtf8(ReadOnlySpan<byte> source, out int bytesNeeded)
             {
-                throw new NotImplementedException();
+                bytesNeeded = 0;
+
+                int index = 0;
+                int length = source.Length;
+                ref byte src = ref source.DangerousGetPinnableReference();
+
+                while (index < length)
+                {
+                    int count = EncodingHelper.GetUtf8EncodedBytes(Unsafe.Add(ref src, index));
+                    if (count == 0)
+                        goto InvalidData;
+                    if (index >= length - count)
+                        goto NeedMoreData;
+
+                    bytesNeeded += count;
+                }
+
+                return index < length ? TransformationStatus.DestinationTooSmall : TransformationStatus.Done;
+
+            InvalidData:
+                return TransformationStatus.InvalidData;
+
+            NeedMoreData:
+                return TransformationStatus.NeedMoreSourceData;
             }
 
+            /// <summary>
+            /// Converts a span containing a sequence of UTF-8 bytes into UTF-32 bytes.
+            ///
+            /// This method will consume as many of the input bytes as possible.
+            ///
+            /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+            /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+            /// the <paramref name="destination"/>.
+            /// </summary>
+            /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
+            /// <param name="destination">A span to write the UTF-32 bytes into.</param>
+            /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+            /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+            /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
             public static TransformationStatus ConvertFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                throw new NotImplementedException();
+                bytesConsumed = 0;
+                bytesWritten = 0;
+
+                int srcLength = source.Length;
+                int dstLength = destination.Length;
+                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte dst = ref destination.DangerousGetPinnableReference();
+
+                while (bytesConsumed < srcLength && bytesWritten < dstLength)
+                {
+                    uint codePoint = Unsafe.Add(ref src, bytesConsumed);
+
+                    int byteCount = EncodingHelper.GetUtf8EncodedBytes((byte)codePoint);
+                    if (byteCount == 0)
+                        goto InvalidData;
+                    if (bytesConsumed >= srcLength - byteCount)
+                        goto NeedMoreData;
+
+                    if (byteCount > 1)
+                        codePoint &= (byte)(0x7F >> byteCount);
+
+                    for (var i = 1; i < byteCount; i++)
+                    {
+                        ref byte next = ref Unsafe.Add(ref src, bytesConsumed + i);
+                        if ((next & EncodingHelper.b1100_0000U) != EncodingHelper.b1000_0000U)
+                            goto InvalidData;
+
+                        codePoint = (codePoint << 6) | (uint)(EncodingHelper.b0011_1111U & next);
+                    }
+
+                    Unsafe.As<byte, uint>(ref Unsafe.Add(ref dst, bytesWritten)) = codePoint;
+                    bytesWritten += 4;
+                    bytesConsumed += byteCount;
+                }
+
+                return bytesConsumed < srcLength ? TransformationStatus.DestinationTooSmall : TransformationStatus.Done;
+
+            InvalidData:
+                return TransformationStatus.InvalidData;
+
+            NeedMoreData:
+                return TransformationStatus.NeedMoreSourceData;
             }
 
             #endregion Utf-8 to Utf-32 conversion

@@ -35,6 +35,18 @@ namespace System.Text
         public const char LowSurrogateStart = '\udc00';
         public const char LowSurrogateEnd = '\udfff';
 
+        // To get this to compile with dotnet cli, we need to temporarily un-binary the magic values
+        public const byte b0000_0111U = 0x07; //7
+        public const byte b0000_1111U = 0x0F; //15
+        public const byte b0001_1111U = 0x1F; //31
+        public const byte b0011_1111U = 0x3F; //63
+        public const byte b0111_1111U = 0x7F; //127
+        public const byte b1000_0000U = 0x80; //128
+        public const byte b1100_0000U = 0xC0; //192
+        public const byte b1110_0000U = 0xE0; //224
+        public const byte b1111_0000U = 0xF0; //240
+        public const byte b1111_1000U = 0xF8; //248
+
         #endregion Constants
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -72,6 +84,24 @@ namespace System.Text
         public static bool InRange(int ch, int start, int end)
         {
             return (uint)(ch - start) <= (uint)(end - start);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetUtf8EncodedBytes(byte b)
+        {
+            if ((b & b1000_0000U) == 0)
+                return 1;
+
+            if ((b & b1110_0000U) == b1100_0000U)
+                return 2;
+
+            if ((b & b1111_0000U) == b1110_0000U)
+                return 3;
+
+            if ((b & b1111_1000U) == b1111_0000U)
+                return 4;
+
+            return 0;
         }
     }
 }
