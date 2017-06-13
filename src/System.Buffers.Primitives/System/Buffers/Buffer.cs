@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace System.Buffers
 {
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
-    public struct Buffer<T> : IEquatable<Buffer<T>>, IEquatable<ReadOnlyBuffer<T>>
+    public struct Buffer<T>
     {
         readonly OwnedBuffer<T> _owner;
         readonly T[] _array;
@@ -126,28 +126,38 @@ namespace System.Buffers
             }
         }
 
-        public BufferHandle Retain()
+        public BufferHandle Retain(bool pin = false)
         {
-            if (_owner != null)
+            BufferHandle bufferHandle;
+            if (pin)
             {
-                _owner.Retain();
-                return new BufferHandle(_owner);
+                if (_owner != null)
+                {
+                    bufferHandle = _owner.Pin(_index);
+                }
+                else
+                {
+                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    unsafe
+                    {
+                        var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
+                        bufferHandle = new BufferHandle(null, pointer, handle);
+                    }
+                }
             }
-            return new BufferHandle();
-        }
-
-        public BufferHandle Pin()
-        {
-            if (_owner != null)
+            else
             {
-                return _owner.Pin(_index);
+                if (_owner != null)
+                {
+                    _owner.Retain();
+                    bufferHandle = new BufferHandle(_owner);
+                }
+                else
+                {
+                    bufferHandle = new BufferHandle();
+                }
             }
-            var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-            unsafe
-            {
-                var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
-                return new BufferHandle(null, pointer, handle);
-            }
+            return bufferHandle;
         }
 
         public bool TryGetArray(out ArraySegment<T> buffer)
@@ -184,6 +194,7 @@ namespace System.Buffers
             var other = (Buffer<T>)obj;
             return Equals(other);
         }
+
         public bool Equals(Buffer<T> other)
         {
             return
@@ -192,23 +203,13 @@ namespace System.Buffers
                 _index == other._index &&
                 _length == other._length;
         }
-        public bool Equals(ReadOnlyBuffer<T> other)
-        {
-            return other.Equals(this);
-        }
-        public static bool operator==(Buffer<T> left, Buffer<T> right)
+
+        public static bool operator ==(Buffer<T> left, Buffer<T> right)
         {
             return left.Equals(right);
         }
-        public static bool operator!=(Buffer<T> left, Buffer<T> right)
-        {
-            return !left.Equals(right);
-        }
-        public static bool operator ==(Buffer<T> left, ReadOnlyBuffer<T> right)
-        {
-            return left.Equals(right);
-        }
-        public static bool operator !=(Buffer<T> left, ReadOnlyBuffer<T> right)
+
+        public static bool operator !=(Buffer<T> left, Buffer<T> right)
         {
             return !left.Equals(right);
         }

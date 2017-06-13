@@ -236,7 +236,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.True(found);
                 var remaining = readBuffer.Slice(cursor);
-                var handle = remaining.First.Pin();
+                var handle = remaining.First.Retain(true);
                 Assert.True(handle.PinnedPointer != null);
                 Assert.True((byte*)handle.PinnedPointer == addresses[i]);
                 handle.Dispose();
@@ -257,7 +257,7 @@ namespace System.IO.Pipelines.Tests
             int index = 0;
             foreach (var memory in readBuffer)
             {
-                var handle = memory.Pin();
+                var handle = memory.Retain(true);
                 handles.Add(handle);
                 var ptr = (byte*)handle.PinnedPointer;
                 for (int i = 0; i < memory.Length; i++)
