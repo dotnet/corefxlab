@@ -12,7 +12,7 @@ namespace System.IO.Compression
     {
         internal IntPtr State { get; private set; }
         internal BrotliDecoderResult LastDecoderResult { get; set; }
-        internal MemoryStream _bufferStream;
+        internal MemoryStream BufferStream { get; private set; }
         private bool _isDisposed = false;
 
         internal Decoder()
@@ -29,7 +29,7 @@ namespace System.IO.Compression
                 throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);
             }
             LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
-            _bufferStream = new MemoryStream();
+            BufferStream = new MemoryStream();
         }
 
         internal void Dispose()
@@ -37,7 +37,7 @@ namespace System.IO.Compression
             if (!_isDisposed && State != IntPtr.Zero)
             {
                 BrotliNative.BrotliDecoderDestroyInstance(State);
-                _bufferStream.Dispose();
+                BufferStream.Dispose();
             }
             _isDisposed = true;
         }
@@ -45,10 +45,10 @@ namespace System.IO.Compression
         internal void RemoveBytes(int numberOfBytes)
         {
             ArraySegment<byte> buf;
-            if (_bufferStream.TryGetBuffer(out buf))
+            if (BufferStream.TryGetBuffer(out buf))
             {
-                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)_bufferStream.Length - numberOfBytes);
-                _bufferStream.SetLength(_bufferStream.Length - numberOfBytes);
+                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)BufferStream.Length - numberOfBytes);
+                BufferStream.SetLength(BufferStream.Length - numberOfBytes);
             }
             else
             {

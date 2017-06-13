@@ -18,7 +18,7 @@ namespace System.IO.Compression
 {
     public partial class BrotliStream : Stream
     {
-        private const int DefaultBufferSize = 64 * 1024;
+        private const int DefaultBufferSize = (1 << 16) - 1;
         private int _bufferSize;
         private Stream _stream;
         private CompressionMode _mode;
@@ -210,7 +210,7 @@ namespace System.IO.Compression
             ValidateParameters(buffer, offset, count);
             EnsureNotDisposed();
 
-            int bytesRead = (int)(_decoder._bufferStream.Length - _readOffset);
+            int bytesRead = (int)(_decoder.BufferStream.Length - _readOffset);
             nuint totalCount = 0;
             bool endOfStream = false;
             bool errorDetected = false;
@@ -233,7 +233,7 @@ namespace System.IO.Compression
                     else if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
                     {
                         Marshal.Copy(_bufferOutput, buf, 0, _bufferSize);
-                        _decoder._bufferStream.Write(buf, 0, _bufferSize);
+                        _decoder.BufferStream.Write(buf, 0, _bufferSize);
                         bytesRead += _bufferSize;
                         _availableOutput = (nuint)_bufferSize;
                         _nextOutput = _bufferOutput;
@@ -267,17 +267,17 @@ namespace System.IO.Compression
                     int remainBytes = (int)(_nextOutput.ToInt64() - _bufferOutput.ToInt64());
                     bytesRead += remainBytes;
                     Marshal.Copy(_bufferOutput, buf, 0, remainBytes);
-                    _decoder._bufferStream.Write(buf, 0, remainBytes);
+                    _decoder.BufferStream.Write(buf, 0, remainBytes);
                     _nextOutput = _bufferOutput;
                 }
                 if (endOfStream) break;
             }
-            if (_decoder._bufferStream.Length - _readOffset >= count || endOfStream)
+            if (_decoder.BufferStream.Length - _readOffset >= count || endOfStream)
             {
-                _decoder._bufferStream.Seek(_readOffset, SeekOrigin.Begin);
-                var bytesToRead = (int)(_decoder._bufferStream.Length - _readOffset);
+                _decoder.BufferStream.Seek(_readOffset, SeekOrigin.Begin);
+                var bytesToRead = (int)(_decoder.BufferStream.Length - _readOffset);
                 if (bytesToRead > count) bytesToRead = count;
-                _decoder._bufferStream.Read(buffer, offset, bytesToRead);
+                _decoder.BufferStream.Read(buffer, offset, bytesToRead);
                 _decoder.RemoveBytes(_readOffset + bytesToRead);
                 _readOffset = 0;
                 return bytesToRead;
