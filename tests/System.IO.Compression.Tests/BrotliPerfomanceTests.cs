@@ -145,12 +145,12 @@ namespace System.IO.Compression.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 string filePath = GetTestFilePath();
-                using (FileStream output = File.Create(filePath))
+                FileStream output = File.Create(filePath);
                 using (BrotliStream brotliCompressStream = new BrotliStream(output, CompressionMode.Compress))
-                using (iteration.StartMeasurement())
-                {
-                    brotliCompressStream.Write(bytes, 0, bytes.Length);
-                }
+                    using (iteration.StartMeasurement())
+                    {
+                        brotliCompressStream.Write(bytes, 0, bytes.Length);
+                    }
                 File.Delete(filePath);
             }
         }

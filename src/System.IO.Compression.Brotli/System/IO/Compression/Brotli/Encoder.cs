@@ -17,7 +17,6 @@ namespace System.IO.Compression
         private const int MaxQuality = 11;
         private bool _isDisposed = false;
 
-
         internal Encoder()
         {
             _isDisposed = false;
