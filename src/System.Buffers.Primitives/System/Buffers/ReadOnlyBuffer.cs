@@ -26,15 +26,49 @@ namespace System.Buffers
             _length = length;
         }
 
-        internal ReadOnlyBuffer(T[] array, int index, int length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlyBuffer(T[] array)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
             _array = array;
             _owner = null;
-            _index = index;
+            _index = 0;
+            _length = array.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlyBuffer(T[] array, int start)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
+            int arrayLength = array.Length;
+            if ((uint)start > (uint)arrayLength)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
+            _length = arrayLength - start;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlyBuffer(T[] array, int start, int length)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
             _length = length;
         }
 
-        private ReadOnlyBuffer(OwnedBuffer<T> owner, T[] array, int index, int length)
+        internal ReadOnlyBuffer(OwnedBuffer<T> owner, T[] array, int index, int length)
         {
             _array = array;
             _owner = owner;
@@ -55,15 +89,21 @@ namespace System.Buffers
         public bool IsEmpty => Length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer<T> Slice(int index)
+        public ReadOnlyBuffer<T> Slice(int start)
         {
-            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, _length - index);
+            if ((uint)start > (uint)_length)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer<T> Slice(int index, int length)
+        public ReadOnlyBuffer<T> Slice(int start, int length)
         {
-            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, length);
+            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + start, length);
         }
 
         public ReadOnlySpan<T> Span

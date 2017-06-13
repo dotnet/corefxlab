@@ -4,7 +4,7 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public class SlicesTests
+    public class BasicUnitTests
     {
         [Fact]
         public void ByteSpanEmptyCreateArrayTest()

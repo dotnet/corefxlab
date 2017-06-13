@@ -54,6 +54,11 @@ namespace System.Runtime
             throw GetObjectDisposedException(objectName);
         }
 
+        public static void ThrowArrayTypeMismatchException(Type type)
+        {
+            throw CreateArrayTypeMismatchException(type);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentNullException GetArgumentNullException(ExceptionArgument argument)
         {
@@ -102,6 +107,12 @@ namespace System.Runtime
             return new ObjectDisposedException(objectName);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArrayTypeMismatchException CreateArrayTypeMismatchException(Type type)
+        {
+            return new ArrayTypeMismatchException(type.ToString());
+        }
+
         private static string GetArgumentName(ExceptionArgument argument)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument),
@@ -114,6 +125,7 @@ namespace System.Runtime
     internal enum ExceptionArgument
     {
         pointer,
-        array
+        array,
+        start
     }
 }

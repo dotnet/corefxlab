@@ -26,11 +26,51 @@ namespace System.Buffers
             _length = length;
         }
 
-        internal Buffer(T[] array, int index, int length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(T[] array)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if (default(T) == null && array.GetType() != typeof(T[]))
+                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
+
             _array = array;
             _owner = null;
-            _index = index;
+            _index = 0;
+            _length = array.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(T[] array, int start)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if (default(T) == null && array.GetType() != typeof(T[]))
+                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
+
+            int arrayLength = array.Length;
+            if ((uint)start > (uint)arrayLength)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
+            _length = arrayLength - start;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(T[] array, int start, int length)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if (default(T) == null && array.GetType() != typeof(T[]))
+                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
+            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
             _length = length;
         }
 
@@ -45,7 +85,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyBuffer<T>(buffer._owner, buffer._index, buffer._length);
+            return new ReadOnlyBuffer<T>(buffer._owner, buffer._array, buffer._index, buffer._length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,15 +101,21 @@ namespace System.Buffers
         public bool IsEmpty => Length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer<T> Slice(int index)
+        public Buffer<T> Slice(int start)
         {
-            return new Buffer<T>(_owner, _array, _index + index, _length - index);
+            if ((uint)start > (uint)_length)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new Buffer<T>(_owner, _array, _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer<T> Slice(int index, int length)
+        public Buffer<T> Slice(int start, int length)
         {
-            return new Buffer<T>(_owner, _array, _index + index, length);
+            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new Buffer<T>(_owner, _array, _index + start, length);
         }
 
         public Span<T> Span
