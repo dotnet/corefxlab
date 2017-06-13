@@ -105,7 +105,7 @@ namespace System.IO.Compression.Tests
             NormalData
         }
 
-        private const int Iter = 10000;
+        private const int Iter = 1;
 
         [Benchmark(InnerIterationCount = Iter)]
         [InlineData(CompressionType.CryptoRandom)]
