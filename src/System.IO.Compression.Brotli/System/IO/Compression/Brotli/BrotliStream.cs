@@ -22,7 +22,6 @@ namespace System.IO.Compression
         private int _bufferSize;
         private Stream _stream;
         private CompressionMode _mode;
-        private nuint _totalOutput;
         private nuint _availableOutput;
         private IntPtr _nextOutput = IntPtr.Zero;
         private nuint _availableInput;
