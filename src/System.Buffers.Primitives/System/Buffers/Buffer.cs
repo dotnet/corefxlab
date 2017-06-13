@@ -94,6 +94,12 @@ namespace System.Buffers
             return new Buffer<T>(array, 0, array.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Buffer<T>(ArraySegment<T> arraySegment)
+        {
+            return new Buffer<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+        }
+
         public static Buffer<T> Empty { get; } = OwnedBuffer<T>.EmptyArray;
 
         public int Length => _length;
@@ -173,6 +179,10 @@ namespace System.Buffers
         public void CopyTo(Span<T> span) => Span.CopyTo(span);
 
         public void CopyTo(Buffer<T> buffer) => Span.CopyTo(buffer.Span);
+
+        public bool TryCopyTo(Span<T> span) => Span.TryCopyTo(span);
+
+        public bool TryCopyTo(Buffer<T> buffer) => Span.TryCopyTo(buffer.Span);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
