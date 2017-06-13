@@ -15,8 +15,12 @@ namespace System.Threading.Tasks.Channels
         public ClosedChannelException(string message) : base(message) { }
 
         /// <summary>Initializes a new instance of the <see cref="ClosedChannelException"/> class.</summary>
+        /// <param name="innerException">The exception that is the cause of this exception.</param>
+        public ClosedChannelException(Exception innerException) : base(Properties.Resources.ClosedChannelException_DefaultMessage, innerException) { }
+
+        /// <summary>Initializes a new instance of the <see cref="ClosedChannelException"/> class.</summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">The exception that is the cause of this exception.</param>
-        public ClosedChannelException(string message, Exception innerException) : base(message, innerException) { } 
+        public ClosedChannelException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

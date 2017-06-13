@@ -7,9 +7,12 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class BoundedChannelTests : ChannelTestBase
     {
-        protected override Channel<int> CreateChannel()
+        protected override Channel<int> CreateChannel() => Channel.CreateBounded<int>(1);
+        protected override Channel<int> CreateFullChannel()
         {
-            return Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
+            c.Out.WriteAsync(42).Wait();
+            return c;
         }
 
         [Fact]

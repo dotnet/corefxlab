@@ -95,12 +95,12 @@ namespace System.Threading.Tasks.Channels
                 ChannelUtilities.Complete(_completion, error);
 
                 // Fail any blocked readers/writers, as there will be no writers/readers to pair them with.
-                ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
-                ChannelUtilities.FailInteractors<WriterInteractor<T>,VoidResult>(_blockedWriters, error);
+                ChannelUtilities.FailInteractors<ReaderInteractor<T>, T>(_blockedReaders, ChannelUtilities.CreateInvalidCompletionException(error));
+                ChannelUtilities.FailInteractors<WriterInteractor<T>, VoidResult>(_blockedWriters, ChannelUtilities.CreateInvalidCompletionException(error));
 
                 // Let any waiting readers and writers know there won't be any more data
-                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
-                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false);
+                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false, error: error);
+                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false, error: error);
             }
 
             return true;
@@ -129,9 +129,11 @@ namespace System.Threading.Tasks.Channels
                 if (_completion.Task.IsCompleted)
                 {
                     return new ValueTask<T>(
-                        _completion.Task.IsFaulted ? Task.FromException<T>(_completion.Task.Exception.InnerException) :
                         _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
-                        Task.FromException<T>(ChannelUtilities.CreateInvalidCompletionException()));
+                        Task.FromException<T>(
+                            _completion.Task.IsFaulted ?
+                            ChannelUtilities.CreateInvalidCompletionException(_completion.Task.Exception.InnerException) :
+                            ChannelUtilities.CreateInvalidCompletionException()));
                 }
 
                 // If there are any blocked writers, find one to pair up with
@@ -213,7 +215,12 @@ namespace System.Threading.Tasks.Channels
                 // Fail if we've already completed
                 if (_completion.Task.IsCompleted)
                 {
-                    return Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
+                    return
+                        _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
+                        Task.FromException<T>(
+                            _completion.Task.IsFaulted ?
+                            ChannelUtilities.CreateInvalidCompletionException(_completion.Task.Exception.InnerException) :
+                            ChannelUtilities.CreateInvalidCompletionException());
                 }
 
                 // Try to find a reader to pair with.  Canceled readers remain in the queue,
@@ -245,7 +252,9 @@ namespace System.Threading.Tasks.Channels
                 // If we're done writing, fail.
                 if (_completion.Task.IsCompleted)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _completion.Task.IsFaulted ?
+                        Task.FromException<bool>(_completion.Task.Exception.InnerException) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // If there's a blocked writer, we can read.
@@ -266,7 +275,9 @@ namespace System.Threading.Tasks.Channels
                 // If we're done writing, fail.
                 if (_completion.Task.IsCompleted)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _completion.Task.IsFaulted ?
+                        Task.FromException<bool>(_completion.Task.Exception.InnerException) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // If there's a blocked reader, we can write

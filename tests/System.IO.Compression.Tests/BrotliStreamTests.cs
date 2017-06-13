@@ -12,138 +12,154 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliStreamTests
     {
-        static string brTestFile(string fileName) => Path.Combine("BrotliTestData" , fileName);
+        static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
         [Fact]
         public void BaseStreamCompress()
         {
             var writeStream = new MemoryStream();
-            var bro = new BrotliStream(writeStream, CompressionMode.Compress);
-            Assert.Same(bro._stream, writeStream);
+            var brotliCompressStream = new BrotliStream(writeStream, CompressionMode.Compress);
             writeStream.Dispose();
         }
-              
+
         [Fact]
         public void BaseStreamDecompress()
         {
             var writeStream = new MemoryStream();
-            var bro = new BrotliStream(writeStream, CompressionMode.Decompress);
-            Assert.Same(bro._stream, writeStream);
+            var brotliCompressStream = new BrotliStream(writeStream, CompressionMode.Decompress);
             writeStream.Dispose();
         }
 
         [Fact]
         public void DecompressCanRead()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Decompress);
-
-            Assert.True(bro.CanRead);
-
-            bro.Dispose();
-            Assert.False(bro.CanRead);
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress);
+            Assert.True(brotliCompressStream.CanRead);
+            brotliCompressStream.Dispose();
+            Assert.False(brotliCompressStream.CanRead);
         }
 
         [Fact]
         public void CompressCanWrite()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Compress);
-            Assert.True(bro.CanWrite);
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress);
+            Assert.True(brotliCompressStream.CanWrite);
 
-            bro.Dispose();
-            Assert.False(bro.CanWrite);
+            brotliCompressStream.Dispose();
+            Assert.False(brotliCompressStream.CanWrite);
         }
 
         [Fact]
         public void CanDisposeBaseStream()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Compress);
-            ms.Dispose(); // This would throw if this was invalid
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress);
+            memoryInputStream.Dispose(); // This would throw if this was invalid
         }
 
         [Fact]
         public void CanDisposeBrotliStream()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Compress);
-            bro.Dispose();
-
-            // Base Stream should be null after dispose
-            Assert.Null(bro._stream);
-
-            bro.Dispose(); // Should be a no-op
+            var memoryInputStream = new MemoryStream();
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress))
+            {
+                brotliCompressStream.Dispose();
+                Assert.Throws<ObjectDisposedException>( delegate { brotliCompressStream.CopyTo(memoryInputStream); }); 
+                brotliCompressStream.Dispose(); // Should be a no-op
+            }
+            memoryInputStream = new MemoryStream();
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress))
+            {
+                brotliCompressStream.Dispose();
+                Assert.Throws<ObjectDisposedException>(delegate { brotliCompressStream.CopyTo(memoryInputStream); });   // Base Stream should be null after dispose
+                brotliCompressStream.Dispose(); // Should be a no-op
+            }
         }
 
         [Fact]
         public void Flush()
         {
-            var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Flush();
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress);
+            brotliCompressStream.Flush();
         }
 
         [Fact]
         public void DoubleFlush()
         {
-            var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Flush();
-            ds.Flush();
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress);
+            brotliCompressStream.Flush();
+            brotliCompressStream.Flush();
         }
 
         [Fact]
         public void DoubleDispose()
         {
-            var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Dispose();
-            ds.Dispose();
+            var memoryInputStream = new MemoryStream();
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress))
+            {
+                brotliCompressStream.Dispose();
+                brotliCompressStream.Dispose();
+            }
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress))
+            {
+                brotliCompressStream.Dispose();
+                brotliCompressStream.Dispose();
+            }
         }
 
         [Fact]
         public void FlushThenDispose()
         {
-            var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Flush();
-            ds.Dispose();
+            var memoryInputStream = new MemoryStream();
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress))
+            {
+                brotliCompressStream.Flush();
+                brotliCompressStream.Dispose();
+            }
+            using (var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress))
+            {
+                brotliCompressStream.Flush();
+                brotliCompressStream.Dispose();
+            }
         }
 
         [Fact]
-        public void TestSeekMethodsDecompress()
+        public void TestSeekMethobrotliCompressStreamDecompress()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Decompress);
-            Assert.False(bro.CanSeek, "CanSeek should be false");
-            Assert.Throws<NotSupportedException>(delegate { long value = bro.Length; });
-            Assert.Throws<NotSupportedException>(delegate { long value = bro.Position; });
-            Assert.Throws<NotSupportedException>(delegate { bro.Position = 100L; });
-            Assert.Throws<NotSupportedException>(delegate { bro.SetLength(100L); });
-            Assert.Throws<NotSupportedException>(delegate { bro.Seek(100L, SeekOrigin.Begin); });
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress);
+            Assert.False(brotliCompressStream.CanSeek, "CanSeek should be false");
+            Assert.Throws<NotSupportedException>(delegate { long value = brotliCompressStream.Length; });
+            Assert.Throws<NotSupportedException>(delegate { long value = brotliCompressStream.Position; });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.Position = 100L; });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.SetLength(100L); });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.Seek(100L, SeekOrigin.Begin); });
         }
 
         [Fact]
-        public void TestSeekMethodsCompress()
+        public void TestSeekMethobrotliCompressStreamCompress()
         {
-            var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Compress);
-            Assert.False(bro.CanSeek, "CanSeek should be false");
-            Assert.Throws<NotSupportedException>(delegate { long value = bro.Length; });
-            Assert.Throws<NotSupportedException>(delegate { long value = bro.Position; });
-            Assert.Throws<NotSupportedException>(delegate { bro.Position = 100L; });
-            Assert.Throws<NotSupportedException>(delegate { bro.SetLength(100L); });
-            Assert.Throws<NotSupportedException>(delegate { bro.Seek(100L, SeekOrigin.Begin); });
+            var memoryInputStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Compress);
+            Assert.False(brotliCompressStream.CanSeek, "CanSeek should be false");
+            Assert.Throws<NotSupportedException>(delegate { long value = brotliCompressStream.Length; });
+            Assert.Throws<NotSupportedException>(delegate { long value = brotliCompressStream.Position; });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.Position = 100L; });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.SetLength(100L); });
+            Assert.Throws<NotSupportedException>(delegate { brotliCompressStream.Seek(100L, SeekOrigin.Begin); });
         }
 
         [Fact]
         public void CanReadBaseStreamAfterDispose()
         {
-            var ms = new MemoryStream(File.ReadAllBytes(brTestFile("BrotliTest.txt.br")));
-            var bro = new BrotliStream(ms, CompressionMode.Decompress, true);
-            var baseStream = bro._stream;
-            bro.Dispose();
+            var memoryInputStream = new MemoryStream(File.ReadAllBytes(brTestFile("BrotliTest.txt.br")));
+            var brotliCompressStream = new BrotliStream(memoryInputStream, CompressionMode.Decompress, true);
+            var baseStream = memoryInputStream;
+            brotliCompressStream.Dispose();
             int size = 1024;
             byte[] bytes = new byte[size];
             baseStream.Read(bytes, 0, size); // This will throw if the underlying stream is not writable as expected
@@ -152,45 +168,34 @@ namespace System.IO.Compression.Tests
         [Fact]
         public void ReadWriteArgumentValidation()
         {
-            using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Compress))
+            using (var brotliCompressStream = new BrotliStream(new MemoryStream(), CompressionMode.Compress))
             {
-                Assert.Throws<ArgumentNullException>(() => ds.Write(null, 0, 0));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], -1, 0));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 0, -1));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 0, 2));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 1, 1));
-                Assert.Throws<InvalidOperationException>(() => ds.Read(new byte[1], 0, 1));
-                ds.Write(new byte[1], 0, 0);
-            }         
-            using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Decompress))
+                Assert.Throws<ArgumentNullException>(() => brotliCompressStream.Write(null, 0, 0));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Write(new byte[1], -1, 0));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Write(new byte[1], 0, -1));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Write(new byte[1], 0, 2));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Write(new byte[1], 1, 1));
+                Assert.Throws<InvalidOperationException>(() => brotliCompressStream.Read(new byte[1], 0, 1));
+                brotliCompressStream.Write(new byte[1], 0, 0);
+            }
+            using (var brotliCompressStream = new BrotliStream(new MemoryStream(), CompressionMode.Decompress))
             {
-                Assert.Throws<ArgumentNullException>(() => ds.Read(null, 0, 0));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], -1, 0));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 0, -1));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 0, 2));
-                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 1, 1));
-                Assert.Throws<InvalidOperationException>(() => ds.Write(new byte[1], 0, 1));
+                Assert.Throws<ArgumentNullException>(() => brotliCompressStream.Read(null, 0, 0));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Read(new byte[1], -1, 0));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Read(new byte[1], 0, -1));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Read(new byte[1], 0, 2));
+                Assert.Throws<ArgumentOutOfRangeException>(() => brotliCompressStream.Read(new byte[1], 1, 1));
+                Assert.Throws<InvalidOperationException>(() => brotliCompressStream.Write(new byte[1], 0, 1));
                 var data = new byte[1] { 42 };
-                Assert.Equal(0, ds.Read(data, 0, 0));
+                Assert.Equal(0, brotliCompressStream.Read(data, 0, 0));
                 Assert.Equal(42, data[0]);
-            }         
-        }
-
-        public static IEnumerable<object[]> RoundtripCompressDecompressOuterData
-        {
-            get
-            {
-                foreach (var level in new[] { CompressionLevel.Fastest, CompressionLevel.Optimal, CompressionLevel.NoCompression }) // compression level
-                {
-                    yield return new object[] { 1, 5 }; // smallest possible writes
-                    yield return new object[] {1023, 1023 * 10}; // overflowing internal buffer
-                    yield return new object[] { 1024 * 1024, 1024 * 1024}; // large single write
-                }
             }
         }
 
         [Theory]
-        [MemberData(nameof(RoundtripCompressDecompressOuterData))]
+        [InlineData(1, 5)]
+        [InlineData(1023, 1023 * 10)]
+        [InlineData(1024 * 1024, 1024 * 1024)]
         public void RoundtripCompressDecompress(int chunkSize, int totalSize)
         {
             byte[] data = new byte[totalSize];
@@ -200,7 +205,7 @@ namespace System.IO.Compression.Tests
             {
                 for (int i = 0; i < data.Length; i += chunkSize)
                 {
-                    compressor.Write(data, i, chunkSize);               
+                    compressor.Write(data, i, chunkSize);
                 }
             }
             compressed.Position = 0;
@@ -211,10 +216,10 @@ namespace System.IO.Compression.Tests
         private void ValidateCompressedData(int chunkSize, MemoryStream compressed, byte[] expected)
         {
             using (MemoryStream decompressed = new MemoryStream())
-            using (var decompressor =new BrotliStream(compressed, CompressionMode.Decompress, true))
+            using (var decompressor = new BrotliStream(compressed, CompressionMode.Decompress, true))
             {
-                 decompressor.CopyTo(decompressed, chunkSize);
-                
+                decompressor.CopyTo(decompressed, chunkSize);
+
                 Assert.Equal<byte>(expected, decompressed.ToArray());
             }
         }

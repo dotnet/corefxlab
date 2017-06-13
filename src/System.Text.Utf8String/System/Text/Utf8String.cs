@@ -35,25 +35,6 @@ namespace System.Text.Utf8
             _buffer = new ReadOnlySpan<byte>(utf8bytes, index, length);
         }
 
-        // TODO: reevaluate implementation
-        public Utf8String(IEnumerable<uint> codePoints)
-        {
-            var len = GetUtf8LengthInBytes(codePoints);
-            var buffer = new Span<byte>(new byte[len]);
-            var index = 0;
-
-            foreach (uint codePoint in codePoints)
-            {
-                int written;
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, index, out written))
-                    throw new ArgumentException("Invalid code point", "codePoints");
-
-                index += written;
-            }
-
-            _buffer = buffer;
-        }
-
         public Utf8String(string s)
         {
             if (s == null)
@@ -560,7 +541,7 @@ namespace System.Text.Utf8
             int len = 0;
             foreach (var codePoint in codePoints)
             {
-                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
+                len += Utf8Helper.GetNumberOfEncodedBytes(codePoint);
             }
 
             return len;
@@ -570,27 +551,21 @@ namespace System.Text.Utf8
         private static byte[] GetUtf8BytesFromString(string str)
         {
             var utf16 = str.AsSpan();
-
-            int needed;
-            if (!Utf8Encoder.TryComputeEncodedBytes(utf16, out needed))
+            if (!TextEncoder.Utf8.TryComputeEncodedBytes(utf16, out int needed))
                 return null;
 
-            var data = new byte[needed];
-            var buffer = new Span<byte>(data);
-
-            int written;
-            int consumed;
-            if (!Utf8Encoder.TryEncode(utf16, buffer, out consumed, out written))
+            var utf8 = new byte[needed];
+            if (!TextEncoder.Utf8.TryEncode(utf16, utf8, out int consumed, out int written))
                 // This shouldn't happen...
                 return null;
 
-            return data;
+            return utf8;
         }
 
         public Utf8String TrimStart()
         {
             CodePointEnumerator it = GetCodePointEnumerator();
-            while (it.MoveNext() && UnicodeHelpers.IsWhitespace(it.Current))
+            while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
 
@@ -610,7 +585,7 @@ namespace System.Text.Utf8
         public Utf8String TrimEnd()
         {
             CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
-            while (it.MoveNext() && UnicodeHelpers.IsWhitespace(it.Current))
+            while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
 

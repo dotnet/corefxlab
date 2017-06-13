@@ -10,82 +10,83 @@ using System.Runtime.InteropServices;
 
 #if BIT64
     using nuint = System.UInt64;
-#else // BIT64
+#else 
     using nuint = System.UInt32;
-#endif // BIT64
+#endif 
 
 namespace System.IO.Compression
 {
+    ///  /// <summary>
+    /// 0 - Process input. Encoder may postpone producing output, until it has processed enough input.
+    /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enough space in output stream.
+    /// 2 - Finalize the stream. Adding more input data to finalized stream is impossible.
+    /// 3 - Emit metadata block to stream. Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than 16MiB.
+    /// </summary>
+    public enum BrotliEncoderOperation
+    {
+        Process,
+        Flush,
+        Finish,
+        EmitMetadata
+    };
+
+    /// <summary>
+    /// 0 - BrotliEncoderMode enumerates all available values.
+    /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
+    /// 2 - Recommended sliding LZ77 window size  2^value -16 .  Encoder may reduce this value, e.g. if input is much smaller than window size.
+    /// 3 - Recommended input block size. 
+    /// 4-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
+    /// 5 - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
+    /// </summary>
+    public enum BrotliEncoderParameter
+    {
+        Mode,
+        Quality,
+        LGWin,
+        LGBlock,
+        LCModeling,
+        SizeHint
+    };
+
+    /// <summary>
+    /// 0 - Decoding error, e.g. corrupted input or memory allocation problem.
+    /// 1 - Decoding successfully completed
+    /// 2 - Partially done; should be called again with more input
+    /// 3 - Partially done; should be called again with more output
+    /// </summary>
+    public enum BrotliDecoderResult
+    {
+        Error,
+        Success,
+        NeedsMoreInput,
+        NeedsMoreOutput
+    };
+
+    /// <summary>
+    /// 0 - Default (Compressor does not know anything in advance properties of the input)
+    /// 1 - For UTF-8 formatted text input
+    /// 2 - Mode used in WOFF 2.0
+    /// </summary>
+    public enum BrotliEncoderMode
+    {
+        Generic,
+        Text,
+        Font
+    };
+
     /// <summary>
     /// This class provides declaration for constants and PInvokes as well as some basic tools for exposing the
     /// native Brotli library to managed code.
     /// </summary>
-    public class BrotliNative
+    internal class BrotliNative
     {
-        /// <summary>
-        /// 0 - Process input. Encoder may postpone producing output, until it has processed enough input.
-        /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enoughspace in output stream.
-        /// 2 - Finalize the stream. Adding more input data to finalized stream is impossible.
-        /// 3 - Emit metadata block to stream.Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than than 16MiB.
-        /// </summary>
-        public enum BrotliEncoderOperation
-        {
-            Process,
-            Flush,
-            Finish,
-            EmitMetadata
-        };
-
-        /// <summary>
-        /// 0 - BrotliEncoderMode enumerates all available values.
-        /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
-        /// 2 - Recommended sliding LZ77 window size  2^value -16 .  Encoder may reduce this value, e.g. if input is much smaller than window size.
-        /// 3 - Recommended input block size. 
-        /// 4-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
-        /// 5 - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
-        /// </summary>
-        public enum BrotliEncoderParameter
-        {
-            Mode,
-            Quality,
-            LGWin,
-            LGBlock,
-            LCModeling,
-            SizeHint
-        };
-
-        /// <summary>
-        /// 0 - Decoding error, e.g. corrupted input or memory allocation problem.
-        /// 1 - Decoding successfully completed
-        /// 2 - Partially done; should be called again with more input
-        /// 3 - Partially done; should be called again with more output
-        /// </summary>
-        public enum BrotliDecoderResult
-        {
-            Error,
-            Success,
-            NeedsMoreInput,
-            NeedsMoreOutput
-        };
-
-        /// <summary>
-        /// 0 - Default (Compressor does not know anything in advance properties of the input)
-        /// 1 - For UTF-8 formatted text input
-        /// 2 - Mode used in WOFF 2.0
-        /// </summary>
-        public enum BrotliEncoderMode
-        {
-            Generic,
-            Text,
-            Font
-        };
-
+       
         #region Encoder
 
-        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
-                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer)
+        public static bool BrotliEncoderCompress(int quality, int windowSize, BrotliEncoderMode mode, nuint inputSize,
+                IntPtr inputBuffer, ref nuint encodedSize, IntPtr encodedBuffer)
         {
-            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, ref encoded_size, encoded_buffer);
+            return Interop.Brotli.BrotliEncoderCompress(quality, windowSize, mode, inputSize, inputBuffer, ref encodedSize, encodedBuffer);
         }
 
         public static IntPtr BrotliEncoderCreateInstance()
