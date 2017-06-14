@@ -45,7 +45,7 @@ namespace System.Buffers
 
         public abstract BufferHandle Pin(int index = 0);
 
-        protected internal abstract bool TryGetArray(out ArraySegment<T> buffer);
+        protected internal abstract bool TryGetArray(out ArraySegment<T> arraySegment);
 
         #region Lifetime Management
         public abstract bool IsDisposed { get; }

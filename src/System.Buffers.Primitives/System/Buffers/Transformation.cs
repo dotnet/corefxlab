@@ -3,9 +3,9 @@
 
 namespace System.Buffers
 {
-    public interface ITransformation
+    public abstract class Transformation
     {
-        TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten);
+        public abstract TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten);
     }
 
     public enum TransformationStatus

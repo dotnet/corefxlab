@@ -124,10 +124,10 @@ namespace System.IO.Pipelines
 #if KESTREL_BY_SOURCE
         internal
 #endif
-        protected override bool TryGetArray(out ArraySegment<byte> buffer)
+        protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
+            arraySegment = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
