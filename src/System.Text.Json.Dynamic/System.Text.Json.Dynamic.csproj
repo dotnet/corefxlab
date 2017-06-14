@@ -4,7 +4,6 @@
     <Description>JSON dynamic object</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.2</LangVersion>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>

@@ -4,7 +4,6 @@
     <Description>An abstraction for doing efficient asynchronous IO</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.2</LangVersion>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <!--<DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);OPERATION_LOCATION_TRACKING;COMPLETION_LOCATION_TRACKING</DefineConstants>-->
   </PropertyGroup>

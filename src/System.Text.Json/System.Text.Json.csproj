@@ -4,7 +4,6 @@
     <Description>Non-allocating JSON reader and writer</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.2</LangVersion>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
