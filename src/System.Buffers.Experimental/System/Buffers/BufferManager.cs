@@ -31,9 +31,9 @@ namespace System.Buffers.Pools
                 base.Dispose(disposing);
             }
 
-            protected override bool TryGetArray(out ArraySegment<byte> buffer)
+            protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
             {
-                buffer = default(ArraySegment<byte>);
+                arraySegment = default(ArraySegment<byte>);
                 return false;
             }
 

@@ -61,10 +61,10 @@ namespace System.Buffers
             return new BufferHandle(this, Add(_pointer.ToPointer(), index));
         }
 
-        protected override bool TryGetArray(out ArraySegment<T> buffer)
+        protected override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
-            buffer = new ArraySegment<T>(_array);
+            arraySegment = new ArraySegment<T>(_array);
             return true;
         }
 

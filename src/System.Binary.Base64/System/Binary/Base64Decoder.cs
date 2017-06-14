@@ -282,9 +282,9 @@ namespace System.Binary.Base64
             return TransformationStatus.InvalidData;
         }
 
-        class FromBase64 : ITransformation
+        class FromBase64 : Transformation
         {
-            public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => Decode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }

@@ -2,13 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Buffers
+namespace System
 {
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
     public struct Buffer<T> : IEquatable<Buffer<T>>, IEquatable<ReadOnlyBuffer<T>>
@@ -150,21 +151,21 @@ namespace System.Buffers
             }
         }
 
-        public bool TryGetArray(out ArraySegment<T> buffer)
+        public bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (_owner != null && _owner.TryGetArray(out var segment))
             {
-                buffer = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
                 return true;
             }
 
             if (_array != null)
             {
-                buffer = new ArraySegment<T>(_array, _index, _length);
+                arraySegment = new ArraySegment<T>(_array, _index, _length);
                 return true;
             }
 
-            buffer = default(ArraySegment<T>);
+            arraySegment = default(ArraySegment<T>);
             return false;
         }
 

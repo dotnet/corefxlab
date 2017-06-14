@@ -2,13 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Buffers
+namespace System
 {
     [DebuggerTypeProxy(typeof(ReadOnlyBufferDebuggerView<>))]
     public struct ReadOnlyBuffer<T> : IEquatable<ReadOnlyBuffer<T>>, IEquatable<Buffer<T>>
