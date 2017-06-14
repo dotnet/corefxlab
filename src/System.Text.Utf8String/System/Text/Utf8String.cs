@@ -10,13 +10,13 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public partial struct Utf8String
+    public partial ref struct Utf8String
     {
-        private ReadOnlySpan<byte> _buffer;
+        private readonly ReadOnlySpan<byte> _buffer;
 
         private const int StringNotFound = -1;
 
-        static readonly Utf8String s_empty = default(Utf8String);
+        static Utf8String s_empty => default(Utf8String);
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?

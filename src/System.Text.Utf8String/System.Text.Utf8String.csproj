@@ -5,6 +5,7 @@
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>7.2</LangVersion>
     <PackageTags>.NET UTF-8 String</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>

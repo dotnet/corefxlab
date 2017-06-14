@@ -8,7 +8,7 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct CodePointEnumerator : IEnumerator<uint>, IEnumerator
+        public ref struct CodePointEnumerator
         {
             private ReadOnlySpan<byte> _buffer;
             private int _index;
@@ -36,8 +36,6 @@ namespace System.Text.Utf8
                 }
             }
 
-            object IEnumerator.Current { get { return Current; } }
-
             public unsafe uint Current
             {
                 get
@@ -63,10 +61,6 @@ namespace System.Text.Utf8
 
                     return codePoint;
                 }
-            }
-
-            void IDisposable.Dispose()
-            {
             }
 
             public bool MoveNext()

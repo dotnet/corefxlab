@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public struct WritableBufferWriter
+    public ref struct WritableBufferWriter
     {
         private WritableBuffer _writableBuffer;
         private Span<byte> _span;
