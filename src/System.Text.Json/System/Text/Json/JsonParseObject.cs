@@ -8,7 +8,7 @@ using System.Text.Utf8;
 
 namespace System.Text.Json
 {
-    public struct JsonObject : IDisposable
+    public ref struct JsonObject
     {
         private BufferPool _pool;
         private OwnedBuffer<byte> _dbMemory;

@@ -226,18 +226,21 @@ namespace System.Text.Json
         struct JsonValue : IBufferFormattable
         {
             JsonDynamicObject _object;
-            Utf8String _value;
+            //TODO: no spans on the heap
+            Utf8String _value => default;
             JsonValueType _type;
 
             public JsonValue(Utf8String value, JsonValueType type = JsonValueType.String)
             {
-                _value = value;
+                //TODO: no spans on the heap
+                //_value = value;
                 _object = null;
                 _type = type;
             }
             public JsonValue(JsonDynamicObject obj)
             {
-                _value = default(Utf8String);
+                //TODO: no spans on the heap
+                //_value = default(Utf8String);
                 _object = obj;
                 _type = JsonValueType.Object;
             }
@@ -245,7 +248,8 @@ namespace System.Text.Json
             public JsonValue(JsonValueType type)
             {
                 _type = type;
-                _value = default(Utf8String);
+                //TODO: no spans on the heap
+                //_value = default(Utf8String);
                 _object = null;
             }
 
@@ -259,7 +263,8 @@ namespace System.Text.Json
                 if (_type == JsonValueType.Null) return null;
                 if (_type == JsonValueType.True) return true;
                 if (_type == JsonValueType.False) return false;
-                if (_type == JsonValueType.String) return _value;
+                //TODO: no spans on the heap
+                //if (_type == JsonValueType.String) return _value;
                 if (_type == JsonValueType.Number)
                 {
                     return double.Parse(_value.ToString());
@@ -293,7 +298,8 @@ namespace System.Text.Json
         struct JsonProperty : IEquatable<JsonProperty>, IBufferFormattable
         {
             JsonDynamicObject _object;
-            Utf8String _name;
+            //TODO: no spans on the heap
+            Utf8String _name => default;
 
             public JsonDynamicObject Object
             {
@@ -306,7 +312,8 @@ namespace System.Text.Json
             public JsonProperty(JsonDynamicObject obj, Utf8String name)
             {
                 _object = obj;
-                _name = name;
+                //TODO: no spans on the heap
+                //_name = name;
             }
 
             public bool Equals(JsonProperty other)

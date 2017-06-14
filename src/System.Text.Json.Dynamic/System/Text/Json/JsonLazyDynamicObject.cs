@@ -8,11 +8,13 @@ namespace System.Text.Json
 {
     public class JsonLazyDynamicObject : DynamicObject, IDisposable
     {
-        JsonObject _dom;
+        //TODO: no spans on the heap
+        JsonObject _dom => default;
 
         private JsonLazyDynamicObject(JsonObject dom)
         {
-            _dom = dom;
+            //TODO: no spans on the heap
+            //_dom = dom;
         }
 
         public static JsonLazyDynamicObject Parse(ReadOnlySpan<byte> utf8Json)
