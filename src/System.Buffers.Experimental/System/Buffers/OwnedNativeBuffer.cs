@@ -44,9 +44,9 @@ namespace System.Buffers
                 return new BufferHandle(this, Add(_pointer.ToPointer(), index));
             }
         }
-        protected override bool TryGetArray(out ArraySegment<byte> buffer)
+        protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            buffer = default(ArraySegment<byte>);
+            arraySegment = default(ArraySegment<byte>);
             return false;
         }
 

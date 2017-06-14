@@ -51,10 +51,10 @@ namespace System.Buffers.Internal
             }
         }
 
-        protected internal override bool TryGetArray(out ArraySegment<T> buffer)
+        protected internal override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
-            buffer = new ArraySegment<T>(_array);
+            arraySegment = new ArraySegment<T>(_array);
             return true;
         }
 

@@ -544,10 +544,10 @@ namespace System.IO.Pipelines.Tests
                     base.Dispose(disposing);
                 }
 
-                protected override bool TryGetArray(out ArraySegment<byte> buffer)
+                protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
                 {
                     if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    buffer = new ArraySegment<byte>(_array);
+                    arraySegment = new ArraySegment<byte>(_array);
                     return true;
                 }
 

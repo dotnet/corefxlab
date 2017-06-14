@@ -12,7 +12,7 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this ITransformation transformation, ReadOnlyBytes source, IOutput destination)
+        public static void Pipe(this Transformation transformation, ReadOnlyBytes source, IOutput destination)
         {
             int afterMergeSlice = 0;
             ReadOnlySpan<byte> remainder;

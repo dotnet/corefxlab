@@ -222,10 +222,10 @@ namespace System.Buffers.Tests
             }
         }
 
-        protected override bool TryGetArray(out ArraySegment<T> buffer)
+        protected override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
-            buffer = new ArraySegment<T>(_array);
+            arraySegment = new ArraySegment<T>(_array);
             return true;
         }
 
@@ -278,10 +278,10 @@ namespace System.Buffers.Tests
             Dispose();
         }
 
-        protected override bool TryGetArray(out ArraySegment<T> buffer)
+        protected override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-            buffer = new ArraySegment<T>(_array);
+            arraySegment = new ArraySegment<T>(_array);
             return true;
         }
 

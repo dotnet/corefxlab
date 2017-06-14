@@ -124,10 +124,10 @@ namespace Microsoft.Net.Http
             _next = null;
         }
 
-        protected override bool TryGetArray(out ArraySegment<byte> buffer)
+        protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
-            buffer = new ArraySegment<byte>(_array);
+            arraySegment = new ArraySegment<byte>(_array);
             return true;
         }
 
