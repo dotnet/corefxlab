@@ -7,7 +7,7 @@ using System.Text.Utf8;
 
 namespace System.Text.Http.SingleSegment
 {
-    public struct HttpHeadersSingleSegment : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
+    public ref struct HttpHeadersSingleSegment
     {
         private readonly Utf8String _headerString;
         private int _count;
@@ -64,17 +64,7 @@ namespace System.Text.Http.SingleSegment
             return new Enumerator(_headerString);
         }        
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator<KeyValuePair<Utf8String, Utf8String>> IEnumerable<KeyValuePair<Utf8String, Utf8String>>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        private static Utf8String ParseHeaderLine(Utf8String headerString, out KeyValuePair<Utf8String, Utf8String> header)
+        private static Utf8String ParseHeaderLine(Utf8String headerString, out Utf8StringPair header)
         {
             Utf8String headerName;
             Utf8String headerValue;
@@ -102,22 +92,22 @@ namespace System.Text.Http.SingleSegment
                 headerString = headerString.Substring(1);
             }            
             
-            header = new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+            header = new Utf8StringPair(headerName, headerValue);
 
             return headerString;
         }
 
-        public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
+        public ref struct Enumerator 
         {
             private readonly Utf8String _originalHeaderString;
             private Utf8String _headerString;
-            private KeyValuePair<Utf8String, Utf8String> _current;
+            private Utf8StringPair _current;
 
             internal Enumerator(Utf8String originalHeaderString)
             {
                 _originalHeaderString = originalHeaderString;
                 _headerString = _originalHeaderString;
-                _current = new KeyValuePair<Utf8String, Utf8String>();
+                _current = new Utf8StringPair();
             }
 
             public bool MoveNext()
@@ -132,18 +122,18 @@ namespace System.Text.Http.SingleSegment
                 return true;
             }
 
-            public KeyValuePair<Utf8String, Utf8String> Current => _current;
+            public Utf8StringPair Current => _current;
+        }
 
-            object IEnumerator.Current => Current;
+        public ref struct Utf8StringPair
+        {
+            public readonly Utf8String Key;
+            public readonly Utf8String Value;
 
-            void IDisposable.Dispose()
+            public Utf8StringPair(Utf8String first, Utf8String second)
             {
-            }
-
-            void IEnumerator.Reset()
-            {
-                _headerString = _originalHeaderString;
-                _current = new KeyValuePair<Utf8String, Utf8String>();
+                this.Key = first;
+                this.Value = second;
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Text.Utf8;
 namespace System.Text.Http.SingleSegment
 {
     [Obsolete("Use System.Text.Http.HttpRequest")]
-    public struct HttpRequestSingleSegment
+    public ref struct HttpRequestSingleSegment
     {
         private HttpRequestLine _requestLine;
         private HttpHeadersSingleSegment _headers;
@@ -65,11 +65,15 @@ namespace System.Text.Http.SingleSegment
         }
     }
 
-    public struct HttpRequestReader
+    public ref struct HttpRequestReader
     {
-        static readonly Utf8String s_Http1_0 = new Utf8String("HTTP/1.0");
-        static readonly Utf8String s_Http1_1 = new Utf8String("HTTP/1.1");
-        static readonly Utf8String s_Http2_0 = new Utf8String("HTTP/2.0");
+        static readonly byte[] b_Http1_0 = new Utf8String("HTTP/1.0").CopyBytes();
+        static readonly byte[] b_Http1_1 = new Utf8String("HTTP/1.1").CopyBytes();
+        static readonly byte[] b_Http2_0 = new Utf8String("HTTP/2.0").CopyBytes();
+
+        static Utf8String s_Http1_0 => new Utf8String(b_Http1_0);
+        static Utf8String s_Http1_1 => new Utf8String(b_Http1_1);
+        static Utf8String s_Http2_0 => new Utf8String(b_Http2_0);
 
         internal static readonly byte[] Eol = new byte[] { s_CR, s_LF };
         internal static readonly byte[] Eoh = new byte[] { s_CR, s_LF, s_CR, s_LF }; // End of Headers
@@ -173,10 +177,16 @@ namespace System.Text.Http.SingleSegment
     static class HttpRequestParser
     {
         // TODO: these copies should be eliminated
-        static readonly Utf8String s_Get = new Utf8String("GET ");
-        static readonly Utf8String s_Post = new Utf8String("POST ");
-        static readonly Utf8String s_Put = new Utf8String("PUT ");
-        static readonly Utf8String s_Delete = new Utf8String("DELETE ");
+        static readonly byte[] b_Get = new Utf8String("GET ").CopyBytes();
+        static readonly byte[] b_Post = new Utf8String("POST ").CopyBytes();
+        static readonly byte[] b_Put = new Utf8String("PUT ").CopyBytes();
+        static readonly byte[] b_Delete = new Utf8String("DELETE ").CopyBytes();
+
+        static Utf8String s_Get => new Utf8String(b_Get);
+        static Utf8String s_Post => new Utf8String(b_Post);
+        static Utf8String s_Put => new Utf8String(b_Put);
+        static Utf8String s_Delete => new Utf8String(b_Delete);
+
 
         internal static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {

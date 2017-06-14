@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Non-allocating HTTP parser</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <LangVersion>7.2</LangVersion>
     <PackageTags>HTTP parser parsing .NET non-allocating corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
