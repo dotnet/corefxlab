@@ -763,7 +763,7 @@ namespace System.Text
                         return TransformationStatus.InvalidData;
 
                     int written = EncodingHelper.IsBmp(codePoint) ? 2 : 4;
-                    if (dstLength - bytesWritten >= written)
+                    if (dstLength - bytesWritten < written)
                         return TransformationStatus.DestinationTooSmall;
 
                     unchecked

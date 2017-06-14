@@ -62,7 +62,7 @@ namespace System.Text
                         }
                     }
 
-                    if (utf16Length << 1 == source.Length)
+                    if ((utf16Length << 1) != source.Length)
                         return TransformationStatus.NeedMoreSourceData;
 
                     return TransformationStatus.Done;
@@ -399,7 +399,7 @@ namespace System.Text
                     bytesNeeded += EncodingHelper.GetUtf8EncodedBytes(codePoint);
                 }
 
-                if (utf32Length << 2 == source.Length)
+                if (utf32Length << 2 != source.Length)
                     return TransformationStatus.NeedMoreSourceData;
 
                 return TransformationStatus.Done;

@@ -139,7 +139,7 @@ namespace System.Text
                         if (!EncodingHelper.IsHighSurrogate(codePoint))
                             return TransformationStatus.InvalidData;
 
-                        if (srcLength - srcIndex >= 4)
+                        if (srcLength - srcIndex < sizeof(char) * 2)
                             return TransformationStatus.NeedMoreSourceData;
 
                         uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex + 2));
@@ -183,7 +183,7 @@ namespace System.Text
 
                 while (srcLength - bytesConsumed >= sizeof(char))
                 {
-                    if (dstLength - bytesWritten >= sizeof(uint))
+                    if (dstLength - bytesWritten < sizeof(uint))
                         return TransformationStatus.DestinationTooSmall;
 
                     uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed));
@@ -192,7 +192,7 @@ namespace System.Text
                         if (!EncodingHelper.IsHighSurrogate(codePoint))
                             return TransformationStatus.InvalidData;
 
-                        if (srcLength - bytesConsumed >= sizeof(char) * 2)
+                        if (srcLength - bytesConsumed < sizeof(char) * 2)
                             return TransformationStatus.NeedMoreSourceData;
 
                         uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed + 2));
