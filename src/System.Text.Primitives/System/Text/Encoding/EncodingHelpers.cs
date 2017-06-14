@@ -87,7 +87,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetUtf8EncodedBytes(byte b)
+        public static int GetUtf8DecodedBytes(byte b)
         {
             if ((b & b1000_0000U) == 0)
                 return 1;
@@ -102,6 +102,41 @@ namespace System.Text
                 return 4;
 
             return 0;
+        }
+
+        internal static int GetUtf8EncodedBytes(uint codePoint)
+        {
+            if (codePoint <= 0x7F)
+                return 1;
+
+            if (codePoint <= 0x7FF)
+                return 2;
+
+            if (codePoint <= 0xFFFF)
+                return 3;
+
+            if (codePoint <= 0x10FFFF)
+                return 4;
+
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsSurrogate(uint codePoint)
+        {
+            return codePoint >= HighSurrogateStart && codePoint <= LowSurrogateEnd;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsLowSurrogate(uint codePoint)
+        {
+            return codePoint >= LowSurrogateStart && codePoint <= LowSurrogateEnd;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsHighSurrogate(uint codePoint)
+        {
+            return codePoint >= HighSurrogateStart && codePoint <= HighSurrogateEnd;
         }
     }
 }
