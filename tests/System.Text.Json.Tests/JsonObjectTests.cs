@@ -14,7 +14,9 @@ namespace System.Text.Json.Tests
         public void ParseArray()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
-            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
+
+            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            try { 
                 Assert.Equal(2, parsedObject.ArrayLength);
 
                 var phoneNumber = (string)parsedObject[0];
@@ -23,13 +25,19 @@ namespace System.Text.Json.Tests
                 Assert.Equal("425-214-3151", phoneNumber);
                 Assert.Equal(25, age);
             }
+            finally
+            {
+                parsedObject.Dispose();
+            }
         }
 
         [Fact]
         public void ParseSimpleObject()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleObjectJson);
-            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
+            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            try
+            {
                 var age = (int)parsedObject["age"];
                 var ageStrring = (string)parsedObject["age"];
                 var first = (string)parsedObject["first"];
@@ -52,14 +60,19 @@ namespace System.Text.Json.Tests
                 Assert.Equal(city, "Redmond");
                 Assert.Equal(zip, 98052);
             }
+            finally
+            {
+                parsedObject.Dispose();
+            }
         }
 
         [Fact]
         public void ParseNestedJson()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
-            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
-
+            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            try
+            {
                 Assert.Equal(1, parsedObject.ArrayLength);
                 var person = parsedObject[0];
                 var age = (double)person["age"];
@@ -101,6 +114,10 @@ namespace System.Text.Json.Tests
                     Assert.IsType<IndexOutOfRangeException>(ex);
                 }
             }
+            finally
+            {
+                parsedObject.Dispose();
+            }
 
             // Exceptional use case
             //var a = x[1];                             // IndexOutOfRangeException
@@ -119,11 +136,17 @@ namespace System.Text.Json.Tests
         public void ParseBoolean()
         {
             var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
-            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
+            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            try
+            {
                 var first = (bool)parsedObject[0];
                 var second = (bool)parsedObject[1];
                 Assert.Equal(true, first);
                 Assert.Equal(false, second);
+            }
+            finally
+            {
+                parsedObject.Dispose();
             }
         }
 

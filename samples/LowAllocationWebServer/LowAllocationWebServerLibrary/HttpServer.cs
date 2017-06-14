@@ -106,7 +106,7 @@ namespace Microsoft.Net.Http
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
         protected virtual void WriteResponseFor404(HttpRequest request, TcpConnectionFormatter response) // Not Found
         {
-            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
+            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8).ToString());
             WriteCommonHeaders(ref response, HttpVersion.V1_1, 404, "Not Found");
             response.AppendEoh();
         }
