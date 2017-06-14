@@ -34,12 +34,16 @@ namespace System.IO.Compression
         Decoder _decoder;
         Encoder _encoder;
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, bufferSize)
+        public override int ReadTimeout { get => base.ReadTimeout; set => base.ReadTimeout = value; }
+
+        public override int WriteTimeout { get => base.WriteTimeout; set => base.WriteTimeout = value; }
+
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
             {
-                _encoder.SetQuality(quality);
+                _encoder.SetQuality((uint)BrotliStatic.GetQualityFromCompressionLevel(quality));
                 _encoder.SetWindow(windowSize);
             }
         }
