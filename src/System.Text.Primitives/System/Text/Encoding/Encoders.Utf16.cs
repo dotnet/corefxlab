@@ -717,7 +717,7 @@ namespace System.Text
 
                 bytesNeeded = 0;
 
-                while (index < length - 3)
+                while (length - index >= 4)
                 {
                     ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, index));
 
@@ -755,7 +755,7 @@ namespace System.Text
                 bytesConsumed = 0;
                 bytesWritten = 0;
 
-                while (bytesConsumed < srcLength - 3)
+                while (srcLength - bytesConsumed >= sizeof(uint))
                 {
                     ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, bytesConsumed));
 
@@ -763,7 +763,7 @@ namespace System.Text
                         return TransformationStatus.InvalidData;
 
                     int written = EncodingHelper.IsBmp(codePoint) ? 2 : 4;
-                    if (bytesWritten >= dstLength - written)
+                    if (dstLength - bytesWritten >= written)
                         return TransformationStatus.DestinationTooSmall;
 
                     unchecked
