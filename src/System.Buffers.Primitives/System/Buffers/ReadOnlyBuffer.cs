@@ -138,12 +138,8 @@ namespace System.Buffers
                 if (_owner != null)
                 {
                     _owner.Retain();
-                    bufferHandle = new BufferHandle(_owner);
                 }
-                else
-                {
-                    bufferHandle = new BufferHandle();
-                }
+                bufferHandle = new BufferHandle(_owner);
             }
             return bufferHandle;
         }

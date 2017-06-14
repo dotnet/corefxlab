@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                 if (nBuffers == 1)
                 {
                     var memory = buffer.First;
-                    var memoryHandle = memory.Retain(true);
+                    var memoryHandle = memory.Retain(pin: true);
                     _handles.Add(memoryHandle);
                     pBuffers[0] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
                 }
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                     int i = 0;
                     foreach (var memory in buffer)
                     {
-                        var memoryHandle = memory.Retain(true);
+                        var memoryHandle = memory.Retain(pin: true);
                         _handles.Add(memoryHandle);
                         pBuffers[i++] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
                     }
