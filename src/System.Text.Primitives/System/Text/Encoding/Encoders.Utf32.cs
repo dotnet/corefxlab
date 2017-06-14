@@ -41,10 +41,10 @@ namespace System.Text
 
                 while (index < length)
                 {
-                    int count = EncodingHelper.GetUtf8EncodedBytes(Unsafe.Add(ref src, index));
+                    int count = EncodingHelper.GetUtf8DecodedBytes(Unsafe.Add(ref src, index));
                     if (count == 0)
                         goto InvalidData;
-                    if (index >= length - count)
+                    if (length - index >= count)
                         goto NeedMoreData;
 
                     bytesNeeded += count;
@@ -87,10 +87,10 @@ namespace System.Text
                 {
                     uint codePoint = Unsafe.Add(ref src, bytesConsumed);
 
-                    int byteCount = EncodingHelper.GetUtf8EncodedBytes((byte)codePoint);
+                    int byteCount = EncodingHelper.GetUtf8DecodedBytes((byte)codePoint);
                     if (byteCount == 0)
                         goto InvalidData;
-                    if (bytesConsumed >= srcLength - byteCount)
+                    if (srcLength - bytesConsumed >= byteCount)
                         goto NeedMoreData;
 
                     if (byteCount > 1)
@@ -125,12 +125,92 @@ namespace System.Text
 
             public static TransformationStatus ComputeEncodedBytesFromUtf16(ReadOnlySpan<byte> source, out int bytesNeeded)
             {
-                throw new NotImplementedException();
+                bytesNeeded = 0;
+
+                ref byte src = ref source.DangerousGetPinnableReference();
+                int srcLength = source.Length;
+                int srcIndex = 0;
+
+                while (srcLength - srcIndex >= sizeof(char))
+                {
+                    uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex));
+                    if (EncodingHelper.IsSurrogate(codePoint))
+                    {
+                        if (!EncodingHelper.IsHighSurrogate(codePoint))
+                            return TransformationStatus.InvalidData;
+
+                        if (srcLength - srcIndex >= 4)
+                            return TransformationStatus.NeedMoreSourceData;
+
+                        uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex + 2));
+                        if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
+                            return TransformationStatus.InvalidData;
+
+                        srcIndex += 2;
+                    }
+
+                    srcIndex += 2;
+                    bytesNeeded += 4;
+                }
+
+                return srcIndex < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
             }
 
+            /// <summary>
+            /// Converts a span containing a sequence of UTF-16 bytes into UTF-32 bytes.
+            ///
+            /// This method will consume as many of the input bytes as possible.
+            ///
+            /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+            /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+            /// the <paramref name="destination"/>.
+            /// </summary>
+            /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
+            /// <param name="destination">A span to write the UTF-32 bytes into.</param>
+            /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+            /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+            /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
             public static TransformationStatus ConvertFromUtf16(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                throw new NotImplementedException();
+                bytesConsumed = 0;
+                bytesWritten = 0;
+
+                ref byte src = ref source.DangerousGetPinnableReference();
+                int srcLength = source.Length;
+
+                ref byte dst = ref destination.DangerousGetPinnableReference();
+                int dstLength = destination.Length;
+
+                while (srcLength - bytesConsumed >= sizeof(char))
+                {
+                    if (dstLength - bytesWritten >= sizeof(uint))
+                        return TransformationStatus.DestinationTooSmall;
+
+                    uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed));
+                    if (EncodingHelper.IsSurrogate(codePoint))
+                    {
+                        if (!EncodingHelper.IsHighSurrogate(codePoint))
+                            return TransformationStatus.InvalidData;
+
+                        if (srcLength - bytesConsumed >= sizeof(char) * 2)
+                            return TransformationStatus.NeedMoreSourceData;
+
+                        uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed + 2));
+                        if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
+                            return TransformationStatus.InvalidData;
+
+                        codePoint -= EncodingHelper.HighSurrogateStart;
+                        lowSurrogate -= EncodingHelper.LowSurrogateStart;
+                        codePoint = ((codePoint << 10) | lowSurrogate) + 0x010000u;
+                        bytesConsumed += 2;
+                    }
+
+                    Unsafe.As<byte, uint>(ref Unsafe.Add(ref dst, bytesWritten)) = codePoint;
+                    bytesConsumed += 2;
+                    bytesWritten += 4;
+                }
+
+                return bytesConsumed < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
             }
 
             #endregion Utf-16 to Utf-32 conversion
