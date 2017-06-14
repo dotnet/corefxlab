@@ -10,12 +10,12 @@ namespace System.IO.Compression
 {
     internal sealed class Encoder
     {
+        internal IntPtr State { get; private set; }
         private const int MinWindowBits = 10;
         private const int MaxWindowBits = 24;
         private const int MinQuality = 0;
         private const int MaxQuality = 11;
         private bool _isDisposed = false;
-        internal IntPtr State = IntPtr.Zero;
 
         internal Encoder()
         {
@@ -27,7 +27,7 @@ namespace System.IO.Compression
         {
             if (quality < MinQuality || quality > MaxQuality)
             {
-                throw new ArgumentException(BrotliEx.WrongQuality);//TODO
+                throw new ArgumentException(BrotliEx.WrongQuality);
             }
             BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.Quality, quality);
         }
@@ -41,7 +41,7 @@ namespace System.IO.Compression
         {
             if (window < MinWindowBits || window > MaxWindowBits)
             {
-                throw new ArgumentException(BrotliEx.WrongWindowSize);//TODO
+                throw new ArgumentException(BrotliEx.WrongWindowSize);
             }
             BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.LGWin, window);
         }

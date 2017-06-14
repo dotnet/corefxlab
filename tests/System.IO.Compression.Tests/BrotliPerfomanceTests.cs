@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
 using Microsoft.Xunit.Performance;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -106,30 +105,72 @@ namespace System.IO.Compression.Tests
             NormalData
         }
 
+        private const int Iter = 1;
+
+        [Benchmark(InnerIterationCount = Iter)]
+        [InlineData(CompressionType.CryptoRandom)]
+        [InlineData(CompressionType.RepeatedSegments)]
+        [InlineData(CompressionType.NormalData)]
+        public void DecompressUsingStream(CompressionType type)
+        {
+            string testFilePath = CreateCompressedFile(type);
+            int bufferSize = 1024;
+            var bytes = new byte[bufferSize];
+            using (MemoryStream brStream = new MemoryStream(File.ReadAllBytes(testFilePath)))
+                foreach (var iteration in Benchmark.Iterations)
+                    using (iteration.StartMeasurement())
+                        for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        {
+                            int retCount = -1;
+                            using (BrotliStream brotliDecompressStream = new BrotliStream(brStream, CompressionMode.Decompress, true))
+                            {
+                                while (retCount != 0)
+                                {
+                                    retCount = brotliDecompressStream.Read(bytes, 0, bufferSize);
+                                }
+                            }
+                            brStream.Seek(0, SeekOrigin.Begin);
+                        }
+            File.Delete(testFilePath);
+        }
+
         [Benchmark]
+        [InlineData(CompressionType.CryptoRandom)]
+        [InlineData(CompressionType.RepeatedSegments)]
+        [InlineData(CompressionType.VeryRepetitive)]
+        [InlineData(CompressionType.NormalData)]
+        public void CompressUsingStream(CompressionType type)
+        {
+            byte[] bytes = CreateBytesToCompress(type);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                string filePath = GetTestFilePath();
+                FileStream output = File.Create(filePath);
+                using (BrotliStream brotliCompressStream = new BrotliStream(output, CompressionMode.Compress))
+                {
+                    using (iteration.StartMeasurement())
+                    {
+                        brotliCompressStream.Write(bytes, 0, bytes.Length);
+                    }
+                }
+                File.Delete(filePath);
+            }
+        }
+
+        [Benchmark(InnerIterationCount = Iter)]
         [InlineData(CompressionType.CryptoRandom)]
         [InlineData(CompressionType.RepeatedSegments)]
         [InlineData(CompressionType.NormalData)]
         public void Decompress(CompressionType type)
         {
             string testFilePath = CreateCompressedFile(type);
-            int bufferSize = 1024 * 32;
-            int retCount = -1;
+            int bufferSize = 1000000;
+            byte[] data = File.ReadAllBytes(testFilePath);
             var bytes = new byte[bufferSize];
-            using (MemoryStream brStream = new MemoryStream(File.ReadAllBytes(testFilePath)))
-                foreach (var iteration in Benchmark.Iterations)
-                    using (iteration.StartMeasurement())
-                        for (int i = 0; i < 10000; i++)
-                        {
-                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true, bufferSize))
-                            {
-                                while (retCount != 0)
-                                {
-                                    retCount = zip.Read(bytes, 0, bufferSize);
-                                }
-                            }
-                            brStream.Seek(0, SeekOrigin.Begin);
-                        }
+            foreach (var iteration in Benchmark.Iterations)
+                using (iteration.StartMeasurement())
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        BrotliPrimitives.Decompress(data, bytes, out int consumed, out int written);
             File.Delete(testFilePath);
         }
 
@@ -143,14 +184,11 @@ namespace System.IO.Compression.Tests
             byte[] bytes = CreateBytesToCompress(type);
             foreach (var iteration in Benchmark.Iterations)
             {
-                string filePath = GetTestFilePath();
-                using (FileStream output = File.Create(filePath))
-                using (BrotliStream zip = new BrotliStream(output, CompressionMode.Compress))
+                byte[] compressed = new byte[bytes.Length];
                 using (iteration.StartMeasurement())
                 {
-                    zip.Write(bytes, 0, bytes.Length);
+                    BrotliPrimitives.Compress(bytes, compressed, out int consumed, out int writen);
                 }
-                File.Delete(filePath);
             }
         }
     }

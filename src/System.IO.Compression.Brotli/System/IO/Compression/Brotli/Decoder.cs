@@ -10,9 +10,10 @@ namespace System.IO.Compression
 {
     internal sealed class Decoder
     {
-        internal IntPtr State = IntPtr.Zero;
-        internal BrotliDecoderResult LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
-        internal MemoryStream BufferStream;
+        internal IntPtr State { get; private set; }
+        internal BrotliDecoderResult LastDecoderResult { get; set; }
+        internal Stream BufferStream => _bufferStream;
+        private MemoryStream _bufferStream;
         private bool _isDisposed = false;
 
         internal Decoder()
@@ -26,9 +27,10 @@ namespace System.IO.Compression
             State = BrotliNative.BrotliDecoderCreateInstance();
             if (State == IntPtr.Zero)
             {
-                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);//TODO Create exception
+                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);
             }
-            BufferStream = new MemoryStream();
+            LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
+            _bufferStream = new MemoryStream();
         }
 
         internal void Dispose()
@@ -36,7 +38,7 @@ namespace System.IO.Compression
             if (!_isDisposed && State != IntPtr.Zero)
             {
                 BrotliNative.BrotliDecoderDestroyInstance(State);
-                BufferStream.Dispose();
+                _bufferStream.Dispose();
             }
             _isDisposed = true;
         }
@@ -44,10 +46,10 @@ namespace System.IO.Compression
         internal void RemoveBytes(int numberOfBytes)
         {
             ArraySegment<byte> buf;
-            if (BufferStream.TryGetBuffer(out buf))
+            if (_bufferStream.TryGetBuffer(out buf))
             {
-                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)BufferStream.Length - numberOfBytes);
-                BufferStream.SetLength(BufferStream.Length - numberOfBytes);
+                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)_bufferStream.Length - numberOfBytes);
+                _bufferStream.SetLength(BufferStream.Length - numberOfBytes);
             }
             else
             {

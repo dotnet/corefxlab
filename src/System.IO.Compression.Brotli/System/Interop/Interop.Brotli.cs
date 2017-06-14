@@ -19,8 +19,8 @@ namespace System.IO.Compression
     {
         internal static partial class Brotli
         {
-            internal const string LibNameEncoder = Library.BrotliEnc;
-            internal const string LibNameDecoder = Library.BrotliDec;
+            internal const string LibNameEncoder = Library.BrotliEncoder;
+            internal const string LibNameDecoder = Library.BrotliDecoder;
 
             #region Encoder
 
