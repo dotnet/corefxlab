@@ -3,7 +3,7 @@
 
 namespace System.Text.Http.SingleSegment
 { 
-    public struct HttpHeaderBuffer
+    public ref struct HttpHeaderBuffer
     {
         //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _bytes;

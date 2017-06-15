@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Json
 {
-    public struct JsonReader
+    public ref struct JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         private const int MaxDepth = sizeof(ulong) * 8;

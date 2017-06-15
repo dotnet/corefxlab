@@ -8,7 +8,7 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct CodePointEnumerable : IEnumerable<uint>, IEnumerable
+        public ref struct CodePointEnumerable 
         {
             private ReadOnlySpan<byte> _buffer;
 
@@ -32,14 +32,15 @@ namespace System.Text.Utf8
                 return new CodePointReverseEnumerator(_buffer);
             }
 
-            IEnumerator IEnumerable.GetEnumerator()
+            public int Count()
             {
-                return GetEnumerator();
-            }
+                int result = 0;
+                foreach (var cp in this)
+                {
+                    result++;
+                }
 
-            IEnumerator<uint> IEnumerable<uint>.GetEnumerator()
-            {
-                return GetEnumerator();
+                return result;
             }
         }
     }

@@ -79,8 +79,14 @@ namespace LowAllocationWebServer
             int requestedCount;
 
             // TODO: this should not convert to span
-            using (var dom = JsonObject.Parse(request.Body.ToSpan())) {
+            var dom = JsonObject.Parse(request.Body.ToSpan());
+            try
+            {
                 requestedCount = (int)dom["Count"];
+            }
+            finally
+            {
+                dom.Dispose();
             }
 
             WriteCommonHeaders(ref response, HttpVersion.V1_1, 200, "OK");

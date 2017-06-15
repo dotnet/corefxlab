@@ -6,7 +6,7 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct Enumerator
+        public ref struct Enumerator
         {
             private readonly ReadOnlySpan<byte> _buffer;
             private readonly int _length;

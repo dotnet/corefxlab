@@ -109,7 +109,7 @@ namespace System.Text.Json
         }
     }
 
-    internal struct JsonParser
+    internal ref struct JsonParser
     {
         private Buffer<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>

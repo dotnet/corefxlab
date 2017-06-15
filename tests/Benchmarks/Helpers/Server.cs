@@ -12,7 +12,9 @@ namespace System.IO.Pipelines.Samples
 {
     public static class RawInMemoryHttpServer
     {
-        public static void RunSingleSegmentParser(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<HttpRequestSingleSegment, WritableBuffer> writeResponse)
+        public delegate void WriteResponseDelegate(HttpRequestSingleSegment request, WritableBuffer buffer);
+
+        public static void RunSingleSegmentParser(int numberOfRequests, int concurrentConnections, byte[] requestPayload, WriteResponseDelegate writeResponse)
         {
             var factory = new PipeFactory();
             var listener = new FakeListener(factory, concurrentConnections);
@@ -40,11 +42,7 @@ namespace System.IO.Pipelines.Samples
                             continue;
                         }
                         // Parse the input http request
-                        HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBuffer.Span);
-
-                        // Writing directly to pooled buffers
-                        var output = connection.Output.Alloc();
-                        writeResponse(parsedRequest, output);
+                        WritableBuffer output = WriteResponse(writeResponse, connection, requestBuffer);
                         await output.FlushAsync();
                     }
                     catch (Exception e)
@@ -70,6 +68,16 @@ namespace System.IO.Pipelines.Samples
 
             listener.Dispose();
             factory.Dispose();
+        }
+
+        private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Buffer<byte> requestBuffer)
+        {
+            HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBuffer.Span);
+
+            // Writing directly to pooled buffers
+            var output = connection.Output.Alloc();
+            writeResponse(parsedRequest, output);
+            return output;
         }
 
         public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<HttpRequest, WritableBuffer> writeResponse)
@@ -132,4 +140,6 @@ namespace System.IO.Pipelines.Samples
         }
 
     }
+
+
 }

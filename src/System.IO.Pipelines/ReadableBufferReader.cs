@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public struct ReadableBufferReader
+    public ref struct ReadableBufferReader
     {
         private Span<byte> _currentSpan;
         private int _index;

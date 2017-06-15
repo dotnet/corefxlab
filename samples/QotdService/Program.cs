@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Net.Libuv;
 using System.Text.Utf8;
 
@@ -12,7 +13,7 @@ namespace QotdService
         public static void Main(string[] args)
         {
             var buffer = new byte[1024];
-            var quote = new Utf8String("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein"); ;
+            var quoteBytes = new Utf8String("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein").CopyBytes();
 
             var loop = new UVLoop();
 
@@ -22,6 +23,7 @@ namespace QotdService
             {
                 connection.ReadCompleted += (data) =>
                 {
+                    var quote = new Utf8String(quoteBytes);
                     quote.CopyTo(buffer);
                     connection.TryWrite(buffer, quote.Length);
                 };
