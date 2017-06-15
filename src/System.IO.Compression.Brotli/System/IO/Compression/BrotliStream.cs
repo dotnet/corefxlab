@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression.Brotli.Resources;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 
 #if BIT64
@@ -34,16 +34,18 @@ namespace System.IO.Compression
         Decoder _decoder;
         Encoder _encoder;
 
-        public override int ReadTimeout { get => base.ReadTimeout; set => base.ReadTimeout = value; }
+        public override bool CanTimeout => true;
 
-        public override int WriteTimeout { get => base.WriteTimeout; set => base.WriteTimeout = value; }
+        public override int ReadTimeout { get ; set; }
+
+        public override int WriteTimeout { get; set; }
 
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
             {
-                _encoder.SetQuality((uint)BrotliStatic.GetQualityFromCompressionLevel(quality));
+                _encoder.SetQuality((uint)Brotli.GetQualityFromCompressionLevel(quality));
                 _encoder.SetWindow(windowSize);
             }
         }
@@ -59,10 +61,12 @@ namespace System.IO.Compression
                 _encoder = new Encoder();
                 _encoder.SetQuality();
                 _encoder.SetWindow();
+                WriteTimeout = 0;
             }
             else
             {
                 _decoder = new Decoder();
+                ReadTimeout = 0;
             }
             _bufferSize = bufferSize;
             _bufferInput = Marshal.AllocHGlobal(_bufferSize);
@@ -212,7 +216,7 @@ namespace System.IO.Compression
             EnsureDecompressionMode();
             ValidateParameters(buffer, offset, count);
             EnsureNotDisposed();
-
+            DateTime begin = DateTime.Now;
             int bytesRead = (int)(_decoder.BufferStream.Length - _readOffset);
             nuint totalCount = 0;
             bool endOfStream = false;
@@ -220,6 +224,11 @@ namespace System.IO.Compression
             Byte[] buf = new Byte[_bufferSize];
             while (bytesRead < count)
             {
+                TimeSpan ExecutionTime = DateTime.Now - begin;
+                if (ReadTimeout > 0 && ExecutionTime.TotalMilliseconds >= ReadTimeout)
+                {
+                    throw new TimeoutException(BrotliEx.TimeoutRead);
+                }
                 while (true)
                 {
                     if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
@@ -306,12 +315,18 @@ namespace System.IO.Compression
             EnsureNotDisposed();
             if (_mode != CompressionMode.Compress)
                 totalWrote += count;
+            DateTime begin = DateTime.Now;
             nuint totalOut = 0;
             int bytesRemain = count;
             int currentOffset = offset;
             int copyLen;
             while (bytesRemain > 0)
             {
+                TimeSpan ExecutionTime = DateTime.Now - begin;
+                if (WriteTimeout > 0 && ExecutionTime.TotalMilliseconds >= WriteTimeout)
+                {
+                    throw new TimeoutException(BrotliEx.TimeoutWrite);
+                }
                 copyLen = bytesRemain > _bufferSize ? _bufferSize : bytesRemain;
                 Marshal.Copy(buffer, currentOffset, _bufferInput, copyLen);
                 bytesRemain -= copyLen;

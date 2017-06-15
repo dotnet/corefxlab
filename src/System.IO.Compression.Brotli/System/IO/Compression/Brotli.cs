@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression.Brotli.Resources;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -13,7 +13,7 @@ using System.Text;
 
 namespace System.IO.Compression
 {
-    public static class BrotliStatic
+    public static class Brotli
     {
         const int DefaultQuality = 11;
         const int DefaultWindowSize = 24;

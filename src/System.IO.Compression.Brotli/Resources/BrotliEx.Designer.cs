@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.IO.Compression.Brotli.Resources {
+namespace System.IO.Compression {
     using System;
     using System.Reflection;
     
@@ -112,6 +112,24 @@ namespace System.IO.Compression.Brotli.Resources {
         internal static string StreamDisposed {
             get {
                 return ResourceManager.GetString("StreamDisposed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error ReadTimeout exceeded.
+        /// </summary>
+        internal static string TimeoutRead {
+            get {
+                return ResourceManager.GetString("TimeoutRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error WriteTimeout exceeded.
+        /// </summary>
+        internal static string TimeoutWrite {
+            get {
+                return ResourceManager.GetString("TimeoutWrite", resourceCulture);
             }
         }
         

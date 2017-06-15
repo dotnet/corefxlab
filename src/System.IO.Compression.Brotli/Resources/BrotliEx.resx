@@ -153,4 +153,10 @@
   <data name="DecoderInstanceCreate" xml:space="preserve">
     <value>Decoder instance create fail</value>
   </data>
+  <data name="TimeoutRead" xml:space="preserve">
+    <value>Error ReadTimeout exceeded</value>
+  </data>
+  <data name="TimeoutWrite" xml:space="preserve">
+    <value>Error WriteTimeout exceeded</value>
+  </data>
 </root>

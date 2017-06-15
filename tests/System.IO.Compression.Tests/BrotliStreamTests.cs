@@ -14,6 +14,18 @@ namespace System.IO.Compression.Tests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
+        [Theory]
+        [InlineData(10)]
+        public void GetSetReadWrite(int sec)
+        {
+            var writeStream = new MemoryStream();
+            var brotliCompressStream = new BrotliStream(writeStream, CompressionMode.Compress);
+            brotliCompressStream.ReadTimeout = sec;
+            brotliCompressStream.WriteTimeout = sec;
+            Assert.Equal(brotliCompressStream.ReadTimeout, sec);
+            Assert.Equal(brotliCompressStream.WriteTimeout, sec);
+        }
+
         [Fact]
         public void BaseStreamCompress()
         {
