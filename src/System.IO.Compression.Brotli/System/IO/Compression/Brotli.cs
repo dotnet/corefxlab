@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression.Resourses;
+using System.IO.Compression.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -28,6 +28,7 @@ namespace System.IO.Compression
             int result = inputSize + overhead;
             return (result < inputSize) ? inputSize : result;
         }
+
         internal static int GetQualityFromCompressionLevel(CompressionLevel level)
         {
             if (level == CompressionLevel.Fastest) return 1;
@@ -42,6 +43,7 @@ namespace System.IO.Compression
             if (result == BrotliDecoderResult.NeedsMoreInput) return TransformationStatus.NeedMoreSourceData;
             return TransformationStatus.InvalidData;
         }
+
         public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, CompressionLevel quality = (CompressionLevel)DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
         {
             return Compress(source, destination, out bytesConsumed, out bytesWritten, GetQualityFromCompressionLevel(quality), windowSize, encMode);

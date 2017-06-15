@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.IO.Compression.Resourses {
+namespace System.IO.Compression.Resources {
     using System;
     using System.Reflection;
     

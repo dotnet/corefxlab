@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression.Resourses;
+using System.IO.Compression.Resources;
 using System.Runtime.InteropServices;
 
 #if BIT64
