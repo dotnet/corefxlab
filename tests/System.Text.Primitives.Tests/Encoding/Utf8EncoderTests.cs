@@ -11,28 +11,25 @@ namespace System.Text.Primitives.Tests.Encoding
     {
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
-            new object[] { true, new byte[] { }, new char[]{ (char)0x0050 }, false },
+            new object[] { new byte[] { }, new char[]{ (char)0x0050 }, TransformationStatus.DestinationTooSmall },
             // multiple bytes
-            new object[] { true, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
-                new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 }, true },
+            new object[] { new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
+                new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 }, TransformationStatus.Done },
         };
 
         [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
-        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(bool useUtf8Encoder, byte[] expectedBytes, char[] chars, bool expectedReturnVal)
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(byte[] expectedBytes, char[] chars, TransformationStatus expectedReturnVal)
         {
-            TextEncoder encoder = useUtf8Encoder ? TextEncoder.Utf8 : TextEncoder.Utf16;
-            ReadOnlySpan<char> characters = new ReadOnlySpan<char>(chars);
-            Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
-            int bytesWritten;
-            int consumed;
+            ReadOnlySpan<byte> utf16 = new ReadOnlySpan<char>(chars).NonPortableCast<char, byte>();
+            Span<byte> buffer = new byte[expectedBytes.Length];
 
-            Assert.Equal(expectedReturnVal, encoder.TryEncode(characters, buffer, out consumed, out bytesWritten));
-            Assert.Equal(expectedReturnVal ? expectedBytes.Length : 0, bytesWritten);
+            Assert.Equal(expectedReturnVal, Encoders.Utf8.FromUtf16.Transform(utf16, buffer, out int consumed, out int written));
+            Assert.Equal(expectedBytes.Length, written);
 
-            if (expectedReturnVal)
+            if (expectedBytes.Length > 0)
             {
-                Assert.Equal(characters.Length, consumed);
-                Assert.True(AreByteArraysEqual(expectedBytes, buffer.ToArray()));
+                Assert.Equal(utf16.Length, consumed);
+                Assert.True(buffer.Slice(0, written).SequenceEqual(expectedBytes));
             }
         }
 

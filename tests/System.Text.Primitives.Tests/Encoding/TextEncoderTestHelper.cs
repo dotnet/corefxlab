@@ -118,7 +118,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     plainText.Append((char)val);
                     continue;
                 }
-                
+
                 if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
@@ -216,7 +216,7 @@ namespace System.Text.Primitives.Tests.Encoding
                         plainText.Append((char)i);
                     }
                 }
-                else if (j >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && j <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                else if (!IsSupportedCodePoint((uint)j))
                 {
                     continue;   // don't want unpaird low surrogates
                 }
@@ -236,7 +236,7 @@ namespace System.Text.Primitives.Tests.Encoding
             for (int j = 0; j < length; j++)
             {
                 var val = highSurrogateOnly ?
-                    rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1) : 
+                    rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1) :
                     rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 plainText.Append((char)val);
             }
@@ -253,6 +253,17 @@ namespace System.Text.Primitives.Tests.Encoding
                 utf8Byte[j] = (byte)val;
             }
             return utf8Byte;
+        }
+
+        public static uint[] GenerateOnlyInvalidUtf32CodePoints(int length)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 2);
+
+            var codepoints = new uint[length];
+            for (int j = 0; j < length; j++)
+                codepoints[j] = GenerateInvalidCodePoint(ref rand);
+
+            return codepoints;
         }
 
         public static string GenerateInvalidStringEndsWithLow(int length)
@@ -307,7 +318,7 @@ namespace System.Text.Primitives.Tests.Encoding
             var utf8Byte = new byte[length];
             for (int j = 0; j < length; j++)
             {
-                // High probability of invalid utf8 bytes since there is no gaurantee that bytes following a byte within 0x60 and 0xFF 
+                // High probability of invalid utf8 bytes since there is no gaurantee that bytes following a byte within 0x60 and 0xFF
                 // will be of the required form 10xx xxxx (and that there will be the correct number of such bytes).
                 var val = rand.Next(0, 0xFF + 1);
                 if (j < length - 1)
@@ -320,6 +331,24 @@ namespace System.Text.Primitives.Tests.Encoding
                 }
             }
             return utf8Byte;
+        }
+
+        public static uint[] GenerateUtf32WithInvalidCodePoints(int length)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 3);
+
+            var codepoints = new uint[length];
+            for (int j = 0; j < length; j++)
+            {
+                // Every 10 codepoints, we will inject a guaranteed invalid one.
+                // However, there may be others as well based on small ranges inside the valid codepoint range.
+                if (j % 10 == 0)
+                    codepoints[j] = GenerateInvalidCodePoint(ref rand);
+                else
+                    codepoints[j] = (uint)rand.Next(0, 0x110000);
+            }
+
+            return codepoints;
         }
 
         public static string GenerateValidStringEndsWithHighStartsWithLow(int length, bool startsWithLow)
@@ -367,82 +396,22 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();
         }
 
-        public static byte[] GenerateValidUtf8BytesEndsWithHighStartsWithLow(int length, bool startsWithLow)
+        public static uint[] GenerateValidUtf32CodePoints(int length)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
-            var utf8Byte = new byte[length];
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 3);
 
-            int val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
-
-            if (length > 0)
+            var codepoints = new uint[length];
+            for (int j = 0; j < length; j++)
             {
-                if (startsWithLow)
+                while (true)
                 {
-                    utf8Byte[length - 1] = (byte)val;
-                    // first byte must be of the form 10xx xxxx
-                    val = rand.Next(0x40, 0xBF + 1);
-                    utf8Byte[0] = (byte)val;
-                }
-                else
-                {
-                    utf8Byte[0] = (byte)val;
-                    // if first byte is valid, last byte should be such that multiple bytes must follow (no byte of the form 10xx xxxx after, invalid)
-                    val = rand.Next(0xC0, 0xDF + 1);
-                    utf8Byte[length - 1] = (byte)val;
+                    codepoints[j] = (uint)rand.Next(0, 0x110000);
+                    if (IsSupportedCodePoint(codepoints[j]))
+                        break;
                 }
             }
 
-            for (int j = 1; j < length - 1; j++)
-            {
-                val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
-                utf8Byte[j] = (byte)val;
-            }
-            return utf8Byte;
-        }
-
-        public static uint[] GenerateValidUtf32EndsWithHighStartsWithLow(int length, bool startsWithLow)
-        {
-            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
-            var utf32 = new uint[length];
-
-            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
-
-            if (length > 0)
-            {
-                if (startsWithLow)
-                {
-                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
-                }
-                utf32[0] = (uint)val;
-            }
-
-            for (int j = 1; j < length - 1; j++)
-            {
-                val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1);
-
-                if (j < length - 1)
-                {
-                    while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
-                    {
-                        val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1); // skip surrogate characters if they can't be paired
-                    }
-
-                    if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
-                    {
-                        utf32[j] = (uint)val;       // high surrogate
-                        j++;
-                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);  // low surrogate
-                    }
-                }
-                else
-                {
-                    // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
-                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
-                }
-
-                utf32[j] = (uint)val;
-            }
-            return utf32;
+            return codepoints;
         }
 
         public static byte[] GenerateValidBytesUtf32EndsWithHighStartsWithLow(int length, bool startsWithLow)
@@ -473,7 +442,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
-                    { 
+                    {
                         WriteToArray(ref utf32, j*4, val);  // high surrogate
                         j++;
                         val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);  // low surrogate
@@ -597,7 +566,7 @@ namespace System.Text.Primitives.Tests.Encoding
             for (int i = 0; i < utf32.Length; i++)
             {
                 uint codePoint = utf32[i];
-                if (codePoint > TextEncoderConstants.LastValidCodePoint)
+                if (!IsSupportedCodePoint(codePoint))
                     return byteCount;
                 else if (codePoint > TextEncoderConstants.Utf8ThreeBytesLastCodePoint)
                     byteCount += 4;
@@ -609,6 +578,30 @@ namespace System.Text.Primitives.Tests.Encoding
                     byteCount += 1;
             }
             return byteCount;
+        }
+        public static bool IsSupportedCodePoint(uint codePoint)
+        {
+            if (codePoint > TextEncoderConstants.LastValidCodePoint)
+                return false;
+            if (codePoint >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                return false;
+            if (codePoint >= 0xFDD0 && codePoint <= 0xFDEF)
+                return false;
+            if (codePoint == 0xFFFE || codePoint == 0xFFFF)
+                return false;
+
+            return true;
+        }
+
+        public static uint GenerateInvalidCodePoint(ref Random rnd)
+        {
+            int range = rnd.Next(0, 2);
+            if (range == 0)
+                return (uint)rnd.Next(0xD800, 0xE000); // Generate a random surrogate
+            else if (range == 1)
+                return (uint)rnd.Next(0xFDD0, 0xFDF0); // Generate in the FDDx, FDEx range
+            else
+                return (uint)rnd.Next(0x110000, 0xFFFFFF); // Generate something above 0x110000
         }
 
         public enum CodePointSubset

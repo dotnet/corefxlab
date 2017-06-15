@@ -166,12 +166,12 @@ namespace System.Text
 
                                 // Unfortunately, this is endianess sensitive
 #if BIGENDIAN
-                            *pTarget = (byte)(ch >> 16);
-                            *(pTarget + 1) = (byte)ch;
-                            pSrc += 4;
-                            *(pTarget + 2) = (byte)(chc >> 16);
-                            *(pTarget + 3) = (byte)chc;
-                            pTarget += 4;
+                                *pTarget = (byte)(ch >> 16);
+                                *(pTarget + 1) = (byte)ch;
+                                pSrc += 4;
+                                *(pTarget + 2) = (byte)(chc >> 16);
+                                *(pTarget + 3) = (byte)chc;
+                                pTarget += 4;
 #else // BIGENDIAN
                                 *pTarget = (byte)ch;
                                 *(pTarget + 1) = (byte)(ch >> 16);
