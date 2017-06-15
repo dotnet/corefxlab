@@ -14,7 +14,6 @@ namespace System.IO.Compression.Tests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
-
         [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
         [InlineData(10)]
         public void GetSetReadWrite(int sec)
@@ -26,7 +25,6 @@ namespace System.IO.Compression.Tests
             Assert.Equal(brotliCompressStream.ReadTimeout, sec);
             Assert.Equal(brotliCompressStream.WriteTimeout, sec);
         }
-
 
         [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
         public void BaseStreamCompress()
