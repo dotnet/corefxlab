@@ -54,13 +54,14 @@ namespace System.Text.Http.Tests
             enumerator.MoveNext();
 
             var current = enumerator.Current;
-            //TODO: no spans on the heap
-            //current.Should().Be(enumerator.Current);
+            Assert.True(current.Key == enumerator.Current.Key);
+            Assert.True(current.Value == enumerator.Current.Value);
 
             enumerator.MoveNext();
 
-            //TODO: no spans on the heap
-            //current.Should().NotBe(enumerator.Current);
+            current = enumerator.Current;
+            Assert.True(current.Key == enumerator.Current.Key);
+            Assert.True(current.Value == enumerator.Current.Value);
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
