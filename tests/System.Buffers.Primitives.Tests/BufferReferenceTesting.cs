@@ -94,7 +94,7 @@ namespace System.Buffers.Tests
         {
             var memory = buffer.Buffer;
             Assert.False(buffer.IsRetained);
-            var handle = memory.Pin();
+            var handle = memory.Retain(pin: true);
             unsafe
             {
                 Assert.NotEqual(0L, new IntPtr(handle.PinnedPointer).ToInt64());
@@ -183,7 +183,7 @@ namespace System.Buffers.Tests
         static void MemoryHandleDoubleFree(OwnedBuffer<byte> buffer)
         {
             var memory = buffer.Buffer;
-            var handle = memory.Pin();
+            var handle = memory.Retain(pin: true);
             Assert.True(buffer.IsRetained);
             buffer.Retain();
             Assert.True(buffer.IsRetained);
@@ -237,8 +237,7 @@ namespace System.Buffers.Tests
         static void BufferLifetime(Buffer<byte> buffer)
         {
             var array = buffer.ToArray();
-            using (var handle = buffer.Retain())
-            using (var pinned = buffer.Pin())
+            using (var pinned = buffer.Retain(pin: true))
             {
                 unsafe
                 {
@@ -278,8 +277,7 @@ namespace System.Buffers.Tests
         static void BufferLifetime(ReadOnlyBuffer<byte> buffer)
         {
             var array = buffer.ToArray();
-            using (var handle = buffer.Retain())
-            using (var pinned = buffer.Pin())
+            using (var pinned = buffer.Retain(pin: true))
             {
                 unsafe
                 {

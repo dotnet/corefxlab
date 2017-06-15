@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 namespace System
 {
     [DebuggerTypeProxy(typeof(ReadOnlyBufferDebuggerView<>))]
-    public struct ReadOnlyBuffer<T> : IEquatable<ReadOnlyBuffer<T>>, IEquatable<Buffer<T>>
+    public struct ReadOnlyBuffer<T>
     {
         readonly OwnedBuffer<T> _owner;
         readonly T[] _array;
@@ -121,28 +121,34 @@ namespace System
             }
         }
 
-        public BufferHandle Retain()
+        public BufferHandle Retain(bool pin = false)
         {
-            if (_owner != null)
+            BufferHandle bufferHandle;
+            if (pin)
             {
-                _owner.Retain();
-                return new BufferHandle(_owner);
+                if (_owner != null)
+                {
+                    bufferHandle = _owner.Pin(_index);
+                }
+                else
+                {
+                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    unsafe
+                    {
+                        var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
+                        bufferHandle = new BufferHandle(null, pointer, handle);
+                    }
+                }
             }
-            return new BufferHandle();
-        }
-
-        public BufferHandle Pin()
-        {
-            if (_owner != null)
+            else
             {
-                return _owner.Pin(_index);
+                if (_owner != null)
+                {
+                    _owner.Retain();
+                }
+                bufferHandle = new BufferHandle(_owner);
             }
-            var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-            unsafe
-            {
-                var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
-                return new BufferHandle(null, pointer, handle);
-            }
+            return bufferHandle;
         }
 
         public T[] ToArray() => Span.ToArray();
@@ -158,19 +164,14 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if (!(obj is Buffer<T>)) {
+            if (!(obj is ReadOnlyBuffer<T>)) {
                 return false;
             }
 
-            var other = (Buffer<T>)obj;
+            var other = (ReadOnlyBuffer<T>)obj;
             return Equals(other);
         }
-
-        public bool Equals(Buffer<T> other)
-        {
-            return Equals((ReadOnlyBuffer<T>)other);
-        }
-
+        
         public bool Equals(ReadOnlyBuffer<T> other)
         {
             return
@@ -180,22 +181,14 @@ namespace System
                 _length == other._length;
         }
 
-        public static bool operator ==(ReadOnlyBuffer<T> left, Buffer<T> right)
-        {
-            return left.Equals(right);
-        }
-        public static bool operator !=(ReadOnlyBuffer<T> left, Buffer<T> right)
-        {
-            return left.Equals(right);
-        }
-
         public static bool operator ==(ReadOnlyBuffer<T> left, ReadOnlyBuffer<T> right)
         {
             return left.Equals(right);
         }
+
         public static bool operator !=(ReadOnlyBuffer<T> left, ReadOnlyBuffer<T> right)
         {
-            return left.Equals(right);
+            return !left.Equals(right);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
