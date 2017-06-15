@@ -11,18 +11,18 @@ using Xunit;
 
 namespace System.IO.Compression.Tests
 {
-    public class BrotliPrimitivesTests
+    public class BrotliTests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
         [Theory]
         [InlineData(25, 1)]
-        [InlineData(0, 1)]
+        [InlineData(-1, 1)]
         [InlineData(24, 0)]
         [InlineData(24, 12)]
-        public void TestMethodCompressEx(int quality, int lgWinSize)
+        public void TestMethodCompressEx(CompressionLevel quality, int lgWinSize)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out int consumed, out int written, quality, lgWinSize));
+            Assert.Throws<ArgumentOutOfRangeException>(() => Brotli.Compress(new byte[1], new byte[1], out int consumed, out int written, quality, lgWinSize));
         }
 
         [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
@@ -34,8 +34,8 @@ namespace System.IO.Compression.Tests
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
-            Span<byte> compressed = new byte[BrotliPrimitives.GetMaximumCompressedSize(totalSize)];
-            TransformationStatus result = BrotliPrimitives.Compress(data, compressed, out int consumed, out int written);
+            Span<byte> compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
+            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written);
             Assert.Equal(TransformationStatus.Done, result);
             Assert.Equal(totalSize, consumed);
             compressed = compressed.Slice(0, written);
@@ -45,7 +45,7 @@ namespace System.IO.Compression.Tests
         private void ValidateCompressedData(Span<byte> data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
-            TransformationStatus result = BrotliPrimitives.Decompress(data, decompressed, out int consumed, out int written);
+            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
             Assert.Equal<byte>(expected, decompressed);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression.Brotli.Resources;
+using System.IO.Compression.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -13,7 +13,7 @@ using System.Text;
 
 namespace System.IO.Compression
 {
-    public struct BrotliPrimitives
+    public static class Brotli
     {
         const int DefaultQuality = 11;
         const int DefaultWindowSize = 24;
@@ -29,6 +29,13 @@ namespace System.IO.Compression
             return (result < inputSize) ? inputSize : result;
         }
 
+        internal static int GetQualityFromCompressionLevel(CompressionLevel level)
+        {
+            if (level == CompressionLevel.Fastest) return 1;
+            if (level == CompressionLevel.Optimal) return 10;
+            return (int)level;
+        }
+
         private static TransformationStatus GetTransformationStatusFromBrotliDecoderResult(BrotliDecoderResult result)
         {
             if (result == BrotliDecoderResult.Success) return TransformationStatus.Done;
@@ -37,9 +44,14 @@ namespace System.IO.Compression
             return TransformationStatus.InvalidData;
         }
 
-        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
+        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, CompressionLevel quality = (CompressionLevel)DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
         {
-            if (quality > DefaultQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
+            return Compress(source, destination, out bytesConsumed, out bytesWritten, GetQualityFromCompressionLevel(quality), windowSize, encMode);
+        }
+
+        internal static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
+        {
+            if (quality > DefaultQuality || quality < 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
             if (windowSize > DefaultWindowSize || windowSize <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
             bytesConsumed = bytesWritten = 0;
             unsafe

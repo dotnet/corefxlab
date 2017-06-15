@@ -170,7 +170,7 @@ namespace System.IO.Compression.Tests
             foreach (var iteration in Benchmark.Iterations)
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        BrotliPrimitives.Decompress(data, bytes, out int consumed, out int written);
+                        Brotli.Decompress(data, bytes, out int consumed, out int written);
             File.Delete(testFilePath);
         }
 
@@ -187,7 +187,7 @@ namespace System.IO.Compression.Tests
                 byte[] compressed = new byte[bytes.Length];
                 using (iteration.StartMeasurement())
                 {
-                    BrotliPrimitives.Compress(bytes, compressed, out int consumed, out int writen);
+                    Brotli.Compress(bytes, compressed, out int consumed, out int writen);
                 }
             }
         }

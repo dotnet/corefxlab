@@ -22,7 +22,7 @@ namespace System.IO.Compression
     /// Finish - Finalize the stream. Adding more input data to finalized stream is impossible.
     /// EmitMetadata - Emit metadata block to stream. Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than 16MiB.
     /// </summary>
-    public enum BrotliEncoderOperation
+    internal enum BrotliEncoderOperation
     {
         Process,
         Flush,
@@ -38,7 +38,7 @@ namespace System.IO.Compression
     /// LCModeling-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
     /// SizeHint - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
     /// </summary>
-    public enum BrotliEncoderParameter
+    internal enum BrotliEncoderParameter
     {
         Mode,
         Quality,
@@ -54,7 +54,7 @@ namespace System.IO.Compression
     /// NeedMoreInput - Partially done; should be called again with more input
     /// NeedMOreOutput - Partially done; should be called again with more output
     /// </summary>
-    public enum BrotliDecoderResult
+    internal enum BrotliDecoderResult
     {
         Error,
         Success,
