@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression;
+using System.IO.Compression.Resourses;
 using System.Runtime.CompilerServices;
 using System.Text;
 

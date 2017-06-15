@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 using System;
 using System.Collections.Generic;
-using System.IO.Compression;
+using System.IO.Compression.Resourses;
 using System.Text;
 
 namespace System.IO.Compression
