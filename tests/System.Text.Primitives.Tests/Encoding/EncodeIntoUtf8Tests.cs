@@ -354,26 +354,30 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        [MemberData(nameof(SupportedEncodingTestData))]
-        public void InputBufferContainsOnlyASCII(TextEncoderTestHelper.SupportedEncoding from)
+        [InlineData(TextEncoderTestHelper.CodePointSubset.ASCII)]
+        [InlineData(TextEncoderTestHelper.CodePointSubset.TwoBytes)]
+        [InlineData(TextEncoderTestHelper.CodePointSubset.ThreeBytes)]
+        [InlineData(TextEncoderTestHelper.CodePointSubset.Surrogates)]
+        [InlineData(TextEncoderTestHelper.CodePointSubset.Mixed)]
+        public void InputBufferContainsNonASCII(TextEncoderTestHelper.CodePointSubset subset)
         {
-            Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.ASCII));  // 1 byte
-        }
+            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, subset);
 
-        [Theory]
-        [MemberData(nameof(SupportedEncodingTestData))]
-        public void InputBufferContainsNonASCII(TextEncoderTestHelper.SupportedEncoding from)
-        {
-            Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.TwoBytes));  // 2 bytes
-            Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.ThreeBytes));  // 3 bytes
-            Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.Surrogates));  // 4 bytes (high and low surrogates)
-            Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.Mixed));  // mixed
+            ValidateFromUtf16(inputString);
+            ValidateFromUtf32(inputString);
         }
 
         [Fact]
-        public void InputContainsAllCodePointsFromUtf16()
+        public void InputContainsAllCodePoints()
         {
-            string inputString = TextEncoderTestHelper.GenerateAllCharacters();
+            string allChars = TextEncoderTestHelper.GenerateAllCharacters();
+
+            ValidateFromUtf16(allChars);
+            ValidateFromUtf32(allChars);
+        }
+
+        private static void ValidateFromUtf16(string inputString)
+        {
             ReadOnlySpan<byte> input = Text.Encoding.Unicode.GetBytes(inputString);
             ReadOnlySpan<byte> expected = Text.Encoding.UTF8.GetBytes(inputString);
             Span<byte> output = new byte[expected.Length];
@@ -384,10 +388,8 @@ namespace System.Text.Primitives.Tests.Encoding
             Assert.True(expected.SequenceEqual(output), "Invalid output sequence");
         }
 
-        [Fact]
-        public void InputContainsAllCodePointsFromUtf32()
+        private static void ValidateFromUtf32(string inputString)
         {
-            string inputString = TextEncoderTestHelper.GenerateAllCharacters();
             ReadOnlySpan<byte> input = Text.Encoding.UTF32.GetBytes(inputString);
             ReadOnlySpan<byte> expected = Text.Encoding.UTF8.GetBytes(inputString);
             Span<byte> output = new byte[expected.Length];

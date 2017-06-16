@@ -6,67 +6,6 @@ namespace System.Text.Primitives.Tests.Encoding
 {
     public static class TextEncoderTestHelper
     {
-        // Checks if the string that gets genereted from the subset of the valid vode points gets encoded correctly
-        // by comparing TextEncoder output to the output from Encoding for any of the encodings that TextEncoder supports.
-        public static bool Validate(SupportedEncoding from, TextEncoder textEncoder, Text.Encoding testEncoder, CodePointSubset subset)
-        {
-            string inputString = GenerateValidString(TextEncoderConstants.DataLength, subset);
-            Text.Encoding testEncoderUtf8 = Text.Encoding.UTF8;
-            Text.Encoding testEncoderUnicode = Text.Encoding.Unicode;
-            Text.Encoding testEncoderUtf32 = Text.Encoding.UTF32;
-
-            byte[] expectedBytes;
-            Span<byte> encodedBytes;
-
-            int bytesWritten;
-            bool retVal = true;
-
-            switch (from)
-            {
-                case SupportedEncoding.FromUtf8:
-                    byte[] inputStringUtf8 = testEncoderUtf8.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUtf8, testEncoder, inputStringUtf8);
-                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<byte> inputUtf8 = inputStringUtf8;
-                    retVal &= textEncoder.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten);
-                    retVal &= inputUtf8.Length == charactersConsumed;
-                    break;
-
-                case SupportedEncoding.FromUtf16:
-                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
-                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<char> inputUtf16 = inputStringUtf16.AsSpan().NonPortableCast<byte, char>();
-                    retVal &= textEncoder.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten);
-                    retVal &= inputUtf16.Length == charactersConsumed;
-                    break;
-
-                case SupportedEncoding.FromString:
-                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
-                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    string inputStr = inputString;
-                    retVal &= textEncoder.TryEncode(inputStr, encodedBytes, /*out charactersConsumed,*/ out bytesWritten);
-                    //retVal &= inputString.Length == charactersConsumed;
-                    break;
-
-                case SupportedEncoding.FromUtf32:
-                default:
-                    byte[] inputStringUtf32 = testEncoderUtf32.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, inputStringUtf32);
-                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<uint> input = inputStringUtf32.AsSpan().NonPortableCast<byte, uint>();
-                    retVal &= textEncoder.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten);
-                    retVal &= input.Length == charactersConsumed;
-                    break;
-            }
-
-            retVal &= expectedBytes.Length == bytesWritten;
-            retVal &= expectedBytes.AsSpan().SequenceEqual(encodedBytes);
-
-            return retVal;
-        }
-
         public static string GenerateValidString(int length, CodePointSubset subset)
         {
             int minCodePoint = 0;
