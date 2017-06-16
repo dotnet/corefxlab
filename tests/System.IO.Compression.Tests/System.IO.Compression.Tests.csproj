@@ -22,7 +22,7 @@
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BrotliTestData\*">
+    <Content Include="BrotliTestData\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

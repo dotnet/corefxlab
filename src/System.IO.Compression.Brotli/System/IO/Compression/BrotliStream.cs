@@ -36,11 +36,20 @@ namespace System.IO.Compression
 
         public override bool CanTimeout => true;
 
-        public override int ReadTimeout { get ; set; }
+        public override int ReadTimeout { get; set; }
 
         public override int WriteTimeout { get; set; }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
+        {
+            if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            else
+            {
+                _encoder.SetQuality((uint)Brotli.GetQualityFromCompressionLevel(quality));
+            }
+        }
+
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, CompressionLevel quality, uint windowSize) : this(baseStream, mode, leaveOpen, bufferSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
