@@ -3,6 +3,7 @@
 
 using System.Text.Utf8;
 using System.Text.Utf16;
+using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
@@ -261,7 +262,7 @@ namespace System.Text
 
         #region Symbol Parsing / Formatting
 
-        public bool TryParseSymbol(ReadOnlySpan<byte> encodedBytes, out Symbol symbol, out int bytesConsumed)
+        public bool TryParseSymbol(ref byte encodedBytes, out Symbol symbol, out int bytesConsumed)
         {
             int trieIndex = 0;
             int bufferIndex = 0;
@@ -272,7 +273,7 @@ namespace System.Text
                 if (node.ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
                 {
                     symbol = (Symbol)node.IndexOrSymbol;
-                    if (VerifySuffix(encodedBytes, bufferIndex, symbol))
+                    if (VerifySuffix(ref encodedBytes, bufferIndex, symbol))
                     {
                         bytesConsumed = _symbols[node.IndexOrSymbol].Length - bufferIndex;
                         return true;
@@ -286,7 +287,7 @@ namespace System.Text
                 }
                 else
                 {
-                    int search = BinarySearch(trieIndex, bufferIndex, encodedBytes[0]);    // we search the _parsingTrie for the nextByte
+                    int search = BinarySearch(trieIndex, bufferIndex, encodedBytes);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
@@ -380,6 +381,54 @@ namespace System.Text
             }
         }
 
+        /// <summary>
+        /// Parse the next byte in a byte array. Will return either a DigitOrSymbol value, an InvalidCharacter, or a Continue
+        /// </summary>
+        /// <param name="nextByte">The next byte to be parsed</param>
+        /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
+        /// <returns></returns>
+        internal bool TryParseSymbol(ref byte encodedBytes, out uint symbol, out int consumed)
+        {
+            int trieIndex = 0;
+            int codeUnitIndex = 0;
+            consumed = 0;
+            while (true)
+            {
+                if (_parsingTrie[trieIndex].ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                {
+                    symbol = (uint)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
+                    if (VerifySuffix(ref encodedBytes, codeUnitIndex, (Symbol)symbol))
+                    {
+                        consumed = _symbols[(int)symbol].Length;
+                        return true;
+                    }
+                    else
+                    {
+                        symbol = 0;
+                        consumed = 0;
+                        return false;
+                    }
+                }
+                else
+                {
+                    int search = BinarySearch(trieIndex, codeUnitIndex, Unsafe.Add(ref encodedBytes, codeUnitIndex));    // we search the _parsingTrie for the nextByte
+
+                    if (search > 0)   // if we found a node
+                    {
+                        trieIndex = _parsingTrie[search].IndexOrSymbol;
+                        consumed++;
+                        codeUnitIndex++;
+                    }
+                    else
+                    {
+                        symbol = 0;
+                        consumed = 0;
+                        return false;
+                    }
+                }
+            }
+        }
+
         #endregion Symbol Parsing / Formatting
 
         #region Private helpers
@@ -435,6 +484,22 @@ namespace System.Text
             for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
             {
                 if (buffer[i + codeUnitIndex] != _symbols[(int)symbol][i + codeUnitIndex])
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool VerifySuffix(ref byte buffer, int codeUnitIndex, Symbol symbol)
+        {
+            int codeUnitLength = _symbols[(int)symbol].Length;
+            if (codeUnitIndex == codeUnitLength - 1)
+                return true;
+
+            for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
+            {
+                int index = i + codeUnitIndex;
+                if (Unsafe.Add(ref buffer, index) != _symbols[(int)symbol][index])
                     return false;
             }
 

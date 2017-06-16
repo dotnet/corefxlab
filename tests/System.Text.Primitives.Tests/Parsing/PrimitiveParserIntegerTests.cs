@@ -1145,6 +1145,13 @@ namespace System.Text.Primitives.Tests
         #region int
 
         [Theory]
+        [InlineData("a1", false, 0, 0)]
+        [InlineData("1", true, 1, 1)]
+        [InlineData("-1", true, -1, 2)]
+        [InlineData("11", true, 11, 2)]
+        [InlineData("-11", true, -11, 3)]
+        [InlineData("00a0", true, 0, 2)]
+        [InlineData("00a", true, 0, 2)]
         [InlineData("111", true, 111, 3)]
         [InlineData("492206507abcdefg", true, 492206507, 9)]
         [InlineData("2147483647", true, 2147483647, 10)] // max
