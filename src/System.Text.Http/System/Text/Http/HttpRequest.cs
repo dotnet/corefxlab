@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Collections.Sequences;
 using System.Text.Formatting;
 using System.Text.Utf8;
-using System.Threading;
 
 namespace System.Text.Http
 {

@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Text.Formatting;
 using System.Threading.Tasks;
-using System.Net.Sockets;
 
 namespace System.IO.Pipelines.Samples
 {
