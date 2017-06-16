@@ -910,7 +910,7 @@ namespace System.Collections.Generic
             {
                 this.multiValueDictionary = multiValueDictionary;
                 this.version = multiValueDictionary.version;
-                this.current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                this.current = default;
                 this.enumerator = multiValueDictionary.dictionary.GetEnumerator();
                 this.state = EnumerationState.BeforeFirst; ;
             }
@@ -957,7 +957,7 @@ namespace System.Collections.Generic
                 }
                 else
                 {
-                    current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                    current = default;
                     state = EnumerationState.AfterLast;
                     return false;
                 }
@@ -973,7 +973,7 @@ namespace System.Collections.Generic
                     throw new InvalidOperationException(Properties.Resources.InvalidOperation_EnumFailedVersion);
                 enumerator.Dispose();
                 enumerator = multiValueDictionary.dictionary.GetEnumerator();
-                current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                current = default;
                 state = EnumerationState.BeforeFirst;
             }
 

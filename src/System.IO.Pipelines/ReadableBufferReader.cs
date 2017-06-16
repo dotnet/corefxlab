@@ -23,7 +23,7 @@ namespace System.IO.Pipelines
             _index = 0;
             _consumedBytes = 0;
             _enumerator = new SegmentEnumerator(start, end);
-            _currentSpan = default(Span<byte>);
+            _currentSpan = default;
             MoveNext();
         }
 

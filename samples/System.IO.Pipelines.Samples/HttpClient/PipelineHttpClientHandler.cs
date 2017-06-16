@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Samples
                         responseBuffer = responseBuffer.Slice(state.PreviousContentLength);
                         consumed = responseBuffer.Start;
 
-                        state.Consumed = default(ReadCursor);
+                        state.Consumed = default;
                     }
 
                     if (responseBuffer.IsEmpty && result.IsCompleted)

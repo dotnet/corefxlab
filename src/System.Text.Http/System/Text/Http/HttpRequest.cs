@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Collections.Sequences;
 using System.Text.Formatting;
 using System.Text.Utf8;
+using System.Threading;
 
 namespace System.Text.Http
 {
@@ -93,7 +94,7 @@ namespace System.Text.Http
             var bytes = _headers.Slice(position.IntegerPosition);
             if (bytes.Length == 0)
             {
-                value = default(HttpHeader);
+                value = default;
                 return false;
             }
 

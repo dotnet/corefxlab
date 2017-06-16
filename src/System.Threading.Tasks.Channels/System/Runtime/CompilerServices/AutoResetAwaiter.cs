@@ -70,7 +70,7 @@ namespace System.Runtime.CompilerServices
 
             // The operation completed successfully.  Clear and return the result.
             TResult result = _result;
-            _result = default(TResult);
+            _result = default;
 #if DEBUG
             _resultSet = false;
 #endif
@@ -89,7 +89,7 @@ namespace System.Runtime.CompilerServices
         }
 
         /// <summary>Set that the operation was canceled.</summary>
-        public void SetCanceled(CancellationToken token = default(CancellationToken))
+        public void SetCanceled(CancellationToken token = default)
         {
             SetException(token.IsCancellationRequested ? new OperationCanceledException(token) : new OperationCanceledException());
         }

@@ -11,7 +11,7 @@ namespace System.Text.Primitives.Tests
         public static string SpanToString(Span<byte> span, TextEncoder encoder = null)
         {
             // Assume no encoder means the buffer is UTF-8
-            encoder = (encoder == null) ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
             Assert.True(encoder.TryDecode(span, out string text, out int consumed));
             return text;
         }

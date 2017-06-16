@@ -77,8 +77,8 @@ namespace System.IO.Pipelines
         {
             if (buffer.IsEmpty)
             {
-                slice = default(ReadableBuffer);
-                cursor = default(ReadCursor);
+                slice = default;
+                cursor = default;
                 return false;
             }
 
@@ -135,8 +135,8 @@ namespace System.IO.Pipelines
                 }
             }
 
-            slice = default(ReadableBuffer);
-            cursor = default(ReadCursor);
+            slice = default;
+            cursor = default;
             return false;
         }
 

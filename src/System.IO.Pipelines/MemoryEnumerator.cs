@@ -19,7 +19,7 @@ namespace System.IO.Pipelines
         public BufferEnumerator(ReadCursor start, ReadCursor end)
         {
             _segmentEnumerator = new SegmentEnumerator(start, end);
-            _current = default(Buffer<byte>);
+            _current = default;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace System.IO.Pipelines
         {
             if (!_segmentEnumerator.MoveNext())
             {
-                _current = default(Buffer<byte>);
+                _current = default;
                 return false;
             }
             var current = _segmentEnumerator.Current;

@@ -12,8 +12,8 @@ namespace System.Text.Parsing
 
         public static bool TryParseUInt64<T>(this T bufferSequence, out ulong value, out int consumed) where T : ISequence<ReadOnlyBuffer<byte>>
         {
-            value = default(uint);
-            consumed = default(int);
+            value = default;
+            consumed = default;
             Position position = Position.First;
 
             // Fetch the first segment
@@ -85,8 +85,8 @@ namespace System.Text.Parsing
 
         public static bool TryParseUInt32<T>(this T bufferSequence, out uint value, out int consumed) where T : ISequence<ReadOnlyBuffer<byte>>
         {
-            value = default(uint);
-            consumed = default(int);
+            value = default;
+            consumed = default;
             Position position = Position.First;
 
             // Fetch the first segment

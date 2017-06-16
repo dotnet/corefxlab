@@ -38,7 +38,7 @@ public class HttpParserBench
         ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
-        ReadCursor consumed = default(ReadCursor);
+        ReadCursor consumed = default;
         ReadCursor read;
         bool success = true;
 
@@ -251,7 +251,7 @@ public class HttpParserBench
     static int FullRequestLegacy()
     {
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        HttpRequest request = default(HttpRequest);
+        HttpRequest request = default;
 
         foreach (var iteration in Benchmark.Iterations) {
             using (iteration.StartMeasurement()) {

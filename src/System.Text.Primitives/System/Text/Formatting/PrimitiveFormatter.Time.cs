@@ -10,7 +10,7 @@ namespace System.Text
     {
         internal static readonly TimeSpan NullOffset = TimeSpan.MinValue;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             TimeSpan offset = NullOffset;
             if (format.IsDefault)
@@ -21,7 +21,7 @@ namespace System.Text
 
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             switch (format.Symbol)
             {
@@ -39,7 +39,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             if (format.IsDefault)
             {
@@ -48,7 +48,7 @@ namespace System.Text
 
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             switch (format.Symbol)
             {
@@ -66,7 +66,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             if (format.IsDefault)
             {
@@ -75,7 +75,7 @@ namespace System.Text
 
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'g' || format.Symbol == 'c' || format.Symbol == 't' || format.Symbol == 'T');
 
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             return TryFormatTimeSpan(value, format.Symbol, buffer, out bytesWritten, encoder);
         }

@@ -177,7 +177,7 @@ namespace System
                 return true;
             }
 
-            arraySegment = default(ArraySegment<T>);
+            arraySegment = default;
             return false;
         }
 

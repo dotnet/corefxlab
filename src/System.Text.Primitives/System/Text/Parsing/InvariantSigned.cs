@@ -20,7 +20,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -42,7 +42,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -89,7 +89,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -105,7 +105,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -128,7 +128,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -179,7 +179,7 @@ namespace System.Text
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -195,7 +195,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -217,7 +217,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -264,7 +264,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -280,7 +280,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -303,7 +303,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -354,7 +354,7 @@ namespace System.Text
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -373,7 +373,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -395,7 +395,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -442,7 +442,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -458,7 +458,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -481,7 +481,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -532,7 +532,7 @@ namespace System.Text
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -548,7 +548,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -570,7 +570,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -617,7 +617,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -633,7 +633,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -656,7 +656,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -707,7 +707,7 @@ namespace System.Text
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -726,7 +726,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -748,7 +748,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -795,7 +795,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -811,7 +811,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -834,7 +834,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -885,7 +885,7 @@ namespace System.Text
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -901,7 +901,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -923,7 +923,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -970,7 +970,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -986,7 +986,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -1009,7 +1009,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1060,7 +1060,7 @@ namespace System.Text
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1079,7 +1079,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -1101,7 +1101,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -1148,7 +1148,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1164,7 +1164,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -1187,7 +1187,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -1238,7 +1238,7 @@ namespace System.Text
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1254,7 +1254,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -1276,7 +1276,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -1323,7 +1323,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1339,7 +1339,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -1362,7 +1362,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -1413,7 +1413,7 @@ namespace System.Text
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1435,7 +1435,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -1457,7 +1457,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1504,7 +1504,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1520,7 +1520,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -1543,7 +1543,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1594,7 +1594,7 @@ namespace System.Text
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1610,7 +1610,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -1632,7 +1632,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1679,7 +1679,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1695,7 +1695,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
 
@@ -1718,7 +1718,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(sbyte);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1769,7 +1769,7 @@ namespace System.Text
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(sbyte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1788,7 +1788,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -1810,7 +1810,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1857,7 +1857,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1873,7 +1873,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -1896,7 +1896,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -1947,7 +1947,7 @@ namespace System.Text
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1963,7 +1963,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -1985,7 +1985,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2032,7 +2032,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2048,7 +2048,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
 
@@ -2071,7 +2071,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(short);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2122,7 +2122,7 @@ namespace System.Text
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(short);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2141,7 +2141,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -2163,7 +2163,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2210,7 +2210,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2226,7 +2226,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -2249,7 +2249,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2300,7 +2300,7 @@ namespace System.Text
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2316,7 +2316,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -2338,7 +2338,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2385,7 +2385,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2401,7 +2401,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
 
@@ -2424,7 +2424,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(int);
+                    value = default;
                     return false;
                 }
                 int parsedValue = firstDigit;
@@ -2475,7 +2475,7 @@ namespace System.Text
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(int);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2494,7 +2494,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -2516,7 +2516,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -2563,7 +2563,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2579,7 +2579,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -2602,7 +2602,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -2653,7 +2653,7 @@ namespace System.Text
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2669,7 +2669,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -2691,7 +2691,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -2738,7 +2738,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2754,7 +2754,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
 
@@ -2777,7 +2777,7 @@ namespace System.Text
                 if (firstDigit < 0 || firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(long);
+                    value = default;
                     return false;
                 }
                 long parsedValue = firstDigit;
@@ -2828,7 +2828,7 @@ namespace System.Text
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
-                            value = default(long);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;

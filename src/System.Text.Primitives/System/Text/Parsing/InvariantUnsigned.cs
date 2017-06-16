@@ -20,7 +20,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -28,7 +28,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -73,7 +73,7 @@ namespace System.Text
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -89,7 +89,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -98,7 +98,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -147,7 +147,7 @@ namespace System.Text
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -163,7 +163,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -171,7 +171,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -216,7 +216,7 @@ namespace System.Text
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -232,7 +232,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -241,7 +241,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -290,7 +290,7 @@ namespace System.Text
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -309,7 +309,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -317,7 +317,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -362,7 +362,7 @@ namespace System.Text
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -378,7 +378,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -387,7 +387,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -436,7 +436,7 @@ namespace System.Text
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -452,7 +452,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -460,7 +460,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -505,7 +505,7 @@ namespace System.Text
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -521,7 +521,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -530,7 +530,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -579,7 +579,7 @@ namespace System.Text
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -598,7 +598,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -606,7 +606,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -651,7 +651,7 @@ namespace System.Text
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -667,7 +667,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -676,7 +676,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -725,7 +725,7 @@ namespace System.Text
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -741,7 +741,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -749,7 +749,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -794,7 +794,7 @@ namespace System.Text
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -810,7 +810,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -819,7 +819,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -868,7 +868,7 @@ namespace System.Text
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -887,7 +887,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -895,7 +895,7 @@ namespace System.Text
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -940,7 +940,7 @@ namespace System.Text
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -956,7 +956,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -965,7 +965,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -1014,7 +1014,7 @@ namespace System.Text
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1030,7 +1030,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -1038,7 +1038,7 @@ namespace System.Text
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -1083,7 +1083,7 @@ namespace System.Text
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1099,7 +1099,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     bytesConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -1108,7 +1108,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     bytesConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -1157,7 +1157,7 @@ namespace System.Text
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
                             bytesConsumed = 0;
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1179,7 +1179,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -1187,7 +1187,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1232,7 +1232,7 @@ namespace System.Text
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1248,7 +1248,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -1257,7 +1257,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1306,7 +1306,7 @@ namespace System.Text
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1322,7 +1322,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -1330,7 +1330,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1375,7 +1375,7 @@ namespace System.Text
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1391,7 +1391,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -1400,7 +1400,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1449,7 +1449,7 @@ namespace System.Text
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(byte);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1468,7 +1468,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -1476,7 +1476,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1521,7 +1521,7 @@ namespace System.Text
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1537,7 +1537,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -1546,7 +1546,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1595,7 +1595,7 @@ namespace System.Text
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1611,7 +1611,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -1619,7 +1619,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1664,7 +1664,7 @@ namespace System.Text
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1680,7 +1680,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -1689,7 +1689,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1738,7 +1738,7 @@ namespace System.Text
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(ushort);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1757,7 +1757,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -1765,7 +1765,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1810,7 +1810,7 @@ namespace System.Text
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1826,7 +1826,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -1835,7 +1835,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1884,7 +1884,7 @@ namespace System.Text
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1900,7 +1900,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -1908,7 +1908,7 @@ namespace System.Text
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -1953,7 +1953,7 @@ namespace System.Text
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -1969,7 +1969,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -1978,7 +1978,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
                 uint parsedValue = firstDigit;
@@ -2027,7 +2027,7 @@ namespace System.Text
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(uint);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2046,7 +2046,7 @@ namespace System.Text
             {
                 if (length < 1)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -2054,7 +2054,7 @@ namespace System.Text
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -2099,7 +2099,7 @@ namespace System.Text
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2115,7 +2115,7 @@ namespace System.Text
                 if (length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -2124,7 +2124,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -2173,7 +2173,7 @@ namespace System.Text
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2189,7 +2189,7 @@ namespace System.Text
             {
                 if (text.Length < 1)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -2197,7 +2197,7 @@ namespace System.Text
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -2242,7 +2242,7 @@ namespace System.Text
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
@@ -2258,7 +2258,7 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     charsConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 
@@ -2267,7 +2267,7 @@ namespace System.Text
                 if (firstDigit > 9)
                 {
                     charsConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
                 ulong parsedValue = firstDigit;
@@ -2316,7 +2316,7 @@ namespace System.Text
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
                             charsConsumed = 0;
-                            value = default(ulong);
+                            value = default;
                             return false;
                         }
                         parsedValue = parsedValue * 10 + nextDigit;

@@ -1298,7 +1298,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParse(s, null, DateTimeStyles.NoCurrentDateDefault, out dt))
             {
-                timeOfDay = default(TimeOfDay);
+                timeOfDay = default;
                 return false;
             }
 
@@ -1351,7 +1351,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default(TimeOfDay);
+                timeOfDay = default;
                 return false;
             }
 
@@ -1409,7 +1409,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default(TimeOfDay);
+                timeOfDay = default;
                 return false;
             }
 
@@ -1471,7 +1471,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default(TimeOfDay);
+                timeOfDay = default;
                 return false;
             }
 

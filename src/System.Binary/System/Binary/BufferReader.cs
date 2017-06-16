@@ -74,7 +74,7 @@ namespace System.Binary
         {
             if (Unsafe.SizeOf<T>() > (uint)slice.Length)
             {
-                value = default(T);
+                value = default;
                 return false;
             }
             value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
@@ -90,7 +90,7 @@ namespace System.Binary
         {
             if (Unsafe.SizeOf<T>() > (uint)slice.Length)
             {
-                value = default(T);
+                value = default;
                 return false;
             }
             value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());

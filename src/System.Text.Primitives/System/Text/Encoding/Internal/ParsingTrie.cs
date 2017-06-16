@@ -272,7 +272,7 @@ namespace System.Text
             int childNodeStartIndex = parsingTrieList.Count;
             for (int i = 0; i < clumps.Count; i++)
             {
-                parsingTrieList.Add(default(Node));
+                parsingTrieList.Add(default);
             }
 
             // Process child nodes

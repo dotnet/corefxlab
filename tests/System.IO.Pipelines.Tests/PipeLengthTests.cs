@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ByteByByteTest()
         {
-            WritableBuffer writableBuffer = default(WritableBuffer);
+            WritableBuffer writableBuffer = default;
             for (int i = 1; i <= 1024 * 1024; i++)
             {
                 writableBuffer = _pipe.Writer.Alloc(100);

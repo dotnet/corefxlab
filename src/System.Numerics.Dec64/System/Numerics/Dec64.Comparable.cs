@@ -10,43 +10,43 @@ namespace System.Numerics
 
         public bool Equals(long other)
         {
-            return default(bool);
+            return default;
         }
 
         public override bool Equals(object obj)
         {
-            return default(bool);
+            return default;
         }
 
         public bool Equals(ulong other)
         {
-            return default(bool);
+            return default;
         }
 
         public static int Compare(Dec64 left, Dec64 right)
         {
-            return default(int);
+            return default;
         }
 
         public int CompareTo(long other)
         {
-            return default(int);
+            return default;
         }
 
         public int CompareTo(Dec64 other)
         {
 
-            return default(int);
+            return default;
         }
 
         public int CompareTo(ulong other)
         {
-            return default(int);
+            return default;
         }
 
         int System.IComparable.CompareTo(object obj)
         {
-            return default(int);
+            return default;
         }
     }
 }

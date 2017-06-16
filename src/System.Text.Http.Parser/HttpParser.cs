@@ -599,7 +599,7 @@ namespace System.Text.Http.Parser
                 return buffer.Slice(start, end).ToSpan();
             }
 
-            return default(Span<byte>);
+            return default;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

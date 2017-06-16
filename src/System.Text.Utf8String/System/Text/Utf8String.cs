@@ -16,7 +16,7 @@ namespace System.Text.Utf8
 
         private const int StringNotFound = -1;
 
-        static Utf8String s_empty => default(Utf8String);
+        static Utf8String s_empty => default;
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
@@ -332,7 +332,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 
@@ -346,7 +346,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 
@@ -360,7 +360,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 
@@ -374,7 +374,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 
@@ -388,7 +388,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 
@@ -402,7 +402,7 @@ namespace System.Text.Utf8
 
             if (idx == StringNotFound)
             {
-                result = default(Utf8String);
+                result = default;
                 return false;
             }
 

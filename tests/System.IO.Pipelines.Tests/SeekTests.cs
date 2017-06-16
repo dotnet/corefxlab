@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Tests
             var cursors = BufferUtilities.CreateBuffer(raw);
             ReadCursor start = cursors.Start;
             ReadCursor end = cursors.End;
-            ReadCursor result = default(ReadCursor);
+            ReadCursor result = default;
 
             var searchFor = search.ToCharArray();
 

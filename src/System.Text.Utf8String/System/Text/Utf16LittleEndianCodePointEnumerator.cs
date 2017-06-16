@@ -20,7 +20,7 @@ namespace System.Text.Utf16
             _s = s;
             _index = -1;
             _encodedChars = 0;
-            _codePoint = default(uint);
+            _codePoint = default;
         }
 
         public uint Current
@@ -39,7 +39,7 @@ namespace System.Text.Utf16
 
                 if (!Utf8Helper.TryDecodeCodePointFromString(_s, _index, out _codePoint, out _encodedChars))
                 {
-                    _codePoint = default(uint);
+                    _codePoint = default;
                     _encodedChars = 0;
                     // or index outside of string
                     throw new InvalidOperationException("Invalid characters in the string");
@@ -59,7 +59,7 @@ namespace System.Text.Utf16
         {
             _index = -1;
             _encodedChars = 0;
-            _codePoint = default(uint);
+            _codePoint = default;
         }
 
         public bool MoveNext()

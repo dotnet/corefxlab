@@ -274,7 +274,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                 while (!_stopping)
                 {
                     bool haveWriteBuffer = false;
-                    WritableBuffer buffer = default(WritableBuffer);
+                    WritableBuffer buffer = default;
                     var initialSegment = default(ArraySegment<byte>);
 
                     try
@@ -295,7 +295,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                                     }
                                     catch
                                     {
-                                        initialSegment = default(ArraySegment<byte>);
+                                        initialSegment = default;
                                     }
                                     if (initialSegment.Array == null)
                                     {
@@ -339,7 +339,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                                 {
                                     // sentinel value that means we should just
                                     // consume sync (we expect there to be data)
-                                    initialSegment = default(ArraySegment<byte>);
+                                    initialSegment = default;
                                 }
                                 else
                                 {
@@ -453,7 +453,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 _smallBuffers?.Recycle(buffer);
             }
-            buffer = default(ArraySegment<byte>);
+            buffer = default;
         }
 
         /// returns null if the caller should redo from start; returns
@@ -481,7 +481,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 // well, it didn't like that... switch to small buffers
                 _bufferStyle = BufferStyle.UseSmallBuffer;
-                return default(ArraySegment<byte>);
+                return default;
             }
             if (args.SocketError != SocketError.Success)
             {   // let the calling code explode

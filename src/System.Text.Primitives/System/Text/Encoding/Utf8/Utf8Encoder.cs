@@ -442,7 +442,7 @@ namespace System.Text.Utf8
         {
             if (index >= utf8.Length)
             {
-                codePoint = default(uint);
+                codePoint = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -453,7 +453,7 @@ namespace System.Text.Utf8
             if (bytesConsumed == 0 || utf8.Length - index < bytesConsumed)
             {
                 bytesConsumed = 0;
-                codePoint = default(uint);
+                codePoint = default;
                 return false;
             }
 
@@ -476,7 +476,7 @@ namespace System.Text.Utf8
                     break;
 
                 default:
-                    codePoint = default(uint);
+                    codePoint = default;
                     bytesConsumed = 0;
                     return false;
             }
@@ -487,7 +487,7 @@ namespace System.Text.Utf8
                 if ((current & b1100_0000U) != b1000_0000U)
                 {
                     bytesConsumed = 0;
-                    codePoint = default(uint);
+                    codePoint = default;
                     return false;
                 }
 

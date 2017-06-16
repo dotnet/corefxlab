@@ -147,7 +147,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private ReadCursor SeekMultiSegment(int bytes, ReadCursor end, bool checkEndReachable)
         {
-            ReadCursor result = default(ReadCursor);
+            ReadCursor result = default;
             bool foundResult = false;
 
             foreach (var segmentPart in new SegmentEnumerator(this, end))

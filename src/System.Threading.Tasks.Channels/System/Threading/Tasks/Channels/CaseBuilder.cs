@@ -170,7 +170,7 @@ namespace System.Threading.Tasks.Channels
         /// A task that represents the asynchronous select operation.
         /// It will complete with the number of cases successfully completed.
         /// </returns>
-        public Task<int> SelectUntilAsync(Func<int, bool> conditionFunc, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<int> SelectUntilAsync(Func<int, bool> conditionFunc, CancellationToken cancellationToken = default)
         {
             if (conditionFunc == null)
             {
@@ -207,7 +207,7 @@ namespace System.Threading.Tasks.Channels
         /// It will complete with a result of true if one of the cases was satisfied,
         /// or else a result of false if none of the cases could be satisfied.
         /// </returns>
-        public Task<bool> SelectAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> SelectAsync(CancellationToken cancellationToken = default)
         {
             // First try each case to see if it can be satisfied synchronously
             foreach (Case c in _cases)
@@ -258,7 +258,7 @@ namespace System.Threading.Tasks.Channels
                 // or once the await finishes.  When one task from one channel finishes, we don't want to leave
                 // tasks from other channels uncanceled.
                 Task<bool> completedTask;
-                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, default(CancellationToken)))
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, default))
                 {
                     for (int i = 0; i < tasks.Length; i++)
                     {
