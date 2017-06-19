@@ -144,6 +144,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Utf8String", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Utf8String.Tests", "tests\System.Text.Utf8String.Tests\System.Text.Utf8String.Tests.csproj", "{C6F061D6-18D6-41E3-A692-C0603A994F30}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{09206D8D-DA08-426F-BAB3-0278791E1B12}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -934,6 +936,18 @@ Global
 		{C6F061D6-18D6-41E3-A692-C0603A994F30}.Release|x64.Build.0 = Release|Any CPU
 		{C6F061D6-18D6-41E3-A692-C0603A994F30}.Release|x86.ActiveCfg = Release|Any CPU
 		{C6F061D6-18D6-41E3-A692-C0603A994F30}.Release|x86.Build.0 = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|x64.Build.0 = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Debug|x86.Build.0 = Debug|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|x64.ActiveCfg = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|x64.Build.0 = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|x86.ActiveCfg = Release|Any CPU
+		{09206D8D-DA08-426F-BAB3-0278791E1B12}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
