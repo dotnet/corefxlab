@@ -13,6 +13,8 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliPerformanceCanterburyCorpus
     {
+        int bufferSize = 8192;
+
         public static IEnumerable<object[]> CanterburyCorpus()
         {
             foreach (CompressionLevel compressionLevel in Enum.GetValues(typeof(CompressionLevel)))
@@ -43,7 +45,6 @@ namespace System.IO.Compression.Tests
         public void Compress_Canterbury(int innerIterations, string fileName, CompressionLevel compressLevel)
         {
             byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", "Canterbury", fileName));
-            int bufferSize = 8096;
             FileStream[] fileStreams = new FileStream[innerIterations];
             BrotliStream[] brotliStream = new BrotliStream[innerIterations];
             string[] paths = new string[innerIterations];
