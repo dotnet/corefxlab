@@ -359,5 +359,21 @@ namespace System.Buffers.Tests
                 Assert.True(ex is ArrayTypeMismatchException);
             }
         }
+
+        [Fact]
+        public void DangerousTryGetArray()
+        {
+            var array = new byte[] { 1, 2, 3, 4, 5 };
+            OwnedBuffer<byte> owned = array;
+            ReadOnlyBuffer<byte> buffer = owned.ReadOnlyBuffer;
+
+            Assert.True(buffer.DangerousTryGetArray(out var dangerousArray));
+            Assert.Equal(array.Length, dangerousArray.Count);
+
+            for(int i=dangerousArray.Offset; i<dangerousArray.Count+dangerousArray.Offset; i++)
+            {
+                Assert.Equal(array[i], dangerousArray.Array[i]);
+            }          
+        }
     }
 }
