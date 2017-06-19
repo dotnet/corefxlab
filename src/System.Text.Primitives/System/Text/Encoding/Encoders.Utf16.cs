@@ -12,18 +12,18 @@ namespace System.Text
         {
             #region Tranforms
 
-            public static readonly ITransformation FromUtf8 = new Utf8ToUtf16Transform();
-            public static readonly ITransformation FromUtf32 = new Utf32ToUtf16Transform();
+            public static readonly Transformation FromUtf8 = new Utf8ToUtf16Transform();
+            public static readonly Transformation FromUtf32 = new Utf32ToUtf16Transform();
 
-            private sealed class Utf8ToUtf16Transform : ITransformation
+            private sealed class Utf8ToUtf16Transform : Transformation
             {
-                public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                     => ConvertFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
             }
 
-            private sealed class Utf32ToUtf16Transform : ITransformation
+            private sealed class Utf32ToUtf16Transform : Transformation
             {
-                public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                     => ConvertFromUtf32(source, destination, out bytesConsumed, out bytesWritten);
             }
 
