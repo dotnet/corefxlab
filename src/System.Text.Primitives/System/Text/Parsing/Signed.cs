@@ -12,7 +12,10 @@ namespace System.Text
     {
         #region Helpers
 
-        private const int maxValueDiv10 = int.MaxValue / 10;
+        private const sbyte maxValueSbyteDiv10 = sbyte.MaxValue / 10;
+        private const short maxValueShortDiv10 = short.MaxValue / 10;
+        private const int maxValueIntDiv10 = int.MaxValue / 10;
+        private const long maxValueLongDiv10 = long.MaxValue / 10;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsDigit(int i)
@@ -31,9 +34,8 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool WillOverFlow(sbyte value, int nextDigit, int sign)
         {
-            sbyte maxValueDiv10 = sbyte.MaxValue / 10;
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueDiv10 || value == maxValueDiv10 && nextDigitTooLarge);
+            return (value > maxValueSbyteDiv10 || nextDigitTooLarge);
         }
 
         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
@@ -41,18 +43,17 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool WillOverFlow(short value, int nextDigit, int sign)
         {
-            short maxValueDiv10 = short.MaxValue / 10;
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueDiv10 || value == maxValueDiv10 && nextDigitTooLarge);
+            return (value > maxValueShortDiv10 || nextDigitTooLarge);
         }
 
         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool WillOverFlow(int value, int nextDigit, int sign)
+        private static bool WillOverFlow(int value, byte nextDigit, sbyte sign)
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueDiv10 || nextDigitTooLarge);
+            return (value > maxValueIntDiv10 || nextDigitTooLarge);
         }
         
         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
@@ -60,9 +61,8 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool WillOverFlow(long value, int nextDigit, int sign)
         {
-            long maxValueDiv10 = long.MaxValue / 10;
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueDiv10 || value == maxValueDiv10 && nextDigitTooLarge);
+            return (value > maxValueLongDiv10 || nextDigitTooLarge);
         }
 
         #endregion

@@ -905,18 +905,169 @@ namespace System.Text
                 return TryParseInt32(text, out value, out int bytesConsumed);
             }
 
+            public static bool TryParseInt32_CUR(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
+            {
+                int textLength = text.Length;
+                if (textLength < 1) goto FalseExit;
+
+                sbyte sign = 1;
+                int index = 0;
+                byte num = text[index];
+                if (num == 45)
+                {
+                    sign = -1;
+                    index++;
+                    if (index >= textLength) goto FalseExit;
+                    num = text[index];
+                }
+                else if (num == 43)
+                {
+                    index++;
+                    if (index >= textLength) goto FalseExit;
+                    num = text[index];
+                }
+
+                bool containsDigitsAsPrefix = false;
+                int answer = 0;
+                while (num == 48)
+                {
+                    index++;
+                    if (index >= textLength)
+                    {
+                        bytesConsumed = index;
+                        value = 0;
+                        return true;
+                    }
+                    num = text[index];
+                    containsDigitsAsPrefix = true;
+                }
+
+                int overflowLength = Int32OverflowLength + index;
+                if (textLength - index > Int32OverflowLength) textLength = overflowLength;
+
+                while (num > 47 && num < 58)
+                {
+                    containsDigitsAsPrefix = true;
+                    answer = answer * 10 + num - 48;
+                    index++;
+                    if (index >= textLength - 1) break;
+                    num = text[index];
+                }
+
+                if (index >= textLength) goto Done;
+                num = text[index];
+                if (num > 47 && num < 58)
+                {
+                    num -= 48;
+                    if (WillOverFlow(answer, num, sign))
+                    {
+                        bytesConsumed = index;
+                        value = answer * sign;
+                        return true;
+                    }
+                    containsDigitsAsPrefix = true;
+                    answer = answer * 10 + num;
+                    index++;
+                }
+
+                Done:
+                if (!containsDigitsAsPrefix) goto FalseExit;
+                bytesConsumed = index;
+                value = answer * sign;
+                return true;
+
+                FalseExit:
+                bytesConsumed = 0;
+                value = 0;
+                return false;
+            }
+
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
             {
-                ref byte textByte = ref text.DangerousGetPinnableReference();
+                int textLength = text.Length;
+                if (textLength < 1) goto FalseExit;
 
+                sbyte sign = 1;
+                int index = textLength;
+                byte num = text[textLength - index];
+                if (num == 45)
+                {
+                    sign = -1;
+                    index--;
+                    if (index <= 0) goto FalseExit;
+                    num = text[textLength - index];
+                }
+                else if (num == 43)
+                {
+                    index--;
+                    if (index <= 0) goto FalseExit;
+                    num = text[textLength - index];
+                }
+
+                bool containsDigitsAsPrefix = false;
+                int answer = 0;
+                while (num == 48)
+                {
+                    index--;
+                    if (index <= 0)
+                    {
+                        bytesConsumed = textLength - index;
+                        value = 0;
+                        return true;
+                    }
+                    num = text[textLength - index];
+                    containsDigitsAsPrefix = true;
+                }
+
+                if (textLength - index > Int32OverflowLength) textLength = Int32OverflowLength;
+
+                while (num > 47 && num < 58)
+                {
+                    containsDigitsAsPrefix = true;
+                    answer = answer * 10 + num - 48;
+                    index--;
+                    if (index <= 1) break;
+                    num = text[textLength - index];
+                }
+
+                if (index <= 0) goto Done;
+                num = text[textLength - index];
+                if (num > 47 && num < 58)
+                {
+                    num -= 48;
+                    if (WillOverFlow(answer, num, sign))
+                    {
+                        bytesConsumed = textLength - index;
+                        value = answer * sign;
+                        return true;
+                    }
+                    containsDigitsAsPrefix = true;
+                    answer = answer * 10 + num;
+                    index--;
+                }
+
+                Done:
+                if (!containsDigitsAsPrefix) goto FalseExit;
+                bytesConsumed = textLength - index;
+                value = answer * sign;
+                return true;
+
+                FalseExit:
+                bytesConsumed = 0;
+                value = 0;
+                return false;
+            }
+
+            public static bool TryParseInt32_PREV(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
+            {
                 int sign = 1;
                 int index = 0;
-                if (textByte == '-')
+                if (text[0] == '-')
                 {
                     sign = -1;
                     index++;
                 }
-                else if (textByte == '+')
+                else if (text[0] == '+')
                 {
                     index++;
                 }
@@ -930,7 +1081,7 @@ namespace System.Text
                 bool containsDigitsAsPrefix = false;
                 while (index < textLength - 1)
                 {
-                    num = Unsafe.Add(ref textByte, index) - 48; // '0'
+                    num = text[index] - 48; // '0'
                     if (!IsDigit(num))
                     {
                         goto Done;
@@ -939,8 +1090,8 @@ namespace System.Text
                     containsDigitsAsPrefix = true;
                     index++;
                 }
-                
-                num = Unsafe.Add(ref textByte, textLength - 1) - 48; // '0'
+
+                num = text[textLength - 1] - 48; // '0'
                 if (IsDigit(num))
                 {
                     if (WillOverFlow(answer, num, sign)) goto FalseExit;
@@ -959,6 +1110,103 @@ namespace System.Text
                 bytesConsumed = 0;
                 value = default;
                 return false;
+            }
+
+            public static bool TryParseInt32_OLD(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
+            {
+                if (text.Length < 1)
+                {
+                    bytesConsumed = 0;
+                    value = default(int);
+                    return false;
+                }
+
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
+
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+
+                // Parse the first digit separately. If invalid here, we need to return false.
+                if (indexOfFirstDigit >= text.Length)
+                {
+                    bytesConsumed = 0;
+                    value = default(int);
+                    return false;
+                }
+                int firstDigit = text[indexOfFirstDigit] - 48; // '0'
+                if (firstDigit < 0 || firstDigit > 9)
+                {
+                    bytesConsumed = 0;
+                    value = default(int);
+                    return false;
+                }
+                int parsedValue = firstDigit;
+
+                if (text.Length < overflowLength)
+                {
+                    // Length is less than Int32OverflowLength; overflow is not possible
+                    for (int index = indexOfFirstDigit + 1; index < text.Length; index++)
+                    {
+                        int nextDigit = text[index] - 48; // '0'
+                        if (nextDigit < 0 || nextDigit > 9)
+                        {
+                            bytesConsumed = index;
+                            value = parsedValue * sign;
+                            return true;
+                        }
+                        parsedValue = parsedValue * 10 + nextDigit;
+                    }
+                }
+                else
+                {
+                    // Length is greater than Int32OverflowLength; overflow is only possible after Int32OverflowLength
+                    // digits. There may be no overflow after Int32OverflowLength if there are leading zeroes.
+                    for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
+                    {
+                        int nextDigit = text[index] - 48; // '0'
+                        if (nextDigit < 0 || nextDigit > 9)
+                        {
+                            bytesConsumed = index;
+                            value = parsedValue * sign;
+                            return true;
+                        }
+                        parsedValue = parsedValue * 10 + nextDigit;
+                    }
+                    for (int index = overflowLength - 1; index < text.Length; index++)
+                    {
+                        int nextDigit = text[index] - 48; // '0'
+                        if (nextDigit < 0 || nextDigit > 9)
+                        {
+                            bytesConsumed = index;
+                            value = parsedValue * sign;
+                            return true;
+                        }
+                        // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
+                        // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
+                        {
+                            bytesConsumed = index;
+                            value = parsedValue * sign;
+                            return true;
+                        }
+                        parsedValue = parsedValue * 10 + nextDigit;
+                    }
+                }
+
+                bytesConsumed = text.Length;
+                value = parsedValue * sign;
+                return true;
             }
             #endregion
 
