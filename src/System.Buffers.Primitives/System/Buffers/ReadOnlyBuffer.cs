@@ -153,6 +153,25 @@ namespace System
 
         public T[] ToArray() => Span.ToArray();
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool DangerousTryGetArray(out ArraySegment<T> arraySegment)
+        {
+            if (_owner != null && _owner.TryGetArray(out var segment))
+            {
+                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                return true;
+            }
+
+            if (_array != null)
+            {
+                arraySegment = new ArraySegment<T>(_array, _index, _length);
+                return true;
+            }
+
+            arraySegment = default(ArraySegment<T>);
+            return false;
+        }
+
         public void CopyTo(Span<T> span) => Span.CopyTo(span);
 
         public void CopyTo(Buffer<T> buffer) => Span.CopyTo(buffer.Span);
