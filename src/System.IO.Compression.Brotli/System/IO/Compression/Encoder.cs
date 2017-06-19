@@ -8,9 +8,12 @@ using System.Text;
 
 namespace System.IO.Compression
 {
-    internal sealed class Encoder
+    public class Encoder : IDisposable
     {
         internal IntPtr State { get; private set; }
+        internal BrotliEncoderOperation Operation { get; set; }
+        //internal Span<byte> NextOut;
+        internal int _availableOut;
         private const int MinWindowBits = 10;
         private const int MaxWindowBits = 24;
         private const int MinQuality = 0;
@@ -60,7 +63,7 @@ namespace System.IO.Compression
             }
         }
 
-        internal void Dispose()
+        public void Dispose()
         {
             if (!_isDisposed && State != IntPtr.Zero)
             {

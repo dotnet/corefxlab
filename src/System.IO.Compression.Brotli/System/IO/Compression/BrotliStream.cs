@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 using System;
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -33,6 +34,8 @@ namespace System.IO.Compression
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
+        Brotli.State _state;
+
 
         public override bool CanTimeout => true;
 
@@ -70,6 +73,11 @@ namespace System.IO.Compression
                 _encoder = new Encoder();
                 _encoder.SetQuality();
                 _encoder.SetWindow();
+                _state = new Brotli.State();
+                _state.BrotliNativeState = BrotliNative.BrotliEncoderCreateInstance();
+                _state.NextOut = new byte[_bufferSize];
+                _state.AvailableOut = _bufferSize;
+                BrotliNative.BrotliEncoderSetParameter(_state.BrotliNativeState, BrotliEncoderParameter.Quality, 10);
                 WriteTimeout = 0;
             }
             else
@@ -129,26 +137,25 @@ namespace System.IO.Compression
 
         protected virtual void FlushEncoder(bool finished)
         {
-            if (_encoder.State == IntPtr.Zero) return;
-            if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) return;
-            BrotliEncoderOperation op = finished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
-            nuint totalOut = 0;
-            while (true)
+            if (_state.BrotliNativeState == IntPtr.Zero) return;
+            if (BrotliNative.BrotliEncoderIsFinished(_state.BrotliNativeState)) return;
+            byte[] BufferIn = new byte[0];
+            byte[] BufferOut = new byte[_bufferSize];
+            TransformationStatus ts = TransformationStatus.DestinationTooSmall;
+            Console.WriteLine("FlushEncoder");
+            while (ts == TransformationStatus.DestinationTooSmall)
             {
-                if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref _availableInput, ref _nextInput, ref _availableOutput, ref _nextOutput, out totalOut))
-                    throw new System.IO.IOException(BrotliEx.unableEncode);
-                var extraData = (nuint)_availableOutput != (nuint)_bufferSize;
-                if (extraData)
+                ts = Brotli.FlushEncoder(BufferIn, BufferOut, out int consumed, out int AvailOut, ref _state);
+                Console.WriteLine(ts.ToString());
+                var bytesWrote = AvailOut;
+                Console.WriteLine(AvailOut);
+                _stream.Write(BufferOut, 0, AvailOut);
+                AvailOut = _bufferSize;
+                if (BrotliNative.BrotliEncoderIsFinished(_state.BrotliNativeState))
                 {
-                    var bytesWrote = (int)((nuint)_bufferSize - (nuint)_availableOutput);
-                    Byte[] buf = new Byte[bytesWrote];
-                    Marshal.Copy(_bufferOutput, buf, 0, bytesWrote);
-                    _stream.Write(buf, 0, bytesWrote);
-                    _availableOutput = (nuint)_bufferSize;
-                    _nextOutput = _bufferOutput;
+                    Console.WriteLine("BrotliEncoderFinished");
+                    break;
                 }
-                if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
-                if (!extraData) break;
             }
         }
 
@@ -181,7 +188,6 @@ namespace System.IO.Compression
                 }
                 base.Dispose(disposing);
             }
-
         }
 
         public override void Flush()
@@ -337,27 +343,41 @@ namespace System.IO.Compression
                     throw new TimeoutException(BrotliEx.TimeoutWrite);
                 }
                 copyLen = bytesRemain > _bufferSize ? _bufferSize : bytesRemain;
-                Marshal.Copy(buffer, currentOffset, _bufferInput, copyLen);
+                byte[] BufferIn = new byte[copyLen];
+                byte[] BufferOut = new byte[_bufferSize];
+                Array.Copy(buffer, currentOffset, BufferIn, 0, copyLen);
                 bytesRemain -= copyLen;
                 currentOffset += copyLen;
+                int AvailIn = copyLen;
                 _availableInput = (nuint)copyLen;
-                _nextInput = _bufferInput;
-                while ((int)_availableInput > 0)
+                int AvailOut = _bufferSize;
+                TransformationStatus tr = TransformationStatus.DestinationTooSmall;
+                while (tr == TransformationStatus.DestinationTooSmall)
                 {
-                    if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliEncoderOperation.Process, ref _availableInput, ref _nextInput, ref _availableOutput,
-                        ref _nextOutput, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
-
-                    if (_availableOutput != (nuint)_bufferSize)
-                    {
-                        var bytesWrote = (int)((nuint)_bufferSize - _availableOutput);
-                        Byte[] buf = new Byte[bytesWrote];
-                        Marshal.Copy(_bufferOutput, buf, 0, bytesWrote);
-                        _stream.Write(buf, 0, bytesWrote);
-                        _availableOutput = (nuint)_bufferSize;
-                        _nextOutput = _bufferOutput;
-                    }
+                    tr = Brotli.Compress(BufferIn, BufferOut, out AvailIn, out AvailOut, ref _state);
+                    Console.WriteLine("Compress: "+tr);
+                    if (tr==TransformationStatus.InvalidData) throw new System.IO.IOException(BrotliEx.unableEncode);
+                    //var bytesWrote = (int)((nuint)_bufferSize - AvailOut);
+                    if (tr==TransformationStatus.DestinationTooSmall) _stream.Write(BufferOut, 0, AvailOut);
                 }
-                if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
+
+                //    while ((int)_availableInput > 0)
+                //    {
+                //        if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliEncoderOperation.Process, ref _availableInput, ref _nextInput, ref _availableOutput,
+                //            ref _nextOutput, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
+
+                //        if (_availableOutput != (nuint)_bufferSize)
+                //        {
+                //            var bytesWrote = (int)((nuint)_bufferSize - _availableOutput);
+                //            Byte[] buf = new Byte[bytesWrote];
+                //            Marshal.Copy(_bufferOutput, buf, 0, bytesWrote);
+                //            _stream.Write(buf, 0, bytesWrote);
+                //            _availableOutput = (nuint)_bufferSize;
+                //            _nextOutput = _bufferOutput;
+                //        }
+                //    }
+                //    if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
+                //
             }
         }
     }

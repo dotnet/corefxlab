@@ -8,7 +8,7 @@ using System.Text;
 
 namespace System.IO.Compression
 {
-    internal sealed class Decoder
+    public class Decoder : IDisposable
     {
         internal IntPtr State { get; private set; }
         internal BrotliDecoderResult LastDecoderResult { get; set; }
@@ -33,7 +33,7 @@ namespace System.IO.Compression
             _bufferStream = new MemoryStream();
         }
 
-        internal void Dispose()
+        public void Dispose()
         {
             if (!_isDisposed && State != IntPtr.Zero)
             {

@@ -13,10 +13,27 @@ using System.Text;
 
 namespace System.IO.Compression
 {
+    
     public static class Brotli
     {
-        const int DefaultQuality = 11;
-        const int DefaultWindowSize = 24;
+        private const int MinWindowBits = 10;
+        private const int MaxWindowBits = 24;
+        private const int MinQuality = 0;
+        private const int MaxQuality = 11;
+
+        public struct State : IDisposable
+        {
+            internal IntPtr BrotliNativeState { get; set; }
+            internal int AvailableOut;
+            internal byte[] NextOut;
+
+            internal Stream BufferStream => _bufferStream;
+            private MemoryStream _bufferStream;
+           
+            public void Dispose() {
+                
+            }
+        }
 
         public static int GetMaximumCompressedSize(int inputSize)
         {
@@ -44,34 +61,80 @@ namespace System.IO.Compression
             return TransformationStatus.InvalidData;
         }
 
-        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, CompressionLevel quality = (CompressionLevel)DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
+        public static TransformationStatus FlushEncoder(Span<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state, bool is_finished = true)
         {
-            return Compress(source, destination, out bytesConsumed, out bytesWritten, GetQualityFromCompressionLevel(quality), windowSize, encMode);
-        }
-
-        internal static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
-        {
-            if (quality > DefaultQuality || quality < 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
-            if (windowSize > DefaultWindowSize || windowSize <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
-            bytesConsumed = bytesWritten = 0;
-            unsafe
-            {
+            BrotliEncoderOperation op = is_finished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
+            bytesConsumed = source.Length;
+            bytesWritten = 0;
+            if (state.BrotliNativeState == IntPtr.Zero) return TransformationStatus.InvalidData;
+            if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState)) return TransformationStatus.InvalidData;
+            unsafe {
                 IntPtr bufIn, bufOut;
                 fixed (byte* inBytes = &source.DangerousGetPinnableReference())
-                fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
+                fixed (byte* outBytes = &state.NextOut.AsSpan().DangerousGetPinnableReference())
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);
                     nuint written = (nuint)destination.Length;
                     nuint consumed = (nuint)source.Length;
-                    if (!BrotliNative.BrotliEncoderCompress(quality, windowSize, encMode, consumed, bufIn, ref written, bufOut))
-                    {
-                        return TransformationStatus.InvalidData;
-                    };
+                    if (!BrotliNative.BrotliEncoderCompressStream(state.BrotliNativeState, op, ref consumed, ref bufIn, ref written, ref bufOut, out nuint totalOut));
                     bytesConsumed = (int)consumed;
-                    bytesWritten = (int)written;
+                    state.AvailableOut = (int)written;
+                    Console.WriteLine("Written: "+written.ToString());
+                }
+                var extraData = state.AvailableOut != destination.Length;
+                if (extraData)
+                {
+                    var bytesWrote = (int)(destination.Length - state.AvailableOut);
+                    bytesWritten = bytesWrote;
+                    state.AvailableOut = destination.Length;
+                    state.NextOut = destination.ToArray();
+                    return TransformationStatus.DestinationTooSmall;
+                }
+            }
+            return TransformationStatus.Done;
+        }
+
+        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
+        {
+            bytesConsumed = source.Length;
+            bytesWritten = destination.Length;
+            unsafe
+            {
+                IntPtr bufIn, bufOut;
+                while (bytesConsumed > 0)
+                {
+
+                    fixed (byte* inBytes = &source.DangerousGetPinnableReference())
+                    fixed (byte* outBytes = &state.NextOut.AsSpan().DangerousGetPinnableReference())
+                    {
+                        bufIn = new IntPtr(inBytes);
+                        bufOut = new IntPtr(outBytes);
+                        nuint written = (nuint)bytesWritten;
+                        nuint consumed = (nuint)bytesConsumed;
+                        if (!BrotliNative.BrotliEncoderCompressStream(state.BrotliNativeState, BrotliEncoderOperation.Process, ref consumed, ref bufIn, ref written, ref bufOut, out nuint totalOut))
+                        {
+                            return TransformationStatus.InvalidData;
+                        };
+                        bytesConsumed = (int)consumed;
+                        Console.WriteLine("Consumed" + bytesConsumed);
+                        Console.WriteLine("TotalOut" + totalOut);
+                        state.AvailableOut = (int)written;
+                        if (state.AvailableOut != destination.Length)
+                        {
+                            var bytesWrote = (int)(destination.Length - bytesWritten);
+                            state.AvailableOut = destination.Length;
+                            state.NextOut = destination.ToArray();
+                            return TransformationStatus.DestinationTooSmall;
+                        }
+                    }
+                }
+                if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState))
+                {
+                    Console.WriteLine("Finished at Compress");
                     return TransformationStatus.Done;
                 }
+                return TransformationStatus.Done;
             }
         }
 
