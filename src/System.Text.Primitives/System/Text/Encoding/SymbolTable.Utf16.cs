@@ -53,24 +53,14 @@ namespace System.Text
 
             public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                if (utf8.Length < 1)
-                    goto ExitFailed;
-
-                ref byte first = ref utf8.DangerousGetPinnableReference();
-
-                int byteCount = EncodingHelper.GetUtf8DecodedBytes(first);
-                if (byteCount == 0)
-                    goto ExitFailed;
-
-                var status = Encoders.Utf16.ConvertFromUtf8(utf8.Slice(0, byteCount), destination, out bytesConsumed, out bytesWritten);
+                var status = Encoders.Utf16.ConvertFromUtf8(utf8, destination, out bytesConsumed, out bytesWritten);
                 if (status != TransformationStatus.Done)
-                    goto ExitFailed;
+                {
+                    bytesConsumed = bytesWritten = 0;
+                    return false;
+                }
 
                 return true;
-
-            ExitFailed:
-                bytesConsumed = bytesWritten = 0;
-                return false;
             }
 
             public override bool TryParse(ReadOnlySpan<byte> source, out byte utf8, out int bytesConsumed)
@@ -94,26 +84,14 @@ namespace System.Text
 
             public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
             {
-                int srcLength = source.Length;
-                if (srcLength < 2)
-                    goto ExitFailed;
-
-                ref char first = ref Unsafe.As<byte, char>(ref source.DangerousGetPinnableReference());
-
-                if (EncodingHelper.IsSurrogate(first))
-                    source = source.Slice(0, 4);
-                else
-                    source = source.Slice(0, 2);
-
                 var status = Encoders.Utf8.ConvertFromUtf16(source, utf8, out bytesConsumed, out bytesWritten);
                 if (status != TransformationStatus.Done)
-                    goto ExitFailed;
+                {
+                    bytesConsumed = bytesWritten = 0;
+                    return false;
+                }
 
                 return true;
-
-            ExitFailed:
-                bytesConsumed = bytesWritten = 0;
-                return false;
             }
         }
     }

@@ -26,7 +26,7 @@ namespace System.Text
 
         public readonly static SymbolTable InvariantUtf8 = new Utf8InvariantSymbolTable();
 
-        public readonly static SymbolTable InvariantUtf16 = new Utf8InvariantSymbolTable();
+        public readonly static SymbolTable InvariantUtf16 = new Utf16InvariantSymbolTable();
 
         #endregion Static instances
 

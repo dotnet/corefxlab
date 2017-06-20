@@ -60,7 +60,26 @@ namespace System.Text
                 return false;
             }
             else
-                throw new NotSupportedException();
+            {
+                // TODO: This is currently pretty expensive. Can this be done more efficiently?
+                //       Note: removing the hack might solve this problem a very different way.
+                var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(utf16Bytes, out int needed);
+                if (status != Buffers.TransformationStatus.Done)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                Span<byte> temp = new byte[needed];
+                status = Encoders.Utf8.ConvertFromUtf16(utf16Bytes, temp, out int consumed, out written);
+                if (status != Buffers.TransformationStatus.Done)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                return symbolTable.TryEncode(temp, buffer, out consumed, out bytesWritten);
+            }
         }
     }
 }

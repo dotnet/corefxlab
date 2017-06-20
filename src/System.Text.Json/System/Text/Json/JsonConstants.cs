@@ -30,9 +30,9 @@ namespace System.Text.Json
 
         #region Common values
 
-        public static readonly char[] TrueValue = { 't', 'r', 'u', 'e' };
-        public static readonly char[] FalseValue = { 'f', 'a', 'l', 's', 'e' };
-        public static readonly char[] NullValue = { 'n', 'u', 'l', 'l' };
+        public static readonly byte[] TrueValue = { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
+        public static readonly byte[] FalseValue = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
+        public static readonly byte[] NullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
 
         #endregion Common values
     }

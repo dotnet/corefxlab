@@ -52,7 +52,16 @@ namespace System.Text
 
             public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                return CopySingleAndValidate(utf8, destination, out bytesConsumed, out bytesWritten);
+                // TODO: We might want to validate that the stream we are moving from utf8 to destination (also UTF-8) is valid.
+                //       For now, we are just doing a copy.
+                if (utf8.TryCopyTo(destination))
+                {
+                    bytesConsumed = bytesWritten = utf8.Length;
+                    return true;
+                }
+
+                bytesConsumed = bytesWritten = 0;
+                return false;
             }
 
             public override bool TryParse(ReadOnlySpan<byte> source, out byte utf8, out int bytesConsumed)
@@ -75,38 +84,14 @@ namespace System.Text
 
             public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
             {
-                return CopySingleAndValidate(source, utf8, out bytesConsumed, out bytesWritten);
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private bool CopySingleAndValidate(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-            {
-                int srcLength = source.Length;
-                ref byte src = ref source.DangerousGetPinnableReference();
-
-                if (srcLength < 1)
-                    goto ExitFailed;
-
-                bytesConsumed = EncodingHelper.GetUtf8DecodedBytes(src);
-                if (source.Length < bytesConsumed || destination.Length < bytesConsumed)
-                    goto ExitFailed;
-
-                ref byte dst = ref destination.DangerousGetPinnableReference();
-                dst = src;  // Write the first byte since it has already been validated above.
-
-                for (var i = 1; i < bytesConsumed; i++)
+                // TODO: We might want to validate that the stream we are moving from utf8 to destination (also UTF-8) is valid.
+                //       For now, we are just doing a copy.
+                if (source.TryCopyTo(utf8))
                 {
-                    ref byte next = ref Unsafe.Add(ref src, i);
-                    if ((next & EncodingHelper.b1100_0000U) != EncodingHelper.b1000_0000U)
-                        goto ExitFailed;
-
-                    Unsafe.Add(ref dst, i) = next;
+                    bytesConsumed = bytesWritten = source.Length;
+                    return true;
                 }
 
-                bytesWritten = bytesConsumed;
-                return true;
-
-            ExitFailed:
                 bytesConsumed = bytesWritten = 0;
                 return false;
             }

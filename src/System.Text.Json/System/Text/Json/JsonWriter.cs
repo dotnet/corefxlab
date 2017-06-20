@@ -34,17 +34,17 @@ namespace System.Text.Json
             _indent = -1;
             _firstItem = true;
 
-            var encoder = output.Encoder;
-            if (encoder.IsInvariantUtf8)
+            var symbolTable = output.SymbolTable;
+            if (symbolTable == SymbolTable.InvariantUtf8)
                 _encoderState = JsonEncoderState.UseFastUtf8;
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
                 _encoderState = JsonEncoderState.UseFastUtf16;
             else
                 _encoderState = JsonEncoderState.UseFullEncoder;
         }
 
         /// <summary>
-        /// Write the starting tag of an object. This is used for adding an object to an 
+        /// Write the starting tag of an object. This is used for adding an object to an
         /// array of other items. If this is used while inside a nested object, the property
         /// name will be missing and result in invalid JSON.
         /// </summary>
@@ -343,13 +343,12 @@ namespace System.Text.Json
             }
             else
             {
-                unsafe
-                {
-                    // Slow path, if we are dealing with non-invariant.
-                    char ch = (char)value;
-                    ReadOnlySpan<char> chSpan = new ReadOnlySpan<char>(&ch, 1);
-                    Write(chSpan);
-                }
+                var buffer = _output.Buffer;
+                int written;
+                while (!_output.SymbolTable.TryEncode(value, buffer, out written))
+                    buffer = EnsureBuffer();
+
+                _output.Advance(written);
             }
         }
 
@@ -367,7 +366,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -378,7 +377,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -389,7 +388,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -400,7 +399,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -411,7 +410,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.Encoder))
+            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -420,39 +419,65 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Write(ReadOnlySpan<char> value)
         {
-            var buffer = _output.Buffer;
-            int written;
-            while (!_output.Encoder.TryEncode(value, buffer, out int consumed, out written))
-                buffer = EnsureBuffer();
+            ReadOnlySpan<byte> source = value.AsBytes();
 
-            _output.Advance(written);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteJsonValue(ReadOnlySpan<char> values)
-        {
             if (UseFastUtf8)
             {
-                int len = values.Length;
-                var buffer = EnsureBuffer(len);
+                Span<byte> destination = _output.Buffer;
 
-                ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
-                ref char chars = ref values.DangerousGetPinnableReference();
-                for (var i = 0; i < len; i++)
-                    Unsafe.Add(ref utf8Bytes, i) = (byte)Unsafe.Add(ref chars, i);
+                while (true)
+                {
+                    var status = Encoders.Utf8.ConvertFromUtf16(source, destination, out int consumed, out int written);
+                    if (status == Buffers.TransformationStatus.Done)
+                    {
+                        _output.Advance(written);
+                        return;
+                    }
+
+                    if (status == Buffers.TransformationStatus.DestinationTooSmall)
+                    {
+                        destination = EnsureBuffer();
+                        continue;
+                    }
+
+                    // This is a failure due to bad input. This shouldn't happen under normal circumstances.
+                    throw new FormatException();
+                }
             }
             else if (UseFastUtf16)
             {
-                int needed = values.Length * sizeof(char);
-                var buffer = EnsureBuffer(needed);
-
-                Span<char> span = buffer.NonPortableCast<byte, char>();
-                values.CopyTo(span);
+                Span<byte> destination = EnsureBuffer(source.Length);
+                source.CopyTo(destination);
             }
             else
             {
-                Write(values);
+                // TODO: This is currently pretty expensive. Can this be done more efficiently?
+                var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(source, out int needed);
+                if (status != Buffers.TransformationStatus.Done)
+                    throw new FormatException();    // This shouldn't happen under normal conditions.
+
+                Span<byte> temp = new byte[needed];
+                status = Encoders.Utf8.ConvertFromUtf16(source, temp, out int consumed, out int written);
+                if (status != Buffers.TransformationStatus.Done)
+                    throw new FormatException();    // If the calculation above succeeded, this will never happen unless a bug exists.
+
+                Span<byte> destination = _output.Buffer;
+                while (!_output.SymbolTable.TryEncode(temp, destination, out consumed, out written))
+                    destination = EnsureBuffer();
+
+                _output.Advance(written);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteJsonValue(ReadOnlySpan<byte> values)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!_output.SymbolTable.TryEncode(values, buffer, out int consumed, out written))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
