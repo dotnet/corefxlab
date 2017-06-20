@@ -12,17 +12,17 @@ using System.Runtime.InteropServices;
 namespace System
 {
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
-    public struct Buffer<T>
+    public unsafe struct Buffer<T>
     {
-        readonly OwnedBuffer<T> _owner;
-        readonly T[] _array;
+        readonly void* _native;
+        readonly object _arrayOrOwnedBuffer;
         readonly int _index;
         readonly int _length;
 
         internal Buffer(OwnedBuffer<T> owner, int index, int length)
         {
-            _array = null;
-            _owner = owner;
+            _arrayOrOwnedBuffer = owner;
+            _native = null;
             _index = index;
             _length = length;
         }
@@ -35,10 +35,19 @@ namespace System
             if (default(T) == null && array.GetType() != typeof(T[]))
                 BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
+            _native = null;
             _index = 0;
             _length = array.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(object owner, void* pointer, int length)
+        {
+            _arrayOrOwnedBuffer = owner;
+            _native = pointer;
+            _index = 0;
+            _length = length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -53,8 +62,8 @@ namespace System
             if ((uint)start > (uint)arrayLength)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
+            _native = null;
             _index = start;
             _length = arrayLength - start;
         }
@@ -69,16 +78,16 @@ namespace System
             if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
+            _native = null;
             _index = start;
             _length = length;
         }
 
-        private Buffer(OwnedBuffer<T> owner, T[] array, int index, int length)
+        private Buffer(object owner, void* pointer, int index, int length)
         {
-            _array = array;
-            _owner = owner;
+            _arrayOrOwnedBuffer = owner;
+            _native = pointer;
             _index = index;
             _length = length;
         }
@@ -86,7 +95,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyBuffer<T>(buffer._owner, buffer._array, buffer._index, buffer._length);
+            return new ReadOnlyBuffer<T>(buffer._arrayOrOwnedBuffer, buffer._native, buffer._index, buffer._length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,7 +122,7 @@ namespace System
             if ((uint)start > (uint)_length)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_owner, _array, _index + start, _length - start);
+            return new Buffer<T>(_arrayOrOwnedBuffer, _native, _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -122,14 +131,14 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_owner, _array, _index + start, length);
+            return new Buffer<T>(_arrayOrOwnedBuffer, _native, _index + start, length);
         }
 
         public Span<T> Span
         {
             get {
-                if (_array != null) return new Span<T>(_array, _index, _length);
-                return _owner.AsSpan(_index, _length);
+                if (_native == null) return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
+                return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
             }
         }
 
@@ -138,13 +147,13 @@ namespace System
             BufferHandle bufferHandle;
             if (pin)
             {
-                if (_owner != null)
+                if (_native != null)
                 {
-                    bufferHandle = _owner.Pin(_index);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
                 }
                 else
                 {
-                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
                     {
                         var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
@@ -154,31 +163,29 @@ namespace System
             }
             else
             {
-                if (_owner != null)
+                if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer) != null)
                 {
-                    _owner.Retain();
+                    Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Retain();
                 }
-                bufferHandle = new BufferHandle(_owner);
+                bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
             }
             return bufferHandle;
         }
 
         public bool TryGetArray(out ArraySegment<T> arraySegment)
         {
-            if (_owner != null && _owner.TryGetArray(out var segment))
+            if (_native != null)
             {
-                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
-                return true;
+                var owner = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer);
+                if (owner.TryGetArray(out var segment))
+                {
+                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                    return true;
+                }
             }
 
-            if (_array != null)
-            {
-                arraySegment = new ArraySegment<T>(_array, _index, _length);
-                return true;
-            }
-
-            arraySegment = default(ArraySegment<T>);
-            return false;
+            arraySegment = new ArraySegment<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
+            return true;
         }
 
         public T[] ToArray() => Span.ToArray();
@@ -205,8 +212,8 @@ namespace System
         public bool Equals(Buffer<T> other)
         {
             return
-                _array == other._array &&
-                _owner == other._owner &&
+                _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
+                _native == other._native &&
                 _index == other._index &&
                 _length == other._length;
         }
@@ -224,11 +231,7 @@ namespace System
         [EditorBrowsable( EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            if (_owner != null)
-            {
-                return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-            }
-            return HashingHelper.CombineHashCodes(_array.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
         }
     }
 }
