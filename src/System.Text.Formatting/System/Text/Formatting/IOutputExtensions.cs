@@ -27,9 +27,7 @@ namespace System.Text.Formatting
 
         public static void Append<TFormatter>(this TFormatter formatter, string value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            while (!formatter.TryAppend(value, symbolTable)) {
-                formatter.Enlarge();
-            }
+            formatter.Append(value.AsSpan(), symbolTable);
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, SymbolTable symbolTable) where TFormatter : IOutput
@@ -39,8 +37,28 @@ namespace System.Text.Formatting
 
         public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            while (!formatter.TryAppend(value, symbolTable)) {
-                formatter.Enlarge();
+            if (value.Length <= 256)
+            {
+                while (!formatter.TryAppend(value, symbolTable)) {
+                    formatter.Enlarge();
+                }
+            }
+            else // slice the span into smaller pieces, otherwise the enlarge might fail.
+            {
+                var leftToWrite = value;
+                while (leftToWrite.Length > 0)
+                {
+                    var chunkLength = leftToWrite.Length < 256 ? leftToWrite.Length : 256;
+                    if (char.IsHighSurrogate(leftToWrite[chunkLength - 1]))
+                    {
+                        chunkLength--;
+                        if (chunkLength == 0) throw new Exception("value ends in a high surrogate");
+                    }
+
+                    var chunk = leftToWrite.Slice(0, chunkLength);
+                    formatter.Append(chunk, symbolTable);
+                    leftToWrite = leftToWrite.Slice(chunkLength);
+                }
             }
         }
 
