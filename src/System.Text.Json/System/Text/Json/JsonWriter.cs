@@ -448,6 +448,7 @@ namespace System.Text.Json
             {
                 Span<byte> destination = EnsureBuffer(source.Length);
                 source.CopyTo(destination);
+                _output.Advance(source.Length);
             }
             else
             {

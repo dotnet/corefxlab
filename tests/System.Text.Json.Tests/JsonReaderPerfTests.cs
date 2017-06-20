@@ -97,9 +97,9 @@ namespace System.Text.Json.Tests
             }
         }
 
-        static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, TextEncoder encoder)
+        static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, SymbolTable symbolTable)
         {
-            var json = new System.Text.Json.JsonReader(data, encoder);
+            var json = new System.Text.Json.JsonReader(data, symbolTable);
             while (json.Read()) ;
         }
 

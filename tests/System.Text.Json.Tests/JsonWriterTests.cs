@@ -7,12 +7,12 @@ using System.Text.Formatting;
 
 namespace System.Text.Json.Tests
 {
-    public class CompositeFormattingTests
+    public class JsonWriterTests
     {
         [Fact]
         public void WriteJsonUtf8()
         {
-            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
+            var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             var json = new JsonWriter(formatter, prettyPrint: true);
             Write(ref json);
 
@@ -24,7 +24,7 @@ namespace System.Text.Json.Tests
         [Fact]
         public void WriteJsonUtf16()
         {
-            var formatter = new ArrayFormatter(1024, TextEncoder.Utf16);
+            var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf16);
             var json = new JsonWriter(formatter, prettyPrint: false);
             Write(ref json);
 

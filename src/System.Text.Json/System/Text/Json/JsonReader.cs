@@ -11,7 +11,7 @@ namespace System.Text.Json
         private const int MaxDepth = sizeof(ulong) * 8;
 
         private readonly JsonEncoderState _encoderState;
-        private readonly TextEncoder _encoder;
+        private readonly SymbolTable _symbolTable;
 
         private ReadOnlySpan<byte> _buffer;
 
@@ -58,23 +58,23 @@ namespace System.Text.Json
         /// <summary>
         /// Gets the encoder instance used when the reader was constructed.
         /// </summary>
-        public TextEncoder Encoder => _encoder;
+        public SymbolTable SymbolTable => _symbolTable;
 
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-        public JsonReader(ReadOnlySpan<byte> data, TextEncoder encoder)
+        public JsonReader(ReadOnlySpan<byte> data, SymbolTable symbolTable)
         {
             _buffer = data;
-            _encoder = encoder;
+            _symbolTable = symbolTable;
             _depth = 0;
             _containerMask = 0;
 
-            if (encoder.IsInvariantUtf8)
+            if (_symbolTable == SymbolTable.InvariantUtf8)
                 _encoderState = JsonEncoderState.UseFastUtf8;
-            else if (encoder.IsInvariantUtf16)
+            else if (_symbolTable == SymbolTable.InvariantUtf16)
                 _encoderState = JsonEncoderState.UseFastUtf16;
             else
                 _encoderState = JsonEncoderState.UseFullEncoder;
