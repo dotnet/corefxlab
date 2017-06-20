@@ -88,7 +88,7 @@ namespace System.Text.Primitives.Tests
         {
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107374182")] // standard parse
         [InlineData("2147483647")] // max value
         [InlineData("0")]
@@ -121,6 +121,35 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147483")]
         [InlineData("+2147483648")]
         [InlineData("+214")]
+        [InlineData("000000000000000000001235abcdfg")]
+        [InlineData("214748364abcdefghijklmnop")]
+        [InlineData("2abcdefghijklmnop")]
+        [InlineData("21474836abcdefghijklmnop")]
+        [InlineData("-21474abcdefghijklmnop")]
+        [InlineData("21474abcdefghijklmnop")]
+        [InlineData("-21abcdefghijklmnop")]
+        [InlineData("-2abcdefghijklmnop")]
+        [InlineData("214abcdefghijklmnop")]
+        [InlineData("-21474836abcdefghijklmnop")]
+        [InlineData("-214748364abcdefghijklmnop")]
+        [InlineData("2147abcdefghijklmnop")]
+        [InlineData("-2147abcdefghijklmnop")]
+        [InlineData("-214748abcdefghijklmnop")]
+        [InlineData("-2147483abcdefghijklmnop")]
+        [InlineData("214748abcdefghijklmnop")]
+        [InlineData("21abcdefghijklmnop")]
+        [InlineData("2147483abcdefghijklmnop")]
+        [InlineData("-214abcdefghijklmnop")]
+        [InlineData("+21474abcdefghijklmnop")]
+        [InlineData("+21abcdefghijklmnop")]
+        [InlineData("+2abcdefghijklmnop")]
+        [InlineData("+21474836abcdefghijklmnop")]
+        [InlineData("+214748364abcdefghijklmnop")]
+        [InlineData("+2147abcdefghijklmnop")]
+        [InlineData("+214748abcdefghijklmnop")]
+        [InlineData("+2147483abcdefghijklmnop")]
+        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed(string text)
         {
             byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
@@ -139,7 +168,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        //[Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(10)]
         [InlineData(100)]
         [InlineData(1000)]
@@ -169,7 +198,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(-1, final);
         }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        //[Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(10)]
         [InlineData(100)]
         [InlineData(1000)]
@@ -219,7 +248,7 @@ namespace System.Text.Primitives.Tests
             return builder.ToString();
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_VariableLength()
         {
             int textLength = s_Int32TextArray.Length;
@@ -243,7 +272,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107374182")] // standard parse
         [InlineData("2147483647")] // max value
         [InlineData("0")]
@@ -276,6 +305,35 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147483")]
         [InlineData("+2147483648")]
         [InlineData("+214")]
+        [InlineData("000000000000000000001235abcdfg")]
+        [InlineData("214748364abcdefghijklmnop")]
+        [InlineData("2abcdefghijklmnop")]
+        [InlineData("21474836abcdefghijklmnop")]
+        [InlineData("-21474abcdefghijklmnop")]
+        [InlineData("21474abcdefghijklmnop")]
+        [InlineData("-21abcdefghijklmnop")]
+        [InlineData("-2abcdefghijklmnop")]
+        [InlineData("214abcdefghijklmnop")]
+        [InlineData("-21474836abcdefghijklmnop")]
+        [InlineData("-214748364abcdefghijklmnop")]
+        [InlineData("2147abcdefghijklmnop")]
+        [InlineData("-2147abcdefghijklmnop")]
+        [InlineData("-214748abcdefghijklmnop")]
+        [InlineData("-2147483abcdefghijklmnop")]
+        [InlineData("214748abcdefghijklmnop")]
+        [InlineData("21abcdefghijklmnop")]
+        [InlineData("2147483abcdefghijklmnop")]
+        [InlineData("-214abcdefghijklmnop")]
+        [InlineData("+21474abcdefghijklmnop")]
+        [InlineData("+21abcdefghijklmnop")]
+        [InlineData("+2abcdefghijklmnop")]
+        [InlineData("+21474836abcdefghijklmnop")]
+        [InlineData("+214748364abcdefghijklmnop")]
+        [InlineData("+2147abcdefghijklmnop")]
+        [InlineData("+214748abcdefghijklmnop")]
+        [InlineData("+2147483abcdefghijklmnop")]
+        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_BASE(string text)
         {
             byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
@@ -294,7 +352,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_VariableLength_BASE()
         {
             int textLength = s_Int32TextArray.Length;
@@ -317,7 +375,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107374182")] // standard parse
         [InlineData("2147483647")] // max value
         [InlineData("0")]
@@ -350,6 +408,35 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147483")]
         [InlineData("+2147483648")]
         [InlineData("+214")]
+        [InlineData("000000000000000000001235abcdfg")]
+        [InlineData("214748364abcdefghijklmnop")]
+        [InlineData("2abcdefghijklmnop")]
+        [InlineData("21474836abcdefghijklmnop")]
+        [InlineData("-21474abcdefghijklmnop")]
+        [InlineData("21474abcdefghijklmnop")]
+        [InlineData("-21abcdefghijklmnop")]
+        [InlineData("-2abcdefghijklmnop")]
+        [InlineData("214abcdefghijklmnop")]
+        [InlineData("-21474836abcdefghijklmnop")]
+        [InlineData("-214748364abcdefghijklmnop")]
+        [InlineData("2147abcdefghijklmnop")]
+        [InlineData("-2147abcdefghijklmnop")]
+        [InlineData("-214748abcdefghijklmnop")]
+        [InlineData("-2147483abcdefghijklmnop")]
+        [InlineData("214748abcdefghijklmnop")]
+        [InlineData("21abcdefghijklmnop")]
+        [InlineData("2147483abcdefghijklmnop")]
+        [InlineData("-214abcdefghijklmnop")]
+        [InlineData("+21474abcdefghijklmnop")]
+        [InlineData("+21abcdefghijklmnop")]
+        [InlineData("+2abcdefghijklmnop")]
+        [InlineData("+21474836abcdefghijklmnop")]
+        [InlineData("+214748364abcdefghijklmnop")]
+        [InlineData("+2147abcdefghijklmnop")]
+        [InlineData("+214748abcdefghijklmnop")]
+        [InlineData("+2147483abcdefghijklmnop")]
+        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_OLD(string text)
         {
             byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
@@ -368,7 +455,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_VariableLength_OLD()
         {
             int textLength = s_Int32TextArray.Length;
