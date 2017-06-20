@@ -28,7 +28,7 @@ namespace Microsoft.Net.Http
             _buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         }
 
-        public TextEncoder Encoder => TextEncoder.Utf8;
+        public SymbolTable SymbolTable => SymbolTable.InvariantUtf8;
 
         public Span<byte> Buffer {
             get {
