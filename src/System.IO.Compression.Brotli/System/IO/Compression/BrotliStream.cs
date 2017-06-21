@@ -37,7 +37,7 @@ namespace System.IO.Compression
 
         public override bool CanTimeout => true;
 
-        public override int ReadTimeout { get ; set; }
+        public override int ReadTimeout { get; set; }
 
         public override int WriteTimeout { get; set; }
 
