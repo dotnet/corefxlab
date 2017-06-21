@@ -22,7 +22,7 @@ namespace System.IO.Compression
 
         public struct State : IDisposable
         {
-            internal IntPtr BrotliNativeState { get; set; }
+            internal IntPtr BrotliNativeState { get; private set; }
 
             public void Dispose()
             {

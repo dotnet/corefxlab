@@ -69,14 +69,14 @@ namespace System.IO.Compression
             _state = new Brotli.State();
             if (_mode == CompressionMode.Compress)
             {
-                _state.BrotliNativeState = BrotliNative.BrotliEncoderCreateInstance();
+                _state.InitializeEncoder();
                 _state.SetQuality();
                 _state.SetWindow();
                 WriteTimeout = 0;
             }
             else
             {
-                _state.BrotliNativeState = BrotliNative.BrotliDecoderCreateInstance();
+                _state.InitializeDecoder();
                 _bufferStream = new MemoryStream();
                 ReadTimeout = 0;
             }
