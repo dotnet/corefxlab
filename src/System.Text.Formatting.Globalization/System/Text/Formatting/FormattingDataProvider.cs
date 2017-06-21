@@ -43,11 +43,10 @@ namespace System.Text.Formatting
             resourceStream.Read(index, 0, indexSize);
 
             byte[] idBytes = new byte[maxIdLength];
-            int idByteCount;
-            if (!TextEncoder.Utf8.TryEncode(localeId, new Span<byte>(idBytes), out idByteCount))
-            {
+            var status = Encoders.Utf8.ConvertFromUtf16(localeId.AsSpan().AsBytes(), idBytes, out int consumed, out int idByteCount);
+            if (status != System.Buffers.TransformationStatus.Done)
                 throw new Exception("bad locale id");
-            }
+
             var id = new Utf8String(idBytes.AsSpan().Slice(0, idByteCount));
 
             int recordStart = -1;
