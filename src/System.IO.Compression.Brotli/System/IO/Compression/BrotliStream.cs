@@ -43,7 +43,10 @@ namespace System.IO.Compression
 
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
         {
-            if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            if (_mode == CompressionMode.Decompress)
+            {
+                throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            }
             else
             {
                 _state.SetQuality((uint)Brotli.GetQualityFromCompressionLevel(quality));
@@ -238,7 +241,8 @@ namespace System.IO.Compression
                 {
                     throw new TimeoutException(BrotliEx.TimeoutRead);
                 }
-                while (true) {
+                while (true)
+                {
                     if (transformationResult == TransformationStatus.NeedMoreSourceData)
                     {
                         _availableInput = _stream.Read(_nextInput, 0, (int)_bufferSize);
@@ -252,7 +256,8 @@ namespace System.IO.Compression
                     {
                         BufferStream.Write(_bufferOutput, 0, _availableOutput);
                         bytesRead += _availableOutput;
-                    } else
+                    }
+                    else
                     {
                         endOfStream = true;
                         break;
@@ -260,7 +265,7 @@ namespace System.IO.Compression
                     transformationResult = Brotli.Decompress(_nextInput, _bufferOutput, out _availableInput, out _availableOutput, ref _state);
                     if (bytesRead >= count) break;
                 }
-                if (transformationResult==TransformationStatus.Done)
+                if (transformationResult == TransformationStatus.Done)
                 {
                     bytesRead += _availableOutput;
                     BufferStream.Write(_bufferOutput, 0, _availableOutput);
@@ -310,8 +315,8 @@ namespace System.IO.Compression
                     throw new TimeoutException(BrotliEx.TimeoutWrite);
                 }
                 copyLen = bytesRemain > _bufferSize ? _bufferSize : bytesRemain;
-                byte[] _bufferInput = new byte[copyLen];
-                Array.Copy(buffer, currentOffset, _bufferInput, 0, copyLen);
+                byte[] bufferInput = new byte[copyLen];
+                Array.Copy(buffer, currentOffset, bufferInput, 0, copyLen);
                 bytesRemain -= copyLen;
                 currentOffset += copyLen;
                 _availableInput = copyLen;
@@ -319,9 +324,9 @@ namespace System.IO.Compression
                 TransformationStatus transformationResult = TransformationStatus.DestinationTooSmall;
                 while (transformationResult == TransformationStatus.DestinationTooSmall)
                 {
-                    transformationResult = Brotli.Compress(_bufferInput, _bufferOutput, out _availableInput, out _availableOutput, ref _state);
-                    if (transformationResult==TransformationStatus.InvalidData) throw new System.IO.IOException(BrotliEx.unableEncode);
-                    if (transformationResult==TransformationStatus.DestinationTooSmall) _stream.Write(_bufferOutput, 0, _availableOutput);
+                    transformationResult = Brotli.Compress(bufferInput, _bufferOutput, out _availableInput, out _availableOutput, ref _state);
+                    if (transformationResult == TransformationStatus.InvalidData) throw new System.IO.IOException(BrotliEx.unableEncode);
+                    if (transformationResult == TransformationStatus.DestinationTooSmall) _stream.Write(_bufferOutput, 0, _availableOutput);
                 }
             }
         }
