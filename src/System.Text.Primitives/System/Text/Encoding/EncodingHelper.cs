@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    static class EncodingHelper
+    internal static class EncodingHelper
     {
         #region Constants
 
