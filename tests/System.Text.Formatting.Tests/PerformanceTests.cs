@@ -268,9 +268,9 @@ namespace System.Text.Formatting.Tests
                 var digitString = new string(digitChar, 1);
                 utf16digitsAndSymbols[digit] = GetBytesUtf16(digitString);
             }
-            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.DecimalSeparator] = GetBytesUtf16(".");
-            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.GroupSeparator] = GetBytesUtf16(",");
-            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.MinusSign] = GetBytesUtf16("_?");
+            utf16digitsAndSymbols[(ushort)SymbolTable.Symbol.DecimalSeparator] = GetBytesUtf16(".");
+            utf16digitsAndSymbols[(ushort)SymbolTable.Symbol.GroupSeparator] = GetBytesUtf16(",");
+            utf16digitsAndSymbols[(ushort)SymbolTable.Symbol.MinusSign] = GetBytesUtf16("_?");
             return new CustomUtf16SymbolTable(utf16digitsAndSymbols);
         }
         static byte[] GetBytesUtf16(string text)

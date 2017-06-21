@@ -44,7 +44,7 @@ namespace System.Text
                     int count = EncodingHelper.GetUtf8DecodedBytes(Unsafe.Add(ref src, index));
                     if (count == 0)
                         goto InvalidData;
-                    if (length - index >= count)
+                    if (length - index < count)
                         goto NeedMoreData;
 
                     bytesNeeded += count;
@@ -90,7 +90,7 @@ namespace System.Text
                     int byteCount = EncodingHelper.GetUtf8DecodedBytes((byte)codePoint);
                     if (byteCount == 0)
                         goto InvalidData;
-                    if (srcLength - bytesConsumed >= byteCount)
+                    if (srcLength - bytesConsumed < byteCount)
                         goto NeedMoreData;
 
                     if (byteCount > 1)

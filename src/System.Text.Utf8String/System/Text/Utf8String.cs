@@ -123,19 +123,22 @@ namespace System.Text.Utf8
             return s.ToString();
         }
 
-        public ReadOnlySpan<byte> Bytes
-        {
-            get { return _buffer; }
-        }
+        public ReadOnlySpan<byte> Bytes => _buffer;
+
         public override string ToString()
         {
-            int consumed;
-            string value;
-            if (!TextEncoder.Utf8.TryDecode(this.Bytes, out value, out consumed))
-                // TODO: The bytes here do not fully decode correctly. What should we do?
+            var status = Encoders.Utf16.ComputeEncodedBytesFromUtf8(this.Bytes, out int needed);
+            if (status != Buffers.TransformationStatus.Done)
                 return string.Empty;
 
-            return value;
+            // UTF-16 is 2 bytes per char
+            var chars = new char[needed >> 1];
+            var utf16 = new Span<char>(chars).AsBytes();
+            status = Encoders.Utf16.ConvertFromUtf8(this.Bytes, utf16, out int consumed, out int written);
+            if (status != Buffers.TransformationStatus.Done)
+                return string.Empty;
+
+            return new string(chars);
         }
 
         public bool ReferenceEquals(Utf8String other)
@@ -214,7 +217,7 @@ namespace System.Text.Utf8
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="index">Index in UTF-8 code units (bytes)</param>
         /// <returns>Length in UTF-8 code units (bytes)</returns>
@@ -224,7 +227,7 @@ namespace System.Text.Utf8
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="index">Index in UTF-8 code units (bytes)</param>
         /// <returns>Length in UTF-8 code units (bytes)</returns>
@@ -234,7 +237,7 @@ namespace System.Text.Utf8
             {
                 throw new ArgumentOutOfRangeException("index");
             }
-            
+
             if (length < 0)
             {
                 // TODO: Should we support that?
@@ -321,7 +324,7 @@ namespace System.Text.Utf8
                     return it.PositionInCodeUnits;
                 }
             }
-            
+
             return StringNotFound;
         }
 
@@ -550,12 +553,14 @@ namespace System.Text.Utf8
         // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
         private static byte[] GetUtf8BytesFromString(string str)
         {
-            var utf16 = str.AsSpan();
-            if (!TextEncoder.Utf8.TryComputeEncodedBytes(utf16, out int needed))
+            var utf16 = str.AsSpan().AsBytes();
+            var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(utf16, out int needed);
+            if (status != Buffers.TransformationStatus.Done)
                 return null;
 
             var utf8 = new byte[needed];
-            if (!TextEncoder.Utf8.TryEncode(utf16, utf8, out int consumed, out int written))
+            status = Encoders.Utf8.ConvertFromUtf16(utf16, utf8, out int consumed, out int written);
+            if (status != Buffers.TransformationStatus.Done)
                 // This shouldn't happen...
                 return null;
 

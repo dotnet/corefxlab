@@ -2,17 +2,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace System.Text.Http.SingleSegment
-{ 
+{
     public ref struct HttpHeaderBuffer
     {
         //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _bytes;
-        private readonly TextEncoder _encoder;
+        private readonly SymbolTable _symbolTable;
 
-        public HttpHeaderBuffer(Span<byte> bytes, TextEncoder encoder)
+        public HttpHeaderBuffer(Span<byte> bytes, SymbolTable symbolTable)
         {
             _bytes = bytes;
-            _encoder = encoder;
+            _symbolTable = symbolTable;
         }
 
         public void UpdateValue(string newValue)
@@ -22,11 +22,9 @@ namespace System.Text.Http.SingleSegment
                 throw new ArgumentException("newValue");
             }
 
-            int bytesWritten;
-            _encoder.TryEncode(newValue, _bytes, out bytesWritten);            
-
+            _symbolTable.TryEncode(newValue.AsSpan(), _bytes, out int consumed, out int written);
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
-        }        
+        }
     }
 
     public static class SpanExtensions

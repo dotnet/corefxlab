@@ -62,13 +62,13 @@ namespace System.Text
             }
 
             int sign = 1;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 sign = -1;
             }
 
             int signConsumed = 0;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.PlusSign || nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
                 if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
@@ -177,13 +177,13 @@ namespace System.Text
             }
 
             int sign = 1;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if ((SymbolTable.Symbol)nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 sign = -1;
             }
 
             int signConsumed = 0;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.PlusSign || nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
                 if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
@@ -292,13 +292,13 @@ namespace System.Text
             }
 
             int sign = 1;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 sign = -1;
             }
 
             int signConsumed = 0;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.PlusSign || nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
                 if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
@@ -407,13 +407,13 @@ namespace System.Text
             }
 
             int sign = 1;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 sign = -1;
             }
 
             int signConsumed = 0;
-            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
+            if (nextSymbol == SymbolTable.Symbol.PlusSign || nextSymbol == SymbolTable.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
                 if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))

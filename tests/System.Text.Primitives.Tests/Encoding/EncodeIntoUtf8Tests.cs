@@ -11,19 +11,6 @@ namespace System.Text.Primitives.Tests.Encoding
     {
         const int BufferSizeRange = 30;
 
-        private static TextEncoder utf8 = TextEncoder.Utf8;
-        private static Text.Encoding testEncoder = Text.Encoding.UTF8;
-        private static Text.Encoding testEncoderUnicode = Text.Encoding.Unicode;
-        private static Text.Encoding testEncoderUtf32 = Text.Encoding.UTF32;
-
-        public static object[] SupportedEncodingTestData =
-        {
-            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf8 },
-            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf16 },
-            new object[] { TextEncoderTestHelper.SupportedEncoding.FromString },
-            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf32 },
-        };
-
         [Fact]
         public void InputEmptyFromUtf16()
         {
