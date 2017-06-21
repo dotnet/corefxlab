@@ -6,16 +6,16 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 
-        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -26,7 +26,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseByte(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -53,29 +53,29 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(byte);
                 bytesConsumed = 0;
                 return false;
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(byte);
                 bytesConsumed = 0;
                 return false;
             }
 
-            uint parsedValue = nextSymbol;
+            uint parsedValue = (uint)nextSymbol;
             int index = thisSymbolConsumed;
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (byte) parsedValue;
@@ -84,7 +84,7 @@ namespace System.Text
 
                 // If parsedValue > (byte.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
-                if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextSymbol > 5))
+                if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextSymbol > SymbolTable.Symbol.D5))
                 {
                     bytesConsumed = 0;
                     value = default(byte);
@@ -92,7 +92,7 @@ namespace System.Text
                 }
 
                 index += thisSymbolConsumed;
-                parsedValue = parsedValue * 10 + nextSymbol;
+                parsedValue = parsedValue * 10 + (uint)nextSymbol;
             }
 
             bytesConsumed = text.Length;
@@ -100,16 +100,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -120,7 +120,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt16(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -147,29 +147,29 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(ushort);
                 bytesConsumed = 0;
                 return false;
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(ushort);
                 bytesConsumed = 0;
                 return false;
             }
 
-            uint parsedValue = nextSymbol;
+            uint parsedValue = (uint)nextSymbol;
             int index = thisSymbolConsumed;
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (ushort) parsedValue;
@@ -178,7 +178,7 @@ namespace System.Text
 
                 // If parsedValue > (ushort.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
-                if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextSymbol > 5))
+                if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextSymbol > SymbolTable.Symbol.D5))
                 {
                     bytesConsumed = 0;
                     value = default(ushort);
@@ -186,7 +186,7 @@ namespace System.Text
                 }
 
                 index += thisSymbolConsumed;
-                parsedValue = parsedValue * 10 + nextSymbol;
+                parsedValue = parsedValue * 10 + (uint)nextSymbol;
             }
 
             bytesConsumed = text.Length;
@@ -194,16 +194,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -214,7 +214,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt32(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -241,29 +241,29 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(uint);
                 bytesConsumed = 0;
                 return false;
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(uint);
                 bytesConsumed = 0;
                 return false;
             }
 
-            uint parsedValue = nextSymbol;
+            uint parsedValue = (uint)nextSymbol;
             int index = thisSymbolConsumed;
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (uint) parsedValue;
@@ -272,7 +272,7 @@ namespace System.Text
 
                 // If parsedValue > (uint.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
-                if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextSymbol > 5))
+                if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextSymbol > SymbolTable.Symbol.D5))
                 {
                     bytesConsumed = 0;
                     value = default(uint);
@@ -280,7 +280,7 @@ namespace System.Text
                 }
 
                 index += thisSymbolConsumed;
-                parsedValue = parsedValue * 10 + nextSymbol;
+                parsedValue = parsedValue * 10 + (uint)nextSymbol;
             }
 
             bytesConsumed = text.Length;
@@ -288,16 +288,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -308,7 +308,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt64(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -335,29 +335,29 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(ulong);
                 bytesConsumed = 0;
                 return false;
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(ulong);
                 bytesConsumed = 0;
                 return false;
             }
 
-            ulong parsedValue = nextSymbol;
+            ulong parsedValue = (uint)nextSymbol;
             int index = thisSymbolConsumed;
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (ulong) parsedValue;
@@ -366,7 +366,7 @@ namespace System.Text
 
                 // If parsedValue > (ulong.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
-                if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextSymbol > 5))
+                if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextSymbol > SymbolTable.Symbol.D5))
                 {
                     bytesConsumed = 0;
                     value = default(ulong);
@@ -374,7 +374,7 @@ namespace System.Text
                 }
 
                 index += thisSymbolConsumed;
-                parsedValue = parsedValue * 10 + nextSymbol;
+                parsedValue = parsedValue * 10 + (uint)nextSymbol;
             }
 
             bytesConsumed = text.Length;

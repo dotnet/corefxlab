@@ -64,17 +64,16 @@ namespace System.Text
         public bool TryParse(ReadOnlySpan<byte> source, out Symbol symbol, out int bytesConsumed)
         {
             int trieIndex = 0;
-            int bufferIndex = 0;
+            int codeUnitIndex = 0;
             bytesConsumed = 0;
             while (true)
             {
-                var node = _parsingTrie[trieIndex];
-                if (node.ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
+                if (_parsingTrie[trieIndex].ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
-                    symbol = (Symbol)node.IndexOrSymbol;
-                    if (VerifySuffix(source, bufferIndex, symbol))
+                    symbol = (Symbol)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
+                    if (VerifySuffix(source, codeUnitIndex, symbol))
                     {
-                        bytesConsumed = _symbols[node.IndexOrSymbol].Length - bufferIndex;
+                        bytesConsumed = _symbols[(int)symbol].Length;
                         return true;
                     }
                     else
@@ -86,13 +85,13 @@ namespace System.Text
                 }
                 else
                 {
-                    int search = BinarySearch(trieIndex, bufferIndex, source[0]);    // we search the _parsingTrie for the nextByte
+                    int search = BinarySearch(trieIndex, codeUnitIndex, source[codeUnitIndex]);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
                         trieIndex = _parsingTrie[search].IndexOrSymbol;
                         bytesConsumed++;
-                        bufferIndex++;
+                        codeUnitIndex++;
                     }
                     else
                     {

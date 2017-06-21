@@ -5,16 +5,16 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -25,7 +25,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseSByte(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -52,9 +52,9 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(sbyte);
                 bytesConsumed = 0;
@@ -71,7 +71,7 @@ namespace System.Text
             if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
-                if (!encoder.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
+                if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
                 {
                     value = default(sbyte);
                     bytesConsumed = 0;
@@ -79,7 +79,7 @@ namespace System.Text
                 }
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(sbyte);
                 bytesConsumed = 0;
@@ -91,8 +91,8 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (sbyte)(parsedValue * sign);
@@ -102,7 +102,7 @@ namespace System.Text
                 // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
                 bool positive = sign > 0;
-                bool nextDigitTooLarge = nextSymbol > 8 || (positive && nextSymbol > 7);
+                bool nextDigitTooLarge = nextSymbol > SymbolTable.Symbol.D8 || (positive && nextSymbol > SymbolTable.Symbol.D7);
                 if (parsedValue > sbyte.MaxValue / 10 || (parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge))
                 {
                     bytesConsumed = 0;
@@ -120,16 +120,16 @@ namespace System.Text
         }
 
 
-        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -140,7 +140,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseInt16(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -167,9 +167,9 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(short);
                 bytesConsumed = 0;
@@ -186,7 +186,7 @@ namespace System.Text
             if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
-                if (!encoder.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
+                if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
                 {
                     value = default(short);
                     bytesConsumed = 0;
@@ -194,7 +194,7 @@ namespace System.Text
                 }
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(short);
                 bytesConsumed = 0;
@@ -206,8 +206,8 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (short)(parsedValue * sign);
@@ -217,7 +217,7 @@ namespace System.Text
                 // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
                 bool positive = sign > 0;
-                bool nextDigitTooLarge = nextSymbol > 8 || (positive && nextSymbol > 7);
+                bool nextDigitTooLarge = nextSymbol > SymbolTable.Symbol.D8 || (positive && nextSymbol > SymbolTable.Symbol.D7);
                 if (parsedValue > short.MaxValue / 10 || (parsedValue == short.MaxValue / 10 && nextDigitTooLarge))
                 {
                     bytesConsumed = 0;
@@ -235,16 +235,16 @@ namespace System.Text
         }
 
 
-        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -255,7 +255,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseInt32(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -282,9 +282,9 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(int);
                 bytesConsumed = 0;
@@ -301,7 +301,7 @@ namespace System.Text
             if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
-                if (!encoder.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
+                if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
                 {
                     value = default(int);
                     bytesConsumed = 0;
@@ -309,7 +309,7 @@ namespace System.Text
                 }
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(int);
                 bytesConsumed = 0;
@@ -321,8 +321,8 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (int)(parsedValue * sign);
@@ -332,7 +332,7 @@ namespace System.Text
                 // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
                 bool positive = sign > 0;
-                bool nextDigitTooLarge = nextSymbol > 8 || (positive && nextSymbol > 7);
+                bool nextDigitTooLarge = nextSymbol > SymbolTable.Symbol.D8 || (positive && nextSymbol > SymbolTable.Symbol.D7);
                 if (parsedValue > int.MaxValue / 10 || (parsedValue == int.MaxValue / 10 && nextDigitTooLarge))
                 {
                     bytesConsumed = 0;
@@ -350,16 +350,16 @@ namespace System.Text
         }
 
 
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -370,7 +370,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseInt64(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoder.IsInvariantUtf16)
+            else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
@@ -397,9 +397,9 @@ namespace System.Text
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
-            uint nextSymbol;
+            SymbolTable.Symbol nextSymbol;
             int thisSymbolConsumed;
-            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(long);
                 bytesConsumed = 0;
@@ -416,7 +416,7 @@ namespace System.Text
             if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
-                if (!encoder.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
+                if (!symbolTable.TryParse(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
                 {
                     value = default(long);
                     bytesConsumed = 0;
@@ -424,7 +424,7 @@ namespace System.Text
                 }
             }
 
-            if (nextSymbol > 9)
+            if (nextSymbol > SymbolTable.Symbol.D9)
             {
                 value = default(long);
                 bytesConsumed = 0;
@@ -436,8 +436,8 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
-                if (!success || nextSymbol > 9)
+                bool success = symbolTable.TryParse(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                if (!success || nextSymbol > SymbolTable.Symbol.D9)
                 {
                     bytesConsumed = index;
                     value = (long)(parsedValue * sign);
@@ -447,7 +447,7 @@ namespace System.Text
                 // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                 // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
                 bool positive = sign > 0;
-                bool nextDigitTooLarge = nextSymbol > 8 || (positive && nextSymbol > 7);
+                bool nextDigitTooLarge = nextSymbol > SymbolTable.Symbol.D8 || (positive && nextSymbol > SymbolTable.Symbol.D7);
                 if (parsedValue > long.MaxValue / 10 || (parsedValue == long.MaxValue / 10 && nextDigitTooLarge))
                 {
                     bytesConsumed = 0;

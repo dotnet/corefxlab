@@ -16,109 +16,6 @@ namespace System.Text.Primitives.Tests
                 return Text.Encoding.UTF8.GetBytes(s);
         }
 
-        static Tuple<byte, int>[] s_utf8ParsingTrie = new Tuple<byte, int>[] {
-            Tuple.Create((byte)17, 0x3004390D),
-            Tuple.Create((byte)43, 18),
-            Tuple.Create((byte)45, 19),
-            Tuple.Create((byte)46, 20),
-            Tuple.Create((byte)48, 21),
-            Tuple.Create((byte)49, 22),
-            Tuple.Create((byte)50, 23),
-            Tuple.Create((byte)51, 24),
-            Tuple.Create((byte)52, 25),
-            Tuple.Create((byte)53, 26),
-            Tuple.Create((byte)54, 27),
-            Tuple.Create((byte)55, 28),
-            Tuple.Create((byte)56, 29),
-            Tuple.Create((byte)57, 30),
-            Tuple.Create((byte)69, 31),
-            Tuple.Create((byte)73, 32),
-            Tuple.Create((byte)78, 33),
-            Tuple.Create((byte)101, 34),
-            Tuple.Create((byte)0, 14),
-            Tuple.Create((byte)0, 13),
-            Tuple.Create((byte)0, 10),
-            Tuple.Create((byte)0, 0),
-            Tuple.Create((byte)0, 1),
-            Tuple.Create((byte)0, 2),
-            Tuple.Create((byte)0, 3),
-            Tuple.Create((byte)0, 4),
-            Tuple.Create((byte)0, 5),
-            Tuple.Create((byte)0, 6),
-            Tuple.Create((byte)0, 7),
-            Tuple.Create((byte)0, 8),
-            Tuple.Create((byte)0, 9),
-            Tuple.Create((byte)0, 16),
-            Tuple.Create((byte)0, 12),
-            Tuple.Create((byte)0, 15),
-            Tuple.Create((byte)0, 16),
-        };
-
-        static Tuple<byte, int>[] s_thais_utf8ParsingTrie = new Tuple<byte, int>[] {
-            Tuple.Create((byte)4, 0),
-            Tuple.Create((byte)43, 5),
-            Tuple.Create((byte)69, 6),
-            Tuple.Create((byte)101, 7),
-            Tuple.Create((byte)0xE0, 8),
-            Tuple.Create((byte)0, 14),
-            Tuple.Create((byte)0, 16),
-            Tuple.Create((byte)0, 16),
-            Tuple.Create((byte)2, 0),
-            Tuple.Create((byte)0xB8, 11),
-            Tuple.Create((byte)0xB9, 15),
-            Tuple.Create((byte)3, 0),
-            Tuple.Create((byte)0x88, 27),
-            Tuple.Create((byte)0xA5, 28),
-            Tuple.Create((byte)0xAA, 29),
-            Tuple.Create((byte)11, -1878877941 /* 0x9002990B */),
-            Tuple.Create((byte)0x84, 30),
-            Tuple.Create((byte)0x90, 31),
-            Tuple.Create((byte)0x91, 32),
-            Tuple.Create((byte)0x92, 33),
-            Tuple.Create((byte)0x93, 34),
-            Tuple.Create((byte)0x94, 35),
-            Tuple.Create((byte)0x95, 36),
-            Tuple.Create((byte)0x96, 37),
-            Tuple.Create((byte)0x97, 38),
-            Tuple.Create((byte)0x98, 39),
-            Tuple.Create((byte)0x99, 40),
-            Tuple.Create((byte)0, 10),
-            Tuple.Create((byte)0, 13),
-            Tuple.Create((byte)0, 12),
-            Tuple.Create((byte)0, 15),
-            Tuple.Create((byte)0, 0),
-            Tuple.Create((byte)0, 1),
-            Tuple.Create((byte)0, 2),
-            Tuple.Create((byte)0, 3),
-            Tuple.Create((byte)0, 4),
-            Tuple.Create((byte)0, 5),
-            Tuple.Create((byte)0, 6),
-            Tuple.Create((byte)0, 7),
-            Tuple.Create((byte)0, 8),
-            Tuple.Create((byte)0, 9),
-        };
-
-        static byte[][] s_utf8digitsAndSymbols = new byte[][] {
-            new byte[] { 48, },
-            new byte[] { 49, },
-            new byte[] { 50, },
-            new byte[] { 51, },
-            new byte[] { 52, },
-            new byte[] { 53, },
-            new byte[] { 54, },
-            new byte[] { 55, },
-            new byte[] { 56, },
-            new byte[] { 57, }, // digit 9
-            new byte[] { 46, }, // decimal separator
-            new byte[] { 44, }, // group separator
-            new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
-            new byte[] { 45, }, // minus sign
-            new byte[] { 43, }, // plus sign
-            new byte[] { 78, 97, 78, }, // NaN
-            new byte[] { 69, }, // E
-            new byte[] { 101, }, // e
-        };
-
         static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
         {
             new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
@@ -132,10 +29,24 @@ namespace System.Text.Primitives.Tests
             new byte[] { 69 }, new byte[] { 101 },
         };
 
-        static TextEncoder s_thaiEncoder = TextEncoder.CreateUtf8Encoder(s_thaiUtf8DigitsAndSymbols);
+        public class ThaiSymbolTable : SymbolTable
+        {
+            public ThaiSymbolTable() : base(s_thaiUtf8DigitsAndSymbols) {}
 
-        static TextEncoder s_utf8Encoder = TextEncoder.CreateUtf8Encoder(s_utf8digitsAndSymbols);
+            public override bool TryEncode(byte utf8, Span<byte> destination, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesWritten);
 
+            public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesConsumed, out bytesWritten);
+
+            public override bool TryParse(ReadOnlySpan<byte> source, out byte utf8, out int bytesConsumed)
+                => SymbolTable.InvariantUtf8.TryParse(source, out utf8, out bytesConsumed);
+
+            public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryParse(source, utf8, out bytesConsumed, out bytesWritten);
+        }
+
+        static SymbolTable s_thaiTable = new ThaiSymbolTable();
 
         #region byte
 
@@ -158,7 +69,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -190,7 +101,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -236,7 +147,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -263,7 +174,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -314,7 +225,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -346,7 +257,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -392,7 +303,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -419,7 +330,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -470,7 +381,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -502,7 +413,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -548,7 +459,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -575,7 +486,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -626,7 +537,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -658,7 +569,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -704,7 +615,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -731,7 +642,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -785,7 +696,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -817,7 +728,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -863,7 +774,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
+            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -890,7 +801,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -917,7 +828,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -970,7 +881,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1002,7 +913,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -1048,7 +959,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
+            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1075,7 +986,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1102,7 +1013,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -1155,7 +1066,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1187,7 +1098,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -1233,7 +1144,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
+            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1260,7 +1171,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1287,7 +1198,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -1340,7 +1251,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1372,7 +1283,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, 'G', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
@@ -1418,7 +1329,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
+            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1445,7 +1356,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, 'X', TextEncoder.Utf8);
+            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf8);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1472,7 +1383,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, 'X', TextEncoder.Utf16);
+            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, 'X', SymbolTable.InvariantUtf16);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed * sizeof(char), consumed);
