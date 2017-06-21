@@ -47,6 +47,8 @@ namespace System.Text.Primitives.Tests.Encoding
             for (int j = 0; j < length; j++)
             {
                 var val = rand.Next(minCodePoint, maxCodePoint + 1);
+                while (!IsSupportedChar((char)val))
+                    val = rand.Next(minCodePoint, maxCodePoint + 1);
 
                 if (ignoreSurrogates)
                 {
@@ -527,6 +529,16 @@ namespace System.Text.Primitives.Tests.Encoding
             if (codePoint >= 0xFDD0 && codePoint <= 0xFDEF)
                 return false;
             if (codePoint == 0xFFFE || codePoint == 0xFFFF)
+                return false;
+
+            return true;
+        }
+
+        public static bool IsSupportedChar(char ch)
+        {
+            if (ch >= 0xFDD0 && ch <= 0xFDEF)
+                return false;
+            if (ch == 0xFFFE || ch == 0xFFFF)
                 return false;
 
             return true;
