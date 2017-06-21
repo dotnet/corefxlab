@@ -13,7 +13,6 @@ using System.Text;
 
 namespace System.IO.Compression
 {
-
     public static class Brotli
     {
         private const int MinWindowBits = 10;
