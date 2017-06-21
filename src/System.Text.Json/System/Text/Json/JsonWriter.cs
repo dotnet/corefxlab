@@ -452,18 +452,8 @@ namespace System.Text.Json
             }
             else
             {
-                // TODO: This is currently pretty expensive. Can this be done more efficiently?
-                var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(source, out int needed);
-                if (status != Buffers.TransformationStatus.Done)
-                    throw new FormatException();    // This shouldn't happen under normal conditions.
-
-                Span<byte> temp = new byte[needed];
-                status = Encoders.Utf8.ConvertFromUtf16(source, temp, out int consumed, out int written);
-                if (status != Buffers.TransformationStatus.Done)
-                    throw new FormatException();    // If the calculation above succeeded, this will never happen unless a bug exists.
-
                 Span<byte> destination = _output.Buffer;
-                while (!_output.SymbolTable.TryEncode(temp, destination, out consumed, out written))
+                if (!_output.SymbolTable.TryEncode(source, destination, out int consumed, out int written))
                     destination = EnsureBuffer();
 
                 _output.Advance(written);
@@ -574,7 +564,7 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> EnsureBuffer(int needed = 0)
+        private Span<byte> EnsureBuffer(int needed = 256)
         {
             // Anytime we need to request an enlarge for the buffer, we may as well ask for something
             // larger than we are likely to need.

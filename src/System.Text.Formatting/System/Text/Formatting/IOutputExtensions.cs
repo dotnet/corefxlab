@@ -64,45 +64,11 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            const int BufferSize = 256;
+            var result = symbolTable.TryEncode(value, formatter.Buffer, out int consumed, out int written);
+            if (result)
+                formatter.Advance(written);
 
-            ReadOnlySpan<byte> source = value.AsBytes();
-            Span<byte> destination = formatter.Buffer;
-
-            int sourceLength = source.Length;
-            if (sourceLength <= 0)
-                return true;
-
-            Span<byte> temp;
-            unsafe
-            {
-                byte* pTemp = stackalloc byte[BufferSize];
-                temp = new Span<byte>(pTemp, BufferSize);
-            }
-
-            int bytesWritten = 0;
-            int bytesConsumed = 0;
-            while (sourceLength > bytesConsumed)
-            {
-                var status = Encoders.Utf8.ConvertFromUtf16(source, temp, out int consumed, out int written);
-                if (status == TransformationStatus.InvalidData)
-                    goto ExitFailed;
-
-                source = source.Slice(consumed);
-                bytesConsumed += consumed;
-
-                if (!symbolTable.TryEncode(temp.Slice(0, written), destination, out consumed, out written))
-                    goto ExitFailed;
-
-                destination = destination.Slice(written);
-                bytesWritten += written;
-            }
-
-            formatter.Advance(bytesWritten);
-            return true;
-
-        ExitFailed:
-            return false;
+            return result;
         }
 
         public static void Append<TFormatter>(this TFormatter formatter, char value, SymbolTable symbolTable) where TFormatter : IOutput
