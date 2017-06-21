@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using Xunit;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace System.Text.Primitives.Tests
 {
@@ -14,6 +16,44 @@ namespace System.Text.Primitives.Tests
             encoder = (encoder == null) ? TextEncoder.Utf8 : encoder;
             Assert.True(encoder.TryDecode(span, out string text, out int consumed));
             return text;
+        }
+
+        // Borrowed from https://github.com/dotnet/corefx/blob/master/src/System.Memory/tests/AllocationHelper.cs
+
+        private static readonly Mutex MemoryLock = new Mutex();
+        private static readonly TimeSpan WaitTimeout = TimeSpan.FromSeconds(120);
+
+        public static bool TryAllocNative(IntPtr size, out IntPtr memory)
+        {
+            memory = IntPtr.Zero;
+
+            if (!MemoryLock.WaitOne(WaitTimeout))
+                return false;
+
+            try
+            {
+                memory = Marshal.AllocHGlobal(size);
+            }
+            catch (OutOfMemoryException)
+            {
+                memory = IntPtr.Zero;
+                MemoryLock.ReleaseMutex();
+            }
+
+            return memory != IntPtr.Zero;
+        }
+
+        public static void ReleaseNative(ref IntPtr memory)
+        {
+            try
+            {
+                Marshal.FreeHGlobal(memory);
+                memory = IntPtr.Zero;
+            }
+            finally
+            {
+                MemoryLock.ReleaseMutex();
+            }
         }
     }
 }

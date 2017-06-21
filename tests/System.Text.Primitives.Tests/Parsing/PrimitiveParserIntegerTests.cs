@@ -14,8 +14,6 @@
 
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -133,6 +131,8 @@ namespace System.Text.Primitives.Tests
             new byte[] { 101, }, // e
         };
 
+        // TODO: Fix Thai + symbol and adjust tests.
+        // Change from new byte[] { 43 }, i.e. '+' to new byte[] { 0xE0, 0xB8, 0x9A, 0xE0, 0xB8, 0xA7, 0xE0, 0xB8, 0x81 }, i.e. 'บวก'
         static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
         {
             new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
@@ -1298,7 +1298,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedConsumed, consumed);
         }
 
-        //[Theory]
+        [Theory]
         [InlineData("0", true, 0, int.MaxValue)]
         [InlineData("2", true, 2, int.MaxValue)]
         [InlineData("21", true, 21, int.MaxValue)]
@@ -1319,7 +1319,7 @@ namespace System.Text.Primitives.Tests
 
             unsafe
             {
-                if (!AllocationHelper.TryAllocNative((IntPtr)TwoGiB, out IntPtr memBlock))
+                if (!TestHelper.TryAllocNative((IntPtr)TwoGiB, out IntPtr memBlock))
                     return; // It's not implausible to believe that a 2gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
 
                 try
@@ -1343,7 +1343,7 @@ namespace System.Text.Primitives.Tests
                 }
                 finally
                 {
-                    AllocationHelper.ReleaseNative(ref memBlock);
+                    TestHelper.ReleaseNative(ref memBlock);
                 }
             }
         }
@@ -1437,7 +1437,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedConsumed, consumed);
         }
 
-        //[Theory]
+        //[Theory] // TODO: Test is too slow, only enable for "outerloop"
         [InlineData("๐", true, 0, int.MaxValue)]
         [InlineData("๒", true, 2, int.MaxValue)]
         [InlineData("๒๑", true, 21, int.MaxValue)]
@@ -1458,7 +1458,7 @@ namespace System.Text.Primitives.Tests
 
             unsafe
             {
-                if (!AllocationHelper.TryAllocNative((IntPtr)TwoGiB, out IntPtr memBlock))
+                if (!TestHelper.TryAllocNative((IntPtr)TwoGiB, out IntPtr memBlock))
                     return; // It's not implausible to believe that a 2gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
 
                 try
@@ -1493,7 +1493,7 @@ namespace System.Text.Primitives.Tests
                 }
                 finally
                 {
-                    AllocationHelper.ReleaseNative(ref memBlock);
+                    TestHelper.ReleaseNative(ref memBlock);
                 }
             }
         }
@@ -1760,45 +1760,5 @@ namespace System.Text.Primitives.Tests
         #endregion
 
 
-    }
-
-    static class AllocationHelper
-    {
-        private static readonly Mutex MemoryLock = new Mutex();
-        private static readonly TimeSpan WaitTimeout = TimeSpan.FromSeconds(120);
-
-        public static bool TryAllocNative(IntPtr size, out IntPtr memory)
-        {
-            memory = IntPtr.Zero;
-
-            if (!MemoryLock.WaitOne(WaitTimeout))
-                return false;
-
-            try
-            {
-                memory = Marshal.AllocHGlobal(size);
-            }
-            catch (OutOfMemoryException)
-            {
-                memory = IntPtr.Zero;
-                MemoryLock.ReleaseMutex();
-            }
-
-            return memory != IntPtr.Zero;
-
-        }
-
-        public static void ReleaseNative(ref IntPtr memory)
-        {
-            try
-            {
-                Marshal.FreeHGlobal(memory);
-                memory = IntPtr.Zero;
-            }
-            finally
-            {
-                MemoryLock.ReleaseMutex();
-            }
-        }
     }
 }
