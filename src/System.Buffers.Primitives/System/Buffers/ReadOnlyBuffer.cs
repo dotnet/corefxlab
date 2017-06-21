@@ -153,6 +153,25 @@ namespace System
 
         public T[] ToArray() => Span.ToArray();
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool DangerousTryGetArray(out ArraySegment<T> arraySegment)
+        {
+            if (_owner != null && _owner.TryGetArray(out var segment))
+            {
+                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                return true;
+            }
+
+            if (_array != null)
+            {
+                arraySegment = new ArraySegment<T>(_array, _index, _length);
+                return true;
+            }
+
+            arraySegment = default(ArraySegment<T>);
+            return false;
+        }
+
         public void CopyTo(Span<T> span) => Span.CopyTo(span);
 
         public void CopyTo(Buffer<T> buffer) => Span.CopyTo(buffer.Span);
@@ -164,12 +183,20 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if (!(obj is ReadOnlyBuffer<T>)) {
+            if (obj is ReadOnlyBuffer<T>)
+            {
+                var other = (ReadOnlyBuffer<T>)obj;
+                return Equals(other);
+            }
+            else if (obj is Buffer<T>)
+            {
+                var other = (Buffer<T>)obj;
+                return Equals(other);
+            }
+            else
+            {
                 return false;
             }
-
-            var other = (ReadOnlyBuffer<T>)obj;
-            return Equals(other);
         }
         
         public bool Equals(ReadOnlyBuffer<T> other)

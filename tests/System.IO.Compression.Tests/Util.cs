@@ -18,7 +18,7 @@ namespace System.IO.Compression.Tests
             NormalData
         }
 
-        public static string GetTestFilePath(int? index = null, string memberName = null, int lineNumber = 0)
+        internal static string GetTestFilePath(int? index = null, string memberName = null, int lineNumber = 0)
         {
             return Path.Combine(Path.GetTempPath(), string.Format(
                 index.HasValue ? "{0}_{1}_{2}_{3}" : "{0}_{1}_{2}",
