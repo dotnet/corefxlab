@@ -1149,40 +1149,6 @@ namespace System.Text.Primitives.Tests
         #region int
 
         [Theory]
-        /*[InlineData("a1", true, 0, 0)]
-        [InlineData("1", true, 1, 1)]
-        [InlineData("-1", true, -1, 2)]
-        [InlineData("11", true, 11, 2)]
-        [InlineData("-11", true, -11, 3)]
-        [InlineData("00a0", true, 0, 2)]
-        [InlineData("00a", true, 0, 2)]
-        [InlineData("111", true, 111, 3)]
-        [InlineData("492206507abcdefg", true, 492206507, 9)]
-        [InlineData("2147483647", true, 2147483647, 10)] // max
-        [InlineData("-2147483648", true, -2147483648, 11)] // min
-        [InlineData("-A", true, 0, 0)] // invalid character after a sign
-        [InlineData("I am 1", true, 0, 0)] // invalid character test
-        [InlineData(" !", true, 0, 0)] // invalid character test w/ char < '0'
-        [InlineData("2147483648", true, 214748364, 9)] // positive overflow test
-        [InlineData("-2147483649", true, -214748364, 10)] // negative overflow test
-        [InlineData("0", true, 0, 1)]
-        [InlineData("+1", true, 1, 2)]
-        [InlineData("+2147483647", true, 2147483647, 11)]
-        [InlineData("as3gf31t`2c", true, 0, 0)]
-        [InlineData("agbagbagb5", true, 0, 0)]
-        [InlineData("1faag", true, 1, 1)]
-        [InlineData("-1sdg", true, -1, 2)]
-        [InlineData("-afsagsag4", true, 0, 0)]
-        [InlineData("+a", true, 0, 0)]
-        [InlineData("-000012345abcdefg1", true, -12345, 10)]
-        [InlineData("+000012345abcdefg1", true, 12345, 10)]
-        [InlineData("000012345abcdefg1", true, 12345, 9)]
-        [InlineData("0000001234145abcdefg1", true, 1234145, 13)]
-        [InlineData("+", true, 0, 0)]
-        [InlineData("-", true, 0, 0)]
-        [InlineData("", true, 0, 0)]
-        [InlineData("5", true, 5, 1)]
-        [InlineData("^", true, 0, 0)]*/
         [InlineData("a1", false, 0, 0)]
         [InlineData("1", true, 1, 1)]
         [InlineData("-1", true, -1, 2)]
@@ -1218,6 +1184,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("5", true, 5, 1)]
         [InlineData("^", false, 0, 0)]
         [InlineData("41474836482145", false, 0, 0)]
+        [InlineData("02147483647", true, 2147483647, 11)] // max
+        [InlineData("-02147483648", true, -2147483648, 12)] // min
+        [InlineData("02147483648", false, 0, 0)] // positive overflow test
+        [InlineData("-02147483649", false, 0, 0)] // negative overflow test
         public unsafe void ParseInt32Dec(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
             int parsedValue;
@@ -1229,57 +1199,122 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, 'G', TextEncoder.Utf8);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
 
-            result = PrimitiveParser.InvariantUtf8.TryParseInt32_OLD(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+            result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out parsedValue);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+
+            result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+            fixed (byte* arrayPointer = textBytes)
+            {
+                result = PrimitiveParser.InvariantUtf8.TryParseInt32(arrayPointer, textBytes.Length, out parsedValue);
+
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+
+                result = PrimitiveParser.InvariantUtf8.TryParseInt32(arrayPointer, textBytes.Length, out parsedValue, out consumed);
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedConsumed, consumed);
+            }
+
+            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, 'G', TextEncoder.Utf16);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
+
+            result = PrimitiveParser.InvariantUtf16.TryParseInt32(utf16CharSpan, out parsedValue);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+
+            result = PrimitiveParser.InvariantUtf16.TryParseInt32(utf16CharSpan, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+            fixed (char* arrayPointer = textChars)
+            {
+                result = PrimitiveParser.InvariantUtf16.TryParseInt32(arrayPointer, textBytes.Length, out parsedValue);
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+
+                result = PrimitiveParser.InvariantUtf16.TryParseInt32(arrayPointer, textBytes.Length, out parsedValue, out consumed);
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedConsumed, consumed);
+            }
+        }
+        
+        [Theory]
+        [InlineData("2", true, 2, 1)]
+        [InlineData("21", true, 21, 2)]
+        [InlineData("214", true, 214, 3)]
+        [InlineData("2147", true, 2147, 4)]
+        [InlineData("21474", true, 21474, 5)]
+        [InlineData("214748", true, 214748, 6)]
+        [InlineData("2147483", true, 2147483, 7)]
+        [InlineData("21474836", true, 21474836, 8)]
+        [InlineData("214748364", true, 214748364, 9)]
+        [InlineData("2147483647", true, 2147483647, 10)]
+        [InlineData("+2", true, 2, 2)]
+        [InlineData("+21", true, 21, 3)]
+        [InlineData("+214", true, 214, 4)]
+        [InlineData("+2147", true, 2147, 5)]
+        [InlineData("+21474", true, 21474, 6)]
+        [InlineData("+214748", true, 214748, 7)]
+        [InlineData("+2147483", true, 2147483, 8)]
+        [InlineData("+21474836", true, 21474836, 9)]
+        [InlineData("+214748364", true, 214748364, 10)]
+        [InlineData("+2147483647", true, 2147483647, 11)]
+        [InlineData("-2", true, -2, 2)]
+        [InlineData("-21", true, -21, 3)]
+        [InlineData("-214", true, -214, 4)]
+        [InlineData("-2147", true, -2147, 5)]
+        [InlineData("-21474", true, -21474, 6)]
+        [InlineData("-214748", true, -214748, 7)]
+        [InlineData("-2147483", true, -2147483, 8)]
+        [InlineData("-21474836", true, -21474836, 9)]
+        [InlineData("-214748364", true, -214748364, 10)]
+        [InlineData("-2147483647", true, -2147483647, 11)]
+        private void ParseInt32VariableLength(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
+        {
+            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            bool result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out int parsedValue, out int consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
         }
 
-        private static readonly string[] s_Int32TextArray = new string[20]
+        //[Theory]
+        [InlineData("0", true, 0, int.MaxValue)]
+        [InlineData("2", true, 2, int.MaxValue)]
+        [InlineData("21", true, 21, int.MaxValue)]
+        [InlineData("+2", true, 2, int.MaxValue)]
+        [InlineData("-2", true, -2, int.MaxValue)]
+        [InlineData("2147483647", true, 2147483647, int.MaxValue)] // max
+        [InlineData("-2147483648", true, -2147483648, int.MaxValue)] // min
+        [InlineData("2147483648", false, 0, 0)] // positive overflow test
+        [InlineData("-2147483649", false, 0, 0)] // negative overflow test
+        [InlineData("12345abcdefg1", true, 12345, int.MaxValue - 8)]
+        [InlineData("1234145abcdefg1", true, 1234145, int.MaxValue - 8)]
+        [InlineData("abcdefghijklmnop1", true, 0, int.MaxValue - 17)]
+        public unsafe void ParseInt32OverflowCheck(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            "214748364",
-            "2",
-            "21474836",
-            "-21474",
-            "21474",
-            "-21",
-            "-2",
-            "214",
-            "-21474836",
-            "-214748364",
-            "2147",
-            "-2147",
-            "-214748",
-            "-2147483",
-            "214748",
-            "-2147483648",
-            "2147483647",
-            "21",
-            "2147483",
-            "-214"
-        };
+            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
 
-        [Fact]
-        private static void ParseInt32DecVariableLength()
-        {
-            int textLength = s_Int32TextArray.Length;
-            byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
-            for (var i = 0; i < textLength; i++)
-            {
-                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_Int32TextArray[i]);
-            }
-
-            for (int i = 0; i < 100; i++)
-            {
-                ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                PrimitiveParser.InvariantUtf8.TryParseInt32(utf8ByteSpan, out int value, out int bytesConsumed);
-            }
-        }
-
-        [Fact]
-        public unsafe void ParseInt32Dec2()
-        {
             const int TwoGiB = int.MaxValue;
 
             unsafe
@@ -1291,18 +1326,20 @@ namespace System.Text.Primitives.Tests
                 {
                     ref byte memory = ref Unsafe.AsRef<byte>(memBlock.ToPointer());
                     var span = new Span<byte>(memBlock.ToPointer(), TwoGiB);
+                    span.Fill(48);
 
-                    for (int i = 0; i < TwoGiB - 2; i++)
+                    byte sign = utf8Span[0];
+                    if (sign == '-' || sign == '+')
                     {
-                        span[i] = 48;
+                        span[0] = sign;
+                        utf8Span = utf8Span.Slice(1);
                     }
-                    span[TwoGiB - 1] = 49;
-                    span[TwoGiB - 2] = 49;
+                    utf8Span.CopyTo(span.Slice(TwoGiB - utf8Span.Length));
 
-                    bool result = PrimitiveParser.InvariantUtf8.TryParseInt32_OLD(span, out int parsedValue, out int consumed);
-                    Assert.Equal(true, result);
-                    Assert.Equal(11, parsedValue);
-                    Assert.Equal(TwoGiB, consumed);
+                    bool result = PrimitiveParser.InvariantUtf8.TryParseInt32(span, out int parsedValue, out int consumed);
+                    Assert.Equal(expectSuccess, result);
+                    Assert.Equal(expectedValue, parsedValue);
+                    Assert.Equal(expectedConsumed, consumed);
                 }
                 finally
                 {
@@ -1311,70 +1348,154 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-
-        [Fact]
-        private static void ParseTestNew()
-        {
-            string text = GenerateRandomDigitString();
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-
-            int final = 0;
-            int totalConsumed = 0;
-            while (totalConsumed < utf8ByteSpan.Length)
-            {
-                PrimitiveParser.InvariantUtf8.TryParseInt32_OLD(utf8ByteSpan.Slice(totalConsumed), out int value, out int bytesConsumed);
-                totalConsumed += bytesConsumed;
-                final |= value;
-            }
-            Assert.Equal(-1, final);
-        }
-
-        private static string GenerateRandomDigitString(int count = 1000)
-        {
-            Random rnd = new Random(42);
-            var builder = new StringBuilder();
-
-            for (int j = 0; j < count; j++)
-            {
-                int sign = rnd.Next(0, 3);
-                if (sign == 1) builder.Append("+");
-                if (sign == 2) builder.Append("-");
-                var length = rnd.Next(1, 14);
-                for (int i = 0; i < length; i++)
-                {
-                    int digit = rnd.Next(0, 10);
-                    builder.Append(digit.ToString());
-                }
-            }
-            return builder.ToString();
-        }
-
-
         [Theory]
-        [InlineData("๑๑๑", true, 0, 111, 9)]
-        [InlineData("เรื่องเหลวไหล๒๗", true, 39, 27, 6)]
-        [InlineData("๕๖กขฃคฅฆง", true, 0, 56, 6)]
-        [InlineData("ที่เล็กที่สุดของประเภทนี้คือลบ๑๒๘.", true, 84, -128, 15)]
-        [InlineData("ปล่อยให้พวกเขา ลบ๒๘ กินเค้ก", true, 43, -28, 12)]
-        [InlineData("๑๒๗", true, 0, 127, 9)] // max
-        [InlineData("ลบ๑๒๘", true, 0, -128, 15)] // min
-        [InlineData("ลบA", false, 0, 0, 0)] // invalid character after a sign
-        [InlineData("I am ๑", false, 0, 0, 0)] // invalid character test
-        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
-        [InlineData("ลป๑", false, 0, 0, 0)] // 
-        public unsafe void ParseInt32Thai(string text, bool expectSuccess, int index, int expectedValue, int expectedConsumed)
+        [InlineData("๑๑๑", true, 111, 9)]
+        [InlineData("๕๖กขฃคฅฆง", true, 56, 6)]
+        [InlineData("๑๒๗", true, 127, 9)] // max
+        [InlineData("ลบ๑๒๘", true, -128, 15)] // min
+        [InlineData("ลบA", false, 0, 0)] // invalid character after a sign
+        [InlineData("I am ๑", false, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("ลป๑", false, 0, 0)]
+        [InlineData("๑๐๗๓๗๔๑๘๒", true, 107374182, 9 * 3)]
+        [InlineData("๒๑๔๗๔๘๓๖๔๗", true, 2147483647, 10 * 3)]
+        [InlineData("๐๒๑๔๗๔๘๓๖๔๗", true, 2147483647, 11 * 3)]
+        [InlineData("๐", true, 0, 1 * 3)]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๘", true, -2147483648, 10 * 3 + 6)]
+        [InlineData("ลบ๐๒๑๔๗๔๘๓๖๔๘", true, -2147483648, 11 * 3 + 6)]
+        [InlineData("๒๑๔๗๔๘๓๖๔", true, 214748364, 9 * 3)]
+        [InlineData("๒", true, 2, 1 * 3)]
+        [InlineData("๒๑๔๗๔๘๓๖", true, 21474836, 8 * 3)]
+        [InlineData("ลบ๒๑๔๗๔", true, -21474, 5 * 3 + 6)]
+        [InlineData("๒๑๔๗๔", true, 21474, 5 * 3)]
+        [InlineData("ลบ๒๑", true, -21, 2 * 3 + 6)]
+        [InlineData("ลบ๒", true, -2, 1 * 3 + 6)]
+        [InlineData("๒๑๔", true, 214, 3 * 3)]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖", true, -21474836, 8 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔", true, -214748364, 9 * 3 + 6)]
+        [InlineData("๒๑๔๗", true, 2147, 4 * 3)]
+        [InlineData("ลบ๒๑๔๗", true, -2147, 4 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘", true, -214748, 6 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘๓", true, -2147483, 7 * 3 + 6)]
+        [InlineData("๒๑๔๗๔๘", true, 214748, 6 * 3)]
+        [InlineData("๒๑", true, 21, 2 * 3)]
+        [InlineData("๒๑๔๗๔๘๓", true, 2147483, 7 * 3)]
+        [InlineData("ลบ๒๑๔", true, -214, 3 * 3 + 6)]
+        [InlineData("+๒๑๔๗๔", true, 21474, 5 * 3 + 1)]
+        [InlineData("+๒๑", true, 21, 2 * 3 + 1)]
+        [InlineData("+๒", true, 2, 1 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖", true, 21474836, 8 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖๔", true, 214748364, 9 * 3 + 1)]
+        [InlineData("+๒๑๔๗", true, 2147, 4 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘", true, 214748, 6 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓", true, 2147483, 7 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗", true, 2147483647, 10 * 3 + 1)]
+        [InlineData("+๒๑๔", true, 214, 3 * 3 + 1)]
+        [InlineData("๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๑๒๓๕abcdfg", true, 1235, 24 * 3)]
+        [InlineData("๒๑๔๗๔๘๓๖๔abcdefghijklmnop", true, 214748364, 9 * 3)]
+        [InlineData("๒abcdefghijklmnop", true, 2, 1 * 3)]
+        [InlineData("๒๑๔๗๔๘๓๖abcdefghijklmnop", true, 21474836, 8 * 3)]
+        [InlineData("ลบ๒๑๔๗๔abcdefghijklmnop", true, -21474, 5 * 3 + 6)]
+        [InlineData("๒๑๔๗๔abcdefghijklmnop", true, 21474, 5 * 3)]
+        [InlineData("ลบ๒๑abcdefghijklmnop", true, -21, 2 * 3 + 6)]
+        [InlineData("ลบ๒abcdefghijklmnop", true, -2, 1 * 3 + 6)]
+        [InlineData("๒๑๔abcdefghijklmnop", true, 214, 3 * 3)]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖abcdefghijklmnop", true, -21474836, 8 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔abcdefghijklmnop", true, -214748364, 9 * 3 + 6)]
+        [InlineData("๒๑๔๗abcdefghijklmnop", true, 2147, 4 * 3)]
+        [InlineData("ลบ๒๑๔๗abcdefghijklmnop", true, -2147, 4 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘abcdefghijklmnop", true, -214748, 6 * 3 + 6)]
+        [InlineData("ลบ๒๑๔๗๔๘๓abcdefghijklmnop", true, -2147483, 7 * 3 + 6)]
+        [InlineData("๒๑๔๗๔๘abcdefghijklmnop", true, 214748, 6 * 3)]
+        [InlineData("๒๑abcdefghijklmnop", true, 21, 2 * 3)]
+        [InlineData("๒๑๔๗๔๘๓abcdefghijklmnop", true, 2147483, 7 * 3)]
+        [InlineData("ลบ๒๑๔abcdefghijklmnop", true, -214, 3 * 3 + 6)]
+        [InlineData("+๒๑๔๗๔abcdefghijklmnop", true, 21474, 5 * 3 + 1)]
+        [InlineData("+๒๑abcdefghijklmnop", true, 21, 2 * 3 + 1)]
+        [InlineData("+๒abcdefghijklmnop", true, 2, 1 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖abcdefghijklmnop", true, 21474836, 8 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖๔abcdefghijklmnop", true, 214748364, 9 * 3 + 1)]
+        [InlineData("+๒๑๔๗abcdefghijklmnop", true, 2147, 4 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘abcdefghijklmnop", true, 214748, 6 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓abcdefghijklmnop", true, 2147483, 7 * 3 + 1)]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗abcdefghijklmnop", true, 2147483647, 10 * 3 + 1)]
+        [InlineData("+๒๑๔abcdefghijklmnop", true, 214, 3 * 3 + 1)]
+        [InlineData("๐๐a๐", true, 0, 6)]
+        [InlineData("๐๐a", true, 0, 6)]
+        [InlineData("", false, 0, 0)]
+        [InlineData("+", false, 0, 0)]
+        [InlineData("ลบ", false, 0, 0)]
+        public unsafe void ParseInt32Thai(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            int parsedValue;
-            int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
+            result = PrimitiveParser.TryParseInt32(utf8Span, out int parsedValue, out int consumed, 'G', s_thaiEncoder);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
+        }
+
+        //[Theory]
+        [InlineData("๐", true, 0, int.MaxValue)]
+        [InlineData("๒", true, 2, int.MaxValue)]
+        [InlineData("๒๑", true, 21, int.MaxValue)]
+        [InlineData("+๒", true, 2, int.MaxValue)]
+        [InlineData("ลบ๒", true, -2, int.MaxValue)]
+        [InlineData("๒๑๔๗๔๘๓๖๔๗", true, 2147483647, int.MaxValue)] // max
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๘", true, -2147483648, int.MaxValue)] // min
+        [InlineData("๒๑๔๗๔๘๓๖๔๘", false, 0, 0)] // positive overflow test
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๙", false, 0, 0)] // negative overflow test
+        [InlineData("๑๒๓๔๕abcdefg๑", true, 12345, int.MaxValue - 8)]
+        [InlineData("๑๒๓๔๑๔๕abcdefg๑", true, 1234145, int.MaxValue - 8)]
+        [InlineData("abcdefghijklmnop๑", true, 0, int.MaxValue - 17)]
+        public unsafe void ParseInt32ThaiOverflowCheck(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
+        {
+            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+
+            const int TwoGiB = int.MaxValue;
+
+            unsafe
+            {
+                if (!AllocationHelper.TryAllocNative((IntPtr)TwoGiB, out IntPtr memBlock))
+                    return; // It's not implausible to believe that a 2gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+
+                try
+                {
+                    ref byte memory = ref Unsafe.AsRef<byte>(memBlock.ToPointer());
+                    var span = new Span<byte>(memBlock.ToPointer(), TwoGiB);
+                    for (int i = 0; i < TwoGiB / 3; i ++)
+                    {
+                        span[i * 3] = 0xe0;
+                        span[i * 3 + 1] = 0xb9;
+                        span[i * 3 + 2] = 0x90;
+                    }
+
+                    byte sign = utf8Span[0];
+                    Span<byte> minusSpan = new byte[] { sign, 0xb8, 0xa5, 0xe0, 0xb8, 0x9a };
+                    if (sign == '+')
+                    {
+                        span[0] = sign;
+                        utf8Span = utf8Span.Slice(1);
+                    }
+                    else if (span.StartsWith(minusSpan))
+                    {
+                        utf8Span = utf8Span.Slice(6);
+                    }
+
+                    utf8Span.CopyTo(span.Slice(TwoGiB - utf8Span.Length));
+
+                    bool result = PrimitiveParser.TryParseInt32(span, out int parsedValue, out int consumed, 'G', s_thaiEncoder);
+                    Assert.Equal(expectSuccess, result);
+                    Assert.Equal(expectedValue, parsedValue);
+                    Assert.Equal(expectedConsumed, consumed);
+                }
+                finally
+                {
+                    AllocationHelper.ReleaseNative(ref memBlock);
+                }
+            }
         }
 
         [Theory]
@@ -1547,7 +1668,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("ลบA", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am ๑", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
-        [InlineData("ลป๑", false, 0, 0, 0)] // 
+        [InlineData("ลป๑", false, 0, 0, 0)]
         public unsafe void ParseInt64Thai(string text, bool expectSuccess, int index, long expectedValue, int expectedConsumed)
         {
             long parsedValue;

@@ -905,83 +905,6 @@ namespace System.Text
                 return TryParseInt32(text, out value, out int bytesConsumed);
             }
 
-            public static bool TryParseInt32_CUR(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
-
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
-                if (num == 45)
-                {
-                    sign = -1;
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-                else if (num == 43)
-                {
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-
-                bool containsDigitsAsPrefix = false;
-                int answer = 0;
-                while (num == 48)
-                {
-                    index++;
-                    if (index >= textLength)
-                    {
-                        bytesConsumed = index;
-                        value = 0;
-                        return true;
-                    }
-                    num = text[index];
-                    containsDigitsAsPrefix = true;
-                }
-
-                int overflowLength = Int32OverflowLength + index;
-                if (textLength - index > Int32OverflowLength) textLength = overflowLength;
-
-                while (num > 47 && num < 58)
-                {
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num - 48;
-                    index++;
-                    if (index >= textLength - 1) break;
-                    num = text[index];
-                }
-
-                if (index >= textLength) goto Done;
-                num = text[index];
-                if (num > 47 && num < 58)
-                {
-                    num -= 48;
-                    if (WillOverFlow(answer, num, sign))
-                    {
-                        bytesConsumed = index;
-                        value = answer * sign;
-                        return true;
-                    }
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (!containsDigitsAsPrefix) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = 0;
-                return false;
-            }
-
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
             {
                 int textLength = text.Length;
@@ -1004,32 +927,39 @@ namespace System.Text
                     num = text[index];
                 }
 
-                int answer = -1;
-                
+                int answer = 0;
+
                 if (num >= '0' && num <= '9')
                 {
-                    answer = num - '0';
-                    index++;
-                    if (index >= textLength) goto Done;
-                    num = text[index];
-                    int overflow = Int32OverflowLength + index - 1;
-                    if (textLength < overflow)
+                    if (num == '0')
                     {
-                        while (num >= '0' && num <= '9')
+                        do
+                        {
+                            index++;
+                            if (index >= textLength) goto Done;
+                            num = text[index];
+                        } while (num == '0') ;
+                        if (num < '0' || num > '9') goto Done;
+                    }
+
+                    int firstNonZeroDigitIndex = index;
+                    if (textLength - firstNonZeroDigitIndex < Int32OverflowLength)
+                    {
+                        do
                         {
                             answer = answer * 10 + num - '0';
                             index++;
                             if (index >= textLength) goto Done;
-                        }
+                            num = text[index];
+                        } while (num >= '0' && num <= '9');
                     }
                     else
                     {
-                        while (num >= '0' && num <= '9')
+                        do
                         {
                             answer = answer * 10 + num - '0';
                             index++;
-                            if (index >= overflow) goto Done;
-                            if (index == overflow - 1)
+                            if (index - firstNonZeroDigitIndex == Int32OverflowLength - 1)
                             {
                                 num = text[index];
                                 if (num >= '0' && num <= '9')
@@ -1042,7 +972,7 @@ namespace System.Text
                                 goto Done;
                             }
                             num = text[index];
-                        }
+                        } while (num >= '0' && num <= '9');
                     }
                     goto Done;
                 }
@@ -1056,391 +986,6 @@ namespace System.Text
                 bytesConsumed = index;
                 value = answer * sign;
                 return true;
-            }
-
-            public static bool TryParseInt32_FINAL2(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
-
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
-                if (num == 45)
-                {
-                    sign = -1;
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-                else if (num == 43)
-                {
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-
-                int answer = -1;
-                if (num == 48)
-                {
-                    answer = 0;
-                    index++;
-                    if (index >= textLength)
-                    {
-                        bytesConsumed = index;
-                        value = 0;
-                        return true;
-                    }
-                    num = text[index];
-
-                    while (num == 48)
-                    {
-                        index++;
-                        if (index >= textLength)
-                        {
-                            bytesConsumed = index;
-                            value = 0;
-                            return true;
-                        }
-                        num = text[index];
-                    }
-                }
-
-                textLength = Math.Min(Int32OverflowLength + index, textLength);
-
-                if (num > 47 && num < 58)
-                {
-                    answer = num - 48;
-                    index++;
-                    if (index >= textLength - 1) goto What;
-                    num = text[index];
-
-                    while (num > 47 && num < 58)
-                    {
-                        answer = answer * 10 + num - 48;
-                        index++;
-                        if (index == textLength - 1) break;
-                        num = text[index];
-                    }
-                }
-
-                What:
-                if (index >= textLength) goto Done;
-                num = text[index];
-                if (num > 47 && num < 58)
-                {
-                    num -= 48;
-                    if (WillOverFlow(answer, num, sign))
-                    {
-                        goto FalseExit;
-                    }
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (answer == -1) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = 0;
-                return false;
-            }
-
-            public static bool TryParseInt32_C(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
-
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
-                if (num == 45)
-                {
-                    sign = -1;
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-                else if (num == 43)
-                {
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-
-                int answer = -1;
-                if (num == 48)
-                {
-                    answer = 0;
-                    index++;
-                    if (index >= textLength)
-                    {
-                        bytesConsumed = index;
-                        value = 0;
-                        return true;
-                    }
-                    num = text[index];
-
-                    while (num == 48)
-                    {
-                        index++;
-                        if (index >= textLength)
-                        {
-                            bytesConsumed = index;
-                            value = 0;
-                            return true;
-                        }
-                        num = text[index];
-                    }
-                }
-
-                textLength = Math.Min(Int32OverflowLength + index, textLength);
-
-                if (num > 47 && num < 58)
-                {
-                    answer = num - 48;
-                    index++;
-                    if (index >= textLength - 1) goto What;
-                    num = text[index];
-
-                    while (num > 47 && num < 58)
-                    {
-                        answer = answer * 10 + num - 48;
-                        index++;
-                        if (index >= textLength - 1) break;
-                        num = text[index];
-                    }
-                }
-
-                What:
-                if (index >= textLength) goto Done;
-                num = text[index];
-                if (num > 47 && num < 58)
-                {
-                    num -= 48;
-                    if (WillOverFlow(answer, num, sign))
-                    {
-                        goto FalseExit;
-                    }
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (answer == -1) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = 0;
-                return false;
-            }
-
-            public static bool TryParseInt32_A(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
-
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
-                if (num == 45)
-                {
-                    sign = -1;
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-                else if (num == 43)
-                {
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-
-                bool containsDigitsAsPrefix = false;
-                int answer = 0;
-                while (num == 48)
-                {
-                    containsDigitsAsPrefix = true;
-                    index++;
-                    if (index >= textLength) goto Done;
-                    num = text[index];
-                }
-
-                textLength = Math.Min(Int32OverflowLength + index, textLength);
-
-                if (num > 47 && num < 58)
-                {
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num - 48;
-                    index++;
-                    if (index >= textLength - 1) goto What;
-                    num = text[index];
-                }
-
-                while (num > 47 && num < 58)
-                {
-                    answer = answer * 10 + num - 48;
-                    index++;
-                    if (index >= textLength - 1) break;
-                    num = text[index];
-                }
-
-                What:
-                if (index >= textLength) goto Done;
-                num = text[index];
-                if (num > 47 && num < 58)
-                {
-                    num -= 48;
-                    if (WillOverFlow(answer, num, sign))
-                    {
-                        goto FalseExit;
-                    }
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (!containsDigitsAsPrefix) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = 0;
-                return false;
-            }
-
-            public static bool TryParseInt32_BACKUP(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
-
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
-                if (num == 45)
-                {
-                    sign = -1;
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-                else if (num == 43)
-                {
-                    index++;
-                    if (index >= textLength) goto FalseExit;
-                    num = text[index];
-                }
-
-                bool containsDigitsAsPrefix = false;
-                int answer = 0;
-                while (num == 48)
-                {
-                    containsDigitsAsPrefix = true;
-                    index++;
-                    if (index >= textLength) goto Done;
-                    num = text[index];
-                }
-
-                textLength = Math.Min(Int32OverflowLength + index, textLength);
-
-                while (num > 47 && num < 58)
-                {
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num - 48;
-                    index++;
-                    if (index >= textLength - 1) break;
-                    num = text[index];
-                }
-
-                if (index >= textLength) goto Done;
-                num = text[index];
-                if (num > 47 && num < 58)
-                {
-                    num -= 48;
-                    if (WillOverFlow(answer, num, sign))
-                    {
-                        goto FalseExit;
-                    }
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (!containsDigitsAsPrefix) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = 0;
-                return false;
-            }
-
-            public static bool TryParseInt32_PREV(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
-            {
-                int sign = 1;
-                int index = 0;
-                if (text[0] == '-')
-                {
-                    sign = -1;
-                    index++;
-                }
-                else if (text[0] == '+')
-                {
-                    index++;
-                }
-
-                int textLength = text.Length;
-                int overflowLength = Int32OverflowLength + index;
-                if (textLength > overflowLength) textLength = overflowLength;
-
-                int answer = 0;
-                int num = 0;
-                bool containsDigitsAsPrefix = false;
-                while (index < textLength - 1)
-                {
-                    num = text[index] - 48; // '0'
-                    if (!IsDigit(num))
-                    {
-                        goto Done;
-                    }
-                    answer = answer * 10 + num;
-                    containsDigitsAsPrefix = true;
-                    index++;
-                }
-
-                num = text[textLength - 1] - 48; // '0'
-                if (IsDigit(num))
-                {
-                    if (WillOverFlow(answer, num, sign)) goto FalseExit;
-                    containsDigitsAsPrefix = true;
-                    answer = answer * 10 + num;
-                    index++;
-                }
-
-                Done:
-                if (!containsDigitsAsPrefix) goto FalseExit;
-                bytesConsumed = index;
-                value = answer * sign;
-                return true;
-
-                FalseExit:
-                bytesConsumed = 0;
-                value = default;
-                return false;
             }
 
             public static bool TryParseInt32_OLD(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
@@ -2782,86 +2327,7 @@ namespace System.Text
 
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value)
             {
-                if (text.Length < 1)
-                {
-                    value = default(int);
-                    return false;
-                }
-
-                int indexOfFirstDigit = 0;
-                int sign = 1;
-                if (text[0] == '-')
-                {
-                    indexOfFirstDigit = 1;
-                    sign = -1;
-                }
-                else if (text[0] == '+')
-                {
-                    indexOfFirstDigit = 1;
-                }
-
-                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
-
-                // Parse the first digit separately. If invalid here, we need to return false.
-                int firstDigit = text[indexOfFirstDigit] - 48; // '0'
-                if (firstDigit < 0 || firstDigit > 9)
-                {
-                    value = default(int);
-                    return false;
-                }
-                int parsedValue = firstDigit;
-
-                if (text.Length < overflowLength)
-                {
-                    // Length is less than Int32OverflowLength; overflow is not possible
-                    for (int index = indexOfFirstDigit + 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-                else
-                {
-                    // Length is greater than Int32OverflowLength; overflow is only possible after Int32OverflowLength
-                    // digits. There may be no overflow after Int32OverflowLength if there are leading zeroes.
-                    for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                    for (int index = overflowLength - 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
-                        // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-                        bool positive = sign > 0;
-                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
-                        if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
-                        {
-                            value = default(int);
-                            return false;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-
-                value = parsedValue * sign;
-                return true;
+                return TryParseInt32(text, out value, out int charsConsumed);
             }
 
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charsConsumed)
@@ -2883,6 +2349,13 @@ namespace System.Text
                 else if (text[0] == '+')
                 {
                     indexOfFirstDigit = 1;
+                }
+
+                if (indexOfFirstDigit >= text.Length)
+                {
+                    charsConsumed = 0;
+                    value = default(int);
+                    return false;
                 }
 
                 int overflowLength = Int32OverflowLength + indexOfFirstDigit;

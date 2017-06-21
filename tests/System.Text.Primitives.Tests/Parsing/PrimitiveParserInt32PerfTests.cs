@@ -119,7 +119,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147")]
         [InlineData("+214748")]
         [InlineData("+2147483")]
-        [InlineData("+2147483648")]
+        [InlineData("+2147483647")]
         [InlineData("+214")]
         [InlineData("000000000000000000001235abcdfg")]
         [InlineData("214748364abcdefghijklmnop")]
@@ -148,7 +148,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147abcdefghijklmnop")]
         [InlineData("+214748abcdefghijklmnop")]
         [InlineData("+2147483abcdefghijklmnop")]
-        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+2147483647abcdefghijklmnop")]
         [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed(string text)
         {
@@ -303,7 +303,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147")]
         [InlineData("+214748")]
         [InlineData("+2147483")]
-        [InlineData("+2147483648")]
+        [InlineData("+2147483647")]
         [InlineData("+214")]
         [InlineData("000000000000000000001235abcdfg")]
         [InlineData("214748364abcdefghijklmnop")]
@@ -332,7 +332,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147abcdefghijklmnop")]
         [InlineData("+214748abcdefghijklmnop")]
         [InlineData("+2147483abcdefghijklmnop")]
-        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+2147483647abcdefghijklmnop")]
         [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_BASE(string text)
         {
@@ -379,7 +379,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("107374182")] // standard parse
         [InlineData("2147483647")] // max value
         [InlineData("0")]
-        [InlineData("-2147483648")] // min value
+        [InlineData("-2147483647")] // min value
         [InlineData("214748364")]
         [InlineData("2")]
         [InlineData("21474836")]
@@ -406,7 +406,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147")]
         [InlineData("+214748")]
         [InlineData("+2147483")]
-        [InlineData("+2147483648")]
+        [InlineData("+2147483647")]
         [InlineData("+214")]
         [InlineData("000000000000000000001235abcdfg")]
         [InlineData("214748364abcdefghijklmnop")]
@@ -435,7 +435,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+2147abcdefghijklmnop")]
         [InlineData("+214748abcdefghijklmnop")]
         [InlineData("+2147483abcdefghijklmnop")]
-        [InlineData("+2147483648abcdefghijklmnop")]
+        [InlineData("+2147483647abcdefghijklmnop")]
         [InlineData("+214abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt32_BytesConsumed_OLD(string text)
         {
@@ -479,12 +479,68 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        /*[Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData("๑๐๗๓๗๔๑๘๒")] // standard parse
-        [InlineData("๒๑๔๗๔๘๓๖๔๗")] // max value
+        //[Benchmark(InnerIterationCount = InnerCount)]
+        [InlineData("๑๐๗๓๗๔๑๘๒")]
+        [InlineData("๒๑๔๗๔๘๓๖๔๗")]
         [InlineData("๐")]
-        [InlineData("๑๐๗")]
-        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๘")] // min value
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๘")]
+        [InlineData("๒๑๔๗๔๘๓๖๔")]
+        [InlineData("๒")]
+        [InlineData("๒๑๔๗๔๘๓๖")]
+        [InlineData("ลบ๒๑๔๗๔")]
+        [InlineData("๒๑๔๗๔")]
+        [InlineData("ลบ๒๑")]
+        [InlineData("ลบ๒")]
+        [InlineData("๒๑๔")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔")]
+        [InlineData("๒๑๔๗")]
+        [InlineData("ลบ๒๑๔๗")]
+        [InlineData("ลบ๒๑๔๗๔๘")]
+        [InlineData("ลบ๒๑๔๗๔๘๓")]
+        [InlineData("๒๑๔๗๔๘")]
+        [InlineData("๒๑")]
+        [InlineData("๒๑๔๗๔๘๓")]
+        [InlineData("ลบ๒๑๔")]
+        [InlineData("+๒๑๔๗๔")]
+        [InlineData("+๒๑")]
+        [InlineData("+๒")]
+        [InlineData("+๒๑๔๗๔๘๓๖")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔")]
+        [InlineData("+๒๑๔๗")]
+        [InlineData("+๒๑๔๗๔๘")]
+        [InlineData("+๒๑๔๗๔๘๓")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗")]
+        [InlineData("+๒๑๔")]
+        [InlineData("๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๑๒๓๕abcdfg")]
+        [InlineData("๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("๒abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("ลบ๒๑abcdefghijklmnop")]
+        [InlineData("ลบ๒abcdefghijklmnop")]
+        [InlineData("๒๑๔abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("๒๑๔๗abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("๒๑abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("+๒๑abcdefghijklmnop")]
+        [InlineData("+๒abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗abcdefghijklmnop")]
+        [InlineData("+๒๑๔abcdefghijklmnop")]
         public unsafe void ParseInt32Thai(string text)
         {
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
@@ -499,6 +555,107 @@ namespace System.Text.Primitives.Tests
                     }
                 }
             }
-        }*/
+        }
+
+        //[Benchmark(InnerIterationCount = InnerCount)]
+        [InlineData("๑๐๗๓๗๔๑๘๒")]
+        [InlineData("๒๑๔๗๔๘๓๖๔๗")]
+        [InlineData("๐")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔๘")]
+        [InlineData("๒๑๔๗๔๘๓๖๔")]
+        [InlineData("๒")]
+        [InlineData("๒๑๔๗๔๘๓๖")]
+        [InlineData("ลบ๒๑๔๗๔")]
+        [InlineData("๒๑๔๗๔")]
+        [InlineData("ลบ๒๑")]
+        [InlineData("ลบ๒")]
+        [InlineData("๒๑๔")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔")]
+        [InlineData("๒๑๔๗")]
+        [InlineData("ลบ๒๑๔๗")]
+        [InlineData("ลบ๒๑๔๗๔๘")]
+        [InlineData("ลบ๒๑๔๗๔๘๓")]
+        [InlineData("๒๑๔๗๔๘")]
+        [InlineData("๒๑")]
+        [InlineData("๒๑๔๗๔๘๓")]
+        [InlineData("ลบ๒๑๔")]
+        [InlineData("+๒๑๔๗๔")]
+        [InlineData("+๒๑")]
+        [InlineData("+๒")]
+        [InlineData("+๒๑๔๗๔๘๓๖")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔")]
+        [InlineData("+๒๑๔๗")]
+        [InlineData("+๒๑๔๗๔๘")]
+        [InlineData("+๒๑๔๗๔๘๓")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗")]
+        [InlineData("+๒๑๔")]
+        [InlineData("๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๐๑๒๓๕abcdfg")]
+        [InlineData("๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("๒abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("ลบ๒๑abcdefghijklmnop")]
+        [InlineData("ลบ๒abcdefghijklmnop")]
+        [InlineData("๒๑๔abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("๒๑๔๗abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("๒๑abcdefghijklmnop")]
+        [InlineData("๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("ลบ๒๑๔abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔abcdefghijklmnop")]
+        [InlineData("+๒๑abcdefghijklmnop")]
+        [InlineData("+๒abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓abcdefghijklmnop")]
+        [InlineData("+๒๑๔๗๔๘๓๖๔๗abcdefghijklmnop")]
+        [InlineData("+๒๑๔abcdefghijklmnop")]
+        public unsafe void ParseInt32Thai_OLD(string text)
+        {
+            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        PrimitiveParser.TryParseInt32_OLD(utf8Span, out int value, out int bytesConsumed, 'G', s_thaiEncoder);
+                        DoNotIgnore(value, bytesConsumed);
+                    }
+                }
+            }
+        }
+
+        static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
+{
+            new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
+            new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
+            new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
+            new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
+                0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
+                0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
+            new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
+                0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
+            new byte[] { 69 }, new byte[] { 101 },
+};
+
+        static TextEncoder s_thaiEncoder = TextEncoder.CreateUtf8Encoder(s_thaiUtf8DigitsAndSymbols);
+
+        private byte[] UtfEncode(string s, bool utf16)
+        {
+            if (utf16)
+                return Text.Encoding.Unicode.GetBytes(s);
+            else
+                return Text.Encoding.UTF8.GetBytes(s);
+        }
     }
 }
