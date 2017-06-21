@@ -75,9 +75,18 @@ namespace System.IO.Compression.Tests
             byte[] data = File.ReadAllBytes(testFilePath);
             var bytes = new byte[bufferSize];
             foreach (var iteration in Benchmark.Iterations)
+            {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Brotli.Decompress(data, bytes, out int consumed, out int written);
+                    {
+                        Brotli.State state = new Brotli.State();
+                        state.InitializeDecoder();
+                        Brotli.Decompress(data, bytes, out int consumed, out int written, ref state);
+
+                    }
+                }
+            }
             File.Delete(testFilePath);
         }
 
@@ -94,7 +103,9 @@ namespace System.IO.Compression.Tests
                 byte[] compressed = new byte[bytes.Length];
                 using (iteration.StartMeasurement())
                 {
-                    Brotli.Compress(bytes, compressed, out int consumed, out int writen);
+                    Brotli.State state = new Brotli.State();
+                    state.InitializeDecoder();
+                    Brotli.Compress(bytes, compressed, out int consumed, out int writen, ref state);
                 }
             }
         }
