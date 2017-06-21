@@ -15,16 +15,6 @@ namespace System.IO.Compression.Tests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
-        [Theory]
-        [InlineData(25, 1)]
-        [InlineData(-1, 1)]
-        [InlineData(24, 0)]
-        [InlineData(24, 12)]
-        public void TestMethodCompressEx(CompressionLevel quality, int lgWinSize)
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => Brotli.Compress(new byte[1], new byte[1], out int consumed, out int written, quality, lgWinSize));
-        }
-
         [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
         [InlineData(1)]
         [InlineData(5)]
@@ -35,7 +25,10 @@ namespace System.IO.Compression.Tests
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
             Span<byte> compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
-            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written);
+            Brotli.State state = new Brotli.State();
+            state.InitializeEncoder();
+            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
+            Brotli.FlushEncoder(data, compressed, out consumed, out written, ref state);
             Assert.Equal(TransformationStatus.Done, result);
             Assert.Equal(totalSize, consumed);
             compressed = compressed.Slice(0, written);
@@ -45,7 +38,8 @@ namespace System.IO.Compression.Tests
         private void ValidateCompressedData(Span<byte> data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
-            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written);
+            Brotli.State state = new Brotli.State();
+            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
             Assert.Equal<byte>(expected, decompressed);
         }
