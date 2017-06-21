@@ -39,6 +39,7 @@ namespace System.IO.Compression.Tests
         {
             byte[] decompressed = new byte[expected.Length];
             Brotli.State state = new Brotli.State();
+            state.InitializeDecoder();
             TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
             Assert.Equal<byte>(expected, decompressed);
