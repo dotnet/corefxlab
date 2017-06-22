@@ -103,7 +103,7 @@ namespace System.Text
             public int CompareTo(Suffix other)
             {
                 var shorter = Math.Min(other.Bytes.Length, Bytes.Length);
-                for(int index=0; index<shorter; index++)
+                for(int index = 0; index < shorter; index++)
                 {
                     if (Bytes[index] == other.Bytes[index]) continue;
                     return Bytes[index].CompareTo(other.Bytes[index]);
@@ -316,7 +316,7 @@ namespace System.Text
                 var firstSpan = first.Bytes.AsSpan();
                 if (firstSpan.SequenceEqual(second.Bytes))
                 {
-                    throw new ArgumentException(String.Format("Symbols cannot be identical"));
+                    throw new ArgumentException("Symbols cannot be identical");
                 }
                 if (first.Bytes.Length > second.Bytes.Length)
                 {
