@@ -136,9 +136,11 @@ namespace System
 
         public Span<T> Span
         {
-            get {
+            get
+            {
                 if (_native == null) return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
-                return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                if (_arrayOrOwnedBuffer != null) return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                return new Span<T>(_native, _length); 
             }
         }
 
@@ -147,11 +149,7 @@ namespace System
             BufferHandle bufferHandle;
             if (pin)
             {
-                if (_native != null)
-                {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
-                }
-                else
+                if (_native == null)
                 {
                     var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
@@ -160,14 +158,30 @@ namespace System
                         bufferHandle = new BufferHandle(null, pointer, handle);
                     }
                 }
+                else if (_arrayOrOwnedBuffer != null)
+                {
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
+                }
+                else
+                {
+                    bufferHandle = new BufferHandle(null);
+                }
             }
             else
             {
-                if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer) != null)
+                if (_native == null)
+                {
+                    bufferHandle = new BufferHandle((IRetainable)_arrayOrOwnedBuffer);
+                }
+                else if (_arrayOrOwnedBuffer != null)
                 {
                     Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Retain();
+                    bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
                 }
-                bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
+                else
+                {
+                    bufferHandle = new BufferHandle(null);
+                }
             }
             return bufferHandle;
         }
