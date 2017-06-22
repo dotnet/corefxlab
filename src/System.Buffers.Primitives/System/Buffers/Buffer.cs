@@ -194,12 +194,20 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if(!(obj is Buffer<T>)) {
+            if (obj is ReadOnlyBuffer<T>)
+            {
+                var other = (ReadOnlyBuffer<T>)obj;
+                return other.Equals(this);
+            }
+            else if (obj is Buffer<T>)
+            {
+                var other = (Buffer<T>)obj;
+                return Equals(other);
+            }
+            else
+            {
                 return false;
             }
-
-            var other = (Buffer<T>)obj;
-            return Equals(other);
         }
 
         public bool Equals(Buffer<T> other)

@@ -24,12 +24,6 @@ namespace System.Buffers.Tests
 
         public sealed class TestClass
         {
-            private double _d;
-            public char C0;
-            public char C1;
-            public char C2;
-            public char C3;
-            public char C4;
         }
     }
 }
