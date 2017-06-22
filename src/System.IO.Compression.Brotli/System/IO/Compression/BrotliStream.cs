@@ -158,10 +158,10 @@ namespace System.IO.Compression
             if (BrotliNative.BrotliEncoderIsFinished(_state.BrotliNativeState)) return;
             _nextInput = new byte[0];
             _availableInput = 0;
-            TransformationStatus ts = TransformationStatus.DestinationTooSmall;
-            while (ts == TransformationStatus.DestinationTooSmall)
+            TransformationStatus flushStatus = TransformationStatus.DestinationTooSmall;
+            while (flushStatus == TransformationStatus.DestinationTooSmall)
             {
-                ts = Brotli.FlushEncoder(_nextInput, _bufferOutput, out _availableInput, out _availableOutput, ref _state, finished);
+                flushStatus = Brotli.FlushEncoder(_nextInput, _bufferOutput, out _availableInput, out _availableOutput, ref _state, finished);
                 _stream.Write(_bufferOutput, 0, _availableOutput);
                 _availableOutput = _bufferSize;
 
