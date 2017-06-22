@@ -226,20 +226,6 @@ namespace System.IO.Compression
                 throw new ObjectDisposedException(BrotliEx.StreamDisposed);
         }
 
-        internal void RemoveBytes(int numberOfBytes)
-        {
-            ArraySegment<byte> buf;
-            if (_bufferStream.TryGetBuffer(out buf))
-            {
-                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)_bufferStream.Length - numberOfBytes);
-                _bufferStream.SetLength(BufferStream.Length - numberOfBytes);
-            }
-            else
-            {
-                throw new UnauthorizedAccessException();
-            }
-        }
-
         public override int Read(byte[] buffer, int offset, int count)
         {
             EnsureDecompressionMode();
