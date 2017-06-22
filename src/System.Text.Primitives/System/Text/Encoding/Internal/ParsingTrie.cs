@@ -304,7 +304,7 @@ namespace System.Text
             //   a) each symbol must be unique
             //   b) a symbol cannot be a prefix of another symbol
             //   c) symbols cannot be empty
-            for(int i=1; i<symbolList.Count; i++)
+            for(int i = 1; i < symbolList.Count; i++)
             {
                 var first = symbolList[i - 1];
                 var second = symbolList[i];
