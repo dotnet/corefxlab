@@ -171,7 +171,7 @@ namespace System
             {
                 if (_native == null)
                 {
-                    bufferHandle = new BufferHandle((IRetainable)_arrayOrOwnedBuffer);
+                    bufferHandle = new BufferHandle(null);
                 }
                 else if (_arrayOrOwnedBuffer != null)
                 {
