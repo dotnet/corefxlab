@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections;
 using System.Collections.Generic;
 
 namespace System.Text
@@ -83,6 +84,12 @@ namespace System.Text
             public int SymbolIndex;
             public byte[] Bytes;
 
+            public Suffix(int symbolIndex, byte[] bytes)
+            {
+                SymbolIndex = symbolIndex;
+                Bytes = bytes;
+            }
+
             public Suffix(int symbolIndex, ReadOnlySpan<byte> bytes)
             {
                 SymbolIndex = symbolIndex;
@@ -95,32 +102,14 @@ namespace System.Text
 
             public int CompareTo(Suffix other)
             {
-                int index = 0;
-                if (Bytes.Length == 0 || other.Bytes.Length == 0)
+                var shorter = Math.Min(other.Bytes.Length, Bytes.Length);
+                for(int index=0; index<shorter; index++)
                 {
-                    throw new ArgumentException("Symbol cannot be zero bytes long");
+                    if (Bytes[index] == other.Bytes[index]) continue;
+                    return Bytes[index].CompareTo(other.Bytes[index]);
                 }
-                while (true)
-                {
-                    if (index == Bytes.Length)
-                    {
-                        if (index == other.Bytes.Length)
-                        {
-                            throw new ArgumentException(String.Format("Symbols cannot be identical"));
-                        }
-                        throw new ArgumentException("Symbols are ambiguous");
-                    }
-                    if (index == other.Bytes.Length)
-                    {
-                        throw new ArgumentException("Symbols are ambiguous");
-                    }
-                    int compareResult = Bytes[index].CompareTo(other.Bytes[index]);
-                    if (compareResult != 0)
-                    {
-                        return compareResult;
-                    }
-                    index++;
-                }
+                return Bytes.Length.CompareTo(other.Bytes.Length);
+                
             }
         }
 
@@ -310,6 +299,40 @@ namespace System.Text
             // Sort the symbol list. This is important for allowing binary search of the child nodes, as well as
             // counting the number of children a node has.
             symbolList.Sort();
+
+            // validate symbol consistemcy:
+            //   a) each symbol must be unique
+            //   b) a symbol cannot be a prefix of another symbol
+            //   c) symbols cannot be empty
+            for(int i=1; i<symbolList.Count; i++)
+            {
+                var first = symbolList[i - 1];
+                var second = symbolList[i];
+
+                if(first.Bytes.Length == 0 || second.Bytes.Length == 0)
+                {
+                    throw new ArgumentException("Symbol cannot be zero bytes long");
+                }
+                var firstSpan = first.Bytes.AsSpan();
+                if (firstSpan.SequenceEqual(second.Bytes))
+                {
+                    throw new ArgumentException(String.Format("Symbols cannot be identical"));
+                }
+                if (first.Bytes.Length > second.Bytes.Length)
+                {
+                    if (firstSpan.StartsWith(second.Bytes))
+                    {
+                        throw new ArgumentException("Symbols are ambiguous");
+                    }
+                }
+                else if(first.Bytes.Length < second.Bytes.Length)
+                {
+                    if (second.Bytes.AsSpan().StartsWith(first.Bytes))
+                    {
+                        throw new ArgumentException("Symbols are ambiguous");
+                    }
+                }
+            }
 
             List<Node> parsingTrieList = new List<Node>(100);
             CreateParsingTrieNodeAndChildren(ref parsingTrieList, symbolList);
