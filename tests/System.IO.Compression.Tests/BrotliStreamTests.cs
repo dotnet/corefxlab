@@ -219,19 +219,20 @@ namespace System.IO.Compression.Tests
                 {
                     compressor.Write(data, i, chunkSize);
                 }
+                compressor.Dispose();
             }
             compressed.Position = 0;
-            ValidateCompressedData(chunkSize, compressed, data);
+            ValidateCompressedData(chunkSize, compressed.ToArray(), data);
             compressed.Dispose();
         }
 
-        private void ValidateCompressedData(int chunkSize, MemoryStream compressed, byte[] expected)
+        private void ValidateCompressedData(int chunkSize, byte[] compressedData, byte[] expected)
         {
+            MemoryStream compressed = new MemoryStream(compressedData);
             using (MemoryStream decompressed = new MemoryStream())
             using (var decompressor = new BrotliStream(compressed, CompressionMode.Decompress, true))
             {
-                decompressor.CopyTo(decompressed, chunkSize);
-
+                decompressor.CopyTo(decompressed, expected.Length);
                 Assert.Equal<byte>(expected, decompressed.ToArray());
             }
         }

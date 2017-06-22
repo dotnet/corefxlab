@@ -24,24 +24,33 @@ namespace System.IO.Compression.Tests
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
-            Span<byte> compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
+            byte[] compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
+            Assert.NotEqual(compressed.Length, 0);
             Brotli.State state = new Brotli.State();
             state.InitializeEncoder();
             TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
-            Brotli.FlushEncoder(data, compressed, out consumed, out written, ref state);
+            while (consumed != 0 || result != TransformationStatus.Done)
+            {
+                result = Brotli.Compress(data, compressed, out consumed, out written, ref state);
+            }
+            byte[] flush = new byte[0];
+            result = Brotli.FlushEncoder(flush, compressed, out consumed, out written, ref state);
             Assert.Equal(TransformationStatus.Done, result);
-            Assert.Equal(totalSize, consumed);
-            compressed = compressed.Slice(0, written);
-            ValidateCompressedData(compressed, data);
+            Assert.Equal(consumed, 0);
+            byte[] resultCompressed = new byte[written];
+            Array.Copy(compressed, resultCompressed, written);
+            ValidateCompressedData(resultCompressed, data);
         }
 
-        private void ValidateCompressedData(Span<byte> data, byte[] expected)
+        private void ValidateCompressedData(byte[] data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
             Brotli.State state = new Brotli.State();
             state.InitializeDecoder();
             TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
+            Assert.Equal<long>(expected.Length, written);
+            Assert.Equal<long>(consumed, 0);
             Assert.Equal<byte>(expected, decompressed);
         }
 
