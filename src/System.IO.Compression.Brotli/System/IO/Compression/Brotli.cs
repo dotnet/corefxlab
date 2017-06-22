@@ -134,7 +134,6 @@ namespace System.IO.Compression
         public static TransformationStatus FlushEncoder(Span<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state, bool isFinished = true)
         {
             BrotliEncoderOperation operation = isFinished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
-            bytesConsumed = source.Length;
             bytesWritten = destination.Length;
             bytesConsumed = 0;
             if (state.BrotliNativeState == IntPtr.Zero) return TransformationStatus.InvalidData;

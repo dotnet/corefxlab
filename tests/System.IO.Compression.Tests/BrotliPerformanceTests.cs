@@ -10,7 +10,7 @@ using Xunit;
 
 namespace System.IO.Compression.Tests
 {
-    public class BrotliPerfomanceTests
+    public class BrotliPerformanceTests
     {
         private const int Iter = 1000;
 
