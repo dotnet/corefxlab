@@ -70,7 +70,13 @@ namespace System.Text
                     return false;
                 }
 
-                Span<byte> temp = new byte[needed];
+                Span<byte> temp;
+                unsafe
+                {
+                    var buf = stackalloc byte[needed];
+                    temp = new Span<byte>(buf, needed);
+                }
+
                 status = Encoders.Utf8.ConvertFromUtf16(utf16Bytes, temp, out int consumed, out written);
                 if (status != Buffers.TransformationStatus.Done)
                 {

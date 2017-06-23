@@ -222,9 +222,9 @@ namespace System.Text.Json
 
         struct JsonValue : IBufferFormattable
         {
-            static readonly byte[] NullBytes = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
-            static readonly byte[] TrueBytes = { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
-            static readonly byte[] FalseBytes = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
+            static readonly byte[] s_nullBytes = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
+            static readonly byte[] s_trueBytes = { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
+            static readonly byte[] s_falseBytes = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
 
             JsonDynamicObject _object;
             //TODO: no spans on the heap
@@ -288,11 +288,11 @@ namespace System.Text.Json
                     case JsonValueType.Object:
                         return _object.TryFormat(buffer, out written, format, symbolTable);
                     case JsonValueType.Null:
-                        return symbolTable.TryEncode(NullBytes, buffer, out consumed, out written);
+                        return symbolTable.TryEncode(s_nullBytes, buffer, out consumed, out written);
                     case JsonValueType.True:
-                        return symbolTable.TryEncode(TrueBytes, buffer, out consumed, out written);
+                        return symbolTable.TryEncode(s_trueBytes, buffer, out consumed, out written);
                     case JsonValueType.False:
-                        return symbolTable.TryEncode(FalseBytes, buffer, out consumed, out written);
+                        return symbolTable.TryEncode(s_falseBytes, buffer, out consumed, out written);
                     default:
                         throw new NotImplementedException();
                 }
