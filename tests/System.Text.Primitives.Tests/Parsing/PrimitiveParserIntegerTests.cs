@@ -1162,7 +1162,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483648", true, -2147483648, 11)] // min
         [InlineData("-A", false, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0)] // invalid character test
-        [InlineData(" !", false, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("123!", true, 123, 3)] // invalid character test w/ char < '0' // TODO: Fix test case elsewhere
         [InlineData("2147483648", false, 0, 0)] // positive overflow test
         [InlineData("-2147483649", false, 0, 0)] // negative overflow test
         [InlineData("0", true, 0, 1)]
@@ -1178,6 +1178,15 @@ namespace System.Text.Primitives.Tests
         [InlineData("+000012345abcdefg1", true, 12345, 10)]
         [InlineData("000012345abcdefg1", true, 12345, 9)]
         [InlineData("0000001234145abcdefg1", true, 1234145, 13)]
+        [InlineData("00000000000000abcdefghijklmnop", true, 0, 14)]
+        [InlineData("000000a", true, 0, 6)]
+        [InlineData("00000000000000!", true, 0, 14)]
+        [InlineData("00000000000000", true, 0, 14)]
+        [InlineData("1147483648", true, 1147483648, 10)]
+        [InlineData("-1147483649", true, -1147483649, 11)]
+        [InlineData("12345!6", true, 12345, 5)]
+        [InlineData("12345!abc", true, 12345, 5)]
+        [InlineData("!!", false, 0, 0)]
         [InlineData("+", false, 0, 0)]
         [InlineData("-", false, 0, 0)]
         [InlineData("", false, 0, 0)]
@@ -1257,7 +1266,7 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
         }
-        
+
         [Theory]
         [InlineData("2", true, 2, 1)]
         [InlineData("21", true, 21, 2)]
@@ -1299,6 +1308,49 @@ namespace System.Text.Primitives.Tests
         }
 
         [Theory]
+        [InlineData("3147483647")]
+        [InlineData("4147483647")]
+        [InlineData("5147483647")]
+        [InlineData("6147483647")]
+        [InlineData("7147483647")]
+        [InlineData("8147483647")]
+        [InlineData("9147483647")]
+        [InlineData("2147483648")]
+        [InlineData("3147483648")]
+        [InlineData("4147483648")]
+        [InlineData("5147483648")]
+        [InlineData("6147483648")]
+        [InlineData("7147483648")]
+        [InlineData("8147483648")]
+        [InlineData("9147483648")]
+        [InlineData("11474836471")]
+        [InlineData("21474836471")]
+        [InlineData("31474836471")]
+        [InlineData("41474836471")]
+        [InlineData("51474836471")]
+        [InlineData("61474836471")]
+        [InlineData("71474836471")]
+        [InlineData("81474836471")]
+        [InlineData("91474836471")]
+        [InlineData("11474836481")]
+        [InlineData("21474836481")]
+        [InlineData("31474836481")]
+        [InlineData("41474836481")]
+        [InlineData("51474836481")]
+        [InlineData("61474836481")]
+        [InlineData("71474836481")]
+        [InlineData("81474836481")]
+        [InlineData("91474836481")]
+        private void ParseInt32VariableOverflowTests(string text)
+        {
+            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            bool result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out int parsedValue, out int consumed);
+            Assert.Equal(false, result);
+            Assert.Equal(0, parsedValue);
+            Assert.Equal(0, consumed);
+        }
+
+        [Theory]
         [InlineData("0", true, 0, int.MaxValue)]
         [InlineData("2", true, 2, int.MaxValue)]
         [InlineData("21", true, 21, int.MaxValue)]
@@ -1311,6 +1363,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("12345abcdefg1", true, 12345, int.MaxValue - 8)]
         [InlineData("1234145abcdefg1", true, 1234145, int.MaxValue - 8)]
         [InlineData("abcdefghijklmnop1", true, 0, int.MaxValue - 17)]
+        [InlineData("1147483648", true, 1147483648, int.MaxValue)]
+        [InlineData("-1147483649", true, -1147483649, int.MaxValue)]
         public unsafe void ParseInt32OverflowCheck(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);

@@ -20,7 +20,7 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsDigit(int i)
         {
-            return i >= 0 && i <= 9;
+            return (uint)(i - '0') <= ('9' - '0');
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35,7 +35,7 @@ namespace System.Text
         private static bool WillOverFlow(sbyte value, int nextDigit, int sign)
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueSbyteDiv10 || nextDigitTooLarge);
+            return (value > maxValueSbyteDiv10 || (value == maxValueSbyteDiv10 && nextDigitTooLarge));
         }
 
         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
@@ -44,16 +44,16 @@ namespace System.Text
         private static bool WillOverFlow(short value, int nextDigit, int sign)
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueShortDiv10 || nextDigitTooLarge);
+            return (value > maxValueShortDiv10 || (value == maxValueShortDiv10 && nextDigitTooLarge));
         }
 
         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool WillOverFlow(int value, byte nextDigit, sbyte sign)
+        private static bool WillOverFlow(int value, int nextDigit, int sign)
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueIntDiv10 || nextDigitTooLarge);
+            return (value > maxValueIntDiv10 || (value == maxValueIntDiv10 && nextDigitTooLarge));
         }
 
         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
@@ -62,7 +62,7 @@ namespace System.Text
         private static bool WillOverFlow(long value, int nextDigit, int sign)
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueLongDiv10 || nextDigitTooLarge);
+            return (value > maxValueLongDiv10 || (value == maxValueLongDiv10 && nextDigitTooLarge));
         }
 
         #endregion

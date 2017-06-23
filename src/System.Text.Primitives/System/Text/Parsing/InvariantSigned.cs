@@ -907,9 +907,9 @@ namespace System.Text
                 int textLength = text.Length;
                 if (textLength < 1) goto FalseExit;
 
-                sbyte sign = 1;
-                int index = 0;
-                byte num = text[index];
+                int sign = 1;
+                int index = default;
+                int num = text[index];
                 if (num == '-')
                 {
                     sign = -1;
@@ -924,9 +924,9 @@ namespace System.Text
                     num = text[index];
                 }
 
-                int answer = 0;
+                int answer = default;
 
-                if (num >= '0' && num <= '9')
+                if (IsDigit(num))
                 {
                     if (num == '0')
                     {
@@ -935,12 +935,11 @@ namespace System.Text
                             index++;
                             if (index >= textLength) goto Done;
                             num = text[index];
-                        } while (num == '0') ;
-                        if (num < '0' || num > '9') goto Done;
+                        } while (num == '0');
+                        if (!IsDigit(num)) goto Done;
                     }
 
-                    int firstNonZeroDigitIndex = index;
-                    if (textLength - firstNonZeroDigitIndex < Int32OverflowLength)
+                    if (textLength - index < Int32OverflowLength)
                     {
                         do
                         {
@@ -948,10 +947,11 @@ namespace System.Text
                             index++;
                             if (index >= textLength) goto Done;
                             num = text[index];
-                        } while (num >= '0' && num <= '9');
+                        } while (IsDigit(num));
                     }
-                    else
+                    else if (textLength - index == Int32OverflowLength)
                     {
+                        int firstNonZeroDigitIndex = index;
                         do
                         {
                             answer = answer * 10 + num - '0';
@@ -959,9 +959,9 @@ namespace System.Text
                             if (index - firstNonZeroDigitIndex == Int32OverflowLength - 1)
                             {
                                 num = text[index];
-                                if (num >= '0' && num <= '9')
+                                if (IsDigit(num))
                                 {
-                                    num -= (byte)'0';
+                                    num -= '0';
                                     if (WillOverFlow(answer, num, sign)) goto FalseExit;
                                     answer = answer * 10 + num;
                                     index++;
@@ -969,14 +969,37 @@ namespace System.Text
                                 goto Done;
                             }
                             num = text[index];
-                        } while (num >= '0' && num <= '9');
+                        } while (IsDigit(num));
+                    }
+                    else
+                    {
+                        int firstNonZeroDigitIndex = index;
+                        do
+                        {
+                            answer = answer * 10 + num - '0';
+                            index++;
+                            if (index - firstNonZeroDigitIndex == Int32OverflowLength - 1)
+                            {
+                                num = text[index];
+                                if (IsDigit(num))
+                                {
+                                    num -= '0';
+                                    if (WillOverFlow(answer, num, sign)) goto FalseExit;
+                                    answer = answer * 10 + num;
+                                    index++;
+                                }
+                                if (IsDigit(text[index])) goto FalseExit;
+                                goto Done;
+                            }
+                            num = text[index];
+                        } while (IsDigit(num));
                     }
                     goto Done;
                 }
 
                 FalseExit:
-                bytesConsumed = 0;
-                value = 0;
+                bytesConsumed = default;
+                value = default;
                 return false;
 
                 Done:
