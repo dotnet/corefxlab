@@ -9,9 +9,9 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 
-        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -60,14 +60,14 @@ namespace System.Text
             int thisSymbolConsumed;
             if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
-                value = default(byte);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
 
             if (nextSymbol > 9)
             {
-                value = default(byte);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -90,7 +90,7 @@ namespace System.Text
                 if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextSymbol > 5))
                 {
                     bytesConsumed = 0;
-                    value = default(byte);
+                    value = default;
                     return false;
                 }
 
@@ -103,9 +103,9 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -154,14 +154,14 @@ namespace System.Text
             int thisSymbolConsumed;
             if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
-                value = default(ushort);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
 
             if (nextSymbol > 9)
             {
-                value = default(ushort);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -184,7 +184,7 @@ namespace System.Text
                 if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextSymbol > 5))
                 {
                     bytesConsumed = 0;
-                    value = default(ushort);
+                    value = default;
                     return false;
                 }
 
@@ -197,9 +197,9 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -248,14 +248,14 @@ namespace System.Text
             int thisSymbolConsumed;
             if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
-                value = default(uint);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
 
             if (nextSymbol > 9)
             {
-                value = default(uint);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -278,7 +278,7 @@ namespace System.Text
                 if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextSymbol > 5))
                 {
                     bytesConsumed = 0;
-                    value = default(uint);
+                    value = default;
                     return false;
                 }
 
@@ -291,9 +291,9 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -342,14 +342,14 @@ namespace System.Text
             int thisSymbolConsumed;
             if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
-                value = default(ulong);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
 
             if (nextSymbol > 9)
             {
-                value = default(ulong);
+                value = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -372,7 +372,7 @@ namespace System.Text
                 if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextSymbol > 5))
                 {
                     bytesConsumed = 0;
-                    value = default(ulong);
+                    value = default;
                     return false;
                 }
 

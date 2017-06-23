@@ -88,7 +88,7 @@ namespace System.Text.Json
             JsonValue jsonValue;
             if (!_properties.TryGetValue(jsonProperty, out jsonValue))
             {
-                value = default(uint);
+                value = default;
                 return false;
             }
 
@@ -105,7 +105,7 @@ namespace System.Text.Json
             JsonValue jsonValue;
             if (!_properties.TryGetValue(jsonProperty, out jsonValue))
             {
-                value = default(Utf8String);
+                value = default;
                 return false;
             }
 

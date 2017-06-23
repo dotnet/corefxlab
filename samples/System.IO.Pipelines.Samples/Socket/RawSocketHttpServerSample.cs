@@ -3,10 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Net;
-using System.Text;
-using System.Text.Formatting;
 using System.Threading.Tasks;
-using System.Net.Sockets;
 using System.IO.Pipelines.Networking.Sockets;
 
 namespace System.IO.Pipelines.Samples

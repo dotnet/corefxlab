@@ -11,49 +11,49 @@ namespace System.Text
     /// </remarks>
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, 0xff, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, 0xffff, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, 0xffffffff, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, encoder);
         }
 
-        public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             return TryFormatCore(value, 0xffffffffffffffff, buffer, out bytesWritten, format, encoder);
         }
 
         static bool TryFormatCore(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
             if (format.IsDefault || format.Symbol == 'g')
             {
                 format.Symbol = 'G';
@@ -69,7 +69,7 @@ namespace System.Text
 
         static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             if (encoder.IsInvariantUtf8)
                 return TryFormatInvariantUtf8(value, buffer, out bytesWritten, format);

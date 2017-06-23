@@ -8,10 +8,10 @@ namespace System.Text
     {
         public static bool TryParseDecimal(ReadOnlySpan<byte> text, out decimal value, out int bytesConsumed, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             bytesConsumed = 0;
-            value = default(decimal);
+            value = default;
 
             if (encoder.IsInvariantUtf8)
             {

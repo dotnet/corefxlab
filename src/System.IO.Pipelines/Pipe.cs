@@ -97,8 +97,8 @@ namespace System.IO.Pipelines
         {
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
-            _readerCompletion = default(PipeCompletion);
-            _writerCompletion = default(PipeCompletion);
+            _readerCompletion = default;
+            _writerCompletion = default;
             _commitHeadIndex = 0;
             _currentWriteLength = 0;
             _length = 0;
@@ -337,7 +337,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
+        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;

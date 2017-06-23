@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Utf8;
 using System.Text.Utf16;
 using Xunit;
 using Xunit.Abstractions;

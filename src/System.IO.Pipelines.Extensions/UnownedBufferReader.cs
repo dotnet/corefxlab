@@ -172,7 +172,7 @@ namespace System.IO.Pipelines
         }
 
         // Called by the READER
-        private ReadableBuffer Read(CancellationToken cancellationToken = default(CancellationToken))
+        private ReadableBuffer Read(CancellationToken cancellationToken = default)
         {
             if (_consuming)
             {
@@ -286,7 +286,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
         // Called by the READER
-        public ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default)
         {
             return new ReadableBufferAwaitable(this);
         }
@@ -399,7 +399,7 @@ namespace System.IO.Pipelines
 
         public bool TryRead(out ReadResult result)
         {
-            result = default(ReadResult);
+            result = default;
             return false;
         }
 

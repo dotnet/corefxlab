@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 
 namespace System.IO.Pipelines
 {
@@ -19,7 +18,7 @@ namespace System.IO.Pipelines
         public BufferEnumerator(ReadCursor start, ReadCursor end)
         {
             _segmentEnumerator = new SegmentEnumerator(start, end);
-            _current = default(Buffer<byte>);
+            _current = default;
         }
 
         /// <summary>
@@ -35,7 +34,7 @@ namespace System.IO.Pipelines
         {
             if (!_segmentEnumerator.MoveNext())
             {
-                _current = default(Buffer<byte>);
+                _current = default;
                 return false;
             }
             var current = _segmentEnumerator.Current;

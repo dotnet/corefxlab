@@ -28,7 +28,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Asynchronously reads an item from the channel.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
         /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
-        public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Attempts to read an item to the channel.</summary>
         /// <param name="item">The read item, or a default value if no item could be read.</param>
@@ -41,7 +41,7 @@ namespace System.Threading.Tasks.Channels
         /// A <see cref="Task{Boolean}"/> that will complete with a <c>true</c> result when data is available to read
         /// or with a <c>false</c> result when no further data will ever be available to be read.
         /// </returns>
-        public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
         private static readonly ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable =
@@ -196,7 +196,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Gets an async enumerator of the data in this channel.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the asynchronous enumeration.</param>
         /// <returns>The async enumerator.</returns>
-        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)) =>
+        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
             new AsyncEnumerator(this, cancellationToken);
 
         /// <summary>Provides an async enumerator for the data in a channel.</summary>

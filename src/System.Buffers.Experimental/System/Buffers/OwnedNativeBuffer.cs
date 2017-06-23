@@ -46,7 +46,7 @@ namespace System.Buffers
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            arraySegment = default(ArraySegment<byte>);
+            arraySegment = default;
             return false;
         }
 

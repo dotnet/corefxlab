@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Networking.Sockets.Internal
                 }
                 else
                 {
-                    segment = default(ArraySegment<byte>);
+                    segment = default;
                     return false;
                 }
             }

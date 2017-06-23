@@ -9,7 +9,7 @@ namespace System.Text.Formatting
 {
     public static class SequenceFormatterExtensions
     {
-        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoder = default(TextEncoder)) where TSequence : ISequence<Buffer<byte>>
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoder = default) where TSequence : ISequence<Buffer<byte>>
         {
             return new SequenceFormatter<TSequence>(sequence, encoder);
         }
