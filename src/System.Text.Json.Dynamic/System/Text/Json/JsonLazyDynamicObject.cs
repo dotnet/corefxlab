@@ -29,7 +29,7 @@ namespace System.Text.Json
             JsonObject jsonObject;
             if (!_dom.TryGetValue(propertyName, out jsonObject))
             {
-                value = default(uint);
+                value = default;
                 return false;
             }
             if (jsonObject.Type != JsonObject.JsonValueType.Number)
@@ -44,7 +44,7 @@ namespace System.Text.Json
         {
             JsonObject jsonObject;
             if (!_dom.TryGetValue(propertyName, out jsonObject)) {
-                value = default(Utf8String);
+                value = default;
                 return false;
             }
             if (jsonObject.Type != JsonObject.JsonValueType.String) {
@@ -58,7 +58,7 @@ namespace System.Text.Json
         {
             JsonObject jsonObject;
             if (!_dom.TryGetValue(binder.Name, out jsonObject)) {
-                result = default(object);
+                result = default;
                 return false;
             }
 

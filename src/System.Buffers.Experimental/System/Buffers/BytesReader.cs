@@ -325,7 +325,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default(TextFormat), _symbolTable))
+            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {

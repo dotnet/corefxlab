@@ -11,7 +11,7 @@ namespace System.Text
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             bytesConsumed = 0;
-            value = default(decimal);
+            value = default;
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {

@@ -8,337 +8,337 @@ namespace System.Numerics
     {
         public static Dec64 operator +(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator &(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator |(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator --(Dec64 value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator /(Dec64 dividend, Dec64 divisor)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static bool operator ==(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator ==(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator ==(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator ==(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator ==(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static Dec64 operator ^(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static explicit operator Dec64(decimal value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static explicit operator Dec64(double value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static explicit operator byte(Dec64 value)
         {
-            return default(byte);
+            return default;
         }
 
         public static explicit operator decimal(Dec64 value)
         {
-            return default(decimal);
+            return default;
         }
 
         public static explicit operator double(Dec64 value)
         {
-            return default(double);
+            return default;
         }
 
         public static explicit operator short(Dec64 value)
         {
-            return default(short);
+            return default;
         }
 
         public static explicit operator int(Dec64 value)
         {
-            return default(int);
+            return default;
         }
 
         public static explicit operator long(Dec64 value)
         {
-            return default(long);
+            return default;
         }
 
         public static explicit operator sbyte(Dec64 value)
         {
-            return default(sbyte);
+            return default;
         }
 
         public static explicit operator float(Dec64 value)
         {
-            return default(float);
+            return default;
         }
 
         public static explicit operator ushort(Dec64 value)
         {
-            return default(ushort);
+            return default;
         }
 
         public static explicit operator uint(Dec64 value)
         {
-            return default(uint);
+            return default;
         }
 
         public static explicit operator ulong(Dec64 value)
         {
-            return default(ulong);
+            return default;
         }
 
         public static explicit operator Dec64(float value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static bool operator >(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >=(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >=(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >=(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >=(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator >=(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static implicit operator Dec64(byte value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(short value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(int value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(long value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(sbyte value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(ushort value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(uint value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static implicit operator Dec64(ulong value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator ++(Dec64 value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static bool operator !=(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator !=(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator !=(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator !=(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator !=(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static Dec64 operator <<(Dec64 value, int shift)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static bool operator <(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <=(long left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <=(Dec64 left, long right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <=(Dec64 left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <=(Dec64 left, ulong right)
         {
-            return default(bool);
+            return default;
         }
 
         public static bool operator <=(ulong left, Dec64 right)
         {
-            return default(bool);
+            return default;
         }
 
         public static Dec64 operator %(Dec64 dividend, Dec64 divisor)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator *(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator ~(Dec64 value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator >>(Dec64 value, int shift)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator -(Dec64 left, Dec64 right)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator -(Dec64 value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 operator +(Dec64 value)
         {
-            return default(Dec64);
+            return default;
         }
     }
 }

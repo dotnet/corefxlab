@@ -19,7 +19,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -33,7 +33,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -80,7 +80,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -96,7 +96,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -111,7 +111,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -162,7 +162,7 @@ namespace System.Text
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -178,7 +178,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -192,7 +192,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -239,7 +239,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -255,7 +255,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -270,7 +270,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -321,7 +321,7 @@ namespace System.Text
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -340,7 +340,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -354,7 +354,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -401,7 +401,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -417,7 +417,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -432,7 +432,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -483,7 +483,7 @@ namespace System.Text
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -499,7 +499,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -513,7 +513,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -560,7 +560,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -576,7 +576,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -591,7 +591,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -642,7 +642,7 @@ namespace System.Text
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -661,7 +661,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -675,7 +675,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -722,7 +722,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -738,7 +738,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -753,7 +753,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -804,7 +804,7 @@ namespace System.Text
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -820,7 +820,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -834,7 +834,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -881,7 +881,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -897,7 +897,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -912,7 +912,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -963,7 +963,7 @@ namespace System.Text
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -982,7 +982,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -996,7 +996,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -1043,7 +1043,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1059,7 +1059,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -1074,7 +1074,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -1125,7 +1125,7 @@ namespace System.Text
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1141,7 +1141,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -1155,7 +1155,7 @@ namespace System.Text
                     nextDigit = hexLookup[nextCharacter];
                     if (nextDigit == 0xFF)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -1202,7 +1202,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1218,7 +1218,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         bytesConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     byte nextCharacter;
@@ -1233,7 +1233,7 @@ namespace System.Text
                     if (nextDigit == 0xFF)
                     {
                         bytesConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -1284,7 +1284,7 @@ namespace System.Text
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
                                 bytesConsumed = 0;
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1309,7 +1309,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1323,7 +1323,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1370,7 +1370,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1386,7 +1386,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1401,7 +1401,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1452,7 +1452,7 @@ namespace System.Text
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1468,7 +1468,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1482,7 +1482,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1529,7 +1529,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1545,7 +1545,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1560,7 +1560,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(byte);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1611,7 +1611,7 @@ namespace System.Text
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(byte);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1630,7 +1630,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1644,7 +1644,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1691,7 +1691,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1707,7 +1707,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1722,7 +1722,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1773,7 +1773,7 @@ namespace System.Text
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1789,7 +1789,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1803,7 +1803,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1850,7 +1850,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1866,7 +1866,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1881,7 +1881,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(ushort);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -1932,7 +1932,7 @@ namespace System.Text
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(ushort);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -1951,7 +1951,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -1965,7 +1965,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -2012,7 +2012,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2028,7 +2028,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2043,7 +2043,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -2094,7 +2094,7 @@ namespace System.Text
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2110,7 +2110,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2124,7 +2124,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -2171,7 +2171,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2187,7 +2187,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2202,7 +2202,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(uint);
+                        value = default;
                         return false;
                     }
                     uint parsedValue = nextDigit;
@@ -2253,7 +2253,7 @@ namespace System.Text
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(uint);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2272,7 +2272,7 @@ namespace System.Text
                 {
                     if (length < 1)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2286,7 +2286,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -2333,7 +2333,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2349,7 +2349,7 @@ namespace System.Text
                     if (length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2364,7 +2364,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -2415,7 +2415,7 @@ namespace System.Text
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2431,7 +2431,7 @@ namespace System.Text
                 {
                     if (text.Length < 1)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2445,7 +2445,7 @@ namespace System.Text
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -2492,7 +2492,7 @@ namespace System.Text
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;
@@ -2508,7 +2508,7 @@ namespace System.Text
                     if (text.Length < 1)
                     {
                         charsConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     char nextCharacter;
@@ -2523,7 +2523,7 @@ namespace System.Text
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
                         charsConsumed = 0;
-                        value = default(ulong);
+                        value = default;
                         return false;
                     }
                     ulong parsedValue = nextDigit;
@@ -2574,7 +2574,7 @@ namespace System.Text
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
                                 charsConsumed = 0;
-                                value = default(ulong);
+                                value = default;
                                 return false;
                             }
                             parsedValue = (parsedValue << 4) + nextDigit;

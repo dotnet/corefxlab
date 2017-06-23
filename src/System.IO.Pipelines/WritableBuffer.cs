@@ -104,7 +104,7 @@ namespace System.IO.Pipelines
         /// Will <see cref="Commit"/> if necessary.
         /// </summary>
         /// <returns>A task that completes when the data is fully flushed.</returns>
-        public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
         {
             return _pipe.FlushAsync(cancellationToken);
         }

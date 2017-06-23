@@ -22,7 +22,7 @@ namespace Microsoft.Net.Http
             for(int i=0; i<_count; i++) {
                 if (requestLine.RequestUri.Span.SequenceEqual(_uris[i]) && requestLine.Method == _verbs[i]) return _requestIds[i];
             }
-            return default(TRequestId);
+            return default;
         }
 
         public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)

@@ -265,7 +265,7 @@ namespace System.Text.Http.SingleSegment
             var index = bytes.IndexOf(HttpRequestReader.Eoh);
             if(index == -1)
             {
-                headers = default(HttpHeadersSingleSegment);
+                headers = default;
                 parsed = 0;
                 return false;
             }

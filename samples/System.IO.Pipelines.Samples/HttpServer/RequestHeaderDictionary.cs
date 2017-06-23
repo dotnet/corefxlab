@@ -67,7 +67,7 @@ namespace System.IO.Pipelines.Samples.Http
             {
                 return value.Raw.Value.Buffer;
             }
-            return default(ReadableBuffer);
+            return default;
         }
 
         private string GetHeaderKey(ref ReadableBuffer key)

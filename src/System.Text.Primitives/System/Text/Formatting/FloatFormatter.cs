@@ -7,7 +7,7 @@ namespace System.Text
 {
     internal static class FloatFormatter
     {
-        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), SymbolTable symbolTable = null)
+        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 

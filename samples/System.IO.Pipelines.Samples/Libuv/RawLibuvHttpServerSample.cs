@@ -3,10 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Net;
-using System.Threading;
 using System.IO.Pipelines.Networking.Libuv;
-using System.Text;
-using System.Text.Formatting;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples

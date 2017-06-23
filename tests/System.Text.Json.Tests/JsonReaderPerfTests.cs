@@ -3,7 +3,6 @@
 
 using Xunit;
 using Microsoft.Xunit.Performance;
-using System.Text.Formatting;
 using System.IO;
 using System.Text.Json.Tests.Resources;
 

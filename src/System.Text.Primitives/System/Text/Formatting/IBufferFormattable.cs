@@ -18,6 +18,6 @@ namespace System.Text
             /// <param name="format">This is a pre-parsed representation of the formatting string. It's preparsed for efficiency.</param>
             /// <param name="symbolTable">This object implements the character and symbol encoder.</param>
             /// <returns>False if the buffer was to small, otherwise true.</returns>
-        bool TryFormat(Span<byte> buffer, out int written, TextFormat format = default(TextFormat), SymbolTable symbolTable = null);
+        bool TryFormat(Span<byte> buffer, out int written, TextFormat format = default, SymbolTable symbolTable = null);
     }
 }

@@ -113,7 +113,7 @@ namespace System.Collections.Sequences
                 return true;
             }
 
-            item = default(T);
+            item = default;
             position = Position.AfterLast;
             return false;
         }

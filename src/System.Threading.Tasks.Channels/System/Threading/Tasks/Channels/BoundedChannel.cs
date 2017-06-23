@@ -151,7 +151,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
         {
             // Fast-path cancellation check
             if (cancellationToken.IsCancellationRequested)
@@ -183,7 +183,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -227,7 +227,7 @@ namespace System.Threading.Tasks.Channels
                     return true;
                 }
             }
-            item = default(T);
+            item = default;
             return false;
         }
 
@@ -254,7 +254,7 @@ namespace System.Threading.Tasks.Channels
             while (!_blockedWriters.IsEmpty)
             {
                 WriterInteractor<T> w = _blockedWriters.DequeueHead();
-                if (w.Success(default(VoidResult)))
+                if (w.Success(default))
                 {
                     _items.EnqueueTail(w.Item);
                     return item;
@@ -363,7 +363,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -395,7 +395,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {

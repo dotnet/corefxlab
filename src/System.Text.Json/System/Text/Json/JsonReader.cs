@@ -805,7 +805,7 @@ namespace System.Text.Json
             {
                 if (length < 1)
                 {
-                    ch = default(char);
+                    ch = default;
                     return 0;
                 }
 
@@ -816,7 +816,7 @@ namespace System.Text.Json
             {
                 if (length < 2)
                 {
-                    ch = default(char);
+                    ch = default;
                     return 0;
                 }
 

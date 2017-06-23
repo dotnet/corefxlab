@@ -15,7 +15,7 @@ namespace System.Text.Formatting
 
         public ArrayFormatter(int capacity, SymbolTable symbolTable, ArrayPool<byte> pool = null)
         {
-            _pool = pool != null ? pool : ArrayPool<byte>.Shared;
+            _pool = pool ?? ArrayPool<byte>.Shared;
             _symbolTable = symbolTable;
             _buffer = new ResizableArray<byte>(_pool.Rent(capacity));
         }
