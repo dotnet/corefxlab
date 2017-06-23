@@ -61,13 +61,13 @@ namespace System.Text.Json.Dynamic.Tests
         {
             var jsonText = new Utf8String("{\"FirstName\":\"John\",\"LastName\":\"Smith\",\"Address\":{\"Street\":\"21 2nd Street\",\"City\":\"New York\",\"State\":\"NY\",\"Zip\":\"10021-3100\"},\"IsAlive\":true,\"Age\":25,\"Spouse\":null}");
             JsonDynamicObject json = JsonDynamicObject.Parse(jsonText, 100);
-            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
+            var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             formatter.Append(json);
             var formattedText = new Utf8String(formatter.Formatted);
 
             // The follwoing check only works given the current implmentation of Dictionary.
             // If the implementation changes, the properties might round trip to different places in the JSON text.
-            Assert.Equal(jsonText.ToString(), formattedText.ToString()); 
+            Assert.Equal(jsonText.ToString(), formattedText.ToString());
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
@@ -76,7 +76,7 @@ namespace System.Text.Json.Dynamic.Tests
             dynamic json = new JsonDynamicObject();
             json.First = "John";
 
-            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
+            var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             formatter.Append((JsonDynamicObject)json);
             Assert.Equal("{\"First\":\"John\"}", formatter.Formatted.ToString());
         }

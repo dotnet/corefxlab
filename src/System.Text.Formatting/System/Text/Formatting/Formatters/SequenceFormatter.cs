@@ -9,16 +9,16 @@ namespace System.Text.Formatting
 {
     public static class SequenceFormatterExtensions
     {
-        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoder = default) where TSequence : ISequence<Buffer<byte>>
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, SymbolTable symbolTable = null) where TSequence : ISequence<Buffer<byte>>
         {
-            return new SequenceFormatter<TSequence>(sequence, encoder);
+            return new SequenceFormatter<TSequence>(sequence, symbolTable);
         }
     }
 
     public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Buffer<byte>>
     {
         ISequence<Buffer<byte>> _buffers;
-        TextEncoder _encoder;
+        SymbolTable _symbolTable;
 
         Position _currentPosition = Position.First;
         int _currentWrittenBytes;
@@ -26,11 +26,11 @@ namespace System.Text.Formatting
         int _previousWrittenBytes;
         int _totalWritten;
 
-        public SequenceFormatter(TSequence buffers, TextEncoder encoder)
+        public SequenceFormatter(TSequence buffers, SymbolTable symbolTable)
         {
-            _encoder = encoder;
+            _symbolTable = symbolTable;
             _buffers = buffers;
-            _previousWrittenBytes = -1;      
+            _previousWrittenBytes = -1;
         }
 
         Span<byte> IOutput.Buffer
@@ -40,7 +40,7 @@ namespace System.Text.Formatting
             }
         }
 
-        private Buffer<byte> Current { 
+        private Buffer<byte> Current {
             get {
                 Buffer<byte> result;
                 if (!_buffers.TryGet(ref _currentPosition, out result, advance: false)) { throw new InvalidOperationException(); }
@@ -55,9 +55,9 @@ namespace System.Text.Formatting
                 return result;
             }
         }
-        private bool NeedShift => _previousWrittenBytes != -1; 
+        private bool NeedShift => _previousWrittenBytes != -1;
 
-        TextEncoder ITextOutput.Encoder => _encoder;
+        SymbolTable ITextOutput.SymbolTable => _symbolTable;
 
         public int TotalWritten => _totalWritten;
 
@@ -72,7 +72,7 @@ namespace System.Text.Formatting
             if (!_buffers.TryGet(ref _currentPosition, out span)) {
                 throw new InvalidOperationException();
             }
-            _currentWrittenBytes = 0;            
+            _currentWrittenBytes = 0;
         }
 
         void IOutput.Advance(int bytes)

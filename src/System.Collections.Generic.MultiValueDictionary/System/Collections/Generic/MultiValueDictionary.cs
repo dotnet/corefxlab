@@ -951,7 +951,7 @@ namespace System.Collections.Generic
                 }
                 else if (enumerator.MoveNext())
                 {
-                    current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(enumerator.Current.Key, (IReadOnlyCollection<TValue>)enumerator.Current.Value);
+                    current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(enumerator.Current.Key, enumerator.Current.Value);
                     state = EnumerationState.During;
                     return true;
                 }

@@ -17,15 +17,15 @@ namespace System.Buffers.Tests
 
             var ab = reader.ReadBytesUntil((byte)' ');
             Assert.True(ab.HasValue);
-            Assert.Equal("AB", ab.ToString(TextEncoder.Utf8));
+            Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(1);
             var cd = reader.ReadBytesUntil((byte)'#');
-            Assert.Equal("CD", cd.ToString(TextEncoder.Utf8));
+            Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(1);
             var ef = reader.ReadBytesUntil(new byte[] { (byte)'&', (byte)'&' });
-            Assert.Equal("EF", ef.ToString(TextEncoder.Utf8));
+            Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(2);
 
@@ -70,15 +70,15 @@ namespace System.Buffers.Tests
             var reader = new BytesReader(bytes);
 
             var ab = reader.ReadBytesUntil((byte)' ');
-            Assert.Equal("AB", ab.ToString(TextEncoder.Utf8));
+            Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(1);
             var cd = reader.ReadBytesUntil((byte)'#');
-            Assert.Equal("CD", cd.ToString(TextEncoder.Utf8));
+            Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(1);
             var ef = reader.ReadBytesUntil(new byte[] { (byte)'&', (byte)'&' });
-            Assert.Equal("EF", ef.ToString(TextEncoder.Utf8));
+            Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
 
             reader.Advance(2);
 
@@ -91,12 +91,12 @@ namespace System.Buffers.Tests
             ReadOnlyBytes bytes = Create("");
             var reader = new BytesReader(bytes);
             var found = reader.ReadBytesUntil((byte)' ');
-            Assert.Equal("", found.ToString(TextEncoder.Utf8));
+            Assert.Equal("", found.ToString(SymbolTable.InvariantUtf8));
 
             bytes = Parse("|");
             reader = new BytesReader(bytes);
             found = reader.ReadBytesUntil((byte)' ');
-            Assert.Equal("", found.ToString(TextEncoder.Utf8));
+            Assert.Equal("", found.ToString(SymbolTable.InvariantUtf8));
 
             //Assert.True(reader.IsEmpty);
         }
@@ -147,7 +147,7 @@ namespace System.Buffers.Tests
             var eol = new Span<byte>(s_eol);
             var bytes = new ReadOnlyBytes(data);
 
-            var reader = new BytesReader(bytes, TextEncoder.Utf8);
+            var reader = new BytesReader(bytes, SymbolTable.InvariantUtf8);
 
             while (true)
             {
@@ -161,16 +161,16 @@ namespace System.Buffers.Tests
     public static class ReadOnlyBytesTextExtensions
     {
 
-        public static string ToString(this ReadOnlyBytes? bytes, TextEncoder encoder)
+        public static string ToString(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
         {
             if (!bytes.HasValue) return string.Empty;
-            return ToString(bytes.Value, encoder);
+            return ToString(bytes.Value, symbolTable);
         }
 
-        public static string ToString(this ReadOnlyBytes bytes, TextEncoder encoder)
+        public static string ToString(this ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
             var sb = new StringBuilder();
-            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
                 while (bytes.TryGet(ref position, out ReadOnlyBuffer<byte> segment))

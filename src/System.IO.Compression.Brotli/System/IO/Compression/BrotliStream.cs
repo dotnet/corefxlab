@@ -142,10 +142,10 @@ namespace System.IO.Compression
             {
                 if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref _availableInput, ref _nextInput, ref _availableOutput, ref _nextOutput, out totalOut))
                     throw new System.IO.IOException(BrotliEx.unableEncode);
-                var extraData = (nuint)_availableOutput != (nuint)_bufferSize;
+                var extraData = _availableOutput != (nuint)_bufferSize;
                 if (extraData)
                 {
-                    var bytesWrote = (int)((nuint)_bufferSize - (nuint)_availableOutput);
+                    var bytesWrote = (int)((nuint)_bufferSize - _availableOutput);
                     Byte[] buf = new Byte[bytesWrote];
                     Marshal.Copy(_bufferOutput, buf, 0, bytesWrote);
                     _stream.Write(buf, 0, bytesWrote);
@@ -247,7 +247,7 @@ namespace System.IO.Compression
                 {
                     if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                     {
-                        _availableInput = (nuint)_stream.Read(buf, 0, (int)_bufferSize);
+                        _availableInput = (nuint)_stream.Read(buf, 0, _bufferSize);
                         _nextInput = _bufferInput;
                         if ((int)_availableInput <= 0)
                         {

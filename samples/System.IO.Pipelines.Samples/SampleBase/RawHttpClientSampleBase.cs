@@ -19,8 +19,8 @@ namespace System.IO.Pipelines.Samples
             while (true)
             {
                 var buffer = connection.Output.Alloc();
-                buffer.Append("GET / HTTP/1.1", TextEncoder.Utf8);
-                buffer.Append("\r\n\r\n", TextEncoder.Utf8);
+                buffer.Append("GET / HTTP/1.1", SymbolTable.InvariantUtf8);
+                buffer.Append("\r\n\r\n", SymbolTable.InvariantUtf8);
                 await buffer.FlushAsync();
 
                 // Write the client output to the console

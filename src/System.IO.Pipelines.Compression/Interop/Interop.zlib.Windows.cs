@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Compression
                     byte* pBytes = (byte*) streamBytes;
                     return
                         (ZLibNative.ErrorCode)
-                        deflateInit2_(pBytes, (int) level, (int) method, (int) windowBits, (int) memLevel,
+                        deflateInit2_(pBytes, (int) level, (int) method, windowBits, memLevel,
                             (int) strategy, versionString, sizeof(ZLibNative.ZStream));
                 }
             }
@@ -100,7 +100,7 @@ namespace System.IO.Pipelines.Compression
                     byte* pBytes = (byte*) streamBytes;
                     return
                         (ZLibNative.ErrorCode)
-                        inflateInit2_(pBytes, (int) windowBits, versionString, sizeof(ZLibNative.ZStream));
+                        inflateInit2_(pBytes, windowBits, versionString, sizeof(ZLibNative.ZStream));
                 }
             }
 

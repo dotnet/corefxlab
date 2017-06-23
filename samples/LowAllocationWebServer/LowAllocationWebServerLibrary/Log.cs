@@ -45,7 +45,7 @@ namespace System.Diagnostics
             Off = -1,
             Error = 0,
             Warning = 10,
-            Verbose = 20, 
+            Verbose = 20,
         }
     }
 
@@ -87,18 +87,18 @@ namespace System.Diagnostics
             if (log.IsVerbose)
             {
                 // TODO: this is much ceremony. We need to do something with this. ReadOnlyBytes.AsUtf8 maybe?
-                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.Verb.ToUtf8String(TextEncoder.Utf8).ToString());
-                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.Path.ToUtf8String(TextEncoder.Utf8).ToString());
-                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version.ToUtf8String(TextEncoder.Utf8).ToString());
+                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.Verb.ToUtf8String(SymbolTable.InvariantUtf8).ToString());
+                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.Path.ToUtf8String(SymbolTable.InvariantUtf8).ToString());
+                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version.ToUtf8String(SymbolTable.InvariantUtf8).ToString());
 
                 log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
                 var position = Position.First;
                 while(request.Headers.TryGet(ref position, out var header, true))
                 {
-                    log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", header.Name.ToUtf8String(TextEncoder.Utf8).ToString(), header.Value.ToUtf8String(TextEncoder.Utf8).ToString());
+                    log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", header.Name.ToUtf8String(SymbolTable.InvariantUtf8).ToString(), header.Value.ToUtf8String(SymbolTable.InvariantUtf8).ToString());
                 }
 
-                var body = request.Body.ToString(TextEncoder.Utf8);               
+                var body = request.Body.ToString(SymbolTable.InvariantUtf8);
                 log.LogMessage(Log.Level.Verbose, body);
             }
         }

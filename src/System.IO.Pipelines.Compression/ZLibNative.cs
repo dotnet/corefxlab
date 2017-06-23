@@ -19,7 +19,7 @@ namespace System.IO.Pipelines.Compression
 
         // This is the NULL pointer for using with ZLib pointers;
         // we prefer it to IntPtr.Zero to mimic the definition of Z_NULL in zlib.h:
-        internal static readonly IntPtr ZNullPtr = (IntPtr)((Int32)0);
+        internal static readonly IntPtr ZNullPtr = (IntPtr)0;
 
         public enum FlushCode : int
         {
