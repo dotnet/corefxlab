@@ -27,7 +27,6 @@ namespace System.IO.Compression.Tests
             byte[] compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
             Assert.NotEqual(compressed.Length, 0);
             Brotli.State state = new Brotli.State();
-            state.InitializeEncoder();
             TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
             while (consumed != 0 || result != TransformationStatus.Done)
             {
@@ -46,7 +45,6 @@ namespace System.IO.Compression.Tests
         {
             byte[] decompressed = new byte[expected.Length];
             Brotli.State state = new Brotli.State();
-            state.InitializeDecoder();
             TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
             Assert.Equal<long>(expected.Length, written);

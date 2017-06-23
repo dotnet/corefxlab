@@ -24,7 +24,7 @@ namespace System.IO.Compression
         {
             internal IntPtr BrotliNativeState { get; private set; }
             internal BrotliDecoderResult LastDecoderResult;
-            public bool CompressMode { get; set; }
+            public bool CompressMode { get; private set; }
 
             public void Dispose()
             {
@@ -38,28 +38,34 @@ namespace System.IO.Compression
                 }
             }
 
-            public void InitializeDecoder()
+            internal void InitializeDecoder()
             {
                 BrotliNativeState = BrotliNative.BrotliDecoderCreateInstance();
                 LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
                 if (BrotliNativeState == IntPtr.Zero)
                 {
-                    throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);
+                    throw new System.Exception(BrotliEx.DecoderInstanceCreate);
                 }
+                CompressMode = false;
             }
 
-            public void InitializeEncoder()
+            internal void InitializeEncoder()
             {
                 
                 BrotliNativeState = BrotliNative.BrotliEncoderCreateInstance();
                 if (BrotliNativeState == IntPtr.Zero)
                 {
-                    throw new System.IO.IOException(BrotliEx.EncoderInstanceCreate);
+                    throw new System.Exception(BrotliEx.EncoderInstanceCreate);
                 }
+                CompressMode = true;
             }
 
             public void SetQuality(uint quality)
             {
+                if (BrotliNativeState == IntPtr.Zero)
+                {
+                    InitializeEncoder();
+                }
                 if (quality > MaxQuality)
                 {
                     throw new ArgumentException(BrotliEx.WrongQuality);
@@ -74,6 +80,10 @@ namespace System.IO.Compression
 
             public void SetWindow(uint window)
             {
+                if (BrotliNativeState == IntPtr.Zero)
+                {
+                    InitializeEncoder();
+                }
                 if (window - MinWindowBits > MaxWindowBits - MinWindowBits)
                 {
                     throw new ArgumentException(BrotliEx.WrongWindowSize);
@@ -89,19 +99,23 @@ namespace System.IO.Compression
 
         public static void EnsureInitialized(ref State state, bool compress)
         {
-            if (state.BrotliNativeState != IntPtr.Zero) return;
+            if (state.BrotliNativeState != IntPtr.Zero)
+            {
+                if (state.CompressMode != compress)
+                {
+                    throw new System.Exception((BrotliEx.InvalidModeChange));
+                }
+                return;
+            }
             if (compress)
             {
-                state.InitializeEncoder();
                 state.SetQuality();
                 state.SetWindow();
-                state.CompressMode = true;
             }
             else
             {
                 state.InitializeDecoder();
                 state.LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
-                state.CompressMode = false;
             }
         }
 
@@ -167,7 +181,14 @@ namespace System.IO.Compression
 
         public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
-            EnsureInitialized(ref state, true);
+            try
+            {
+                EnsureInitialized(ref state, true);
+            }
+            catch (System.IO.IOException initException)
+            {
+                throw initException;
+            }
             bytesWritten = destination.Length;
             bytesConsumed = source.Length;
             unsafe
@@ -200,7 +221,14 @@ namespace System.IO.Compression
 
         public static TransformationStatus Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
-            EnsureInitialized(ref state, false);
+            try
+            {
+                EnsureInitialized(ref state, false);
+            }
+            catch (System.IO.IOException initException)
+            {
+                throw initException;
+            }
             bool endOfStream = false;
             bytesConsumed = source.Length;
             bytesWritten = destination.Length;

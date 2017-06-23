@@ -81,7 +81,6 @@ namespace System.IO.Compression.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         Brotli.State state = new Brotli.State();
-                        state.InitializeDecoder();
                         Brotli.Decompress(data, bytes, out int consumed, out int written, ref state);
                     }
                 }
@@ -103,7 +102,6 @@ namespace System.IO.Compression.Tests
                 using (iteration.StartMeasurement())
                 {
                     Brotli.State state = new Brotli.State();
-                    state.InitializeEncoder();
                     Brotli.Compress(bytes, compressed, out int consumed, out int writen, ref state);
                 }
             }
