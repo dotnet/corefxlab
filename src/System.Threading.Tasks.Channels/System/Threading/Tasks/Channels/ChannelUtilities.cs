@@ -38,7 +38,7 @@ namespace System.Threading.Tasks.Channels
             }
             else
             {
-                tcs.TrySetResult(default(VoidResult));
+                tcs.TrySetResult(default);
             }
         }
 

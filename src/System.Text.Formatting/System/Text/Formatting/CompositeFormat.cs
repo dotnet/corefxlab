@@ -375,7 +375,7 @@ namespace System.Text.Formatting
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? TextFormat.Parse(formatSpecifier.Value): default(TextFormat);
+                var parsedFormat = formatSpecifier.HasValue ? TextFormat.Parse(formatSpecifier.Value): default;
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 

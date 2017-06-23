@@ -13,7 +13,7 @@ namespace System.Buffers
         void* _pointer;
         GCHandle _handle;
 
-        public BufferHandle(IRetainable owner, void* pinnedPointer, GCHandle handle = default(GCHandle))
+        public BufferHandle(IRetainable owner, void* pinnedPointer, GCHandle handle = default)
         {
             _pointer = pinnedPointer;
             _handle = handle;

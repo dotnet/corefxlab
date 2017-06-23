@@ -210,8 +210,8 @@ namespace System.IO.Pipelines
 
         internal void ClearCursors()
         {
-            BufferStart = default(ReadCursor);
-            BufferEnd = default(ReadCursor);
+            BufferStart = default;
+            BufferEnd = default;
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace System.IO.Pipelines
             }
             else if (position == Position.AfterLast)
             {
-                item = default(ReadOnlyBuffer<byte>);
+                item = default;
                 return false;
             }
 

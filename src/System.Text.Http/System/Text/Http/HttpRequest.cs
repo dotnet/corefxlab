@@ -93,7 +93,7 @@ namespace System.Text.Http
             var bytes = _headers.Slice(position.IntegerPosition);
             if (bytes.Length == 0)
             {
-                value = default(HttpHeader);
+                value = default;
                 return false;
             }
 

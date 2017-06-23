@@ -60,7 +60,7 @@ namespace System.Buffers
             var rest = position.ObjectPosition as IReadOnlyBufferList<byte>;
             if (rest == null)
             {
-                value = default(ReadOnlyBuffer<byte>);
+                value = default;
                 return false;
             }
 
@@ -281,7 +281,7 @@ namespace System.Buffers
                     if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
                     return true;
                 }
-                else if (position.ObjectPosition == null) { item = default(ReadOnlyBuffer<byte>); return false; }
+                else if (position.ObjectPosition == null) { item = default; return false; }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._first;

@@ -4,7 +4,6 @@
 
 using System.Net;
 using System.Threading.Tasks;
-using System.IO.Pipelines.Networking.Windows.RIO;
 
 namespace System.IO.Pipelines.Samples
 {

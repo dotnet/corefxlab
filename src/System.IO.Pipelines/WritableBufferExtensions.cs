@@ -60,7 +60,7 @@ namespace System.IO.Pipelines
 
         public static void Write(this WritableBuffer buffer, byte[] source, int offset, int length)
         {
-            Span<byte> dest = default(Span<byte>);
+            Span<byte> dest = default;
             var destLength = dest.Length;
 
             if (destLength == 0)

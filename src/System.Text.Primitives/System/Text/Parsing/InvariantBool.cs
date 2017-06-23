@@ -43,7 +43,7 @@ namespace System.Text
                     }
                 }
                 // No need to set consumed
-                value = default(bool);
+                value = default;
                 return false;
             }
             public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
@@ -74,7 +74,7 @@ namespace System.Text
                     }
                 }
                 bytesConsumed = 0;
-                value = default(bool);
+                value = default;
                 return false;
             }
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
@@ -105,7 +105,7 @@ namespace System.Text
                     }
                 }
                 // No need to set consumed
-                value = default(bool);
+                value = default;
                 return false;
             }
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed)
@@ -136,7 +136,7 @@ namespace System.Text
                     }
                 }
                 bytesConsumed = 0;
-                value = default(bool);
+                value = default;
                 return false;
             }
         }
@@ -170,7 +170,7 @@ namespace System.Text
                     }
                 }
                 // No need to set consumed
-                value = default(bool);
+                value = default;
                 return false;
             }
             public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charsConsumed)
@@ -201,7 +201,7 @@ namespace System.Text
                     }
                 }
                 charsConsumed = 0;
-                value = default(bool);
+                value = default;
                 return false;
             }
             public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value)
@@ -232,7 +232,7 @@ namespace System.Text
                     }
                 }
                 // No need to set consumed
-                value = default(bool);
+                value = default;
                 return false;
             }
             public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value, out int charsConsumed)
@@ -263,7 +263,7 @@ namespace System.Text
                     }
                 }
                 charsConsumed = 0;
-                value = default(bool);
+                value = default;
                 return false;
             }
         }

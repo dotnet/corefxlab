@@ -7,11 +7,11 @@ namespace System.Text
 {
     internal static class FloatFormatter
     {
-        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default, TextEncoder encoder = null)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            encoder = encoder ?? TextEncoder.Utf8;
 
             bytesWritten = 0;
             int written;

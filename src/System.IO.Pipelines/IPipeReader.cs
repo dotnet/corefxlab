@@ -22,7 +22,7 @@ namespace System.IO.Pipelines
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
-        ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
+        ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Moves forward the pipeline's read cursor to after the consumed data.

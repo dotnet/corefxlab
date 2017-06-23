@@ -8,14 +8,14 @@ namespace System.Text.Formatting
 {
     public static class IOutputExtensions
     {
-        public static void Append<TFormatter, T>(this TFormatter formatter, T value, TextEncoder encoder, TextFormat format = default(TextFormat)) where T : IBufferFormattable where TFormatter : IOutput
+        public static void Append<TFormatter, T>(this TFormatter formatter, T value, TextEncoder encoder, TextFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, TextEncoder encoder, TextFormat format = default(TextFormat)) where T : IBufferFormattable where TFormatter : IOutput
+        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, TextEncoder encoder, TextFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -119,14 +119,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, uint value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, uint value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -136,14 +136,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ulong value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ulong value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -153,14 +153,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, int value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, int value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -170,14 +170,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, long value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, long value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -187,14 +187,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, byte value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, byte value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -204,14 +204,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -221,14 +221,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ushort value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ushort value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -238,14 +238,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, short value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, short value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -255,14 +255,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Guid value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Guid value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -272,14 +272,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -289,14 +289,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -306,14 +306,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -323,14 +323,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, float value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, float value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {
@@ -340,14 +340,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, double value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, double value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, TextEncoder encoder, TextFormat format = default(TextFormat)) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, TextEncoder encoder, TextFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoder)) {

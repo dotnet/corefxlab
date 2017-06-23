@@ -71,7 +71,7 @@ namespace System.Threading.Tasks.Channels
         internal override void UnregisterCancellation()
         {
             _registration.Dispose();
-            _registration = default(CancellationTokenRegistration);
+            _registration = default;
         }
     }
 
@@ -93,7 +93,7 @@ namespace System.Threading.Tasks.Channels
         internal override void UnregisterCancellation()
         {
             _registration.Dispose();
-            _registration = default(CancellationTokenRegistration);
+            _registration = default;
         }
     }
 }

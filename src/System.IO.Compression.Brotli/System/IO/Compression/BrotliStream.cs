@@ -1,17 +1,13 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.IO.Compression.Resources;
 using System.Runtime.InteropServices;
 
 #if BIT64
     using nuint = System.UInt64;
 #else
-    using nuint = System.UInt32;
+using nuint = System.UInt32;
 #endif 
 
 namespace System.IO.Compression
@@ -36,13 +32,28 @@ namespace System.IO.Compression
 
         public override bool CanTimeout => true;
 
-        public override int ReadTimeout { get ; set; }
+        public override int ReadTimeout { get; set; }
 
         public override int WriteTimeout { get; set; }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, CompressionLevel quality) : this(baseStream, mode, leaveOpen, bufferSize)
         {
-            if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            if (_mode == CompressionMode.Decompress)
+            {
+                throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            }
+            else
+            {
+                _encoder.SetQuality((uint)Brotli.GetQualityFromCompressionLevel(quality));
+            }
+        }
+
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, CompressionLevel quality, uint windowSize) : this(baseStream, mode, leaveOpen, bufferSize)
+        {
+            if (_mode == CompressionMode.Decompress)
+            {
+                throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
+            }
             else
             {
                 _encoder.SetQuality((uint)Brotli.GetQualityFromCompressionLevel(quality));
@@ -52,7 +63,10 @@ namespace System.IO.Compression
 
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int bufferSize = DefaultBufferSize)
         {
-            if (baseStream == null) throw new ArgumentNullException("baseStream");
+            if (baseStream == null)
+            {
+                throw new ArgumentNullException("baseStream");
+            }
             _mode = mode;
             _stream = baseStream;
             _leaveOpen = leaveOpen;
