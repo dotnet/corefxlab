@@ -28,12 +28,12 @@ namespace System.Text.Http.Tests
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new ArrayFormatter(124, TextEncoder.Utf8, ArrayPool<byte>.Shared);
+            _formatter = new ArrayFormatter(124, SymbolTable.InvariantUtf8, ArrayPool<byte>.Shared);
         }
 
         [Fact]
         public void It_has_an_extension_method_to_write_status_line()
-        {            
+        {
             _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
 
             var result = _formatter.Formatted;

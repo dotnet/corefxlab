@@ -11,10 +11,10 @@ namespace System.Text.Primitives.Tests
     {
         const int NumberOfRandomSamples = 1000;
 
-        static readonly TextEncoder[] Encoders = new TextEncoder[]
+        static readonly SymbolTable[] SymbolTables = new SymbolTable[]
         {
-            TextEncoder.Utf8,
-            TextEncoder.Utf16,
+            SymbolTable.InvariantUtf8,
+            SymbolTable.InvariantUtf16,
         };
 
         static readonly TextFormat[] Formats = new TextFormat[]
@@ -44,73 +44,73 @@ namespace System.Text.Primitives.Tests
         [Fact]
         public void SpecificIntegerTests()
         {
-            foreach (var encoder in Encoders)
+            foreach (var symbolTable in SymbolTables)
             {
                 foreach (var format in Formats)
                 {
-                    Validate<ulong>(0, format, encoder);
-                    Validate<ulong>(1, format, encoder);
-                    Validate<ulong>(999999999999, format, encoder);
-                    Validate<ulong>(1000000000000, format, encoder);
-                    Validate<ulong>(ulong.MaxValue, format, encoder);
+                    Validate<ulong>(0, format, symbolTable);
+                    Validate<ulong>(1, format, symbolTable);
+                    Validate<ulong>(999999999999, format, symbolTable);
+                    Validate<ulong>(1000000000000, format, symbolTable);
+                    Validate<ulong>(ulong.MaxValue, format, symbolTable);
 
-                    Validate<uint>(0, format, encoder);
-                    Validate<uint>(1, format, encoder);
-                    Validate<uint>(999999999, format, encoder);
-                    Validate<uint>(1000000000, format, encoder);
-                    Validate<uint>(uint.MaxValue, format, encoder);
+                    Validate<uint>(0, format, symbolTable);
+                    Validate<uint>(1, format, symbolTable);
+                    Validate<uint>(999999999, format, symbolTable);
+                    Validate<uint>(1000000000, format, symbolTable);
+                    Validate<uint>(uint.MaxValue, format, symbolTable);
 
-                    Validate<ushort>(0, format, encoder);
-                    Validate<ushort>(1, format, encoder);
-                    Validate<ushort>(9999, format, encoder);
-                    Validate<ushort>(10000, format, encoder);
-                    Validate<ushort>(ushort.MaxValue, format, encoder);
+                    Validate<ushort>(0, format, symbolTable);
+                    Validate<ushort>(1, format, symbolTable);
+                    Validate<ushort>(9999, format, symbolTable);
+                    Validate<ushort>(10000, format, symbolTable);
+                    Validate<ushort>(ushort.MaxValue, format, symbolTable);
 
-                    Validate<byte>(0, format, encoder);
-                    Validate<byte>(1, format, encoder);
-                    Validate<byte>(99, format, encoder);
-                    Validate<byte>(100, format, encoder);
-                    Validate<byte>(byte.MaxValue, format, encoder);
+                    Validate<byte>(0, format, symbolTable);
+                    Validate<byte>(1, format, symbolTable);
+                    Validate<byte>(99, format, symbolTable);
+                    Validate<byte>(100, format, symbolTable);
+                    Validate<byte>(byte.MaxValue, format, symbolTable);
 
-                    Validate<long>(long.MinValue, format, encoder);
-                    Validate<long>(-1000000000000, format, encoder);
-                    Validate<long>(-999999999999, format, encoder);
-                    Validate<long>(-1, format, encoder);
-                    Validate<long>(0, format, encoder);
-                    Validate<long>(1, format, encoder);
-                    Validate<long>(999999999999, format, encoder);
-                    Validate<long>(1000000000000, format, encoder);
-                    Validate<long>(long.MaxValue, format, encoder);
+                    Validate<long>(long.MinValue, format, symbolTable);
+                    Validate<long>(-1000000000000, format, symbolTable);
+                    Validate<long>(-999999999999, format, symbolTable);
+                    Validate<long>(-1, format, symbolTable);
+                    Validate<long>(0, format, symbolTable);
+                    Validate<long>(1, format, symbolTable);
+                    Validate<long>(999999999999, format, symbolTable);
+                    Validate<long>(1000000000000, format, symbolTable);
+                    Validate<long>(long.MaxValue, format, symbolTable);
 
-                    Validate<int>(int.MinValue, format, encoder);
-                    Validate<int>(-1000000000, format, encoder);
-                    Validate<int>(-999999999, format, encoder);
-                    Validate<int>(-1, format, encoder);
-                    Validate<int>(0, format, encoder);
-                    Validate<int>(1, format, encoder);
-                    Validate<int>(999999999, format, encoder);
-                    Validate<int>(1000000000, format, encoder);
-                    Validate<int>(int.MaxValue, format, encoder);
+                    Validate<int>(int.MinValue, format, symbolTable);
+                    Validate<int>(-1000000000, format, symbolTable);
+                    Validate<int>(-999999999, format, symbolTable);
+                    Validate<int>(-1, format, symbolTable);
+                    Validate<int>(0, format, symbolTable);
+                    Validate<int>(1, format, symbolTable);
+                    Validate<int>(999999999, format, symbolTable);
+                    Validate<int>(1000000000, format, symbolTable);
+                    Validate<int>(int.MaxValue, format, symbolTable);
 
-                    Validate<short>(short.MinValue, format, encoder);
-                    Validate<short>(-10000, format, encoder);
-                    Validate<short>(-9999, format, encoder);
-                    Validate<short>(-1, format, encoder);
-                    Validate<short>(0, format, encoder);
-                    Validate<short>(1, format, encoder);
-                    Validate<short>(9999, format, encoder);
-                    Validate<short>(10000, format, encoder);
-                    Validate<short>(short.MaxValue, format, encoder);
+                    Validate<short>(short.MinValue, format, symbolTable);
+                    Validate<short>(-10000, format, symbolTable);
+                    Validate<short>(-9999, format, symbolTable);
+                    Validate<short>(-1, format, symbolTable);
+                    Validate<short>(0, format, symbolTable);
+                    Validate<short>(1, format, symbolTable);
+                    Validate<short>(9999, format, symbolTable);
+                    Validate<short>(10000, format, symbolTable);
+                    Validate<short>(short.MaxValue, format, symbolTable);
 
-                    Validate<sbyte>(sbyte.MaxValue, format, encoder);
-                    Validate<sbyte>(-100, format, encoder);
-                    Validate<sbyte>(-99, format, encoder);
-                    Validate<sbyte>(-1, format, encoder);
-                    Validate<sbyte>(0, format, encoder);
-                    Validate<sbyte>(1, format, encoder);
-                    Validate<sbyte>(99, format, encoder);
-                    Validate<sbyte>(100, format, encoder);
-                    Validate<sbyte>(sbyte.MaxValue, format, encoder);
+                    Validate<sbyte>(sbyte.MaxValue, format, symbolTable);
+                    Validate<sbyte>(-100, format, symbolTable);
+                    Validate<sbyte>(-99, format, symbolTable);
+                    Validate<sbyte>(-1, format, symbolTable);
+                    Validate<sbyte>(0, format, symbolTable);
+                    Validate<sbyte>(1, format, symbolTable);
+                    Validate<sbyte>(99, format, symbolTable);
+                    Validate<sbyte>(100, format, symbolTable);
+                    Validate<sbyte>(sbyte.MaxValue, format, symbolTable);
                 }
             }
         }
@@ -120,34 +120,34 @@ namespace System.Text.Primitives.Tests
         {
             for (var i = 0; i < NumberOfRandomSamples; i++)
             {
-                foreach (var encoder in Encoders)
+                foreach (var symbolTable in SymbolTables)
                 {
                     foreach (var format in Formats)
                     {
-                        ValidateRandom<ulong>(format, encoder);
-                        ValidateRandom<uint>(format, encoder);
-                        ValidateRandom<ushort>(format, encoder);
-                        ValidateRandom<byte>(format, encoder);
-                        ValidateRandom<long>(format, encoder);
-                        ValidateRandom<int>(format, encoder);
-                        ValidateRandom<short>(format, encoder);
-                        ValidateRandom<sbyte>(format, encoder);
+                        ValidateRandom<ulong>(format, symbolTable);
+                        ValidateRandom<uint>(format, symbolTable);
+                        ValidateRandom<ushort>(format, symbolTable);
+                        ValidateRandom<byte>(format, symbolTable);
+                        ValidateRandom<long>(format, symbolTable);
+                        ValidateRandom<int>(format, symbolTable);
+                        ValidateRandom<short>(format, symbolTable);
+                        ValidateRandom<sbyte>(format, symbolTable);
                     }
                 }
             }
         }
 
-        static void ValidateRandom<T>(TextFormat format, TextEncoder encoder)
+        static void ValidateRandom<T>(TextFormat format, SymbolTable symbolTable)
         {
-            Validate<T>(GetRandom<T>(), format, encoder);
+            Validate<T>(GetRandom<T>(), format, symbolTable);
         }
 
-        static void Validate<T>(long value, TextFormat format, TextEncoder encoder)
+        static void Validate<T>(long value, TextFormat format, SymbolTable symbolTable)
         {
-            Validate<T>(unchecked((ulong)value), format, encoder);
+            Validate<T>(unchecked((ulong)value), format, symbolTable);
         }
 
-        static void Validate<T>(ulong value, TextFormat format, TextEncoder encoder)
+        static void Validate<T>(ulong value, TextFormat format, SymbolTable symbolTable)
         {
             var formatString = format.Precision == 255 ? $"{format.Symbol}" : $"{format.Symbol}{format.Precision}";
 
@@ -158,47 +158,47 @@ namespace System.Text.Primitives.Tests
             if (typeof(T) == typeof(ulong))
             {
                 expected = value.ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat(value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat(value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(uint))
             {
                 expected = ((uint)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((uint)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((uint)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(ushort))
             {
                 expected = ((ushort)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((ushort)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((ushort)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(byte))
             {
                 expected = ((byte)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((byte)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((byte)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(long))
             {
                 expected = ((long)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((long)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((long)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(int))
             {
                 expected = ((int)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((int)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((int)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(short))
             {
                 expected = ((short)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((short)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((short)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(sbyte))
             {
                 expected = ((sbyte)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(PrimitiveFormatter.TryFormat((sbyte)value, span, out written, format, encoder));
+                Assert.True(PrimitiveFormatter.TryFormat((sbyte)value, span, out written, format, symbolTable));
             }
             else
                 throw new NotSupportedException();
 
-            string actual = TestHelper.SpanToString(span.Slice(0, written), encoder);
+            string actual = TestHelper.SpanToString(span.Slice(0, written), symbolTable);
             Assert.Equal(expected, actual);
         }
 

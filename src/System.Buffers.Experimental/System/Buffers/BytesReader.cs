@@ -11,48 +11,48 @@ namespace System.Buffers
     /// </summary>
     public struct BytesReader
     {
-        readonly TextEncoder _encoder;
+        readonly SymbolTable _symbolTable;
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
         ReadOnlyBuffer<byte> _currentSegment;
         int _currentSegmentIndex;
-        
-        public BytesReader(ReadOnlyBytes bytes, TextEncoder encoder)
+
+        public BytesReader(ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
             _unreadSegments = bytes;
             _currentSegment = bytes.First;
-            _encoder = encoder;
+            _symbolTable = symbolTable;
             _currentSegmentIndex = 0;
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes, TextEncoder encoder)
+        public BytesReader(ReadOnlyBuffer<byte> bytes, SymbolTable symbolTable)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
-            _encoder = encoder;
+            _symbolTable = symbolTable;
             _currentSegmentIndex = 0;
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes) : this(bytes, TextEncoder.Utf8)
+        public BytesReader(ReadOnlyBuffer<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
-        public BytesReader(ReadOnlyBytes bytes) : this(bytes, TextEncoder.Utf8)
+        public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, TextEncoder.Utf8)
+        public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyBufferList<byte> bytes, TextEncoder encoder) : this(new ReadOnlyBytes(bytes))
+        public BytesReader(IReadOnlyBufferList<byte> bytes, SymbolTable encoder) : this(new ReadOnlyBytes(bytes))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
 
         public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);
 
-        public TextEncoder Encoder => _encoder;
+        public SymbolTable SymbolTable => _symbolTable;
 
         public ReadOnlyBytes? ReadBytesUntil(byte value)
         {
@@ -296,7 +296,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _encoder))
+            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -311,7 +311,7 @@ namespace System.Buffers
                 var tempSpan = new Span<byte>(temp, 15);
                 var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _encoder))
+                if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
                 {
                     Advance(consumed);
                     return true;
@@ -325,7 +325,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default, _encoder))
+            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -340,7 +340,7 @@ namespace System.Buffers
                 var tempSpan = new Span<byte>(temp, 32);
                 var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _encoder))
+                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
                 {
                     Advance(consumed);
                     return true;

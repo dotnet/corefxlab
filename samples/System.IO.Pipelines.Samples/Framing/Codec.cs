@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
         public void Initialize(IPipeConnection connection)
         {
-            _textOutput = new PipelineTextOutput(connection.Output, TextEncoder.Utf8);
+            _textOutput = new PipelineTextOutput(connection.Output, SymbolTable.InvariantUtf8);
         }
 
         public Task HandleAsync(Line message)
