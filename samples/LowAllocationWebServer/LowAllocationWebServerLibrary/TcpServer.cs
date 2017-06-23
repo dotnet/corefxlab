@@ -4,7 +4,6 @@
 
 using Microsoft.Net.Interop;
 using System;
-using System.Buffers;
 
 namespace Microsoft.Net.Sockets
 {

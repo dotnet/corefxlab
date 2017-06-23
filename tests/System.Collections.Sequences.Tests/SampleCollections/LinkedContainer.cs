@@ -29,7 +29,7 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
-            item = default(T);
+            item = default;
 
             if(_count == 0) {
                 position = Position.AfterLast;

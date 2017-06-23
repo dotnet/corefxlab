@@ -35,11 +35,11 @@ namespace System.IO.Pipelines.Samples
             var connection = await state.ConnectionTask;
 
             var requestBuffer = connection.Output.Alloc();
-            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", TextEncoder.Utf8);
+            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", SymbolTable.InvariantUtf8);
             WriteHeaders(request.Headers, ref requestBuffer);
 
             // End of the headers
-            requestBuffer.Append("\r\n\r\n", TextEncoder.Utf8);
+            requestBuffer.Append("\r\n\r\n", SymbolTable.InvariantUtf8);
 
             if (request.Method != HttpMethod.Get && request.Method != HttpMethod.Head)
             {
@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Samples
                         responseBuffer = responseBuffer.Slice(state.PreviousContentLength);
                         consumed = responseBuffer.Start;
 
-                        state.Consumed = default(ReadCursor);
+                        state.Consumed = default;
                     }
 
                     if (responseBuffer.IsEmpty && result.IsCompleted)
@@ -147,7 +147,7 @@ namespace System.IO.Pipelines.Samples
                         {
                             break;
                         }
-                        
+
                         int ch = responseBuffer.First.Span[0];
 
                         if (ch == '\r')
@@ -254,7 +254,7 @@ namespace System.IO.Pipelines.Samples
         {
             foreach (var header in headers)
             {
-                buffer.Append($"{header.Key}:{string.Join(",", header.Value)}\r\n", TextEncoder.Utf8);
+                buffer.Append($"{header.Key}:{string.Join(",", header.Value)}\r\n", SymbolTable.InvariantUtf8);
             }
         }
 
@@ -272,7 +272,7 @@ namespace System.IO.Pipelines.Samples
         {
             var addresses = await Dns.GetHostAddressesAsync(request.RequestUri.Host);
             var port = request.RequestUri.Port;
-            var address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);           
+            var address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
             return await ConnectAsync(new IPEndPoint(address, port));
         }
 

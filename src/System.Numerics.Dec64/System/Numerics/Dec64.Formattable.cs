@@ -8,57 +8,57 @@ namespace System.Numerics
     {
         public static bool TryParse(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider, out Dec64 result)
         {
-            result = default(Dec64); return default(bool);
+            result = default; return default;
         }
 
         public static bool TryParse(string value, out Dec64 result)
         {
-            result = default(Dec64); return default(bool);
+            result = default; return default;
         }
 
         public static Dec64 Parse(string value)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 Parse(string value, System.Globalization.NumberStyles style)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 Parse(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider)
         {
-            return default(Dec64);
+            return default;
         }
 
         public static Dec64 Parse(string value, System.IFormatProvider provider)
         {
-            return default(Dec64);
+            return default;
         }
 
         public byte[] ToByteArray()
         {
-            return default(byte[]);
+            return default;
         }
 
         public override string ToString()
         {
-            return default(string);
+            return default;
         }
 
         public string ToString(System.IFormatProvider provider)
         {
-            return default(string);
+            return default;
         }
 
         public string ToString(string format)
         {
-            return default(string);
+            return default;
         }
 
         public string ToString(string format, System.IFormatProvider provider)
         {
-            return default(string);
+            return default;
         }
     }
 }

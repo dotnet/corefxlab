@@ -89,7 +89,7 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
         {
-            item = default(KeyValuePair<K, V>);
+            item = default;
 
             if (_count == 0 | position.Equals(Position.AfterLast)) {
                 position = Position.AfterLast;

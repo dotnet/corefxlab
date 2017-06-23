@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Samples.Models
 
         public virtual bool IsTransient()
         {
-            return Id.Equals(default(TId));
+            return Id.Equals(default);
         }
     }
 

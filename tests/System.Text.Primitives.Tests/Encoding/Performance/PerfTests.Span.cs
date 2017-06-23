@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Text.Primitives.Tests.Encoding;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests
 {
@@ -41,44 +42,27 @@ namespace System.Text.Primitives.Tests
 
         [Benchmark(InnerIterationCount = InnerCount)]
         [MemberData(nameof(GetEncodingPerformanceTestData))]
-        public void EncodeFromUtf8toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
-        {
-            string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
-            Text.Encoding utf8Encoder = Text.Encoding.UTF8;
-            int utf8Length = utf8Encoder.GetByteCount(characters);
-            var utf8TempBuffer = new byte[utf8Length];
-            utf8Encoder.GetBytes(characters, 0, characters.Length, utf8TempBuffer, 0);
-            Span<byte> utf8Span = new Span<byte>(utf8TempBuffer);
-            
-            TextEncoder utf8 = TextEncoder.Utf8;
-            var utf8Buffer = new byte[utf8Length];
-            var span = new Span<byte>(utf8Buffer);
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf8.TryEncode(utf8Span, span, out int consumed, out int written)) { throw new Exception(); }
-            }
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf16toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            ReadOnlySpan<char> characters = inputString.AsSpan();
-            TextEncoder utf8 = TextEncoder.Utf8;
-            Assert.True(utf8.TryComputeEncodedBytes(characters, out int encodedBytes));
-            var utf8Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf8Buffer);
+            ReadOnlySpan<byte> utf16 = inputString.AsSpan().AsBytes();
+
+            var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(utf16, out int needed);
+            Assert.Equal(TransformationStatus.Done, status);
+
+            Span<byte> utf8 = new byte[needed];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf8.TryEncode(characters, span, out int consumed, out int written)) { throw new Exception(); }
+                    {
+                        status = Encoders.Utf8.ConvertFromUtf16(utf16, utf8, out int consumed, out int written);
+                        if (status != TransformationStatus.Done)
+                            throw new Exception();
+                    }
+                }
             }
         }
 
@@ -87,24 +71,24 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf32toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
-            Text.Encoding utf32 = Text.Encoding.UTF32;
-            int utf32Length = utf32.GetByteCount(characters);
-            var utf32Buffer = new byte[utf32Length];
-            utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
-            Span<byte> utf32ByteSpan = new Span<byte>(utf32Buffer);
-            ReadOnlySpan<uint> utf32Span = utf32ByteSpan.NonPortableCast<byte, uint>();
+            ReadOnlySpan<byte> utf32 = Text.Encoding.UTF32.GetBytes(inputString);
 
-            TextEncoder utf8 = TextEncoder.Utf8;
-            Assert.True(utf8.TryComputeEncodedBytes(utf32Span, out int encodedBytes));
-            var utf8Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf8Buffer);
+            var status = Encoders.Utf8.ComputeEncodedBytesFromUtf32(utf32, out int needed);
+            Assert.Equal(TransformationStatus.Done, status);
+
+            Span<byte> utf8 = new byte[needed];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf8.TryEncode(utf32Span, span, out int consumed, out int written)) { throw new Exception(); }
+                    {
+                        status = Encoders.Utf8.ConvertFromUtf32(utf32, utf8, out int consumed, out int written);
+                        if (status != TransformationStatus.Done)
+                            throw new Exception();
+                    }
+                }
             }
         }
 
@@ -113,42 +97,24 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf8toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
-            Text.Encoding utf8Encoder = Text.Encoding.UTF8;
-            int utf8Length = utf8Encoder.GetByteCount(characters);
-            var utf8TempBuffer = new byte[utf8Length];
-            utf8Encoder.GetBytes(characters, 0, characters.Length, utf8TempBuffer, 0);
-            Span<byte> utf8Span = new Span<byte>(utf8TempBuffer);
+            ReadOnlySpan<byte> utf8 = Text.Encoding.UTF8.GetBytes(inputString);
 
-            TextEncoder utf16 = TextEncoder.Utf16;
-            Assert.True(utf16.TryComputeEncodedBytes(utf8Span, out int encodedBytes));
-            var utf16Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf16Buffer);
+            var status = Encoders.Utf16.ComputeEncodedBytesFromUtf8(utf8, out int needed);
+            Assert.Equal(TransformationStatus.Done, status);
+
+            Span<byte> utf16 = new byte[needed];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf16.TryEncode(utf8Span, span, out int consumed, out int written)) { throw new Exception(); }
-            }
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [MemberData(nameof(GetEncodingPerformanceTestData))]
-        public void EncodeFromUtf16toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
-        {
-            string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            ReadOnlySpan<char> characters = inputString.AsSpan();
-            TextEncoder utf16 = TextEncoder.Utf16;
-            Assert.True(utf16.TryComputeEncodedBytes(characters, out int encodedBytes));
-            var utf16Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf16Buffer);
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf16.TryEncode(characters, span, out int consumed, out int written)) { throw new Exception(); }
+                    {
+                        status = Encoders.Utf16.ConvertFromUtf8(utf8, utf16, out int consumed, out int written);
+                        if (status != TransformationStatus.Done)
+                            throw new Exception();
+                    }
+                }
             }
         }
 
@@ -157,24 +123,24 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf32toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
-            Text.Encoding utf32 = Text.Encoding.UTF32;
-            int utf32Length = utf32.GetByteCount(characters);
-            var utf32Buffer = new byte[utf32Length];
-            utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
-            Span<byte> utf32ByteSpan = new Span<byte>(utf32Buffer);
-            ReadOnlySpan<uint> utf32Span = utf32ByteSpan.NonPortableCast<byte, uint>();
+            ReadOnlySpan<byte> utf32 = Text.Encoding.UTF32.GetBytes(inputString);
 
-            TextEncoder utf16 = TextEncoder.Utf16;
-            Assert.True(utf16.TryComputeEncodedBytes(utf32Span, out int encodedBytes));
-            var utf16Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf16Buffer);
+            var status = Encoders.Utf16.ComputeEncodedBytesFromUtf32(utf32, out int needed);
+            Assert.Equal(TransformationStatus.Done, status);
+
+            Span<byte> utf16 = new byte[needed];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf16.TryEncode(utf32Span, span, out int consumed, out int written)) { throw new Exception(); }
+                    {
+                        status = Encoders.Utf16.ConvertFromUtf32(utf32, utf16, out int consumed, out int written);
+                        if (status != TransformationStatus.Done)
+                            throw new Exception();
+                    }
+                }
             }
         }
 

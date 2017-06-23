@@ -9,7 +9,7 @@ namespace System.Buffers
     // This is to support secnarios today covered by Buffer<T> in corefxlab
     public class OwnedPinnedBuffer<T> : ReferenceCountedBuffer<T>
     {
-        public unsafe OwnedPinnedBuffer(T[] array, void* pointer, GCHandle handle = default(GCHandle))
+        public unsafe OwnedPinnedBuffer(T[] array, void* pointer, GCHandle handle = default)
         {
             var computedPointer = new IntPtr(Unsafe.AsPointer(ref array[0]));
             if (computedPointer != new IntPtr(pointer))

@@ -23,7 +23,7 @@ namespace System.IO.Pipelines
             _segment = start.Segment;
             _endSegment = end.Segment;
             _endIndex = end.Index;
-            _current = default(SegmentPart);
+            _current = default;
         }
 
         /// <summary>

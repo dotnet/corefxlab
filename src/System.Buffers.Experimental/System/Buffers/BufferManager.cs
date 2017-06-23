@@ -33,7 +33,7 @@ namespace System.Buffers.Pools
 
             protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
             {
-                arraySegment = default(ArraySegment<byte>);
+                arraySegment = default;
                 return false;
             }
 

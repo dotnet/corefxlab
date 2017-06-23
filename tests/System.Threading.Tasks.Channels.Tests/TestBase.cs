@@ -64,7 +64,7 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     return CurrentDelegate != null ? 
                         CurrentDelegate() :
-                        default(T); }
+                        default; }
             }
 
             object IEnumerator.Current { get { return Current; } }

@@ -70,7 +70,7 @@ namespace System.Text.Formatting.Tests
 
             var expected = time.ToString("R");
 
-            var sb = new ArrayFormatter(100, TextEncoder.Utf8);
+            var sb = new ArrayFormatter(100, SymbolTable.InvariantUtf8);
             sb.Append(time, 'R');
             var result = sb.Formatted.AsSpan().ToArray();
             var resultString = Encoding.UTF8.GetString(result);

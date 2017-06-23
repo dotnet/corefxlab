@@ -3,7 +3,6 @@
 
 using Xunit;
 using Microsoft.Xunit.Performance;
-using System.Text.Formatting;
 using System.IO;
 using System.Text.Json.Tests.Resources;
 
@@ -97,9 +96,9 @@ namespace System.Text.Json.Tests
             }
         }
 
-        static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, TextEncoder encoder)
+        static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, SymbolTable symbolTable)
         {
-            var json = new System.Text.Json.JsonReader(data, encoder);
+            var json = new System.Text.Json.JsonReader(data, symbolTable);
             while (json.Read()) ;
         }
 

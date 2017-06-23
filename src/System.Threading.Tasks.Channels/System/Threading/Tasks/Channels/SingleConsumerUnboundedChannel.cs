@@ -191,7 +191,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
         {
             T item;
             return TryRead(out item) ?
@@ -311,7 +311,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
         {
             // Outside of the lock, check if there are any items waiting to be read.  If there are, we're done.
             if (!_items.IsEmpty)
@@ -353,7 +353,7 @@ namespace System.Threading.Tasks.Channels
             return newWaiter.Task;
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default)
         {
             return
                 cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
@@ -362,7 +362,7 @@ namespace System.Threading.Tasks.Channels
                 ChannelUtilities.FalseTask;
         }
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default)
         {
             // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
             // so just TryWrite and return a completed task.

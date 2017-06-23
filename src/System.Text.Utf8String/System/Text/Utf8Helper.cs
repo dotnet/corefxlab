@@ -50,7 +50,7 @@ namespace System.Text
         {
             if (index >= utf8.Length)
             {
-                codePoint = default(uint);
+                codePoint = default;
                 bytesConsumed = 0;
                 return false;
             }
@@ -61,7 +61,7 @@ namespace System.Text
             if (bytesConsumed == 0 || utf8.Length - index < bytesConsumed)
             {
                 bytesConsumed = 0;
-                codePoint = default(uint);
+                codePoint = default;
                 return false;
             }
 
@@ -84,7 +84,7 @@ namespace System.Text
                     break;
 
                 default:
-                    codePoint = default(uint);
+                    codePoint = default;
                     bytesConsumed = 0;
                     return false;
             }
@@ -95,7 +95,7 @@ namespace System.Text
                 if ((current & b1100_0000U) != b1000_0000U)
                 {
                     bytesConsumed = 0;
-                    codePoint = default(uint);
+                    codePoint = default;
                     return false;
                 }
 
@@ -155,7 +155,7 @@ namespace System.Text
             {
                 if (it.Length == 0)
                 {
-                    encodedBytes = default(int);
+                    encodedBytes = default;
                     return false;
                 }
 
@@ -168,7 +168,7 @@ namespace System.Text
             }
 
             // Invalid unicode character or stream prematurely ended (which is still invalid character in that stream)
-            encodedBytes = default(int);
+            encodedBytes = default;
             return false;
         }
 
@@ -188,15 +188,15 @@ namespace System.Text
                     // we know the character length by iterating on surrogate characters from the end
                     // but the first byte of the character has also encoded length
                     // seems like the lengths don't match
-                    codePoint = default(uint);
+                    codePoint = default;
                     return false;
                 }
 
                 return true;
             }
 
-            codePoint = default(uint);
-            encodedBytes = default(int);
+            codePoint = default;
+            encodedBytes = default;
             return false;
         }
 
@@ -205,14 +205,14 @@ namespace System.Text
         {
             if (index < 0 || index >= s.Length)
             {
-                codePoint = default(uint);
+                codePoint = default;
                 encodedChars = 0;
                 return false;
             }
 
             if (index == s.Length - 1 && char.IsSurrogate(s[index]))
             {
-                codePoint = default(uint);
+                codePoint = default;
                 encodedChars = 0;
                 return false;
             }

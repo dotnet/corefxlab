@@ -130,7 +130,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
         {
             T item;
             return TryRead(out item) ?
@@ -176,7 +176,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
         {
             // If there are any items, readers can try to get them.
             if (!_items.IsEmpty)
@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Channels
                 return true;
             }
 
-            item = default(T);
+            item = default;
             return false;
         }
 
@@ -283,13 +283,13 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
             _doneWriting != ChannelUtilities.DoneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
             ChannelUtilities.FalseTask;
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
             TryWrite(item) ? Task.CompletedTask :
             Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));

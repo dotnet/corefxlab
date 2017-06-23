@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -147,7 +146,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private ReadCursor SeekMultiSegment(int bytes, ReadCursor end, bool checkEndReachable)
         {
-            ReadCursor result = default(ReadCursor);
+            ReadCursor result = default;
             bool foundResult = false;
 
             foreach (var segmentPart in new SegmentEnumerator(this, end))

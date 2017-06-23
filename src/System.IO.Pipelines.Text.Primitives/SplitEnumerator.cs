@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Text.Primitives
         private ReadableBuffer _current, _remainder;
         internal SplitEnumerator(ReadableBuffer remainder, byte delimiter)
         {
-            _current = default(ReadableBuffer);
+            _current = default;
             _remainder = remainder;
             _delimiter = delimiter;
         }
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 return false;
             }
             _current = _remainder;
-            _remainder = default(ReadableBuffer);
+            _remainder = default;
             return true;
         }
     }

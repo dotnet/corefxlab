@@ -64,7 +64,7 @@ namespace System.Buffers
             var rest = position.ObjectPosition as IBufferList<byte>;
             if (rest == null)
             {
-                value = default(Buffer<byte>);
+                value = default;
                 return false;
             }
 
@@ -212,7 +212,7 @@ namespace System.Buffers
                     if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
                     return true;
                 }
-                else if (position.ObjectPosition == null) { item = default(Buffer<byte>); return false; }
+                else if (position.ObjectPosition == null) { item = default; return false; }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._first;

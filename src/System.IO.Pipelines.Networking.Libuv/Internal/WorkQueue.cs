@@ -72,7 +72,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Internal
             private T _current;
             internal Enumerator(Node node)
             {
-                _current = default(T);
+                _current = default;
                 _next = node;
             }
             object IEnumerator.Current => _current;
@@ -84,7 +84,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Internal
             {
                 if (_next == null)
                 {
-                    _current = default(T);
+                    _current = default;
                     return false;
                 }
                 _current = _next.Value;

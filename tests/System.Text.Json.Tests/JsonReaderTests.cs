@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Tests.Resources;
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Json.Tests
@@ -272,7 +271,7 @@ namespace System.Text.Json.Tests
                 return json;
             }
 
-            var jsonReader = new JsonReader(jsonString.AsSpan().AsBytes(), TextEncoder.Utf16);
+            var jsonReader = new JsonReader(jsonString.AsSpan().AsBytes(), SymbolTable.InvariantUtf16);
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {
@@ -299,11 +298,10 @@ namespace System.Text.Json.Tests
             switch (value.Type)
             {
                 case Value.ValueType.String:
-                    jsonReader.Encoder.TryDecode(jsonReader.Value, out string str, out consumed);
-                    value.StringValue = str;
+                    value.StringValue = ReadString(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    PrimitiveParser.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.Encoder);
+                    PrimitiveParser.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:
@@ -363,7 +361,7 @@ namespace System.Text.Json.Tests
                         jsonObject.Pairs = jsonPairs;
                         return jsonObject;
                     case JsonTokenType.PropertyName:
-                        Assert.True(jsonReader.Encoder.TryDecode(jsonReader.Value, out string name, out int consumed));
+                        string name = ReadString(ref jsonReader);
                         jsonReader.Read(); // Move to value token
                         var pair = new Pair
                         {
@@ -406,6 +404,38 @@ namespace System.Text.Json.Tests
             }
 
             throw new FormatException("Json array was started but never ended.");
+        }
+
+        private static string ReadString(ref JsonReader jsonReader)
+        {
+            if (jsonReader.SymbolTable == SymbolTable.InvariantUtf8)
+            {
+                var status = Encoders.Utf16.ComputeEncodedBytesFromUtf8(jsonReader.Value, out int needed);
+                Assert.Equal(Buffers.TransformationStatus.Done, status);
+
+                var text = new string(' ', needed);
+                unsafe
+                {
+                    fixed (char* pChars = text)
+                    {
+                        var dst = new Span<byte>((byte*)pChars, needed);
+
+                        status = Encoders.Utf16.ConvertFromUtf8(jsonReader.Value, dst, out int consumed, out int written);
+                        Assert.Equal(Buffers.TransformationStatus.Done, status);
+                    }
+                }
+
+                return text;
+            }
+            else if (jsonReader.SymbolTable == SymbolTable.InvariantUtf16)
+            {
+                var utf16 = jsonReader.Value.NonPortableCast<byte, char>();
+                var chars = utf16.ToArray();
+
+                return new string(chars);
+            }
+            else
+                throw new NotImplementedException();
         }
     }
 }
