@@ -10,47 +10,6 @@ namespace System.Text.Primitives.Tests
 {
     public partial class PrimitiveParserTests
     {
-        private byte[] UtfEncode(string s, bool utf16)
-        {
-            if (utf16)
-                return Text.Encoding.Unicode.GetBytes(s);
-            else
-                return Text.Encoding.UTF8.GetBytes(s);
-        }
-
-        // TODO: Fix Thai + symbol and adjust tests.
-        // Change from new byte[] { 43 }, i.e. '+' to new byte[] { 0xE0, 0xB8, 0x9A, 0xE0, 0xB8, 0xA7, 0xE0, 0xB8, 0x81 }, i.e. 'บวก'
-        static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
-        {
-            new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
-            new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
-            new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
-            new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
-                0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
-                0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
-            new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
-                0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
-            new byte[] { 69 }, new byte[] { 101 },
-        };
-
-        public class ThaiSymbolTable : SymbolTable
-        {
-            public ThaiSymbolTable() : base(s_thaiUtf8DigitsAndSymbols) {}
-
-            public override bool TryEncode(byte utf8, Span<byte> destination, out int bytesWritten)
-                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesWritten);
-
-            public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesConsumed, out bytesWritten);
-
-            public override bool TryParse(ReadOnlySpan<byte> source, out byte utf8, out int bytesConsumed)
-                => SymbolTable.InvariantUtf8.TryParse(source, out utf8, out bytesConsumed);
-
-            public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
-                => SymbolTable.InvariantUtf8.TryParse(source, utf8, out bytesConsumed, out bytesWritten);
-        }
-
-        static SymbolTable s_thaiTable = new ThaiSymbolTable();
 
         #region byte
 
@@ -66,8 +25,8 @@ namespace System.Text.Primitives.Tests
         {
             byte parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -144,8 +103,8 @@ namespace System.Text.Primitives.Tests
         {
             byte parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -222,8 +181,8 @@ namespace System.Text.Primitives.Tests
         {
             ushort parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -300,8 +259,8 @@ namespace System.Text.Primitives.Tests
         {
             ushort parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -378,8 +337,8 @@ namespace System.Text.Primitives.Tests
         {
             uint parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -456,8 +415,8 @@ namespace System.Text.Primitives.Tests
         {
             uint parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -534,8 +493,8 @@ namespace System.Text.Primitives.Tests
         {
             ulong parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -612,8 +571,8 @@ namespace System.Text.Primitives.Tests
         {
             ulong parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -693,8 +652,8 @@ namespace System.Text.Primitives.Tests
         {
             sbyte parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -775,10 +734,10 @@ namespace System.Text.Primitives.Tests
         {
             sbyte parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
+            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', TestHelper.ThaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -798,8 +757,8 @@ namespace System.Text.Primitives.Tests
         {
             sbyte parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -878,8 +837,8 @@ namespace System.Text.Primitives.Tests
         {
             short parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -960,10 +919,10 @@ namespace System.Text.Primitives.Tests
         {
             short parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
+            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', TestHelper.ThaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -983,8 +942,8 @@ namespace System.Text.Primitives.Tests
         {
             short parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -1102,8 +1061,8 @@ namespace System.Text.Primitives.Tests
         {
             int parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -1201,7 +1160,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483647", true, -2147483647, 11)]
         private void ParseInt32VariableLength(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             bool result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out int parsedValue, out int consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1244,7 +1203,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("91474836481")]
         private void ParseInt32VariableOverflowTests(string text)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             bool result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out int parsedValue, out int consumed);
             Assert.Equal(false, result);
             Assert.Equal(0, parsedValue);
@@ -1268,7 +1227,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-1147483649", true, -1147483649, int.MaxValue)]
         public unsafe void ParseInt32OverflowCheck(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
 
             const int TwoGiB = int.MaxValue;
 
@@ -1382,8 +1341,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("ลบ", false, 0, 0)]
         public unsafe void ParseInt32Thai(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            bool result = PrimitiveParser.TryParseInt32(utf8Span, out int parsedValue, out int consumed, 'G', s_thaiTable);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            bool result = PrimitiveParser.TryParseInt32(utf8Span, out int parsedValue, out int consumed, 'G', TestHelper.ThaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1405,7 +1364,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("abcdefghijklmnop๑", true, 0, int.MaxValue - 17)]
         public unsafe void ParseInt32ThaiOverflowCheck(string text, bool expectSuccess, int expectedValue, int expectedConsumed)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
 
             const int TwoGiB = int.MaxValue;
 
@@ -1439,7 +1398,7 @@ namespace System.Text.Primitives.Tests
 
                     utf8Span.CopyTo(span.Slice(TwoGiB - utf8Span.Length));
 
-                    bool result = PrimitiveParser.TryParseInt32(span, out int parsedValue, out int consumed, 'G', s_thaiTable);
+                    bool result = PrimitiveParser.TryParseInt32(span, out int parsedValue, out int consumed, 'G', TestHelper.ThaiTable);
                     Assert.Equal(expectSuccess, result);
                     Assert.Equal(expectedValue, parsedValue);
                     Assert.Equal(expectedConsumed, consumed);
@@ -1464,8 +1423,8 @@ namespace System.Text.Primitives.Tests
         {
             int parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -1544,8 +1503,8 @@ namespace System.Text.Primitives.Tests
         {
             long parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
@@ -1626,10 +1585,10 @@ namespace System.Text.Primitives.Tests
         {
             long parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiTable);
+            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', TestHelper.ThaiTable);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1649,8 +1608,8 @@ namespace System.Text.Primitives.Tests
         {
             long parsedValue;
             int consumed;
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
-            ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
+            ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
             ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();

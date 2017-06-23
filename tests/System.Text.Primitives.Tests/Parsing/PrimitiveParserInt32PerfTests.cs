@@ -354,14 +354,14 @@ namespace System.Text.Primitives.Tests
         [InlineData("+๒๑๔abcdefghijklmnop")]
         public unsafe void ParseInt32Thai(string text)
         {
-            ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
+            ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        PrimitiveParser.TryParseInt32(utf8Span, out int value, out int bytesConsumed, 'G', s_thaiEncoder);
+                        PrimitiveParser.TryParseInt32(utf8Span, out int value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
                         DoNotIgnore(value, bytesConsumed);
                     }
                 }

@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -65,5 +65,47 @@ namespace System.Text.Primitives.Tests
                 MemoryLock.ReleaseMutex();
             }
         }
+
+        public static byte[] UtfEncode(string s, bool utf16)
+        {
+            if (utf16)
+                return Text.Encoding.Unicode.GetBytes(s);
+            else
+                return Text.Encoding.UTF8.GetBytes(s);
+        }
+
+        // TODO: Fix Thai + symbol and adjust tests.
+        // Change from new byte[] { 43 }, i.e. '+' to new byte[] { 0xE0, 0xB8, 0x9A, 0xE0, 0xB8, 0xA7, 0xE0, 0xB8, 0x81 }, i.e. 'บวก'
+        static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
+        {
+            new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
+            new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
+            new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
+            new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
+                0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
+                0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
+            new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
+                0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
+            new byte[] { 69 }, new byte[] { 101 },
+        };
+
+        public class ThaiSymbolTable : SymbolTable
+        {
+            public ThaiSymbolTable() : base(s_thaiUtf8DigitsAndSymbols) { }
+
+            public override bool TryEncode(byte utf8, Span<byte> destination, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesWritten);
+
+            public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryEncode(utf8, destination, out bytesConsumed, out bytesWritten);
+
+            public override bool TryParse(ReadOnlySpan<byte> source, out byte utf8, out int bytesConsumed)
+                => SymbolTable.InvariantUtf8.TryParse(source, out utf8, out bytesConsumed);
+
+            public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
+                => SymbolTable.InvariantUtf8.TryParse(source, utf8, out bytesConsumed, out bytesWritten);
+        }
+
+        public static SymbolTable ThaiTable = new ThaiSymbolTable();
     }
 }
