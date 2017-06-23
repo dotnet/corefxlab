@@ -143,6 +143,7 @@ namespace System.IO.Compression
 
         public static TransformationStatus FlushEncoder(Span<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state, bool isFinished = true)
         {
+            EnsureInitialized(ref state, true);
             BrotliEncoderOperation operation = isFinished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
             bytesWritten = destination.Length;
             bytesConsumed = 0;
@@ -177,14 +178,7 @@ namespace System.IO.Compression
 
         public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
-            try
-            {
-                EnsureInitialized(ref state, true);
-            }
-            catch (System.IO.IOException initException)
-            {
-                throw initException;
-            }
+            EnsureInitialized(ref state, true);
             bytesWritten = destination.Length;
             bytesConsumed = source.Length;
             unsafe
@@ -217,14 +211,7 @@ namespace System.IO.Compression
 
         public static TransformationStatus Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
-            try
-            {
-                EnsureInitialized(ref state, false);
-            }
-            catch (System.IO.IOException initException)
-            {
-                throw initException;
-            }
+            EnsureInitialized(ref state, false);
             bool endOfStream = false;
             bytesConsumed = source.Length;
             bytesWritten = destination.Length;
