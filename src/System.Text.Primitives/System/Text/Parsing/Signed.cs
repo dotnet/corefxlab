@@ -384,7 +384,7 @@ namespace System.Text
                     {
                         answer = answer * 10 + (int)symbol - (int)SymbolTable.Symbol.D0;
                         index += consumed;
-                        if (index - firstNonZeroDigitIndex == Int32OverflowLength * numBytes - 1)
+                        if (index - firstNonZeroDigitIndex == (Int32OverflowLength - 1) * numBytes)
                         {
                             if (!symbolTable.TryParse(text.Slice(index), out symbol, out consumed)) goto Done;
                             if (IsValid(symbol))

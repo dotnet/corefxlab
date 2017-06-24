@@ -136,7 +136,7 @@ namespace Microsoft.Net.Http
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Add(handle.AddrOfPinnedObject(), index);
+                var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
                 return new BufferHandle(this, pointer, handle);
             }
         }
