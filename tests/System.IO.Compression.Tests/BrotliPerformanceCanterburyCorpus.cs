@@ -19,30 +19,56 @@ namespace System.IO.Compression.Tests
         {
             foreach (CompressionLevel compressionLevel in Enum.GetValues(typeof(CompressionLevel)))
             {
+                string folder = "Canterbury";
                 foreach (int innerIterations in new int[] { 1, 10 })
                 {
-                    yield return new object[] { innerIterations, "alice29.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "asyoulik.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "cp.html", compressionLevel };
-                    yield return new object[] { innerIterations, "fields.c", compressionLevel };
-                    yield return new object[] { innerIterations, "grammar.lsp", compressionLevel };
-                    yield return new object[] { innerIterations, "kennedy.xls", compressionLevel };
-                    yield return new object[] { innerIterations, "lcet10.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "plrabn12.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "ptt5", compressionLevel };
-                    yield return new object[] { innerIterations, "sum", compressionLevel };
-                    yield return new object[] { innerIterations, "xargs.1", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "alice29.txt", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "asyoulik.txt", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "cp.html", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "fields.c", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "grammar.lsp", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "kennedy.xls", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "lcet10.txt", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "plrabn12.txt", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "ptt5", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "sum", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "xargs.1", compressionLevel };
                 }
+                /*folder = "WebFiles";
+                foreach (int innerIterations in new int[] { 1, 10 })
+                {
+                    yield return new object[] { innerIterations, folder, "angular.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "angular.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "broker-config.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "config.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "jquery-3.2.1.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "jquery-3.2.1.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "meBoot.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "MWFMDL2.woff", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "mwf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "style.css", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "uhf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, folder, "www.reddit.com6.23.2017.har", compressionLevel };
+                }*/
             }
         }
 
+        public static void CreateCompressFile(string source, string destiny, CompressionLevel lvl)
+        {
+            byte[] bytes = File.ReadAllBytes(source);
+            FileStream ms = File.Create(destiny);
+            BrotliStream bs = new BrotliStream(ms, CompressionMode.Compress, true, (1 << 16) - 1, lvl);
+            bs.Write(bytes, 0, bytes.Length);
+            bs.Dispose();
+            ms.Dispose();
+        }
         /// <summary>
         /// Benchmark tests to measure the performance of individually compressing each file in the
         /// Canterbury Corpus
         /// </summary>
         [Benchmark]
         [MemberData(nameof(CanterburyCorpus))]
-        public void Compress_Canterbury(int innerIterations, string fileName, CompressionLevel compressLevel)
+        public void Compress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel compressLevel)
         {
             byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", "Canterbury", fileName));
             FileStream[] fileStreams = new FileStream[innerIterations];
@@ -75,10 +101,15 @@ namespace System.IO.Compression.Tests
         /// </summary>
         [Benchmark]
         [MemberData(nameof(CanterburyCorpus))]
-        public void Decompress_Canterbury(int innerIterations, string fileName, CompressionLevel level)
+        public void Decompress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel level)
         {
-            string zipFilePath = Path.Combine("BrotliTestData", "Canterbury", "BrotliCompressed", fileName + level.ToString() + ".br");
-            string sourceFilePath = Path.Combine("BrotliTestData", "Canterbury", fileName);
+            string zipFilePath = Path.Combine("BrotliTestData", folder, "BrotliCompressed", fileName+level.ToString() + ".br");
+            string sourceFilePath = Path.Combine("BrotliTestData", folder, fileName);
+            if (folder == "WebFiles")
+            {
+                CreateCompressFile(sourceFilePath, zipFilePath, level);
+            }
+            
             byte[] outputRead = new byte[new FileInfo(sourceFilePath).Length];
             MemoryStream[] memories = new MemoryStream[innerIterations];
             foreach (var iteration in Benchmark.Iterations)
