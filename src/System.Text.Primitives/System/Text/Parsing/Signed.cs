@@ -333,7 +333,6 @@ namespace System.Text
             int textLength = text.Length;
             if (textLength < 1) goto FalseExit;
 
-            ref byte textByte = ref text.DangerousGetPinnableReference();
             if (!symbolTable.TryParse(text, out SymbolTable.Symbol symbol, out int consumed)) goto FalseExit;
 
             sbyte sign = 1;
