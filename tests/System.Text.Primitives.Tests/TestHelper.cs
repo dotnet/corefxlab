@@ -6,11 +6,41 @@ using System.Buffers;
 using Xunit;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace System.Text.Primitives.Tests
 {
     public static class TestHelper
     {
+        public const int LoadIterations = 30000;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void DoNotIgnore(uint value, int consumed)
+        {
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void DoNotIgnore(ulong value, int consumed)
+        {
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void DoNotIgnore(int value, int consumed)
+        {
+        }
+
+        public static void PrintTestName(string testString, [CallerMemberName] string testName = "")
+        {
+            if (testString != null)
+            {
+                Console.WriteLine("{0} called with test string \"{1}\".", testName, testString);
+            }
+            else
+            {
+                Console.WriteLine("{0} called with no test string.", testName);
+            }
+        }
+
         public static string SpanToString(Span<byte> span, SymbolTable symbolTable = null)
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)

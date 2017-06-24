@@ -46,7 +46,7 @@ namespace System.Text.Formatting.Tests
             sb.Append("hi");
             sb.Append(1);
             sb.Append("hello");
-            sb.Append(-20);
+            sb.Append((sbyte)-20);
             Assert.Equal("hi1hello-20", sb.ToString());
         }
 
@@ -140,9 +140,9 @@ namespace System.Text.Formatting.Tests
             CheckInt64(long.MaxValue, "x", "7fffffffffffffff", formatter);
 
             CheckInt64(long.MinValue, "X", "8000000000000000", formatter);
-            CheckInt64(-10,  "X", "FFFFFFFFFFFFFFF6", formatter);
-            CheckInt64(-1,  "X", "FFFFFFFFFFFFFFFF", formatter);
-            CheckInt64(0,  "X", "0", formatter);
+            CheckInt64(-10, "X", "FFFFFFFFFFFFFFF6", formatter);
+            CheckInt64(-1, "X", "FFFFFFFFFFFFFFFF", formatter);
+            CheckInt64(0, "X", "0", formatter);
             CheckInt64(1, "X", "1", formatter);
             CheckInt64(10, "X", "A", formatter);
             CheckInt64(long.MaxValue, "X", "7FFFFFFFFFFFFFFF", formatter);
@@ -198,14 +198,14 @@ namespace System.Text.Formatting.Tests
         {
             var sb = new StringFormatter();
             sb.Append('C');
-            sb.Append(-10);
-            sb.Append(99);
-            sb.Append(-10);
-            sb.Append(99);
-            sb.Append(-10);
-            sb.Append(99);
-            sb.Append(-10);
-            sb.Append(99);
+            sb.Append((sbyte)-10);
+            sb.Append((byte)99);
+            sb.Append((short)-10);
+            sb.Append((ushort)99);
+            sb.Append((int)-10);
+            sb.Append((uint)99);
+            sb.Append((long)-10);
+            sb.Append((ulong)99);
             var result = sb.ToString();
             Assert.Equal("C-1099-1099-1099-1099", result);
         }
@@ -215,14 +215,14 @@ namespace System.Text.Formatting.Tests
         {
             var format = TextFormat.Parse("D");
             var sb = new StringFormatter();
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
+            sb.Append((sbyte)-10, format);
+            sb.Append((byte)99, format);
+            sb.Append((short)-10, format);
+            sb.Append((ushort)99, format);
+            sb.Append((int)-10, format);
+            sb.Append((uint)99, format);
+            sb.Append((long)-10, format);
+            sb.Append((ulong)99, format);
             var result = sb.ToString();
             Assert.Equal("-1099-1099-1099-1099", result);
         }
@@ -232,14 +232,14 @@ namespace System.Text.Formatting.Tests
         {
             var format = TextFormat.Parse("D3");
             var sb = new StringFormatter();
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
+            sb.Append((sbyte)-10, format);
+            sb.Append((byte)99, format);
+            sb.Append((short)-10, format);
+            sb.Append((ushort)99, format);
+            sb.Append((int)-10, format);
+            sb.Append((uint)99, format);
+            sb.Append((long)-10, format);
+            sb.Append((ulong)99, format);
             var result = sb.ToString();
             Assert.Equal("-010099-010099-010099-010099", result);
         }
@@ -249,14 +249,14 @@ namespace System.Text.Formatting.Tests
         {
             var format = TextFormat.Parse("G");
             var sb = new StringFormatter();
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
+            sb.Append((sbyte)-10, format);
+            sb.Append((byte)99, format);
+            sb.Append((short)-10, format);
+            sb.Append((ushort)99, format);
+            sb.Append((int)-10, format);
+            sb.Append((uint)99, format);
+            sb.Append((long)-10, format);
+            sb.Append((ulong)99, format);
             var result = sb.ToString();
             Assert.Equal("-1099-1099-1099-1099", result);
         }
@@ -266,14 +266,14 @@ namespace System.Text.Formatting.Tests
         {
             var format = TextFormat.Parse("N1");
             var sb = new StringFormatter();
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
-            sb.Append(-10, format);
-            sb.Append(99, format);
+            sb.Append((sbyte)-10, format);
+            sb.Append((byte)99, format);
+            sb.Append((short)-10, format);
+            sb.Append((ushort)99, format);
+            sb.Append((int)-10, format);
+            sb.Append((uint)99, format);
+            sb.Append((long)-10, format);
+            sb.Append((ulong)99, format);
             var result = sb.ToString();
             Assert.Equal("-10.099.0-10.099.0-10.099.0-10.099.0", result);
         }
@@ -285,16 +285,16 @@ namespace System.Text.Formatting.Tests
             var X = TextFormat.Parse("X");
 
             var sb = new StringFormatter();
-            sb.Append(255, x);
-            sb.Append(255, X);
+            sb.Append((ulong)255, x);
+            sb.Append((uint)255, X);
             Assert.Equal("ffFF", sb.ToString());
 
             sb.Clear();
-            sb.Append(-1, X);
+            sb.Append((int)-1, X);
             Assert.Equal("FFFFFFFF", sb.ToString());
 
             sb.Clear();
-            sb.Append(-2, X);
+            sb.Append((int)-2, X);
             Assert.Equal("FFFFFFFE", sb.ToString());
         }
 
@@ -305,17 +305,17 @@ namespace System.Text.Formatting.Tests
             var X = TextFormat.Parse("X");
 
             var sb = new ArrayFormatter(256, SymbolTable.InvariantUtf8);
-            sb.Append(255, x);
-            sb.Append(255, X);
+            sb.Append((ulong)255, x);
+            sb.Append((uint)255, X);
 
             Assert.Equal("ffFF", new Utf8String(sb.Formatted.AsSpan()).ToString());
 
             sb.Clear();
-            sb.Append(-1, X);
+            sb.Append((int)-1, X);
             Assert.Equal("FFFFFFFF", new Utf8String(sb.Formatted.AsSpan()).ToString());
 
             sb.Clear();
-            sb.Append(-2, X);
+            sb.Append((int)-2, X);
             Assert.Equal("FFFFFFFE", new Utf8String(sb.Formatted.AsSpan()).ToString());
         }
 
@@ -326,16 +326,16 @@ namespace System.Text.Formatting.Tests
             var X = TextFormat.Parse("X10");
 
             var sb = new StringFormatter();
-            sb.Append(255, x);
-            sb.Append(255, X);
+            sb.Append((ulong)255, x);
+            sb.Append((uint)255, X);
             Assert.Equal("00000000ff00000000FF", sb.ToString());
 
             sb.Clear();
-            sb.Append(-1, X);
+            sb.Append((int)-1, X);
             Assert.Equal("00FFFFFFFF", sb.ToString());
 
             sb.Clear();
-            sb.Append(-2, X);
+            sb.Append((int)-2, X);
             Assert.Equal("00FFFFFFFE", sb.ToString());
         }
 
@@ -345,7 +345,8 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool)) {
+            using (var writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool))
+            {
                 writer.Append(100);
                 writer.Append(-100);
                 writer.Append('h');
@@ -360,7 +361,8 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var utf8Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool)) {
+            using (var utf8Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool))
+            {
                 utf8Writer.Append("Hello");
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
@@ -371,7 +373,8 @@ namespace System.Text.Formatting.Tests
             }
 
             stream.Position = 0;
-            using(var utf16Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf16, pool)) {
+            using (var utf16Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf16, pool))
+            {
                 utf16Writer.Append("Hello");
                 utf16Writer.Append(" ");
                 utf16Writer.Append("World!");
@@ -390,7 +393,8 @@ namespace System.Text.Formatting.Tests
                 string data = new string('#', length);
                 formatter.Append(data);
                 Assert.Equal(length, formatter.CommitedByteCount);
-                for(int i=0; i<formatter.CommitedByteCount; i++) {
+                for (int i = 0; i < formatter.CommitedByteCount; i++)
+                {
                     Assert.Equal((byte)'#', formatter.Formatted.Array[i]);
                 }
             }

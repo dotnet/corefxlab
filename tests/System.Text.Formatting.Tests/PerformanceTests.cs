@@ -34,7 +34,7 @@ namespace System.Text.Formatting.Tests
                 StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append(i % 10);
+                    sb.Append(((int)(i % 10)));
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)
@@ -54,7 +54,7 @@ namespace System.Text.Formatting.Tests
                 StringBuilder sb = new StringBuilder(numbersToWrite);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append(i % 10);
+                    sb.Append(((int)(i % 10)));
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)
@@ -74,7 +74,7 @@ namespace System.Text.Formatting.Tests
                 StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append(i % 10, TextFormat.HexUppercase);
+                    sb.Append(((int)(i % 10)), TextFormat.HexUppercase);
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)
@@ -94,7 +94,7 @@ namespace System.Text.Formatting.Tests
                 StringBuilder sb = new StringBuilder(numbersToWrite);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append((i % 10).ToString("X"));
+                    sb.Append(((int)(i % 10)).ToString("X"));
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)
@@ -279,4 +279,3 @@ namespace System.Text.Formatting.Tests
         }
     }
 }
-
