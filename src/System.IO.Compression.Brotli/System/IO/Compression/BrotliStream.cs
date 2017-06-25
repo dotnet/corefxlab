@@ -258,7 +258,7 @@ namespace System.IO.Compression
                     throw new TimeoutException(BrotliEx.TimeoutWrite);
                 }
                 copyLen = bytesRemain > _bufferSize ? _bufferSize : bytesRemain;
-                Span<byte> bufferInput = new Span<byte>(buffer, offset, count);
+                Span<byte> bufferInput = new Span<byte>(buffer, currentOffset, copyLen);
                 _transformationResult = TransformationStatus.DestinationTooSmall;
                 _transformationResult = Brotli.Compress(bufferInput, _buffer, out _availableInput, out _availableOutput, ref _state);
                 if (_transformationResult == TransformationStatus.InvalidData)
