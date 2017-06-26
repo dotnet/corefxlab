@@ -128,8 +128,9 @@ namespace System.IO.Compression
 
         internal static int GetQualityFromCompressionLevel(CompressionLevel level)
         {
-            if (level == CompressionLevel.Fastest) return 1;
             if (level == CompressionLevel.Optimal) return 10;
+            if (level == CompressionLevel.NoCompression) return 1;
+            if (level == CompressionLevel.Fastest) return 2;
             return (int)level;
         }
 

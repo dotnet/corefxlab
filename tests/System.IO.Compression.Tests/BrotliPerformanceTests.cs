@@ -10,7 +10,7 @@ namespace System.IO.Compression.Tests
     {
         private const int Iter = 1000;
 
-        [Benchmark(InnerIterationCount = Iter)]
+     //   [Benchmark(InnerIterationCount = Iter)]
         [InlineData(Util.CompressionType.CryptoRandom)]
         [InlineData(Util.CompressionType.RepeatedSegments)]
         [InlineData(Util.CompressionType.NormalData)]
@@ -37,7 +37,7 @@ namespace System.IO.Compression.Tests
             File.Delete(testFilePath);
         }
 
-        [Benchmark]
+       // [Benchmark]
         [InlineData(Util.CompressionType.CryptoRandom)]
         [InlineData(Util.CompressionType.RepeatedSegments)]
         [InlineData(Util.CompressionType.VeryRepetitive)]
@@ -60,7 +60,7 @@ namespace System.IO.Compression.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = Iter)]
+       // [Benchmark(InnerIterationCount = Iter)]
         [InlineData(Util.CompressionType.CryptoRandom)]
         [InlineData(Util.CompressionType.RepeatedSegments)]
         [InlineData(Util.CompressionType.NormalData)]
@@ -84,7 +84,7 @@ namespace System.IO.Compression.Tests
             File.Delete(testFilePath);
         }
 
-        [Benchmark]
+      //  [Benchmark]
         [InlineData(Util.CompressionType.CryptoRandom)]
         [InlineData(Util.CompressionType.RepeatedSegments)]
         [InlineData(Util.CompressionType.VeryRepetitive)]

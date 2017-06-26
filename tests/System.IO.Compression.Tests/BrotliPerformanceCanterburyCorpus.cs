@@ -34,7 +34,7 @@ namespace System.IO.Compression.Tests
                     yield return new object[] { innerIterations, folder, "sum", compressionLevel };
                     yield return new object[] { innerIterations, folder, "xargs.1", compressionLevel };
                 }
-                /*folder = "WebFiles";
+                folder = "WebFiles";
                 foreach (int innerIterations in new int[] { 1, 10 })
                 {
                     yield return new object[] { innerIterations, folder, "angular.js", compressionLevel };
@@ -49,7 +49,7 @@ namespace System.IO.Compression.Tests
                     yield return new object[] { innerIterations, folder, "style.css", compressionLevel };
                     yield return new object[] { innerIterations, folder, "uhf-west-european-default.min.css", compressionLevel };
                     yield return new object[] { innerIterations, folder, "www.reddit.com6.23.2017.har", compressionLevel };
-                }*/
+                }
             }
         }
 
@@ -105,11 +105,6 @@ namespace System.IO.Compression.Tests
         {
             string zipFilePath = Path.Combine("BrotliTestData", folder, "BrotliCompressed", fileName+level.ToString() + ".br");
             string sourceFilePath = Path.Combine("BrotliTestData", folder, fileName);
-            if (folder == "WebFiles")
-            {
-                CreateCompressFile(sourceFilePath, zipFilePath, level);
-            }
-            
             byte[] outputRead = new byte[new FileInfo(sourceFilePath).Length];
             MemoryStream[] memories = new MemoryStream[innerIterations];
             foreach (var iteration in Benchmark.Iterations)
