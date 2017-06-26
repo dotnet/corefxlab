@@ -18,7 +18,7 @@ namespace System.IO.Compression
 {
     public partial class BrotliStream : Stream
     {
-        private const int DefaultBufferSize = (1 << 16) - 16;
+        private const int DefaultBufferSize = (1 << 16) - 16; //65520
         private int _bufferSize;
         private Stream _stream;
         private CompressionMode _mode;
