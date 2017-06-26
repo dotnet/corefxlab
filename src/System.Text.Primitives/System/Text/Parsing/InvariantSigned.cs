@@ -901,8 +901,7 @@ namespace System.Text
 
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
             {
-                int textLength = text.Length;
-                if (textLength < 1) goto FalseExit;
+                if (text.Length < 1) goto FalseExit;
 
                 int sign = 1;
                 int index = 0;
@@ -911,13 +910,13 @@ namespace System.Text
                 {
                     sign = -1;
                     index++;
-                    if (index >= textLength) goto FalseExit;
+                    if ((uint)index >= (uint)text.Length) goto FalseExit;
                     num = text[index];
                 }
                 else if (num == '+')
                 {
                     index++;
-                    if (index >= textLength) goto FalseExit;
+                    if ((uint)index >= (uint)text.Length) goto FalseExit;
                     num = text[index];
                 }
 
@@ -930,7 +929,7 @@ namespace System.Text
                         do
                         {
                             index++;
-                            if (index >= textLength) goto Done;
+                            if ((uint)index >= (uint)text.Length) goto Done;
                             num = text[index];
                         } while (num == '0');
                         if (!IsDigit(num)) goto Done;
@@ -939,64 +938,66 @@ namespace System.Text
                     answer = num - '0';
                     index++;
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
                     index++;
                     answer = 10 * answer + num - '0';
 
                     // Potential overflow
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     num = text[index];
                     if (!IsDigit(num)) goto Done;
-                    long lAnswer = (long)answer * 10 + num - '0';
+                    if (answer > Int32.MaxValue / 10 + 1) goto FalseExit; // Overflow
+                    answer = answer * 10 + num - '0';
 
-                    if (lAnswer > (long)Int32.MaxValue + (-1 * sign + 1) / 2) goto FalseExit;
-                    answer = (int)lAnswer;
+                    // if sign < 0, (-1 * sign + 1) / 2 = 1
+                    // else, (-1 * sign + 1) / 2 = 0
+                    if ((uint)answer > (uint)Int32.MaxValue + (-1 * sign + 1) / 2) goto FalseExit; // Overflow
                     index++;
-                    if (index >= textLength) goto Done;
+                    if ((uint)index >= (uint)text.Length) goto Done;
                     if (!IsDigit(text[index])) goto Done;
 
                     // Guaranteed overflow
