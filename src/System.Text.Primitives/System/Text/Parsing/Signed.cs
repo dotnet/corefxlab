@@ -371,7 +371,7 @@ namespace System.Text
                 {
                     do
                     {
-                        answer = answer * 10 + (int)symbol - (int)SymbolTable.Symbol.D0;
+                        answer = answer * 10 + (int)symbol;
                         index += consumed;
                         if (index >= textLength) goto Done;
                         if (!symbolTable.TryParse(text.Slice(index), out symbol, out consumed)) goto Done;
@@ -381,14 +381,13 @@ namespace System.Text
                 {
                     do
                     {
-                        answer = answer * 10 + (int)symbol - (int)SymbolTable.Symbol.D0;
+                        answer = answer * 10 + (int)symbol;
                         index += consumed;
                         if (index - firstNonZeroDigitIndex == (Int32OverflowLength - 1) * numBytes)
                         {
                             if (!symbolTable.TryParse(text.Slice(index), out symbol, out consumed)) goto Done;
                             if (IsValid(symbol))
                             {
-                                symbol -= (int)SymbolTable.Symbol.D0;
                                 if (WillOverFlow(answer, (int)symbol, sign)) goto FalseExit;
                                 answer = answer * 10 + (int)symbol;
                                 index += consumed;
