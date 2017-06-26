@@ -93,7 +93,7 @@ namespace System.IO.Compression
             }
         }
 
-        public static void EnsureInitialized(ref State state, bool compress)
+        internal static void EnsureInitialized(ref State state, bool compress)
         {
             if (state.BrotliNativeState != IntPtr.Zero)
             {
