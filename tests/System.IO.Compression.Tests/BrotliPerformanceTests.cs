@@ -84,7 +84,7 @@ namespace System.IO.Compression.Tests
             File.Delete(testFilePath);
         }
 
-      //  [Benchmark]
+        [Benchmark]
         [InlineData(Util.CompressionType.CryptoRandom)]
         [InlineData(Util.CompressionType.RepeatedSegments)]
         [InlineData(Util.CompressionType.VeryRepetitive)]
