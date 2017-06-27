@@ -386,18 +386,24 @@ namespace System.Buffers.Tests
             var span = buffer.Span;
             var sliceSpan = slice.Span;
 
+            span[5] = 42;
+            sliceSpan[10] = 24;
+
             GC.Collect(2);
             GC.WaitForPendingFinalizers();
 
             try
             {
                 span = buffer.Span;
-                span = slice.Span;
+                sliceSpan = slice.Span;
             }
             catch (ObjectDisposedException ex)
             {
                 Assert.True(false, "There shouldn't be any Object Disposed Exception here. " + ex.Message);
             }
+
+            Assert.Equal(42, span[5]);
+            Assert.Equal(24, sliceSpan[10]);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace System
     public struct Buffer<T>
     {
         // The highest order bit of _index is used to discern whether _arrayOrOwnedBuffer is an array or an owned buffer
-        // if (_index >> 31) = 1, object _arrayOrOwnedBuffer is an OwnedBuffer<T>
+        // if (_index >> 31) == 1, object _arrayOrOwnedBuffer is an OwnedBuffer<T>
         // else, object _arrayOrOwnedBuffer is a T[]
         readonly object _arrayOrOwnedBuffer;
         readonly int _index;
