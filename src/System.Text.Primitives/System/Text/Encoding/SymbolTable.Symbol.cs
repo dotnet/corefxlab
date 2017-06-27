@@ -5,6 +5,7 @@ namespace System.Text
 {
     public partial class SymbolTable
     {
+        // Do not change the specific enum values without careful consideration of the impacts to the parsers.
         public enum Symbol : ushort {
             D0 = (ushort)0,
             D1 = (ushort)1,

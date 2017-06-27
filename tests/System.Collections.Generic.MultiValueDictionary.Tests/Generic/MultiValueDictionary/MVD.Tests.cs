@@ -353,7 +353,7 @@ namespace System.Collections.Tests
         public void MVD_Constructor4_InvalidTCollection<TKey, TValue>()
         {
             Assert.Throws<InvalidOperationException>(() => MultiValueDictionary<TKey, TValue>.Create<DummyReadOnlyCollection<TValue>>(1, (IEqualityComparer<TKey>)null));
-            Assert.Throws<InvalidOperationException>(() => MultiValueDictionary<TKey, TValue>.Create<DummyReadOnlyCollection<TValue>>(1, (IEqualityComparer<TKey>)null, () => new DummyReadOnlyCollection<TValue>()));
+            Assert.Throws<InvalidOperationException>(() => MultiValueDictionary<TKey, TValue>.Create<DummyReadOnlyCollection<TValue>>(1, null, () => new DummyReadOnlyCollection<TValue>()));
         }
 
         #endregion    

@@ -140,9 +140,9 @@ namespace System.Text.Formatting.Tests
             CheckInt64(long.MaxValue, "x", "7fffffffffffffff", formatter);
 
             CheckInt64(long.MinValue, "X", "8000000000000000", formatter);
-            CheckInt64(-10,  "X", "FFFFFFFFFFFFFFF6", formatter);
-            CheckInt64(-1,  "X", "FFFFFFFFFFFFFFFF", formatter);
-            CheckInt64(0,  "X", "0", formatter);
+            CheckInt64(-10, "X", "FFFFFFFFFFFFFFF6", formatter);
+            CheckInt64(-1, "X", "FFFFFFFFFFFFFFFF", formatter);
+            CheckInt64(0, "X", "0", formatter);
             CheckInt64(1, "X", "1", formatter);
             CheckInt64(10, "X", "A", formatter);
             CheckInt64(long.MaxValue, "X", "7FFFFFFFFFFFFFFF", formatter);
@@ -345,7 +345,8 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool)) {
+            using (var writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool))
+            {
                 writer.Append(100);
                 writer.Append(-100);
                 writer.Append('h');
@@ -360,7 +361,8 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var utf8Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool)) {
+            using (var utf8Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf8, pool))
+            {
                 utf8Writer.Append("Hello");
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
@@ -371,7 +373,8 @@ namespace System.Text.Formatting.Tests
             }
 
             stream.Position = 0;
-            using(var utf16Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf16, pool)) {
+            using (var utf16Writer = new StreamFormatter(stream, SymbolTable.InvariantUtf16, pool))
+            {
                 utf16Writer.Append("Hello");
                 utf16Writer.Append(" ");
                 utf16Writer.Append("World!");
@@ -390,7 +393,8 @@ namespace System.Text.Formatting.Tests
                 string data = new string('#', length);
                 formatter.Append(data);
                 Assert.Equal(length, formatter.CommitedByteCount);
-                for(int i=0; i<formatter.CommitedByteCount; i++) {
+                for (int i = 0; i < formatter.CommitedByteCount; i++)
+                {
                     Assert.Equal((byte)'#', formatter.Formatted.Array[i]);
                 }
             }

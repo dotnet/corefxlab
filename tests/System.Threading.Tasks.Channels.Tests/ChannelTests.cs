@@ -82,25 +82,25 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseRead_Async_InvalidArguments_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, (Func<int, Task>)null));
+            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, null));
             Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, i => Task.CompletedTask));
-            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseRead<int>(Channel.CreateUnbounded<int>().In, (Func<int, Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseRead<int>(Channel.CreateUnbounded<int>().In, null));
         }
 
         [Fact]
         public void CaseWrite_Sync_InvalidArguments_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, (Action)null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, (Action)delegate { }));
+            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, delegate { }));
             Assert.Throws<ArgumentNullException>("action", () => Channel.CaseWrite<int>(Channel.CreateUnbounded<int>().Out, 0, (Action)null));
         }
 
         [Fact]
         public void CaseWrite_Async_InvalidArguments_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, (Func<Task>)null));
+            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, null));
             Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, delegate { return Task.CompletedTask; }));
-            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseWrite<int>(Channel.CreateUnbounded<int>().Out, 0, (Func<Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseWrite<int>(Channel.CreateUnbounded<int>().Out, 0, null));
         }
 
         [Fact]

@@ -20,9 +20,9 @@ namespace System.Threading.Tasks.Channels.Tests
         public void CaseRead_Async_InvalidArguments_ThrowsArgumentException()
         {
             CaseBuilder cb = Channel.CaseRead<int>(Channel.CreateUnbounded<int>(), i => { });
-            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, (Func<int, Task>)null));
+            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, i => Task.CompletedTask));
-            Assert.Throws<ArgumentNullException>("func", () => cb.CaseRead<int>(Channel.CreateUnbounded<int>(), (Func<int, Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => cb.CaseRead<int>(Channel.CreateUnbounded<int>(), null));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             CaseBuilder cb = Channel.CaseRead<int>(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)null));
-            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)delegate { }));
+            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, delegate { }));
             Assert.Throws<ArgumentNullException>("action", () => cb.CaseWrite<int>(Channel.CreateUnbounded<int>(), 0, (Action)null));
         }
 
@@ -38,9 +38,9 @@ namespace System.Threading.Tasks.Channels.Tests
         public void CaseWrite_Async_InvalidArguments_ThrowsArgumentException()
         {
             CaseBuilder cb = Channel.CaseRead<int>(Channel.CreateUnbounded<int>(), i => { });
-            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Func<Task>)null));
+            Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, delegate { return Task.CompletedTask; }));
-            Assert.Throws<ArgumentNullException>("func", () => cb.CaseWrite<int>(Channel.CreateUnbounded<int>(), 0, (Func<Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => cb.CaseWrite<int>(Channel.CreateUnbounded<int>(), 0, null));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void CaseDefault_Async_InvalidAction_ThrowsException()
         {
             CaseBuilder builder1 = Channel.CaseRead<int>(Channel.CreateUnbounded<int>(), i => Task.CompletedTask);
-            Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault((Func<Task>)null));
+            Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault(null));
         }
 
         [Fact]

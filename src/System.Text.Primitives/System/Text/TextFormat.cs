@@ -33,15 +33,16 @@ namespace System.Text
 
         public static TextFormat Parse(ReadOnlySpan<char> format)
         {
-            if (format.Length == 0)
+            int formatLength = format.Length;
+            if (formatLength == 0)
             {
                 return default;
             }
 
             uint precision = NoPrecision;
-            if (format.Length > 1)
+            if (formatLength > 1)
             {
-                var span = format.Slice(1, format.Length - 1);
+                var span = format.Slice(1, formatLength - 1);
 
                 if (!PrimitiveParser.InvariantUtf16.TryParseUInt32(span, out precision))
                 {
@@ -69,18 +70,18 @@ namespace System.Text
             return Parse(format.AsSpan());
         }
          
-        public bool IsHexadecimal => Symbol == 'X' || Symbol == 'x';
+        public bool IsHexadecimal => _format == 'X' || _format == 'x';
 
-        public bool HasPrecision => Precision != NoPrecision;
+        public bool HasPrecision => _precision != NoPrecision;
 
         public bool IsDefault => _format == 0 && _precision == 0;
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", Symbol, Precision);
+            return string.Format("{0}:{1}", _format, _precision);
         }
 
-        public static bool operator==(TextFormat left, TextFormat right) => left.Equals(right);
+        public static bool operator ==(TextFormat left, TextFormat right) => left.Equals(right);
         public static bool operator !=(TextFormat left, TextFormat right) => !left.Equals(right);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -93,13 +94,13 @@ namespace System.Text
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(TextFormat other)
         {
-            return Symbol.Equals(other.Symbol) && Precision.Equals(other.Precision);
+            return _format == other._format && _precision == other._precision;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return CombineHashCodes(Symbol.GetHashCode(), Precision.GetHashCode());
+            return CombineHashCodes(_format.GetHashCode(), _precision.GetHashCode());
         }
 
         static int CombineHashCodes(int h1, int h2)

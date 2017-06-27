@@ -148,22 +148,22 @@ namespace System.Slices.Tests
             new byte[] { 1, 2, 7, 7, 5, 6 }, 2, 3)]
         // copy one byte from the beginning at the end of other array
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 1,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 6, 0)]
         // copy two bytes from the beginning at 5th element
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
         // copy one byte from the beginning at the end of other array
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 6, 0)]
         // copy two bytes from the beginning at 5th element
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 4, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
         public void SpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b, int bidx, int bcount)
@@ -259,22 +259,22 @@ namespace System.Slices.Tests
             new byte[] { 1, 2, 7, 7, 5, 6 }, 2, 3)]
         // copy one byte from the beginning at the end of other array
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 1,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 6, 0)]
         // copy two bytes from the beginning at 5th element
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
         // copy one byte from the beginning at the end of other array
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 6, 0)]
         // copy two bytes from the beginning at 5th element
         [InlineData(
-            (byte[])null,
+            null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 4, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
         public void ReadOnlySpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b, int bidx, int bcount)
