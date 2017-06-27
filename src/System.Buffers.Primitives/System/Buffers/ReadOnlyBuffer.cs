@@ -106,6 +106,7 @@ namespace System
 
         public ReadOnlySpan<T> Span
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (_index < 0)

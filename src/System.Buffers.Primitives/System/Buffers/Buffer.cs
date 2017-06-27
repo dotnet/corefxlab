@@ -120,6 +120,7 @@ namespace System
 
         public Span<T> Span
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (_index < 0)
