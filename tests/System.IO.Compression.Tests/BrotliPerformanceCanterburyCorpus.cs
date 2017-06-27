@@ -53,15 +53,6 @@ namespace System.IO.Compression.Tests
             }
         }
 
-        public static void CreateCompressFile(string source, string destiny, CompressionLevel lvl)
-        {
-            byte[] bytes = File.ReadAllBytes(source);
-            FileStream ms = File.Create(destiny);
-            BrotliStream bs = new BrotliStream(ms, CompressionMode.Compress, true, (1 << 16) - 1, lvl);
-            bs.Write(bytes, 0, bytes.Length);
-            bs.Dispose();
-            ms.Dispose();
-        }
         /// <summary>
         /// Benchmark tests to measure the performance of individually compressing each file in the
         /// Canterbury Corpus
@@ -70,7 +61,7 @@ namespace System.IO.Compression.Tests
         [MemberData(nameof(CanterburyCorpus))]
         public void Compress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel compressLevel)
         {
-            byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", "Canterbury", fileName));
+            byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", folder, fileName));
             FileStream[] fileStreams = new FileStream[innerIterations];
             BrotliStream[] brotliStream = new BrotliStream[innerIterations];
             string[] paths = new string[innerIterations];
@@ -103,7 +94,7 @@ namespace System.IO.Compression.Tests
         [MemberData(nameof(CanterburyCorpus))]
         public void Decompress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel level)
         {
-            string zipFilePath = Path.Combine("BrotliTestData", folder, "BrotliCompressed", fileName+level.ToString() + ".br");
+            string zipFilePath = Path.Combine("BrotliTestData", folder, "BrotliCompressed", fileName + level.ToString() + ".br");
             string sourceFilePath = Path.Combine("BrotliTestData", folder, fileName);
             byte[] outputRead = new byte[new FileInfo(sourceFilePath).Length];
             MemoryStream[] memories = new MemoryStream[innerIterations];
