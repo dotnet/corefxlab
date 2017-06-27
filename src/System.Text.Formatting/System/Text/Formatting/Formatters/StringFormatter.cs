@@ -10,7 +10,7 @@ namespace System.Text.Formatting
     {
         ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
-        public TextEncoder Encoder { get; set; } = TextEncoder.Utf16;
+        public SymbolTable SymbolTable { get; set; } = SymbolTable.InvariantUtf16;
 
         public StringFormatter(int characterCapacity = 32, ArrayPool<byte> pool = null)
         {

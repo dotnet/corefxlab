@@ -1,12 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
 using System.Buffers;
-using System.IO.Compression;
-using System.Threading;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace System.IO.Compression.Tests
@@ -14,16 +9,6 @@ namespace System.IO.Compression.Tests
     public class BrotliTests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
-
-        [Theory]
-        [InlineData(25, 1)]
-        [InlineData(-1, 1)]
-        [InlineData(24, 0)]
-        [InlineData(24, 12)]
-        public void TestMethodCompressEx(CompressionLevel quality, int lgWinSize)
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => Brotli.Compress(new byte[1], new byte[1], out int consumed, out int written, quality, lgWinSize));
-        }
 
         [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
         [InlineData(1)]
@@ -34,19 +19,31 @@ namespace System.IO.Compression.Tests
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
-            Span<byte> compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
-            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written);
+            byte[] compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
+            Assert.NotEqual(compressed.Length, 0);
+            Brotli.State state = new Brotli.State();
+            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
+            while (consumed != 0 || result != TransformationStatus.Done)
+            {
+                result = Brotli.Compress(data, compressed, out consumed, out written, ref state);
+            }
+            byte[] flush = new byte[0];
+            result = Brotli.FlushEncoder(flush, compressed, out consumed, out written, ref state);
             Assert.Equal(TransformationStatus.Done, result);
-            Assert.Equal(totalSize, consumed);
-            compressed = compressed.Slice(0, written);
-            ValidateCompressedData(compressed, data);
+            Assert.Equal(consumed, 0);
+            byte[] resultCompressed = new byte[written];
+            Array.Copy(compressed, resultCompressed, written);
+            ValidateCompressedData(resultCompressed, data);
         }
 
-        private void ValidateCompressedData(Span<byte> data, byte[] expected)
+        private void ValidateCompressedData(byte[] data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
-            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written);
+            Brotli.State state = new Brotli.State();
+            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
             Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
+            Assert.Equal<long>(expected.Length, written);
+            Assert.Equal<long>(consumed, 0);
             Assert.Equal<byte>(expected, decompressed);
         }
 

@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Runtime;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Http
@@ -63,7 +62,7 @@ namespace Microsoft.Net.Http
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default(Buffer<byte>); return false; }
+            else if (position.ObjectPosition == null) { item = default; return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
             item = sequence.Buffer.Slice(0, _written);
@@ -86,7 +85,7 @@ namespace Microsoft.Net.Http
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default(ReadOnlyBuffer<byte>); return false; }
+            else if (position.ObjectPosition == null) { item = default; return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
             item = sequence.Buffer.Slice(0, _written);

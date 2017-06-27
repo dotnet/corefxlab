@@ -1,16 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.IO.Compression;
 
 #if BIT64
     using nuint = System.UInt64;
 #else
-    using nuint = System.UInt32;
+using nuint = System.UInt32;
 #endif 
 
 namespace System.IO.Compression
@@ -23,10 +19,6 @@ namespace System.IO.Compression
             internal const string LibNameDecoder = Library.BrotliDecoder;
 
             #region Encoder
-
-            [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliEncoderMode mode, nuint input_size,
-                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
@@ -54,10 +46,6 @@ namespace System.IO.Compression
             #endregion
 
             #region Decoder
-
-            [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn,
-                ref nuint availableOut, IntPtr nextOut);
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliDecoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);

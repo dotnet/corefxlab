@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Text.Formatting;
 using System.Threading.Tasks;
-using System.Net.Sockets;
 
 namespace System.IO.Pipelines.Samples
 {
@@ -66,7 +65,7 @@ namespace System.IO.Pipelines.Samples
 
                     // Writing directly to pooled buffers
                     var output = connection.Output.Alloc();
-                    var formatter = new OutputFormatter<WritableBuffer>(output, TextEncoder.Utf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(output, SymbolTable.InvariantUtf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 13");
                     formatter.Append("\r\nContent-Type: text/plain");

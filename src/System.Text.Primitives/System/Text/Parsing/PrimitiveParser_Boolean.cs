@@ -6,18 +6,18 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed, TextEncoder encoder = null)
+        public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed, SymbolTable symbolTable = null)
         {
-            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             bytesConsumed = 0;
-            value = default(bool);
+            value = default;
 
-            if (encoder.IsInvariantUtf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 return InvariantUtf8.TryParseBoolean(text, out value, out bytesConsumed);
             }
-            if (encoder.IsInvariantUtf16)
+            if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
                 int charactersConsumed;

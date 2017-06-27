@@ -2,12 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
-using System.Text;
-using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {

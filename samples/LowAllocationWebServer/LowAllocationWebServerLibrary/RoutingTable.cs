@@ -22,13 +22,13 @@ namespace Microsoft.Net.Http
             for(int i=0; i<_count; i++) {
                 if (requestLine.RequestUri.Span.SequenceEqual(_uris[i]) && requestLine.Method == _verbs[i]) return _requestIds[i];
             }
-            return default(TRequestId);
+            return default;
         }
 
         public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)
         {
             // TODO: this should not allocate new string
-            Utf8String requestUtf8 = request.Path.ToUtf8String(TextEncoder.Utf8);
+            Utf8String requestUtf8 = request.Path.ToUtf8String(SymbolTable.InvariantUtf8);
             for (int i = 0; i < _count; i++)
             {
                 // TODO: this should check the verb too

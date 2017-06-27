@@ -36,6 +36,7 @@
     <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

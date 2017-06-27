@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace System.IO.Compression
+﻿namespace System.IO.Compression
 {
     internal static partial class Library
     {

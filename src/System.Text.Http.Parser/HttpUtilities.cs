@@ -73,7 +73,7 @@ namespace System.Text.Http.Parser.Internal
 
             var buffer = stackalloc byte[8];
             Span<byte> span = new Span<byte>(buffer, 8);
-            TextEncoder.Utf8.TryEncode(str, span, out var written);
+            Encoders.Utf8.ConvertFromUtf16(str.AsSpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<ulong>();
         }
 
@@ -83,7 +83,7 @@ namespace System.Text.Http.Parser.Internal
 
             var buffer = stackalloc byte[4];
             Span<byte> span = new Span<byte>(buffer, 4);
-            TextEncoder.Utf8.TryEncode(str, span, out var written);
+            Encoders.Utf8.ConvertFromUtf16(str.AsSpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<uint>();
         }
 

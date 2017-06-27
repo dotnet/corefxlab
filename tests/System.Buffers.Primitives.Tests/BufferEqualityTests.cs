@@ -19,6 +19,15 @@ namespace System.Buffers.Tests
             var readOnlyBuffer = ReadOnlyBuffer<byte>.Empty;
             object readOnlyBufferAsObject = readOnlyBuffer;
             Assert.True(readOnlyBuffer.Equals(readOnlyBufferAsObject));
+
+            Assert.False(buffer.Equals(new object()));
+            Assert.False(readOnlyBuffer.Equals(new object()));
+
+            Assert.False(buffer.Equals((object)(new Buffer<byte>(new byte[] { 1, 2 }))));
+            Assert.False(readOnlyBuffer.Equals((object)(new ReadOnlyBuffer<byte>(new byte[] { 1, 2 }))));
+
+            Assert.True(buffer.Equals(readOnlyBufferAsObject));
+            Assert.True(readOnlyBuffer.Equals(bufferAsObject));
         }
 
         [Theory]

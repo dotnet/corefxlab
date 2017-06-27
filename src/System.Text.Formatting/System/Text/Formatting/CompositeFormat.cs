@@ -9,7 +9,7 @@ namespace System.Text.Formatting
 
     // This whole API is very speculative, i.e. I am not sure I am happy with the design
     // This API is trying to do composite formatting without boxing (or any other allocations).
-    // And because not all types in the platfrom implement IBufferFormattable (in particular built-in primitives don't), 
+    // And because not all types in the platfrom implement IBufferFormattable (in particular built-in primitives don't),
     // it needs to play some tricks with generic type parameters. But as you can see at the end of AppendUntyped, I am not sure how to tick the type system
     // not never box.
     public static class CompositeFormattingExtensions
@@ -138,15 +138,10 @@ namespace System.Text.Formatting
             // this should be optimized using fixed pointer to substring, but I will wait with this till we design proper substring
 
             var characters = whole.Slice(index, count);
-            int bytesWritten;
-            int charactersConsumed;
-
-            if (!formatter.Encoder.TryEncode(characters, buffer, out charactersConsumed, out bytesWritten))
+            if (!formatter.TryAppend(characters, formatter.SymbolTable))
             {
                 Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
             }
-
-            formatter.Advance(bytesWritten);
         }
 
         static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, TextFormat format) where TFormatter : ITextOutput
@@ -375,7 +370,7 @@ namespace System.Text.Formatting
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? TextFormat.Parse(formatSpecifier.Value): default(TextFormat);
+                var parsedFormat = formatSpecifier.HasValue ? TextFormat.Parse(formatSpecifier.Value): default;
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 

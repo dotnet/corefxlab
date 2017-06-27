@@ -41,7 +41,7 @@ namespace System.CommandLine
             IReadOnlyList<T> values;
             if (!TryParseOptionList(diagnosticName, names, valueConverter, isRequired, out values, out specified))
             {
-                value = default(T);
+                value = default;
                 return false;
             }
 
@@ -111,7 +111,7 @@ namespace System.CommandLine
                 return true;
             }
 
-            value = default(T);
+            value = default;
             return false;
         }
 

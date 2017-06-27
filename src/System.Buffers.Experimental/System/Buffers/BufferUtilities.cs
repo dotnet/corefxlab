@@ -39,7 +39,7 @@ namespace System.Buffers
         internal static void ClearSpan<T>(Span<T> span)
         {
             for (int i = 0; i < span.Length; i++)
-                span[i] = default(T);
+                span[i] = default;
         }
     }
 }

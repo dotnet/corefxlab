@@ -1,16 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 #if BIT64
     using nuint = System.UInt64;
-#else 
+#else
     using nuint = System.UInt32;
 #endif 
 
@@ -63,18 +58,6 @@ namespace System.IO.Compression
     };
 
     /// <summary>
-    /// Generic - Default (Compressor does not know anything in advance properties of the input)
-    /// Text - For UTF-8 formatted text input
-    /// Font - Mode used in WOFF 2.0
-    /// </summary>
-    public enum BrotliEncoderMode
-    {
-        Generic,
-        Text,
-        Font
-    };
-
-    /// <summary>
     /// This class provides declaration for constants and PInvokes as well as some basic tools for exposing the
     /// native Brotli library to managed code.
     /// </summary>
@@ -82,12 +65,6 @@ namespace System.IO.Compression
     {
        
         #region Encoder
-
-        public static bool BrotliEncoderCompress(int quality, int windowSize, BrotliEncoderMode mode, nuint inputSize,
-                IntPtr inputBuffer, ref nuint encodedSize, IntPtr encodedBuffer)
-        {
-            return Interop.Brotli.BrotliEncoderCompress(quality, windowSize, mode, inputSize, inputBuffer, ref encodedSize, encodedBuffer);
-        }
 
         public static IntPtr BrotliEncoderCreateInstance()
         {
@@ -130,11 +107,6 @@ namespace System.IO.Compression
         #endregion
 
         #region Decoder
-
-        public static BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn, ref nuint availableOut, IntPtr nextOut)
-        {
-            return Interop.Brotli.BrotliDecoderDecompress(ref availableIn, nextIn, ref availableOut, nextOut);
-        }
 
         public static IntPtr BrotliDecoderCreateInstance()
         {

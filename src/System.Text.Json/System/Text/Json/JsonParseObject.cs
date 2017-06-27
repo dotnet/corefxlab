@@ -76,7 +76,7 @@ namespace System.Text.Json
                 }
             }
 
-            value = default(JsonObject);
+            value = default;
             return false;
         }
 
@@ -120,7 +120,7 @@ namespace System.Text.Json
                 }
             }
 
-            value = default(JsonObject);
+            value = default;
             return false;
         }
 

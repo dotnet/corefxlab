@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Utf8;
 using System.Text.Utf16;
 using Xunit;
 using Xunit.Abstractions;
@@ -347,11 +346,11 @@ namespace System.Text.Utf8.Tests
 
         private byte[] GetUtf8BytesFromCodePoints(List<uint> codePoints)
         {
-            var utf32 = codePoints.ToArray();
-            Assert.True(TextEncoder.Utf8.TryComputeEncodedBytes(utf32, out int needed));
+            ReadOnlySpan<byte> utf32 = codePoints.ToArray().AsSpan().AsBytes();
+            Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf8.ComputeEncodedBytesFromUtf32(utf32, out int needed));
 
-            var utf8 = new byte[needed];
-            Assert.True(TextEncoder.Utf8.TryEncode(utf32, utf8, out int consumed, out int written));
+            byte[] utf8 = new byte[needed];
+            Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf8.ConvertFromUtf32(utf32, utf8, out int consumed, out int written));
             Assert.Equal(needed, written);
 
             return utf8;

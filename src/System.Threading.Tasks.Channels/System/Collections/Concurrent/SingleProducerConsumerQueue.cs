@@ -137,7 +137,7 @@ namespace System.Threading.Tasks.Channels
             if (first != segment._state._lastCopy)
             {
                 result = array[first];
-                array[first] = default(T); // Clear the slot to release the element
+                array[first] = default; // Clear the slot to release the element
                 segment._state._first = (first + 1) & (array.Length - 1);
                 return true;
             }
@@ -172,12 +172,12 @@ namespace System.Threading.Tasks.Channels
 
             if (first == segment._state._last)
             {
-                result = default(T);
+                result = default;
                 return false;
             }
 
             result = array[first];
-            array[first] = default(T); // Clear the slot to release the element
+            array[first] = default; // Clear the slot to release the element
             segment._state._first = (first + 1) & (segment._array.Length - 1);
             segment._state._lastCopy = segment._state._last; // Refresh _lastCopy to ensure that _first has not passed _lastCopy
 

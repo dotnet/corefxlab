@@ -1,11 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
-using System.IO.Compression;
-using System.Threading;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace System.IO.Compression.Tests
@@ -219,19 +214,20 @@ namespace System.IO.Compression.Tests
                 {
                     compressor.Write(data, i, chunkSize);
                 }
+                compressor.Dispose();
             }
             compressed.Position = 0;
-            ValidateCompressedData(chunkSize, compressed, data);
+            ValidateCompressedData(chunkSize, compressed.ToArray(), data);
             compressed.Dispose();
         }
 
-        private void ValidateCompressedData(int chunkSize, MemoryStream compressed, byte[] expected)
+        private void ValidateCompressedData(int chunkSize, byte[] compressedData, byte[] expected)
         {
+            MemoryStream compressed = new MemoryStream(compressedData);
             using (MemoryStream decompressed = new MemoryStream())
             using (var decompressor = new BrotliStream(compressed, CompressionMode.Decompress, true))
             {
-                decompressor.CopyTo(decompressed, chunkSize);
-
+                decompressor.CopyTo(decompressed, expected.Length);
                 Assert.Equal<byte>(expected, decompressed.ToArray());
             }
         }

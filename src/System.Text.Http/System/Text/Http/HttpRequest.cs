@@ -37,7 +37,7 @@ namespace System.Text.Http
         public ReadOnlyBytes Version => Bytes.Slice(_version);
         public HttpHeaders Headers => _headers;
         public ReadOnlyBytes Body => Bytes.Slice(_bodyIndex);
-        
+
         public int BodyIndex => _bodyIndex;
 
         public static HttpRequest Parse(ReadOnlyBytes bytes)
@@ -73,14 +73,14 @@ namespace System.Text.Http
 
         public void Deconstruct(out string name, out string value)
         {
-            name = Name.ToString(TextEncoder.Utf8);
-            value = Value.ToString(TextEncoder.Utf8);
+            name = Name.ToString(SymbolTable.InvariantUtf8);
+            value = Value.ToString(SymbolTable.InvariantUtf8);
         }
 
         public void Deconstruct(out Utf8String name, out Utf8String value)
         {
-            name = Name.ToUtf8String(TextEncoder.Utf8);
-            value = Value.ToUtf8String(TextEncoder.Utf8);
+            name = Name.ToUtf8String(SymbolTable.InvariantUtf8);
+            value = Value.ToUtf8String(SymbolTable.InvariantUtf8);
         }
     }
 
@@ -93,7 +93,7 @@ namespace System.Text.Http
             var bytes = _headers.Slice(position.IntegerPosition);
             if (bytes.Length == 0)
             {
-                value = default(HttpHeader);
+                value = default;
                 return false;
             }
 
@@ -118,7 +118,7 @@ namespace System.Text.Http
 
         public override string ToString()
         {
-            return _headers.ToString(TextEncoder.Utf8);
+            return _headers.ToString(SymbolTable.InvariantUtf8);
         }
     }
 
@@ -144,15 +144,15 @@ namespace System.Text.Http
     // TODO: these should be improved and moved to System.Text.Primtives
     public static class PrimitiveEncoder
     {
-        public static string ToString(this ReadOnlyBytes? bytes, TextEncoder encoder)
+        public static string ToString(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
         {
             if (bytes == null) return "";
-            return ToString(bytes.Value, encoder);
+            return ToString(bytes.Value, symbolTable);
         }
 
-        public static string ToString(this Buffer<byte> bytes, TextEncoder encoder)
+        public static string ToString(this Buffer<byte> bytes, SymbolTable symbolTable)
         {
-            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 return new Utf8String(bytes.Span).ToString();
             }
@@ -162,10 +162,10 @@ namespace System.Text.Http
             }
         }
 
-        public static string ToString(this ReadOnlyBytes bytes, TextEncoder encoder)
+        public static string ToString(this ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
             var sb = new StringBuilder();
-            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
                 ReadOnlyBuffer<byte> segment;
@@ -181,16 +181,16 @@ namespace System.Text.Http
             return sb.ToString();
         }
 
-        public static Utf8String ToUtf8String(this ReadOnlyBytes? bytes, TextEncoder encoder)
+        public static Utf8String ToUtf8String(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
         {
             if (bytes == null) return Utf8String.Empty;
-            return ToUtf8String(bytes.Value, encoder);
+            return ToUtf8String(bytes.Value, symbolTable);
         }
 
-        public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, TextEncoder encoder)
+        public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
-            var sb = new ArrayFormatter(bytes.ComputeLength(), TextEncoder.Utf8);
-            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
+            var sb = new ArrayFormatter(bytes.ComputeLength(), SymbolTable.InvariantUtf8);
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
                 ReadOnlyBuffer<byte> segment;

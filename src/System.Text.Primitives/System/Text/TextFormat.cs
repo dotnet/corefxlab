@@ -35,7 +35,7 @@ namespace System.Text
         {
             if (format.Length == 0)
             {
-                return default(TextFormat);
+                return default;
             }
 
             uint precision = NoPrecision;
@@ -65,7 +65,7 @@ namespace System.Text
         // once we have a non allocating conversion from string to ReadOnlySpan<char>, we can remove this overload
         public static TextFormat Parse(string format)
         {
-            if (format == null) return default(TextFormat);
+            if (format == null) return default;
             return Parse(format.AsSpan());
         }
          

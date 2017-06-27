@@ -25,7 +25,7 @@ namespace System.Text.Json
             var properties = new Dictionary<JsonProperty, JsonValue>(expectedNumberOfProperties);
             stack.Push(new JsonDynamicObject(properties));
 
-            var reader = new JsonReader(utf8, TextEncoder.Utf8);
+            var reader = new JsonReader(utf8, SymbolTable.InvariantUtf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)
@@ -88,7 +88,7 @@ namespace System.Text.Json
             JsonValue jsonValue;
             if (!_properties.TryGetValue(jsonProperty, out jsonValue))
             {
-                value = default(uint);
+                value = default;
                 return false;
             }
 
@@ -105,7 +105,7 @@ namespace System.Text.Json
             JsonValue jsonValue;
             if (!_properties.TryGetValue(jsonProperty, out jsonValue))
             {
-                value = default(Utf8String);
+                value = default;
                 return false;
             }
 
@@ -163,11 +163,11 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, TextEncoder encoder)
+        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;
-            if(!TryEncodeChar(encoder, '{', buffer, out justWritten))
+            if(!TryEncodeControlChar(symbolTable, (byte)'{', buffer, out justWritten))
             {
                 return false;
             }
@@ -184,47 +184,48 @@ namespace System.Text.Json
                 }
                 else
                 {
-                    if (!TryEncodeChar(encoder, ',', buffer.Slice(written), out justWritten))
+                    if (!TryEncodeControlChar(symbolTable, (byte)',', buffer.Slice(written), out justWritten))
                     {
                         return false;
                     }
                     written += justWritten;
                 }
 
-                if(!property.Key.TryFormat(buffer.Slice(written), out justWritten, format, encoder))
+                if(!property.Key.TryFormat(buffer.Slice(written), out justWritten, format, symbolTable))
                 {
                     written = 0; return false;
                 }
                 written += justWritten;
-                if (!TryEncodeChar(encoder, ':', buffer.Slice(written), out justWritten))
+                if (!TryEncodeControlChar(symbolTable, (byte)':', buffer.Slice(written), out justWritten))
                 {
                     return false;
                 }
                 written += justWritten;
-                if (!property.Value.TryFormat(buffer.Slice(written), out justWritten, format, encoder))
+                if (!property.Value.TryFormat(buffer.Slice(written), out justWritten, format, symbolTable))
                 {
                     written = 0; return false;
                 }
                 written += justWritten;
             }
 
-            if (!TryEncodeChar(encoder, '}', buffer.Slice(written), out justWritten)) {
+            if (!TryEncodeControlChar(symbolTable, (byte)'}', buffer.Slice(written), out justWritten)) {
                 written = 0; return false;
             }
             written += justWritten;
             return true;
         }
 
-        private static unsafe bool TryEncodeChar(TextEncoder formattingData, char value, Span<byte> buffer, out int written)
+        private static unsafe bool TryEncodeControlChar(SymbolTable symbolTable, byte value, Span<byte> buffer, out int written)
         {
-            ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&value, 1);
-            
-            int consumed;
-            return formattingData.TryEncode(charSpan, buffer, out consumed, out written);
+            return symbolTable.TryEncode(value, buffer, out written);
         }
 
         struct JsonValue : IBufferFormattable
         {
+            static readonly byte[] s_nullBytes = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
+            static readonly byte[] s_trueBytes = { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
+            static readonly byte[] s_falseBytes = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
+
             JsonDynamicObject _object;
             //TODO: no spans on the heap
             Utf8String _value => default;
@@ -272,22 +273,26 @@ namespace System.Text.Json
                 else throw new NotImplementedException();
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, TextEncoder encoder)
+            static readonly byte[] nullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l'};
+
+            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
             {
+                int consumed;
+
                 switch (_type)
                 {
                     case JsonValueType.String:
-                        return _value.TryFormatQuotedString(buffer, out written, format, encoder: encoder);
+                        return _value.TryFormatQuotedString(buffer, out written, format, symbolTable: symbolTable);
                     case JsonValueType.Number:
-                        return _value.TryFormat(buffer, out written, format, encoder: encoder);
+                        return _value.TryFormat(buffer, out written, format, symbolTable: symbolTable);
                     case JsonValueType.Object:
-                        return _object.TryFormat(buffer, out written, format, encoder);
+                        return _object.TryFormat(buffer, out written, format, symbolTable);
                     case JsonValueType.Null:
-                        return encoder.TryEncode("null", buffer, out written);
+                        return symbolTable.TryEncode(s_nullBytes, buffer, out consumed, out written);
                     case JsonValueType.True:
-                        return encoder.TryEncode("true", buffer, out written);
+                        return symbolTable.TryEncode(s_trueBytes, buffer, out consumed, out written);
                     case JsonValueType.False:
-                        return encoder.TryEncode("false", buffer, out written);
+                        return symbolTable.TryEncode(s_falseBytes, buffer, out consumed, out written);
                     default:
                         throw new NotImplementedException();
                 }
@@ -332,18 +337,18 @@ namespace System.Text.Json
                 return result;
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, TextEncoder encoder)
+            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
             {
-                return _name.TryFormatQuotedString(buffer, out written, format, encoder);
+                return _name.TryFormatQuotedString(buffer, out written, format, symbolTable);
             }
         }
     }
 
     static class Utf8StringExtensions
     {
-        // TODO: this should be properly implemented 
+        // TODO: this should be properly implemented
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, TextEncoder encoder)
+        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -360,30 +365,26 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, TextEncoder encoder)
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
         {
             written = 0;
-            int consumed;
             int justWritten;
 
             unsafe
             {
-                char quoteChar = '"';
-                ReadOnlySpan<char> quoteSpan = new ReadOnlySpan<char>(&quoteChar, 1);
-
-                if (!encoder.TryEncode(quoteSpan, buffer, out consumed, out justWritten))
+                if (!symbolTable.TryEncode((byte)'"', buffer, out justWritten))
                 {
                     return false;
                 }
                 written += justWritten;
 
-                if (!str.TryFormat(buffer.Slice(written), out justWritten, format, encoder))
+                if (!str.TryFormat(buffer.Slice(written), out justWritten, format, symbolTable))
                 {
                     return false;
                 }
                 written += justWritten;
 
-                if (!encoder.TryEncode(quoteSpan, buffer.Slice(written), out consumed, out justWritten))
+                if (!symbolTable.TryEncode((byte)'"', buffer.Slice(written), out justWritten))
                 {
                     return false;
                 }

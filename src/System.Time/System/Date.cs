@@ -1226,7 +1226,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParse(s, out dt))
             {
-                date = default(Date);
+                date = default;
                 return false;
             }
 
@@ -1279,7 +1279,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParse(s, provider, styles, out dt))
             {
-                date = default(Date);
+                date = default;
                 return false;
             }
 
@@ -1337,7 +1337,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, format, provider, styles, out dt))
             {
-                date = default(Date);
+                date = default;
                 return false;
             }
 
@@ -1399,7 +1399,7 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, formats, provider, styles, out dt))
             {
-                date = default(Date);
+                date = default;
                 return false;
             }
 
