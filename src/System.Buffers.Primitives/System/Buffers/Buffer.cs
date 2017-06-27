@@ -14,14 +14,19 @@ namespace System
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
     public struct Buffer<T>
     {
+        // The highest order bit of _index is used to discern whether _arrayOrOwnedBuffer is an array or an owned buffer
+        // if (_index >> 31) = 1, object _arrayOrOwnedBuffer is an OwnedBuffer<T>
+        // else, object _arrayOrOwnedBuffer is a T[]
         readonly object _arrayOrOwnedBuffer;
         readonly int _index;
         readonly int _length;
 
+        private const int bitMask = 0x7FFFFFFF;
+
         internal Buffer(OwnedBuffer<T> owner, int index, int length)
         {
             _arrayOrOwnedBuffer = owner;
-            _index = index | (1 << 31);
+            _index = index | (1 << 31); // Before using _index, check if _index < 0, then 'and' it with bitMask
             _length = length;
         }
 
@@ -73,6 +78,8 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
+            // There is no need to 'and' _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
             if (buffer._index < 0)
                 return new ReadOnlyBuffer<T>(Unsafe.As<OwnedBuffer<T>>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
             return new ReadOnlyBuffer<T>(Unsafe.As<T[]>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
@@ -102,6 +109,8 @@ namespace System
             if ((uint)start > (uint)_length)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
+            // There is no need to and _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
             if (_index < 0)
                 return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, _length - start);
             return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, _length - start);
@@ -113,6 +122,8 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
+            // There is no need to 'and' _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
             if (_index < 0)
                 return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, length);
             return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, length);
@@ -124,7 +135,7 @@ namespace System
             get
             {
                 if (_index < 0)
-                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index & 0x7FFFFFFF, _length);
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index & bitMask, _length);
                 return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
@@ -136,7 +147,7 @@ namespace System
             {
                 if (_index < 0)
                 {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & 0x7FFFFFFF);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & bitMask);
                 }
                 else
                 {
@@ -169,7 +180,7 @@ namespace System
             {
                 if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).TryGetArray(out var segment))
                 {
-                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & 0x7FFFFFFF), _length);
+                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & bitMask), _length);
                     return true;
                 }
             }
@@ -216,7 +227,7 @@ namespace System
         {
             return
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
-                (_index & 0x7FFFFFFF) == (other._index & 0x7FFFFFFF) &&
+                (_index & bitMask) == (other._index & bitMask) &&
                 _length == other._length;
         }
 
@@ -233,7 +244,7 @@ namespace System
         [EditorBrowsable( EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), (_index & 0x7FFFFFFF).GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), (_index & bitMask).GetHashCode(), _length.GetHashCode());
         }
     }
 }
