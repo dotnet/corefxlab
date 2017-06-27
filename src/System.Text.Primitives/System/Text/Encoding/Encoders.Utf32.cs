@@ -8,25 +8,6 @@ namespace System.Text.Encoders
 {
     public static class Utf32
     {
-        #region Tranforms
-
-        public static readonly Transformation FromUtf8 = new Utf8ToUtf32Transform();
-        public static readonly Transformation FromUtf16 = new Utf16ToUtf32Transform();
-
-        private sealed class Utf8ToUtf32Transform : Transformation
-        {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => ConvertFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
-        }
-
-        private sealed class Utf16ToUtf32Transform : Transformation
-        {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => ConvertFromUtf16(source, destination, out bytesConsumed, out bytesWritten);
-        }
-
-        #endregion Transforms
-
         #region Utf-8 to Utf-32 conversion
 
         public static TransformationStatus ComputeEncodedBytesFromUtf8(ReadOnlySpan<byte> source, out int bytesNeeded)
