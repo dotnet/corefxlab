@@ -159,4 +159,7 @@
   <data name="TimeoutWrite" xml:space="preserve">
     <value>Error WriteTimeout exceeded</value>
   </data>
+  <data name="InvalidModeChange" xml:space="preserve">
+    <value>Mode change is not permitted </value>
+  </data>
 </root>

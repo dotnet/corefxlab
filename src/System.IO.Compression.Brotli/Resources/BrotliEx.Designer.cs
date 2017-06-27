@@ -98,6 +98,15 @@ namespace System.IO.Compression.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mode change is not permitted .
+        /// </summary>
+        internal static string InvalidModeChange {
+            get {
+                return ResourceManager.GetString("InvalidModeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quality and WindowSize is ambitious for Decompress mode.
         /// </summary>
         internal static string QualityAndWinSize {
