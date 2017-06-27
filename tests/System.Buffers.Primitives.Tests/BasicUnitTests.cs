@@ -375,5 +375,29 @@ namespace System.Buffers.Tests
                 Assert.Equal(array[i], dangerousArray.Array[i]);
             }          
         }
+
+        [Fact]
+        public void OwnedBufferDisposedAfterFinalizerGCKeepAliveTest()
+        {
+            var owned = (OwnedBuffer<byte>)new byte[1024];
+            var buffer = owned.Buffer;
+            var slice = buffer.Slice(1);
+
+            var span = buffer.Span;
+            var sliceSpan = slice.Span;
+
+            GC.Collect(2);
+            GC.WaitForPendingFinalizers();
+
+            try
+            {
+                span = buffer.Span;
+                span = slice.Span;
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Assert.True(false, "There shouldn't be any Object Disposed Exception here. " + ex.Message);
+            }
+        }
     }
 }
