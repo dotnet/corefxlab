@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 namespace System
 {
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
-    public unsafe struct Buffer<T>
+    public struct Buffer<T>
     {
         readonly object _arrayOrOwnedBuffer;
         readonly int _index;
