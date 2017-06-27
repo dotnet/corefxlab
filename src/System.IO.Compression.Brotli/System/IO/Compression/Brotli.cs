@@ -13,7 +13,6 @@ namespace System.IO.Compression
     {
         private const int MinWindowBits = 10;
         private const int MaxWindowBits = 24;
-        private const int MinQuality = 0;
         private const int MaxQuality = 11;
 
         public struct State : IDisposable
@@ -24,6 +23,7 @@ namespace System.IO.Compression
 
             public void Dispose()
             {
+                if (BrotliNativeState == IntPtr.Zero) return;
                 if (CompressMode)
                 {
                     BrotliNative.BrotliEncoderDestroyInstance(BrotliNativeState);
@@ -32,6 +32,7 @@ namespace System.IO.Compression
                 {
                     BrotliNative.BrotliDecoderDestroyInstance(BrotliNativeState);
                 }
+                BrotliNativeState = IntPtr.Zero;
             }
 
             internal void InitializeDecoder()
@@ -47,7 +48,6 @@ namespace System.IO.Compression
 
             internal void InitializeEncoder()
             {
-                
                 BrotliNativeState = BrotliNative.BrotliEncoderCreateInstance();
                 if (BrotliNativeState == IntPtr.Zero)
                 {
@@ -64,7 +64,7 @@ namespace System.IO.Compression
                 }
                 if (quality > MaxQuality)
                 {
-                    throw new ArgumentException(BrotliEx.WrongQuality);
+                    throw new ArgumentOutOfRangeException(BrotliEx.WrongQuality);
                 }
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.Quality, quality);
             }
@@ -82,7 +82,7 @@ namespace System.IO.Compression
                 }
                 if (window - MinWindowBits > MaxWindowBits - MinWindowBits)
                 {
-                    throw new ArgumentException(BrotliEx.WrongWindowSize);
+                    throw new ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
                 }
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.LGWin, window);
             }
@@ -117,6 +117,10 @@ namespace System.IO.Compression
 
         public static int GetMaximumCompressedSize(int inputSize)
         {
+            if (inputSize < 0 || inputSize > 2147483132) // 2^32 - 1 - 515 (max compressed extra bytes)
+            {
+                throw new System.ArgumentOutOfRangeException("inputSize");
+            }
             if (inputSize == 0) return 1;
             int numLargeBlocks = inputSize >> 24;
             int tail = inputSize & 0xFFFFFF;
@@ -243,10 +247,6 @@ namespace System.IO.Compression
                     var error = BrotliNative.BrotliDecoderGetErrorCode(state.BrotliNativeState);
                     var text = BrotliNative.BrotliDecoderErrorString(error);
                     throw new System.IO.IOException(text + BrotliEx.unableDecode);
-                }
-                if (state.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
-                {
-                    throw new System.IO.IOException(BrotliEx.FinishDecompress);
                 }
                 return GetTransformationStatusFromBrotliDecoderResult(state.LastDecoderResult);
             }
