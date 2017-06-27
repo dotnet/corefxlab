@@ -21,10 +21,6 @@ namespace System.IO.Compression
             #region Encoder
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliEncoderMode mode, nuint input_size,
-                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
-
-            [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
@@ -50,10 +46,6 @@ namespace System.IO.Compression
             #endregion
 
             #region Decoder
-
-            [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn,
-                ref nuint availableOut, IntPtr nextOut);
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliDecoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
