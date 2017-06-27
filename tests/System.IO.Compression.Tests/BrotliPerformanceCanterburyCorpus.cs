@@ -13,7 +13,9 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliPerformanceCanterburyCorpus
     {
-        int bufferSize = 8192;
+        private int bufferSize = 8192;
+        private const string CanterburyFolder = "Canterbury";
+        private const string WebFilesFolder = "WebFiles";
 
         public static IEnumerable<object[]> CanterburyCorpus()
         {
@@ -21,17 +23,33 @@ namespace System.IO.Compression.Tests
             {
                 foreach (int innerIterations in new int[] { 1, 10 })
                 {
-                    yield return new object[] { innerIterations, "alice29.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "asyoulik.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "cp.html", compressionLevel };
-                    yield return new object[] { innerIterations, "fields.c", compressionLevel };
-                    yield return new object[] { innerIterations, "grammar.lsp", compressionLevel };
-                    yield return new object[] { innerIterations, "kennedy.xls", compressionLevel };
-                    yield return new object[] { innerIterations, "lcet10.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "plrabn12.txt", compressionLevel };
-                    yield return new object[] { innerIterations, "ptt5", compressionLevel };
-                    yield return new object[] { innerIterations, "sum", compressionLevel };
-                    yield return new object[] { innerIterations, "xargs.1", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "alice29.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "asyoulik.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "cp.html", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "fields.c", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "grammar.lsp", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "kennedy.xls", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "lcet10.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "plrabn12.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "ptt5", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "sum", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "xargs.1", compressionLevel };
+                }
+
+                foreach (int innerIterations in new int[] { 1, 10 })
+                {
+                    yield return new object[] { innerIterations, WebFilesFolder, "angular.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "angular.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "broker-config.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "config.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "jquery-3.2.1.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "jquery-3.2.1.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "meBoot.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "MWFMDL2.woff", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "mwf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "style.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "uhf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "www.reddit.com6.23.2017.har", compressionLevel };
                 }
             }
         }
@@ -42,9 +60,9 @@ namespace System.IO.Compression.Tests
         /// </summary>
         [Benchmark]
         [MemberData(nameof(CanterburyCorpus))]
-        public void Compress_Canterbury(int innerIterations, string fileName, CompressionLevel compressLevel)
+        public void Compress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel compressLevel)
         {
-            byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", "Canterbury", fileName));
+            byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", folder, fileName));
             FileStream[] fileStreams = new FileStream[innerIterations];
             BrotliStream[] brotliStream = new BrotliStream[innerIterations];
             string[] paths = new string[innerIterations];
@@ -75,10 +93,10 @@ namespace System.IO.Compression.Tests
         /// </summary>
         [Benchmark]
         [MemberData(nameof(CanterburyCorpus))]
-        public void Decompress_Canterbury(int innerIterations, string fileName, CompressionLevel level)
+        public void Decompress_Canterbury(int innerIterations, string folder, string fileName, CompressionLevel level)
         {
-            string zipFilePath = Path.Combine("BrotliTestData", "Canterbury", "BrotliCompressed", fileName + level.ToString() + ".br");
-            string sourceFilePath = Path.Combine("BrotliTestData", "Canterbury", fileName);
+            string zipFilePath = Path.Combine("BrotliTestData", folder, "BrotliCompressed", fileName + level.ToString() + ".br");
+            string sourceFilePath = Path.Combine("BrotliTestData", folder, fileName);
             byte[] outputRead = new byte[new FileInfo(sourceFilePath).Length];
             MemoryStream[] memories = new MemoryStream[innerIterations];
             foreach (var iteration in Benchmark.Iterations)

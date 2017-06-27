@@ -128,7 +128,7 @@ namespace System.IO.Compression
             TransformationStatus flushStatus = TransformationStatus.DestinationTooSmall;
             while (flushStatus == TransformationStatus.DestinationTooSmall)
             {
-                flushStatus = Brotli.FlushEncoder(Array.Empty<byte>(), _buffer, out _availableInput, out _availableOutput, ref _state, finished);
+                flushStatus = Brotli.FlushEncoder(Span<byte>.Empty, _buffer, out _availableInput, out _availableOutput, ref _state, finished);
                 _stream.Write(_buffer, 0, _availableOutput);
                 _availableOutput = _bufferSize;
 
