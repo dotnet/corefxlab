@@ -13,42 +13,43 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliPerformanceCanterburyCorpus
     {
-        int bufferSize = 8192;
+        private int bufferSize = 8192;
+        private const string CanterburyFolder = "Canterbury";
+        private const string WebFilesFolder = "WebFiles";
 
         public static IEnumerable<object[]> CanterburyCorpus()
         {
             foreach (CompressionLevel compressionLevel in Enum.GetValues(typeof(CompressionLevel)))
             {
-                string folder = "Canterbury";
                 foreach (int innerIterations in new int[] { 1, 10 })
                 {
-                    yield return new object[] { innerIterations, folder, "alice29.txt", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "asyoulik.txt", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "cp.html", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "fields.c", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "grammar.lsp", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "kennedy.xls", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "lcet10.txt", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "plrabn12.txt", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "ptt5", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "sum", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "xargs.1", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "alice29.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "asyoulik.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "cp.html", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "fields.c", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "grammar.lsp", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "kennedy.xls", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "lcet10.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "plrabn12.txt", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "ptt5", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "sum", compressionLevel };
+                    yield return new object[] { innerIterations, CanterburyFolder, "xargs.1", compressionLevel };
                 }
-                folder = "WebFiles";
+
                 foreach (int innerIterations in new int[] { 1, 10 })
                 {
-                    yield return new object[] { innerIterations, folder, "angular.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "angular.min.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "broker-config.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "config.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "jquery-3.2.1.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "jquery-3.2.1.min.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "meBoot.min.js", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "MWFMDL2.woff", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "mwf-west-european-default.min.css", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "style.css", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "uhf-west-european-default.min.css", compressionLevel };
-                    yield return new object[] { innerIterations, folder, "www.reddit.com6.23.2017.har", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "angular.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "angular.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "broker-config.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "config.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "jquery-3.2.1.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "jquery-3.2.1.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "meBoot.min.js", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "MWFMDL2.woff", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "mwf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "style.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "uhf-west-european-default.min.css", compressionLevel };
+                    yield return new object[] { innerIterations, WebFilesFolder, "www.reddit.com6.23.2017.har", compressionLevel };
                 }
             }
         }
