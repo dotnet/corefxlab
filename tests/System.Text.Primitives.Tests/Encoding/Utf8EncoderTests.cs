@@ -23,7 +23,7 @@ namespace System.Text.Primitives.Tests.Encoding
             ReadOnlySpan<byte> utf16 = new ReadOnlySpan<char>(chars).NonPortableCast<char, byte>();
             Span<byte> buffer = new byte[expectedBytes.Length];
 
-            Assert.Equal(expectedReturnVal, Encoders.Utf8.FromUtf16.Transform(utf16, buffer, out int consumed, out int written));
+            Assert.Equal(expectedReturnVal, Encoders.Utf8.ConvertFromUtf16(utf16, buffer, out int consumed, out int written));
             Assert.Equal(expectedBytes.Length, written);
 
             if (expectedBytes.Length > 0)
