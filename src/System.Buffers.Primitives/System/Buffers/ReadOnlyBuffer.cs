@@ -37,14 +37,6 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer(object owner, void* pointer, int length)
-        {
-            _arrayOrOwnedBuffer = owner;
-            _index = 0;
-            _length = length;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBuffer(T[] array, int start)
         {
             if (array == null)
@@ -117,7 +109,7 @@ namespace System
             get
             {
                 if (_index < 0)
-                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index & 0x7FFFFFFF, _length);
                 return new ReadOnlySpan<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
@@ -129,7 +121,7 @@ namespace System
             {
                 if (_index < 0)
                 {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & 0x7FFFFFFF);
                 }
                 else
                 {
@@ -161,19 +153,21 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool DangerousTryGetArray(out ArraySegment<T> arraySegment)
         {
-            if (_owner != null && _owner.TryGetArray(out var segment))
+            if (_index < 0)
             {
-                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).TryGetArray(out var segment))
+                {
+                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & 0x7FFFFFFF), _length);
+                    return true;
+                }
+            }
+            else
+            {
+                arraySegment = new ArraySegment<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
                 return true;
             }
 
-            if (_array != null)
-            {
-                arraySegment = new ArraySegment<T>(_array, _index, _length);
-                return true;
-            }
-
-            arraySegment = default(ArraySegment<T>);
+            arraySegment = default;
             return false;
         }
 
@@ -208,7 +202,7 @@ namespace System
         {
             return
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
-                _index == other._index &&
+                (_index & 0x7FFFFFFF) == (other._index & 0x7FFFFFFF) &&
                 _length == other._length;
         }
 
@@ -225,7 +219,7 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), (_index & 0x7FFFFFFF).GetHashCode(), _length.GetHashCode());
         }
     }
 }

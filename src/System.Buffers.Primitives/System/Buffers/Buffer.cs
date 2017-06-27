@@ -123,7 +123,7 @@ namespace System
             get
             {
                 if (_index < 0)
-                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index & 0x7FFFFFFF, _length);
                 return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
@@ -135,7 +135,7 @@ namespace System
             {
                 if (_index < 0)
                 {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & 0x7FFFFFFF);
                 }
                 else
                 {
@@ -168,7 +168,7 @@ namespace System
             {
                 if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).TryGetArray(out var segment))
                 {
-                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & 0x7FFFFFFF), _length);
                     return true;
                 }
             }
@@ -215,7 +215,7 @@ namespace System
         {
             return
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
-                _index == other._index &&
+                (_index & 0x7FFFFFFF) == (other._index & 0x7FFFFFFF) &&
                 _length == other._length;
         }
 
@@ -232,7 +232,7 @@ namespace System
         [EditorBrowsable( EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), (_index & 0x7FFFFFFF).GetHashCode(), _length.GetHashCode());
         }
     }
 }
