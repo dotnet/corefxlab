@@ -14,7 +14,6 @@ namespace System
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
     public unsafe struct Buffer<T>
     {
-        readonly void* _native;
         readonly object _arrayOrOwnedBuffer;
         readonly int _index;
         readonly int _length;
@@ -22,8 +21,7 @@ namespace System
         internal Buffer(OwnedBuffer<T> owner, int index, int length)
         {
             _arrayOrOwnedBuffer = owner;
-            _native = null;
-            _index = index;
+            _index = index | (1 << 31);
             _length = length;
         }
 
@@ -36,18 +34,8 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = 0;
             _length = array.Length;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer(object owner, void* pointer, int length)
-        {
-            _arrayOrOwnedBuffer = owner;
-            _native = pointer;
-            _index = 0;
-            _length = length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,7 +51,6 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = start;
             _length = arrayLength - start;
         }
@@ -79,23 +66,16 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = start;
-            _length = length;
-        }
-
-        private Buffer(object owner, void* pointer, int index, int length)
-        {
-            _arrayOrOwnedBuffer = owner;
-            _native = pointer;
-            _index = index;
             _length = length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyBuffer<T>(buffer._arrayOrOwnedBuffer, buffer._native, buffer._index, buffer._length);
+            if (buffer._index < 0)
+                return new ReadOnlyBuffer<T>(Unsafe.As<OwnedBuffer<T>>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
+            return new ReadOnlyBuffer<T>(Unsafe.As<T[]>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -122,7 +102,9 @@ namespace System
             if ((uint)start > (uint)_length)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_arrayOrOwnedBuffer, _native, _index + start, _length - start);
+            if (_index < 0)
+                return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, _length - start);
+            return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,16 +113,18 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_arrayOrOwnedBuffer, _native, _index + start, length);
+            if (_index < 0)
+                return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, length);
+            return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, length);
         }
 
         public Span<T> Span
         {
             get
             {
-                if (_native == null) return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
-                if (_arrayOrOwnedBuffer != null) return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
-                return new Span<T>(_native, _length); 
+                if (_index < 0)
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
 
@@ -149,7 +133,11 @@ namespace System
             BufferHandle bufferHandle;
             if (pin)
             {
-                if (_native == null)
+                if (_index < 0)
+                {
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
+                }
+                else
                 {
                     var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
@@ -158,22 +146,10 @@ namespace System
                         bufferHandle = new BufferHandle(null, pointer, handle);
                     }
                 }
-                else if (_arrayOrOwnedBuffer != null)
-                {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
-                }
-                else
-                {
-                    bufferHandle = new BufferHandle(null);
-                }
             }
             else
             {
-                if (_native == null)
-                {
-                    bufferHandle = new BufferHandle(null);
-                }
-                else if (_arrayOrOwnedBuffer != null)
+                if (_index < 0)
                 {
                     Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Retain();
                     bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
@@ -188,18 +164,22 @@ namespace System
 
         public bool TryGetArray(out ArraySegment<T> arraySegment)
         {
-            if (_native != null)
+            if (_index < 0)
             {
-                var owner = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer);
-                if (owner.TryGetArray(out var segment))
+                if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).TryGetArray(out var segment))
                 {
                     arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
                     return true;
                 }
             }
+            else
+            {
+                arraySegment = new ArraySegment<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
+                return true;
+            }
 
-            arraySegment = new ArraySegment<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
-            return true;
+            arraySegment = default;
+            return false;
         }
 
         public T[] ToArray() => Span.ToArray();
@@ -227,7 +207,6 @@ namespace System
         {
             return
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
-                _native == other._native &&
                 _index == other._index &&
                 _length == other._length;
         }

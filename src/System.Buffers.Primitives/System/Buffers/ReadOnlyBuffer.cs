@@ -14,7 +14,6 @@ namespace System
     [DebuggerTypeProxy(typeof(ReadOnlyBufferDebuggerView<>))]
     public unsafe struct ReadOnlyBuffer<T>
     {
-        readonly void* _native;
         readonly object _arrayOrOwnedBuffer;
         readonly int _index;
         readonly int _length;
@@ -22,8 +21,7 @@ namespace System
         internal ReadOnlyBuffer(OwnedBuffer<T> owner, int index, int length)
         {
             _arrayOrOwnedBuffer = owner;
-            _native = null;
-            _index = index;
+            _index = index | (1 << 31);
             _length = length;
         }
 
@@ -34,7 +32,6 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = 0;
             _length = array.Length;
         }
@@ -43,7 +40,6 @@ namespace System
         public ReadOnlyBuffer(object owner, void* pointer, int length)
         {
             _arrayOrOwnedBuffer = owner;
-            _native = pointer;
             _index = 0;
             _length = length;
         }
@@ -59,7 +55,6 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = start;
             _length = arrayLength - start;
         }
@@ -73,16 +68,7 @@ namespace System
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             _arrayOrOwnedBuffer = array;
-            _native = null;
             _index = start;
-            _length = length;
-        }
-
-        internal ReadOnlyBuffer(object arrayOrOwnedBuffer, void* pointer, int index, int length)
-        {
-            _arrayOrOwnedBuffer = arrayOrOwnedBuffer;
-            _native = pointer;
-            _index = index;
             _length = length;
         }
 
@@ -110,7 +96,9 @@ namespace System
             if ((uint)start > (uint)_length)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new ReadOnlyBuffer<T>(_arrayOrOwnedBuffer, _native, _index + start, _length - start);
+            if (_index < 0)
+                return new ReadOnlyBuffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, _length - start);
+            return new ReadOnlyBuffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -119,16 +107,18 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new ReadOnlyBuffer<T>(_arrayOrOwnedBuffer, _native, _index + start, length);
+            if (_index < 0)
+                return new ReadOnlyBuffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, length);
+            return new ReadOnlyBuffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, length);
         }
 
         public ReadOnlySpan<T> Span
         {
             get
             {
-                if (_native == null) return new ReadOnlySpan<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
-                if (_arrayOrOwnedBuffer != null) return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
-                return new Span<T>(_native, _length);
+                if (_index < 0)
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index, _length);
+                return new ReadOnlySpan<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
 
@@ -137,7 +127,11 @@ namespace System
             BufferHandle bufferHandle;
             if (pin)
             {
-                if (_native == null)
+                if (_index < 0)
+                {
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
+                }
+                else
                 {
                     var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
@@ -146,22 +140,10 @@ namespace System
                         bufferHandle = new BufferHandle(null, pointer, handle);
                     }
                 }
-                else if (_arrayOrOwnedBuffer != null)
-                {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index);
-                }
-                else
-                {
-                    bufferHandle = new BufferHandle(null);
-                }
             }
             else
             {
-                if (_native == null)
-                {
-                    bufferHandle = new BufferHandle((IRetainable)_arrayOrOwnedBuffer);
-                }
-                else if (_arrayOrOwnedBuffer != null)
+                if (_index < 0)
                 {
                     Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Retain();
                     bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
@@ -199,7 +181,6 @@ namespace System
         {
             return
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
-                _native == other._native &&
                 _index == other._index &&
                 _length == other._length;
         }
