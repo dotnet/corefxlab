@@ -1,6 +1,6 @@
 ﻿#define USE_ASYNC_SEND
 #define USE_ASYNC_RECEIVE
-// #define USING_TASK_SOCKETS
+//#define USING_TASK_SOCKETS
 //#define USE_BUFFER_BLOCKCOPY
 //#define USE_SMALL_RESPONSE
 using System;
@@ -79,24 +79,26 @@ public class Server
         {
             using (_socket)
             {
+                int offset = 0;
                 byte[] buffer = new byte[4096];
-                _request = new Request() { _buffer = _readArgs.Buffer };
-                _response = new Response() { _socket = _socket };
-                _context = new HttpContext() { Request = request, Response = response };
+                _request = new Request() { _buffer = buffer };
+                _response = new Response() { _connection = this };
+                _context = new HttpContext() { Request = _request, Response = _response };
                 for (;;)
                 {
-                    int bytesRead = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
+                    int bytesRead = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer, offset, buffer.Length-offset), SocketFlags.None);
                     // Console.WriteLine("****** REQUEST {0} bytes: {1}", bytesRead, buffer.AsString(bytesRead).Replace("\r\n", "\r\n      "));
                     if (bytesRead == 0)
                     {
                         // Console.WriteLine("** Closing Connection");
                         break;
                     }
-                    ParseAndReply(buffer, 0, bytesRead);
+                    offset = ParseAndReply(buffer, bytesRead);
                 }
             }
             // TODO remove from _server._activeConnectons list.  
         }
+
 #else
         void ProcessRequests()
         {
@@ -136,7 +138,9 @@ public class Server
                     _socket.Dispose();
                     return;
                 }
-                ParseAndReply(e.Buffer, bytesRead + e.Offset, e.Offset != 0);
+                int leftOver = ParseAndReply(e.Buffer, bytesRead + e.Offset);
+                if (_readArgs.Offset != leftOver)
+                    _readArgs.SetBuffer(leftOver, _readArgs.Count - leftOver);
 
                 // If it is not pending we can loop and process the next one.  
                 var pending = _socket.ReceiveAsync(_readArgs);
@@ -152,25 +156,28 @@ public class Server
         }
 
 #endif
-
-        void ParseAndReply(byte[] buffer, int bytesRead, bool nonZeroOffset)
+        /// <summary>
+        /// Parse what is in 'buffer' of length 'bufferLength, and call user code (to format a response)
+        /// This method also copies down any unused tail of the buffer to the front of the buffer and
+        /// returns that count (thus if it return 3 the first three bytes in the buffer are unconsumed).  
+        /// </summary>
+        int ParseAndReply(byte[] buffer, int bufferLength)
         {
             // Parse, we start at offset 0 because what is before the offset is copied from the previous chunk. 
             int startParse = 0;
             do
             {
                 _request.parseResult.Reset();
-                int endParsed = RequestParser.ParseRequest(buffer, startParse, bytesRead, ref _request.parseResult);
+                int endParsed = RequestParser.ParseRequest(buffer, startParse, bufferLength, ref _request.parseResult);
                 if (!_request.parseResult._parseOK)
                 {
                     // We have a partial buffer, move the rest to the begining of the buffer, set the buffer to fill in after that
                     // and try again.  
-                    if (endParsed == bytesRead)
+                    if (endParsed == bufferLength)
                     {
-                        int tailBytes = bytesRead - startParse;
+                        int tailBytes = bufferLength - startParse;
                         Buffer.BlockCopy(buffer, startParse, buffer, 0, tailBytes);
-                        _readArgs.SetBuffer(buffer, tailBytes, buffer.Length - tailBytes);
-                        return;
+                        return tailBytes;
                     }
                     _response.WriteUtf8(s_badRequestText);
                     Console.WriteLine("bad request");
@@ -192,14 +199,14 @@ public class Server
                 // Console.WriteLine("  ** REPLYING {0} bytes : {1}", response.Length, response.Buffer.AsString(response.Length).Replace("\r\n", "\r\n      "));
                 startParse = endParsed;
             }
-            while (startParse < bytesRead);
+            while (startParse < bufferLength);
 
             // This sends pipelined responses for piplined inputs.  
             _socket.Send(_response.Buffer, _response.Length, SocketFlags.None);
             _response.Clear();
             // _response.Flush().Wait();
 
-            _readArgs.SetBuffer(buffer, 0, buffer.Length);
+            return 0;
         }
 
         public static readonly byte[] s_badRequestText = Encoding.UTF8.GetBytes("HTTP/1.1 400 Bad Request\r\n\r\n");
@@ -267,10 +274,34 @@ public class Response
         _responseLength += b.Length;
     }
 
+    // translates to Utf8 on the fly 
+    public void Write(String s)
+    {
+        if (_first)
+        {
+            _first = false;
+            AppendResponseHeader();
+        }
+
+        if (_responseBuffer.Length < _responseLength + s.Length)
+            GrowBuffer(_responseLength + s.Length);
+
+        // TODO currently it assumes ascii (simply truncates).  
+        // In reality it can bail and call a real convert if it notices non-ascii. 
+        byte[] responseBuffer = _responseBuffer;
+        int offset = _responseLength;
+        for (int i = 0; i < s.Length; i++)
+            responseBuffer[offset + i] = (byte) s[i];
+        _responseLength += s.Length;
+    }
+
     public Task Flush()
     {
         if (0 < _responseLength)
         {
+#if USING_TASK_SOCKETS
+            return _connection._socket.SendAsync(new ArraySegment<byte>(_responseBuffer, 0, _responseLength), SocketFlags.None);
+#else
             _connection._writeArgs.SetBuffer(_responseBuffer, 0, _responseLength);
             bool pending = _connection._socket.SendAsync(_connection._writeArgs);
             if (pending)
@@ -280,6 +311,7 @@ public class Response
                 _connection._pendingWrite = pendingWrite;
                 return pendingWrite.Task;
             }
+#endif 
         }
         return Task.CompletedTask;
     }
