@@ -14,16 +14,19 @@ namespace System
     [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
     public struct Buffer<T>
     {
-        readonly OwnedBuffer<T> _owner;
-        readonly T[] _array;
+        // The highest order bit of _index is used to discern whether _arrayOrOwnedBuffer is an array or an owned buffer
+        // if (_index >> 31) == 1, object _arrayOrOwnedBuffer is an OwnedBuffer<T>
+        // else, object _arrayOrOwnedBuffer is a T[]
+        readonly object _arrayOrOwnedBuffer;
         readonly int _index;
         readonly int _length;
 
+        private const int bitMask = 0x7FFFFFFF;
+
         internal Buffer(OwnedBuffer<T> owner, int index, int length)
         {
-            _array = null;
-            _owner = owner;
-            _index = index;
+            _arrayOrOwnedBuffer = owner;
+            _index = index | (1 << 31); // Before using _index, check if _index < 0, then 'and' it with bitMask
             _length = length;
         }
 
@@ -35,8 +38,7 @@ namespace System
             if (default(T) == null && array.GetType() != typeof(T[]))
                 BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
             _index = 0;
             _length = array.Length;
         }
@@ -53,8 +55,7 @@ namespace System
             if ((uint)start > (uint)arrayLength)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
             _index = start;
             _length = arrayLength - start;
         }
@@ -69,24 +70,19 @@ namespace System
             if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            _array = array;
-            _owner = null;
+            _arrayOrOwnedBuffer = array;
             _index = start;
-            _length = length;
-        }
-
-        private Buffer(OwnedBuffer<T> owner, T[] array, int index, int length)
-        {
-            _array = array;
-            _owner = owner;
-            _index = index;
             _length = length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyBuffer<T>(buffer._owner, buffer._array, buffer._index, buffer._length);
+            // There is no need to 'and' _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
+            if (buffer._index < 0)
+                return new ReadOnlyBuffer<T>(Unsafe.As<OwnedBuffer<T>>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
+            return new ReadOnlyBuffer<T>(Unsafe.As<T[]>(buffer._arrayOrOwnedBuffer), buffer._index, buffer._length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,7 +109,11 @@ namespace System
             if ((uint)start > (uint)_length)
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_owner, _array, _index + start, _length - start);
+            // There is no need to and _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
+            if (_index < 0)
+                return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, _length - start);
+            return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -122,14 +122,21 @@ namespace System
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new Buffer<T>(_owner, _array, _index + start, length);
+            // There is no need to 'and' _index by the bit mask here 
+            // since the constructor will set the highest order bit again anyway
+            if (_index < 0)
+                return new Buffer<T>(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer), _index + start, length);
+            return new Buffer<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index + start, length);
         }
 
         public Span<T> Span
         {
-            get {
-                if (_array != null) return new Span<T>(_array, _index, _length);
-                return _owner.AsSpan(_index, _length);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (_index < 0)
+                    return Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).AsSpan(_index & bitMask, _length);
+                return new Span<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
             }
         }
 
@@ -138,13 +145,13 @@ namespace System
             BufferHandle bufferHandle;
             if (pin)
             {
-                if (_owner != null)
+                if (_index < 0)
                 {
-                    bufferHandle = _owner.Pin(_index);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & bitMask);
                 }
                 else
                 {
-                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
                     {
                         var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
@@ -154,26 +161,32 @@ namespace System
             }
             else
             {
-                if (_owner != null)
+                if (_index < 0)
                 {
-                    _owner.Retain();
+                    Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Retain();
+                    bufferHandle = new BufferHandle(Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer));
                 }
-                bufferHandle = new BufferHandle(_owner);
+                else
+                {
+                    bufferHandle = new BufferHandle(null);
+                }
             }
             return bufferHandle;
         }
 
         public bool TryGetArray(out ArraySegment<T> arraySegment)
         {
-            if (_owner != null && _owner.TryGetArray(out var segment))
+            if (_index < 0)
             {
-                arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
-                return true;
+                if (Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).TryGetArray(out var segment))
+                {
+                    arraySegment = new ArraySegment<T>(segment.Array, segment.Offset + (_index & bitMask), _length);
+                    return true;
+                }
             }
-
-            if (_array != null)
+            else
             {
-                arraySegment = new ArraySegment<T>(_array, _index, _length);
+                arraySegment = new ArraySegment<T>(Unsafe.As<T[]>(_arrayOrOwnedBuffer), _index, _length);
                 return true;
             }
 
@@ -213,9 +226,8 @@ namespace System
         public bool Equals(Buffer<T> other)
         {
             return
-                _array == other._array &&
-                _owner == other._owner &&
-                _index == other._index &&
+                _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
+                (_index & bitMask) == (other._index & bitMask) &&
                 _length == other._length;
         }
 
@@ -232,11 +244,7 @@ namespace System
         [EditorBrowsable( EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            if (_owner != null)
-            {
-                return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-            }
-            return HashingHelper.CombineHashCodes(_array.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_arrayOrOwnedBuffer.GetHashCode(), (_index & bitMask).GetHashCode(), _length.GetHashCode());
         }
     }
 }
