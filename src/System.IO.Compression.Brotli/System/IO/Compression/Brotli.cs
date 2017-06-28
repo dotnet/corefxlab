@@ -14,6 +14,7 @@ namespace System.IO.Compression
         private const int MinWindowBits = 10;
         private const int MaxWindowBits = 24;
         private const int MaxQuality = 11;
+        private const int MaxInputSize = 2147483132; // 2^32 - 1 - 515 (max compressed extra bytes)
 
         public struct State : IDisposable
         {
@@ -117,7 +118,7 @@ namespace System.IO.Compression
 
         public static int GetMaximumCompressedSize(int inputSize)
         {
-            if (inputSize < 0 || inputSize > 2147483132) // 2^32 - 1 - 515 (max compressed extra bytes)
+            if (inputSize < 0 || inputSize > MaxInputSize)
             {
                 throw new System.ArgumentOutOfRangeException("inputSize");
             }
