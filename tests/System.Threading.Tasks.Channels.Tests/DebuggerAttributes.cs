@@ -27,7 +27,7 @@ namespace System.Diagnostics
                 throw new InvalidOperationException(
                     string.Format("Expected one DebuggerTypeProxyAttribute on {0}.", obj));
             }
-            var cad = (CustomAttributeData)attrs[0];
+            var cad = attrs[0];
 
             // Get the proxy type.  As written, this only works if the proxy and the target type
             // have the same generic parameters, e.g. Dictionary<TKey,TValue> and Proxy<TKey,TValue>.
@@ -63,7 +63,7 @@ namespace System.Diagnostics
                 throw new InvalidOperationException(
                     string.Format("Expected one DebuggerDisplayAttribute on {0}.", obj));
             }
-            var cad = (CustomAttributeData)attrs[0];
+            var cad = attrs[0];
 
             // Get the text of the DebuggerDisplayAttribute
             string attrText = (string)cad.ConstructorArguments[0].Value;

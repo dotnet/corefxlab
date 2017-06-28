@@ -279,4 +279,3 @@ namespace System.Text.Formatting.Tests
         }
     }
 }
-

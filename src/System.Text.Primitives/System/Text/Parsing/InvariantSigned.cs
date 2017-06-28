@@ -896,176 +896,122 @@ namespace System.Text
 
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value)
             {
-                if (text.Length < 1)
-                {
-                    value = default;
-                    return false;
-                }
-
-                int indexOfFirstDigit = 0;
-                int sign = 1;
-                if (text[0] == '-')
-                {
-                    indexOfFirstDigit = 1;
-                    sign = -1;
-                }
-                else if (text[0] == '+')
-                {
-                    indexOfFirstDigit = 1;
-                }
-
-                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
-
-                // Parse the first digit separately. If invalid here, we need to return false.
-                int firstDigit = text[indexOfFirstDigit] - 48; // '0'
-                if (firstDigit < 0 || firstDigit > 9)
-                {
-                    value = default;
-                    return false;
-                }
-                int parsedValue = firstDigit;
-
-                if (text.Length < overflowLength)
-                {
-                    // Length is less than Int32OverflowLength; overflow is not possible
-                    for (int index = indexOfFirstDigit + 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-                else
-                {
-                    // Length is greater than Int32OverflowLength; overflow is only possible after Int32OverflowLength
-                    // digits. There may be no overflow after Int32OverflowLength if there are leading zeroes.
-                    for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                    for (int index = overflowLength - 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
-                        // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-                        bool positive = sign > 0;
-                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
-                        if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
-                        {
-                            value = default;
-                            return false;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-
-                value = parsedValue * sign;
-                return true;
+                return TryParseInt32(text, out value, out int bytesConsumed);
             }
 
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed)
             {
-                if (text.Length < 1)
-                {
-                    bytesConsumed = 0;
-                    value = default;
-                    return false;
-                }
+                if (text.Length < 1) goto FalseExit;
 
-                int indexOfFirstDigit = 0;
                 int sign = 1;
-                if (text[0] == '-')
+                int index = 0;
+                int num = text[index];
+                if (num == '-')
                 {
-                    indexOfFirstDigit = 1;
                     sign = -1;
+                    index++;
+                    if ((uint)index >= (uint)text.Length) goto FalseExit;
+                    num = text[index];
                 }
-                else if (text[0] == '+')
+                else if (num == '+')
                 {
-                    indexOfFirstDigit = 1;
+                    index++;
+                    if ((uint)index >= (uint)text.Length) goto FalseExit;
+                    num = text[index];
                 }
 
-                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int answer = 0;
 
-                // Parse the first digit separately. If invalid here, we need to return false.
-                int firstDigit = text[indexOfFirstDigit] - 48; // '0'
-                if (firstDigit < 0 || firstDigit > 9)
+                if (IsDigit(num))
                 {
-                    bytesConsumed = 0;
-                    value = default;
-                    return false;
-                }
-                int parsedValue = firstDigit;
-
-                if (text.Length < overflowLength)
-                {
-                    // Length is less than Int32OverflowLength; overflow is not possible
-                    for (int index = indexOfFirstDigit + 1; index < text.Length; index++)
+                    if (num == '0')
                     {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
+                        do
                         {
-                            bytesConsumed = index;
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
+                            index++;
+                            if ((uint)index >= (uint)text.Length) goto Done;
+                            num = text[index];
+                        } while (num == '0');
+                        if (!IsDigit(num)) goto Done;
                     }
-                }
-                else
-                {
-                    // Length is greater than Int32OverflowLength; overflow is only possible after Int32OverflowLength
-                    // digits. There may be no overflow after Int32OverflowLength if there are leading zeroes.
-                    for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            bytesConsumed = index;
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                    for (int index = overflowLength - 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            bytesConsumed = index;
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
-                        // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-                        bool positive = sign > 0;
-                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
-                        if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
-                        {
-                            bytesConsumed = 0;
-                            value = default;
-                            return false;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
+
+                    answer = num - '0';
+                    index++;
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    index++;
+                    answer = 10 * answer + num - '0';
+
+                    // Potential overflow
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    num = text[index];
+                    if (!IsDigit(num)) goto Done;
+                    if (answer > Int32.MaxValue / 10 + 1) goto FalseExit; // Overflow
+                    answer = answer * 10 + num - '0';
+
+                    // if sign < 0, (-1 * sign + 1) / 2 = 1
+                    // else, (-1 * sign + 1) / 2 = 0
+                    if ((uint)answer > (uint)Int32.MaxValue + (-1 * sign + 1) / 2) goto FalseExit; // Overflow
+                    index++;
+                    if ((uint)index >= (uint)text.Length) goto Done;
+                    if (!IsDigit(text[index])) goto Done;
+
+                    // Guaranteed overflow
+                    goto FalseExit;
                 }
 
-                bytesConsumed = text.Length;
-                value = parsedValue * sign;
+                FalseExit:
+                bytesConsumed = default;
+                value = default;
+                return false;
+
+                Done:
+                bytesConsumed = index;
+                value = answer * sign;
                 return true;
             }
 
@@ -2311,86 +2257,7 @@ namespace System.Text
 
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value)
             {
-                if (text.Length < 1)
-                {
-                    value = default;
-                    return false;
-                }
-
-                int indexOfFirstDigit = 0;
-                int sign = 1;
-                if (text[0] == '-')
-                {
-                    indexOfFirstDigit = 1;
-                    sign = -1;
-                }
-                else if (text[0] == '+')
-                {
-                    indexOfFirstDigit = 1;
-                }
-
-                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
-
-                // Parse the first digit separately. If invalid here, we need to return false.
-                int firstDigit = text[indexOfFirstDigit] - 48; // '0'
-                if (firstDigit < 0 || firstDigit > 9)
-                {
-                    value = default;
-                    return false;
-                }
-                int parsedValue = firstDigit;
-
-                if (text.Length < overflowLength)
-                {
-                    // Length is less than Int32OverflowLength; overflow is not possible
-                    for (int index = indexOfFirstDigit + 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-                else
-                {
-                    // Length is greater than Int32OverflowLength; overflow is only possible after Int32OverflowLength
-                    // digits. There may be no overflow after Int32OverflowLength if there are leading zeroes.
-                    for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                    for (int index = overflowLength - 1; index < text.Length; index++)
-                    {
-                        int nextDigit = text[index] - 48; // '0'
-                        if (nextDigit < 0 || nextDigit > 9)
-                        {
-                            value = parsedValue * sign;
-                            return true;
-                        }
-                        // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
-                        // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-                        bool positive = sign > 0;
-                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
-                        if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
-                        {
-                            value = default;
-                            return false;
-                        }
-                        parsedValue = parsedValue * 10 + nextDigit;
-                    }
-                }
-
-                value = parsedValue * sign;
-                return true;
+                return TryParseInt32(text, out value, out int charsConsumed);
             }
 
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charsConsumed)
@@ -2412,6 +2279,13 @@ namespace System.Text
                 else if (text[0] == '+')
                 {
                     indexOfFirstDigit = 1;
+                }
+
+                if (indexOfFirstDigit >= text.Length)
+                {
+                    charsConsumed = 0;
+                    value = default;
+                    return false;
                 }
 
                 int overflowLength = Int32OverflowLength + indexOfFirstDigit;

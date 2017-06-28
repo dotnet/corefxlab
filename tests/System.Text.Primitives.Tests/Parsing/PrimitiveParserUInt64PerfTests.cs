@@ -20,11 +20,11 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         ulong.TryParse(text, out value);
-                        DoNotIgnore(value, 0);
+                        TestHelper.DoNotIgnore(value, 0);
                     }
                 }
             }
@@ -40,11 +40,11 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         ulong.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value);
-                        DoNotIgnore(value, 0);
+                        TestHelper.DoNotIgnore(value, 0);
                     }
                 }
             }
@@ -60,11 +60,11 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         ulong.TryParse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value);
-                        DoNotIgnore(value, 0);
+                        TestHelper.DoNotIgnore(value, 0);
                     }
                 }
             }
@@ -84,11 +84,11 @@ namespace System.Text.Primitives.Tests
                 {
                     using (iteration.StartMeasurement())
                     {
-                        for (int i = 0; i < LoadIterations; i++)
+                        for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             ulong value;
                             PrimitiveParser.InvariantUtf8.TryParseUInt64(utf8ByteStar, length, out value);
-                            DoNotIgnore(value, 0);
+                            TestHelper.DoNotIgnore(value, 0);
                         }
                     }
                 }
@@ -109,12 +109,12 @@ namespace System.Text.Primitives.Tests
                 {
                     using (iteration.StartMeasurement())
                     {
-                        for (int i = 0; i < LoadIterations; i++)
+                        for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             ulong value;
                             int bytesConsumed;
                             PrimitiveParser.InvariantUtf8.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
+                            TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
                 }
@@ -133,11 +133,11 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         PrimitiveParser.InvariantUtf8.TryParseUInt64(utf8ByteSpan, out value);
-                        DoNotIgnore(value, 0);
+                        TestHelper.DoNotIgnore(value, 0);
                     }
                 }
             }
@@ -155,12 +155,12 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         int bytesConsumed;
                         PrimitiveParser.InvariantUtf8.TryParseUInt64(utf8ByteSpan, out value, out bytesConsumed);
-                        DoNotIgnore(value, bytesConsumed);
+                        TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
             }
@@ -180,11 +180,11 @@ namespace System.Text.Primitives.Tests
                 {
                     using (iteration.StartMeasurement())
                     {
-                        for (int i = 0; i < LoadIterations; i++)
+                        for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             ulong value;
                             PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(utf8ByteStar, length, out value);
-                            DoNotIgnore(value, 0);
+                            TestHelper.DoNotIgnore(value, 0);
                         }
                     }
                 }
@@ -205,12 +205,12 @@ namespace System.Text.Primitives.Tests
                 {
                     using (iteration.StartMeasurement())
                     {
-                        for (int i = 0; i < LoadIterations; i++)
+                        for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             ulong value;
                             int bytesConsumed;
                             PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
+                            TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
                 }
@@ -229,11 +229,11 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(utf8ByteSpan, out value);
-                        DoNotIgnore(value, 0);
+                        TestHelper.DoNotIgnore(value, 0);
                     }
                 }
             }
@@ -251,12 +251,12 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         ulong value;
                         int bytesConsumed;
                         PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(utf8ByteSpan, out value, out bytesConsumed);
-                        DoNotIgnore(value, bytesConsumed);
+                        TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
             }

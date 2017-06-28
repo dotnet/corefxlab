@@ -19,7 +19,7 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         bool.TryParse(text, out value);
                     }
@@ -40,7 +40,7 @@ namespace System.Text.Primitives.Tests
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LoadIterations; i++)
+                    for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
                     }
@@ -62,7 +62,7 @@ namespace System.Text.Primitives.Tests
                 {
                     using (iteration.StartMeasurement())
                     {
-                        for (int i = 0; i < LoadIterations; i++)
+                        for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
                         }
