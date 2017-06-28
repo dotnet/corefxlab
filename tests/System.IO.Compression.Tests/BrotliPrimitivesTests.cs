@@ -46,7 +46,7 @@ namespace System.IO.Compression.Tests
         {
             Brotli.State state = new Brotli.State();
             state.SetQuality();
-            Assert.Throws<System.Exception> (delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
+            Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
         }
 
         [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
@@ -92,7 +92,7 @@ namespace System.IO.Compression.Tests
         [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
         [InlineData(0, 1)]
         [InlineData(1024, 1030)]
-        [InlineData(1<<30, 1073742086)]
+        [InlineData(1 << 30, 1073742086)]
         [InlineData(2147483132, int.MaxValue)]
         public void CorrectMaxSize(int totalSize, int maxCompressedSize)
         {
