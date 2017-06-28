@@ -128,7 +128,7 @@ namespace System.IO.Compression
             int tailOverhead = (tail > (1 << 20)) ? 4 : 3;
             int overhead = 2 + (4 * numLargeBlocks) + tailOverhead + 1;
             int result = inputSize + overhead;
-            return (result < inputSize) ? inputSize : result;
+            return result;
         }
 
         internal static int GetQualityFromCompressionLevel(CompressionLevel level)
