@@ -55,9 +55,9 @@ namespace System.Text
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
-            if (format.IsDefault || format.Symbol == 'g')
+            if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                format = 'G';
             }
 
             if (symbolTable == SymbolTable.InvariantUtf8)

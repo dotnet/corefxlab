@@ -370,7 +370,7 @@ namespace System.Text.Formatting
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? ParsedFormat.Parse(formatSpecifier.Value): default;
+                var parsedFormat = (formatSpecifier.HasValue && formatSpecifier.Value != 0) ? new ParsedFormat(formatSpecifier.Value) : default;
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
@@ -43,5 +44,11 @@ namespace System.Text
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 239
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF              // 255
         };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsHexFormat(ParsedFormat format)
+        {
+            return format.Symbol == 'X' || format.Symbol == 'x';
+        }
     }
 }

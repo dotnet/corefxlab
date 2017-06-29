@@ -11,7 +11,7 @@ namespace System.Text
         {
             if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                format = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
@@ -22,7 +22,7 @@ namespace System.Text
         {
             if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                format = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;

@@ -123,7 +123,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void ParseThrowsExceptionWhenParsedPrecisionExceedsMaxPrecision()
         {
-            var ex = Assert.Throws<Exception>(() => ParsedFormat.Parse($"x{100}"));
+            var ex = Assert.Throws<FormatException>(() => ParsedFormat.Parse($"x{100}"));
         }
 
         private static void Verify(ParsedFormat format, byte expectedPrecision, char expectedSymbol)

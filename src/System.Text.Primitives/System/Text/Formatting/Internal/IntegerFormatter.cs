@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
@@ -13,21 +14,21 @@ namespace System.Text
             {
                 return TryFormatUInt64(unchecked((ulong)value), buffer, out bytesWritten, format, symbolTable);
             }
-            else if (format.IsHexadecimal)
+            else if (format.Symbol == 'x' || format.Symbol == 'X')
             {
                 return TryFormatUInt64(unchecked((ulong)value) & mask, buffer, out bytesWritten, format, symbolTable);
             }
             else
             {
                 int minusSignBytes = 0;
-                if(!symbolTable.TryEncode(SymbolTable.Symbol.MinusSign, buffer, out minusSignBytes))
+                if (!symbolTable.TryEncode(SymbolTable.Symbol.MinusSign, buffer, out minusSignBytes))
                 {
                     bytesWritten = 0;
                     return false;
                 }
 
                 int digitBytes = 0;
-                if(!TryFormatUInt64(unchecked((ulong)-value), buffer.Slice(minusSignBytes), out digitBytes, format, symbolTable))
+                if (!TryFormatUInt64(unchecked((ulong)-value), buffer.Slice(minusSignBytes), out digitBytes, format, symbolTable))
                 {
                     bytesWritten = 0;
                     return false;
@@ -39,38 +40,47 @@ namespace System.Text
 
         internal static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
-            if(format.Symbol == 'g')
+            switch (format.Symbol)
             {
-                format.Symbol = 'G';
-            }
+                case 'x':
+                case 'X':
+                    if (symbolTable == SymbolTable.InvariantUtf8)
+                        return TryFormatHexadecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
+                    else if (symbolTable == SymbolTable.InvariantUtf16)
+                        return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
+                    else
+                        throw new NotSupportedException();
 
-            if (format.IsHexadecimal && symbolTable == SymbolTable.InvariantUtf16) {
-                return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
-            }
+                case 'd':
+                case 'D':
+                case 'g':
+                case 'G':
+                    if (symbolTable == SymbolTable.InvariantUtf8)
+                        return TryFormatDecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
+                    else if (symbolTable == SymbolTable.InvariantUtf16)
+                        return TryFormatDecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
+                    else
+                        return TryFormatDecimal(value, buffer, out bytesWritten, format, symbolTable);
 
-            if (format.IsHexadecimal && symbolTable == SymbolTable.InvariantUtf8) {
-                return TryFormatHexadecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
-            }
+                case 'n':
+                case 'N':
+                    return TryFormatDecimal(value, buffer, out bytesWritten, format, symbolTable);
 
-            if ((symbolTable == SymbolTable.InvariantUtf16) && (format.Symbol == 'D' || format.Symbol == 'G')) {
-                return TryFormatDecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
+                default:
+                    throw new FormatException();
             }
-
-            if ((symbolTable == SymbolTable.InvariantUtf8) && (format.Symbol == 'D' || format.Symbol == 'G')) {
-                return TryFormatDecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
-            }
-
-            return TryFormatDecimal(value, buffer, out bytesWritten, format, symbolTable);
         }
 
         private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
-            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
+            char symbol = char.ToUpperInvariant(format.Symbol);
+            Precondition.Require(symbol == 'D' || symbol == 'G');
 
             // Count digits
             var valueToCountDigits = value;
             var digitsCount = 1;
-            while (valueToCountDigits >= 10UL) {
+            while (valueToCountDigits >= 10UL)
+            {
                 valueToCountDigits = valueToCountDigits / 10UL;
                 digitsCount++;
             }
@@ -79,29 +89,35 @@ namespace System.Text
             var bytesCount = digitsCount * 2;
 
             // If format is D and precision is greater than digits count, append leading zeros
-            if (format.Symbol == 'D' && format.HasPrecision) {
+            if ((symbol == 'D') && format.HasPrecision)
+            {
                 var leadingZerosCount = format.Precision - digitsCount;
-                if (leadingZerosCount > 0) {
+                if (leadingZerosCount > 0)
+                {
                     bytesCount += leadingZerosCount * 2;
                 }
 
-                if (bytesCount > buffer.Length) {
+                if (bytesCount > buffer.Length)
+                {
                     bytesWritten = 0;
                     return false;
                 }
 
-                while (leadingZerosCount-- > 0) {
+                while (leadingZerosCount-- > 0)
+                {
                     buffer[index++] = (byte)'0';
                     buffer[index++] = 0;
                 }
             }
-            else if (bytesCount > buffer.Length) {
+            else if (bytesCount > buffer.Length)
+            {
                 bytesWritten = 0;
                 return false;
             }
 
             index = bytesCount;
-            while (digitsCount-- > 0) {
+            while (digitsCount-- > 0)
+            {
                 ulong digit = value % 10UL;
                 value /= 10UL;
                 buffer[--index] = 0;
@@ -114,7 +130,8 @@ namespace System.Text
 
         private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
-            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
+            char symbol = char.ToUpperInvariant(format.Symbol);
+            Precondition.Require(symbol == 'D' || symbol == 'G');
 
             // Count digits
             var valueToCountDigits = value;
@@ -129,7 +146,7 @@ namespace System.Text
             var bytesCount = digitsCount;
 
             // If format is D and precision is greater than digits count, append leading zeros
-            if (format.Symbol == 'D' && format.HasPrecision)
+            if ((symbol == 'D') && format.HasPrecision)
             {
                 var leadingZerosCount = format.Precision - digitsCount;
                 if (leadingZerosCount > 0)
@@ -177,19 +194,23 @@ namespace System.Text
             // Count amount of hex digits
             var hexDigitsCount = 1;
             ulong valueToCount = value;
-            if (valueToCount > 0xFFFFFFFF) {
+            if (valueToCount > 0xFFFFFFFF)
+            {
                 hexDigitsCount += 8;
                 valueToCount >>= 0x20;
             }
-            if (valueToCount > 0xFFFF) {
+            if (valueToCount > 0xFFFF)
+            {
                 hexDigitsCount += 4;
                 valueToCount >>= 0x10;
             }
-            if (valueToCount > 0xFF) {
+            if (valueToCount > 0xFF)
+            {
                 hexDigitsCount += 2;
                 valueToCount >>= 0x8;
             }
-            if (valueToCount > 0xF) {
+            if (valueToCount > 0xF)
+            {
                 hexDigitsCount++;
             }
 
@@ -199,13 +220,15 @@ namespace System.Text
             var leadingZerosCount = format.HasPrecision ? format.Precision - hexDigitsCount : 0;
             bytesCount += leadingZerosCount > 0 ? leadingZerosCount * 2 : 0;
 
-            if (bytesCount > buffer.Length) {
+            if (bytesCount > buffer.Length)
+            {
                 bytesWritten = 0;
                 return false;
             }
 
             var index = bytesCount;
-            while (hexDigitsCount-- > 0) {
+            while (hexDigitsCount-- > 0)
+            {
                 byte digit = (byte)(value & 0xF);
                 value >>= 0x4;
                 digit += digit < 10 ? firstDigitOffset : firstHexCharOffset;
@@ -215,7 +238,8 @@ namespace System.Text
             }
 
             // Write leading zeros if any
-            while (leadingZerosCount-- > 0) {
+            while (leadingZerosCount-- > 0)
+            {
                 buffer[--index] = 0;
                 buffer[--index] = firstDigitOffset;
             }
@@ -292,12 +316,8 @@ namespace System.Text
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
         private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
-            if(format.IsDefault)
-            {
-                format.Symbol = 'G';
-            }
-            format.Symbol = Char.ToUpperInvariant(format.Symbol); // TODO: this is costly. I think the transformation should happen in Parse
-            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G' || format.Symbol == 'N');
+            char symbol = char.ToUpperInvariant(format.Symbol);
+            Precondition.Require(symbol == 'D' || format.Symbol == 'G' || format.Symbol == 'N');
 
             // Reverse value on decimal basis, count digits and trailing zeros before the decimal separator
             ulong reversedValueExceptFirst = 0;
@@ -326,7 +346,7 @@ namespace System.Text
             bytesWritten = 0;
             int digitBytes;
             // If format is D and precision is greater than digitsCount + trailingZerosCount, append leading zeros
-            if (format.Symbol == 'D' && format.HasPrecision)
+            if (symbol == 'D' && format.HasPrecision)
             {
                 var leadingZerosCount = format.Precision - digitsCount - trailingZerosCount;
                 while (leadingZerosCount-- > 0)
@@ -349,7 +369,7 @@ namespace System.Text
             bytesWritten += digitBytes;
             digitsCount--;
 
-            if (format.Symbol == 'N')
+            if (symbol == 'N')
             {
                 const int GroupSize = 3;
 
@@ -447,7 +467,7 @@ namespace System.Text
             }
 
             // If format is N and precision is not defined or is greater than zero, append trailing zeros after decimal point
-            if (format.Symbol == 'N')
+            if (symbol == 'N')
             {
                 int trailingZerosAfterDecimalCount = format.HasPrecision ? format.Precision : 2;
 
