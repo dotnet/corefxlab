@@ -10,7 +10,7 @@ namespace System.Text
     {
         internal static readonly TimeSpan NullOffset = TimeSpan.MinValue;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             TimeSpan offset = NullOffset;
             if (format.IsDefault)
@@ -40,7 +40,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -68,7 +68,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {

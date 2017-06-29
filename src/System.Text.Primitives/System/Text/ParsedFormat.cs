@@ -5,10 +5,10 @@ using System.ComponentModel;
 
 namespace System.Text
 {
-    public struct TextFormat : IEquatable<TextFormat>
+    public struct ParsedFormat : IEquatable<ParsedFormat>
     {
-        public static TextFormat HexUppercase = new TextFormat('X', NoPrecision);
-        public static TextFormat HexLowercase = new TextFormat('x', NoPrecision);
+        public static ParsedFormat HexUppercase = new ParsedFormat('X', NoPrecision);
+        public static ParsedFormat HexLowercase = new ParsedFormat('x', NoPrecision);
 
         public const byte NoPrecision = byte.MaxValue;
         internal const byte MaxPrecision = 99;
@@ -23,15 +23,15 @@ namespace System.Text
         }
         public byte Precision => _precision;
 
-        public TextFormat(char symbol, byte precision = NoPrecision)
+        public ParsedFormat(char symbol, byte precision = NoPrecision)
         {
             _format = (byte)symbol; //TODO: do we want to validate here?
             _precision = precision;
         }
 
-        public static implicit operator TextFormat(char symbol) => new TextFormat(symbol);
+        public static implicit operator ParsedFormat(char symbol) => new ParsedFormat(symbol);
 
-        public static TextFormat Parse(ReadOnlySpan<char> format)
+        public static ParsedFormat Parse(ReadOnlySpan<char> format)
         {
             int formatLength = format.Length;
             if (formatLength == 0)
@@ -58,18 +58,18 @@ namespace System.Text
 
             // TODO: this is duplicated from above. It needs to be refactored
             var specifier = format[0];
-            return new TextFormat(specifier, (byte)precision);
+            return new ParsedFormat(specifier, (byte)precision);
         }
 
-        public static TextFormat Parse(char format) => new TextFormat(format, NoPrecision);
+        public static ParsedFormat Parse(char format) => new ParsedFormat(format, NoPrecision);
 
         // once we have a non allocating conversion from string to ReadOnlySpan<char>, we can remove this overload
-        public static TextFormat Parse(string format)
+        public static ParsedFormat Parse(string format)
         {
             if (format == null) return default;
             return Parse(format.AsSpan());
         }
-         
+
         public bool IsHexadecimal => _format == 'X' || _format == 'x';
 
         public bool HasPrecision => _precision != NoPrecision;
@@ -81,18 +81,18 @@ namespace System.Text
             return string.Format("{0}:{1}", _format, _precision);
         }
 
-        public static bool operator ==(TextFormat left, TextFormat right) => left.Equals(right);
-        public static bool operator !=(TextFormat left, TextFormat right) => !left.Equals(right);
+        public static bool operator ==(ParsedFormat left, ParsedFormat right) => left.Equals(right);
+        public static bool operator !=(ParsedFormat left, ParsedFormat right) => !left.Equals(right);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if (!(obj is TextFormat)) return false;
-            return Equals((TextFormat)obj);
+            if (!(obj is ParsedFormat)) return false;
+            return Equals((ParsedFormat)obj);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool Equals(TextFormat other)
+        public bool Equals(ParsedFormat other)
         {
             return _format == other._format && _precision == other._precision;
         }

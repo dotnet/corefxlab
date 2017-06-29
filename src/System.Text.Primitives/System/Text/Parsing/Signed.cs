@@ -64,7 +64,7 @@ namespace System.Text
 
         #endregion
 
-        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -178,7 +178,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -292,7 +292,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             bool isDefault = format.IsDefault;
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
@@ -411,7 +411,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 

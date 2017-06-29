@@ -74,7 +74,7 @@ namespace System.Text.Formatting.Tests
                 StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append(((int)(i % 10)), TextFormat.HexUppercase);
+                    sb.Append(((int)(i % 10)), ParsedFormat.HexUppercase);
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)

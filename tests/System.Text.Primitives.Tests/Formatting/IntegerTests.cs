@@ -17,28 +17,28 @@ namespace System.Text.Primitives.Tests
             SymbolTable.InvariantUtf16,
         };
 
-        static readonly TextFormat[] Formats = new TextFormat[]
+        static readonly ParsedFormat[] Formats = new ParsedFormat[]
         {
-            new TextFormat('N', 0),
-            new TextFormat('N', 1),
-            new TextFormat('N', 10),
-            new TextFormat('N', 30),
-            new TextFormat('N', 255),
-            new TextFormat('D', 0),
-            new TextFormat('D', 1),
-            new TextFormat('D', 10),
-            new TextFormat('D', 30),
-            new TextFormat('D', 255),
-            new TextFormat('x', 0),
-            new TextFormat('x', 1),
-            new TextFormat('x', 10),
-            new TextFormat('x', 30),
-            new TextFormat('x', 255),
-            new TextFormat('X', 0),
-            new TextFormat('X', 1),
-            new TextFormat('X', 10),
-            new TextFormat('X', 30),
-            new TextFormat('X', 255),
+            new ParsedFormat('N', 0),
+            new ParsedFormat('N', 1),
+            new ParsedFormat('N', 10),
+            new ParsedFormat('N', 30),
+            new ParsedFormat('N', 255),
+            new ParsedFormat('D', 0),
+            new ParsedFormat('D', 1),
+            new ParsedFormat('D', 10),
+            new ParsedFormat('D', 30),
+            new ParsedFormat('D', 255),
+            new ParsedFormat('x', 0),
+            new ParsedFormat('x', 1),
+            new ParsedFormat('x', 10),
+            new ParsedFormat('x', 30),
+            new ParsedFormat('x', 255),
+            new ParsedFormat('X', 0),
+            new ParsedFormat('X', 1),
+            new ParsedFormat('X', 10),
+            new ParsedFormat('X', 30),
+            new ParsedFormat('X', 255),
         };
 
         [Fact]
@@ -137,17 +137,17 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        static void ValidateRandom<T>(TextFormat format, SymbolTable symbolTable)
+        static void ValidateRandom<T>(ParsedFormat format, SymbolTable symbolTable)
         {
             Validate<T>(GetRandom<T>(), format, symbolTable);
         }
 
-        static void Validate<T>(long value, TextFormat format, SymbolTable symbolTable)
+        static void Validate<T>(long value, ParsedFormat format, SymbolTable symbolTable)
         {
             Validate<T>(unchecked((ulong)value), format, symbolTable);
         }
 
-        static void Validate<T>(ulong value, TextFormat format, SymbolTable symbolTable)
+        static void Validate<T>(ulong value, ParsedFormat format, SymbolTable symbolTable)
         {
             var formatString = format.Precision == 255 ? $"{format.Symbol}" : $"{format.Symbol}{format.Precision}";
 
