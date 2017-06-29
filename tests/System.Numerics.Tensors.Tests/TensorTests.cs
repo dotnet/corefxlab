@@ -10,13 +10,6 @@ namespace tests
 {
     public class TensorTests
     {
-        private Array CreateSequentialArray(params int[] dimensions)
-        {
-            var array = Array.CreateInstance(typeof(int), dimensions);
-            // todo
-            return array;
-        }
-
         [Fact]
         public void ConstructTensorFromArrayRank1()
         {
@@ -262,6 +255,27 @@ namespace tests
                 { 4, 9, 4 }
             };
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, expected));
+        }
+
+        [Fact]
+        public void Reshape()
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var actual = tensor.Reshape(3, 2);
+
+            var expected = new[,]
+            {
+                { 1, 2 },
+                { 3, 4 },
+                { 5, 6 }
+            };
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
     }
 }

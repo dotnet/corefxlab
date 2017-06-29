@@ -63,7 +63,6 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-
             if (dimensions.Length == 0)
             {
                 // rank 0 tensor should be a scalar, need to think about how to represent that.
@@ -75,6 +74,35 @@ namespace System.Numerics
             // could throw, let the runtime decide what that limit is
             backingArray = new T[size];
 
+            // make a private copy of mutable dimensions array
+            this.dimensions = new int[dimensions.Length];
+            dimensions.CopyTo(this.dimensions, 0);
+        }
+
+        public Tensor(T[] fromBackingArray, params int[] dimensions)
+        {
+            if (dimensions == null)
+            {
+                throw new ArgumentNullException(nameof(dimensions));
+            }
+
+            if (dimensions.Length == 0)
+            {
+                // rank 0 tensor should be a scalar, need to think about how to represent that.
+                throw new ArgumentOutOfRangeException(nameof(dimensions));
+            }
+
+            long size = GetProduct(dimensions);
+
+            if (size != fromBackingArray.Length)
+            {
+                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
+            }
+
+            // keep a reference to the backing array
+            backingArray = fromBackingArray;
+
+            // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
             dimensions.CopyTo(this.dimensions, 0);
         }
@@ -207,7 +235,51 @@ namespace System.Numerics
 
             return diagonalTensor;
         }
-        
+
+        public Tensor<T> Reshape(params int[] dimensions)
+        {
+            if (dimensions == null)
+            {
+                throw new ArgumentNullException(nameof(dimensions));
+            }
+
+            if (dimensions.Length == 0)
+            {
+                // Rank0 not supported
+                throw new ArgumentException("New dimensions must be specified.", nameof(dimensions));
+            }
+
+            var newSize = GetProduct(dimensions);
+
+            if (newSize != Length)
+            {
+                throw new ArgumentException($"Cannot reshape array due to mismatch in lengths, currently {Length} would become {newSize}.", nameof(dimensions));
+            }
+
+            return new Tensor<T>(backingArray, dimensions);
+        }
+
+        public Tensor<T> ReshapeCopy(params int[] dimensions)
+        {
+            if (dimensions == null)
+            {
+                throw new ArgumentNullException(nameof(dimensions));
+            }
+
+            if (dimensions.Length == 0)
+            {
+                // Rank0 not supported
+                throw new ArgumentException("New dimensions must be specified.", nameof(dimensions));
+            }
+
+            var newSize = (int)GetProduct(dimensions);
+
+            T[] copyBackingArray = new T[newSize];
+            var copyLength = Math.Min(newSize, Length);
+            Array.Copy(backingArray, copyBackingArray, copyLength);
+
+            return new Tensor<T>(copyBackingArray, dimensions);
+        }
 
         public T this[int index]
         {
