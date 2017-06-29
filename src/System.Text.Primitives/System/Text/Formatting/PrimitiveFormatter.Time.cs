@@ -19,14 +19,15 @@ namespace System.Text
                 offset = value.Offset;
             }
 
-            Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
-
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             switch (format.Symbol)
             {
                 case 'R':
                     return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, out bytesWritten, symbolTable);
+
+                case 'l':
+                    return TryFormatDateTimeRfc1123Lowercase(value.UtcDateTime, buffer, out bytesWritten, symbolTable);
 
                 case 'O':
                     return TryFormatDateTimeFormatO(value.DateTime, value.Offset, buffer, out bytesWritten, symbolTable);
@@ -46,14 +47,15 @@ namespace System.Text
                 format.Symbol = 'G';
             }
 
-            Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
-
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
             switch (format.Symbol)
             {
                 case 'R':
                     return TryFormatDateTimeRfc1123(value, buffer, out bytesWritten, symbolTable);
+
+                case 'l':
+                    return TryFormatDateTimeRfc1123Lowercase(value, buffer, out bytesWritten, symbolTable);
 
                 case 'O':
                     return TryFormatDateTimeFormatO(value, NullOffset, buffer, out bytesWritten, symbolTable);
@@ -112,6 +114,18 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
+            else
+                throw new NotImplementedException();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static bool TryFormatDateTimeRfc1123Lowercase(DateTime value, Span<byte> buffer, out int bytesWritten, SymbolTable symbolTable)
+        {
+            // for now it only works for invariant culture
+            if (symbolTable == SymbolTable.InvariantUtf8)
+                return InvariantUtf8TimeFormatter.TryFormatRfc1123Lowercase(value, buffer, out bytesWritten);
+            else if (symbolTable == SymbolTable.InvariantUtf16)
+                return InvariantUtf16TimeFormatter.TryFormatRfc1123Lowercase(value, buffer, out bytesWritten);
             else
                 throw new NotImplementedException();
         }

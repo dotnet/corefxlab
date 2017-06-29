@@ -26,6 +26,10 @@ namespace System.Text
         private const char GMT2 = 'M';
         private const char GMT3 = 'T';
 
+        private const char GMT1Lowercase = 'g';
+        private const char GMT2Lowercase = 'm';
+        private const char GMT3Lowercase = 't';
+
         private static readonly char[][] DayAbbreviations = new char[][]
         {
                 new char[] { 'S', 'u', 'n' },
@@ -51,6 +55,33 @@ namespace System.Text
                 new char[] { 'O', 'c', 't' },
                 new char[] { 'N', 'o', 'v' },
                 new char[] { 'D', 'e', 'c' },
+        };
+
+        private static readonly char[][] DayAbbreviationsLowercase = new char[][]
+        {
+                new char[] { 's', 'u', 'n' },
+                new char[] { 'm', 'o', 'n' },
+                new char[] { 't', 'u', 'e' },
+                new char[] { 'w', 'e', 'd' },
+                new char[] { 't', 'h', 'u' },
+                new char[] { 'f', 'r', 'i' },
+                new char[] { 's', 'a', 't' },
+        };
+
+        private static readonly char[][] MonthAbbreviationsLowercase = new char[][]
+        {
+                new char[] { 'j', 'a', 'n' },
+                new char[] { 'f', 'e', 'b' },
+                new char[] { 'm', 'a', 'r' },
+                new char[] { 'a', 'p', 'r' },
+                new char[] { 'm', 'a', 'y' },
+                new char[] { 'j', 'u', 'n' },
+                new char[] { 'j', 'u', 'l' },
+                new char[] { 'a', 'u', 'g' },
+                new char[] { 's', 'e', 'p' },
+                new char[] { 'o', 'c', 't' },
+                new char[] { 'n', 'o', 'v' },
+                new char[] { 'd', 'e', 'c' },
         };
 
         #endregion Constants
@@ -240,6 +271,55 @@ namespace System.Text
             Unsafe.Add(ref utf16Bytes, 26) = GMT1;
             Unsafe.Add(ref utf16Bytes, 27) = GMT2;
             Unsafe.Add(ref utf16Bytes, 28) = GMT3;
+
+            return true;
+        }
+
+        public static bool TryFormatRfc1123Lowercase(DateTime value, Span<byte> buffer, out int bytesWritten)
+        {
+            const int CharsNeeded = 29;
+
+            bytesWritten = CharsNeeded * sizeof(char);
+            if (buffer.Length < bytesWritten)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+
+            var dayAbbrev = DayAbbreviationsLowercase[(int)value.DayOfWeek];
+            Unsafe.Add(ref utf16Bytes, 0) = dayAbbrev[0];
+            Unsafe.Add(ref utf16Bytes, 1) = dayAbbrev[1];
+            Unsafe.Add(ref utf16Bytes, 2) = dayAbbrev[2];
+            Unsafe.Add(ref utf16Bytes, 3) = Comma;
+            Unsafe.Add(ref utf16Bytes, 4) = Space;
+
+            FormattingHelpers.WriteDigits(value.Day, 2, ref utf16Bytes, 5);
+            Unsafe.Add(ref utf16Bytes, 7) = ' ';
+
+            var monthAbbrev = MonthAbbreviationsLowercase[value.Month - 1];
+            Unsafe.Add(ref utf16Bytes, 8) = monthAbbrev[0];
+            Unsafe.Add(ref utf16Bytes, 9) = monthAbbrev[1];
+            Unsafe.Add(ref utf16Bytes, 10) = monthAbbrev[2];
+            Unsafe.Add(ref utf16Bytes, 11) = Space;
+
+            FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 12);
+            Unsafe.Add(ref utf16Bytes, 16) = Space;
+
+            FormattingHelpers.WriteDigits(value.Hour, 2, ref utf16Bytes, 17);
+            Unsafe.Add(ref utf16Bytes, 19) = Colon;
+
+            FormattingHelpers.WriteDigits(value.Minute, 2, ref utf16Bytes, 20);
+            Unsafe.Add(ref utf16Bytes, 22) = Colon;
+
+            FormattingHelpers.WriteDigits(value.Second, 2, ref utf16Bytes, 23);
+            Unsafe.Add(ref utf16Bytes, 25) = Space;
+
+            Unsafe.Add(ref utf16Bytes, 26) = GMT1Lowercase;
+            Unsafe.Add(ref utf16Bytes, 27) = GMT2Lowercase;
+            Unsafe.Add(ref utf16Bytes, 28) = GMT3Lowercase;
 
             return true;
         }

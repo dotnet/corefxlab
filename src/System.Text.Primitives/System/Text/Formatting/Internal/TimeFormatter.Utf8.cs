@@ -26,6 +26,10 @@ namespace System.Text
         private const byte GMT2 = (byte)'M';
         private const byte GMT3 = (byte)'T';
 
+        private const byte GMT1Lowercase = (byte)'g';
+        private const byte GMT2Lowercase = (byte)'m';
+        private const byte GMT3Lowercase = (byte)'t';
+
         private static readonly byte[][] DayAbbreviations = new byte[][]
         {
                 new byte[] { (byte)'S', (byte)'u', (byte)'n' },
@@ -35,6 +39,17 @@ namespace System.Text
                 new byte[] { (byte)'T', (byte)'h', (byte)'u' },
                 new byte[] { (byte)'F', (byte)'r', (byte)'i' },
                 new byte[] { (byte)'S', (byte)'a', (byte)'t' },
+        };
+
+        private static readonly byte[][] DayAbbreviationsLowercase = new byte[][]
+        {
+                new byte[] { (byte)'s', (byte)'u', (byte)'n' },
+                new byte[] { (byte)'m', (byte)'o', (byte)'n' },
+                new byte[] { (byte)'t', (byte)'u', (byte)'e' },
+                new byte[] { (byte)'w', (byte)'e', (byte)'d' },
+                new byte[] { (byte)'t', (byte)'h', (byte)'u' },
+                new byte[] { (byte)'f', (byte)'r', (byte)'i' },
+                new byte[] { (byte)'s', (byte)'a', (byte)'t' },
         };
 
         private static readonly byte[][] MonthAbbreviations = new byte[][]
@@ -52,6 +67,22 @@ namespace System.Text
                 new byte[] { (byte)'N', (byte)'o', (byte)'v' },
                 new byte[] { (byte)'D', (byte)'e', (byte)'c' },
         };
+
+        private static readonly byte[][] MonthAbbreviationsLowercase = new byte[][]
+{
+                new byte[] { (byte)'j', (byte)'a', (byte)'n' },
+                new byte[] { (byte)'f', (byte)'e', (byte)'b' },
+                new byte[] { (byte)'m', (byte)'a', (byte)'r' },
+                new byte[] { (byte)'a', (byte)'p', (byte)'r' },
+                new byte[] { (byte)'m', (byte)'a', (byte)'y' },
+                new byte[] { (byte)'j', (byte)'u', (byte)'n' },
+                new byte[] { (byte)'j', (byte)'u', (byte)'l' },
+                new byte[] { (byte)'a', (byte)'u', (byte)'g' },
+                new byte[] { (byte)'s', (byte)'e', (byte)'p' },
+                new byte[] { (byte)'o', (byte)'c', (byte)'t' },
+                new byte[] { (byte)'n', (byte)'o', (byte)'v' },
+                new byte[] { (byte)'d', (byte)'e', (byte)'c' },
+};
 
         #endregion Constants
 
@@ -235,6 +266,54 @@ namespace System.Text
             Unsafe.Add(ref utf8Bytes, 26) = GMT1;
             Unsafe.Add(ref utf8Bytes, 27) = GMT2;
             Unsafe.Add(ref utf8Bytes, 28) = GMT3;
+
+            return true;
+        }
+
+        public static bool TryFormatRfc1123Lowercase(DateTime value, Span<byte> buffer, out int bytesWritten)
+        {
+            const int BytesNeeded = 29;
+
+            bytesWritten = BytesNeeded;
+            if (buffer.Length < bytesWritten)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
+
+            var dayAbbrev = DayAbbreviationsLowercase[(int)value.DayOfWeek];
+            Unsafe.Add(ref utf8Bytes, 0) = dayAbbrev[0];
+            Unsafe.Add(ref utf8Bytes, 1) = dayAbbrev[1];
+            Unsafe.Add(ref utf8Bytes, 2) = dayAbbrev[2];
+            Unsafe.Add(ref utf8Bytes, 3) = Comma;
+            Unsafe.Add(ref utf8Bytes, 4) = Space;
+
+            FormattingHelpers.WriteDigits(value.Day, 2, ref utf8Bytes, 5);
+            Unsafe.Add(ref utf8Bytes, 7) = (byte)' ';
+
+            var monthAbbrev = MonthAbbreviationsLowercase[value.Month - 1];
+            Unsafe.Add(ref utf8Bytes, 8) = monthAbbrev[0];
+            Unsafe.Add(ref utf8Bytes, 9) = monthAbbrev[1];
+            Unsafe.Add(ref utf8Bytes, 10) = monthAbbrev[2];
+            Unsafe.Add(ref utf8Bytes, 11) = Space;
+
+            FormattingHelpers.WriteDigits(value.Year, 4, ref utf8Bytes, 12);
+            Unsafe.Add(ref utf8Bytes, 16) = Space;
+
+            FormattingHelpers.WriteDigits(value.Hour, 2, ref utf8Bytes, 17);
+            Unsafe.Add(ref utf8Bytes, 19) = Colon;
+
+            FormattingHelpers.WriteDigits(value.Minute, 2, ref utf8Bytes, 20);
+            Unsafe.Add(ref utf8Bytes, 22) = Colon;
+
+            FormattingHelpers.WriteDigits(value.Second, 2, ref utf8Bytes, 23);
+            Unsafe.Add(ref utf8Bytes, 25) = Space;
+
+            Unsafe.Add(ref utf8Bytes, 26) = GMT1Lowercase;
+            Unsafe.Add(ref utf8Bytes, 27) = GMT2Lowercase;
+            Unsafe.Add(ref utf8Bytes, 28) = GMT3Lowercase;
 
             return true;
         }
