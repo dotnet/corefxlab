@@ -11,53 +11,53 @@ namespace System.Text
     /// </remarks>
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, 0xff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, 0xffff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, 0xffffffff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             return TryFormatCore(value, 0xffffffffffffffff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        static bool TryFormatCore(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format, SymbolTable symbolTable)
+        static bool TryFormatCore(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
-            if (format.IsDefault || format.Symbol == 'g')
+            if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                format = 'G';
             }
 
             if (symbolTable == SymbolTable.InvariantUtf8)
@@ -68,7 +68,7 @@ namespace System.Text
                 return IntegerFormatter.TryFormatInt64(value, mask, buffer, out bytesWritten, format, symbolTable);
         }
 
-        static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, SymbolTable symbolTable)
+        static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -80,7 +80,7 @@ namespace System.Text
                 return IntegerFormatter.TryFormatUInt64(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        static bool TryFormatInvariantUtf8(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format)
+        static bool TryFormatInvariantUtf8(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
             switch (format.Symbol)
             {
@@ -106,7 +106,7 @@ namespace System.Text
             }
         }
 
-        static bool TryFormatInvariantUtf8(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format)
+        static bool TryFormatInvariantUtf8(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
             switch (format.Symbol)
             {
@@ -132,7 +132,7 @@ namespace System.Text
             }
         }
 
-        static bool TryFormatInvariantUtf16(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format)
+        static bool TryFormatInvariantUtf16(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
             switch (format.Symbol)
             {
@@ -158,7 +158,7 @@ namespace System.Text
             }
         }
 
-        static bool TryFormatInvariantUtf16(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format)
+        static bool TryFormatInvariantUtf16(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
         {
             switch (format.Symbol)
             {

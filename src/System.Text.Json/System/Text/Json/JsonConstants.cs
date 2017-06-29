@@ -7,9 +7,9 @@ namespace System.Text.Json
     {
         #region Formatting constants
 
-        public static readonly TextFormat NumberFormat = new TextFormat('D');
-        public static readonly TextFormat DateTimeFormat = new TextFormat('O');
-        public static readonly TextFormat GuidFormat = new TextFormat('D');
+        public static readonly ParsedFormat NumberFormat = new ParsedFormat('D');
+        public static readonly ParsedFormat DateTimeFormat = new ParsedFormat('O');
+        public static readonly ParsedFormat GuidFormat = new ParsedFormat('D');
 
         #endregion Formatting constants
 

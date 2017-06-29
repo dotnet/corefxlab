@@ -10,18 +10,19 @@ namespace System.Text
     {
         internal static readonly TimeSpan NullOffset = TimeSpan.MinValue;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             TimeSpan offset = NullOffset;
+            char symbol = format.Symbol;
             if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                symbol = 'G';
                 offset = value.Offset;
             }
 
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
-            switch (format.Symbol)
+            switch (symbol)
             {
                 case 'R':
                     return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, out bytesWritten, symbolTable);
@@ -40,16 +41,13 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format.Symbol = 'G';
-            }
+            char symbol = format.IsDefault ? 'G' : format.Symbol;
 
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
-            switch (format.Symbol)
+            switch (symbol)
             {
                 case 'R':
                     return TryFormatDateTimeRfc1123(value, buffer, out bytesWritten, symbolTable);
@@ -68,18 +66,15 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format.Symbol = 'c';
-            }
+            char symbol = format.IsDefault ? 'c' : format.Symbol;
 
-            Precondition.Require(format.Symbol == 'G' || format.Symbol == 'g' || format.Symbol == 'c' || format.Symbol == 't' || format.Symbol == 'T');
+            Precondition.Require(symbol == 'G' || symbol == 'g' || symbol == 'c' || symbol == 't' || symbol == 'T');
 
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
-            return TryFormatTimeSpan(value, format.Symbol, buffer, out bytesWritten, symbolTable);
+            return TryFormatTimeSpan(value, symbol, buffer, out bytesWritten, symbolTable);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

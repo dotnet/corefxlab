@@ -29,7 +29,7 @@ namespace System.Text.Formatting.Tests
         private void CheckByte(byte value, string format, string expected)
         {
             var formatter = new StringFormatter();
-            var parsed = TextFormat.Parse(format);
+            var parsed = ParsedFormat.Parse(format);
             formatter.Clear();
             formatter.Append(value, parsed);
             var result = formatter.ToString();
@@ -101,7 +101,7 @@ namespace System.Text.Formatting.Tests
 
         private void CheckInt64(long value, string format, string expected, StringFormatter formatter)
         {
-            var parsed = TextFormat.Parse(format);
+            var parsed = ParsedFormat.Parse(format);
             formatter.Clear();
             formatter.Append(value, parsed);
             var result = formatter.ToString();
@@ -213,7 +213,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatD()
         {
-            var format = TextFormat.Parse("D");
+            var format = ParsedFormat.Parse("D");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -230,7 +230,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatDPrecision()
         {
-            var format = TextFormat.Parse("D3");
+            var format = ParsedFormat.Parse("D3");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -247,7 +247,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatG()
         {
-            var format = TextFormat.Parse("G");
+            var format = ParsedFormat.Parse("G");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -264,7 +264,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatNPrecision()
         {
-            var format = TextFormat.Parse("N1");
+            var format = ParsedFormat.Parse("N1");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -281,8 +281,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatX()
         {
-            var x = TextFormat.Parse("x");
-            var X = TextFormat.Parse("X");
+            var x = ParsedFormat.Parse("x");
+            var X = ParsedFormat.Parse("X");
 
             var sb = new StringFormatter();
             sb.Append((ulong)255, x);
@@ -301,8 +301,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatXUtf8()
         {
-            var x = TextFormat.Parse("x");
-            var X = TextFormat.Parse("X");
+            var x = ParsedFormat.Parse("x");
+            var X = ParsedFormat.Parse("X");
 
             var sb = new ArrayFormatter(256, SymbolTable.InvariantUtf8);
             sb.Append((ulong)255, x);
@@ -322,8 +322,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatXPrecision()
         {
-            var x = TextFormat.Parse("x10");
-            var X = TextFormat.Parse("X10");
+            var x = ParsedFormat.Parse("x10");
+            var X = ParsedFormat.Parse("X10");
 
             var sb = new StringFormatter();
             sb.Append((ulong)255, x);

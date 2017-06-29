@@ -64,7 +64,7 @@ namespace System.Text
 
         #endregion
 
-        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -75,7 +75,7 @@ namespace System.Text
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     return InvariantUtf8.Hex.TryParseSByte(text, out value, out bytesConsumed);
                 }
@@ -89,7 +89,7 @@ namespace System.Text
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     result = InvariantUtf16.Hex.TryParseSByte(utf16Text, out value, out charsConsumed);
                 }
@@ -101,7 +101,7 @@ namespace System.Text
                 return result;
             }
 
-            if (format.IsHexadecimal)
+            if (IsHexFormat(format))
             {
                 throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
             }
@@ -178,7 +178,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -189,7 +189,7 @@ namespace System.Text
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     return InvariantUtf8.Hex.TryParseInt16(text, out value, out bytesConsumed);
                 }
@@ -203,7 +203,7 @@ namespace System.Text
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     result = InvariantUtf16.Hex.TryParseInt16(utf16Text, out value, out charsConsumed);
                 }
@@ -215,7 +215,7 @@ namespace System.Text
                 return result;
             }
 
-            if (format.IsHexadecimal)
+            if (IsHexFormat(format))
             {
                 throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
             }
@@ -292,7 +292,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             bool isDefault = format.IsDefault;
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
@@ -302,7 +302,7 @@ namespace System.Text
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            bool isHex = format.IsHexadecimal;
+            bool isHex = IsHexFormat(format);
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
@@ -411,7 +411,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -422,7 +422,7 @@ namespace System.Text
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     return InvariantUtf8.Hex.TryParseInt64(text, out value, out bytesConsumed);
                 }
@@ -436,7 +436,7 @@ namespace System.Text
                 ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
-                if (format.IsHexadecimal)
+                if (IsHexFormat(format))
                 {
                     result = InvariantUtf16.Hex.TryParseInt64(utf16Text, out value, out charsConsumed);
                 }
@@ -448,7 +448,7 @@ namespace System.Text
                 return result;
             }
 
-            if (format.IsHexadecimal)
+            if (IsHexFormat(format))
             {
                 throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
             }

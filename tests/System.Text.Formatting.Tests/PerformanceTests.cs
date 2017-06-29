@@ -68,13 +68,15 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatIntHex()
         {
+            ParsedFormat format = new ParsedFormat('X', ParsedFormat.NoPrecision);
+
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
                 StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
-                    sb.Append(((int)(i % 10)), TextFormat.HexUppercase);
+                    sb.Append(((int)(i % 10)), format);
                 }
                 var text = sb.ToString();
                 if (text.Length != numbersToWrite)
