@@ -85,7 +85,7 @@ namespace System.Text.Primitives.Tests
 
         static void TestDateTimeOffsetFormat(DateTimeOffset dto, char formatChar, SymbolTable symbolTable)
         {
-            ParsedFormat format = (formatChar == 0) ? default : formatChar;
+            ParsedFormat format = (formatChar == 0) ? default(ParsedFormat) : formatChar;
 
             string expected;
             if (formatChar == 'l') {
