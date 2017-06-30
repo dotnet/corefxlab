@@ -11,9 +11,31 @@ namespace System.Text.Encoders
     {
         #region UTF-16 Conversions
 
+        /// <summary>
+        /// Calculates the byte count needed to encode the UTF-8 bytes from the specified UTF-16 sequence.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
+        /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
         public static TransformationStatus FromUtf16Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             => Utf16.ToUtf8Length(source, out bytesNeeded);
 
+        /// <summary>
+        /// Converts a span containing a sequence of UTF-16 bytes into UTF-8 bytes.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        ///
+        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+        /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+        /// the <paramref name="destination"/>.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
+        /// <param name="destination">A span to write the UTF-8 bytes into.</param>
+        /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+        /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
         public static TransformationStatus FromUtf16(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             => Utf16.ToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
@@ -687,12 +709,42 @@ namespace System.Text.Encoders
 
         #region UTF-32 Conversions
 
+        /// <summary>
+        /// Calculates the byte count needed to encode the UTF-8 bytes from the specified UTF-32 sequence.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
+        /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
         public static TransformationStatus FromUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             => Utf32.ToUtf8Length(source, out bytesNeeded);
 
+        /// <summary>
+        /// Converts a span containing a sequence of UTF-32 bytes into UTF-8 bytes.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        ///
+        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+        /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+        /// the <paramref name="destination"/>.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
+        /// <param name="destination">A span to write the UTF-8 bytes into.</param>
+        /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+        /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
         public static TransformationStatus FromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             => Utf32.ToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
+        /// <summary>
+        /// Calculates the byte count needed to encode the UTF-32 bytes from the specified UTF-8 sequence.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
+        /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
         public static TransformationStatus ToUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
         {
             bytesNeeded = 0;
@@ -782,25 +834,5 @@ namespace System.Text.Encoders
         }
 
         #endregion UTF-32 Conversions
-
-        #region Utf-16 to Utf-8 conversion
-
-        public static TransformationStatus ComputeEncodedBytesFromUtf16(ReadOnlySpan<byte> source, out int bytesNeeded)
-            => Utf16.ToUtf8Length(source, out bytesNeeded);
-
-        public static TransformationStatus ConvertFromUtf16(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-            => Utf16.ToUtf8(source, destination, out bytesConsumed, out bytesWritten);
-
-        #endregion Utf-16 to Utf-8 conversion
-
-        #region Utf-32 to Utf-8 conversion
-
-        public static TransformationStatus ComputeEncodedBytesFromUtf32(ReadOnlySpan<byte> source, out int bytesNeeded)
-            => Utf32.ToUtf8Length(source, out bytesNeeded);
-
-        public static TransformationStatus ConvertFromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-            => Utf32.ToUtf8(source, destination, out bytesConsumed, out bytesWritten);
-
-        #endregion Utf-32 to Utf-8 conversion
     }
 }
