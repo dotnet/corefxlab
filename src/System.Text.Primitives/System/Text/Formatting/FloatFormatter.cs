@@ -47,7 +47,7 @@ namespace System.Text
             var utf16Bytes = hack.AsSpan().AsBytes();
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                var status = Encoders.Utf8.ConvertFromUtf16(utf16Bytes, buffer, out int consumed, out bytesWritten);
+                var status = Encoders.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out bytesWritten);
                 return status == Buffers.TransformationStatus.Done;
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -63,7 +63,7 @@ namespace System.Text
             {
                 // TODO: This is currently pretty expensive. Can this be done more efficiently?
                 //       Note: removing the hack might solve this problem a very different way.
-                var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(utf16Bytes, out int needed);
+                var status = Encoders.Utf16.ToUtf8Length(utf16Bytes, out int needed);
                 if (status != Buffers.TransformationStatus.Done)
                 {
                     bytesWritten = 0;
@@ -77,7 +77,7 @@ namespace System.Text
                     temp = new Span<byte>(buf, needed);
                 }
 
-                status = Encoders.Utf8.ConvertFromUtf16(utf16Bytes, temp, out int consumed, out written);
+                status = Encoders.Utf16.ToUtf8(utf16Bytes, temp, out int consumed, out written);
                 if (status != Buffers.TransformationStatus.Done)
                 {
                     bytesWritten = 0;

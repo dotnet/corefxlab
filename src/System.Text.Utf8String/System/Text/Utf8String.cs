@@ -127,14 +127,14 @@ namespace System.Text.Utf8
 
         public override string ToString()
         {
-            var status = Encoders.Utf16.ComputeEncodedBytesFromUtf8(this.Bytes, out int needed);
+            var status = Encoders.Utf8.ToUtf16Length(this.Bytes, out int needed);
             if (status != Buffers.TransformationStatus.Done)
                 return string.Empty;
 
             // UTF-16 is 2 bytes per char
             var chars = new char[needed >> 1];
             var utf16 = new Span<char>(chars).AsBytes();
-            status = Encoders.Utf16.ConvertFromUtf8(this.Bytes, utf16, out int consumed, out int written);
+            status = Encoders.Utf8.ToUtf16(this.Bytes, utf16, out int consumed, out int written);
             if (status != Buffers.TransformationStatus.Done)
                 return string.Empty;
 
@@ -554,12 +554,12 @@ namespace System.Text.Utf8
         private static byte[] GetUtf8BytesFromString(string str)
         {
             var utf16 = str.AsSpan().AsBytes();
-            var status = Encoders.Utf8.ComputeEncodedBytesFromUtf16(utf16, out int needed);
+            var status = Encoders.Utf16.ToUtf8Length(utf16, out int needed);
             if (status != Buffers.TransformationStatus.Done)
                 return null;
 
             var utf8 = new byte[needed];
-            status = Encoders.Utf8.ConvertFromUtf16(utf16, utf8, out int consumed, out int written);
+            status = Encoders.Utf16.ToUtf8(utf16, utf8, out int consumed, out int written);
             if (status != Buffers.TransformationStatus.Done)
                 // This shouldn't happen...
                 return null;
