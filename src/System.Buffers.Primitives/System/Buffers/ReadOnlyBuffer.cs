@@ -192,15 +192,13 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if (obj is ReadOnlyBuffer<T>)
+            if (obj is ReadOnlyBuffer<T> readOnlyBuffer)
             {
-                var other = (ReadOnlyBuffer<T>)obj;
-                return Equals(other);
+                return Equals(readOnlyBuffer);
             }
-            else if (obj is Buffer<T>)
+            else if (obj is Buffer<T> buffer)
             {
-                var other = (Buffer<T>)obj;
-                return Equals(other);
+                return Equals(buffer);
             }
             else
             {
@@ -214,16 +212,6 @@ namespace System
                 _arrayOrOwnedBuffer == other._arrayOrOwnedBuffer &&
                 (_index & bitMask) == (other._index & bitMask) &&
                 _length == other._length;
-        }
-
-        public static bool operator ==(ReadOnlyBuffer<T> left, ReadOnlyBuffer<T> right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(ReadOnlyBuffer<T> left, ReadOnlyBuffer<T> right)
-        {
-            return !left.Equals(right);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
