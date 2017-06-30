@@ -47,14 +47,10 @@
     <Compile Remove="System\Interop\Library.OSX.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(BrotliPath)\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BrotliNative" Version="0.0.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
   </ItemGroup>
