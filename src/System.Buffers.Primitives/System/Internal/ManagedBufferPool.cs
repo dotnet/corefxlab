@@ -44,7 +44,7 @@ namespace System.Buffers.Internal
 
             public override bool IsDisposed => _disposed;
 
-            public override bool IsRetained => _referenceCount > 0;
+            protected override bool IsRetained => _referenceCount > 0;
 
             public override Span<byte> AsSpan(int index, int length)
             {
@@ -85,16 +85,17 @@ namespace System.Buffers.Internal
                 Interlocked.Increment(ref _referenceCount);
             }
 
-            public override void Release()
+            public override bool Release()
             {
                 var newRefCount = Interlocked.Decrement(ref _referenceCount);
                 if (newRefCount == 0) {
                     Dispose();
-                    return;
+                    return IsRetained;
                 }
                 if(newRefCount < 0) {
                     throw new InvalidOperationException();
                 }
+                return IsRetained;
             }
         }
     }

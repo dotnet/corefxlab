@@ -109,14 +109,12 @@ namespace System.Buffers.Tests
             var owned = new CustomBuffer<byte>(255);
             var memory = owned.Buffer;
             Assert.Equal(0, owned.OnNoRefencesCalledCount);
-            Assert.False(owned.IsRetained);
+            
             using (memory.Retain())
             {
                 Assert.Equal(0, owned.OnNoRefencesCalledCount);
-                Assert.True(owned.IsRetained);
             }
             Assert.Equal(1, owned.OnNoRefencesCalledCount);
-            Assert.False(owned.IsRetained);
         }
 
         [Fact(Skip = "This needs to be fixed and re-enabled or removed.")]
@@ -195,7 +193,7 @@ namespace System.Buffers.Tests
 
         public override bool IsDisposed => _disposed;
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         public override Span<T> AsSpan(int index, int length)
         {
@@ -239,7 +237,7 @@ namespace System.Buffers.Tests
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
             if (!IsRetained) throw new InvalidOperationException();
 
@@ -247,6 +245,7 @@ namespace System.Buffers.Tests
             {
                 _noReferencesCalledCount++;
             }
+            return IsRetained;
         }
     }
 

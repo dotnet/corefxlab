@@ -58,11 +58,11 @@ namespace System.Buffers
 
         protected abstract void Dispose(bool disposing);
 
-        public abstract bool IsRetained { get; }
+        protected abstract bool IsRetained { get; }
 
         public abstract void Retain();
 
-        public abstract void Release();
+        public abstract bool Release();
         #endregion
 
         protected internal static unsafe void* Add(void* pointer, int offset)

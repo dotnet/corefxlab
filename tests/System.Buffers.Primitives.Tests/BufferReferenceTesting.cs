@@ -93,15 +93,12 @@ namespace System.Buffers.Tests
         static void Pin(OwnedBuffer<byte> buffer)
         {
             var memory = buffer.Buffer;
-            Assert.False(buffer.IsRetained);
             var handle = memory.Retain(pin: true);
             unsafe
             {
                 Assert.NotEqual(0L, new IntPtr(handle.PinnedPointer).ToInt64());
             }
-            Assert.True(buffer.IsRetained);
             handle.Dispose();
-            Assert.False(buffer.IsRetained);
         }
 
         static void Dispose(OwnedBuffer<byte> buffer)
@@ -110,7 +107,6 @@ namespace System.Buffers.Tests
 
             buffer.Dispose();
             Assert.True(buffer.IsDisposed);
-            Assert.False(buffer.IsRetained);
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
@@ -184,15 +180,10 @@ namespace System.Buffers.Tests
         {
             var memory = buffer.Buffer;
             var handle = memory.Retain(pin: true);
-            Assert.True(buffer.IsRetained);
             buffer.Retain();
-            Assert.True(buffer.IsRetained);
             handle.Dispose();
-            Assert.True(buffer.IsRetained);
             handle.Dispose();
-            Assert.True(buffer.IsRetained);
-            buffer.Release();
-            Assert.False(buffer.IsRetained);
+            Assert.False(buffer.Release());
         }
 
         public static void TestBuffer(Func<Buffer<byte>> create)
