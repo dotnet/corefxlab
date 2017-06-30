@@ -2,318 +2,64 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Encoders
 {
     public static class Utf16
     {
-        #region Utf-8 to Utf-16 conversion
+        #region UTF-8 Conversions
 
-        /// <summary>
-        /// Calculates the byte count needed to encode the UTF-16 bytes from the specified UTF-8 sequence.
-        ///
-        /// This method will consume as many of the input bytes as possible.
-        /// </summary>
-        /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
-        /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
-        public unsafe static TransformationStatus ComputeEncodedBytesFromUtf8(ReadOnlySpan<byte> source, out int bytesNeeded)
+        public static TransformationStatus FromUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+            => Utf8.ToUtf16Length(source, out bytesNeeded);
+
+        public static TransformationStatus FromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            => Utf8.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
+
+        public static TransformationStatus ToUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
         {
-            fixed (byte* pUtf8 = &source.DangerousGetPinnableReference())
+            bytesNeeded = 0;
+
+            // try? because Convert.ConvertToUtf32 can throw
+            // if the high/low surrogates aren't valid; no point
+            // running all the tests twice per code-point
+            try
             {
-                byte* pSrc = pUtf8;
-                byte* pSrcEnd = pSrc + source.Length;
+                ref char utf16 = ref Unsafe.As<byte, char>(ref source.DangerousGetPinnableReference());
+                int utf16Length = source.Length >> 1; // byte => char count
 
-                bytesNeeded = 0;
-
-                int ch = 0;
-                while (pSrc < pSrcEnd)
+                for (int i = 0; i < utf16Length; i++)
                 {
-                    int availableBytes = EncodingHelper.PtrDiff(pSrcEnd, pSrc);
+                    var ch = Unsafe.Add(ref utf16, i);
 
-                    // don't fall into the fast decoding loop if we don't have enough bytes
-                    if (availableBytes <= 13)
-                    {
-                        // try to get over the remainder of the ascii characters fast though
-                        byte* pLocalEnd = pSrc + availableBytes;
-                        while (pSrc < pLocalEnd)
-                        {
-                            ch = *pSrc;
-                            pSrc++;
-
-                            if (ch > 0x7F)
-                                goto LongCodeSlow;
-
-                            bytesNeeded++;
-                        }
-
-                        // we are done
-                        break;
-                    }
-
-                    // To compute the upper bound, assume that all characters are ASCII characters at this point,
-                    //  the boundary will be decreased for every non-ASCII character we encounter
-                    // Also, we need 7 chars reserve for the unrolled ansi decoding loop and for decoding of multibyte sequences
-                    byte* pStop = pSrc + availableBytes - 7;
-
-                    // Fast loop
-                    while (pSrc < pStop)
-                    {
-                        ch = *pSrc;
-                        pSrc++;
-
-                        if (ch > 0x7F)
-                            goto LongCode;
-
+                    if ((ushort)ch <= 0x7f) // Fast path for ASCII
                         bytesNeeded++;
-
-                        // 2-byte align
-                        if ((unchecked((int)pSrc) & 0x1) != 0)
-                        {
-                            ch = *pSrc;
-                            pSrc++;
-
-                            if (ch > 0x7F)
-                                goto LongCode;
-
-                            bytesNeeded++;
-                        }
-
-                        // 4-byte align
-                        if ((unchecked((int)pSrc) & 0x2) != 0)
-                        {
-                            ch = *(ushort*)pSrc;
-                            if ((ch & 0x8080) != 0)
-                                goto LongCodeWithMask16;
-                            pSrc += 2;
-                            bytesNeeded += 2;
-                        }
-
-                        // Run 8 characters at a time!
-                        while (pSrc < pStop)
-                        {
-                            ch = *(int*)pSrc;
-                            int chb = *(int*)(pSrc + 4);
-                            if (((ch | chb) & unchecked((int)0x80808080)) != 0)
-                                goto LongCodeWithMask32;
-                            pSrc += 8;
-                            bytesNeeded += 8;
-                        }
-
-                        break;
-
-#if BIGENDIAN
-                    LongCodeWithMask32:
-                        // be careful about the sign extension
-                        ch = (int)(((uint)ch) >> 16);
-                    LongCodeWithMask16:
-                        ch = (int)(((uint)ch) >> 8);
-#else // BIGENDIAN
-                    LongCodeWithMask32:
-                    LongCodeWithMask16:
-                        ch &= 0xFF;
-#endif // BIGENDIAN
-                        pSrc++;
-                        if (ch <= 0x7F)
-                        {
-                            bytesNeeded++;
-                            continue;
-                        }
-
-                    LongCode:
-                        int chc = *pSrc;
-                        pSrc++;
-
-                        // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                        if ((ch & 0x40) == 0 || (chc & unchecked((sbyte)0xC0)) != 0x80)
-                            goto InvalidData;
-
-                        chc &= 0x3F;
-
-                        if ((ch & 0x20) != 0)
-                        {
-                            // Handle 3 or 4 byte encoding.
-
-                            // Fold the first 2 bytes together
-                            chc |= (ch & 0x0F) << 6;
-
-                            if ((ch & 0x10) != 0)
-                            {
-                                // 4 byte - surrogate pair
-                                ch = *pSrc;
-
-                                // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                                // and the trailing byte should be 10vvvvvv
-                                if (!EncodingHelper.InRange(chc >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                // Merge 3rd byte then read the last byte
-                                chc = (chc << 6) | (ch & 0x3F);
-                                ch = *(pSrc + 1);
-
-                                // The last trailing byte still holds the form 10vvvvvv
-                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                pSrc += 2;
-                                ch = (chc << 6) | (ch & 0x3F);
-
-                                bytesNeeded++;
-
-                                ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
-                            }
-                            else
-                            {
-                                // 3 byte encoding
-                                ch = *pSrc;
-
-                                // Check for non-shortest form of 3 byte sequence
-                                // No surrogates
-                                // Trailing byte must be in the form 10vvvvvv
-                                if ((chc & (0x1F << 5)) == 0 ||
-                                    (chc & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                    (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                pSrc++;
-                                ch = (chc << 6) | (ch & 0x3F);
-                            }
-
-                            // extra byte, we're already planning 2 chars for 2 of these bytes,
-                            // but the big loop is testing the target against pStop, so we need
-                            // to subtract 2 more or we risk overrunning the input.  Subtract
-                            // one here and one below.
-                            pStop--;
-                        }
-                        else
-                        {
-                            // 2 byte encoding
-                            ch &= 0x1F;
-
-                            // Check for non-shortest form
-                            if (ch <= 1)
-                                goto InvalidData;
-
-                            ch = (ch << 6) | chc;
-                        }
-
-                        bytesNeeded++;
-
-                        // extra byte, we're only expecting 1 char for each of these 2 bytes,
-                        // but the loop is testing the target (not source) against pStop.
-                        // subtract an extra count from pStop so that we don't overrun the input.
-                        pStop--;
-                    }
-
-                    continue;
-
-                LongCodeSlow:
-                    if (pSrc >= pSrcEnd)
-                    {
-                        // This is a special case where hit the end of the buffer but are in the middle
-                        // of decoding a long code. The error exit thinks we have read 2 extra bytes already,
-                        // so we add +1 to pSrc to get the count correct for the bytes consumed value.
-                        pSrc++;
-                        goto NeedMoreData;
-                    }
-
-                    int chd = *pSrc;
-                    pSrc++;
-
-                    // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                    if ((ch & 0x40) == 0 || (chd & unchecked((sbyte)0xC0)) != 0x80)
-                        goto InvalidData;
-
-                    chd &= 0x3F;
-
-                    if ((ch & 0x20) != 0)
-                    {
-                        // Handle 3 or 4 byte encoding.
-
-                        // Fold the first 2 bytes together
-                        chd |= (ch & 0x0F) << 6;
-
-                        if ((ch & 0x10) != 0)
-                        {
-                            // 4 byte - surrogate pair
-                            // We need 2 more bytes
-                            if (pSrc >= pSrcEnd - 1)
-                                goto NeedMoreData;
-
-                            ch = *pSrc;
-
-                            // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                            // and the trailing byte should be 10vvvvvv
-                            if (!EncodingHelper.InRange(chd >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            // Merge 3rd byte then read the last byte
-                            chd = (chd << 6) | (ch & 0x3F);
-                            ch = *(pSrc + 1);
-
-                            // The last trailing byte still holds the form 10vvvvvv
-                            // We only know for sure we have room for one more char, but we need an extra now.
-                            if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            pSrc += 2;
-                            ch = (chd << 6) | (ch & 0x3F);
-
-                            bytesNeeded++;
-
-                            ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
-                        }
-                        else
-                        {
-                            // 3 byte encoding
-                            if (pSrc >= pSrcEnd)
-                                goto NeedMoreData;
-
-                            ch = *pSrc;
-
-                            // Check for non-shortest form of 3 byte sequence
-                            // No surrogates
-                            // Trailing byte must be in the form 10vvvvvv
-                            if ((chd & (0x1F << 5)) == 0 ||
-                                (chd & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            pSrc++;
-                            ch = (chd << 6) | (ch & 0x3F);
-                        }
-                    }
+                    else if (!char.IsSurrogate(ch))
+                        bytesNeeded += EncodingHelper.GetUtf8EncodedBytes((uint)ch);
                     else
                     {
-                        // 2 byte encoding
-                        ch &= 0x1F;
+                        if (++i >= utf16Length)
+                            return TransformationStatus.NeedMoreSourceData;
 
-                        // Check for non-shortest form
-                        if (ch <= 1)
-                            goto InvalidData;
-
-                        ch = (ch << 6) | chd;
+                        uint codePoint = (uint)char.ConvertToUtf32(ch, Unsafe.Add(ref utf16, i));
+                        bytesNeeded += EncodingHelper.GetUtf8EncodedBytes(codePoint);
                     }
-
-                    bytesNeeded++;
                 }
 
-                bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
-                return EncodingHelper.PtrDiff(pSrcEnd, pSrc) == 0 ? TransformationStatus.Done : TransformationStatus.DestinationTooSmall;
+                if ((utf16Length << 1) != source.Length)
+                    return TransformationStatus.NeedMoreSourceData;
 
-            NeedMoreData:
-                bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
-                return TransformationStatus.NeedMoreSourceData;
-
-            InvalidData:
-                bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
+                return TransformationStatus.Done;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
                 return TransformationStatus.InvalidData;
             }
         }
 
         /// <summary>
-        /// Converts a span containing a sequence of UTF-8 bytes into UTF-16 bytes.
+        /// Converts a span containing a sequence of UTF-16 bytes into UTF-8 bytes.
         ///
         /// This method will consume as many of the input bytes as possible.
         ///
@@ -321,447 +67,422 @@ namespace System.Text.Encoders
         /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
         /// the <paramref name="destination"/>.
         /// </summary>
-        /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
-        /// <param name="destination">A span to write the UTF-16 bytes into.</param>
+        /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
+        /// <param name="destination">A span to write the UTF-8 bytes into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
         /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
         /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
-        public unsafe static TransformationStatus ConvertFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public unsafe static TransformationStatus ToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
-            fixed (byte* pUtf8 = &source.DangerousGetPinnableReference())
-            fixed (byte* pUtf16 = &destination.DangerousGetPinnableReference())
+            //
+            //
+            // KEEP THIS IMPLEMENTATION IN SYNC WITH https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/src/System/Text/UTF8Encoding.cs
+            //
+            //
+            fixed (byte* chars = &source.DangerousGetPinnableReference())
+            fixed (byte* bytes = &destination.DangerousGetPinnableReference())
             {
-                byte* pSrc = pUtf8;
-                byte* pSrcEnd = pSrc + source.Length;
-                char* pDst = (char*)pUtf16;
-                char* pDstEnd = pDst + (destination.Length >> 1);   // Conversion from bytes to chars - div by sizeof(char)
+                char* pSrc = (char*)chars;
+                byte* pTarget = bytes;
 
-                int ch = 0;
-                while (pSrc < pSrcEnd && pDst < pDstEnd)
+                char* pEnd = (char*)(chars + source.Length);
+                byte* pAllocatedBufferEnd = pTarget + destination.Length;
+
+                // assume that JIT will enregister pSrc, pTarget and ch
+
+                // Entering the fast encoding loop incurs some overhead that does not get amortized for small
+                // number of characters, and the slow encoding loop typically ends up running for the last few
+                // characters anyway since the fast encoding loop needs 5 characters on input at least.
+                // Thus don't use the fast decoding loop at all if we don't have enough characters. The threashold
+                // was choosen based on performance testing.
+                // Note that if we don't have enough bytes, pStop will prevent us from entering the fast loop.
+                while (pEnd - pSrc > 13)
                 {
-                    // we may need as many as 1 character per byte, so reduce the byte count if necessary.
-                    // If availableChars is too small, pStop will be before pTarget and we won't do fast loop.
-                    int availableChars = EncodingHelper.PtrDiff(pDstEnd, pDst);
-                    int availableBytes = EncodingHelper.PtrDiff(pSrcEnd, pSrc);
+                    // we need at least 1 byte per character, but Convert might allow us to convert
+                    // only part of the input, so try as much as we can.  Reduce charCount if necessary
+                    int available = Math.Min(EncodingHelper.PtrDiff(pEnd, pSrc), EncodingHelper.PtrDiff(pAllocatedBufferEnd, pTarget));
 
-                    if (availableChars < availableBytes)
-                        availableBytes = availableChars;
-
-                    // don't fall into the fast decoding loop if we don't have enough bytes
-                    if (availableBytes <= 13)
-                    {
-                        // try to get over the remainder of the ascii characters fast though
-                        byte* pLocalEnd = pSrc + availableBytes;
-                        while (pSrc < pLocalEnd)
-                        {
-                            ch = *pSrc;
-                            pSrc++;
-
-                            if (ch > 0x7F)
-                                goto LongCodeSlow;
-
-                            *pDst = (char)ch;
-                            pDst++;
-                        }
-
-                        // we are done
-                        break;
-                    }
+                    // FASTLOOP:
+                    // - optimistic range checks
+                    // - fallbacks to the slow loop for all special cases, exception throwing, etc.
 
                     // To compute the upper bound, assume that all characters are ASCII characters at this point,
                     //  the boundary will be decreased for every non-ASCII character we encounter
-                    // Also, we need 7 chars reserve for the unrolled ansi decoding loop and for decoding of multibyte sequences
-                    char* pStop = pDst + availableBytes - 7;
+                    // Also, we need 5 chars reserve for the unrolled ansi decoding loop and for decoding of surrogates
+                    // If there aren't enough bytes for the output, then pStop will be <= pSrc and will bypass the loop.
+                    char* pStop = pSrc + available - 5;
+                    if (pSrc >= pStop)
+                        break;
 
-                    // Fast loop
-                    while (pDst < pStop)
+                    do
                     {
-                        ch = *pSrc;
+                        int ch = *pSrc;
                         pSrc++;
 
                         if (ch > 0x7F)
+                        {
                             goto LongCode;
+                        }
+                        *pTarget = (byte)ch;
+                        pTarget++;
 
-                        *pDst = (char)ch;
-                        pDst++;
-
-                        // 2-byte align
-                        if ((unchecked((int)pSrc) & 0x1) != 0)
+                        // get pSrc aligned
+                        if ((unchecked((int)pSrc) & 0x2) != 0)
                         {
                             ch = *pSrc;
                             pSrc++;
-
                             if (ch > 0x7F)
+                            {
                                 goto LongCode;
-
-                            *pDst = (char)ch;
-                            pDst++;
+                            }
+                            *pTarget = (byte)ch;
+                            pTarget++;
                         }
 
-                        // 4-byte align
-                        if ((unchecked((int)pSrc) & 0x2) != 0)
-                        {
-                            ch = *(ushort*)pSrc;
-                            if ((ch & 0x8080) != 0)
-                                goto LongCodeWithMask16;
-
-                            // Unfortunately, endianness sensitive
-#if BIGENDIAN
-                            *pDst = (char)((ch >> 8) & 0x7F);
-                            pSrc += 2;
-                            *(pDst + 1) = (char)(ch & 0x7F);
-                            pDst += 2;
-#else // BIGENDIAN
-                            *pDst = (char)(ch & 0x7F);
-                            pSrc += 2;
-                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
-                            pDst += 2;
-#endif // BIGENDIAN
-                        }
-
-                        // Run 8 characters at a time!
-                        while (pDst < pStop)
+                        // Run 4 characters at a time!
+                        while (pSrc < pStop)
                         {
                             ch = *(int*)pSrc;
-                            int chb = *(int*)(pSrc + 4);
-                            if (((ch | chb) & unchecked((int)0x80808080)) != 0)
-                                goto LongCodeWithMask32;
+                            int chc = *(int*)(pSrc + 2);
+                            if (((ch | chc) & unchecked((int)0xFF80FF80)) != 0)
+                            {
+                                goto LongCodeWithMask;
+                            }
 
-                            // Unfortunately, endianness sensitive
+                            // Unfortunately, this is endianess sensitive
 #if BIGENDIAN
-                            *pDst = (char)((ch >> 24) & 0x7F);
-                            *(pDst+1) = (char)((ch >> 16) & 0x7F);
-                            *(pDst+2) = (char)((ch >> 8) & 0x7F);
-                            *(pDst+3) = (char)(ch & 0x7F);
-                            pSrc += 8;
-                            *(pDst+4) = (char)((chb >> 24) & 0x7F);
-                            *(pDst+5) = (char)((chb >> 16) & 0x7F);
-                            *(pDst+6) = (char)((chb >> 8) & 0x7F);
-                            *(pDst+7) = (char)(chb & 0x7F);
-                            pDst += 8;
+                            *pTarget = (byte)(ch >> 16);
+                            *(pTarget + 1) = (byte)ch;
+                            pSrc += 4;
+                            *(pTarget + 2) = (byte)(chc >> 16);
+                            *(pTarget + 3) = (byte)chc;
+                            pTarget += 4;
 #else // BIGENDIAN
-                            *pDst = (char)(ch & 0x7F);
-                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
-                            *(pDst + 2) = (char)((ch >> 16) & 0x7F);
-                            *(pDst + 3) = (char)((ch >> 24) & 0x7F);
-                            pSrc += 8;
-                            *(pDst + 4) = (char)(chb & 0x7F);
-                            *(pDst + 5) = (char)((chb >> 8) & 0x7F);
-                            *(pDst + 6) = (char)((chb >> 16) & 0x7F);
-                            *(pDst + 7) = (char)((chb >> 24) & 0x7F);
-                            pDst += 8;
+                            *pTarget = (byte)ch;
+                            *(pTarget + 1) = (byte)(ch >> 16);
+                            pSrc += 4;
+                            *(pTarget + 2) = (byte)chc;
+                            *(pTarget + 3) = (byte)(chc >> 16);
+                            pTarget += 4;
 #endif // BIGENDIAN
                         }
+                        continue;
 
-                        break;
-
+                    LongCodeWithMask:
 #if BIGENDIAN
-                    LongCodeWithMask32:
                         // be careful about the sign extension
                         ch = (int)(((uint)ch) >> 16);
-                    LongCodeWithMask16:
-                        ch = (int)(((uint)ch) >> 8);
 #else // BIGENDIAN
-                    LongCodeWithMask32:
-                    LongCodeWithMask16:
-                        ch &= 0xFF;
+                        ch = (char)ch;
 #endif // BIGENDIAN
                         pSrc++;
-                        if (ch <= 0x7F)
+
+                        if (ch > 0x7F)
                         {
-                            *pDst = (char)ch;
-                            pDst++;
-                            continue;
+                            goto LongCode;
                         }
+                        *pTarget = (byte)ch;
+                        pTarget++;
+                        continue;
 
-                        LongCode:
-                        int chc = *pSrc;
-                        pSrc++;
-
-                        // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                        if ((ch & 0x40) == 0 || (chc & unchecked((sbyte)0xC0)) != 0x80)
-                            goto InvalidData;
-
-                        chc &= 0x3F;
-
-                        if ((ch & 0x20) != 0)
+                    LongCode:
+                        // use separate helper variables for slow and fast loop so that the jit optimizations
+                        // won't get confused about the variable lifetimes
+                        int chd;
+                        if (ch <= 0x7FF)
                         {
-                            // Handle 3 or 4 byte encoding.
-
-                            // Fold the first 2 bytes together
-                            chc |= (ch & 0x0F) << 6;
-
-                            if ((ch & 0x10) != 0)
+                            // 2 byte encoding
+                            chd = unchecked((sbyte)0xC0) | (ch >> 6);
+                        }
+                        else
+                        {
+                            // if (!IsLowSurrogate(ch) && !IsHighSurrogate(ch))
+                            if (!EncodingHelper.InRange(ch, EncodingHelper.HighSurrogateStart, EncodingHelper.LowSurrogateEnd))
                             {
-                                // 4 byte - surrogate pair
-                                ch = *pSrc;
-
-                                // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                                // and the trailing byte should be 10vvvvvv
-                                if (!EncodingHelper.InRange(chc >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                // Merge 3rd byte then read the last byte
-                                chc = (chc << 6) | (ch & 0x3F);
-                                ch = *(pSrc + 1);
-
-                                // The last trailing byte still holds the form 10vvvvvv
-                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                pSrc += 2;
-                                ch = (chc << 6) | (ch & 0x3F);
-
-                                *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(EncodingHelper.HighSurrogateStart - (0x10000 >> 10))));
-                                pDst++;
-
-                                ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
+                                // 3 byte encoding
+                                chd = unchecked((sbyte)0xE0) | (ch >> 12);
                             }
                             else
                             {
-                                // 3 byte encoding
-                                ch = *pSrc;
-
-                                // Check for non-shortest form of 3 byte sequence
-                                // No surrogates
-                                // Trailing byte must be in the form 10vvvvvv
-                                if ((chc & (0x1F << 5)) == 0 ||
-                                    (chc & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                    (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                // 4 byte encoding - high surrogate + low surrogate
+                                // if (!IsHighSurrogate(ch))
+                                if (ch > EncodingHelper.HighSurrogateEnd)
+                                {
+                                    // low without high -> bad
                                     goto InvalidData;
+                                }
+
+                                chd = *pSrc;
+
+                                // if (!IsLowSurrogate(chd)) {
+                                if (!EncodingHelper.InRange(chd, EncodingHelper.LowSurrogateStart, EncodingHelper.LowSurrogateEnd))
+                                {
+                                    // high not followed by low -> bad
+                                    goto InvalidData;
+                                }
 
                                 pSrc++;
-                                ch = (chc << 6) | (ch & 0x3F);
+
+                                ch = chd + (ch << 10) +
+                                    (0x10000
+                                    - EncodingHelper.LowSurrogateStart
+                                    - (EncodingHelper.HighSurrogateStart << 10));
+
+                                *pTarget = (byte)(unchecked((sbyte)0xF0) | (ch >> 18));
+                                // pStop - this byte is compensated by the second surrogate character
+                                // 2 input chars require 4 output bytes.  2 have been anticipated already
+                                // and 2 more will be accounted for by the 2 pStop-- calls below.
+                                pTarget++;
+
+                                chd = unchecked((sbyte)0x80) | (ch >> 12) & 0x3F;
                             }
+                            *pTarget = (byte)chd;
+                            pStop--;                    // 3 byte sequence for 1 char, so need pStop-- and the one below too.
+                            pTarget++;
 
-                            // extra byte, we're already planning 2 chars for 2 of these bytes,
-                            // but the big loop is testing the target against pStop, so we need
-                            // to subtract 2 more or we risk overrunning the input.  Subtract
-                            // one here and one below.
-                            pStop--;
+                            chd = unchecked((sbyte)0x80) | (ch >> 6) & 0x3F;
                         }
-                        else
-                        {
-                            // 2 byte encoding
-                            ch &= 0x1F;
+                        *pTarget = (byte)chd;
+                        pStop--;                        // 2 byte sequence for 1 char so need pStop--.
 
-                            // Check for non-shortest form
-                            if (ch <= 1)
-                                goto InvalidData;
+                        *(pTarget + 1) = (byte)(unchecked((sbyte)0x80) | ch & 0x3F);
+                        // pStop - this byte is already included
 
-                            ch = (ch << 6) | chc;
-                        }
-
-                        *pDst = (char)ch;
-                        pDst++;
-
-                        // extra byte, we're only expecting 1 char for each of these 2 bytes,
-                        // but the loop is testing the target (not source) against pStop.
-                        // subtract an extra count from pStop so that we don't overrun the input.
-                        pStop--;
+                        pTarget += 2;
                     }
+                    while (pSrc < pStop);
 
-                    continue;
+                    Debug.Assert(pTarget <= pAllocatedBufferEnd, "[UTF8Encoding.GetBytes]pTarget <= pAllocatedBufferEnd");
+                }
 
-                LongCodeSlow:
-                    if (pSrc >= pSrcEnd)
-                    {
-                        // This is a special case where hit the end of the buffer but are in the middle
-                        // of decoding a long code. The error exit thinks we have read 2 extra bytes already,
-                        // so we add +1 to pSrc to get the count correct for the bytes consumed value.
-                        pSrc++;
-                        goto NeedMoreData;
-                    }
+                while (pSrc < pEnd)
+                {
+                    // SLOWLOOP: does all range checks, handles all special cases, but it is slow
 
-                    int chd = *pSrc;
+                    // read next char. The JIT optimization seems to be getting confused when
+                    // compiling "ch = *pSrc++;", so rather use "ch = *pSrc; pSrc++;" instead
+                    int ch = *pSrc;
                     pSrc++;
 
-                    // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                    if ((ch & 0x40) == 0 || (chd & unchecked((sbyte)0xC0)) != 0x80)
-                        goto InvalidData;
-
-                    chd &= 0x3F;
-
-                    if ((ch & 0x20) != 0)
+                    if (ch <= 0x7F)
                     {
-                        // Handle 3 or 4 byte encoding.
+                        if (pAllocatedBufferEnd - pTarget <= 0)
+                            goto DestinationFull;
 
-                        // Fold the first 2 bytes together
-                        chd |= (ch & 0x0F) << 6;
+                        *pTarget = (byte)ch;
+                        pTarget++;
+                        continue;
+                    }
 
-                        if ((ch & 0x10) != 0)
-                        {
-                            // 4 byte - surrogate pair
-                            // We need 2 more bytes
-                            if (pSrc >= pSrcEnd - 1)
-                                goto NeedMoreData;
+                    int chd;
+                    if (ch <= 0x7FF)
+                    {
+                        if (pAllocatedBufferEnd - pTarget <= 1)
+                            goto DestinationFull;
 
-                            ch = *pSrc;
-
-                            // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                            // and the trailing byte should be 10vvvvvv
-                            if (!EncodingHelper.InRange(chd >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            // Merge 3rd byte then read the last byte
-                            chd = (chd << 6) | (ch & 0x3F);
-                            ch = *(pSrc + 1);
-
-                            // The last trailing byte still holds the form 10vvvvvv
-                            // We only know for sure we have room for one more char, but we need an extra now.
-                            if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            if (EncodingHelper.PtrDiff(pDstEnd, pDst) < 2)
-                                goto DestinationFull;
-
-                            pSrc += 2;
-                            ch = (chd << 6) | (ch & 0x3F);
-
-                            *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(EncodingHelper.HighSurrogateStart - (0x10000 >> 10))));
-                            pDst++;
-
-                            ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
-                        }
-                        else
-                        {
-                            // 3 byte encoding
-                            if (pSrc >= pSrcEnd)
-                                goto NeedMoreData;
-
-                            ch = *pSrc;
-
-                            // Check for non-shortest form of 3 byte sequence
-                            // No surrogates
-                            // Trailing byte must be in the form 10vvvvvv
-                            if ((chd & (0x1F << 5)) == 0 ||
-                                (chd & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            pSrc++;
-                            ch = (chd << 6) | (ch & 0x3F);
-                        }
+                        // 2 byte encoding
+                        chd = unchecked((sbyte)0xC0) | (ch >> 6);
                     }
                     else
                     {
-                        // 2 byte encoding
-                        ch &= 0x1F;
+                        // if (!IsLowSurrogate(ch) && !IsHighSurrogate(ch))
+                        if (!EncodingHelper.InRange(ch, EncodingHelper.HighSurrogateStart, EncodingHelper.LowSurrogateEnd))
+                        {
+                            if (pAllocatedBufferEnd - pTarget <= 2)
+                                goto DestinationFull;
 
-                        // Check for non-shortest form
-                        if (ch <= 1)
-                            goto InvalidData;
+                            // 3 byte encoding
+                            chd = unchecked((sbyte)0xE0) | (ch >> 12);
+                        }
+                        else
+                        {
+                            if (pAllocatedBufferEnd - pTarget <= 3)
+                                goto DestinationFull;
 
-                        ch = (ch << 6) | chd;
+                            // 4 byte encoding - high surrogate + low surrogate
+                            // if (!IsHighSurrogate(ch))
+                            if (ch > EncodingHelper.HighSurrogateEnd)
+                            {
+                                // low without high -> bad
+                                goto InvalidData;
+                            }
+
+                            if (pSrc >= pEnd)
+                                goto NeedMoreData;
+
+                            chd = *pSrc;
+
+                            // if (!IsLowSurrogate(chd)) {
+                            if (!EncodingHelper.InRange(chd, EncodingHelper.LowSurrogateStart, EncodingHelper.LowSurrogateEnd))
+                            {
+                                // high not followed by low -> bad
+                                goto InvalidData;
+                            }
+
+                            pSrc++;
+
+                            ch = chd + (ch << 10) +
+                                (0x10000
+                                - EncodingHelper.LowSurrogateStart
+                                - (EncodingHelper.HighSurrogateStart << 10));
+
+                            *pTarget = (byte)(unchecked((sbyte)0xF0) | (ch >> 18));
+                            pTarget++;
+
+                            chd = unchecked((sbyte)0x80) | (ch >> 12) & 0x3F;
+                        }
+                        *pTarget = (byte)chd;
+                        pTarget++;
+
+                        chd = unchecked((sbyte)0x80) | (ch >> 6) & 0x3F;
                     }
 
-                    *pDst = (char)ch;
-                    pDst++;
+                    *pTarget = (byte)chd;
+                    *(pTarget + 1) = (byte)(unchecked((sbyte)0x80) | ch & 0x3F);
+
+                    pTarget += 2;
                 }
 
-            DestinationFull:
-                bytesConsumed = EncodingHelper.PtrDiff(pSrc, pUtf8);
-                bytesWritten = EncodingHelper.PtrDiff((byte*)pDst, pUtf16);
-                return EncodingHelper.PtrDiff(pSrcEnd, pSrc) == 0 ? TransformationStatus.Done : TransformationStatus.DestinationTooSmall;
-
-            NeedMoreData:
-                bytesConsumed = EncodingHelper.PtrDiff(pSrc - 2, pUtf8);
-                bytesWritten = EncodingHelper.PtrDiff((byte*)pDst, pUtf16);
-                return TransformationStatus.NeedMoreSourceData;
+                bytesConsumed = (int)((byte*)pSrc - chars);
+                bytesWritten = (int)(pTarget - bytes);
+                return TransformationStatus.Done;
 
             InvalidData:
-                bytesConsumed = EncodingHelper.PtrDiff(pSrc - 2, pUtf8);
-                bytesWritten = EncodingHelper.PtrDiff((byte*)pDst, pUtf16);
+                bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
+                bytesWritten = (int)(pTarget - bytes);
                 return TransformationStatus.InvalidData;
+
+            DestinationFull:
+                bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
+                bytesWritten = (int)(pTarget - bytes);
+                return TransformationStatus.DestinationTooSmall;
+
+            NeedMoreData:
+                bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
+                bytesWritten = (int)(pTarget - bytes);
+                return TransformationStatus.NeedMoreSourceData;
             }
         }
+
+        #endregion UTF-8 Conversions
+
+        #region UTF-32 Conversions
+
+        public static TransformationStatus FromUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+            => Utf32.ToUtf16Length(source, out bytesNeeded);
+
+        public static TransformationStatus FromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            => Utf32.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
+
+        public static TransformationStatus ToUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+        {
+            bytesNeeded = 0;
+
+            ref byte src = ref source.DangerousGetPinnableReference();
+            int srcLength = source.Length;
+            int srcIndex = 0;
+
+            while (srcLength - srcIndex >= sizeof(char))
+            {
+                uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex));
+                if (EncodingHelper.IsSurrogate(codePoint))
+                {
+                    if (!EncodingHelper.IsHighSurrogate(codePoint))
+                        return TransformationStatus.InvalidData;
+
+                    if (srcLength - srcIndex < sizeof(char) * 2)
+                        return TransformationStatus.NeedMoreSourceData;
+
+                    uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex + 2));
+                    if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
+                        return TransformationStatus.InvalidData;
+
+                    srcIndex += 2;
+                }
+
+                srcIndex += 2;
+                bytesNeeded += 4;
+            }
+
+            return srcIndex < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
+        }
+
+        /// <summary>
+        /// Converts a span containing a sequence of UTF-16 bytes into UTF-32 bytes.
+        ///
+        /// This method will consume as many of the input bytes as possible.
+        ///
+        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+        /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+        /// the <paramref name="destination"/>.
+        /// </summary>
+        /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
+        /// <param name="destination">A span to write the UTF-32 bytes into.</param>
+        /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+        /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
+        public static TransformationStatus ToUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        {
+            bytesConsumed = 0;
+            bytesWritten = 0;
+
+            ref byte src = ref source.DangerousGetPinnableReference();
+            int srcLength = source.Length;
+
+            ref byte dst = ref destination.DangerousGetPinnableReference();
+            int dstLength = destination.Length;
+
+            while (srcLength - bytesConsumed >= sizeof(char))
+            {
+                if (dstLength - bytesWritten < sizeof(uint))
+                    return TransformationStatus.DestinationTooSmall;
+
+                uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed));
+                if (EncodingHelper.IsSurrogate(codePoint))
+                {
+                    if (!EncodingHelper.IsHighSurrogate(codePoint))
+                        return TransformationStatus.InvalidData;
+
+                    if (srcLength - bytesConsumed < sizeof(char) * 2)
+                        return TransformationStatus.NeedMoreSourceData;
+
+                    uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed + 2));
+                    if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
+                        return TransformationStatus.InvalidData;
+
+                    codePoint -= EncodingHelper.HighSurrogateStart;
+                    lowSurrogate -= EncodingHelper.LowSurrogateStart;
+                    codePoint = ((codePoint << 10) | lowSurrogate) + 0x010000u;
+                    bytesConsumed += 2;
+                }
+
+                Unsafe.As<byte, uint>(ref Unsafe.Add(ref dst, bytesWritten)) = codePoint;
+                bytesConsumed += 2;
+                bytesWritten += 4;
+            }
+
+            return bytesConsumed < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
+        }
+
+        #endregion UTF-32 Conversions
+
+        #region Utf-8 to Utf-16 conversion
+
+        public unsafe static TransformationStatus ComputeEncodedBytesFromUtf8(ReadOnlySpan<byte> source, out int bytesNeeded)
+            => Utf8.ToUtf16Length(source, out bytesNeeded);
+
+        public unsafe static TransformationStatus ConvertFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            => Utf8.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
 
         #endregion Utf-8 to Utf-16 conversion
 
         #region Utf-32 to Utf-16 conversion
 
-        /// <summary>
-        /// Calculates the byte count needed to encode the UTF-16 bytes from the specified UTF-32 sequence.
-        ///
-        /// This method will consume as many of the input bytes as possible.
-        /// </summary>
-        /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
-        /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
         public static TransformationStatus ComputeEncodedBytesFromUtf32(ReadOnlySpan<byte> source, out int bytesNeeded)
-        {
-            int index = 0;
-            int length = source.Length;
-            ref byte src = ref source.DangerousGetPinnableReference();
+            => Utf32.ToUtf16Length(source, out bytesNeeded);
 
-            bytesNeeded = 0;
-
-            while (length - index >= 4)
-            {
-                ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, index));
-
-                if (!EncodingHelper.IsSupportedCodePoint(codePoint))
-                    return TransformationStatus.InvalidData;
-
-                bytesNeeded += EncodingHelper.IsBmp(codePoint) ? 2 : 4;
-                index += 4;
-            }
-
-            return index < length ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
-        }
-
-        /// <summary>
-        /// Converts a span containing a sequence of UTF-32 bytes into UTF-16 bytes.
-        ///
-        /// This method will consume as many of the input bytes as possible.
-        ///
-        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
-        /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
-        /// the <paramref name="destination"/>.
-        /// </summary>
-        /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
-        /// <param name="destination">A span to write the UTF-16 bytes into.</param>
-        /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
-        /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
         public static TransformationStatus ConvertFromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-        {
-            ref byte src = ref source.DangerousGetPinnableReference();
-            ref byte dst = ref destination.DangerousGetPinnableReference();
-            int srcLength = source.Length;
-            int dstLength = destination.Length;
-
-            bytesConsumed = 0;
-            bytesWritten = 0;
-
-            while (srcLength - bytesConsumed >= sizeof(uint))
-            {
-                ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, bytesConsumed));
-
-                if (!EncodingHelper.IsSupportedCodePoint(codePoint))
-                    return TransformationStatus.InvalidData;
-
-                int written = EncodingHelper.IsBmp(codePoint) ? 2 : 4;
-                if (dstLength - bytesWritten < written)
-                    return TransformationStatus.DestinationTooSmall;
-
-                unchecked
-                {
-                    if (written == 2)
-                        Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten)) = (char)codePoint;
-                    else
-                    {
-                        Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten)) = (char)(((codePoint - 0x010000u) >> 10) + EncodingHelper.HighSurrogateStart);
-                        Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten + 2)) = (char)((codePoint & 0x3FF) + EncodingHelper.LowSurrogateStart);
-                    }
-                }
-
-                bytesWritten += written;
-                bytesConsumed += 4;
-            }
-
-            return bytesConsumed < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
-        }
+            => Utf32.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
 
         #endregion Utf-32 to Utf-16 conversion
     }
