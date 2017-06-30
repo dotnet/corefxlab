@@ -64,71 +64,36 @@ namespace System.Buffers.Tests
             Buffer<byte> implicitBufferArray = bytes;
             ReadOnlyBuffer<byte> implicitReadOnlyBufferArray = bytes;
 
-            Assert.True(buffer == bytes);
-            Assert.False(buffer != bytes);
-            Assert.True(readOnlyBuffer == bytes);
-            Assert.False(readOnlyBuffer != bytes);
-            Assert.True(implicitReadOnlyBuffer == bytes);
-            Assert.False(implicitReadOnlyBuffer != bytes);
-            Assert.True(implicitBufferArray == bytes);
-            Assert.False(implicitBufferArray != bytes);
-            Assert.True(implicitReadOnlyBufferArray == bytes);
-            Assert.False(implicitReadOnlyBufferArray != bytes);
+            Assert.True(buffer.Equals(bytes));
+            Assert.True(readOnlyBuffer.Equals(bytes));
+            Assert.True(implicitReadOnlyBuffer.Equals(bytes));
+            Assert.True(implicitBufferArray.Equals(bytes));
+            Assert.True(implicitReadOnlyBufferArray.Equals(bytes));
+            
+            Assert.True(readOnlyBuffer.Equals(buffer));
+            Assert.True(implicitReadOnlyBuffer.Equals(buffer));
+            Assert.True(implicitBufferArray.Equals(buffer));
+            Assert.True(implicitReadOnlyBufferArray.Equals(buffer));
 
-            Assert.True(bytes == buffer);
-            Assert.False(bytes != buffer);
-            Assert.True(readOnlyBuffer == buffer);
-            Assert.False(readOnlyBuffer != buffer);
-            Assert.True(implicitReadOnlyBuffer == buffer);
-            Assert.False(implicitReadOnlyBuffer != buffer);
-            Assert.True(implicitBufferArray == buffer);
-            Assert.False(implicitBufferArray != buffer);
-            Assert.True(implicitReadOnlyBufferArray == buffer);
-            Assert.False(implicitReadOnlyBufferArray != buffer);
+            Assert.True(buffer.Equals(readOnlyBuffer));
+            Assert.True(implicitReadOnlyBuffer.Equals(readOnlyBuffer));
+            Assert.True(implicitBufferArray.Equals(readOnlyBuffer));
+            Assert.True(implicitReadOnlyBufferArray.Equals(readOnlyBuffer));
 
-            Assert.True(buffer == readOnlyBuffer);
-            Assert.False(buffer != readOnlyBuffer);
-            Assert.True(bytes == readOnlyBuffer);
-            Assert.False(bytes != readOnlyBuffer);
-            Assert.True(implicitReadOnlyBuffer == readOnlyBuffer);
-            Assert.False(implicitReadOnlyBuffer != readOnlyBuffer);
-            Assert.True(implicitBufferArray == readOnlyBuffer);
-            Assert.False(implicitBufferArray != readOnlyBuffer);
-            Assert.True(implicitReadOnlyBufferArray == readOnlyBuffer);
-            Assert.False(implicitReadOnlyBufferArray != readOnlyBuffer);
+            Assert.True(buffer.Equals(implicitBufferArray));
+            Assert.True(readOnlyBuffer.Equals(implicitBufferArray));
+            Assert.True(implicitReadOnlyBuffer.Equals(implicitBufferArray));
+            Assert.True(implicitReadOnlyBufferArray.Equals(implicitBufferArray));
 
-            Assert.True(buffer == implicitBufferArray);
-            Assert.False(buffer != implicitBufferArray);
-            Assert.True(readOnlyBuffer == implicitBufferArray);
-            Assert.False(readOnlyBuffer != implicitBufferArray);
-            Assert.True(bytes == implicitBufferArray);
-            Assert.False(bytes != implicitBufferArray);
-            Assert.True(implicitReadOnlyBuffer == implicitBufferArray);
-            Assert.False(implicitReadOnlyBuffer != implicitBufferArray);
-            Assert.True(implicitReadOnlyBufferArray == implicitBufferArray);
-            Assert.False(implicitReadOnlyBufferArray != implicitBufferArray);
+            Assert.True(buffer.Equals(implicitReadOnlyBuffer));
+            Assert.True(readOnlyBuffer.Equals(implicitReadOnlyBuffer));
+            Assert.True(implicitBufferArray.Equals(implicitReadOnlyBuffer));
+            Assert.True(implicitReadOnlyBufferArray.Equals(implicitReadOnlyBuffer));
 
-            Assert.True(buffer == implicitReadOnlyBuffer);
-            Assert.False(buffer != implicitReadOnlyBuffer);
-            Assert.True(readOnlyBuffer == implicitReadOnlyBuffer);
-            Assert.False(readOnlyBuffer != implicitReadOnlyBuffer);
-            Assert.True(bytes == implicitReadOnlyBuffer);
-            Assert.False(bytes != implicitReadOnlyBuffer);
-            Assert.True(implicitBufferArray == implicitReadOnlyBuffer);
-            Assert.False(implicitBufferArray != implicitReadOnlyBuffer);
-            Assert.True(implicitReadOnlyBufferArray == implicitReadOnlyBuffer);
-            Assert.False(implicitReadOnlyBufferArray != implicitReadOnlyBuffer);
-
-            Assert.True(buffer == implicitReadOnlyBufferArray);
-            Assert.False(buffer != implicitReadOnlyBufferArray);
-            Assert.True(readOnlyBuffer == implicitReadOnlyBufferArray);
-            Assert.False(readOnlyBuffer != implicitReadOnlyBufferArray);
-            Assert.True(implicitReadOnlyBuffer == implicitReadOnlyBufferArray);
-            Assert.False(implicitReadOnlyBuffer != implicitReadOnlyBufferArray);
-            Assert.True(implicitBufferArray == implicitReadOnlyBufferArray);
-            Assert.False(implicitBufferArray != implicitReadOnlyBufferArray);
-            Assert.True(bytes == implicitReadOnlyBufferArray);
-            Assert.False(bytes != implicitReadOnlyBufferArray);
+            Assert.True(buffer.Equals(implicitReadOnlyBufferArray));
+            Assert.True(readOnlyBuffer.Equals(implicitReadOnlyBufferArray));
+            Assert.True(implicitReadOnlyBuffer.Equals(implicitReadOnlyBufferArray));
+            Assert.True(implicitBufferArray.Equals(implicitReadOnlyBufferArray));
         }
 
         [Theory]
@@ -139,28 +104,20 @@ namespace System.Buffers.Tests
             var readOnlyBuffer = new ReadOnlyBuffer<byte>(bytes, start, length);
             ReadOnlyBuffer<byte> implicitReadOnlyBuffer = buffer;
 
-            Assert.True(readOnlyBuffer == buffer);
-            Assert.False(readOnlyBuffer != buffer);
-            Assert.True(implicitReadOnlyBuffer == buffer);
-            Assert.False(implicitReadOnlyBuffer != buffer);
+            Assert.True(readOnlyBuffer.Equals(buffer));
+            Assert.True(implicitReadOnlyBuffer.Equals(buffer));
 
-            Assert.True(buffer == readOnlyBuffer);
-            Assert.False(buffer != readOnlyBuffer);
-            Assert.True(implicitReadOnlyBuffer == readOnlyBuffer);
-            Assert.False(implicitReadOnlyBuffer != readOnlyBuffer);
+            Assert.True(buffer.Equals(readOnlyBuffer));
+            Assert.True(implicitReadOnlyBuffer.Equals(readOnlyBuffer));
 
-            Assert.True(buffer == implicitReadOnlyBuffer);
-            Assert.False(buffer != implicitReadOnlyBuffer);
-            Assert.True(readOnlyBuffer == implicitReadOnlyBuffer);
-            Assert.False(readOnlyBuffer != implicitReadOnlyBuffer);
+            Assert.True(buffer.Equals(implicitReadOnlyBuffer));
+            Assert.True(readOnlyBuffer.Equals(implicitReadOnlyBuffer));
         }
 
         private static void BuffersReferencingSameMemoryAreEqualInEveryAspect(Buffer<byte> buffer, Buffer<byte> pointingToSameMemory)
         {
-            Assert.True(buffer == pointingToSameMemory);
-            Assert.True(pointingToSameMemory == buffer);
-            Assert.False(buffer != pointingToSameMemory);
-            Assert.False(pointingToSameMemory != buffer);
+            Assert.True(buffer.Equals(pointingToSameMemory));
+            Assert.True(pointingToSameMemory.Equals(buffer));
 
             Assert.True(buffer.SequenceEqual(pointingToSameMemory));
             Assert.True(pointingToSameMemory.SequenceEqual(buffer));
@@ -170,10 +127,8 @@ namespace System.Buffers.Tests
 
         private static void BuffersReferencingSameMemoryAreEqualInEveryAspect(ref ReadOnlyBuffer<byte> buffer, ref ReadOnlyBuffer<byte> pointingToSameMemory)
         {
-            Assert.True(buffer == pointingToSameMemory);
-            Assert.True(pointingToSameMemory == buffer);
-            Assert.False(buffer != pointingToSameMemory);
-            Assert.False(pointingToSameMemory != buffer);
+            Assert.True(buffer.Equals(pointingToSameMemory));
+            Assert.True(pointingToSameMemory.Equals(buffer));
 
             Assert.True(buffer.SequenceEqual(pointingToSameMemory));
             Assert.True(pointingToSameMemory.SequenceEqual(buffer));
@@ -210,10 +165,8 @@ namespace System.Buffers.Tests
             Assert.True(buffer.SequenceEqual(ofSameValues));
             Assert.True(ofSameValues.SequenceEqual(buffer));
 
-            Assert.False(buffer == ofSameValues);
-            Assert.True(buffer != ofSameValues);
-            Assert.False(ofSameValues == buffer);
-            Assert.True(ofSameValues != buffer);
+            Assert.False(buffer.Equals(ofSameValues));
+            Assert.False(ofSameValues.Equals(buffer));
         }
 
         [Theory]
@@ -230,12 +183,8 @@ namespace System.Buffers.Tests
             Assert.True(buffer.SequenceEqual(ofSameValues));
             Assert.True(ofSameValues.SequenceEqual(buffer));
 
-            Assert.False(buffer == ofSameValues);
-            Assert.True(buffer != ofSameValues);
-            Assert.False(ofSameValues == buffer);
-            Assert.True(ofSameValues != buffer);
-
-            Assert.False(buffer == ofSameValues);
+            Assert.False(buffer.Equals(ofSameValues));
+            Assert.False(ofSameValues.Equals(buffer));
         }
 
         [Theory]
@@ -252,12 +201,8 @@ namespace System.Buffers.Tests
             Assert.False(buffer.SequenceEqual(ofDifferentValues));
             Assert.False(ofDifferentValues.SequenceEqual(buffer));
 
-            Assert.False(buffer == ofDifferentValues);
-            Assert.True(buffer != ofDifferentValues);
-            Assert.False(ofDifferentValues == buffer);
-            Assert.True(ofDifferentValues != buffer);
-
-            Assert.False(buffer == ofDifferentValues);
+            Assert.False(buffer.Equals(ofDifferentValues));
+            Assert.False(ofDifferentValues.Equals(buffer));
         }
 
         [Theory]
@@ -274,12 +219,8 @@ namespace System.Buffers.Tests
             Assert.False(buffer.SequenceEqual(ofDifferentValues));
             Assert.False(ofDifferentValues.SequenceEqual(buffer));
 
-            Assert.False(buffer == ofDifferentValues);
-            Assert.True(buffer != ofDifferentValues);
-            Assert.False(ofDifferentValues == buffer);
-            Assert.True(ofDifferentValues != buffer);
-
-            Assert.False(buffer == ofDifferentValues);
+            Assert.False(buffer.Equals(ofDifferentValues));
+            Assert.False(ofDifferentValues.Equals(buffer));
         }
 
         [Fact]
@@ -293,9 +234,9 @@ namespace System.Buffers.Tests
         }
 
         private static void SequentialEqualityOfBuffersOfFloatingPointTypesDoesNotUseBitwiseComparison<T>(
-            T negativeInfinity, T positiveInfinity, // .Equals => false
-            T negativeZero, T positiveZero, // .Equals => TRUE
-            T NaN) // .Equals => True
+            T negativeInfinity, T positiveInfinity, //.Equals => false
+            T negativeZero, T positiveZero, //.Equals => TRUE
+            T NaN) //.Equals => True
             where T : struct, IEquatable<T>
         {
             const int elementsCountThatNormallyWouldInvolveMemCmp = 1000;

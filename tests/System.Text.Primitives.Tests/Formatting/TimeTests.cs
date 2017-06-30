@@ -20,6 +20,7 @@ namespace System.Text.Primitives.Tests
         [InlineData('G')]
         [InlineData('O')]
         [InlineData('R')]
+        [InlineData('l')]
         public void SpecificDateTimeTests(char format)
         {
             foreach (var symbolTable in SymbolTables)
@@ -36,6 +37,7 @@ namespace System.Text.Primitives.Tests
         [InlineData('G')]
         [InlineData('O')]
         [InlineData('R')]
+        [InlineData('l')]
         public void RandomDateTimeTests(char format)
         {
             for (var i = 0; i < NumberOfRandomSamples; i++)
@@ -50,7 +52,11 @@ namespace System.Text.Primitives.Tests
 
         static void TestDateTimeFormat(DateTime dt, char format, SymbolTable symbolTable)
         {
-            var expected = dt.ToString(format.ToString(), CultureInfo.InvariantCulture);
+            string expected;
+            if (format == 'l')
+                expected = dt.ToString("R", CultureInfo.InvariantCulture).ToLowerInvariant();
+            else
+                expected = dt.ToString(format.ToString(), CultureInfo.InvariantCulture);           
 
             var span = new Span<byte>(new byte[256]);
             Assert.True(PrimitiveFormatter.TryFormat(dt, span, out int written, format, symbolTable));
@@ -64,6 +70,7 @@ namespace System.Text.Primitives.Tests
         [InlineData('G')]
         [InlineData('O')]
         [InlineData('R')]
+        [InlineData('l')]
         public void RandomDateTimeOffsetTests(char format)
         {
             for (var i = 0; i < NumberOfRandomSamples; i++)
@@ -78,10 +85,15 @@ namespace System.Text.Primitives.Tests
 
         static void TestDateTimeOffsetFormat(DateTimeOffset dto, char formatChar, SymbolTable symbolTable)
         {
-            TextFormat format = (formatChar == 0) ? default(TextFormat) : formatChar;
-            string expected = (format.IsDefault)
-                ? dto.ToString(CultureInfo.InvariantCulture)
-                : dto.ToString(formatChar.ToString(), CultureInfo.InvariantCulture);
+            ParsedFormat format = (formatChar == 0) ? default(ParsedFormat) : formatChar;
+
+            string expected;
+            if (formatChar == 'l') {
+                expected = dto.ToString("R", CultureInfo.InvariantCulture).ToLowerInvariant();
+            }
+            else {
+                expected = (format.IsDefault) ? dto.ToString(CultureInfo.InvariantCulture) : dto.ToString(formatChar.ToString(), CultureInfo.InvariantCulture);
+            }
 
             var span = new Span<byte>(new byte[256]);
             Assert.True(PrimitiveFormatter.TryFormat(dto, span, out int written, format, symbolTable));

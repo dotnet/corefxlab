@@ -8,14 +8,14 @@ namespace System.Text.Formatting
 {
     public static class IOutputExtensions
     {
-        public static void Append<TFormatter, T>(this TFormatter formatter, T value, SymbolTable symbolTable, TextFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
+        public static void Append<TFormatter, T>(this TFormatter formatter, T value, SymbolTable symbolTable, ParsedFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, SymbolTable symbolTable, TextFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
+        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, SymbolTable symbolTable, ParsedFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -105,14 +105,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, uint value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, uint value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -122,14 +122,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ulong value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ulong value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -139,14 +139,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, int value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, int value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -156,14 +156,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, long value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, long value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -173,14 +173,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, byte value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, byte value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -190,14 +190,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -207,14 +207,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ushort value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ushort value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -224,14 +224,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, short value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, short value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -241,14 +241,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Guid value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Guid value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -258,14 +258,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -275,14 +275,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -292,14 +292,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -309,14 +309,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, float value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, float value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {
@@ -326,14 +326,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, double value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, double value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, symbolTable, format)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, SymbolTable symbolTable, TextFormat format = default) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, SymbolTable symbolTable, ParsedFormat format = default) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, symbolTable)) {

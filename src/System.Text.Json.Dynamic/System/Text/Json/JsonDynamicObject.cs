@@ -163,7 +163,7 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
+        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;
@@ -275,7 +275,7 @@ namespace System.Text.Json
 
             static readonly byte[] nullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l'};
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
+            public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
             {
                 int consumed;
 
@@ -337,7 +337,7 @@ namespace System.Text.Json
                 return result;
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
+            public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
             {
                 return _name.TryFormatQuotedString(buffer, out written, format, symbolTable);
             }
@@ -348,7 +348,7 @@ namespace System.Text.Json
     {
         // TODO: this should be properly implemented
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
+        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -365,7 +365,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, SymbolTable symbolTable)
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;
