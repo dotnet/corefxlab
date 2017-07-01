@@ -136,7 +136,7 @@ namespace System.Text
             bytesConsumed = 0;
             while (srcLength > bytesConsumed)
             {
-                var status = Encoders.Utf8.ConvertFromUtf16(srcBytes, temp, out int consumed, out int written);
+                var status = Encoders.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written);
                 if (status == Buffers.TransformationStatus.InvalidData)
                     goto ExitFailed;
 
