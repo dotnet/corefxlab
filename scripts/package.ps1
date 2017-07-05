@@ -33,7 +33,7 @@ Ensure-Nuget-Exists
 Write-Host "** Creating NuGet packages from nuspec. **"
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\external", "*.nuspec", "AllDirectories")) {
     Write-Host "Creating NuGet package for $file..."
-    Invoke-Expression "$nugetPath pack $file -Version 0.0.1 -o $packagesPath"
+    Invoke-Expression "$nugetPath pack $file -o $packagesPath"
     
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $brotliExternalFile"
