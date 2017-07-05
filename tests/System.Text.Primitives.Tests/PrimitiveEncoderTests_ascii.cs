@@ -2,36 +2,37 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Text.Encoders;
 using Xunit;
 
-namespace System.Text.Primitives.Tests
+namespace System.Text.Encoders.Tests
 {
     public class PrimitiveEncoderTestsAscii
     {
         [Theory]
         [InlineData("")]
         [InlineData("Hello World")]
-        public void DecodeAsciiToStringBasics(string original)
+        public void AsciiToUtf16StringBasics(string original)
         {
             var encoded = (Span<byte>)Text.Encoding.ASCII.GetBytes(original);
-            var decoded = encoded.DecodeAscii();
+            var decoded = Ascii.ToUtf16String(encoded);
             Assert.Equal(original, decoded);
         }
 
         [Fact]
-        public void DecodeAsciiWorksOnAllAsciiChars()
+        public void AsciiToUtf16StringWorksOnAllAsciiChars()
         {
             for (int index = 0; index < 100; index++) {
                 var encoded = (Span<byte>)new byte[100];
                 for (int encodedByte = 0; encodedByte < 128; encodedByte++) {
                     encoded[index] = (byte)encodedByte;
-                    var result = encoded.DecodeAscii();
+                    var result = Ascii.ToUtf16String(encoded);
                 }
             }
         }
 
         [Fact]
-        public void DecodeAsciiToStringFailsOnNonAscii()
+        public void AsciiToUtf16StringFailsOnNonAscii()
         {
             for (int index = 0; index < 100; index++) {
                 var encoded = (Span<byte>)new byte[100];
@@ -39,7 +40,7 @@ namespace System.Text.Primitives.Tests
                     encoded[0] = (byte)encodedByte;
                     bool exception = false;
                     try {
-                        var result = encoded.DecodeAscii();
+                        var result = Ascii.ToUtf16String(encoded);
                     }
                     catch(ArgumentException) {
                         exception = true;

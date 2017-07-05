@@ -6,6 +6,7 @@ using Xunit;
 using Microsoft.Xunit.Performance;
 using System;
 using System.Text;
+using System.Text.Encoders;
 using System.Text.Utf8;
 
 public class AsciiDecodingBench
@@ -21,7 +22,7 @@ public class AsciiDecodingBench
         foreach (var iteration in Benchmark.Iterations) {
             using (iteration.StartMeasurement()) {
                 for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    str = bytes.DecodeAscii();
+                    str = Ascii.ToUtf16String(bytes);
                     len += str.Length;
                 }
             }
