@@ -18,25 +18,6 @@
     <BaseAddress>0x180000000</BaseAddress>
     <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'x86'">
-    <SourceArch>x86</SourceArch>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
-    <SourceSystem>windows</SourceSystem>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' == 'Unix'">
-    <SourceSystem>linux</SourceSystem>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' == 'OSX'">
-    <SourceSystem>osx</SourceSystem>
-    <SourceArch></SourceArch>
-  </PropertyGroup>
-  <PropertyGroup>
-    <BrotliPath>..\..\external\Brotli\lib\$(SourceSystem)\$(SourceArch)</BrotliPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <BrotliLibraries Include="$(BrotliPath)\*.*" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(OS)' != 'Windows_NT'">
     <Compile Remove="System\Interop\Library.Windows.cs" />
   </ItemGroup>
