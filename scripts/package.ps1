@@ -23,7 +23,7 @@ Write-Host "** Building all NuGet packages. **"
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "System*.csproj", "AllDirectories")) {
     Write-Host "Creating NuGet package for $file..."
     Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath --include-symbols --version-suffix $BuildVersion"
-    
+
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $file"
     }
