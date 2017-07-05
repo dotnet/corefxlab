@@ -4,12 +4,12 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Encoders
 {
-    public static partial class PrimitiveEncoder
+    public static partial class Ascii
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string DecodeAscii(this ReadOnlySpan<byte> bytes)
+        public static string ToUtf16String(this ReadOnlySpan<byte> bytes)
         {
             var len = bytes.Length;
             if (len == 0) {
@@ -32,7 +32,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string DecodeAscii(this Span<byte> bytes)
+        public static string ToUtf16String(this Span<byte> bytes)
         {
             var len = bytes.Length;
             if (len == 0) {
