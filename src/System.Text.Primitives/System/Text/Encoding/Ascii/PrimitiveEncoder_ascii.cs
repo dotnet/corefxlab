@@ -9,7 +9,7 @@ namespace System.Text.Encoders
     public static partial class Ascii
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToUtf16String(this ReadOnlySpan<byte> bytes)
+        public static string ToUtf16String(ReadOnlySpan<byte> bytes)
         {
             var len = bytes.Length;
             if (len == 0) {
@@ -32,7 +32,7 @@ namespace System.Text.Encoders
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ToUtf16String(this Span<byte> bytes)
+        public static string ToUtf16String(Span<byte> bytes)
         {
             var len = bytes.Length;
             if (len == 0) {
