@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>BrotliNative</id>
-        <version>$version$</version>
+        <version>0.0.1</version>
         <authors>Microsoft</authors>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <licenseUrl>https://github.com/dotnet/corefxlab/blob/master/LICENSE</licenseUrl>

@@ -30,12 +30,14 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "System
 }
 
 Ensure-Nuget-Exists
-Write-Host "** Creating BrotliNative NuGet packages. **"
-$brotliExternalFile = "$repoRoot\external\BrotliNative.nuspec"
-Invoke-Expression "$nugetPath pack $brotliExternalFile -Version 0.0.1 -o $packagesPath"
-
-if (!$?) {
-    Write-Error "Failed to create NuGet package for project $brotliExternalFile"
+Write-Host "** Creating NuGet packages from nuspec. **"
+foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\external", "*.nuspec", "AllDirectories")) {
+    Write-Host "Creating NuGet package for $file..."
+    Invoke-Expression "$nugetPath pack $file -o $packagesPath"
+    
+    if (!$?) {
+        Write-Error "Failed to create NuGet package for project $brotliExternalFile"
+    }
 }
 
 if ($ApiKey)
