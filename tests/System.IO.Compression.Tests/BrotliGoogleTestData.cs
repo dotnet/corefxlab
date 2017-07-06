@@ -33,6 +33,8 @@ namespace System.IO.Compression.Tests
                 yield return new object[] { "plrabn12.txt", compressionLevel };
                 yield return new object[] { "quickfox", compressionLevel };
                 yield return new object[] { "quickfox_repeated", compressionLevel };
+                yield return new object[] { "random_org_10k.bin", compressionLevel };
+                yield return new object[] { "x", compressionLevel };
                 yield return new object[] { "ukkonooa", compressionLevel };
                 yield return new object[] { "xyzzy", compressionLevel };
                 yield return new object[] { "zeros", compressionLevel };
@@ -55,7 +57,7 @@ namespace System.IO.Compression.Tests
         {
             byte[] bytes = File.ReadAllBytes(Path.Combine("BrotliTestData", TestDataFilesFolder, fileName));
             MemoryStream memoryStream = new MemoryStream();
-            using (BrotliStream brotliStream = new BrotliStream(memoryStream, CompressionMode.Compress, true))
+            using (BrotliStream brotliStream = new BrotliStream(memoryStream, CompressionMode.Compress, true, bufferSize, compressionLevel))
             {
                 brotliStream.Write(bytes, 0, bytes.Length);
                 brotliStream.Dispose();
