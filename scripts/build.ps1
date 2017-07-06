@@ -55,10 +55,6 @@ if ($lastexitcode -ne 0) {
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($testFile -match ("System.IO.Compression.Tests")) {
-        Write-Warning "Skipping tests in $file. Cannot build the brotli dll yet."
-        continue
-    }
     Write-Host "Building and running tests for project $testFile..."
     Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
 
