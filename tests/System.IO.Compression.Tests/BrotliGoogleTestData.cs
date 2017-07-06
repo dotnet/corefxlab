@@ -24,7 +24,6 @@ namespace System.IO.Compression.Tests
                 yield return new object[] { "10x10y", compressionLevel };
                 yield return new object[] { "64x", compressionLevel };
                 yield return new object[] { "backward65536", compressionLevel };
-                yield return new object[] { "asyoulik.txt", compressionLevel };
                 yield return new object[] { "compressed_file", compressionLevel };
                 yield return new object[] { "compressed_repeated", compressionLevel };
                 yield return new object[] { "empty", compressionLevel };
