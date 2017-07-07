@@ -30,14 +30,15 @@ public static class Brotli {
     }
 ```
 ```out bytesConsumed``` - number of bytes from source, which used in this call
+
 ```out bytesWritten``` - number of written to destination bytes 
 
 The ```Compress``` performs data compression. It sets ```source``` data should be compressed and return compressed data in ```destination```. ```state.CompressMode``` should be ```true``` .
 
 
 The ```FlushEncoder``` return compressed data, which have sent to ```state``` using Compress. 
-S
-The ```Decompress``` Decompresses the data in ```source``` into ```destination```. 
+
+The ```Decompress``` Decompresses the data in ```source``` into ```destination```. ```state.CompressMode``` should be ```false``` .
 
 ```State``` uses in both compress and decompress mode to save a temporary status and data of process.
 
@@ -68,7 +69,9 @@ Simple method to compress bytes to file.
     File.WriteAllBytes(OutFile, ans);
  }
 ```
+
 Simple method to decompress bytes to file. If out data is larger than destination ```result``` be ```TransformationStatus.DestinationTooSmall``` and it's available to call Decompress again to collect rest of data.
+
 ```C#
  static void DecompSimple(byte[] bytes, string outFile, int decompressedLength)
  {
@@ -82,6 +85,7 @@ Simple method to decompress bytes to file. If out data is larger than destinatio
 ```
 
 ## BrotliStream
+
 ```C#
  public class BrotliStream : Stream {
     public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen=false, int bufferSize=65520);
