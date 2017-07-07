@@ -29,7 +29,7 @@ namespace System.IO.Compression.Tests
         public void SimpleSetQuality()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.True(state.CompressMode);
         }
 
@@ -37,7 +37,7 @@ namespace System.IO.Compression.Tests
         public void SimpleSetWindowSize()
         {
             Brotli.State state = new Brotli.State();
-            state.SetWindow();
+            state.SetWindow(11);
             Assert.True(state.CompressMode);
         }
 
@@ -45,7 +45,7 @@ namespace System.IO.Compression.Tests
         public void DecompressSetQuality()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
         }
 
@@ -53,7 +53,7 @@ namespace System.IO.Compression.Tests
         public void DecompressSetWindow()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
         }
 
