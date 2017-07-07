@@ -162,8 +162,7 @@ public static void BrotliEncodePage()
         string AcceptEncoding = HttpContext.Current.Request.Headers["Accept-Encoding"];
         Response.Filter = new System.IO.Compression.BrotliStream(Response.Filter,
         System.IO.Compression.CompressionMode.Compress);
-        Response.Headers.Remove("Content-Encoding");
-        Response.AppendHeader("Content-Encoding", "brotli");
+        Response.AppendHeader("Content-Encoding", "br");
     }
 }
 
