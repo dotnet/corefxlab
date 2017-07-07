@@ -22,29 +22,24 @@ public static class Brotli {
         public struct State : IDisposable {
             public bool CompressMode { get; }
             public void Dispose();
-            public void SetQuality();
             public void SetQuality(uint quality);
-            public void SetWindow();
             public void SetWindow(uint window);
         }
     }
 ```
-```out bytesConsumed``` - number of bytes from source, which used in this call
+```out bytesConsumed``` - number of bytes used from source data while executing the operation
 
-```out bytesWritten``` - number of written to destination bytes 
+```out bytesWritten``` - number of bytes written to destination while executing the operation
 
-The ```Compress``` performs data compression. It sets ```source``` data should be compressed and return compressed data in ```destination```. ```state.CompressMode``` should be ```true``` .
+```State``` used in both compress and decompress mode to save a temporary status and data of process.  State will set automaticaly at first call of Compress or Decompress. Once it is initialized and being used for one data stream, it shouldn't be used for another one and in other mode.
 
+The ```Compress``` performs data compression. Taking data from ```source``` and write already compressed data to ```destination```.
 
-The ```FlushEncoder``` return compressed data, which have sent to ```state``` using Compress. 
+The ```FlushEncoder``` return compressed data, which have sent to ```state``` using Compress. This method always should be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
 
-The ```Decompress``` Decompresses the data in ```source``` into ```destination```. ```state.CompressMode``` should be ```false``` .
+The ```Decompress``` Decompresses the data from ```source``` into ```destination```. 
 
-```State``` uses in both compress and decompress mode to save a temporary status and data of process.
-
-```CompressMode =  true``` shows that ```State``` in compress mode, ```false``` in decompress mode. 
-
-```SetQuality``` alows you to set quality of compression ```0 to 11```. The higher quality means higher compression ratio. 
+```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means higher compression ratio. 
 
 ```SetWindow``` - Logarithm of Recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is (1 << value) - 16. Possible values: ```11 to 24```
 
@@ -145,9 +140,9 @@ private void DecompressDataToFile(byte[] compressedData, string outFile)
 }
 ```
 
-#### Dynamic Web Compress
-You can add code like this to you Global.asax.cs in ASP.NET aplication to support dynamic compress
-```
+#### Dynamic Web Compression
+You can add code like this to your Global.asax.cs in ASP.NET application to support dynamic compress
+```C#
 public static bool IsBrotliSupported()
 {
     string AcceptEncoding = HttpContext.Current.Request.Headers["Accept-Encoding"];
@@ -164,14 +159,14 @@ public static void BrotliEncodePage()
     if (IsBrotliSupported())
     {
         string AcceptEncoding = HttpContext.Current.Request.Headers["Accept-Encoding"];
-        Response.Filter = new System.IO.Compression.BrotliStream(Response.Filter,
-        System.IO.Compression.CompressionMode.Compress);
+        Response.Filter = new System.IO.Compression.BrotliStream(Response.Filter,        System.IO.Compression.CompressionMode.Compress);
         Response.AppendHeader("Content-Encoding", "br");
     }
 }
-
 ```
+
 #### WebServer Request and Response
+
 ```C#
 using System;
 using System.IO;
