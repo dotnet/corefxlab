@@ -1,4 +1,7 @@
-﻿using System.Buffers;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+using System.Buffers;
 using System.IO.Compression.Resources;
 
 #if BIT64
@@ -72,7 +75,7 @@ namespace System.IO.Compression
 
             public void SetQuality()
             {
-                SetQuality(MaxQuality);
+                SetQuality((uint)GetQualityFromCompressionLevel(CompressionLevel.Optimal));
             }
 
             public void SetWindow(uint window)
@@ -133,9 +136,9 @@ namespace System.IO.Compression
 
         internal static int GetQualityFromCompressionLevel(CompressionLevel level)
         {
-            if (level == CompressionLevel.Optimal) return 10;
-            if (level == CompressionLevel.NoCompression) return 1;
-            if (level == CompressionLevel.Fastest) return 2;
+            if (level == CompressionLevel.Optimal) return 11;
+            if (level == CompressionLevel.NoCompression) return 0;
+            if (level == CompressionLevel.Fastest) return 1;
             return (int)level;
         }
 
