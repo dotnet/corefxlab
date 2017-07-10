@@ -6,7 +6,7 @@ Brotli is a generic-purpose lossless compression algorithm that compresses data
 using a combination of a modern variant of the LZ77 algorithm, Huffman coding
 and 2nd order context modeling, with a compression ratio comparable to the best
 currently available general-purpose compression methods. It is similar in speed
-with deflate but offers more dense compression.
+to deflate but offers more dense compression.
 
 The specification of the Brotli Compressed Data Format is defined in [RFC 7932](https://www.ietf.org/rfc/rfc7932.txt).
 
@@ -29,17 +29,17 @@ public static class Brotli {
 ```
 ```out bytesConsumed``` - number of bytes used from source data while executing the operation
 
-```out bytesWritten``` - number of bytes written to destination while executing the operation
+```out bytesWritten``` - number of bytes are written in destination while executing the operation
 
-```State``` used in both compress and decompress mode to save a temporary status and data of process.  State will set automaticaly at first call of Compress or Decompress. Once it is initialized and being used for one data stream, it shouldn't be used for another one and in other mode.
+```State``` is used in both compress and decompress mode to save a temporary status and data of process.  State will set automaticaly at first call of Compress or Decompress. Once it is initialized and being used for one data stream, it shouldn't be used for another one and in other mode.
 
-The ```Compress``` performs data compression. Taking data from ```source``` and write already compressed data to ```destination```.
+The ```Compress``` performs data compression. Taking data from ```source``` and writing already compressed data to ```destination```.
 
-The ```FlushEncoder``` return compressed data, which have sent to ```state``` using Compress. This method always should be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
+The ```FlushEncoder``` returns compressed data, which was sent to ```state``` using Compress. This method always should be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
 
 The ```Decompress``` Decompresses the data from ```source``` into ```destination```. 
 
-```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means higher compression ratio. 
+```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means the higher compression ratio. 
 
 ```SetWindow``` - Logarithm of Recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is (1 << value) - 16. Possible values: ```11 to 24```
 
@@ -65,7 +65,7 @@ Simple method to compress bytes to file.
  }
 ```
 
-Simple method to decompress bytes to file. If out data is larger than destination ```result``` be ```TransformationStatus.DestinationTooSmall``` and it's available to call Decompress again to collect rest of data.
+Simple method to decompress bytes to file. If out data is larger than destination ```result``` will be ```TransformationStatus.DestinationTooSmall``` and it's available to call Decompress again to collect rest of data.
 
 ```C#
  static void DecompSimple(byte[] bytes, string outFile, int decompressedLength)
