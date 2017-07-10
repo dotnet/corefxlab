@@ -72,7 +72,7 @@ Simple method to decompress bytes to file. If out data is larger than destinatio
  {
     Brotli.State state = new Brotli.State();
     byte[] data = ms.ToArray();
-    byte[] decompressed = new byte[decLen];
+    byte[] decompressed = new byte[decompressedLength];
     TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
     File.WriteAllBytes(outFile, decompressed);
  }
