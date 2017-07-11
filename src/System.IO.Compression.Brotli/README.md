@@ -39,9 +39,9 @@ The ```FlushEncoder``` returns compressed data, which was sent to ```state``` us
 
 The ```Decompress``` decompresses the data from ```source``` into ```destination```. 
 
-```SetQuality``` allows you to set the quality of compression ```between 0 to 11``` inclusive. The higher quality means the higher compression ratio, but more compute time.
+```SetQuality``` allows you to set the quality of compression ```between 0 and 11``` inclusive. The higher quality means the higher compression ratio, but more compute time.
 
-```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is ```(1 << value) - 16```. Possible values: ```betwwen 11 to 24``` inclusive
+```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is ```(1 << value) - 16```. Possible values: ```betwwen 11 and 24``` inclusive
 
 ### Examples
 Simple method to compress bytes to file.
@@ -209,3 +209,6 @@ namespace Examples.System.Net
 }
 
 ```
+## References
+Google repository of Brotli: https://github.com/google/brotli
+ 
