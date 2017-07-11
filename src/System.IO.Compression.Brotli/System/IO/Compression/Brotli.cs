@@ -58,6 +58,8 @@ namespace System.IO.Compression
                     throw new System.Exception(BrotliEx.EncoderInstanceCreate);
                 }
                 CompressMode = true;
+                SetQuality((uint)GetQualityFromCompressionLevel(CompressionLevel.Optimal));
+                SetWindow(MaxWindowBits);
             }
 
             public void SetQuality(uint quality)
@@ -73,11 +75,6 @@ namespace System.IO.Compression
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.Quality, quality);
             }
 
-            public void SetQuality()
-            {
-                SetQuality((uint)GetQualityFromCompressionLevel(CompressionLevel.Optimal));
-            }
-
             public void SetWindow(uint window)
             {
                 if (BrotliNativeState == IntPtr.Zero)
@@ -89,11 +86,6 @@ namespace System.IO.Compression
                     throw new ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
                 }
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.LGWin, window);
-            }
-
-            public void SetWindow()
-            {
-                SetWindow(MaxWindowBits);
             }
         }
 
@@ -109,8 +101,7 @@ namespace System.IO.Compression
             }
             if (compress)
             {
-                state.SetQuality();
-                state.SetWindow();
+                state.InitializeEncoder();
             }
             else
             {
