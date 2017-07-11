@@ -10,6 +10,8 @@ namespace System.IO.Compression.Tests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
+        const string testFile = "BrotliTest.txt";
+
         [Fact]
         public void CanDisposeState()
         {
@@ -127,6 +129,34 @@ namespace System.IO.Compression.Tests
         {
             Brotli.State state = new Brotli.State();
             Assert.Throws<System.ArgumentOutOfRangeException>(delegate { state.SetWindow(windowSize); });
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(1024)]
+        public void DecompressRandomInvalidData(int totalSize)
+        {
+            Brotli.State state = new Brotli.State();
+            byte[] data = new byte[totalSize];
+            new Random(42).NextBytes(data);
+            Assert.Throws<System.IO.IOException>(delegate { Brotli.Decompress(data, Array.Empty<byte>(), out int consumed, out int written, ref state);  });
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(10)]
+        public void DecompressPartlyInvalidData(int correctPart)
+        {
+            Brotli.State state = new Brotli.State();
+            byte[] data = File.ReadAllBytes(Path.Combine("BrotliTestData", testFile + ".br"));
+            Span<byte> source = new Span<byte>(data, 0, data.Length / correctPart);
+            int expected = (int)new FileInfo(Path.Combine("BrotliTestData", testFile)).Length;
+            byte[] decompressed = new byte[expected];
+            TransformationStatus result = Brotli.Decompress(source, decompressed, out int consumed, out int written, ref state);
+            new Random(42).NextBytes(data);
+            Assert.Throws<System.IO.IOException>(delegate { Brotli.Decompress(data, Array.Empty<byte>(), out consumed, out written, ref state); } );
         }
 
         [Theory]
