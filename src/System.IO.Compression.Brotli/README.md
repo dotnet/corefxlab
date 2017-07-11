@@ -31,17 +31,17 @@ public static class Brotli {
 
 ```out bytesWritten``` - number of bytes are written in destination while executing the operation
 
-```State``` is used in both compress and decompress mode to save a temporary status and data of process.  State will set automaticaly at first call of Compress or Decompress. Once it is initialized and being used for one data stream, it shouldn't be used for another one and in other mode.
+```State``` is used in both compress and decompress mode to save a temporary status and data of process.  State will set automatically on initial call of Compress or Decompress. The state cannot be re-used for multiple data streams and cannot switch modes (compress vs. decompress).
 
-The ```Compress``` performs data compression. Taking data from ```source``` and writing already compressed data to ```destination```.
+The ```Compress``` performs data compression. Taking data from ```source``` and writing compressed data to ```destination```.
 
-The ```FlushEncoder``` returns compressed data, which was sent to ```state``` using Compress. This method always should be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
+The ```FlushEncoder``` returns compressed data, which was sent to ```state``` using Compress. This method should always be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
 
 The ```Decompress``` Decompresses the data from ```source``` into ```destination```. 
 
-```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means the higher compression ratio. 
+```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means the higher compression ratio, but more compute time.
 
-```SetWindow``` - Logarithm of Recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is (1 << value) - 16. Possible values: ```11 to 24```
+```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is (1 << value) - 16. Possible values: ```11 to 24```
 
 ### Examples
 Simple method to compress bytes to file.
