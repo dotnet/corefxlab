@@ -10,7 +10,7 @@ to deflate but offers more dense compression.
 
 The specification of the Brotli Compressed Data Format is defined in [RFC 7932](https://www.ietf.org/rfc/rfc7932.txt).
 
-Brotli encoding is supported by most web browsers, major web servers, and some CDNs (Content delivery network).
+Brotli encoding is supported by most web browsers, major web servers, and some CDNs (Content Delivery Networks).
 
 ## Brotli Class
 ```C#
@@ -39,14 +39,13 @@ The ```FlushEncoder``` returns compressed data, which was sent to ```state``` us
 
 The ```Decompress``` decompresses the data from ```source``` into ```destination```. 
 
-```SetQuality``` allows you to set quality of compression ```between 0 to 11```. The higher quality means the higher compression ratio, but more compute time.
+```SetQuality``` allows you to set quality of compression ```between 0 to 11``` inclusive. The higher quality means the higher compression ratio, but more compute time.
 
-```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is ```(1 << value) - 16```. Possible values: ```11 to 24```
+```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is ```(1 << value) - 16```. Possible values: ```betwwen 11 to 24``` inclusive
 
 ### Examples
 Simple method to compress bytes to file.
 ```C#
-
  static void CompressSimple(byte[] bytes, string outFile)
  {
     Brotli.State state = new Brotli.State();
