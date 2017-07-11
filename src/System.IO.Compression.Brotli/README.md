@@ -10,7 +10,7 @@ to deflate but offers more dense compression.
 
 The specification of the Brotli Compressed Data Format is defined in [RFC 7932](https://www.ietf.org/rfc/rfc7932.txt).
 
-Brotli encoding is supported by most web browsers, major web servers, and some CDNs.
+Brotli encoding is supported by most web browsers, major web servers, and some CDNs (Content delivery network).
 
 ## Brotli Class
 ```C#
@@ -29,43 +29,41 @@ public static class Brotli {
 ```
 ```out bytesConsumed``` - number of bytes used from source data while executing the operation
 
-```out bytesWritten``` - number of bytes are written in destination while executing the operation
+```out bytesWritten``` - number of bytes that are written in destination while executing the operation
 
-```State``` is used in both compress and decompress mode to save a temporary status and data of process.  State will set automatically on initial call of Compress or Decompress. The state cannot be re-used for multiple data streams and cannot switch modes (compress vs. decompress).
+```State``` is used in both compress and decompress mode to save a temporary status and data of process.  State will be set automatically on initial call of Compress or Decompress. The state cannot be re-used for multiple data streams and cannot switch modes (compress vs. decompress).
 
-The ```Compress``` performs data compression. Taking data from ```source``` and writing compressed data to ```destination```.
+The ```Compress``` performs data compression. It takes data from ```source``` and writes compressed data to ```destination```.
 
 The ```FlushEncoder``` returns compressed data, which was sent to ```state``` using Compress. This method should always be called after all Compress executions (```isFinished = true```) or when you want to get compressed data immediately (```isFinished = false```).
 
-The ```Decompress``` Decompresses the data from ```source``` into ```destination```. 
+The ```Decompress``` decompresses the data from ```source``` into ```destination```. 
 
-```SetQuality``` allows you to set quality of compression ```0 to 11```. The higher quality means the higher compression ratio, but more compute time.
+```SetQuality``` allows you to set quality of compression ```between 0 to 11```. The higher quality means the higher compression ratio, but more compute time.
 
-```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is (1 << value) - 16. Possible values: ```11 to 24```
+```SetWindow``` - Logarithm of recommended sliding LZ77 window size. Encoder may reduce this value, e.g. if input is much smaller than window size. Window size is ```(1 << value) - 16```. Possible values: ```11 to 24```
 
 ### Examples
 Simple method to compress bytes to file.
 ```C#
 
- static void CompressSimple(byte[] bytes, string OutFile)
+ static void CompressSimple(byte[] bytes, string outFile)
  {
     Brotli.State state = new Brotli.State();
+    Span<byte> spanBytes = new Span<byte>(bytes);
     byte[] compressed = new byte[Brotli.GetMaximumCompressedSize(bytes.Length)];
-    state.SetQuality();
-    TransformationStatus result = Brotli.Compress(bytes, compressed, out int consumed, out int written, ref state);
+    TransformationStatus result = Brotli.Compress(spanBytes, compressed, out int consumed, out int written, ref state);
     while (result != TransformationStatus.Done)
     {
-        result = Brotli.Compress(bytes, compressed, out consumed, out written, ref state);
-        bytes = bytes.AsSpan().Slice(consumed).ToArray();
+        result = Brotli.Compress(spanBytes, compressed, out consumed, out written, ref state);
+        spanBytes = spanBytes.Slice(consumed);
     }
     result = Brotli.FlushEncoder(Array.Empty<byte>(), compressed, out consumed, out written, ref state);
-    byte[] ans = new byte[written];
-    Array.Copy(compressed, ans, written);
-    File.WriteAllBytes(OutFile, ans);
+    File.WriteAllBytes(outFile, compressed.AsSpan().Slice(0, written).ToArray());
  }
 ```
 
-Simple method to decompress bytes to file. If out data is larger than destination ```result``` will be ```TransformationStatus.DestinationTooSmall``` and it's available to call Decompress again to collect rest of data.
+Simple method to decompress bytes to file. If out data is larger than destination, ```result``` will be ```TransformationStatus.DestinationTooSmall``` and you can call ```Decompress``` again to collect rest of data.
 
 ```C#
  static void DecompSimple(byte[] bytes, string outFile, int decompressedLength)
@@ -104,9 +102,9 @@ Simple method to decompress bytes to file. If out data is larger than destinatio
 }
 ```
 
-```Write``` write and compress bytes to stream, can only be called in Compress mode
+```Write``` - write and compress bytes to stream, can only be called in Compress mode
 
-```Read``` read bytes from stream and write them to buffer, can only be called in Decompress mode
+```Read``` - read bytes from stream and write them to buffer, can only be called in Decompress mode
 
 Default ```CompressionLevel``` is ```Optimal```(max compression ratio).
 
@@ -123,7 +121,7 @@ public void CompressData(byte[] data, MemoryStream compressed)
 }
 ```
 
-After calling method compressed data will be in ```MemoryStream compressed``` .
+After calling method compressed data will be in ```MemoryStream compressed```.
 
 #### Decompress
 Decompress and write data to file.
@@ -141,7 +139,7 @@ private void DecompressDataToFile(byte[] compressedData, string outFile)
 ```
 
 #### Dynamic Web Compression
-You can add code like this to your Global.asax.cs in ASP.NET application to support dynamic compress
+You can add code like this to your Global.asax.cs in ASP.NET application to support dynamic compression
 ```C#
 public static bool IsBrotliSupported()
 {
@@ -159,7 +157,7 @@ public static void BrotliEncodePage()
     if (IsBrotliSupported())
     {
         string AcceptEncoding = HttpContext.Current.Request.Headers["Accept-Encoding"];
-        Response.Filter = new System.IO.Compression.BrotliStream(Response.Filter,        System.IO.Compression.CompressionMode.Compress);
+        Response.Filter = new System.IO.Compression.BrotliStream(Response.Filter, System.IO.Compression.CompressionMode.Compress);
         Response.AppendHeader("Content-Encoding", "br");
     }
 }
