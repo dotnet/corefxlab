@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
         {
             if (desiredBufferLength < 256) desiredBufferLength = 256;
             if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
-            return desiredBufferLength;
+            return desiredBufferLength; 
         }
 
         /// <summary>
