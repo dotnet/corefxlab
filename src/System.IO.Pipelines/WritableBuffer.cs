@@ -30,16 +30,13 @@ namespace System.IO.Pipelines
 
         Span<byte> IOutput.Buffer => Buffer.Span;
 
-        void IOutput.Enlarge(int desiredBufferLength) => Ensure(NewSize(desiredBufferLength));
+        void IOutput.Enlarge(int desiredBufferLength) => Ensure(ComputeActualSize(desiredBufferLength));
 
-        private int NewSize(int desiredBufferLength)
+        private int ComputeActualSize(int desiredBufferLength)
         {
-            var currentSize = Buffer.Length;
-            if(desiredBufferLength == 0) {
-                if (currentSize <= 0) return 256;
-                else return currentSize * 2;
-            }
-            return desiredBufferLength < currentSize ? currentSize : desiredBufferLength;
+            if (desiredBufferLength < 256) desiredBufferLength = 256;
+            if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
+            return desiredBufferLength;
         }
 
         /// <summary>
