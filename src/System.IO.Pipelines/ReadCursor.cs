@@ -68,59 +68,24 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal int GetLength(ReadCursor end)
+        internal long GetLength(ReadCursor end)
         {
             if (IsDefault)
             {
                 return 0;
             }
+
             return GetLength(Segment, Index, end.Segment, end.Index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int GetLength(
+        internal static long GetLength(
             BufferSegment start,
             int startIndex,
             BufferSegment endSegment,
             int endIndex)
         {
-            if (start == endSegment)
-            {
-                return endIndex - startIndex;
-            }
-
-            return GetLengthMultiSegment(start, startIndex, endSegment, endIndex);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static int GetLengthMultiSegment(BufferSegment start,
-            int startIndex,
-            BufferSegment endSegment,
-            int endIndex)
-        {
-            var segment = start;
-            var index = startIndex;
-            var length = 0;
-            checked
-            {
-                while (true)
-                {
-                    if (segment == endSegment)
-                    {
-                        return length + endIndex - index;
-                    }
-                    else if (segment.Next == null)
-                    {
-                        return length;
-                    }
-                    else
-                    {
-                        length += segment.End - index;
-                        segment = segment.Next;
-                        index = segment.Start;
-                    }
-                }
-            }
+            return (endSegment.RunningLength + endIndex) - (start.RunningLength + startIndex);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -315,25 +280,7 @@ namespace System.IO.Pipelines
 
         internal bool GreaterOrEqual(ReadCursor other)
         {
-            if (other.Segment == Segment)
-            {
-                return other.Index <= Index;
-            }
-            return IsReachable(other);
-        }
-
-        internal bool IsReachable(ReadCursor other)
-        {
-            var current = other.Segment;
-            while (current != null)
-            {
-                if (current == Segment)
-                {
-                    return true;
-                }
-                current = current.Next;
-            }
-            return false;
+            return other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index;
         }
     }
 }

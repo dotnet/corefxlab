@@ -170,7 +170,7 @@ namespace System.IO.Pipelines
                 var nextBuffer = _pool.Rent(count);
                 var nextSegment = new BufferSegment(nextBuffer);
 
-                segment.Next = nextSegment;
+                segment.SetNext(nextSegment);
 
                 _writingHead = nextSegment;
             }
@@ -207,7 +207,7 @@ namespace System.IO.Pipelines
             {
                 // Append the segment to the commit head if writes have been committed
                 // and it isn't the same segment (unused tail space)
-                _commitHead.Next = segment;
+                _commitHead.SetNext(segment);
             }
 
             // Set write head to assigned segment
@@ -242,7 +242,7 @@ namespace System.IO.Pipelines
                     {
                         Debug.Assert(_commitHead.Next == null);
                         // Allocated buffer, append as next segment
-                        _commitHead.Next = clonedBegin;
+                        _commitHead.SetNext(clonedBegin);
                     }
                 }
             }
@@ -250,7 +250,7 @@ namespace System.IO.Pipelines
             {
                 Debug.Assert(_writingHead.Next == null);
                 // Active write, append as next segment
-                _writingHead.Next = clonedBegin;
+                _writingHead.SetNext(clonedBegin);
             }
 
             // Move write head to end of buffer

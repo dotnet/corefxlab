@@ -26,11 +26,16 @@ namespace System.IO.Pipelines
 
         /// <summary>
         /// Reference to the next block of data when the overall "active" bytes spans multiple blocks. At the point when the block is
-        /// leased Next is guaranteed to be null. Start, End, and Next are used together in order to create a linked-list of discontiguous 
-        /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active" 
+        /// leased Next is guaranteed to be null. Start, End, and Next are used together in order to create a linked-list of discontiguous
+        /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active"
         /// memory is shrunk when bytes are consumed, Start is increased, and blocks are returned to the pool.
         /// </summary>
-        public BufferSegment Next;
+        public BufferSegment Next { get; private set; }
+
+        /// <summary>
+        /// Combined length of all segments before this
+        /// </summary>
+        public long RunningLength { get; private set; }
 
         /// <summary>
         /// The buffer being tracked
@@ -56,7 +61,7 @@ namespace System.IO.Pipelines
             End = end;
             ReadOnly = true;
 
-            // For unowned buffers, we need to make a copy here so that the caller can 
+            // For unowned buffers, we need to make a copy here so that the caller can
             // give up the give this buffer back to the caller
             var unowned = buffer as UnownedBuffer;
             if (unowned != null)
@@ -128,16 +133,37 @@ namespace System.IO.Pipelines
 
             while (beginOrig != endOrig)
             {
-                endClone.Next = new BufferSegment(beginOrig._owned, beginOrig.Start, beginOrig.End);
+                endClone.SetNext(new BufferSegment(beginOrig._owned, beginOrig.Start, beginOrig.End));
 
                 endClone = endClone.Next;
                 beginOrig = beginOrig.Next;
             }
 
             lastSegment = new BufferSegment(endOrig._owned, endOrig.Start, endBuffer.Index);
-            endClone.Next = lastSegment;
+            endClone.SetNext(lastSegment);
 
             return beginClone;
+        }
+
+        public void SetNext(BufferSegment segment)
+        {
+            if (segment == null)
+            {
+                throw new ArgumentNullException(nameof(segment));
+            }
+            if (Next != null)
+            {
+                throw new InvalidOperationException($"{nameof(Next)} is already set.");
+            }
+
+            Next = segment;
+
+            segment = this;
+            while (segment.Next != null)
+            {
+                segment.Next.RunningLength = segment.RunningLength + segment.ReadableBytes;
+                segment = segment.Next;
+            }
         }
     }
 }
