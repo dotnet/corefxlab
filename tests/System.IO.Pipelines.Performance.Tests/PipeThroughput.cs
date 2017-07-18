@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
             var reading = Task.Run(async () =>
             {
-                int remaining = InnerLoopCount * WriteLength;
+                long remaining = InnerLoopCount * WriteLength;
                 while (remaining != 0)
                 {
                     var result = await _pipe.Reader.ReadAsync();

@@ -30,12 +30,12 @@ namespace System.IO.Pipelines
         /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active"
         /// memory is shrunk when bytes are consumed, Start is increased, and blocks are returned to the pool.
         /// </summary>
-        public BufferSegment Next { get; private set; }
+        public BufferSegment Next;
 
         /// <summary>
         /// Combined length of all segments before this
         /// </summary>
-        public long RunningLength { get; private set; }
+        public long RunningLength;
 
         /// <summary>
         /// The buffer being tracked
