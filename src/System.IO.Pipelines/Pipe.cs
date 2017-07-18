@@ -732,7 +732,7 @@ namespace System.IO.Pipelines
                 // Reading commit head shared with writer
                 result.ResultBuffer.BufferEnd.Segment = _commitHead;
                 result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+                result.ResultBuffer.BufferLength = _length;
 
                 result.ResultBuffer.BufferStart.Segment = head;
                 result.ResultBuffer.BufferStart.Index = head.Start;

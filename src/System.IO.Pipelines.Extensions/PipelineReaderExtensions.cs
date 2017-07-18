@@ -22,15 +22,16 @@ namespace System.IO.Pipelines
                 var result = awaiter.GetResult();
                 var inputBuffer = result.Buffer;
 
-                var sliced = inputBuffer.Slice(0, Math.Min(inputBuffer.Length, destination.Count));
+                var length = (int) Math.Min(inputBuffer.Length, destination.Count);
+
+                var sliced = inputBuffer.Slice(0, length);
                 sliced.CopyTo(destination);
 
-                int actual = sliced.Length;
                 input.Advance(sliced.End);
 
-                if (actual != 0)
+                if (length != 0)
                 {
-                    return new ValueTask<int>(actual);
+                    return new ValueTask<int>(length);
                 }
 
                 if (result.IsCompleted)
@@ -76,16 +77,17 @@ namespace System.IO.Pipelines
                 var result = await input.ReadAsync();
                 var inputBuffer = result.Buffer;
 
-                var sliced = inputBuffer.Slice(0, Math.Min(inputBuffer.Length, destination.Count));
+                var length = (int)Math.Min(inputBuffer.Length, destination.Count);
+                var sliced = inputBuffer.Slice(0, length);
                 sliced.CopyTo(destination);
-                int actual = sliced.Length;
                 input.Advance(sliced.End);
 
-                if (actual != 0)
+                if (length != 0)
                 {
-                    return actual;
+                    return length;
                 }
-                else if (result.IsCompleted)
+
+                if (result.IsCompleted)
                 {
                     return 0;
                 }

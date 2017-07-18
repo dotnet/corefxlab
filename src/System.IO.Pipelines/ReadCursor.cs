@@ -124,7 +124,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ReadCursor Seek(int bytes, ReadCursor end, bool checkEndReachable = true)
+        internal ReadCursor Seek(long bytes, ReadCursor end, bool checkEndReachable = true)
         {
             if (IsEnd)
             {
@@ -132,9 +132,9 @@ namespace System.IO.Pipelines
             }
 
             ReadCursor cursor;
-            if (Segment == end.Segment && end.Index - Index >= bytes)
+            if (Segment == end.Segment && end.Index >= bytes + Index)
             {
-                cursor = new ReadCursor(Segment, Index + bytes);
+                cursor = new ReadCursor(Segment, Index + (int)bytes);
             }
             else
             {
@@ -145,7 +145,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private ReadCursor SeekMultiSegment(int bytes, ReadCursor end, bool checkEndReachable)
+        private ReadCursor SeekMultiSegment(long bytes, ReadCursor end, bool checkEndReachable)
         {
             ReadCursor result = default(ReadCursor);
             bool foundResult = false;
@@ -158,7 +158,7 @@ namespace System.IO.Pipelines
                 {
                     if (segmentPart.Length >= bytes)
                     {
-                        result = new ReadCursor(segmentPart.Segment, segmentPart.Start + bytes);
+                        result = new ReadCursor(segmentPart.Segment, segmentPart.Start + (int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)
                         {

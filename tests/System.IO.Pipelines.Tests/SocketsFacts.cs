@@ -303,7 +303,6 @@ namespace System.IO.Pipelines.Tests
                     break;
                 }
 
-                int len = request.Length;
                 var response = connection.Output.Alloc();
                 response.Append(request);
                 await response.FlushAsync();

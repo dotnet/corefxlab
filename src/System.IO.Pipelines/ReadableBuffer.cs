@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Collections.Sequences;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -14,12 +15,12 @@ namespace System.IO.Pipelines
     {
         internal ReadCursor BufferStart;
         internal ReadCursor BufferEnd;
-        internal int BufferLength;
+        internal long BufferLength;
 
         /// <summary>
         /// Length of the <see cref="ReadableBuffer"/> in bytes.
         /// </summary>
-        public int Length => BufferLength;
+        public long Length => BufferLength;
 
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
@@ -79,11 +80,11 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadableBuffer Slice(int start, int length)
+        public ReadableBuffer Slice(long start, long length)
         {
             var begin = BufferStart.Seek(start, BufferEnd, false);
             var end = begin.Seek(length, BufferEnd, false);
-            return Slice(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace System.IO.Pipelines
         {
             BufferEnd.BoundsCheck(end);
             var begin = BufferStart.Seek(start, end);
-            return Slice(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace System.IO.Pipelines
             BufferEnd.BoundsCheck(end);
             end.BoundsCheck(start);
 
-            return new ReadableBuffer(start, end);
+            return SliceImpl(start, end);
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace System.IO.Pipelines
 
             var end = start.Seek(length, BufferEnd, false);
 
-            return Slice(start, end);
+            return SliceImpl(start, end);
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace System.IO.Pipelines
         {
             BufferEnd.BoundsCheck(start);
 
-            return new ReadableBuffer(start, BufferEnd);
+            return SliceImpl(start, BufferEnd);
         }
 
         /// <summary>
@@ -145,7 +146,13 @@ namespace System.IO.Pipelines
             if (start == 0) return this;
 
             var begin = BufferStart.Seek(start, BufferEnd, false);
-            return new ReadableBuffer(begin, BufferEnd);
+            return SliceImpl(begin, BufferEnd);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ReadableBuffer SliceImpl(ReadCursor start, ReadCursor end)
+        {
+            return new ReadableBuffer(start, end);
         }
 
         /// <summary>
