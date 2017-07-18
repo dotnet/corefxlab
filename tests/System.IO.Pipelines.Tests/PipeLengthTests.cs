@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
 using System.IO.Pipelines.Testing;
-using System.Threading;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
@@ -104,10 +102,6 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ByteByByteTest()
         {
-            //while (!Debugger.IsAttached)
-            //{
-            //    Thread.Sleep(100);
-            //}
             WritableBuffer writableBuffer = default(WritableBuffer);
             for (int i = 1; i <= 1024 * 1024; i++)
             {
