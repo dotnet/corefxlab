@@ -92,7 +92,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadableBuffer Slice(int start, ReadCursor end)
+        public ReadableBuffer Slice(long start, ReadCursor end)
         {
             BufferEnd.BoundsCheck(end);
             var begin = BufferStart.Seek(start, end);
@@ -117,7 +117,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="ReadCursor"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadableBuffer Slice(ReadCursor start, int length)
+        public ReadableBuffer Slice(ReadCursor start, long length)
         {
             BufferEnd.BoundsCheck(start);
 
@@ -141,7 +141,7 @@ namespace System.IO.Pipelines
         /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadableBuffer"/>'s end.
         /// </summary>
         /// <param name="start">The start index at which to begin this slice.</param>
-        public ReadableBuffer Slice(int start)
+        public ReadableBuffer Slice(long start)
         {
             if (start == 0) return this;
 
@@ -329,7 +329,7 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public ReadCursor Move(ReadCursor cursor, int count)
+        public ReadCursor Move(ReadCursor cursor, long count)
         {
             if (count < 0)
             {
