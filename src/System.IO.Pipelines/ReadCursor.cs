@@ -85,7 +85,14 @@ namespace System.IO.Pipelines
             BufferSegment endSegment,
             int endIndex)
         {
-            return (endSegment.RunningLength + endIndex) - (start.RunningLength + startIndex);
+            if (start == endSegment)
+            {
+                return endIndex - startIndex;
+            }
+
+            return (endSegment.RunningLength - start.Next.RunningLength)
+                   + (start.End - startIndex)
+                   + (endIndex - endSegment.Start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
