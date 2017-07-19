@@ -84,7 +84,7 @@ namespace System.IO.Pipelines
         {
             var begin = BufferStart.Seek(start, BufferEnd, false);
             var end = begin.Seek(length, BufferEnd, false);
-            return SliceImpl(begin, end);
+            return new ReadableBuffer(begin, end);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace System.IO.Pipelines
         {
             BufferEnd.BoundsCheck(end);
             var begin = BufferStart.Seek(start, end);
-            return SliceImpl(begin, end);
+            return new ReadableBuffer(begin, end);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace System.IO.Pipelines
             BufferEnd.BoundsCheck(end);
             end.BoundsCheck(start);
 
-            return SliceImpl(start, end);
+            return new ReadableBuffer(start, end);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace System.IO.Pipelines
 
             var end = start.Seek(length, BufferEnd, false);
 
-            return SliceImpl(start, end);
+            return new ReadableBuffer(start, end);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace System.IO.Pipelines
         {
             BufferEnd.BoundsCheck(start);
 
-            return SliceImpl(start, BufferEnd);
+            return new ReadableBuffer(start, BufferEnd);
         }
 
         /// <summary>
@@ -146,13 +146,7 @@ namespace System.IO.Pipelines
             if (start == 0) return this;
 
             var begin = BufferStart.Seek(start, BufferEnd, false);
-            return SliceImpl(begin, BufferEnd);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ReadableBuffer SliceImpl(ReadCursor start, ReadCursor end)
-        {
-            return new ReadableBuffer(start, end);
+            return new ReadableBuffer(begin, BufferEnd);
         }
 
         /// <summary>
