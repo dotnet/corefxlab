@@ -147,14 +147,8 @@ namespace System.IO.Pipelines
 
         public void SetNext(BufferSegment segment)
         {
-            if (segment == null)
-            {
-                throw new ArgumentNullException(nameof(segment));
-            }
-            if (Next != null)
-            {
-                throw new InvalidOperationException($"{nameof(Next)} is already set.");
-            }
+            Debug.Assert(segment != null);
+            Debug.Assert(Next == null);
 
             Next = segment;
 

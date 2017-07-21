@@ -106,6 +106,7 @@ namespace System.IO.Pipelines
             ReadCursor cursor;
             if (Segment == end.Segment && end.Index >= bytes + Index)
             {
+                // end.Index >= bytes + Index and end.Index is int
                 cursor = new ReadCursor(Segment, Index + (int)bytes);
             }
             else
