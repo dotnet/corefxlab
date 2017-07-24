@@ -826,13 +826,52 @@ namespace System.Text.Primitives.Tests
         [Theory]
         [InlineData("111", true, 111, 3)]
         [InlineData("4922abcdefg", true, 4922, 4)]
+        [InlineData("a1", false, 0, 0)]
+        [InlineData("1", true, 1, 1)]
+        [InlineData("-1", true, -1, 2)]
+        [InlineData("11", true, 11, 2)]
+        [InlineData("-11", true, -11, 3)]
+        [InlineData("00a0", true, 0, 2)]
+        [InlineData("00a", true, 0, 2)]
+        [InlineData("111", true, 111, 3)]
+        [InlineData("29220abcdefg", true, 29220, 5)]
+        [InlineData("0", true, 0, 1)]
+        [InlineData("+1", true, 1, 2)]
+        [InlineData("+32767", true, 32767, 6)]
+        [InlineData("as3gf31t`2c", false, 0, 0)]
+        [InlineData("agbagbagb5", false, 0, 0)]
+        [InlineData("1faag", true, 1, 1)]
+        [InlineData("-1sdg", true, -1, 2)]
+        [InlineData("-afsagsag4", false, 0, 0)]
+        [InlineData("+a", false, 0, 0)]
+        [InlineData("+", false, 0, 0)]
+        [InlineData("-", false, 0, 0)]
+        [InlineData("-000012345abcdefg1", true, -12345, 10)]
+        [InlineData("+000012345abcdefg1", true, 12345, 10)]
+        [InlineData("000012345abcdefg1", true, 12345, 9)]
+        [InlineData("00000000000000abcdefghijklmnop", true, 0, 14)]
+        [InlineData("000000a", true, 0, 6)]
+        [InlineData("00000000000000!", true, 0, 14)]
+        [InlineData("00000000000000", true, 0, 14)]
+        [InlineData("11423", true, 11423, 5)]
+        [InlineData("-11423", true, -11423, 6)]
+        [InlineData("12345!6", true, 12345, 5)]
+        [InlineData("12345!abc", true, 12345, 5)]
+        [InlineData("!!", false, 0, 0)]
+        [InlineData("", false, 0, 0)]
+        [InlineData("5", true, 5, 1)]
+        [InlineData("^", false, 0, 0)]
         [InlineData("32767", true, 32767, 5)] // max
         [InlineData("-32768", true, -32768, 6)] // min
+        [InlineData("032767", true, 32767, 6)] // max with 0
+        [InlineData("-032768", true, -32768, 7)] // min with 0
         [InlineData("-A", false, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0)] // invalid character test w/ char < '0'
         [InlineData("32768", false, 0, 0)] // positive overflow test
         [InlineData("-32769", false, 0, 0)] // negative overflow test
+        [InlineData("032768", false, 0, 0)] // positive overflow test with 0
+        [InlineData("-032769", false, 0, 0)] // negative overflow test with 0
         public unsafe void ParseInt16Dec(string text, bool expectSuccess, short expectedValue, int expectedConsumed)
         {
             short parsedValue;
