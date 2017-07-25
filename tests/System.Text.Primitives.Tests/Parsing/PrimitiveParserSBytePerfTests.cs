@@ -9,7 +9,7 @@ namespace System.Text.Primitives.Tests
 {
     public partial class PrimitiveParserSBytePerfTests
     {
-        private const int InnerCount = 10000;
+        private const int InnerCount = 100000;
 
         [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107")] // standard parse
