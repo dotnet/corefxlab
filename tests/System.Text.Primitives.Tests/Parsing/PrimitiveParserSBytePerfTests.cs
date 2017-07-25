@@ -40,53 +40,6 @@ namespace System.Text.Primitives.Tests
         [InlineData("127")] // max value
         [InlineData("0")]
         [InlineData("-128")] // min value
-        private static void PrimitiveParserByteSpanToSByte(string text)
-        {
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                    {
-                        PrimitiveParser.InvariantUtf8.TryParseSByte(utf8ByteSpan, out sbyte value);
-                        TestHelper.DoNotIgnore(value, 0);
-                    }
-                }
-            }
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        private static void PrimitiveParserByteSpanToSByte_VariableLength()
-        {
-            int textLength = s_SByteTextArray.Length;
-            byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
-            for (var i = 0; i < textLength; i++)
-            {
-                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_SByteTextArray[i]);
-            }
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                    {
-                        ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        PrimitiveParser.InvariantUtf8.TryParseSByte(utf8ByteSpan, out sbyte value);
-                        TestHelper.DoNotIgnore(value, 0);
-                    }
-                }
-            }
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData("107")] // standard parse
-        [InlineData("127")] // max value
-        [InlineData("0")]
-        [InlineData("-128")] // min value
         [InlineData("147")]
         [InlineData("2")]
         [InlineData("105")]
@@ -191,7 +144,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int.TryParse(text, out int value);
+                        sbyte.TryParse(text, out sbyte value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -214,7 +167,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int.TryParse(s_SByteTextArray[i % textLength], out int value);
+                        sbyte.TryParse(s_SByteTextArray[i % textLength], out sbyte value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
