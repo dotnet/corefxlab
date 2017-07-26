@@ -277,5 +277,74 @@ namespace tests
             };
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
+
+        [Fact]
+        public void CreateWithDiagonal()
+        {
+            var actual = Tensor<int>.CreateFromDiagonal(new Tensor<int>(fromArray: new[] { 1, 2, 3, 4, 5 }));
+
+            var expected = new[,]
+            {
+                {1, 0, 0, 0, 0 },
+                {0, 2, 0, 0, 0 },
+                {0, 0, 3, 0, 0 },
+                {0, 0, 0, 4, 0 },
+                {0, 0, 0, 0, 5 }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void CreateWithDiagonalAndOffset()
+        {
+            var actual = Tensor<int>.CreateFromDiagonal(new Tensor<int>(fromArray: new[] { 1, 2, 3, 4 }), 1);
+
+            var expected = new[,]
+            {
+                {0, 1, 0, 0, 0 },
+                {0, 0, 2, 0, 0 },
+                {0, 0, 0, 3, 0 },
+                {0, 0, 0, 0, 4 },
+                {0, 0, 0, 0, 0 }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            actual = Tensor<int>.CreateFromDiagonal(new Tensor<int>(fromArray: new[] { 1, 2, 3, 4 }), -1);
+
+            expected = new[,]
+            {
+                {0, 0, 0, 0, 0 },
+                {1, 0, 0, 0, 0 },
+                {0, 2, 0, 0, 0 },
+                {0, 0, 3, 0, 0 },
+                {0, 0, 0, 4, 0 }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            actual = Tensor<int>.CreateFromDiagonal(new Tensor<int>(fromArray: new[] { 1 }), -4);
+            expected = new[,]
+            {
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 },
+                {1, 0, 0, 0, 0 }
+            };
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            actual = Tensor<int>.CreateFromDiagonal(new Tensor<int>(fromArray: new[] { 1 }), 4);
+            expected = new[,]
+            {
+                {0, 0, 0, 0, 1 },
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 },
+                {0, 0, 0, 0, 0 }
+            };
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
     }
 }

@@ -136,6 +136,56 @@ namespace System.Numerics
             for(int i = 0; i < size; i++)
             {
                 result.backingArray[i] = oneValue;
+
+        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal)
+        {
+            return CreateFromDiagonal(diagonal, 0);
+        }
+
+        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal, int offset)
+        {
+            int diagonalLength = diagonal.dimensions[0];
+
+            // TODO: allow specification of axis1 and axis2?
+            var dimensions = new int[diagonal.dimensions.Length + 1];
+
+            // assume square
+            var axisLength = diagonalLength + Math.Abs(offset);
+            dimensions[0] = dimensions[1] = axisLength;
+
+            var remainingDimensions = new int[dimensions.Length - 2];
+            
+            for(int i = 1; i < diagonal.dimensions.Length; i++)
+            {
+                dimensions[i + 1] = diagonal.dimensions[i];
+                remainingDimensions[i - 1] = diagonal.dimensions[i];
+            }
+
+            var result = new Tensor<T>(dimensions);
+
+            var sizePerDiagonal = diagonal.Length / diagonalLength;
+            var destIndices = new int[result.Rank];
+            var diagnonalIndices = new int[diagonal.Rank];
+            var diagProjectionIndices = new int[remainingDimensions.Length];
+
+            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
+            {
+                var destIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
+                var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
+
+                destIndices[0] = destIndex0;
+                destIndices[1] = destIndex1;
+                diagnonalIndices[0] = diagIndex;
+
+                for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
+                {
+                    GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
+
+                    Array.Copy(diagProjectionIndices, 0, destIndices, 2, diagProjectionIndices.Length);
+                    Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
+
+                    result[destIndices] = diagonal[diagnonalIndices];
+                }
             }
 
             return result;
@@ -163,7 +213,7 @@ namespace System.Numerics
                 throw new InvalidOperationException($"Cannot compute diagonal of {nameof(Tensor<T>)} with Rank less than 2.");
             }
 
-            // TODO: allow specification of axis1 and axis2
+            // TODO: allow specification of axis1 and axis2?
             var axisLength0 = dimensions[0];
             var axisLength1 = dimensions[1];
 
@@ -202,8 +252,6 @@ namespace System.Numerics
             }
 
             var diagonalTensor = new Tensor<T>(dimensions:newTensorDimensions);
-
-            // number of 
             var sizePerDiagonal = diagonalTensor.Length / diagonalLength;
 
             Debug.Assert(sizePerDiagonal == GetProduct(remainingDimensions));
@@ -368,6 +416,24 @@ namespace System.Numerics
             return GetOffsetFromIndicies(indices, dimensions);
         }
 
+        // Inverse of GetOffsetFromIndices
+        private void GetIndicesFromOffset(int offset, int[] indices)
+        {
+            GetIndicesFromOffset(offset, backingArray.Length, dimensions, indices);
+        }
+
+        #region statics
+
+        public static int Compare(Tensor<T> left, Tensor<T> right)
+        {
+            return StructuralComparisons.StructuralComparer.Compare(left, right);
+        }
+
+        public static bool Equals(Tensor<T> left, Tensor<T> right)
+        {
+            return StructuralComparisons.StructuralEqualityComparer.Equals(left, right);
+        }
+
         private static int GetOffsetFromIndicies(int[] indices, int[] dimensions)
         {
             Debug.Assert(indices.Length == dimensions.Length);
@@ -392,12 +458,6 @@ namespace System.Numerics
             }
 
             return index;
-        }
-
-        // Inverse of GetOffsetFromIndices
-        private void GetIndicesFromOffset(int offset, int[] indices)
-        {
-            GetIndicesFromOffset(offset, backingArray.Length, dimensions, indices);
         }
 
         private static void GetIndicesFromOffset(int offset, int totalLength, int[] dimensions, int[] indices)
@@ -439,10 +499,12 @@ namespace System.Numerics
             return product;
         }
 
+        #region IEnumerable members
         public IEnumerator GetEnumerator()
         {
             return backingArray.GetEnumerator();
         }
+        #endregion
 
         #region ICollection members
         int ICollection.Count => backingArray.Length;
@@ -594,7 +656,7 @@ namespace System.Numerics
             }
 
             int result = 0;
-            var indices = new int[Rank];
+            var indices = new int[Rank];  // consider stackalloc
             for (int i = 0; i < backingArray.Length; i++)
             {
                 var left = backingArray[i];
@@ -682,7 +744,7 @@ namespace System.Numerics
                 }
             }
             
-            var indices = new int[Rank];
+            var indices = new int[Rank];  // consider stackalloc
             for (int i = 0; i < backingArray.Length; i++)
             {
                 var left = backingArray[i];
