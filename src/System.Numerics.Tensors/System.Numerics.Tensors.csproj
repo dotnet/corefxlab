@@ -5,5 +5,30 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET Tensor Array corefxlab</PackageTags>
+    <!-- disable automatic compile item inclusion so that we can set the correct metadata on TextTemplate-generated sources -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="System\Numerics\Tensor.cs" />
+    <Compile Include="System\Numerics\TensorArithmetic.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TensorArithmetic.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="System\Numerics\TensorArithmetic.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TensorArithmetic.tt</DependentUpon>
+    </None>
+    <None Update="System\Numerics\TensorArithmetic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TensorArithmetic.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- enable the TextTemplating extension -->
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
 </Project>

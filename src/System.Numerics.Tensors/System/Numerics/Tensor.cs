@@ -12,6 +12,7 @@ namespace System.Numerics
         private readonly T[] backingArray;
         private readonly int[] dimensions;
 
+        private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
         public Tensor(Array fromArray)
         {
@@ -107,8 +108,20 @@ namespace System.Numerics
             dimensions.CopyTo(this.dimensions, 0);
         }
 
+        /// <summary>
+        /// Total length of the Tensor.
+        /// </summary>
         public int Length => backingArray.Length;
+
+        /// <summary>
+        /// Rank of the tensor: number of dimensions.
+        /// </summary>
         public int Rank => dimensions.Length;
+
+        /// <summary>
+        /// Returns a single dimensional view of this Tensor, in C-style ordering
+        /// </summary>
+        public T[] Buffer => backingArray;
 
         /// <summary>
         /// Sets all elements in Tensor to <paramref name="value"/>.
@@ -124,18 +137,43 @@ namespace System.Numerics
             }
         }
 
+        /// <summary>
+        /// Creates a new Tensor with the same size as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <returns></returns>
         public Tensor<T> CloneEmpty()
         {
             return new Tensor<T>(dimensions);
         }
 
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="oneValue"></param>
+        /// <returns></returns>
+        public static Tensor<T> CreateIdentity(int size)
+        {
+            return CreateIdentity(size, arithmetic.One);
+        }
+
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="oneValue"></param>
+        /// <returns></returns>
         public static Tensor<T> CreateIdentity(int size, T oneValue)
         {
             var result = new Tensor<T>(size, size);
 
             for(int i = 0; i < size; i++)
             {
-                result.backingArray[i] = oneValue;
+                result.backingArray[i * size + i] = oneValue;
+            }
+
+            return result;
+        }
 
         public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal)
         {
@@ -498,6 +536,40 @@ namespace System.Numerics
 
             return product;
         }
+        #endregion
+
+        #region Arithmetic
+
+        public static Tensor<T> operator +(Tensor<T> left, Tensor<T> right)
+        {
+            return arithmetic.Add(left, right);
+        }
+
+        public static Tensor<T> operator +(Tensor<T> tensor, T scalar)
+        {
+            return arithmetic.Add(tensor, scalar);
+        }
+
+        public static Tensor<T> operator +(Tensor<T> tensor)
+        {
+            return arithmetic.UnaryPlus(tensor);
+        }
+        public static Tensor<T> operator -(Tensor<T> left, Tensor<T> right)
+        {
+            return arithmetic.Subtract(left, right);
+        }
+
+        public static Tensor<T> operator -(Tensor<T> tensor, T scalar)
+        {
+            return arithmetic.Subtract(tensor, scalar);
+        }
+
+        public static Tensor<T> operator -(Tensor<T> tensor)
+        {
+            return arithmetic.UnaryMinus(tensor);
+        }
+
+        #endregion
 
         #region IEnumerable members
         public IEnumerator GetEnumerator()

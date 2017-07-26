@@ -1,0 +1,234 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace System.Numerics
+{
+    internal interface ITensorArithmetic<T>
+    {
+        T One { get; }
+        Tensor<T> Add(Tensor<T> left, Tensor<T> right);
+        Tensor<T> Add(Tensor<T> tensor, T scalar);
+        Tensor<T> UnaryPlus(Tensor<T> tensor);
+        Tensor<T> Subtract(Tensor<T> left, Tensor<T> right);
+        Tensor<T> Subtract(Tensor<T> tensor, T scalar);
+        Tensor<T> UnaryMinus(Tensor<T> tensor);
+    }
+
+    internal static class TensorArithmetic
+    {   
+        public static ITensorArithmetic<T> GetArithmetic<T>()
+        {
+<# foreach (TypeConfiguration type in typeConfiguration)
+ {
+#>
+            <#=GenerateIfStatementHeader(type)#>
+            {
+                return (ITensorArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
+            }
+<#
+ }
+#>
+            return null;
+        }
+    }
+    
+<# foreach (TypeConfiguration type in typeConfiguration)
+ {
+#>
+    internal class <#=type.ClassPrefix#>Arithmetic : ITensorArithmetic<<#=type.TypeName#>>
+    {
+        public <#=type.TypeName#> One => <#=type.OneLiteral#>;
+
+        public Tensor<<#=type.TypeName#>> Add(Tensor<<#=type.TypeName#>> left, Tensor<<#=type.TypeName#>> right)
+        {
+<# if (type.TypeName == "bool")
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            // TODO: Assert same shape
+            var result = left.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)(left.Buffer[i] + right.Buffer[i]);
+            }
+
+            return result;
+<#
+}
+#>
+        }
+
+        public Tensor<<#=type.TypeName#>> Add(Tensor<<#=type.TypeName#>> tensor, <#=type.TypeName#> scalar)
+        {
+<# if (type.TypeName == "bool")
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            var result = tensor.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)(tensor.Buffer[i] + scalar);
+            }
+
+            return result;
+<#
+}
+#>
+        }
+
+        public Tensor<<#=type.TypeName#>> UnaryPlus(Tensor<<#=type.TypeName#>> tensor)
+        {
+<# if (type.TypeName == "bool")
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            // TODO: Assert same shape
+            var result = tensor.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)+tensor.Buffer[i];
+            }
+
+            return result;
+<#
+}
+#>
+        }
+
+        public Tensor<<#=type.TypeName#>> Subtract(Tensor<<#=type.TypeName#>> left, Tensor<<#=type.TypeName#>> right)
+        {
+<# if (type.TypeName == "bool")
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            // TODO: Assert same shape
+            var result = left.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)(left.Buffer[i] - right.Buffer[i]);
+            }
+
+            return result;
+<#
+}
+#>
+        }
+
+        public Tensor<<#=type.TypeName#>> Subtract(Tensor<<#=type.TypeName#>> tensor, <#=type.TypeName#> scalar)
+        {
+<# if (type.TypeName == "bool")
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            var result = tensor.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)(tensor.Buffer[i] - scalar);
+            }
+
+            return result;
+<#
+}
+#>
+        }
+
+        public Tensor<<#=type.TypeName#>> UnaryMinus(Tensor<<#=type.TypeName#>> tensor)
+        {
+<# if (type.TypeName == "bool" || type.TypeName[0] == 'u')
+{
+#>
+            throw new NotSupportedException();
+<#
+} else {
+#>
+            // TODO: Assert same shape
+            var result = tensor.CloneEmpty();
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (<#=type.TypeName#>)-tensor.Buffer[i];
+            }
+
+            return result;
+<#
+}
+#>
+        }
+    }
+<#
+ }
+#>
+}
+<#+
+    public class TypeConfiguration
+    {
+        public TypeConfiguration(string typeName, string classPrefix = null, string oneLiteral = null)
+        {
+            TypeName = typeName;
+            ClassPrefix = classPrefix ?? char.ToUpper(typeName[0]) + typeName.Substring(1);
+            OneLiteral = oneLiteral ?? "1";
+        }
+
+        public string TypeName { get; }
+        public string ClassPrefix { get; }
+        public string OneLiteral { get; }
+    }
+
+    public string GenerateIfStatementHeader(TypeConfiguration type)
+    {
+        string keyword = (type == typeConfiguration[0]) ? "if" : "else if";
+        return $"{keyword} (typeof(T) == typeof({type.TypeName}))";
+    }
+
+    public TypeConfiguration[] typeConfiguration = new []
+    {
+        new TypeConfiguration("bool", oneLiteral:"true"),
+        new TypeConfiguration("byte"),
+        new TypeConfiguration("char", oneLiteral:"(char)1"),
+        new TypeConfiguration("decimal"),
+        new TypeConfiguration("double", oneLiteral:"1.0"),
+        new TypeConfiguration("float", oneLiteral:"1.0f"),
+        new TypeConfiguration("int"),
+        new TypeConfiguration("long"),
+        new TypeConfiguration("sbyte", classPrefix:"SByte"),
+        new TypeConfiguration("short"),
+        new TypeConfiguration("uint", classPrefix:"UInt"),
+        new TypeConfiguration("ulong", classPrefix:"ULong"),
+        new TypeConfiguration("ushort", classPrefix:"UShort")
+    };
+#>
