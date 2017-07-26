@@ -26,7 +26,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Returns the number of bytes currently written and uncommitted.
         /// </summary>
-        public int BytesWritten => AsReadableBuffer().Length;
+        public long BytesWritten => AsReadableBuffer().Length;
 
         Span<byte> IOutput.Buffer => Buffer.Span;
 
@@ -53,7 +53,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="count">number of bytes</param>
         /// <remarks>
-        /// Used when writing to <see cref="Buffer"/> directly. 
+        /// Used when writing to <see cref="Buffer"/> directly.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">
         /// More requested than underlying <see cref="IBufferPool"/> can allocate in a contiguous block.

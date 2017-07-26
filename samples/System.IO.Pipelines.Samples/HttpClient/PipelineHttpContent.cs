@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Samples
 
         protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            int remaining = ContentLength;
+            long remaining = ContentLength;
 
             while (remaining > 0)
             {
