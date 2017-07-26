@@ -11,6 +11,30 @@ namespace System.Text.Primitives.Tests
     {
         private const int InnerCount = 100000;
 
+        private static readonly string[] s_SByteTextArray = new string[20]
+        {
+           "145",
+            "2",
+            "112",
+            "-112",
+            "114",
+            "-21",
+            "-2",
+            "114",
+            "-114",
+            "-124",
+            "117",
+            "-117",
+            "-14",
+            "-2",
+            "2",
+            "14",
+            "74",
+            "21",
+            "83",
+            "-127"
+        };
+
         [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107")] // standard parse
         [InlineData("127")] // max value
@@ -58,6 +82,30 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = InnerCount)]
+        private static void PrimitiveParserByteSpanToSByte_BytesConsumed_VariableLength()
+        { 
+            int textLength = s_SByteTextArray.Length; 
+            byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength); 
+            for (var i = 0; i<textLength; i++) 
+            { 
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_SByteTextArray[i]); 
+            } 
+
+            foreach (var iteration in Benchmark.Iterations) 
+            { 
+                using (iteration.StartMeasurement()) 
+                { 
+                    for (int i = 0; i<Benchmark.InnerIterationCount; i++) 
+                    {
+                        ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
+                        PrimitiveParser.InvariantUtf8.TryParseSByte(utf8ByteSpan, out sbyte value, out int bytesConsumed);
+                        TestHelper.DoNotIgnore(value, bytesConsumed);
+                    } 
+                } 
+            } 
+        } 
+
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("107")] // standard parse
         [InlineData("127")] // max value
         [InlineData("0")]
@@ -74,17 +122,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("+127")]
         [InlineData("+21")]
         [InlineData("+2")]
-        [InlineData("00000000000000000000123abcdfg")]
-        [InlineData("2abcdefghijklmnop")]
-        [InlineData("14abcdefghijklmnop")]
-        [InlineData("-14abcdefghijklmnop")]
-        [InlineData("-21abcdefghijklmnop")]
-        [InlineData("-2abcdefghijklmnop")]
-        [InlineData("+14abcdefghijklmnop")]
-        [InlineData("+21abcdefghijklmnop")]
-        [InlineData("+2abcdefghijklmnop")]
-        [InlineData("+111abcdefghijklmnop")]
-        [InlineData("+000000000000000000123abcdfg")]
+        [InlineData("00000000000000000000123")]
         private static void PrimitiveParserByteSpanToSByte_BytesConsumed_Baseline(string text)
         {
             byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
