@@ -137,6 +137,11 @@ namespace System.Numerics
             }
         }
 
+        public Tensor<T> Clone()
+        {
+            return new Tensor<T>((T[])backingArray.Clone(), dimensions);
+        }
+
         /// <summary>
         /// Creates a new Tensor with the same size as this tensor with elements initialized to their default value.
         /// </summary>
@@ -539,37 +544,208 @@ namespace System.Numerics
         #endregion
 
         #region Arithmetic
+        private static void CheckShape(Tensor<T> left, Tensor<T> right)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (right == null)
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
+            // TODO: Support "compatible sizes" AKA "broadcasting"
+
+            if (left.Rank != right.Rank || left.Length != right.Length)
+            {
+                throw new ArgumentException("Operands must have matching dimensions");
+            }
+
+            for(int i = 0; i < left.Rank; i++)
+            {
+                if (left.dimensions[i] != right.dimensions[i])
+                {
+                    throw new ArgumentException("Operands must have matching dimensions");
+                }
+            }
+        }
 
         public static Tensor<T> operator +(Tensor<T> left, Tensor<T> right)
         {
+            CheckShape(left, right);
             return arithmetic.Add(left, right);
         }
 
         public static Tensor<T> operator +(Tensor<T> tensor, T scalar)
         {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
             return arithmetic.Add(tensor, scalar);
         }
 
         public static Tensor<T> operator +(Tensor<T> tensor)
         {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
             return arithmetic.UnaryPlus(tensor);
         }
         public static Tensor<T> operator -(Tensor<T> left, Tensor<T> right)
         {
+            CheckShape(left, right);
             return arithmetic.Subtract(left, right);
         }
 
         public static Tensor<T> operator -(Tensor<T> tensor, T scalar)
         {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
             return arithmetic.Subtract(tensor, scalar);
         }
 
         public static Tensor<T> operator -(Tensor<T> tensor)
         {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
             return arithmetic.UnaryMinus(tensor);
         }
 
+        public static Tensor<T> operator ++(Tensor<T> tensor)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Increment(tensor);
+        }
+
+        public static Tensor<T> operator --(Tensor<T> tensor)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Decrement(tensor);
+        }
+
+        public static Tensor<T> operator *(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.Multiply(left, right);
+        }
+
+        public static Tensor<T> operator *(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Multiply(tensor, scalar);
+        }
+
+        public static Tensor<T> operator /(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.Divide(left, right);
+        }
+
+        public static Tensor<T> operator /(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Divide(tensor, scalar);
+        }
+
+        public static Tensor<T> operator %(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.Modulo(left, right);
+        }
+
+        public static Tensor<T> operator %(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Modulo(tensor, scalar);
+        }
+
+        public static Tensor<T> operator &(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.And(left, right);
+        }
+
+        public static Tensor<T> operator &(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.And(tensor, scalar);
+        }
+
+        public static Tensor<T> operator |(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.Or(left, right);
+        }
+
+        public static Tensor<T> operator |(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Or(tensor, scalar);
+        }
+        public static Tensor<T> operator ^(Tensor<T> left, Tensor<T> right)
+        {
+            CheckShape(left, right);
+            return arithmetic.Xor(left, right);
+        }
+
+        public static Tensor<T> operator ^(Tensor<T> tensor, T scalar)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.Xor(tensor, scalar);
+        }
+
+        public static Tensor<T> operator <<(Tensor<T> tensor, int value)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.LeftShift(tensor, value);
+        }
+
+        public static Tensor<T> operator >>(Tensor<T> tensor, int value)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+            return arithmetic.RightShift(tensor, value);
+        }
         #endregion
+
+        
 
         #region IEnumerable members
         public IEnumerator GetEnumerator()

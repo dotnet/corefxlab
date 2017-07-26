@@ -498,5 +498,446 @@ namespace tests
             var actual = -tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
+
+        [Fact]
+        public void PrefixIncrement()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expectedResult = new Tensor<int>(
+                new[,]
+                {
+                    {1, 2, 3},
+                    {4, 5, 6}
+                });
+
+            var expectedTensor = expectedResult;
+
+            var actual = ++tensor;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+        }
+
+
+        [Fact]
+        public void PostfixIncrement()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            // returns original value
+            var expectedResult = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            // increments operand
+            var expectedTensor = new Tensor<int>(
+                new[,]
+                {
+                    {1, 2, 3},
+                    {4, 5, 6}
+                }); ;
+
+            var actual = tensor++;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+        }
+
+
+        [Fact]
+        public void PrefixDecrement()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expectedResult = new Tensor<int>(
+                new[,]
+                {
+                    {-1, 0, 1},
+                    {2, 3, 4}
+                });
+
+            var expectedTensor = expectedResult;
+
+            var actual = --tensor;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+        }
+
+        [Fact]
+        public void PostfixDecrement()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            // returns original value
+            var expectedResult = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            // decrements operand
+            var expectedTensor = new Tensor<int>(
+                new[,]
+                {
+                    {-1, 0, 1},
+                    {2, 3, 4}
+                }); ;
+
+            var actual = tensor--;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+        }
+
+        [Fact]
+        public void Multiply()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 4},
+                    {9, 16, 25}
+                });
+
+            var actual = tensor * tensor;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void MultiplyScalar()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 2, 4},
+                    {6, 8, 10}
+                });
+
+            var actual = tensor * 2;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Divide()
+        {
+            var dividend = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 4},
+                    {9, 16, 25}
+                });
+
+            var divisor = new Tensor<int>(
+                new[,]
+                {
+                    {1, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var actual = dividend / divisor;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void DivideScalar()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 2, 4},
+                    {6, 8, 10}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var actual = tensor / 2;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Modulo()
+        {
+            var dividend = new Tensor<int>(
+                new[,]
+                {
+                    {0, 3, 8},
+                    {11, 14, 17}
+                });
+
+            var divisor = new Tensor<int>(
+                new[,]
+                {
+                    {1, 2, 3},
+                    {4, 5, 6}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var actual = dividend % divisor;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void ModuloScalar()
+        {
+            var tensor = new Tensor<int>(
+                new[,]
+                {
+                    {0, 3, 4},
+                    {7, 8, 9}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 0},
+                    {1, 0, 1}
+                });
+
+            var actual = tensor % 2;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void And()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 3},
+                    {7, 15, 31}
+                });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {1, 1, 3},
+                    {2, 4, 8}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 3},
+                    {2, 4, 8}
+                });
+
+            var actual = left & right;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void AndScalar()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 3},
+                    {5, 15, 31}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 0, 0},
+                    {4, 4, 20}
+                });
+
+            var actual = left & 20;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Or()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 3},
+                    {7, 14, 31}
+                });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {1, 2, 4},
+                    {2, 4, 8}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {1, 3, 7},
+                    {7, 14, 31}
+                });
+
+            var actual = left | right;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void OrScalar()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {1, 1, 3},
+                    {3, 5, 5}
+                });
+
+            var actual = left | 1;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Xor()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 3},
+                    {7, 14, 31}
+                });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {1, 2, 4},
+                    {2, 4, 8}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {1, 3, 7},
+                    {5, 10, 23}
+                });
+
+            var actual = left ^ right;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void XorScalar()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {1, 0, 3},
+                    {2, 5, 4}
+                });
+
+            var actual = left ^ 1;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+        
+        [Fact]
+        public void LeftShift()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 2, 4},
+                    {6, 8, 10}
+                });
+
+            var actual = left << 1;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void RightShift()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0, 0, 1},
+                    {1, 2, 2}
+                });
+
+            var actual = left >> 1;
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
     }
 }
