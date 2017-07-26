@@ -129,7 +129,7 @@ namespace System.IO.Pipelines
                     else if (_tail != null)
                     {
                         // Add this segment to the end of the chain
-                        _tail.Next = segment;
+                        _tail.SetNext(segment);
                     }
 
                     // Always update tail to the buffer's tail

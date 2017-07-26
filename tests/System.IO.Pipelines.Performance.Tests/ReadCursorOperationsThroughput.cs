@@ -139,7 +139,7 @@ namespace System.IO.Pipelines.Performance.Tests
                         }
 
                         length = span.Length;
-                        skip = buffer.Slice(current, found).Length + 1;
+                        skip = (int)buffer.Slice(current, found).Length + 1;
                     }
                     else
                     {

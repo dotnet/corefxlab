@@ -44,7 +44,7 @@ namespace System.IO.Pipelines.Testing
                 }
                 else
                 {
-                    last.Next = current;
+                    last.SetNext(current);
                     last = current;
                 }
                 i++;
