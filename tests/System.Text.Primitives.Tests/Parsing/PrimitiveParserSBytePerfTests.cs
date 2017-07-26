@@ -11,13 +11,12 @@ namespace System.Text.Primitives.Tests
     {
         private const int InnerCount = 100000;
 
-        private static readonly string[] s_SByteTextArray = new string[20]
+        private static readonly string[] s_SByteTextArray = new string[17]
         {
-           "145",
+           "95",
             "2",
             "112",
             "-112",
-            "114",
             "-21",
             "-2",
             "114",
@@ -26,8 +25,6 @@ namespace System.Text.Primitives.Tests
             "117",
             "-117",
             "-14",
-            "-2",
-            "2",
             "14",
             "74",
             "21",
