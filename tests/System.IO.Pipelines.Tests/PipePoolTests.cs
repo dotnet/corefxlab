@@ -164,7 +164,7 @@ namespace System.IO.Pipelines.Tests
                     _bufferPool.CurrentlyRentedBlocks--;
                 }
 
-                public override bool IsRetained { get; }
+                public override bool IsRetained => true;
                 public override void Retain()
                 {
                 }
