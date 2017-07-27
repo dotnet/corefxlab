@@ -92,9 +92,14 @@ namespace System.IO.Pipelines
             return builder.ToString();
         }
 
-        protected override void OnZeroReferences()
+        protected void OnZeroReferences()
         {
             Pool.Return(this);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _disposed = true;
         }
 
         public override void Retain()
@@ -106,7 +111,10 @@ namespace System.IO.Pipelines
         public override void Release()
         {
             // TODO: should it check IsRetained?
-            Interlocked.Decrement(ref _referenceCount);
+            if (Interlocked.Decrement(ref _referenceCount) <= 0)
+            {
+               OnZeroReferences();
+            }
         }
 
         public override bool IsRetained => _referenceCount > 0;

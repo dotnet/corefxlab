@@ -15,21 +15,21 @@ namespace System.IO.Pipelines.Tests
             using (var pool = new MemoryPool())
             {
                 var block1 = pool.Rent(1);
-                block1.AddReference();
+                block1.Retain();
                 block1.Release();
 
-            OwnedBuffer<byte> block2 = null;
+                OwnedBuffer<byte> block2 = null;
 
-            // Lease-return until we get same block
+                // Lease-return until we get same block
                 while (block1 != block2)
-            {
-                block2 = pool.Rent(1);
-                    block2.AddReference();
+                {
+                    block2 = pool.Rent(1);
+                    block2.Retain();
                     block2.Release();
                 }
 
-            Assert.True(block2.AsSpan().Length > 0);
+                Assert.True(block2.AsSpan().Length > 0);
+            }
         }
     }
-}
 }

@@ -131,36 +131,42 @@ namespace System.IO.Pipelines.Tests
                     _bufferPool.CurrentlyRentedBlocks++;
                 }
 
-                protected override void OnZeroReferences()
+                public override int Length => _array.Length;
+                public override Span<byte> AsSpan(int index, int length)
+                {
+                    if (IsDisposed)
+                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                    return _array;
+                }
+
+                public override BufferHandle Pin(int index = 0)
+                {
+                    throw new NotImplementedException();
+                }
+
+                protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
+                {
+                    if (IsDisposed)
+                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                    arraySegment = new ArraySegment<byte>(_array);
+                    return true;
+                }
+
+                public override bool IsDisposed { get; }
+                protected override void Dispose(bool disposing)
+                {
+                    throw new NotImplementedException();
+                }
+
+                public override void Release()
                 {
                     _bufferPool.ReturnedBlocks++;
                     _bufferPool.CurrentlyRentedBlocks--;
                 }
 
-                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                public override bool IsRetained { get; }
+                public override void Retain()
                 {
-                    if (IsDisposed)
-                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    buffer = new ArraySegment<byte>(_array);
-                    return true;
-                }
-
-                protected override unsafe bool TryGetPointerInternal(out void* pointer)
-                {
-                    pointer = null;
-                    return false;
-                }
-
-                public override int Length => _array.Length;
-
-                public override Span<byte> Span
-                {
-                    get
-                    {
-                        if (IsDisposed)
-                            PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                        return _array;
-                    }
                 }
 
                 byte[] _array;
