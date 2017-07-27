@@ -7,10 +7,143 @@ using System.Diagnostics;
 
 namespace System.Numerics
 {
+
+    public static partial class Tensor
+    {
+        internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (right == null)
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
+            // TODO: Support "compatible sizes" AKA "broadcasting"
+
+            if (left.Rank != right.Rank || left.Length != right.Length)
+            {
+                throw new ArgumentException("Operands must have matching dimensions");
+            }
+
+            for (int i = 0; i < left.Rank; i++)
+            {
+                if (left.dimensions[i] != right.dimensions[i])
+                {
+                    throw new ArgumentException("Operands must have matching dimensions");
+                }
+            }
+        }
+
+        internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<T> result)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (right == null)
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            // TODO: Support "compatible sizes" AKA "broadcasting"
+
+            if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
+            {
+                throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            for (int i = 0; i < result.Rank; i++)
+            {
+                if (left.dimensions[i] != result.dimensions[i] || right.dimensions[i] != result.dimensions[i])
+                {
+                    throw new ArgumentException("Operands and result must have matching dimensions");
+                }
+            }
+        }
+
+        internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<bool> result)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (right == null)
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            // TODO: Support "compatible sizes" AKA "broadcasting"
+
+            if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
+            {
+                throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            for (int i = 0; i < result.Rank; i++)
+            {
+                if (left.dimensions[i] != result.dimensions[i] || right.dimensions[i] != result.dimensions[i])
+                {
+                    throw new ArgumentException("Operands and result must have matching dimensions");
+                }
+            }
+        }
+
+        internal static void ValidateArgs<T>(Tensor<T> tensor)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+        }
+
+        internal static void ValidateArgs<T>(Tensor<T> tensor, Tensor<T> result)
+        {
+            if (tensor == null)
+            {
+                throw new ArgumentNullException(nameof(tensor));
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
+            if (tensor.Rank != result.Rank || tensor.Length != result.Length)
+            {
+                throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            for (int i = 0; i < result.Rank; i++)
+            {
+                if (tensor.dimensions[i] != result.dimensions[i])
+                {
+                    throw new ArgumentException("Operands and result must have matching dimensions");
+                }
+            }
+        }
+        
+    }
+
     public class Tensor<T>: IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable // todo: ICloneable
     {
         private readonly T[] backingArray;
-        private readonly int[] dimensions;
+        internal readonly int[] dimensions;
 
         private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
@@ -119,6 +252,11 @@ namespace System.Numerics
         public int Rank => dimensions.Length;
 
         /// <summary>
+        /// Returns a copy of the dimensions array.
+        /// </summary>
+        public int[] Dimensions => (int[])dimensions.Clone();
+
+        /// <summary>
         /// Returns a single dimensional view of this Tensor, in C-style ordering
         /// </summary>
         public T[] Buffer => backingArray;
@@ -149,6 +287,16 @@ namespace System.Numerics
         public Tensor<T> CloneEmpty()
         {
             return new Tensor<T>(dimensions);
+        }
+
+
+        /// <summary>
+        /// Creates a new Tensor of a different type with the same size as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <returns></returns>
+        public Tensor<TResult> CloneEmpty<TResult>()
+        {
+            return new Tensor<TResult>(dimensions);
         }
 
         /// <summary>
@@ -544,208 +692,116 @@ namespace System.Numerics
         #endregion
 
         #region Arithmetic
-        private static void CheckShape(Tensor<T> left, Tensor<T> right)
-        {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
-
-            // TODO: Support "compatible sizes" AKA "broadcasting"
-
-            if (left.Rank != right.Rank || left.Length != right.Length)
-            {
-                throw new ArgumentException("Operands must have matching dimensions");
-            }
-
-            for(int i = 0; i < left.Rank; i++)
-            {
-                if (left.dimensions[i] != right.dimensions[i])
-                {
-                    throw new ArgumentException("Operands must have matching dimensions");
-                }
-            }
-        }
 
         public static Tensor<T> operator +(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Add(left, right);
+            return Tensor.Add(left, right);
         }
 
         public static Tensor<T> operator +(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Add(tensor, scalar);
+            return Tensor.Add(tensor, scalar);
         }
 
         public static Tensor<T> operator +(Tensor<T> tensor)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.UnaryPlus(tensor);
+            return Tensor.UnaryPlus(tensor);
         }
         public static Tensor<T> operator -(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Subtract(left, right);
+            return Tensor.Subtract(left, right);
         }
 
         public static Tensor<T> operator -(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Subtract(tensor, scalar);
+            return Tensor.Subtract(tensor, scalar);
         }
 
         public static Tensor<T> operator -(Tensor<T> tensor)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.UnaryMinus(tensor);
+            return Tensor.UnaryMinus(tensor);
         }
 
         public static Tensor<T> operator ++(Tensor<T> tensor)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Increment(tensor);
+            return Tensor.Increment(tensor);
         }
 
         public static Tensor<T> operator --(Tensor<T> tensor)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Decrement(tensor);
+            return Tensor.Decrement(tensor);
         }
 
         public static Tensor<T> operator *(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Multiply(left, right);
+            return Tensor.Multiply(left, right);
         }
 
         public static Tensor<T> operator *(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Multiply(tensor, scalar);
+            return Tensor.Multiply(tensor, scalar);
         }
 
         public static Tensor<T> operator /(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Divide(left, right);
+            return Tensor.Divide(left, right);
         }
 
         public static Tensor<T> operator /(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Divide(tensor, scalar);
+            return Tensor.Divide(tensor, scalar);
         }
 
         public static Tensor<T> operator %(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Modulo(left, right);
+            return Tensor.Modulo(left, right);
         }
 
         public static Tensor<T> operator %(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Modulo(tensor, scalar);
+            return Tensor.Modulo(tensor, scalar);
         }
 
         public static Tensor<T> operator &(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.And(left, right);
+            return Tensor.And(left, right);
         }
 
         public static Tensor<T> operator &(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.And(tensor, scalar);
+            return Tensor.And(tensor, scalar);
         }
 
         public static Tensor<T> operator |(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Or(left, right);
+            return Tensor.Or(left, right);
         }
 
         public static Tensor<T> operator |(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Or(tensor, scalar);
+            return Tensor.Or(tensor, scalar);
         }
+
         public static Tensor<T> operator ^(Tensor<T> left, Tensor<T> right)
         {
-            CheckShape(left, right);
-            return arithmetic.Xor(left, right);
+            return Tensor.Xor(left, right);
         }
 
         public static Tensor<T> operator ^(Tensor<T> tensor, T scalar)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.Xor(tensor, scalar);
+            return Tensor.Xor(tensor, scalar);
         }
 
         public static Tensor<T> operator <<(Tensor<T> tensor, int value)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.LeftShift(tensor, value);
+            return Tensor.LeftShift(tensor, value);
         }
 
         public static Tensor<T> operator >>(Tensor<T> tensor, int value)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-            return arithmetic.RightShift(tensor, value);
+            return Tensor.RightShift(tensor, value);
         }
         #endregion
-
-        
 
         #region IEnumerable members
         public IEnumerator GetEnumerator()
@@ -805,6 +861,11 @@ namespace System.Numerics
         bool IList.Contains(object value)
         {
             return ((IList)backingArray).Contains(value);
+        }
+
+        public object ElementWiseEquals(Tensor<int> left, Tensor<int> right)
+        {
+            throw new NotImplementedException();
         }
 
         int IList.IndexOf(object value)

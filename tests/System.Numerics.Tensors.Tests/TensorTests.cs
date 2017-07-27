@@ -939,5 +939,61 @@ namespace tests
             var actual = left >> 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
+
+        [Fact]
+        public void ElementWiseEquals()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, -2},
+                    {2, 3, 5}
+                });
+
+            var expected = new Tensor<bool>(
+                new[,]
+                {
+                    {true, true, false },
+                    {false, false, true}
+                });
+
+            var actual = Tensor.Equals(left, right);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+
+        [Fact]
+        public void ElementWiseNotEquals()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, -2},
+                    {2, 3, 5}
+                });
+
+            var expected = new Tensor<bool>(
+                new[,]
+                {
+                    {false, false, true},
+                    {true, true, false}
+                });
+
+            var actual = Tensor.NotEquals(left, right);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
     }
 }

@@ -1,0 +1,253 @@
+﻿<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#+
+    public class TypeConfiguration
+    {
+        public TypeConfiguration(string typeName, string classPrefix = null, string oneLiteral = "1", bool supportsNumeric = true, bool supportsBitwise = true, IEnumerable<string> unsupportedMethods = null)
+        {
+            TypeName = typeName;
+            ClassPrefix = classPrefix ?? char.ToUpper(typeName[0]) + typeName.Substring(1);
+            OneLiteral = oneLiteral;
+            SupportsNumeric = supportsNumeric;
+            SupportsBitwise = supportsBitwise;
+            UnsupportedMethods = new HashSet<string>(unsupportedMethods ?? Enumerable.Empty<string>());
+        }
+
+        public string TypeName { get; }
+        public string ClassPrefix { get; }
+        public string OneLiteral { get; }
+        
+        public bool SupportsNumeric { get; }
+        public bool SupportsBitwise { get; }
+        public ISet<string> UnsupportedMethods { get; }
+    }
+
+    public string GenerateIfStatementHeader(TypeConfiguration type)
+    {
+        string keyword = (type == typeConfiguration[0]) ? "if" : "else if";
+        return $"{keyword} (typeof(T) == typeof({type.TypeName}))";
+    }
+
+    public TypeConfiguration[] typeConfiguration = new []
+    {
+        new TypeConfiguration("bool", oneLiteral:"true", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),
+        new TypeConfiguration("byte"),
+        new TypeConfiguration("char", oneLiteral:"(char)1"),
+        new TypeConfiguration("decimal", supportsBitwise: false),
+        new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false),
+        new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false),
+        new TypeConfiguration("int"),
+        new TypeConfiguration("long"),
+        new TypeConfiguration("sbyte", classPrefix:"SByte"),
+        new TypeConfiguration("short"),
+        new TypeConfiguration("uint", classPrefix:"UInt", unsupportedMethods: new[] {"UnaryMinus"}),
+        new TypeConfiguration("ulong", classPrefix:"ULong", unsupportedMethods: new[] {"UnaryMinus"}),
+        new TypeConfiguration("ushort", classPrefix:"UShort", unsupportedMethods: new[] {"UnaryMinus"})
+    };
+
+    public enum MethodType
+    {
+       Unary,
+       UnaryInPlace,
+       BinaryScalar,
+       BinaryInt,
+       Binary,
+       Comparison
+    }
+
+    public class MethodConfiguration
+    {
+        public MethodConfiguration(string methodName, MethodType methodType, string op, bool isNumeric = false, bool isBitwise = false)
+        {
+            MethodName = methodName;
+            MethodType = methodType;
+            Operator = op;
+            IsNumeric = isNumeric;
+            IsBitwise = isBitwise;
+        }
+
+        public string ResultName => "result";
+
+        public string MethodName { get; }
+        public MethodType MethodType { get; }
+        public string Operator { get; }
+        
+        public string GetGenericMethodSignature(string typeName)
+        {
+            var resultType = GetResultType(typeName);
+            var arguments = GetMethodArguments(typeName);
+
+            return $"{resultType} {MethodName}<{typeName}>({arguments})";
+        }
+        
+        public string GetGenericResultMethodSignature(string typeName)
+        {
+            var resultType = GetResultType(typeName);
+            var arguments = GetMethodArguments(typeName);
+
+            return $"void {MethodName}<{typeName}>({arguments}, {resultType} {ResultName})";
+        }
+
+        public string GetResultMethodSignature(string typeName)
+        {
+            var resultType = GetResultType(typeName);
+            var arguments = GetMethodArguments(typeName);
+
+            return $"void {MethodName}({arguments}, {resultType} {ResultName})";
+        }
+
+        public string GetMethodArguments(string typeName)
+        {
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                case MethodType.UnaryInPlace:
+                    return $"Tensor<{typeName}> tensor";
+                case MethodType.BinaryScalar:
+                    return $"Tensor<{typeName}> tensor, {typeName} scalar";
+                case MethodType.BinaryInt:
+                    return $"Tensor<{typeName}> tensor, int value";
+                case MethodType.Binary:
+                case MethodType.Comparison:
+                    return $"Tensor<{typeName}> left, Tensor<{typeName}> right";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        public string GetCallArguments()
+        {
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                case MethodType.UnaryInPlace:
+                    return "tensor";
+                case MethodType.BinaryScalar:
+                    return "tensor, scalar";
+                case MethodType.BinaryInt:
+                    return "tensor, value";
+                case MethodType.Binary:
+                case MethodType.Comparison:
+                    return "left, right";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+        
+        public string GetValidationMethod(bool includeResult)
+        {
+            var suffix = includeResult ? ", result" : "";
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                case MethodType.UnaryInPlace:
+                case MethodType.BinaryScalar:
+                case MethodType.BinaryInt:
+                    return $"ValidateArgs(tensor{suffix});";
+                case MethodType.Binary:
+                case MethodType.Comparison:
+                    return $"ValidateBinaryArgs(left, right{suffix});";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        public string GetResultType(string typeName)
+        {
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                case MethodType.UnaryInPlace:
+                case MethodType.BinaryScalar:
+                case MethodType.BinaryInt:
+                case MethodType.Binary:
+                    return $"Tensor<{typeName}>";
+                case MethodType.Comparison:
+                    return $"Tensor<bool>";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+
+        public string GetElementOperation(string typeName, string access)
+        {
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                    return $"{ResultName}{access} = ({typeName}){Operator}tensor{access}";
+                case MethodType.UnaryInPlace:
+                    return $"{ResultName}{access}{Operator}";
+                case MethodType.BinaryScalar:
+                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} scalar)";
+                case MethodType.BinaryInt:
+                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} value)";
+                case MethodType.Binary:
+                    return $"{ResultName}{access} = ({typeName})(left{access} {Operator} right{access})";
+                case MethodType.Comparison:
+                    return $"{ResultName}{access} = left{access} {Operator} right{access}";
+                default:
+                    throw new ArgumentException();
+
+            }
+        }
+
+        public string InitializeResult()
+        {
+            switch (MethodType)
+            {
+                case MethodType.UnaryInPlace:
+                    return $"tensor.Clone()";
+                case MethodType.Unary:
+                case MethodType.BinaryScalar:
+                case MethodType.BinaryInt:
+                    return $"tensor.CloneEmpty()";
+                case MethodType.Binary:
+                    return $"left.CloneEmpty()";
+                case MethodType.Comparison:
+                    return $"left.CloneEmpty<bool>()";
+                default:
+                    throw new ArgumentException();
+            }
+        }
+        
+        public bool IsNumeric { get; }
+        public bool IsBitwise { get; }
+    }
+
+    
+    public MethodConfiguration[] methodConfiguration = new []
+    {
+        new MethodConfiguration("Add", MethodType.Binary, "+", isNumeric:true),
+        new MethodConfiguration("Add", MethodType.BinaryScalar, "+", isNumeric:true),
+        new MethodConfiguration("UnaryPlus", MethodType.Unary, "+", isNumeric:true),
+        new MethodConfiguration("Subtract", MethodType.Binary, "-", isNumeric:true),
+        new MethodConfiguration("Subtract", MethodType.BinaryScalar, "-", isNumeric:true),
+        new MethodConfiguration("UnaryMinus", MethodType.Unary, "-", isNumeric:true),
+        new MethodConfiguration("Increment", MethodType.UnaryInPlace, "++", isNumeric:true),
+        new MethodConfiguration("Decrement", MethodType.UnaryInPlace, "--", isNumeric:true),
+        new MethodConfiguration("Multiply", MethodType.Binary, "*", isNumeric:true),  // element-wise product, not matrix product
+        new MethodConfiguration("Multiply", MethodType.BinaryScalar, "*", isNumeric:true),
+        new MethodConfiguration("Divide", MethodType.Binary, "/", isNumeric:true),
+        new MethodConfiguration("Divide", MethodType.BinaryScalar, "/", isNumeric:true),
+        new MethodConfiguration("Modulo", MethodType.Binary, "%", isNumeric:true),
+        new MethodConfiguration("Modulo", MethodType.BinaryScalar, "%", isNumeric:true),
+        new MethodConfiguration("And", MethodType.Binary, "&", isBitwise: true),
+        new MethodConfiguration("And", MethodType.BinaryScalar, "&", isBitwise: true),
+        new MethodConfiguration("Or", MethodType.Binary, "|", isBitwise: true),
+        new MethodConfiguration("Or", MethodType.BinaryScalar, "|", isBitwise: true),
+        new MethodConfiguration("Xor", MethodType.Binary, "^", isBitwise: true),
+        new MethodConfiguration("Xor", MethodType.BinaryScalar, "^", isBitwise: true),
+        new MethodConfiguration("LeftShift", MethodType.BinaryInt, "<<", isBitwise: true),
+        new MethodConfiguration("RightShift", MethodType.BinaryInt, ">>", isBitwise: true),
+
+        // Note all of these are element-wise operations not testing the operation on the entire Tensor
+        new MethodConfiguration("Equals", MethodType.Comparison, "=="),
+        new MethodConfiguration("NotEquals", MethodType.Comparison, "!="),
+        new MethodConfiguration("GreaterThanOrEqual", MethodType.Comparison, ">=", isNumeric:true),
+        new MethodConfiguration("LessThanOrEqual", MethodType.Comparison, "<=", isNumeric:true),
+        new MethodConfiguration("GreaterThan", MethodType.Comparison, ">", isNumeric:true),
+        new MethodConfiguration("LessThan", MethodType.Comparison, "<", isNumeric:true),
+    }.OrderBy(m => m.MethodName).ToArray();
+#>

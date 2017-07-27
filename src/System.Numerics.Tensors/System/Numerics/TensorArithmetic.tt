@@ -1,9 +1,7 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>// Copyright (c) Microsoft. All rights reserved.
+<#@ output extension=".cs" #>
+<#@ include file="TensorTemplate.ttinclude" #>// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -16,12 +14,17 @@ namespace System.Numerics
     {
         T One { get; }
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        <#= method.GetMethodSignature("T")#>;
+        <#= method.GetResultMethodSignature("T")#>;
 <# } #>
     }
 
+    internal static class TensorArithmetic<T>
+    {
+        public static ITensorArithmetic<T> Instance => TensorArithmetic.GetArithmetic<T>();
+    }
+
     internal static class TensorArithmetic
-    {   
+    { 
         public static ITensorArithmetic<T> GetArithmetic<T>()
         {
 <# foreach (TypeConfiguration type in typeConfiguration) { #>
@@ -40,187 +43,19 @@ namespace System.Numerics
         public <#=type.TypeName#> One => <#=type.OneLiteral#>;
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        public <#= method.GetMethodSignature(type.TypeName)#>
+        public <#= method.GetResultMethodSignature(type.TypeName)#>
         {
 <# if ((method.IsNumeric && !type.SupportsNumeric) ||  (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
 <# } else { #>
-            var <#= method.ResultName #> = <#=method.InitializeResult()#>;
-
             for(int i = 0; i < <#= method.ResultName #>.Length; i++)
             {
                 // TODO: vectorize
                 <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
             }
-
-            return result;
 <# } #>
         }
 <# } #>
     }
 <# } #>
 }
-<#+
-    public class TypeConfiguration
-    {
-        public TypeConfiguration(string typeName, string classPrefix = null, string oneLiteral = "1", bool supportsNumeric = true, bool supportsBitwise = true, IEnumerable<string> unsupportedMethods = null)
-        {
-            TypeName = typeName;
-            ClassPrefix = classPrefix ?? char.ToUpper(typeName[0]) + typeName.Substring(1);
-            OneLiteral = oneLiteral;
-            SupportsNumeric = supportsNumeric;
-            SupportsBitwise = supportsBitwise;
-            UnsupportedMethods = new HashSet<string>(unsupportedMethods ?? Enumerable.Empty<string>());
-        }
-
-        public string TypeName { get; }
-        public string ClassPrefix { get; }
-        public string OneLiteral { get; }
-        
-        public bool SupportsNumeric { get; }
-        public bool SupportsBitwise { get; }
-        public ISet<string> UnsupportedMethods { get; }
-    }
-
-    public string GenerateIfStatementHeader(TypeConfiguration type)
-    {
-        string keyword = (type == typeConfiguration[0]) ? "if" : "else if";
-        return $"{keyword} (typeof(T) == typeof({type.TypeName}))";
-    }
-
-    public TypeConfiguration[] typeConfiguration = new []
-    {
-        new TypeConfiguration("bool", oneLiteral:"true", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),
-        new TypeConfiguration("byte"),
-        new TypeConfiguration("char", oneLiteral:"(char)1"),
-        new TypeConfiguration("decimal", supportsBitwise: false),
-        new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false),
-        new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false),
-        new TypeConfiguration("int"),
-        new TypeConfiguration("long"),
-        new TypeConfiguration("sbyte", classPrefix:"SByte"),
-        new TypeConfiguration("short"),
-        new TypeConfiguration("uint", classPrefix:"UInt", unsupportedMethods: new[] {"UnaryMinus"}),
-        new TypeConfiguration("ulong", classPrefix:"ULong", unsupportedMethods: new[] {"UnaryMinus"}),
-        new TypeConfiguration("ushort", classPrefix:"UShort", unsupportedMethods: new[] {"UnaryMinus"})
-    };
-
-    public enum MethodType
-    {
-       Unary,
-       UnaryInPlace,
-       BinaryScalar,
-       BinaryInt,
-       Binary,
-       Comparison
-    }
-
-    public class MethodConfiguration
-    {
-        public MethodConfiguration(string methodName, MethodType methodType, string op, bool isNumeric = false, bool isBitwise = false)
-        {
-            MethodName = methodName;
-            MethodType = methodType;
-            Operator = op;
-            IsNumeric = isNumeric;
-            IsBitwise = isBitwise;
-        }
-
-        public string ResultName => "result";
-
-        public string MethodName { get; }
-        public MethodType MethodType { get; }
-        public string Operator { get; }
-        
-        public string GetMethodSignature(string typeName)
-        {
-            switch (MethodType)
-            {
-                case MethodType.Unary:
-                case MethodType.UnaryInPlace:
-                    return $"Tensor<{typeName}> {MethodName}(Tensor<{typeName}> tensor)";
-                case MethodType.BinaryScalar:
-                    return $"Tensor<{typeName}> {MethodName}(Tensor<{typeName}> tensor, {typeName} scalar)";
-                case MethodType.BinaryInt:
-                    return $"Tensor<{typeName}> {MethodName}(Tensor<{typeName}> tensor, int value)";
-                case MethodType.Binary:
-                    return $"Tensor<{typeName}> {MethodName}(Tensor<{typeName}> left, Tensor<{typeName}> right)";
-                case MethodType.Comparison:
-                    return $"bool {MethodName}(Tensor<{typeName}> left, Tensor<{typeName}> right)";
-                default:
-                    throw new ArgumentException();
-
-            }
-        }
-
-        public string GetElementOperation(string typeName, string access)
-        {
-            switch (MethodType)
-            {
-                case MethodType.Unary:
-                    return $"{ResultName}{access} = ({typeName}){Operator}tensor{access}";
-                case MethodType.UnaryInPlace:
-                    return $"{ResultName}{access}{Operator}";
-                case MethodType.BinaryScalar:
-                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} scalar)";
-                case MethodType.BinaryInt:
-                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} value)";
-                case MethodType.Binary:
-                    return $"{ResultName}{access} = ({typeName})(left{access} {Operator} right{access})";
-                case MethodType.Comparison:
-                    return $"{ResultName}{access} = left{access} {Operator} right{access}";
-                default:
-                    throw new ArgumentException();
-
-            }
-        }
-
-        public string InitializeResult()
-        {
-            switch (MethodType)
-            {
-                case MethodType.UnaryInPlace:
-                    return $"tensor.Clone()";
-                case MethodType.Unary:
-                case MethodType.BinaryScalar:
-                case MethodType.BinaryInt:
-                    return $"tensor.CloneEmpty()";
-                case MethodType.Binary:
-                case MethodType.Comparison:
-                    return $"left.CloneEmpty()";
-                default:
-                    throw new ArgumentException();
-            }
-        }
-        
-        public bool IsNumeric { get; }
-        public bool IsBitwise { get; }
-    }
-
-    
-    public MethodConfiguration[] methodConfiguration = new []
-    {
-        new MethodConfiguration("Add", MethodType.Binary, "+", isNumeric:true),
-        new MethodConfiguration("Add", MethodType.BinaryScalar, "+", isNumeric:true),
-        new MethodConfiguration("UnaryPlus", MethodType.Unary, "+", isNumeric:true),
-        new MethodConfiguration("Subtract", MethodType.Binary, "-", isNumeric:true),
-        new MethodConfiguration("Subtract", MethodType.BinaryScalar, "-", isNumeric:true),
-        new MethodConfiguration("UnaryMinus", MethodType.Unary, "-", isNumeric:true),
-        new MethodConfiguration("Increment", MethodType.UnaryInPlace, "++", isNumeric:true),
-        new MethodConfiguration("Decrement", MethodType.UnaryInPlace, "--", isNumeric:true),
-        new MethodConfiguration("Multiply", MethodType.Binary, "*", isNumeric:true),  // element-wise product, not matrix product
-        new MethodConfiguration("Multiply", MethodType.BinaryScalar, "*", isNumeric:true),
-        new MethodConfiguration("Divide", MethodType.Binary, "/", isNumeric:true),
-        new MethodConfiguration("Divide", MethodType.BinaryScalar, "/", isNumeric:true),
-        new MethodConfiguration("Modulo", MethodType.Binary, "%", isNumeric:true),
-        new MethodConfiguration("Modulo", MethodType.BinaryScalar, "%", isNumeric:true),
-        new MethodConfiguration("And", MethodType.Binary, "&", isBitwise: true),
-        new MethodConfiguration("And", MethodType.BinaryScalar, "&", isBitwise: true),
-        new MethodConfiguration("Or", MethodType.Binary, "|", isBitwise: true),
-        new MethodConfiguration("Or", MethodType.BinaryScalar, "|", isBitwise: true),
-        new MethodConfiguration("Xor", MethodType.Binary, "^", isBitwise: true),
-        new MethodConfiguration("Xor", MethodType.BinaryScalar, "^", isBitwise: true),
-        new MethodConfiguration("LeftShift", MethodType.BinaryInt, "<<", isBitwise: true),
-        new MethodConfiguration("RightShift", MethodType.BinaryInt, ">>", isBitwise: true),
-    };
-#>

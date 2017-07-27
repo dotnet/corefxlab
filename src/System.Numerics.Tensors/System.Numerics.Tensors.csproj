@@ -15,8 +15,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TensorArithmetic.tt</DependentUpon>
     </Compile>
+    <Compile Include="System\Numerics\Tensor.Operations.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Tensor.Operations.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="System\Numerics\Tensor.Operations.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Tensor.Operations.tt</DependentUpon>
+    </None>
     <None Update="System\Numerics\TensorArithmetic.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -26,6 +36,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TensorArithmetic.cs</LastGenOutput>
     </None>
+    <None Update="System\Numerics\Tensor.Operations.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Tensor.Operations.cs</LastGenOutput>
+    </None>
+    <None Update="System\Numerics\TensorTemplate.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <!-- enable the TextTemplating extension -->

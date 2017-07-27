@@ -10,32 +10,43 @@ namespace System.Numerics
     internal interface ITensorArithmetic<T>
     {
         T One { get; }
-        Tensor<T> Add(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Add(Tensor<T> tensor, T scalar);
-        Tensor<T> UnaryPlus(Tensor<T> tensor);
-        Tensor<T> Subtract(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Subtract(Tensor<T> tensor, T scalar);
-        Tensor<T> UnaryMinus(Tensor<T> tensor);
-        Tensor<T> Increment(Tensor<T> tensor);
-        Tensor<T> Decrement(Tensor<T> tensor);
-        Tensor<T> Multiply(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Multiply(Tensor<T> tensor, T scalar);
-        Tensor<T> Divide(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Divide(Tensor<T> tensor, T scalar);
-        Tensor<T> Modulo(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Modulo(Tensor<T> tensor, T scalar);
-        Tensor<T> And(Tensor<T> left, Tensor<T> right);
-        Tensor<T> And(Tensor<T> tensor, T scalar);
-        Tensor<T> Or(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Or(Tensor<T> tensor, T scalar);
-        Tensor<T> Xor(Tensor<T> left, Tensor<T> right);
-        Tensor<T> Xor(Tensor<T> tensor, T scalar);
-        Tensor<T> LeftShift(Tensor<T> tensor, int value);
-        Tensor<T> RightShift(Tensor<T> tensor, int value);
+        void Add(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Add(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void And(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void And(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void Decrement(Tensor<T> tensor, Tensor<T> result);
+        void Divide(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Divide(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void Equals(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void GreaterThan(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void GreaterThanOrEqual(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void Increment(Tensor<T> tensor, Tensor<T> result);
+        void LeftShift(Tensor<T> tensor, int value, Tensor<T> result);
+        void LessThan(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void LessThanOrEqual(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void Modulo(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Modulo(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void Multiply(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Multiply(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void NotEquals(Tensor<T> left, Tensor<T> right, Tensor<bool> result);
+        void Or(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Or(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void RightShift(Tensor<T> tensor, int value, Tensor<T> result);
+        void Subtract(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Subtract(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void UnaryMinus(Tensor<T> tensor, Tensor<T> result);
+        void UnaryPlus(Tensor<T> tensor, Tensor<T> result);
+        void Xor(Tensor<T> left, Tensor<T> right, Tensor<T> result);
+        void Xor(Tensor<T> tensor, T scalar, Tensor<T> result);
+    }
+
+    internal static class TensorArithmetic<T>
+    {
+        public static ITensorArithmetic<T> Instance => TensorArithmetic.GetArithmetic<T>();
     }
 
     internal static class TensorArithmetic
-    {   
+    { 
         public static ITensorArithmetic<T> GetArithmetic<T>()
         {
             if (typeof(T) == typeof(bool))
@@ -98,882 +109,802 @@ namespace System.Numerics
     {
         public bool One => true;
 
-        public Tensor<bool> Add(Tensor<bool> left, Tensor<bool> right)
+        public void Add(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<bool> Add(Tensor<bool> tensor, bool scalar)
+        public void Add(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<bool> UnaryPlus(Tensor<bool> tensor)
+        public void And(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
         {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Subtract(Tensor<bool> left, Tensor<bool> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Subtract(Tensor<bool> tensor, bool scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> UnaryMinus(Tensor<bool> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Increment(Tensor<bool> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Decrement(Tensor<bool> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Multiply(Tensor<bool> left, Tensor<bool> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Multiply(Tensor<bool> tensor, bool scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Divide(Tensor<bool> left, Tensor<bool> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Divide(Tensor<bool> tensor, bool scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Modulo(Tensor<bool> left, Tensor<bool> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> Modulo(Tensor<bool> tensor, bool scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> And(Tensor<bool> left, Tensor<bool> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<bool> And(Tensor<bool> tensor, bool scalar)
+        public void And(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<bool> Or(Tensor<bool> left, Tensor<bool> right)
+        public void Decrement(Tensor<bool> tensor, Tensor<bool> result)
         {
-            var result = left.CloneEmpty();
-
+            throw new NotSupportedException();
+        }
+        public void Divide(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Divide(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Equals(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+            }
+        }
+        public void GreaterThan(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void GreaterThanOrEqual(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Increment(Tensor<bool> tensor, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LeftShift(Tensor<bool> tensor, int value, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LessThan(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LessThanOrEqual(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Modulo(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Modulo(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Multiply(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Multiply(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void NotEquals(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(left.Buffer[i] | right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<bool> Or(Tensor<bool> tensor, bool scalar)
+        public void Or(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(tensor.Buffer[i] | scalar);
             }
-
-            return result;
         }
-        public Tensor<bool> Xor(Tensor<bool> left, Tensor<bool> right)
+        public void RightShift(Tensor<bool> tensor, int value, Tensor<bool> result)
         {
-            var result = left.CloneEmpty();
-
+            throw new NotSupportedException();
+        }
+        public void Subtract(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Subtract(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void UnaryMinus(Tensor<bool> tensor, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void UnaryPlus(Tensor<bool> tensor, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void Xor(Tensor<bool> left, Tensor<bool> right, Tensor<bool> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(left.Buffer[i] ^ right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<bool> Xor(Tensor<bool> tensor, bool scalar)
+        public void Xor(Tensor<bool> tensor, bool scalar, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(tensor.Buffer[i] ^ scalar);
             }
-
-            return result;
-        }
-        public Tensor<bool> LeftShift(Tensor<bool> tensor, int value)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<bool> RightShift(Tensor<bool> tensor, int value)
-        {
-            throw new NotSupportedException();
         }
     }
     internal class ByteArithmetic : ITensorArithmetic<byte>
     {
         public byte One => 1;
 
-        public Tensor<byte> Add(Tensor<byte> left, Tensor<byte> right)
+        public void Add(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<byte> Add(Tensor<byte> tensor, byte scalar)
+        public void Add(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<byte> UnaryPlus(Tensor<byte> tensor)
+        public void And(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<byte> Subtract(Tensor<byte> left, Tensor<byte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Subtract(Tensor<byte> tensor, byte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<byte> UnaryMinus(Tensor<byte> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<byte> Increment(Tensor<byte> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<byte> Decrement(Tensor<byte> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<byte> Multiply(Tensor<byte> left, Tensor<byte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Multiply(Tensor<byte> tensor, byte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Divide(Tensor<byte> left, Tensor<byte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Divide(Tensor<byte> tensor, byte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Modulo(Tensor<byte> left, Tensor<byte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<byte> Modulo(Tensor<byte> tensor, byte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<byte> And(Tensor<byte> left, Tensor<byte> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<byte> And(Tensor<byte> tensor, byte scalar)
+        public void And(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<byte> Or(Tensor<byte> left, Tensor<byte> right)
+        public void Decrement(Tensor<byte> tensor, Tensor<byte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<byte> Or(Tensor<byte> tensor, byte scalar)
+        public void Divide(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (byte)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<byte> Xor(Tensor<byte> left, Tensor<byte> right)
+        public void Divide(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (byte)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (byte)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<byte> Xor(Tensor<byte> tensor, byte scalar)
+        public void Equals(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (byte)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<byte> LeftShift(Tensor<byte> tensor, int value)
+        public void GreaterThan(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<byte> tensor, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<byte> tensor, int value, Tensor<byte> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<byte> RightShift(Tensor<byte> tensor, int value)
+        public void LessThan(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<byte> left, Tensor<byte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<byte> tensor, int value, Tensor<byte> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<byte> tensor, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<byte> tensor, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<byte> left, Tensor<byte> right, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<byte> tensor, byte scalar, Tensor<byte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (byte)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class CharArithmetic : ITensorArithmetic<char>
     {
         public char One => (char)1;
 
-        public Tensor<char> Add(Tensor<char> left, Tensor<char> right)
+        public void Add(Tensor<char> left, Tensor<char> right, Tensor<char> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<char> Add(Tensor<char> tensor, char scalar)
+        public void Add(Tensor<char> tensor, char scalar, Tensor<char> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<char> UnaryPlus(Tensor<char> tensor)
+        public void And(Tensor<char> left, Tensor<char> right, Tensor<char> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<char> Subtract(Tensor<char> left, Tensor<char> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<char> Subtract(Tensor<char> tensor, char scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<char> UnaryMinus(Tensor<char> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<char> Increment(Tensor<char> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<char> Decrement(Tensor<char> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<char> Multiply(Tensor<char> left, Tensor<char> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<char> Multiply(Tensor<char> tensor, char scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<char> Divide(Tensor<char> left, Tensor<char> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<char> Divide(Tensor<char> tensor, char scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<char> Modulo(Tensor<char> left, Tensor<char> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<char> Modulo(Tensor<char> tensor, char scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<char> And(Tensor<char> left, Tensor<char> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<char> And(Tensor<char> tensor, char scalar)
+        public void And(Tensor<char> tensor, char scalar, Tensor<char> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<char> Or(Tensor<char> left, Tensor<char> right)
+        public void Decrement(Tensor<char> tensor, Tensor<char> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<char> Or(Tensor<char> tensor, char scalar)
+        public void Divide(Tensor<char> left, Tensor<char> right, Tensor<char> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (char)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<char> Xor(Tensor<char> left, Tensor<char> right)
+        public void Divide(Tensor<char> tensor, char scalar, Tensor<char> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (char)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (char)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<char> Xor(Tensor<char> tensor, char scalar)
+        public void Equals(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (char)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<char> LeftShift(Tensor<char> tensor, int value)
+        public void GreaterThan(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<char> tensor, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<char> tensor, int value, Tensor<char> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<char> RightShift(Tensor<char> tensor, int value)
+        public void LessThan(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<char> left, Tensor<char> right, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<char> tensor, char scalar, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<char> left, Tensor<char> right, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<char> tensor, char scalar, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<char> left, Tensor<char> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<char> left, Tensor<char> right, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<char> tensor, char scalar, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<char> tensor, int value, Tensor<char> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (char)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<char> left, Tensor<char> right, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<char> tensor, char scalar, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<char> tensor, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<char> tensor, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<char> left, Tensor<char> right, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<char> tensor, char scalar, Tensor<char> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (char)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class DecimalArithmetic : ITensorArithmetic<decimal>
     {
         public decimal One => 1;
 
-        public Tensor<decimal> Add(Tensor<decimal> left, Tensor<decimal> right)
+        public void Add(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<decimal> Add(Tensor<decimal> tensor, decimal scalar)
+        public void Add(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<decimal> UnaryPlus(Tensor<decimal> tensor)
+        public void And(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)+tensor.Buffer[i];
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<decimal> Subtract(Tensor<decimal> left, Tensor<decimal> right)
+        public void And(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<decimal> Subtract(Tensor<decimal> tensor, decimal scalar)
+        public void Decrement(Tensor<decimal> tensor, Tensor<decimal> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<decimal> UnaryMinus(Tensor<decimal> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<decimal> Increment(Tensor<decimal> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<decimal> Decrement(Tensor<decimal> tensor)
-        {
-            var result = tensor.Clone();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<decimal> Multiply(Tensor<decimal> left, Tensor<decimal> right)
+        public void Divide(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<decimal> Multiply(Tensor<decimal> tensor, decimal scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (decimal)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<decimal> Divide(Tensor<decimal> left, Tensor<decimal> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<decimal> Divide(Tensor<decimal> tensor, decimal scalar)
+        public void Divide(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<decimal> Modulo(Tensor<decimal> left, Tensor<decimal> right)
+        public void Equals(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
         {
-            var result = left.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+            }
+        }
+        public void GreaterThan(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<decimal> tensor, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<decimal> tensor, int value, Tensor<decimal> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LessThan(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(left.Buffer[i] % right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<decimal> Modulo(Tensor<decimal> tensor, decimal scalar)
+        public void Modulo(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (decimal)(tensor.Buffer[i] % scalar);
             }
-
-            return result;
         }
-        public Tensor<decimal> And(Tensor<decimal> left, Tensor<decimal> right)
+        public void Multiply(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<decimal> left, Tensor<decimal> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<decimal> And(Tensor<decimal> tensor, decimal scalar)
+        public void Or(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<decimal> Or(Tensor<decimal> left, Tensor<decimal> right)
+        public void RightShift(Tensor<decimal> tensor, int value, Tensor<decimal> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<decimal> Or(Tensor<decimal> tensor, decimal scalar)
+        public void Subtract(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<decimal> tensor, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<decimal> tensor, Tensor<decimal> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (decimal)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<decimal> left, Tensor<decimal> right, Tensor<decimal> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<decimal> Xor(Tensor<decimal> left, Tensor<decimal> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<decimal> Xor(Tensor<decimal> tensor, decimal scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<decimal> LeftShift(Tensor<decimal> tensor, int value)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<decimal> RightShift(Tensor<decimal> tensor, int value)
+        public void Xor(Tensor<decimal> tensor, decimal scalar, Tensor<decimal> result)
         {
             throw new NotSupportedException();
         }
@@ -982,203 +913,195 @@ namespace System.Numerics
     {
         public double One => 1.0;
 
-        public Tensor<double> Add(Tensor<double> left, Tensor<double> right)
+        public void Add(Tensor<double> left, Tensor<double> right, Tensor<double> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<double> Add(Tensor<double> tensor, double scalar)
+        public void Add(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<double> UnaryPlus(Tensor<double> tensor)
+        public void And(Tensor<double> left, Tensor<double> right, Tensor<double> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)+tensor.Buffer[i];
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<double> Subtract(Tensor<double> left, Tensor<double> right)
+        public void And(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<double> Subtract(Tensor<double> tensor, double scalar)
+        public void Decrement(Tensor<double> tensor, Tensor<double> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<double> UnaryMinus(Tensor<double> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<double> Increment(Tensor<double> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<double> Decrement(Tensor<double> tensor)
-        {
-            var result = tensor.Clone();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<double> Multiply(Tensor<double> left, Tensor<double> right)
+        public void Divide(Tensor<double> left, Tensor<double> right, Tensor<double> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<double> Multiply(Tensor<double> tensor, double scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (double)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<double> Divide(Tensor<double> left, Tensor<double> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<double> Divide(Tensor<double> tensor, double scalar)
+        public void Divide(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<double> Modulo(Tensor<double> left, Tensor<double> right)
+        public void Equals(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
         {
-            var result = left.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+            }
+        }
+        public void GreaterThan(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<double> tensor, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<double> tensor, int value, Tensor<double> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LessThan(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<double> left, Tensor<double> right, Tensor<double> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(left.Buffer[i] % right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<double> Modulo(Tensor<double> tensor, double scalar)
+        public void Modulo(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (double)(tensor.Buffer[i] % scalar);
             }
-
-            return result;
         }
-        public Tensor<double> And(Tensor<double> left, Tensor<double> right)
+        public void Multiply(Tensor<double> left, Tensor<double> right, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<double> tensor, double scalar, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<double> left, Tensor<double> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<double> left, Tensor<double> right, Tensor<double> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<double> And(Tensor<double> tensor, double scalar)
+        public void Or(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<double> Or(Tensor<double> left, Tensor<double> right)
+        public void RightShift(Tensor<double> tensor, int value, Tensor<double> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<double> Or(Tensor<double> tensor, double scalar)
+        public void Subtract(Tensor<double> left, Tensor<double> right, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<double> tensor, double scalar, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<double> tensor, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<double> tensor, Tensor<double> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (double)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<double> left, Tensor<double> right, Tensor<double> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<double> Xor(Tensor<double> left, Tensor<double> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<double> Xor(Tensor<double> tensor, double scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<double> LeftShift(Tensor<double> tensor, int value)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<double> RightShift(Tensor<double> tensor, int value)
+        public void Xor(Tensor<double> tensor, double scalar, Tensor<double> result)
         {
             throw new NotSupportedException();
         }
@@ -1187,203 +1110,195 @@ namespace System.Numerics
     {
         public float One => 1.0f;
 
-        public Tensor<float> Add(Tensor<float> left, Tensor<float> right)
+        public void Add(Tensor<float> left, Tensor<float> right, Tensor<float> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<float> Add(Tensor<float> tensor, float scalar)
+        public void Add(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<float> UnaryPlus(Tensor<float> tensor)
+        public void And(Tensor<float> left, Tensor<float> right, Tensor<float> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)+tensor.Buffer[i];
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<float> Subtract(Tensor<float> left, Tensor<float> right)
+        public void And(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
+            throw new NotSupportedException();
         }
-        public Tensor<float> Subtract(Tensor<float> tensor, float scalar)
+        public void Decrement(Tensor<float> tensor, Tensor<float> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<float> UnaryMinus(Tensor<float> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<float> Increment(Tensor<float> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<float> Decrement(Tensor<float> tensor)
-        {
-            var result = tensor.Clone();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<float> Multiply(Tensor<float> left, Tensor<float> right)
+        public void Divide(Tensor<float> left, Tensor<float> right, Tensor<float> result)
         {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<float> Multiply(Tensor<float> tensor, float scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (float)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<float> Divide(Tensor<float> left, Tensor<float> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<float> Divide(Tensor<float> tensor, float scalar)
+        public void Divide(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<float> Modulo(Tensor<float> left, Tensor<float> right)
+        public void Equals(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
         {
-            var result = left.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+            }
+        }
+        public void GreaterThan(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<float> tensor, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<float> tensor, int value, Tensor<float> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void LessThan(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<float> left, Tensor<float> right, Tensor<float> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(left.Buffer[i] % right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<float> Modulo(Tensor<float> tensor, float scalar)
+        public void Modulo(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (float)(tensor.Buffer[i] % scalar);
             }
-
-            return result;
         }
-        public Tensor<float> And(Tensor<float> left, Tensor<float> right)
+        public void Multiply(Tensor<float> left, Tensor<float> right, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<float> tensor, float scalar, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<float> left, Tensor<float> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<float> left, Tensor<float> right, Tensor<float> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<float> And(Tensor<float> tensor, float scalar)
+        public void Or(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<float> Or(Tensor<float> left, Tensor<float> right)
+        public void RightShift(Tensor<float> tensor, int value, Tensor<float> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<float> Or(Tensor<float> tensor, float scalar)
+        public void Subtract(Tensor<float> left, Tensor<float> right, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<float> tensor, float scalar, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<float> tensor, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<float> tensor, Tensor<float> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (float)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<float> left, Tensor<float> right, Tensor<float> result)
         {
             throw new NotSupportedException();
         }
-        public Tensor<float> Xor(Tensor<float> left, Tensor<float> right)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<float> Xor(Tensor<float> tensor, float scalar)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<float> LeftShift(Tensor<float> tensor, int value)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<float> RightShift(Tensor<float> tensor, int value)
+        public void Xor(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
             throw new NotSupportedException();
         }
@@ -1392,1859 +1307,1591 @@ namespace System.Numerics
     {
         public int One => 1;
 
-        public Tensor<int> Add(Tensor<int> left, Tensor<int> right)
+        public void Add(Tensor<int> left, Tensor<int> right, Tensor<int> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<int> Add(Tensor<int> tensor, int scalar)
+        public void Add(Tensor<int> tensor, int scalar, Tensor<int> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<int> UnaryPlus(Tensor<int> tensor)
+        public void And(Tensor<int> left, Tensor<int> right, Tensor<int> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<int> Subtract(Tensor<int> left, Tensor<int> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<int> Subtract(Tensor<int> tensor, int scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<int> UnaryMinus(Tensor<int> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<int> Increment(Tensor<int> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<int> Decrement(Tensor<int> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<int> Multiply(Tensor<int> left, Tensor<int> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<int> Multiply(Tensor<int> tensor, int scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<int> Divide(Tensor<int> left, Tensor<int> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<int> Divide(Tensor<int> tensor, int scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<int> Modulo(Tensor<int> left, Tensor<int> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<int> Modulo(Tensor<int> tensor, int scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<int> And(Tensor<int> left, Tensor<int> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<int> And(Tensor<int> tensor, int scalar)
+        public void And(Tensor<int> tensor, int scalar, Tensor<int> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<int> Or(Tensor<int> left, Tensor<int> right)
+        public void Decrement(Tensor<int> tensor, Tensor<int> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<int> Or(Tensor<int> tensor, int scalar)
+        public void Divide(Tensor<int> left, Tensor<int> right, Tensor<int> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (int)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<int> Xor(Tensor<int> left, Tensor<int> right)
+        public void Divide(Tensor<int> tensor, int scalar, Tensor<int> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (int)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (int)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<int> Xor(Tensor<int> tensor, int scalar)
+        public void Equals(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (int)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<int> LeftShift(Tensor<int> tensor, int value)
+        public void GreaterThan(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<int> tensor, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<int> tensor, int value, Tensor<int> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<int> RightShift(Tensor<int> tensor, int value)
+        public void LessThan(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<int> left, Tensor<int> right, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<int> tensor, int scalar, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<int> left, Tensor<int> right, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<int> tensor, int scalar, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<int> left, Tensor<int> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<int> left, Tensor<int> right, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<int> tensor, int scalar, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<int> tensor, int value, Tensor<int> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<int> left, Tensor<int> right, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<int> tensor, int scalar, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<int> tensor, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<int> tensor, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<int> left, Tensor<int> right, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<int> tensor, int scalar, Tensor<int> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (int)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class LongArithmetic : ITensorArithmetic<long>
     {
         public long One => 1;
 
-        public Tensor<long> Add(Tensor<long> left, Tensor<long> right)
+        public void Add(Tensor<long> left, Tensor<long> right, Tensor<long> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<long> Add(Tensor<long> tensor, long scalar)
+        public void Add(Tensor<long> tensor, long scalar, Tensor<long> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<long> UnaryPlus(Tensor<long> tensor)
+        public void And(Tensor<long> left, Tensor<long> right, Tensor<long> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<long> Subtract(Tensor<long> left, Tensor<long> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<long> Subtract(Tensor<long> tensor, long scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<long> UnaryMinus(Tensor<long> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<long> Increment(Tensor<long> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<long> Decrement(Tensor<long> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<long> Multiply(Tensor<long> left, Tensor<long> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<long> Multiply(Tensor<long> tensor, long scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<long> Divide(Tensor<long> left, Tensor<long> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<long> Divide(Tensor<long> tensor, long scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<long> Modulo(Tensor<long> left, Tensor<long> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<long> Modulo(Tensor<long> tensor, long scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<long> And(Tensor<long> left, Tensor<long> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<long> And(Tensor<long> tensor, long scalar)
+        public void And(Tensor<long> tensor, long scalar, Tensor<long> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<long> Or(Tensor<long> left, Tensor<long> right)
+        public void Decrement(Tensor<long> tensor, Tensor<long> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<long> Or(Tensor<long> tensor, long scalar)
+        public void Divide(Tensor<long> left, Tensor<long> right, Tensor<long> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (long)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<long> Xor(Tensor<long> left, Tensor<long> right)
+        public void Divide(Tensor<long> tensor, long scalar, Tensor<long> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (long)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (long)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<long> Xor(Tensor<long> tensor, long scalar)
+        public void Equals(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (long)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<long> LeftShift(Tensor<long> tensor, int value)
+        public void GreaterThan(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<long> tensor, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<long> tensor, int value, Tensor<long> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<long> RightShift(Tensor<long> tensor, int value)
+        public void LessThan(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<long> left, Tensor<long> right, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<long> tensor, long scalar, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<long> left, Tensor<long> right, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<long> tensor, long scalar, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<long> left, Tensor<long> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<long> left, Tensor<long> right, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<long> tensor, long scalar, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<long> tensor, int value, Tensor<long> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (long)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<long> left, Tensor<long> right, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<long> tensor, long scalar, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<long> tensor, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<long> tensor, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<long> left, Tensor<long> right, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<long> tensor, long scalar, Tensor<long> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (long)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class SByteArithmetic : ITensorArithmetic<sbyte>
     {
         public sbyte One => 1;
 
-        public Tensor<sbyte> Add(Tensor<sbyte> left, Tensor<sbyte> right)
+        public void Add(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<sbyte> Add(Tensor<sbyte> tensor, sbyte scalar)
+        public void Add(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<sbyte> UnaryPlus(Tensor<sbyte> tensor)
+        public void And(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Subtract(Tensor<sbyte> left, Tensor<sbyte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Subtract(Tensor<sbyte> tensor, sbyte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> UnaryMinus(Tensor<sbyte> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Increment(Tensor<sbyte> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Decrement(Tensor<sbyte> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Multiply(Tensor<sbyte> left, Tensor<sbyte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Multiply(Tensor<sbyte> tensor, sbyte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Divide(Tensor<sbyte> left, Tensor<sbyte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Divide(Tensor<sbyte> tensor, sbyte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Modulo(Tensor<sbyte> left, Tensor<sbyte> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> Modulo(Tensor<sbyte> tensor, sbyte scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<sbyte> And(Tensor<sbyte> left, Tensor<sbyte> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<sbyte> And(Tensor<sbyte> tensor, sbyte scalar)
+        public void And(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<sbyte> Or(Tensor<sbyte> left, Tensor<sbyte> right)
+        public void Decrement(Tensor<sbyte> tensor, Tensor<sbyte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<sbyte> Or(Tensor<sbyte> tensor, sbyte scalar)
+        public void Divide(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (sbyte)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<sbyte> Xor(Tensor<sbyte> left, Tensor<sbyte> right)
+        public void Divide(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (sbyte)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<sbyte> Xor(Tensor<sbyte> tensor, sbyte scalar)
+        public void Equals(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (sbyte)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<sbyte> LeftShift(Tensor<sbyte> tensor, int value)
+        public void GreaterThan(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<sbyte> tensor, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<sbyte> tensor, int value, Tensor<sbyte> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<sbyte> RightShift(Tensor<sbyte> tensor, int value)
+        public void LessThan(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<sbyte> tensor, int value, Tensor<sbyte> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<sbyte> tensor, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<sbyte> tensor, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<sbyte> left, Tensor<sbyte> right, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<sbyte> tensor, sbyte scalar, Tensor<sbyte> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (sbyte)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class ShortArithmetic : ITensorArithmetic<short>
     {
         public short One => 1;
 
-        public Tensor<short> Add(Tensor<short> left, Tensor<short> right)
+        public void Add(Tensor<short> left, Tensor<short> right, Tensor<short> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<short> Add(Tensor<short> tensor, short scalar)
+        public void Add(Tensor<short> tensor, short scalar, Tensor<short> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<short> UnaryPlus(Tensor<short> tensor)
+        public void And(Tensor<short> left, Tensor<short> right, Tensor<short> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<short> Subtract(Tensor<short> left, Tensor<short> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<short> Subtract(Tensor<short> tensor, short scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<short> UnaryMinus(Tensor<short> tensor)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)-tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<short> Increment(Tensor<short> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<short> Decrement(Tensor<short> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<short> Multiply(Tensor<short> left, Tensor<short> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<short> Multiply(Tensor<short> tensor, short scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<short> Divide(Tensor<short> left, Tensor<short> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<short> Divide(Tensor<short> tensor, short scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<short> Modulo(Tensor<short> left, Tensor<short> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<short> Modulo(Tensor<short> tensor, short scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<short> And(Tensor<short> left, Tensor<short> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<short> And(Tensor<short> tensor, short scalar)
+        public void And(Tensor<short> tensor, short scalar, Tensor<short> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<short> Or(Tensor<short> left, Tensor<short> right)
+        public void Decrement(Tensor<short> tensor, Tensor<short> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<short> Or(Tensor<short> tensor, short scalar)
+        public void Divide(Tensor<short> left, Tensor<short> right, Tensor<short> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (short)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<short> Xor(Tensor<short> left, Tensor<short> right)
+        public void Divide(Tensor<short> tensor, short scalar, Tensor<short> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (short)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (short)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<short> Xor(Tensor<short> tensor, short scalar)
+        public void Equals(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (short)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<short> LeftShift(Tensor<short> tensor, int value)
+        public void GreaterThan(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<short> tensor, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<short> tensor, int value, Tensor<short> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<short> RightShift(Tensor<short> tensor, int value)
+        public void LessThan(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<short> left, Tensor<short> right, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<short> tensor, short scalar, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<short> left, Tensor<short> right, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<short> tensor, short scalar, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<short> left, Tensor<short> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<short> left, Tensor<short> right, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<short> tensor, short scalar, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<short> tensor, int value, Tensor<short> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (short)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<short> left, Tensor<short> right, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<short> tensor, short scalar, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<short> tensor, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)-tensor.Buffer[i];
+            }
+        }
+        public void UnaryPlus(Tensor<short> tensor, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<short> left, Tensor<short> right, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<short> tensor, short scalar, Tensor<short> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (short)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class UIntArithmetic : ITensorArithmetic<uint>
     {
         public uint One => 1;
 
-        public Tensor<uint> Add(Tensor<uint> left, Tensor<uint> right)
+        public void Add(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<uint> Add(Tensor<uint> tensor, uint scalar)
+        public void Add(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<uint> UnaryPlus(Tensor<uint> tensor)
+        public void And(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<uint> Subtract(Tensor<uint> left, Tensor<uint> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Subtract(Tensor<uint> tensor, uint scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<uint> UnaryMinus(Tensor<uint> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<uint> Increment(Tensor<uint> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<uint> Decrement(Tensor<uint> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<uint> Multiply(Tensor<uint> left, Tensor<uint> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Multiply(Tensor<uint> tensor, uint scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Divide(Tensor<uint> left, Tensor<uint> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Divide(Tensor<uint> tensor, uint scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Modulo(Tensor<uint> left, Tensor<uint> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<uint> Modulo(Tensor<uint> tensor, uint scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<uint> And(Tensor<uint> left, Tensor<uint> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<uint> And(Tensor<uint> tensor, uint scalar)
+        public void And(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<uint> Or(Tensor<uint> left, Tensor<uint> right)
+        public void Decrement(Tensor<uint> tensor, Tensor<uint> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<uint> Or(Tensor<uint> tensor, uint scalar)
+        public void Divide(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (uint)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<uint> Xor(Tensor<uint> left, Tensor<uint> right)
+        public void Divide(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (uint)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (uint)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<uint> Xor(Tensor<uint> tensor, uint scalar)
+        public void Equals(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (uint)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<uint> LeftShift(Tensor<uint> tensor, int value)
+        public void GreaterThan(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<uint> tensor, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<uint> tensor, int value, Tensor<uint> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<uint> RightShift(Tensor<uint> tensor, int value)
+        public void LessThan(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<uint> left, Tensor<uint> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<uint> tensor, int value, Tensor<uint> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (uint)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<uint> tensor, Tensor<uint> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void UnaryPlus(Tensor<uint> tensor, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<uint> left, Tensor<uint> right, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<uint> tensor, uint scalar, Tensor<uint> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (uint)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class ULongArithmetic : ITensorArithmetic<ulong>
     {
         public ulong One => 1;
 
-        public Tensor<ulong> Add(Tensor<ulong> left, Tensor<ulong> right)
+        public void Add(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ulong> Add(Tensor<ulong> tensor, ulong scalar)
+        public void Add(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<ulong> UnaryPlus(Tensor<ulong> tensor)
+        public void And(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Subtract(Tensor<ulong> left, Tensor<ulong> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Subtract(Tensor<ulong> tensor, ulong scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> UnaryMinus(Tensor<ulong> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<ulong> Increment(Tensor<ulong> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Decrement(Tensor<ulong> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Multiply(Tensor<ulong> left, Tensor<ulong> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Multiply(Tensor<ulong> tensor, ulong scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Divide(Tensor<ulong> left, Tensor<ulong> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Divide(Tensor<ulong> tensor, ulong scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Modulo(Tensor<ulong> left, Tensor<ulong> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> Modulo(Tensor<ulong> tensor, ulong scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ulong> And(Tensor<ulong> left, Tensor<ulong> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ulong> And(Tensor<ulong> tensor, ulong scalar)
+        public void And(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<ulong> Or(Tensor<ulong> left, Tensor<ulong> right)
+        public void Decrement(Tensor<ulong> tensor, Tensor<ulong> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<ulong> Or(Tensor<ulong> tensor, ulong scalar)
+        public void Divide(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (ulong)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ulong> Xor(Tensor<ulong> left, Tensor<ulong> right)
+        public void Divide(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ulong)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<ulong> Xor(Tensor<ulong> tensor, ulong scalar)
+        public void Equals(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ulong)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<ulong> LeftShift(Tensor<ulong> tensor, int value)
+        public void GreaterThan(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<ulong> tensor, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<ulong> tensor, int value, Tensor<ulong> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<ulong> RightShift(Tensor<ulong> tensor, int value)
+        public void LessThan(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<ulong> left, Tensor<ulong> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<ulong> tensor, int value, Tensor<ulong> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ulong)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<ulong> tensor, Tensor<ulong> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void UnaryPlus(Tensor<ulong> tensor, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<ulong> left, Tensor<ulong> right, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<ulong> tensor, ulong scalar, Tensor<ulong> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ulong)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
     internal class UShortArithmetic : ITensorArithmetic<ushort>
     {
         public ushort One => 1;
 
-        public Tensor<ushort> Add(Tensor<ushort> left, Tensor<ushort> right)
+        public void Add(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(left.Buffer[i] + right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ushort> Add(Tensor<ushort> tensor, ushort scalar)
+        public void Add(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(tensor.Buffer[i] + scalar);
             }
-
-            return result;
         }
-        public Tensor<ushort> UnaryPlus(Tensor<ushort> tensor)
+        public void And(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
         {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)+tensor.Buffer[i];
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Subtract(Tensor<ushort> left, Tensor<ushort> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] - right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Subtract(Tensor<ushort> tensor, ushort scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] - scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> UnaryMinus(Tensor<ushort> tensor)
-        {
-            throw new NotSupportedException();
-        }
-        public Tensor<ushort> Increment(Tensor<ushort> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]++;
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Decrement(Tensor<ushort> tensor)
-        {
-            var result = tensor.Clone();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i]--;
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Multiply(Tensor<ushort> left, Tensor<ushort> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] * right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Multiply(Tensor<ushort> tensor, ushort scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] * scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Divide(Tensor<ushort> left, Tensor<ushort> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] / right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Divide(Tensor<ushort> tensor, ushort scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] / scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Modulo(Tensor<ushort> left, Tensor<ushort> right)
-        {
-            var result = left.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] % right.Buffer[i]);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> Modulo(Tensor<ushort> tensor, ushort scalar)
-        {
-            var result = tensor.CloneEmpty();
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] % scalar);
-            }
-
-            return result;
-        }
-        public Tensor<ushort> And(Tensor<ushort> left, Tensor<ushort> right)
-        {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(left.Buffer[i] & right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ushort> And(Tensor<ushort> tensor, ushort scalar)
+        public void And(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(tensor.Buffer[i] & scalar);
             }
-
-            return result;
         }
-        public Tensor<ushort> Or(Tensor<ushort> left, Tensor<ushort> right)
+        public void Decrement(Tensor<ushort> tensor, Tensor<ushort> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] | right.Buffer[i]);
+                result.Buffer[i]--;
             }
-
-            return result;
         }
-        public Tensor<ushort> Or(Tensor<ushort> tensor, ushort scalar)
+        public void Divide(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] | scalar);
+                result.Buffer[i] = (ushort)(left.Buffer[i] / right.Buffer[i]);
             }
-
-            return result;
         }
-        public Tensor<ushort> Xor(Tensor<ushort> left, Tensor<ushort> right)
+        public void Divide(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
         {
-            var result = left.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ushort)(left.Buffer[i] ^ right.Buffer[i]);
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] / scalar);
             }
-
-            return result;
         }
-        public Tensor<ushort> Xor(Tensor<ushort> tensor, ushort scalar)
+        public void Equals(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
-                result.Buffer[i] = (ushort)(tensor.Buffer[i] ^ scalar);
+                result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
             }
-
-            return result;
         }
-        public Tensor<ushort> LeftShift(Tensor<ushort> tensor, int value)
+        public void GreaterThan(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+            }
+        }
+        public void GreaterThanOrEqual(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+            }
+        }
+        public void Increment(Tensor<ushort> tensor, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i]++;
+            }
+        }
+        public void LeftShift(Tensor<ushort> tensor, int value, Tensor<ushort> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(tensor.Buffer[i] << value);
             }
-
-            return result;
         }
-        public Tensor<ushort> RightShift(Tensor<ushort> tensor, int value)
+        public void LessThan(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
         {
-            var result = tensor.CloneEmpty();
-
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+            }
+        }
+        public void LessThanOrEqual(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+            }
+        }
+        public void Modulo(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(left.Buffer[i] % right.Buffer[i]);
+            }
+        }
+        public void Modulo(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] % scalar);
+            }
+        }
+        public void Multiply(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(left.Buffer[i] * right.Buffer[i]);
+            }
+        }
+        public void Multiply(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] * scalar);
+            }
+        }
+        public void NotEquals(Tensor<ushort> left, Tensor<ushort> right, Tensor<bool> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+            }
+        }
+        public void Or(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(left.Buffer[i] | right.Buffer[i]);
+            }
+        }
+        public void Or(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] | scalar);
+            }
+        }
+        public void RightShift(Tensor<ushort> tensor, int value, Tensor<ushort> result)
+        {
             for(int i = 0; i < result.Length; i++)
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(tensor.Buffer[i] >> value);
             }
-
-            return result;
+        }
+        public void Subtract(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(left.Buffer[i] - right.Buffer[i]);
+            }
+        }
+        public void Subtract(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] - scalar);
+            }
+        }
+        public void UnaryMinus(Tensor<ushort> tensor, Tensor<ushort> result)
+        {
+            throw new NotSupportedException();
+        }
+        public void UnaryPlus(Tensor<ushort> tensor, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)+tensor.Buffer[i];
+            }
+        }
+        public void Xor(Tensor<ushort> left, Tensor<ushort> right, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(left.Buffer[i] ^ right.Buffer[i]);
+            }
+        }
+        public void Xor(Tensor<ushort> tensor, ushort scalar, Tensor<ushort> result)
+        {
+            for(int i = 0; i < result.Length; i++)
+            {
+                // TODO: vectorize
+                result.Buffer[i] = (ushort)(tensor.Buffer[i] ^ scalar);
+            }
         }
     }
 }
