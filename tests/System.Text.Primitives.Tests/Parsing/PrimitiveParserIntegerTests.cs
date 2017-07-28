@@ -639,6 +639,52 @@ namespace System.Text.Primitives.Tests
         #region sbyte
 
         [Theory]
+        [InlineData("a1", false, 0, 0)]
+        [InlineData("1", true, 1, 1)]
+        [InlineData("-1", true, -1, 2)]
+        [InlineData("11", true, 11, 2)]
+        [InlineData("-11", true, -11, 3)]
+        [InlineData("00a0", true, 0, 2)]
+        [InlineData("00a", true, 0, 2)]
+        [InlineData("111", true, 111, 3)]
+        [InlineData("123abcdefg", true, 123, 3)]
+        [InlineData("-A", false, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0)] // invalid character test
+        [InlineData("123!", true, 123, 3)] // invalid character test w/ char < '0' // TODO: Fix test case elsewhere
+        [InlineData("128", false, 0, 0)] // positive overflow test
+        [InlineData("-129", false, 0, 0)] // negative overflow test
+        [InlineData("0", true, 0, 1)]
+        [InlineData("+1", true, 1, 2)]
+        [InlineData("+127", true, 127, 4)]
+        [InlineData("as3gf31t`2c", false, 0, 0)]
+        [InlineData("agbagbagb5", false, 0, 0)]
+        [InlineData("1faag", true, 1, 1)]
+        [InlineData("-1sdg", true, -1, 2)]
+        [InlineData("-afsagsag4", false, 0, 0)]
+        [InlineData("+a", false, 0, 0)]
+        [InlineData("-0000123abcdefg1", true, -123, 8)]
+        [InlineData("+0000123abcdefg1", true, 123, 8)]
+        [InlineData("0000123abcdefg1", true, 123, 7)]
+        [InlineData("00000012abcdefg1", true, 12, 8)]
+        [InlineData("00000000000000abcdefghijklmnop", true, 0, 14)]
+        [InlineData("000000a", true, 0, 6)]
+        [InlineData("00000000000000!", true, 0, 14)]
+        [InlineData("00000000000000", true, 0, 14)]
+        [InlineData("114", true, 114, 3)]
+        [InlineData("-115", true, -115, 4)]
+        [InlineData("123!6", true, 123, 3)]
+        [InlineData("123!abc", true, 123, 3)]
+        [InlineData("!!", false, 0, 0)]
+        [InlineData("+", false, 0, 0)]
+        [InlineData("-", false, 0, 0)]
+        [InlineData("", false, 0, 0)]
+        [InlineData("5", true, 5, 1)]
+        [InlineData("^", false, 0, 0)]
+        [InlineData("41474836482145", false, 0, 0)]
+        [InlineData("0127", true, 127, 4)] // max
+        [InlineData("-0128", true, -128, 5)] // min
+        [InlineData("0128", false, 0, 0)] // positive overflow test
+        [InlineData("-0129", false, 0, 0)] // negative overflow test
         [InlineData("111", true, 111, 3)]
         [InlineData("49abcdefg", true, 49, 2)]
         [InlineData("127", true, 127, 3)] // max
