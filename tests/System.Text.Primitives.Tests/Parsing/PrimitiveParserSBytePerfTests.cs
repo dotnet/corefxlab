@@ -139,6 +139,29 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = InnerCount)]
+
+        private static void PrimitiveParserByteSpanToInt32_BytesConsumed_VariableLength_Baseline()
+        {
+            int textLength = s_SByteTextArray.Length;
+            byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
+            for (var i = 0; i < textLength; i++)
+            {
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_SByteTextArray[i]);
+            }
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        sbyte.TryParse(s_SByteTextArray[i % textLength], out sbyte value);
+                        TestHelper.DoNotIgnore(value, 0);
+                    }
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("๑๑๑")]
         [InlineData("๑๒๔")]
         [InlineData("௧௨")]
