@@ -51,30 +51,6 @@ namespace System.Text.Primitives.Tests.Parsing
         }
 
         [Benchmark(InnerIterationCount = InnerCount)]
-        private static void PrimitiveParserByteSpanToInt16_VariableLength()
-        {
-            int textLength = s_Int16TextArray.Length;
-            byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
-            for (var i = 0; i < textLength; i++)
-            {
-                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_Int16TextArray[i]);
-            }
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                    {
-                        ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        PrimitiveParser.InvariantUtf8.TryParseInt16(utf8ByteSpan, out short value);
-                        TestHelper.DoNotIgnore(value, 0);
-                    }
-                }
-            }
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData("10737")] // standard parse
         [InlineData("32767")] // max value
         [InlineData("0")]
@@ -287,7 +263,7 @@ namespace System.Text.Primitives.Tests.Parsing
         [InlineData("+ลบ๒๑abcdefghijklmnop")]
         [InlineData("+๒๑abcdefghijklmnop")]
         [InlineData("+ลบ๑๔abcdefghijklmnop")]
-        public unsafe void ParseInt16Thai(string text)
+        public void ParseInt16Thai(string text)
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             foreach (var iteration in Benchmark.Iterations)
