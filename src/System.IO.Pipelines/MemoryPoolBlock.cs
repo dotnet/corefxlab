@@ -111,7 +111,7 @@ namespace System.IO.Pipelines
         public override void Release()
         {
             // TODO: should it check IsRetained?
-            if (Interlocked.Decrement(ref _referenceCount) <= 0)
+            if (Interlocked.Decrement(ref _referenceCount) == 0)
             {
                OnZeroReferences();
             }
