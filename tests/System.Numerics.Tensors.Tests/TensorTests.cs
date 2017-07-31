@@ -171,7 +171,7 @@ namespace tests
             {
                { 1, 2, 4 },
                { 8, 3, 9 },
-               { 0, 7, 5 },
+               { 1, 7, 5 },
             };
 
             var tensor = new Tensor<int>(arr);
@@ -186,7 +186,7 @@ namespace tests
             diag = tensor.GetDiagonal(-1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 8, 7 }));
             diag = tensor.GetDiagonal(-2);
-            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 0 }));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1 }));
             Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-3));
         }
 
@@ -197,7 +197,7 @@ namespace tests
             {
                { 1, 2, 4, 3, 7 },
                { 8, 3, 9, 2, 6 },
-               { 0, 7, 5, 2, 9 }
+               { 1, 7, 5, 2, 9 }
             };
 
             var tensor = new Tensor<int>(arr);
@@ -216,7 +216,7 @@ namespace tests
             diag = tensor.GetDiagonal(-1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 8, 7 }));
             diag = tensor.GetDiagonal(-2);
-            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 0 }));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1 }));
             Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-3));
             Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-4));
             Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-5));
@@ -231,7 +231,7 @@ namespace tests
                 {
                    { 1, 2, 4 },
                    { 8, 3, 9 },
-                   { 0, 7, 5 },
+                   { 1, 7, 5 },
                 },
                 {
                    { 4, 5, 7 },
@@ -255,6 +255,437 @@ namespace tests
                 { 4, 9, 4 }
             };
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, expected));
+        }
+
+        [Fact]
+        public void GetTriangleSquare()
+        {
+            var arr = new[,]
+            {
+               { 1, 2, 4 },
+               { 8, 3, 9 },
+               { 1, 7, 5 },
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetTriangle(0);
+
+            var expected = new Tensor<int>(new[,]
+            {
+               { 1, 0, 0 },
+               { 8, 3, 0 },
+               { 1, 7, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 0 },
+               { 8, 3, 9 },
+               { 1, 7, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4 },
+               { 8, 3, 9 },
+               { 1, 7, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(3);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(200);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(-1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0 },
+               { 8, 0, 0 },
+               { 1, 7, 0 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(-2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+               { 1, 0, 0 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+            });
+            tri = tensor.GetTriangle(-3);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            // same as -3, should it be an exception?
+            tri = tensor.GetTriangle(-4);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(-300);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+        }
+
+        [Fact]
+        public void GetTriangleRectangle()
+        {
+            var arr = new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 8, 3, 9, 2, 6 },
+               { 1, 7, 5, 2, 9 }
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetTriangle(0);
+            var expected = new Tensor<int>(new[,]
+            {
+               { 1, 0, 0, 0, 0 },
+               { 8, 3, 0, 0, 0 },
+               { 1, 7, 5, 0, 0 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 0, 0, 0 },
+               { 8, 3, 9, 0, 0 },
+               { 1, 7, 5, 2, 0 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 0, 0 },
+               { 8, 3, 9, 2, 0 },
+               { 1, 7, 5, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(3);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 3, 0 },
+               { 8, 3, 9, 2, 6 },
+               { 1, 7, 5, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(4);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 8, 3, 9, 2, 6 },
+               { 1, 7, 5, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            // same as 4, should it be an exception?
+            tri = tensor.GetTriangle(5);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(1000);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(-1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 0, 0 },
+               { 8, 0, 0, 0, 0 },
+               { 1, 7, 0, 0, 0 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 },
+               { 1, 0, 0, 0, 0 }
+            });
+            tri = tensor.GetTriangle(-2);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 }
+            });
+            tri = tensor.GetTriangle(-3);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetTriangle(-4);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(-5);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetTriangle(-100);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+        }
+
+        [Fact]
+        public void GetTriangleCube()
+        {
+            var arr = new[, ,]
+            {
+                {
+                   { 1, 2, 4 },
+                   { 8, 3, 9 },
+                   { 1, 7, 5 },
+                },
+                {
+                   { 4, 5, 7 },
+                   { 1, 6, 2 },
+                   { 3, 0, 8 },
+                },
+                {
+                   { 5, 6, 1 },
+                   { 2, 2, 3 },
+                   { 4, 9, 4 },
+                },
+
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetTriangle(0);
+            var expected = new Tensor<int>(new[,,]
+            {
+                {
+                   { 1, 2, 4 },
+                   { 0, 0, 0 },
+                   { 0, 0, 0 },
+                },
+                {
+                   { 4, 5, 7 },
+                   { 1, 6, 2 },
+                   { 0, 0, 0 },
+                },
+                {
+                   { 5, 6, 1 },
+                   { 2, 2, 3 },
+                   { 4, 9, 4 },
+                },
+
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+        }
+
+        [Fact]
+        public void GetUpperTriangleSquare()
+        {
+            var arr = new[,]
+            {
+               { 1, 2, 4 },
+               { 8, 3, 9 },
+               { 1, 7, 5 },
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetUpperTriangle(0);
+
+           var expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4 },
+               { 0, 3, 9 },
+               { 0, 0, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 2, 4 },
+               { 0, 0, 9 },
+               { 0, 0, 0 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 4 },
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(3);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+               { 0, 0, 0 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(4);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(42);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(-1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4 },
+               { 8, 3, 9 },
+               { 0, 7, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(-2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4 },
+               { 8, 3, 9 },
+               { 1, 7, 5 },
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(-3);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(-300);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+        }
+        
+        [Fact]
+        public void GetUpperTriangleRectangle()
+        {
+            var arr = new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 8, 3, 9, 2, 6 },
+               { 1, 7, 5, 2, 9 }
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetUpperTriangle(0);
+            var expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 0, 3, 9, 2, 6 },
+               { 0, 0, 5, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 2, 4, 3, 7 },
+               { 0, 0, 9, 2, 6 },
+               { 0, 0, 0, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(2);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 4, 3, 7 },
+               { 0, 0, 0, 2, 6 },
+               { 0, 0, 0, 0, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(3);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 3, 7 },
+               { 0, 0, 0, 0, 6 },
+               { 0, 0, 0, 0, 0 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(4);
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 0, 7 },
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            expected = new Tensor<int>(new[,]
+            {
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 },
+               { 0, 0, 0, 0, 0 }
+            });
+            tri = tensor.GetUpperTriangle(5);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(6);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(1000);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            tri = tensor.GetUpperTriangle(-1);
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 8, 3, 9, 2, 6 },
+               { 0, 7, 5, 2, 9 }
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+
+            expected = new Tensor<int>(new[,]
+            {
+               { 1, 2, 4, 3, 7 },
+               { 8, 3, 9, 2, 6 },
+               { 1, 7, 5, 2, 9 }
+            });
+            tri = tensor.GetUpperTriangle(-2);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            
+            tri = tensor.GetUpperTriangle(-3);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(-4);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            tri = tensor.GetUpperTriangle(-100);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+        }
+        
+        [Fact]
+        public void GetUpperTriangleCube()
+        {
+            var arr = new[, ,]
+            {
+                {
+                   { 1, 2, 4 },
+                   { 8, 3, 9 },
+                   { 1, 7, 5 },
+                },
+                {
+                   { 4, 5, 7 },
+                   { 1, 6, 2 },
+                   { 3, 0, 8 },
+                },
+                {
+                   { 5, 6, 1 },
+                   { 2, 2, 3 },
+                   { 4, 9, 4 },
+                },
+
+            };
+
+            var tensor = new Tensor<int>(arr);
+            var tri = tensor.GetUpperTriangle(0);
+            var expected = new Tensor<int>(new[, ,]
+            {
+                {
+                   { 1, 2, 4 },
+                   { 8, 3, 9 },
+                   { 1, 7, 5 },
+                },
+                {
+                   { 0, 0, 0 },
+                   { 1, 6, 2 },
+                   { 3, 0, 8 },
+                },
+                {
+                   { 0, 0, 0 },
+                   { 0, 0, 0 },
+                   { 4, 9, 4 },
+                },
+
+            });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
         }
 
         [Fact]

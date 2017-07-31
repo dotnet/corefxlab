@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace System.Numerics
@@ -31,7 +33,7 @@ namespace System.Numerics
 
             for (int i = 0; i < left.Rank; i++)
             {
-                if (left.dimensions[i] != right.dimensions[i])
+                if (left.Dimensions[i] != right.Dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions");
                 }
@@ -64,7 +66,7 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.dimensions[i] != result.dimensions[i] || right.dimensions[i] != result.dimensions[i])
+                if (left.Dimensions[i] != result.Dimensions[i] || right.Dimensions[i] != result.Dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions");
                 }
@@ -97,7 +99,7 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.dimensions[i] != result.dimensions[i] || right.dimensions[i] != result.dimensions[i])
+                if (left.Dimensions[i] != result.Dimensions[i] || right.Dimensions[i] != result.Dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions");
                 }
@@ -131,7 +133,7 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (tensor.dimensions[i] != result.dimensions[i])
+                if (tensor.Dimensions[i] != result.Dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions");
                 }
@@ -140,10 +142,12 @@ namespace System.Numerics
         
     }
 
-    public class Tensor<T>: IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable // todo: ICloneable
+    // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
+    public class Tensor<T>: IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] backingArray;
-        internal readonly int[] dimensions;
+        private readonly int[] dimensions;
+        private IReadOnlyList<int> readOnlyDimensions;
 
         private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
@@ -162,8 +166,7 @@ namespace System.Numerics
             }
 
             backingArray = new T[fromArray.Length];
-
-            // TODO: check if blittable and memcpy?
+            
             int index = 0;
             foreach(var item in fromArray)
             {
@@ -254,7 +257,7 @@ namespace System.Numerics
         /// <summary>
         /// Returns a copy of the dimensions array.
         /// </summary>
-        public int[] Dimensions => (int[])dimensions.Clone();
+        public IReadOnlyList<int> Dimensions => readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
 
         /// <summary>
         /// Returns a single dimensional view of this Tensor, in C-style ordering
@@ -370,10 +373,13 @@ namespace System.Numerics
 
                 for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
-                    GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
+                    if (remainingDimensions.Length > 0)
+                    {
+                        GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
 
-                    Array.Copy(diagProjectionIndices, 0, destIndices, 2, diagProjectionIndices.Length);
-                    Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
+                        Array.Copy(diagProjectionIndices, 0, destIndices, 2, diagProjectionIndices.Length);
+                        Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
+                    }
 
                     result[destIndices] = diagonal[diagnonalIndices];
                 }
@@ -463,16 +469,129 @@ namespace System.Numerics
 
                 for(int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
-                    GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
+                    if (remainingDimensions.Length > 0)
+                    {
+                        GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
 
-                    Array.Copy(diagProjectionIndices, 0, sourceIndices, 2, diagProjectionIndices.Length);
-                    Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
+                        Array.Copy(diagProjectionIndices, 0, sourceIndices, 2, diagProjectionIndices.Length);
+                        Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
+                    }
 
                     diagonalTensor[diagnonalIndices] = this[sourceIndices];
                 }
             }
 
             return diagonalTensor;
+        }
+
+
+        public Tensor<T> GetTriangle()
+        {
+            return GetTriangle(0, upper: false);
+        }
+
+        public Tensor<T> GetTriangle(int offset)
+        {
+            return GetTriangle(offset, upper: false);
+        }
+
+        public Tensor<T> GetUpperTriangle()
+        {
+            return GetTriangle(0, upper: true);
+        }
+
+        public Tensor<T> GetUpperTriangle(int offset)
+        {
+            return GetTriangle(offset, upper: true);
+        }
+
+        private Tensor<T> GetTriangle(int offset, bool upper)
+        {
+            // Similar to get diagonal except it gets every element below and including the diagonal.
+
+            // TODO: allow specification of axis1 and axis2?
+            var axisLength0 = dimensions[0];
+            var axisLength1 = dimensions[1];
+            var diagonalLength = Math.Max(axisLength0, axisLength1);
+
+            var result = CloneEmpty();
+
+            var projectionSize = result.Length / (axisLength0 * axisLength1);
+
+            var remainingDimensions = new int[dimensions.Length - 2];
+
+            for (int i = 2; i < dimensions.Length; i++)
+            {
+                remainingDimensions[i - 2] = dimensions[i];
+            }
+
+            // TODO: avoid translating to indices and back by directly accessing backing array
+            var indices = new int[Rank];
+
+            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
+            {
+                // starting point for the tri
+                var triIndex0 = offset > 0 ? diagIndex - offset: diagIndex;
+                var triIndex1 = offset > 0 ? diagIndex : diagIndex + offset;
+
+                // for lower triangle, iterate index0 keeping same index1
+                // for upper triangle, iterate index1 keeping same index0
+
+                if (triIndex0 < 0)
+                {
+                    if (upper)
+                    {
+                        // out of bounds, ignore this diagIndex.
+                        continue;
+                    }
+                    else
+                    {
+                        // set index to 0 so that we can iterate on the remaining index0 values.
+                        triIndex0 = 0;
+                    }
+                }
+
+                if (triIndex1 < 0)
+                {
+                    if (upper)
+                    {
+                        // set index to 0 so that we can iterate on the remaining index1 values.
+                        triIndex1 = 0;
+                    }
+                    else
+                    {
+                        // out of bounds, ignore this diagIndex.
+                        continue;
+                    }
+                }
+
+                while ((triIndex1 < axisLength1) && (triIndex0 < axisLength0))
+                {
+                    indices[0] = triIndex0;
+                    indices[1] = triIndex1;
+
+                    for (int projectionOffset = 0; projectionOffset < projectionSize; projectionOffset++)
+                    {
+                        // copy a given tri element, projected across remaining dimensions
+                        if (indices.Length > 2)
+                        {
+                            GetIndicesFromOffset(projectionOffset, projectionSize, dimensions, indices, startIndex: 2 /* skip first two dimensions*/);
+                        }
+                        result[indices] = this[indices];
+                    }
+
+                    if (upper)
+                    {
+                        triIndex1++;
+                    }
+                    else
+                    {
+                        triIndex0++;
+                    }
+                }
+            }
+
+            return result;
         }
 
         public Tensor<T> Reshape(params int[] dimensions)
@@ -651,14 +770,15 @@ namespace System.Numerics
             return index;
         }
 
-        private static void GetIndicesFromOffset(int offset, int totalLength, int[] dimensions, int[] indices)
+        private static void GetIndicesFromOffset(int offset, int totalLength, int[] dimensions, int[] indices, int startIndex = 0)
         {
             Debug.Assert(indices.Length == dimensions.Length);
-            Debug.Assert(totalLength == GetProduct(dimensions));
+            Debug.Assert(startIndex < dimensions.Length);
+            Debug.Assert(totalLength == GetProduct(dimensions, startIndex));
 
             var divisor = totalLength;
 
-            for (int i = 0; i < indices.Length; i++)
+            for (int i = startIndex; i < indices.Length; i++)
             {
                 divisor /= dimensions[i];
 
@@ -669,10 +789,10 @@ namespace System.Numerics
             }
         }
 
-        private static long GetProduct(int[] dimensions)
+        private static long GetProduct(int[] dimensions, int startIndex = 0)
         {
             long product = 1;
-            for (int i = 0; i < dimensions.Length; i++)
+            for (int i = startIndex; i < dimensions.Length; i++)
             {
                 if (dimensions[i] < 0)
                 {
@@ -691,8 +811,7 @@ namespace System.Numerics
         }
         #endregion
 
-        #region Arithmetic
-
+        #region Operators
         public static Tensor<T> operator +(Tensor<T> left, Tensor<T> right)
         {
             return Tensor.Add(left, right);
@@ -914,7 +1033,6 @@ namespace System.Numerics
                 return CompareTo(otherArray, comparer);
             }
 
-            // todo: check exception
             throw new ArgumentException($"Cannot compare {nameof(Tensor<T>)} to {other.GetType()}.", nameof(other));
         }
 
@@ -1006,7 +1124,6 @@ namespace System.Numerics
                 return Equals(otherArray, comparer);
             }
 
-            // todo: check exception
             throw new ArgumentException($"Cannot compare {nameof(Tensor<T>)} to {other.GetType()}.", nameof(other));
         }
 
