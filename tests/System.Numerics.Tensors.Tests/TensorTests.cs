@@ -40,6 +40,66 @@ namespace tests
         }
 
         [Fact]
+        public void TestDefaultConstructor()
+        {
+            Tensor<int> defaultTensor = default(Tensor<int>);
+
+            Assert.Equal(0, defaultTensor.Buffer.Length);
+            Assert.Equal(0, defaultTensor.Dimensions.Count);
+            Assert.True(defaultTensor.IsFixedSize);
+            Assert.False(defaultTensor.IsReadOnly);
+            Assert.Equal(0, defaultTensor.Length);
+            Assert.Equal(0, defaultTensor.Rank);
+
+            // don't throw
+            var clone = defaultTensor.Clone();
+            clone = defaultTensor.CloneEmpty();
+            var doubleClone = defaultTensor.CloneEmpty<double>();
+            var arr = new int[0];
+            defaultTensor.CopyTo(arr, 0);
+            defaultTensor.Fill(0);
+            defaultTensor.Reshape();
+            defaultTensor.ReshapeCopy();
+            defaultTensor.ToString();
+
+            Assert.Equal(default(Tensor<int>), defaultTensor);
+            Assert.Equal(default(Tensor<int>).GetHashCode(), defaultTensor.GetHashCode());
+            Assert.False(defaultTensor.GetEnumerator().MoveNext());
+
+            // rank is too small
+            Assert.Throws<InvalidOperationException>(() => defaultTensor.GetDiagonal());
+            Assert.Throws<InvalidOperationException>(() => defaultTensor.GetTriangle());
+            Assert.Throws<InvalidOperationException>(() => defaultTensor.GetUpperTriangle());
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0, 0]);
+            Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0, 0, 0]);
+
+            Assert.Throws<ArgumentException>(() => defaultTensor + 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor + defaultTensor);
+            Assert.Throws<ArgumentException>(() => +defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor - 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor - defaultTensor);
+            Assert.Throws<ArgumentException>(() => -defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor++);
+            Assert.Throws<ArgumentException>(() => defaultTensor--);
+            Assert.Throws<ArgumentException>(() => defaultTensor * 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor * defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor / 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor / defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor % 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor % defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor & defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor & -1);
+            Assert.Throws<ArgumentException>(() => defaultTensor | defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor | -1);
+            Assert.Throws<ArgumentException>(() => defaultTensor ^ defaultTensor);
+            Assert.Throws<ArgumentException>(() => defaultTensor ^ -1);
+            Assert.Throws<ArgumentException>(() => defaultTensor >> 1);
+            Assert.Throws<ArgumentException>(() => defaultTensor << 1);
+        }
+
+        [Fact]
         public void ConstructTensorFromArrayRank3()
         {
             var arr = new[, ,]

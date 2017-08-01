@@ -14,21 +14,14 @@ namespace System.Numerics
     {
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
-
-            // TODO: Support "compatible sizes" AKA "broadcasting"
-
             if (left.Rank != right.Rank || left.Length != right.Length)
             {
                 throw new ArgumentException("Operands must have matching dimensions");
+            }
+
+            if (left.Rank == 0)
+            {
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
             }
 
             for (int i = 0; i < left.Rank; i++)
@@ -42,26 +35,14 @@ namespace System.Numerics
 
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<T> result)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
-
-            if (result == null)
-            {
-                throw new ArgumentNullException(nameof(result));
-            }
-
-            // TODO: Support "compatible sizes" AKA "broadcasting"
-
             if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
             {
                 throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            if (left.Rank == 0)
+            {
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
             }
 
             for (int i = 0; i < result.Rank; i++)
@@ -75,26 +56,14 @@ namespace System.Numerics
 
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<bool> result)
         {
-            if (left == null)
-            {
-                throw new ArgumentNullException(nameof(left));
-            }
-
-            if (right == null)
-            {
-                throw new ArgumentNullException(nameof(right));
-            }
-
-            if (result == null)
-            {
-                throw new ArgumentNullException(nameof(result));
-            }
-
-            // TODO: Support "compatible sizes" AKA "broadcasting"
-
             if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
             {
                 throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            if (left.Rank == 0)
+            {
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
             }
 
             for (int i = 0; i < result.Rank; i++)
@@ -108,27 +77,22 @@ namespace System.Numerics
 
         internal static void ValidateArgs<T>(Tensor<T> tensor)
         {
-            if (tensor == null)
+            if (tensor.Rank == 0)
             {
-                throw new ArgumentNullException(nameof(tensor));
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
             }
         }
 
         internal static void ValidateArgs<T>(Tensor<T> tensor, Tensor<T> result)
         {
-            if (tensor == null)
-            {
-                throw new ArgumentNullException(nameof(tensor));
-            }
-
-            if (result == null)
-            {
-                throw new ArgumentNullException(nameof(result));
-            }
-
             if (tensor.Rank != result.Rank || tensor.Length != result.Length)
             {
                 throw new ArgumentException("Operands and result must have matching dimensions");
+            }
+
+            if (tensor.Rank == 0)
+            {
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
             }
 
             for (int i = 0; i < result.Rank; i++)
@@ -139,11 +103,10 @@ namespace System.Numerics
                 }
             }
         }
-        
     }
 
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
-    public class Tensor<T>: IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
+    public struct Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] backingArray;
         private readonly int[] dimensions;
@@ -160,18 +123,20 @@ namespace System.Numerics
 
             // copy initial array
             dimensions = new int[fromArray.Rank];
-            for(int i = 0; i < dimensions.Length; i++)
+            for (int i = 0; i < dimensions.Length; i++)
             {
                 dimensions[i] = fromArray.GetLength(i);
             }
 
             backingArray = new T[fromArray.Length];
-            
+
             int index = 0;
-            foreach(var item in fromArray)
+            foreach (var item in fromArray)
             {
                 backingArray[index++] = (T)item;
             }
+
+            readOnlyDimensions = null;
         }
 
         /// <summary>
@@ -187,6 +152,7 @@ namespace System.Numerics
 
             backingArray = new T[size];
             dimensions = new[] { size };
+            readOnlyDimensions = null;
         }
 
         /// <summary>
@@ -200,12 +166,6 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            if (dimensions.Length == 0)
-            {
-                // rank 0 tensor should be a scalar, need to think about how to represent that.
-                throw new ArgumentOutOfRangeException(nameof(dimensions));
-            }
-
             long size = GetProduct(dimensions);
 
             // could throw, let the runtime decide what that limit is
@@ -214,19 +174,19 @@ namespace System.Numerics
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
             dimensions.CopyTo(this.dimensions, 0);
+            readOnlyDimensions = null;
         }
 
         public Tensor(T[] fromBackingArray, params int[] dimensions)
         {
+            if (fromBackingArray == null)
+            {
+                throw new ArgumentNullException(nameof(fromBackingArray));
+            }
+
             if (dimensions == null)
             {
                 throw new ArgumentNullException(nameof(dimensions));
-            }
-
-            if (dimensions.Length == 0)
-            {
-                // rank 0 tensor should be a scalar, need to think about how to represent that.
-                throw new ArgumentOutOfRangeException(nameof(dimensions));
             }
 
             long size = GetProduct(dimensions);
@@ -242,27 +202,40 @@ namespace System.Numerics
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
             dimensions.CopyTo(this.dimensions, 0);
+            readOnlyDimensions = null;
         }
 
         /// <summary>
         /// Total length of the Tensor.
         /// </summary>
-        public int Length => backingArray.Length;
+        public int Length => backingArray?.Length ?? 0;
 
         /// <summary>
         /// Rank of the tensor: number of dimensions.
         /// </summary>
-        public int Rank => dimensions.Length;
+        public int Rank => dimensions?.Length ?? 0;
 
         /// <summary>
         /// Returns a copy of the dimensions array.
         /// </summary>
-        public IReadOnlyList<int> Dimensions => readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
+        public IReadOnlyList<int> Dimensions
+        {
+            get
+            {
+                if (dimensions == null)
+                {
+                    // make sure we don't mutate a default(Tensor<T>) object by accessing this property
+                    return ArrayUtilities.Empty<int>();
+                }
+
+                return readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
+            }
+        }
 
         /// <summary>
         /// Returns a single dimensional view of this Tensor, in C-style ordering
         /// </summary>
-        public T[] Buffer => backingArray;
+        public T[] Buffer => backingArray ?? ArrayUtilities.Empty<T>();
 
         /// <summary>
         /// Sets all elements in Tensor to <paramref name="value"/>.
@@ -270,17 +243,20 @@ namespace System.Numerics
         /// <param name="value">Value to fill</param>
         public void Fill(T value)
         {
-            // JIT look here, lend us a hand
-            for (int i = 0; i < backingArray.Length; i++)
+            if (backingArray != null)
             {
-                // is it possible to fast-path when initialValue == default(T)?
-                backingArray[i] = value;
+                // JIT look here, lend us a hand
+                for (int i = 0; i < backingArray.Length; i++)
+                {
+                    // is it possible to fast-path when initialValue == default(T)?
+                    backingArray[i] = value;
+                }
             }
         }
 
         public Tensor<T> Clone()
         {
-            return new Tensor<T>((T[])backingArray.Clone(), dimensions);
+            return new Tensor<T>((T[])Buffer.Clone(), dimensions ?? ArrayUtilities.Empty<int>());
         }
 
         /// <summary>
@@ -289,7 +265,7 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<T> CloneEmpty()
         {
-            return new Tensor<T>(dimensions);
+            return new Tensor<T>(dimensions ?? ArrayUtilities.Empty<int>());
         }
 
 
@@ -299,14 +275,13 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<TResult> CloneEmpty<TResult>()
         {
-            return new Tensor<TResult>(dimensions);
+            return new Tensor<TResult>(dimensions ?? ArrayUtilities.Empty<int>());
         }
 
         /// <summary>
         /// Creates an identity tensor
         /// </summary>
         /// <param name="size"></param>
-        /// <param name="oneValue"></param>
         /// <returns></returns>
         public static Tensor<T> CreateIdentity(int size)
         {
@@ -325,7 +300,7 @@ namespace System.Numerics
 
             for(int i = 0; i < size; i++)
             {
-                result.backingArray[i * size + i] = oneValue;
+                result.Buffer[i * size + i] = oneValue;
             }
 
             return result;
@@ -338,6 +313,11 @@ namespace System.Numerics
 
         public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal, int offset)
         {
+            if (diagonal.Rank < 1)
+            {
+                throw new ArgumentException($"Tensor {nameof(diagonal)} must have at least one dimension.", nameof(diagonal));
+            }
+
             int diagonalLength = diagonal.dimensions[0];
 
             // TODO: allow specification of axis1 and axis2?
@@ -451,7 +431,7 @@ namespace System.Numerics
             var diagonalTensor = new Tensor<T>(dimensions:newTensorDimensions);
             var sizePerDiagonal = diagonalTensor.Length / diagonalLength;
 
-            Debug.Assert(sizePerDiagonal == GetProduct(remainingDimensions));
+            Debug.Assert(sizePerDiagonal == GetProduct(remainingDimensions) || remainingDimensions.Length == 0);
 
             // TODO: avoid translating to indices and back by directly accessing backing array
             var sourceIndices = new int[Rank];
@@ -507,6 +487,11 @@ namespace System.Numerics
 
         private Tensor<T> GetTriangle(int offset, bool upper)
         {
+            if (Rank < 2)
+            {
+                throw new InvalidOperationException($"Cannot compute triangle of {nameof(Tensor<T>)} with Rank less than 2.");
+            }
+
             // Similar to get diagonal except it gets every element below and including the diagonal.
 
             // TODO: allow specification of axis1 and axis2?
@@ -601,12 +586,6 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            if (dimensions.Length == 0)
-            {
-                // Rank0 not supported
-                throw new ArgumentException("New dimensions must be specified.", nameof(dimensions));
-            }
-
             var newSize = GetProduct(dimensions);
 
             if (newSize != Length)
@@ -614,7 +593,7 @@ namespace System.Numerics
                 throw new ArgumentException($"Cannot reshape array due to mismatch in lengths, currently {Length} would become {newSize}.", nameof(dimensions));
             }
 
-            return new Tensor<T>(backingArray, dimensions);
+            return new Tensor<T>(Buffer, dimensions);
         }
 
         public Tensor<T> ReshapeCopy(params int[] dimensions)
@@ -624,17 +603,15 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            if (dimensions.Length == 0)
-            {
-                // Rank0 not supported
-                throw new ArgumentException("New dimensions must be specified.", nameof(dimensions));
-            }
-
             var newSize = (int)GetProduct(dimensions);
 
             T[] copyBackingArray = new T[newSize];
             var copyLength = Math.Min(newSize, Length);
-            Array.Copy(backingArray, copyBackingArray, copyLength);
+
+            if (copyLength != 0)
+            {
+                Array.Copy(Buffer, copyBackingArray, copyLength);
+            }
 
             return new Tensor<T>(copyBackingArray, dimensions);
         }
@@ -643,21 +620,21 @@ namespace System.Numerics
         {
             get
             {
-                if (dimensions.Length != 1)
+                if (Rank != 1)
                 {
-                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {dimensions.Length} dimensions.");
+                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
                 }
 
-                return backingArray[index];
+                return Buffer[index];
             }
             set
             {
-                if (dimensions.Length != 1)
+                if (Rank != 1)
                 {
-                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {dimensions.Length} dimensions.");
+                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
                 }
 
-                backingArray[index] = value;
+                Buffer[index] = value;
             }
         }
 
@@ -666,13 +643,13 @@ namespace System.Numerics
             get
             {
                 var index = GetOffset(indexRow, indexColumn);
-                return backingArray[index];
+                return Buffer[index];
             }
             set
             {
 
                 var index = GetOffset(indexRow, indexColumn);
-                backingArray[index] = value;
+                Buffer[index] = value;
             }
         }
         
@@ -681,21 +658,21 @@ namespace System.Numerics
             get
             {
                 var index = GetOffsetFromIndices(indices);
-                return backingArray[index];
+                return Buffer[index];
             }
 
             set
             {
                 var index = GetOffsetFromIndices(indices);
-                backingArray[index] = value;
+                Buffer[index] = value;
             }
         }
 
         private int GetOffset(int indexRow, int indexColumn)
         {
-            if (dimensions.Length != 2)
+            if (Rank != 2)
             {
-                throw new ArgumentOutOfRangeException($"Cannot use 2 dimension indexer on {nameof(Tensor<T>)} with {dimensions.Length} dimensions.");
+                throw new ArgumentOutOfRangeException($"Cannot use 2 dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
             }
 
             if (indexRow < 0 || indexRow >= dimensions[0])
@@ -718,7 +695,7 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(indices));
             }
 
-            if (indices.Length != this.dimensions.Length)
+            if (indices.Length != dimensions?.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(indices));
             }
@@ -729,7 +706,7 @@ namespace System.Numerics
         // Inverse of GetOffsetFromIndices
         private void GetIndicesFromOffset(int offset, int[] indices)
         {
-            GetIndicesFromOffset(offset, backingArray.Length, dimensions, indices);
+            GetIndicesFromOffset(offset, Length, dimensions, indices);
         }
 
         #region statics
@@ -791,8 +768,13 @@ namespace System.Numerics
 
         private static long GetProduct(int[] dimensions, int startIndex = 0)
         {
+            if (dimensions.Length == 0)
+            {
+                return 0;
+            }
+
             long product = 1;
-            for (int i = startIndex; i < dimensions.Length; i++)
+            for (int i = startIndex; i < dimensions?.Length; i++)
             {
                 if (dimensions[i] < 0)
                 {
@@ -925,12 +907,12 @@ namespace System.Numerics
         #region IEnumerable members
         public IEnumerator GetEnumerator()
         {
-            return backingArray.GetEnumerator();
+            return Buffer.GetEnumerator();
         }
         #endregion
 
         #region ICollection members
-        int ICollection.Count => backingArray.Length;
+        int ICollection.Count => Buffer.Length;
 
         bool ICollection.IsSynchronized => false;
 
@@ -938,7 +920,7 @@ namespace System.Numerics
 
         public void CopyTo(Array array, int index)
         {
-            backingArray.CopyTo(array, index);
+            Buffer.CopyTo(array, index);
         }
         #endregion
 
@@ -969,45 +951,40 @@ namespace System.Numerics
         int IList.Add(object value)
         {
             // will throw
-            return ((IList)backingArray).Add(value);
+            return ((IList)Buffer).Add(value);
         }
 
         void IList.Clear()
         {
-            ((IList)backingArray).Clear();
+            ((IList)Buffer).Clear();
         }
 
         bool IList.Contains(object value)
         {
-            return ((IList)backingArray).Contains(value);
-        }
-
-        public object ElementWiseEquals(Tensor<int> left, Tensor<int> right)
-        {
-            throw new NotImplementedException();
+            return ((IList)Buffer).Contains(value);
         }
 
         int IList.IndexOf(object value)
         {
-            return ((IList)backingArray).IndexOf(value);
+            return ((IList)Buffer).IndexOf(value);
         }
 
         void IList.Insert(int index, object value)
         {
             // will throw
-            ((IList)backingArray).Insert(index, value);
+            ((IList)Buffer).Insert(index, value);
         }
 
         void IList.Remove(object value)
         {
             // will throw
-            ((IList)backingArray).Remove(value);
+            ((IList)Buffer).Remove(value);
         }
 
         void IList.RemoveAt(int index)
         {
             // will throw
-            ((IList)backingArray).RemoveAt(index);
+            ((IList)Buffer).RemoveAt(index);
         }
         #endregion
 
@@ -1019,11 +996,9 @@ namespace System.Numerics
                 return 1;
             }
 
-            var otherTensor = other as Tensor<T>;
-            
-            if (otherTensor != null)
+            if (other is Tensor<T>)
             {
-                return CompareTo(otherTensor, comparer);
+                return CompareTo((Tensor<T>)other, comparer);
             }
 
             var otherArray = other as Array;
@@ -1110,11 +1085,9 @@ namespace System.Numerics
                 return false;
             }
 
-            var otherTensor = other as Tensor<T>;
-
-            if (otherTensor != null)
+            if (other is Tensor<T>)
             {
-                return Equals(otherTensor, comparer);
+                return Equals((Tensor<T>)other, comparer);
             }
 
             var otherArray = other as Array;
