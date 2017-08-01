@@ -414,7 +414,6 @@ namespace System.IO.Pipelines
             }
         }
 
-
         // Reading
 
         void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)

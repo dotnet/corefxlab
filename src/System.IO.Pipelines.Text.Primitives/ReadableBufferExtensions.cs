@@ -223,6 +223,7 @@ namespace System.IO.Pipelines.Text.Primitives
 
                 buffer.CopyTo(destination);
 
+                // We are able to cast because buffer.Length < 128
                 textSpan = destination.Slice(0, (int) buffer.Length);
             }
             else

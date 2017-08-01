@@ -103,7 +103,7 @@ namespace System.IO.Pipelines
             }
 
             ReadCursor cursor;
-            if (Segment == end.Segment && end.Index >= bytes + Index)
+            if (Segment == end.Segment && end.Index - Index >= bytes)
             {
                 // end.Index >= bytes + Index and end.Index is int
                 cursor = new ReadCursor(Segment, Index + (int)bytes);
@@ -287,7 +287,10 @@ namespace System.IO.Pipelines
 
         internal bool GreaterOrEqual(ReadCursor other)
         {
-            return other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index;
+            // This is other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index 
+            // fliped to avoid overflows
+
+            return other.Segment.RunningLength - Index <= Segment.RunningLength - other.Index;
         }
     }
 }

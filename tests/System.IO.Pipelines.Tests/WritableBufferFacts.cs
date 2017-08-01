@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Tests
                     var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
-                    // Sizes less then max int
+                    // We are able to cast because test arguments are in range of int
                     Assert.True(input.EqualsTo(new Span<byte>(data, (int) offset, (int) input.Length)));
                     offset += input.Length;
                     pipe.Advance(input.End);
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Tests
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetUtf8String(input);
-                    // Sizes less then max int
+                    // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int) offset, (int) input.Length), s);
                     offset += input.Length;
                     pipe.Advance(input.End);
@@ -171,6 +171,7 @@ namespace System.IO.Pipelines.Tests
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetAsciiString(input);
+                    // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int) offset, (int) input.Length), s);
                     offset += input.Length;
                     pipe.Advance(input.End);
