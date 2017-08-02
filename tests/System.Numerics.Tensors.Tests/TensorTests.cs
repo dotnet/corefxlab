@@ -74,29 +74,29 @@ namespace tests
             Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0]);
             Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0, 0]);
             Assert.Throws<ArgumentOutOfRangeException>(() => defaultTensor[0, 0, 0]);
-
-            Assert.Throws<ArgumentException>(() => defaultTensor + 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor + defaultTensor);
-            Assert.Throws<ArgumentException>(() => +defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor - 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor - defaultTensor);
-            Assert.Throws<ArgumentException>(() => -defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor++);
-            Assert.Throws<ArgumentException>(() => defaultTensor--);
-            Assert.Throws<ArgumentException>(() => defaultTensor * 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor * defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor / 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor / defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor % 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor % defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor & defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor & -1);
-            Assert.Throws<ArgumentException>(() => defaultTensor | defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor | -1);
-            Assert.Throws<ArgumentException>(() => defaultTensor ^ defaultTensor);
-            Assert.Throws<ArgumentException>(() => defaultTensor ^ -1);
-            Assert.Throws<ArgumentException>(() => defaultTensor >> 1);
-            Assert.Throws<ArgumentException>(() => defaultTensor << 1);
+            
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor + 1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor + defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => +defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor - 1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor - defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => -defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor++);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor--);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor * 1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor * defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor / 1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor / defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor % 1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor % defaultTensor);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor & defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor & -1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor | defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor | -1);
+            Assert.Throws<ArgumentException>("left", () => defaultTensor ^ defaultTensor);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor ^ -1);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor >> 1);
+            Assert.Throws<ArgumentException>("tensor", () => defaultTensor << 1);
         }
 
         [Fact]
@@ -241,13 +241,13 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 2, 9 }));
             diag = tensor.GetDiagonal(2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 4 }));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(3));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(3));
 
             diag = tensor.GetDiagonal(-1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 8, 7 }));
             diag = tensor.GetDiagonal(-2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1 }));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-3));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(-3));
         }
 
         [Fact]
@@ -271,15 +271,15 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 3, 6 }));
             diag = tensor.GetDiagonal(4);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 7 }));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(5));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(5));
 
             diag = tensor.GetDiagonal(-1);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 8, 7 }));
             diag = tensor.GetDiagonal(-2);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1 }));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-3));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-4));
-            Assert.Throws<ArgumentException>(() => tensor.GetDiagonal(-5));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(-3));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(-4));
+            Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(-5));
         }
 
 

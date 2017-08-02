@@ -16,61 +16,81 @@ namespace System.Numerics
         {
             if (left.Rank != right.Rank || left.Length != right.Length)
             {
-                throw new ArgumentException("Operands must have matching dimensions");
+                throw new ArgumentException("Operands must have matching dimensions", nameof(right));
             }
 
             if (left.Rank == 0)
             {
-                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.", nameof(left));
             }
 
             for (int i = 0; i < left.Rank; i++)
             {
                 if (left.Dimensions[i] != right.Dimensions[i])
                 {
-                    throw new ArgumentException("Operands must have matching dimensions");
+                    throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
             }
         }
 
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<T> result)
         {
-            if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
+            if (left.Rank != right.Rank || left.Length != right.Length)
             {
-                throw new ArgumentException("Operands and result must have matching dimensions");
+                throw new ArgumentException("Operands must have matching dimensions", nameof(right));
+            }
+
+            if (left.Rank != result.Rank || left.Length != result.Length)
+            {
+                throw new ArgumentException("Operands must have matching dimensions", nameof(result));
             }
 
             if (left.Rank == 0)
             {
-                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.", nameof(left));
             }
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != result.Dimensions[i] || right.Dimensions[i] != result.Dimensions[i])
+                if (left.Dimensions[i] != right.Dimensions[i])
                 {
-                    throw new ArgumentException("Operands and result must have matching dimensions");
+                    throw new ArgumentException("Operands must have matching dimensions", nameof(right));
+                }
+
+                if (left.Dimensions[i] != result.Dimensions[i])
+                {
+                    throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
             }
         }
 
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right, Tensor<bool> result)
         {
-            if (left.Rank != result.Rank || right.Rank != result.Rank || left.Length != result.Length || right.Length != result.Length)
+            if (left.Rank != right.Rank || left.Length != right.Length)
             {
-                throw new ArgumentException("Operands and result must have matching dimensions");
+                throw new ArgumentException("Operands must have matching dimensions", nameof(right));
+            }
+
+            if (left.Rank != result.Rank || left.Length != result.Length)
+            {
+                throw new ArgumentException("Operands must have matching dimensions", nameof(result));
             }
 
             if (left.Rank == 0)
             {
-                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.", nameof(left));
             }
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != result.Dimensions[i] || right.Dimensions[i] != result.Dimensions[i])
+                if (left.Dimensions[i] != right.Dimensions[i])
                 {
-                    throw new ArgumentException("Operands and result must have matching dimensions");
+                    throw new ArgumentException("Operands must have matching dimensions", nameof(right));
+                }
+
+                if (left.Dimensions[i] != result.Dimensions[i])
+                {
+                    throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
             }
         }
@@ -79,7 +99,7 @@ namespace System.Numerics
         {
             if (tensor.Rank == 0)
             {
-                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.", nameof(tensor));
             }
         }
 
@@ -87,19 +107,19 @@ namespace System.Numerics
         {
             if (tensor.Rank != result.Rank || tensor.Length != result.Length)
             {
-                throw new ArgumentException("Operands and result must have matching dimensions");
+                throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
             }
 
             if (tensor.Rank == 0)
             {
-                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.");
+                throw new ArgumentException($"Cannot operate on Tensor with {nameof(Tensor<T>.Rank)} of 0.", nameof(tensor));
             }
 
             for (int i = 0; i < result.Rank; i++)
             {
                 if (tensor.Dimensions[i] != result.Dimensions[i])
                 {
-                    throw new ArgumentException("Operands and result must have matching dimensions");
+                    throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
             }
         }
