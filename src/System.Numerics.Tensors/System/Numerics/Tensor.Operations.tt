@@ -20,7 +20,7 @@ namespace System.Numerics
         {
             <#= method.GetValidationMethod(false) #>
 
-            var <#= method.ResultName #> = <#=method.InitializeResult()#>;
+            var <#= method.ResultName #> = <#=method.InitializeResult("T")#>;
             
             TensorArithmetic<T>.Instance.<#=method.MethodName#>(<#=method.GetCallArguments()#>, <#= method.ResultName #>);
 

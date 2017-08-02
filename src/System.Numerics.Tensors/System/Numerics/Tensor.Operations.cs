@@ -77,6 +77,24 @@ namespace System.Numerics
             return result;
         }
 
+        public static void Contract<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes, Tensor<T> result)
+        {
+            var resultDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes, result);
+
+            TensorArithmetic<T>.Instance.Contract(left, right, leftAxes, rightAxes, result);
+        }
+
+        public static Tensor<T> Contract<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes)
+        {
+            var resultDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes);
+
+            var result = new Tensor<T>(resultDimensions);
+            
+            TensorArithmetic<T>.Instance.Contract(left, right, leftAxes, rightAxes, result);
+
+            return result;
+        }
+
         public static void Decrement<T>(Tensor<T> tensor, Tensor<T> result)
         {
             ValidateArgs(tensor, result);

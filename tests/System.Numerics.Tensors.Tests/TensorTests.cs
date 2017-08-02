@@ -1486,5 +1486,99 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
+        [Fact]
+        public void MatrixMultiply()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {5, 6, 7, 8, 9},
+                    {10, 11, 12, 13, 14}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0*0 + 1*5 + 2*10, 0*1 + 1*6 + 2*11, 0*2 + 1*7 + 2*12, 0*3 + 1*8 + 2*13, 0*4 + 1*9 + 2*14},
+                    {3*0 + 4*5 + 5*10, 3*1 + 4*6 + 5*11, 3*2 + 4*7 + 5*12, 3*3 + 4*8 + 5*13, 3*4 + 4*9 + 5*14}
+                });
+
+            var actual = left.MatrixMultiply(right);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Contract()
+        {
+            var left = new Tensor<int>(
+                new[, ,]
+                {
+                    {
+                        {0, 1},
+                        {2, 3}
+                    },
+                    {
+                        {4, 5},
+                        {6, 7}
+                    },
+                    {
+                        {8, 9},
+                        {10, 11}
+                    }
+                });
+
+            var right = new Tensor<int>(
+                new[, ,]
+                {
+                    {
+                        {0, 1},
+                        {2, 3},
+                        {4, 5}
+                    },
+                    {
+                        {6, 7},
+                        {8, 9},
+                        {10, 11}
+                    },
+                    {
+                        {12, 13},
+                        {14, 15},
+                        {16, 17}
+                    },
+                    {
+                        {18, 19},
+                        {20, 21},
+                        {22, 23}
+                    }
+                });
+
+            // contract a 3*2*2 with a 4*3*2 tensor, summing on (3*2)*2 and 4*(3*2) to produce a 2*4 tensor
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {110, 290, 470, 650},
+                    {125, 341, 557, 773},
+                });
+            var actual = Tensor.Contract(left, right, new[] { 0, 1 }, new[] { 1, 2 });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            // contract a 3*2*2 with a 4*3*2 tensor, summing on (3)*2*(2) and 4*(3*2) to produce a 2*4 tensor
+            expected = new Tensor<int>(
+                new[,]
+                {
+                    {101, 263, 425, 587},
+                    {131, 365, 599, 833},
+                });
+            actual = Tensor.Contract(left, right, new[] { 0, 2 }, new[] { 1, 2 });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
     }
 }

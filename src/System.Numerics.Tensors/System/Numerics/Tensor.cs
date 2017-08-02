@@ -123,6 +123,102 @@ namespace System.Numerics
                 }
             }
         }
+
+        internal static int[] ValidateContractArgs<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes)
+        {
+            if (leftAxes == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (rightAxes == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (leftAxes.Length != rightAxes.Length)
+            {
+                throw new ArgumentException($"{nameof(leftAxes)} and {nameof(rightAxes)} must have the same length, but were {leftAxes.Length} and {rightAxes.Length}, respectively.");
+            }
+
+
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                var leftAxis = leftAxes[i];
+
+                if (leftAxis >= left.Rank)
+                {
+                    throw new ArgumentOutOfRangeException($"{nameof(leftAxes)}[{i}] was set to axis index {leftAxis} which exceeds the Rank of {left}.");
+                }
+
+                var leftDimension = left.Dimensions[leftAxis];
+
+                var rightAxis = rightAxes[i];
+
+                if (rightAxis >= right.Rank)
+                {
+                    throw new ArgumentOutOfRangeException($"{nameof(rightAxes)}[{i}] was set to axis index {rightAxis} which exceeds the Rank of {right}.");
+                }
+
+                var rightDimension = right.Dimensions[rightAxis];
+
+                if (leftDimension != rightDimension)
+                {
+                    throw new ArgumentOutOfRangeException($"Tensors may only be contracted on axes of the same length, but {nameof(leftAxes)} index {i} was length {leftDimension} and {nameof(rightAxes)} index {i} was length {rightDimension}.");
+                }
+            }
+
+            var leftNonSummingDimensions = left.Rank - leftAxes.Length;
+            var rightNonSummingDimensions = right.Rank - rightAxes.Length;
+            var resultDimensions = new int[leftNonSummingDimensions + rightNonSummingDimensions];
+            int dimensionsIndex = 0;
+
+            Action<Tensor<T>, int[]> fillDimensions = (tensor, axes) =>
+            {
+                for (int i = 0; i < tensor.Rank; i++)
+                {
+                    var skip = false;
+                    foreach (var contractionIndex in axes)
+                    {
+                        if (contractionIndex == i)
+                        {
+                            skip = true;
+                            break;
+                        }
+                    }
+
+                    if (!skip)
+                    {
+                        resultDimensions[dimensionsIndex++] = tensor.Dimensions[i];
+                    }
+                }
+            };
+
+            fillDimensions(left, leftAxes);
+            fillDimensions(right, rightAxes);
+
+            return resultDimensions;
+        }
+
+        internal static int[] ValidateContractArgs<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes, Tensor<T> result)
+        {
+            var expectedDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes);
+
+            if (result.Rank != expectedDimensions.Length)
+            {
+                throw new ArgumentException($"{nameof(result)} should have {expectedDimensions.Length} dimensions but had {result.Rank}.");
+            }
+
+            for(int i = 0; i < expectedDimensions.Length; i++)
+            {
+                if (result.Dimensions[i] != expectedDimensions[i])
+                {
+                    throw new ArgumentException($"{nameof(result)} dimension {i} should be {expectedDimensions[i]} but was {result.Dimensions[i]}.");
+                }
+            }
+
+            return expectedDimensions;
+        }
     }
 
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
@@ -186,7 +282,7 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = GetProduct(dimensions);
+            long size = ArrayUtilities.GetProduct(dimensions);
 
             // could throw, let the runtime decide what that limit is
             backingArray = new T[size];
@@ -209,7 +305,7 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = GetProduct(dimensions);
+            long size = ArrayUtilities.GetProduct(dimensions);
 
             if (size != fromBackingArray.Length)
             {
@@ -451,7 +547,7 @@ namespace System.Numerics
             var diagonalTensor = new Tensor<T>(dimensions:newTensorDimensions);
             var sizePerDiagonal = diagonalTensor.Length / diagonalLength;
 
-            Debug.Assert(sizePerDiagonal == GetProduct(remainingDimensions) || remainingDimensions.Length == 0);
+            Debug.Assert(sizePerDiagonal == ArrayUtilities.GetProduct(remainingDimensions) || remainingDimensions.Length == 0);
 
             // TODO: avoid translating to indices and back by directly accessing backing array
             var sourceIndices = new int[Rank];
@@ -599,6 +695,28 @@ namespace System.Numerics
             return result;
         }
 
+        static int[] s_zeroArray = new[] { 0 };
+        static int[] s_oneArray = new[] { 1 };
+        public Tensor<T> MatrixMultiply(Tensor<T> right)
+        {
+            if (Rank != 2)
+            {
+                throw new InvalidOperationException($"{nameof(MatrixMultiply)} is only valid for a {nameof(Tensor<T>)} of {nameof(Rank)} 2.");
+            }
+
+            if (right.Rank != 2)
+            {
+                throw new ArgumentException($"{nameof(Tensor<T>)} {nameof(right)} must have {nameof(Rank)} 2.", nameof(right));
+            }
+
+            if (dimensions[1] != right.dimensions[0])
+            {
+                throw new ArgumentException($"{nameof(Tensor<T>)} {nameof(right)} must have first dimension of {dimensions[1]}.", nameof(right));
+            }
+
+            return Tensor.Contract(this, right, s_oneArray, s_zeroArray);
+        }
+
         public Tensor<T> Reshape(params int[] dimensions)
         {
             if (dimensions == null)
@@ -606,7 +724,7 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            var newSize = GetProduct(dimensions);
+            var newSize = ArrayUtilities.GetProduct(dimensions);
 
             if (newSize != Length)
             {
@@ -623,7 +741,7 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            var newSize = (int)GetProduct(dimensions);
+            var newSize = (int)ArrayUtilities.GetProduct(dimensions);
 
             T[] copyBackingArray = new T[newSize];
             var copyLength = Math.Min(newSize, Length);
@@ -771,7 +889,7 @@ namespace System.Numerics
         {
             Debug.Assert(indices.Length == dimensions.Length);
             Debug.Assert(startIndex < dimensions.Length);
-            Debug.Assert(totalLength == GetProduct(dimensions, startIndex));
+            Debug.Assert(totalLength == ArrayUtilities.GetProduct(dimensions, startIndex));
 
             var divisor = totalLength;
 
@@ -784,32 +902,6 @@ namespace System.Numerics
                 indices[i] = current;
                 offset %= divisor;
             }
-        }
-
-        private static long GetProduct(int[] dimensions, int startIndex = 0)
-        {
-            if (dimensions.Length == 0)
-            {
-                return 0;
-            }
-
-            long product = 1;
-            for (int i = startIndex; i < dimensions?.Length; i++)
-            {
-                if (dimensions[i] < 0)
-                {
-                    throw new ArgumentOutOfRangeException($"{nameof(dimensions)}[{i}]");
-                }
-
-                // we use a long which should be much larger than is ever used here,
-                // but still force checked
-                checked
-                {
-                    product *= dimensions[i];
-                }
-            }
-
-            return product;
         }
         #endregion
 
