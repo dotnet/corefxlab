@@ -302,7 +302,7 @@ namespace System.IO.Pipelines.Tests
                 int written;
                 fixed (char* c = s)
                 {
-                    // Sizes smaller then max int
+                    // We are able to cast because test arguments are in range of int
                     written = Encoding.ASCII.GetBytes(c, s.Length, ptr, (int)readBuffer.Length);
                 }
                 var slice = readBuffer.Slice(0, written);
