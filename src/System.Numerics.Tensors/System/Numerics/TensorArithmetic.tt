@@ -1,0 +1,61 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="TensorTemplate.ttinclude" #>// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace System.Numerics
+{
+    internal interface ITensorArithmetic<T>
+    {
+        T One { get; }
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+        <#= method.GetResultMethodSignature("T")#>;
+<# } #>
+    }
+
+    internal static class TensorArithmetic<T>
+    {
+        public static ITensorArithmetic<T> Instance => TensorArithmetic.GetArithmetic<T>();
+    }
+
+    internal static class TensorArithmetic
+    { 
+        public static ITensorArithmetic<T> GetArithmetic<T>()
+        {
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+            <#=GenerateIfStatementHeader(type)#>
+            {
+                return (ITensorArithmetic<T>)new <#=type.ClassPrefix#>Arithmetic();
+            }
+<# } #>
+            return null;
+        }
+    }
+    
+<# foreach (TypeConfiguration type in typeConfiguration) { #>
+    internal class <#=type.ClassPrefix#>Arithmetic : ITensorArithmetic<<#=type.TypeName#>>
+    {
+        public <#=type.TypeName#> One => <#=type.OneLiteral#>;
+
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+        public <#= method.GetResultMethodSignature(type.TypeName)#>
+        {
+<# if ((method.IsNumeric && !type.SupportsNumeric) ||  (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
+            throw new NotSupportedException();
+<# } else { #>
+            for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+            {
+                // TODO: vectorize
+                <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
+            }
+<# } #>
+        }
+<# } #>
+    }
+<# } #>
+}
