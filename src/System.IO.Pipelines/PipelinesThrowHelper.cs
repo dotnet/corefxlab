@@ -106,7 +106,7 @@ namespace System.IO.Pipelines
             Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), argument),
                 "The enum value is not defined, please check the ExceptionResource Enum.");
 
-            // Should be look up with enviorment resources
+            // Should be look up with environment resources
             string resourceString = null;
             switch (argument)
             {
@@ -152,6 +152,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.BackpressureDeadlock:
                     resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
                     break;
+                case ExceptionResource.AdvanceToInvalidCursor:
+                    resourceString = "Pipe is already advanced past provided cursor";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -192,6 +195,7 @@ namespace System.IO.Pipelines
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
         AdvancingWithNoBuffer,
-        BackpressureDeadlock
+        BackpressureDeadlock,
+        AdvanceToInvalidCursor
     }
 }

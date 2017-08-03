@@ -14,17 +14,14 @@ namespace System.IO.Pipelines.Tests
         {
             var pool = new MemoryPool();
 
-            BufferReferenceTests.TestOwnedBuffer(() => {
-                return pool.Rent(1024);
-            });
+            BufferReferenceTests.TestOwnedBuffer(() => pool.Rent(1024), block => pool.Return((MemoryPoolBlock) block));
+            pool.Dispose();
         }
 
         [Fact]
         public void UnownedBufferReferenceTests()
         {
-            BufferReferenceTests.TestOwnedBuffer(() => {
-                return new UnownedBuffer(new ArraySegment<byte>(new byte[1024]));
-            });
+            BufferReferenceTests.TestOwnedBuffer(() => new UnownedBuffer(new ArraySegment<byte>(new byte[1024])));
         }
     }
 }

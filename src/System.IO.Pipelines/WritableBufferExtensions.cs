@@ -60,9 +60,26 @@ namespace System.IO.Pipelines
 
         public static void Write(this WritableBuffer buffer, byte[] source, int offset, int length)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (offset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (length == 0)
+            {
+                return;
+            }
+
             Span<byte> dest = default;
             var destLength = dest.Length;
-
             if (destLength == 0)
             {
                 buffer.Ensure();

@@ -138,10 +138,10 @@ namespace System.IO.Pipelines.Networking.Libuv
             PipeFactory.Dispose();
         }
 
-        public void Schedule(Action action)
+        public void Schedule(Action<object> action, object state)
         {
             // REVIEW: Should we inline actions if we're already on the libuv thread?
-            Post(state => ((Action)state)(), action);
+            Post(action, state);
         }
 
         private struct Work

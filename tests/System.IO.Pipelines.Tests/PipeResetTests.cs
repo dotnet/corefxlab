@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class PipeResetTests
+    public class PipeResetTests : IDisposable
     {
         private PipeFactory _pipeFactory;
 

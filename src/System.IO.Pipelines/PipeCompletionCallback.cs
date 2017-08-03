@@ -3,8 +3,9 @@
 
 namespace System.IO.Pipelines
 {
-    public interface IScheduler
+    internal struct PipeCompletionCallback
     {
-        void Schedule(Action<object> action, object state);
+        public Action<Exception, object> Callback;
+        public object State;
     }
 }

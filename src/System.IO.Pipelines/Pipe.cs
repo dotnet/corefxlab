@@ -16,6 +16,8 @@ namespace System.IO.Pipelines
     {
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
+        private static readonly Action<object> _invokeCompletionCallbacks = state => ((PipeCompletionCallbacks)state).Execute();
+        private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
         // This sync objects protects the following state:
         // 1. _commitHead & _commitHeadIndex
@@ -90,15 +92,14 @@ namespace System.IO.Pipelines
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
             _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
-            ResetState();
+            _readerAwaitable = new PipeAwaitable(completed: false);
+            _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
         private void ResetState()
         {
-            _readerAwaitable = new PipeAwaitable(completed: false);
-            _writerAwaitable = new PipeAwaitable(completed: true);
-            _readerCompletion = default;
-            _writerCompletion = default;
+            _readerCompletion.Reset();
+            _writerCompletion.Reset();
             _commitHeadIndex = 0;
             _currentWriteLength = 0;
             _length = 0;
@@ -141,6 +142,7 @@ namespace System.IO.Pipelines
                         throw;
                     }
                 }
+
                 _currentWriteLength = 0;
                 return new WritableBuffer(this);
             }
@@ -168,7 +170,7 @@ namespace System.IO.Pipelines
                 var nextBuffer = _pool.Rent(count);
                 var nextSegment = new BufferSegment(nextBuffer);
 
-                segment.Next = nextSegment;
+                segment.SetNext(nextSegment);
 
                 _writingHead = nextSegment;
             }
@@ -205,7 +207,7 @@ namespace System.IO.Pipelines
             {
                 // Append the segment to the commit head if writes have been committed
                 // and it isn't the same segment (unused tail space)
-                _commitHead.Next = segment;
+                _commitHead.SetNext(segment);
             }
 
             // Set write head to assigned segment
@@ -240,7 +242,7 @@ namespace System.IO.Pipelines
                     {
                         Debug.Assert(_commitHead.Next == null);
                         // Allocated buffer, append as next segment
-                        _commitHead.Next = clonedBegin;
+                        _commitHead.SetNext(clonedBegin);
                     }
                 }
             }
@@ -248,7 +250,7 @@ namespace System.IO.Pipelines
             {
                 Debug.Assert(_writingHead.Next == null);
                 // Active write, append as next segment
-                _writingHead.Next = clonedBegin;
+                _writingHead.SetNext(clonedBegin);
             }
 
             // Move write head to end of buffer
@@ -388,18 +390,25 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
             }
 
-            _writerCompletion.TryComplete(exception);
-
             Action awaitable;
+            PipeCompletionCallbacks completionCallbacks;
+            bool readerCompleted;
 
             lock (_sync)
             {
+                completionCallbacks = _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
+                readerCompleted = _readerCompletion.IsCompleted;
+            }
+
+            if (completionCallbacks != null)
+            {
+                TrySchedule(_readerScheduler, _invokeCompletionCallbacks, completionCallbacks);
             }
 
             TrySchedule(_readerScheduler, awaitable);
 
-            if (_readerCompletion.IsCompleted)
+            if (readerCompleted)
             {
                 Dispose();
             }
@@ -412,35 +421,63 @@ namespace System.IO.Pipelines
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
-            int consumedBytes = 0;
-            if (!consumed.IsDefault)
-            {
-                returnStart = _readHead;
-                consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumed.Segment, consumed.Index);
-
-                returnEnd = consumed.Segment;
-                _readHead = consumed.Segment;
-                _readHead.Start = consumed.Index;
-            }
-
             // Reading commit head shared with writer
             Action continuation = null;
             lock (_sync)
             {
-                var oldLength = _length;
-                _length -= consumedBytes;
+                var examinedEverything = examined.Segment == _commitHead && examined.Index == _commitHeadIndex;
 
-                if (oldLength >= _maximumSizeLow &&
-                    _length < _maximumSizeLow)
+                if (!consumed.IsDefault)
                 {
-                    continuation = _writerAwaitable.Complete();
+                    if (_readHead == null)
+                    {
+                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
+                        return;
+                    }
+
+                    returnStart = _readHead;
+                    returnEnd = consumed.Segment;
+
+                    // Check if we crossed _maximumSizeLow and complete backpressure
+                    var consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumed.Segment, consumed.Index);
+                    var oldLength = _length;
+                    _length -= consumedBytes;
+
+                    if (oldLength >= _maximumSizeLow &&
+                        _length < _maximumSizeLow)
+                    {
+                        continuation = _writerAwaitable.Complete();
+                    }
+
+                    // Check if we consumed entire last segment
+                    // if we are going to return commit head
+                    // we need to check that there is no writing operation that
+                    // might be using tailspace
+                    if (consumed.Index == returnEnd.End &&
+                        !(_commitHead == returnEnd && _writingState.IsActive))
+                    {
+                        var nextBlock = returnEnd.Next;
+                        if (_commitHead == returnEnd)
+                        {
+                            _commitHead = nextBlock;
+                            _commitHeadIndex = nextBlock?.Start ?? 0;
+                        }
+
+                        _readHead = nextBlock;
+                        returnEnd = nextBlock;
+                    }
+                    else
+                    {
+                        _readHead = consumed.Segment;
+                        _readHead.Start = consumed.Index;
+                    }
                 }
 
                 // We reset the awaitable to not completed if we've examined everything the producer produced so far
-                if (examined.Segment == _commitHead &&
-                    examined.Index == _commitHeadIndex &&
-                    !_writerCompletion.IsCompleted)
+                // but only if writer is not completed yet
+                if (examinedEverything && !_writerCompletion.IsCompleted)
                 {
+                    // Prevent deadlock where reader awaits new data and writer await backpressure
                     if (!_writerAwaitable.IsCompleted)
                     {
                         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
@@ -453,9 +490,8 @@ namespace System.IO.Pipelines
 
             while (returnStart != null && returnStart != returnEnd)
             {
-                var returnSegment = returnStart;
+                returnStart.Dispose();
                 returnStart = returnStart.Next;
-                returnSegment.Dispose();
             }
 
             TrySchedule(_writerScheduler, continuation);
@@ -472,18 +508,46 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
             }
 
-            _readerCompletion.TryComplete(exception);
-
+            PipeCompletionCallbacks completionCallbacks;
             Action awaitable;
+            bool writerCompleted;
+
             lock (_sync)
             {
+                completionCallbacks = _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
+                writerCompleted = _writerCompletion.IsCompleted;
             }
+
+            if (completionCallbacks != null)
+            {
+                TrySchedule(_writerScheduler, _invokeCompletionCallbacks, completionCallbacks);
+            }
+
             TrySchedule(_writerScheduler, awaitable);
 
-            if (_writerCompletion.IsCompleted)
+            if (writerCompleted)
             {
                 Dispose();
+            }
+        }
+
+        void IPipeReader.OnWriterCompleted(Action<Exception, object> callback, object state)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            PipeCompletionCallbacks completionCallbacks;
+            lock (_sync)
+            {
+                completionCallbacks = _writerCompletion.AddCallback(callback, state);
+            }
+
+            if (completionCallbacks != null)
+            {
+                TrySchedule(_readerScheduler, _invokeCompletionCallbacks, completionCallbacks);
             }
         }
 
@@ -513,6 +577,25 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, awaitable);
         }
 
+        void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
+        {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            PipeCompletionCallbacks completionCallbacks;
+            lock (_sync)
+            {
+                completionCallbacks = _readerCompletion.AddCallback(callback, state);
+            }
+
+            if (completionCallbacks != null)
+            {
+                TrySchedule(_writerScheduler, _invokeCompletionCallbacks, completionCallbacks);
+            }
+        }
+
         ReadableBufferAwaitable IPipeReader.ReadAsync(CancellationToken token)
         {
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -522,7 +605,7 @@ namespace System.IO.Pipelines
             }
             lock (_sync)
             {
-                cancellationTokenRegistration= _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
+                cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
             return new ReadableBufferAwaitable(this);
@@ -544,7 +627,7 @@ namespace System.IO.Pipelines
                     return true;
                 }
 
-                if(_readerAwaitable.HasContinuation)
+                if (_readerAwaitable.HasContinuation)
                 {
                     PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
                 }
@@ -556,7 +639,15 @@ namespace System.IO.Pipelines
         {
             if (action != null)
             {
-                scheduler.Schedule(action);
+                scheduler.Schedule(_scheduleContinuation, action);
+            }
+        }
+
+        private static void TrySchedule(IScheduler scheduler, Action<object> action, object state)
+        {
+            if (action != null)
+            {
+                scheduler.Schedule(action, state);
             }
         }
 
@@ -592,9 +683,14 @@ namespace System.IO.Pipelines
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;
+            bool doubleCompletion;
             lock (_sync)
             {
-                awaitable = _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
+                awaitable = _readerAwaitable.OnCompleted(continuation, out doubleCompletion);
+            }
+            if (doubleCompletion)
+            {
+                Writer.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_readerScheduler, awaitable);
         }
@@ -635,7 +731,7 @@ namespace System.IO.Pipelines
                 // Reading commit head shared with writer
                 result.ResultBuffer.BufferEnd.Segment = _commitHead;
                 result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+                result.ResultBuffer.BufferLength = _length;
 
                 result.ResultBuffer.BufferStart.Segment = head;
                 result.ResultBuffer.BufferStart.Index = head.Start;
@@ -682,9 +778,14 @@ namespace System.IO.Pipelines
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;
+            bool doubleCompletion;
             lock (_sync)
             {
-                awaitable = _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
+                awaitable = _writerAwaitable.OnCompleted(continuation, out doubleCompletion);
+            }
+            if (doubleCompletion)
+            {
+                Reader.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_writerScheduler, awaitable);
         }
@@ -714,6 +815,8 @@ namespace System.IO.Pipelines
 
         public void Reset()
         {
+            lock (_sync)
+            {
             if (!_disposed)
             {
                 throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
@@ -723,4 +826,5 @@ namespace System.IO.Pipelines
             ResetState();
         }
     }
+}
 }

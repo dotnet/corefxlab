@@ -184,9 +184,9 @@ namespace System.IO.Pipelines.Tests
                 Thread.Start();
             }
 
-            public void Schedule(Action action)
+            public void Schedule(Action<object> action, object state)
             {
-                _work.Add(action);
+                _work.Add(() => action(state));
             }
 
             private void Work(object state)

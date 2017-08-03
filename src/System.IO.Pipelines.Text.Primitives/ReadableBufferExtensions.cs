@@ -9,7 +9,7 @@ using System.Text.Utf8;
 namespace System.IO.Pipelines.Text.Primitives
 {
     /// <summary>
-    /// Extension methods 
+    /// Extension methods
     /// </summary>
     public static class ReadableBufferExtensions
     {
@@ -98,13 +98,14 @@ namespace System.IO.Pipelines.Text.Primitives
         {
             byte* addr;
             ulong value;
-            int len = buffer.Length;
+            var len = buffer.Length;
             if (buffer.IsSingleSpan)
             {
                 // It fits!
                 fixed (byte* source = &buffer.First.Span.DangerousGetPinnableReference())
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(source, len, out value))
+                    // We are able to cast because IsSingleSpan and span size is int
+                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(source, (int) len, out value))
                     {
                         ThrowInvalidOperation();
                     }
@@ -112,10 +113,12 @@ namespace System.IO.Pipelines.Text.Primitives
             }
             else if (len < 128) // REVIEW: What's a good number
             {
-                var data = stackalloc byte[len];
-                buffer.CopyTo(new Span<byte>(data, len));
+                // We are able to cast because len < 128
+                var length = (int) len;
+                var data = stackalloc byte[length];
+                buffer.CopyTo(new Span<byte>(data, length));
                 addr = data;
-                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(addr, len, out value))
+                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(addr, length, out value))
                 {
                     throw new InvalidOperationException();
                 }
@@ -152,7 +155,7 @@ namespace System.IO.Pipelines.Text.Primitives
                     ThrowInvalidOperation();
                 }
             }
-            
+
             return asciiString;
         }
 
@@ -172,7 +175,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 return null;
             }
 
-            var asciiString = new string('\0', buffer.Length);
+            var asciiString = new string('\0', (int) Math.Min(int.MaxValue, buffer.Length));
 
             fixed (char* outputStart = asciiString)
             {
@@ -220,7 +223,8 @@ namespace System.IO.Pipelines.Text.Primitives
 
                 buffer.CopyTo(destination);
 
-                textSpan = destination.Slice(0, buffer.Length);
+                // We are able to cast because buffer.Length < 128
+                textSpan = destination.Slice(0, (int) buffer.Length);
             }
             else
             {
