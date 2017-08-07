@@ -285,16 +285,28 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = ArrayUtilities.GetProduct(dimensions);
-
-            // could throw, let the runtime decide what that limit is
-            backingArray = new T[size];
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
+            }
 
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
-            dimensions.CopyTo(this.dimensions, 0);
+            long size = 1;
+            for(int i = 0; i < dimensions.Length; i++)
+            {
+                if (dimensions[i] < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
+                }
+                this.dimensions[i] = dimensions[i];
+                size *= dimensions[i];
+            }
             strides = ArrayUtilities.GetStrides(this.dimensions);
             readOnlyDimensions = null;
+
+            // could throw, let the runtime decide what that limit is
+            backingArray = new T[size];
         }
 
         public Tensor(T[] fromBackingArray, params int[] dimensions)
@@ -309,11 +321,9 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = ArrayUtilities.GetProduct(dimensions);
-
-            if (size != fromBackingArray.Length)
+            if (dimensions.Length == 0)
             {
-                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
             }
 
             // keep a reference to the backing array
@@ -321,7 +331,22 @@ namespace System.Numerics
 
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
-            dimensions.CopyTo(this.dimensions, 0);
+            long size = 1;
+            for (int i = 0; i < dimensions.Length; i++)
+            {
+                if (dimensions[i] < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
+                }
+                this.dimensions[i] = dimensions[i];
+                size *= dimensions[i];
+            }
+
+            if (size != fromBackingArray.Length)
+            {
+                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
+            }
+
             strides = ArrayUtilities.GetStrides(this.dimensions);
             readOnlyDimensions = null;
         }
@@ -377,7 +402,11 @@ namespace System.Numerics
 
         public Tensor<T> Clone()
         {
-            return new Tensor<T>((T[])Buffer.Clone(), dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<T>);
+            }
+            return new Tensor<T>((T[])Buffer.Clone(), dimensions);
         }
 
         /// <summary>
@@ -386,7 +415,11 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<T> CloneEmpty()
         {
-            return new Tensor<T>(dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<T>);
+            }
+            return new Tensor<T>(dimensions);
         }
 
 
@@ -396,7 +429,11 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<TResult> CloneEmpty<TResult>()
         {
-            return new Tensor<TResult>(dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<TResult>);
+            }
+            return new Tensor<TResult>(dimensions);
         }
 
         /// <summary>
@@ -682,6 +719,11 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
+            }
+
             var newSize = ArrayUtilities.GetProduct(dimensions);
 
             if (newSize != Length)
@@ -697,6 +739,11 @@ namespace System.Numerics
             if (dimensions == null)
             {
                 throw new ArgumentNullException(nameof(dimensions));
+            }
+
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
             }
 
             var newSize = (int)ArrayUtilities.GetProduct(dimensions);
