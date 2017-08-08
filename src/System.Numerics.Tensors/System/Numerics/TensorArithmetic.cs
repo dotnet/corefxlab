@@ -300,13 +300,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -314,7 +314,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -323,7 +323,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -580,13 +580,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -594,7 +594,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -603,7 +603,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -852,13 +852,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -866,7 +866,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -875,7 +875,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -1100,13 +1100,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -1114,7 +1114,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -1123,7 +1123,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -1348,13 +1348,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -1362,7 +1362,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -1371,7 +1371,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -1604,13 +1604,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -1618,7 +1618,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -1627,7 +1627,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -1884,13 +1884,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -1898,7 +1898,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -1907,7 +1907,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -2164,13 +2164,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -2178,7 +2178,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -2187,7 +2187,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -2444,13 +2444,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -2458,7 +2458,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -2467,7 +2467,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -2724,13 +2724,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -2738,7 +2738,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -2747,7 +2747,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -3000,13 +3000,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -3014,7 +3014,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -3023,7 +3023,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -3276,13 +3276,13 @@ namespace System.Numerics
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -3290,7 +3290,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -3299,7 +3299,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {

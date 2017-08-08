@@ -26,7 +26,7 @@ namespace System.Numerics
 
             for (int i = 0; i < left.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
@@ -52,12 +52,12 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
 
-                if (left.Dimensions[i] != result.Dimensions[i])
+                if (left.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
@@ -83,12 +83,12 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
 
-                if (left.Dimensions[i] != result.Dimensions[i])
+                if (left.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
@@ -117,7 +117,7 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (tensor.Dimensions[i] != result.Dimensions[i])
+                if (tensor.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
@@ -150,7 +150,7 @@ namespace System.Numerics
                     throw new ArgumentOutOfRangeException($"{nameof(leftAxes)}[{i}] was set to axis index {leftAxis} which exceeds the Rank of {left}.");
                 }
 
-                var leftDimension = left.Dimensions[leftAxis];
+                var leftDimension = left.dimensions[leftAxis];
 
                 var rightAxis = rightAxes[i];
 
@@ -159,7 +159,7 @@ namespace System.Numerics
                     throw new ArgumentOutOfRangeException($"{nameof(rightAxes)}[{i}] was set to axis index {rightAxis} which exceeds the Rank of {right}.");
                 }
 
-                var rightDimension = right.Dimensions[rightAxis];
+                var rightDimension = right.dimensions[rightAxis];
 
                 if (leftDimension != rightDimension)
                 {
@@ -188,7 +188,7 @@ namespace System.Numerics
 
                     if (!skip)
                     {
-                        resultDimensions[dimensionsIndex++] = tensor.Dimensions[i];
+                        resultDimensions[dimensionsIndex++] = tensor.dimensions[i];
                     }
                 }
             };
@@ -210,9 +210,9 @@ namespace System.Numerics
 
             for(int i = 0; i < expectedDimensions.Length; i++)
             {
-                if (result.Dimensions[i] != expectedDimensions[i])
+                if (result.dimensions[i] != expectedDimensions[i])
                 {
-                    throw new ArgumentException($"{nameof(result)} dimension {i} should be {expectedDimensions[i]} but was {result.Dimensions[i]}.");
+                    throw new ArgumentException($"{nameof(result)} dimension {i} should be {expectedDimensions[i]} but was {result.dimensions[i]}.");
                 }
             }
 
@@ -224,7 +224,7 @@ namespace System.Numerics
     public struct Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] backingArray;
-        private readonly int[] dimensions;
+        internal readonly int[] dimensions;
         private readonly int[] strides;
         private IReadOnlyList<int> readOnlyDimensions;
 

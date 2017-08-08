@@ -75,9 +75,9 @@ namespace System.Numerics
         /// </summary>
         /// <param name="dimensions"></param>
         /// <returns></returns>
-        public static int[] GetStrides(IReadOnlyList<int> dimensions)
+        public static int[] GetStrides(int[] dimensions)
         {
-            int[] strides = new int[dimensions.Count];
+            int[] strides = new int[dimensions.Length];
 
             int stride = 1;
             for (int i = strides.Length - 1; i >= 0; i--)
@@ -89,12 +89,12 @@ namespace System.Numerics
             return strides;
         }
 
-        public static void GetSplitStrides(IReadOnlyList<int> dimensions, int[] splitAxes, int[] strides, int stridesOffset, int[] splitStrides, int splitStridesOffset)
+        public static void GetSplitStrides(int[] dimensions, int[] splitAxes, int[] strides, int stridesOffset, int[] splitStrides, int splitStridesOffset)
         {
             int stride = 1;
 
             int strideIndex = 0;
-            for (int i = dimensions.Count - 1; i >= 0; i--)
+            for (int i = dimensions.Length - 1; i >= 0; i--)
             {
                 bool isSplit = false;
                 for (int j = 0; j < splitAxes.Length; j++)
