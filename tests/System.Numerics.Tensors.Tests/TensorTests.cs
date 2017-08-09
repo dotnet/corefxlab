@@ -58,8 +58,10 @@ namespace tests
             var arr = new int[0];
             defaultTensor.CopyTo(arr, 0);
             defaultTensor.Fill(0);
-            defaultTensor.Reshape();
-            defaultTensor.ReshapeCopy();
+            Assert.Throws<ArgumentException>("dimensions", () => defaultTensor.Reshape());
+            Assert.Throws<ArgumentOutOfRangeException>("dimensions", () => defaultTensor.Reshape(0));
+            Assert.Throws<ArgumentException>("dimensions", () => defaultTensor.ReshapeCopy());
+            Assert.Throws<ArgumentOutOfRangeException>("dimensions", () => defaultTensor.ReshapeCopy(0));
             defaultTensor.ToString();
 
             Assert.Equal(default(Tensor<int>), defaultTensor);
@@ -151,6 +153,32 @@ namespace tests
             Assert.Equal(22, tensor[3, 1, 1]);
             Assert.Equal(23, tensor[3, 1, 2]);
 
+        }
+
+        [Fact]
+        public void ConstructFromDimensions()
+        {
+            var tensor = new Tensor<int>(1, 2, 3);
+            Assert.Equal(3, tensor.Rank);
+            Assert.Equal(3, tensor.Dimensions.Count);
+            Assert.Equal(1, tensor.Dimensions[0]);
+            Assert.Equal(2, tensor.Dimensions[1]);
+            Assert.Equal(3, tensor.Dimensions[2]);
+            Assert.Equal(6, tensor.Length);
+
+            Assert.Throws<ArgumentNullException>("dimensions", () => new Tensor<int>(dimensions: null));
+            Assert.Throws<ArgumentException>("dimensions", () => new Tensor<int>(dimensions: new int[0]));
+
+            Assert.Throws<ArgumentOutOfRangeException>("dimensions", () => new Tensor<int>(1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>("dimensions", () => new Tensor<int>(1, -1));
+
+            // ensure dimensions are immutable
+            var dimensions = new[] { 1, 2, 3 };
+            tensor = new Tensor<int>(dimensions);
+            dimensions[0] = dimensions[1] = dimensions[2] = 0;
+            Assert.Equal(1, tensor.Dimensions[0]);
+            Assert.Equal(2, tensor.Dimensions[1]);
+            Assert.Equal(3, tensor.Dimensions[2]);
         }
 
         [Fact]
@@ -1486,5 +1514,131 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
+        [Fact]
+        public void MatrixMultiply()
+        {
+            var left = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {5, 6, 7, 8, 9},
+                    {10, 11, 12, 13, 14}
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0*0 + 1*5 + 2*10, 0*1 + 1*6 + 2*11, 0*2 + 1*7 + 2*12, 0*3 + 1*8 + 2*13, 0*4 + 1*9 + 2*14},
+                    {3*0 + 4*5 + 5*10, 3*1 + 4*6 + 5*11, 3*2 + 4*7 + 5*12, 3*3 + 4*8 + 5*13, 3*4 + 4*9 + 5*14}
+                });
+
+            var actual = left.MatrixMultiply(right);
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void Contract()
+        {
+            var left = new Tensor<int>(
+                new[, ,]
+                {
+                    {
+                        {0, 1},
+                        {2, 3}
+                    },
+                    {
+                        {4, 5},
+                        {6, 7}
+                    },
+                    {
+                        {8, 9},
+                        {10, 11}
+                    }
+                });
+
+            var right = new Tensor<int>(
+                new[, ,]
+                {
+                    {
+                        {0, 1},
+                        {2, 3},
+                        {4, 5}
+                    },
+                    {
+                        {6, 7},
+                        {8, 9},
+                        {10, 11}
+                    },
+                    {
+                        {12, 13},
+                        {14, 15},
+                        {16, 17}
+                    },
+                    {
+                        {18, 19},
+                        {20, 21},
+                        {22, 23}
+                    }
+                });
+
+            // contract a 3*2*2 with a 4*3*2 tensor, summing on (3*2)*2 and 4*(3*2) to produce a 2*4 tensor
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {110, 290, 470, 650},
+                    {125, 341, 557, 773},
+                });
+            var actual = Tensor.Contract(left, right, new[] { 0, 1 }, new[] { 1, 2 });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            // contract a 3*2*2 with a 4*3*2 tensor, summing on (3)*2*(2) and 4*(3*2) to produce a 2*4 tensor
+            expected = new Tensor<int>(
+                new[,]
+                {
+                    {101, 263, 425, 587},
+                    {131, 365, 599, 833},
+                });
+            actual = Tensor.Contract(left, right, new[] { 0, 2 }, new[] { 1, 2 });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Fact]
+        public void ContractMismatchedDimensions()
+        {
+            var left = new Tensor<int>(fromArray:
+                new[] { 0, 1, 2, 3 });
+
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    { 0 },
+                    { 1 },
+                    { 2 }
+                });
+
+            var expected = new Tensor<int>(
+                new[,]
+                {
+                    {0,0,0},
+                    {0,1,2},
+                    {0,2,4},
+                    {0,3,6},
+                });
+
+            Assert.Throws<ArgumentException>(() => Tensor.Contract(left, right, new int[] { }, new[] { 1 }));
+
+            // reshape to include dimension of length 1.
+            var leftReshaped = left.Reshape(1, left.Length);
+
+            var actual = Tensor.Contract(leftReshaped, right, new[] { 0 }, new[] { 1 });
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
     }
 }

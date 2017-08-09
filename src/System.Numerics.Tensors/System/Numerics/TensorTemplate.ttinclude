@@ -53,12 +53,13 @@
        BinaryScalar,
        BinaryInt,
        Binary,
-       Comparison
+       Comparison,
+       Contraction
     }
 
     public class MethodConfiguration
     {
-        public MethodConfiguration(string methodName, MethodType methodType, string op, bool isNumeric = false, bool isBitwise = false)
+        public MethodConfiguration(string methodName, MethodType methodType, string op = null, bool isNumeric = false, bool isBitwise = false)
         {
             MethodName = methodName;
             MethodType = methodType;
@@ -111,6 +112,8 @@
                 case MethodType.Binary:
                 case MethodType.Comparison:
                     return $"Tensor<{typeName}> left, Tensor<{typeName}> right";
+                case MethodType.Contraction:
+                    return $"Tensor<{typeName}> left, Tensor<{typeName}> right, int[] leftAxes, int[] rightAxes";
                 default:
                     throw new ArgumentException();
             }
@@ -130,6 +133,8 @@
                 case MethodType.Binary:
                 case MethodType.Comparison:
                     return "left, right";
+                case MethodType.Contraction:
+                    return "left, right, leftAxes, rightAxes";
                 default:
                     throw new ArgumentException();
             }
@@ -148,6 +153,8 @@
                 case MethodType.Binary:
                 case MethodType.Comparison:
                     return $"ValidateBinaryArgs(left, right{suffix});";
+                case MethodType.Contraction:
+                    return $"var resultDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes{suffix});";
                 default:
                     throw new ArgumentException();
             }
@@ -162,6 +169,7 @@
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
                 case MethodType.Binary:
+                case MethodType.Contraction:
                     return $"Tensor<{typeName}>";
                 case MethodType.Comparison:
                     return $"Tensor<bool>";
@@ -193,7 +201,7 @@
             }
         }
 
-        public string InitializeResult()
+        public string InitializeResult(string typeName)
         {
             switch (MethodType)
             {
@@ -207,6 +215,8 @@
                     return $"left.CloneEmpty()";
                 case MethodType.Comparison:
                     return $"left.CloneEmpty<bool>()";
+                case MethodType.Contraction:
+                    return $"new Tensor<{typeName}>(resultDimensions)";
                 default:
                     throw new ArgumentException();
             }
@@ -249,5 +259,7 @@
         new MethodConfiguration("LessThanOrEqual", MethodType.Comparison, "<=", isNumeric:true),
         new MethodConfiguration("GreaterThan", MethodType.Comparison, ">", isNumeric:true),
         new MethodConfiguration("LessThan", MethodType.Comparison, "<", isNumeric:true),
+
+        new MethodConfiguration("Contract", MethodType.Contraction, isNumeric:true),
     }.OrderBy(m => m.MethodName).ToArray();
 #>

@@ -26,7 +26,7 @@ namespace System.Numerics
 
             for (int i = 0; i < left.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
@@ -52,12 +52,12 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
 
-                if (left.Dimensions[i] != result.Dimensions[i])
+                if (left.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
@@ -83,12 +83,12 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (left.Dimensions[i] != right.Dimensions[i])
+                if (left.dimensions[i] != right.dimensions[i])
                 {
                     throw new ArgumentException("Operands must have matching dimensions", nameof(right));
                 }
 
-                if (left.Dimensions[i] != result.Dimensions[i])
+                if (left.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
@@ -117,11 +117,106 @@ namespace System.Numerics
 
             for (int i = 0; i < result.Rank; i++)
             {
-                if (tensor.Dimensions[i] != result.Dimensions[i])
+                if (tensor.dimensions[i] != result.dimensions[i])
                 {
                     throw new ArgumentException("Operands and result must have matching dimensions", nameof(result));
                 }
             }
+        }
+
+        internal static int[] ValidateContractArgs<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes)
+        {
+            if (leftAxes == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (rightAxes == null)
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (leftAxes.Length != rightAxes.Length)
+            {
+                throw new ArgumentException($"{nameof(leftAxes)} and {nameof(rightAxes)} must have the same length, but were {leftAxes.Length} and {rightAxes.Length}, respectively.");
+            }
+
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                var leftAxis = leftAxes[i];
+
+                if (leftAxis >= left.Rank)
+                {
+                    throw new ArgumentOutOfRangeException($"{nameof(leftAxes)}[{i}] was set to axis index {leftAxis} which exceeds the Rank of {left}.");
+                }
+
+                var leftDimension = left.dimensions[leftAxis];
+
+                var rightAxis = rightAxes[i];
+
+                if (rightAxis >= right.Rank)
+                {
+                    throw new ArgumentOutOfRangeException($"{nameof(rightAxes)}[{i}] was set to axis index {rightAxis} which exceeds the Rank of {right}.");
+                }
+
+                var rightDimension = right.dimensions[rightAxis];
+
+                if (leftDimension != rightDimension)
+                {
+                    throw new ArgumentOutOfRangeException($"Tensors may only be contracted on axes of the same length, but {nameof(leftAxes)} index {i} was length {leftDimension} and {nameof(rightAxes)} index {i} was length {rightDimension}.");
+                }
+            }
+
+            var leftNonSummingDimensions = left.Rank - leftAxes.Length;
+            var rightNonSummingDimensions = right.Rank - rightAxes.Length;
+            var resultDimensions = new int[leftNonSummingDimensions + rightNonSummingDimensions];
+            int dimensionsIndex = 0;
+
+            Action<Tensor<T>, int[]> fillDimensions = (tensor, axes) =>
+            {
+                for (int i = 0; i < tensor.Rank; i++)
+                {
+                    var skip = false;
+                    foreach (var contractionIndex in axes)
+                    {
+                        if (contractionIndex == i)
+                        {
+                            skip = true;
+                            break;
+                        }
+                    }
+
+                    if (!skip)
+                    {
+                        resultDimensions[dimensionsIndex++] = tensor.dimensions[i];
+                    }
+                }
+            };
+
+            fillDimensions(left, leftAxes);
+            fillDimensions(right, rightAxes);
+
+            return resultDimensions;
+        }
+
+        internal static int[] ValidateContractArgs<T>(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes, Tensor<T> result)
+        {
+            var expectedDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes);
+
+            if (result.Rank != expectedDimensions.Length)
+            {
+                throw new ArgumentException($"{nameof(result)} should have {expectedDimensions.Length} dimensions but had {result.Rank}.");
+            }
+
+            for(int i = 0; i < expectedDimensions.Length; i++)
+            {
+                if (result.dimensions[i] != expectedDimensions[i])
+                {
+                    throw new ArgumentException($"{nameof(result)} dimension {i} should be {expectedDimensions[i]} but was {result.dimensions[i]}.");
+                }
+            }
+
+            return expectedDimensions;
         }
     }
 
@@ -129,7 +224,8 @@ namespace System.Numerics
     public struct Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
         private readonly T[] backingArray;
-        private readonly int[] dimensions;
+        internal readonly int[] dimensions;
+        private readonly int[] strides;
         private IReadOnlyList<int> readOnlyDimensions;
 
         private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
@@ -147,6 +243,8 @@ namespace System.Numerics
             {
                 dimensions[i] = fromArray.GetLength(i);
             }
+
+            strides = ArrayUtilities.GetStrides(dimensions);
 
             backingArray = new T[fromArray.Length];
 
@@ -172,6 +270,7 @@ namespace System.Numerics
 
             backingArray = new T[size];
             dimensions = new[] { size };
+            strides = ArrayUtilities.GetStrides(dimensions);
             readOnlyDimensions = null;
         }
 
@@ -186,15 +285,28 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = GetProduct(dimensions);
-
-            // could throw, let the runtime decide what that limit is
-            backingArray = new T[size];
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
+            }
 
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
-            dimensions.CopyTo(this.dimensions, 0);
+            long size = 1;
+            for(int i = 0; i < dimensions.Length; i++)
+            {
+                if (dimensions[i] < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
+                }
+                this.dimensions[i] = dimensions[i];
+                size *= dimensions[i];
+            }
+            strides = ArrayUtilities.GetStrides(this.dimensions);
             readOnlyDimensions = null;
+
+            // could throw, let the runtime decide what that limit is
+            backingArray = new T[size];
         }
 
         public Tensor(T[] fromBackingArray, params int[] dimensions)
@@ -209,11 +321,9 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            long size = GetProduct(dimensions);
-
-            if (size != fromBackingArray.Length)
+            if (dimensions.Length == 0)
             {
-                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
             }
 
             // keep a reference to the backing array
@@ -221,7 +331,23 @@ namespace System.Numerics
 
             // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
-            dimensions.CopyTo(this.dimensions, 0);
+            long size = 1;
+            for (int i = 0; i < dimensions.Length; i++)
+            {
+                if (dimensions[i] < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
+                }
+                this.dimensions[i] = dimensions[i];
+                size *= dimensions[i];
+            }
+
+            if (size != fromBackingArray.Length)
+            {
+                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
+            }
+
+            strides = ArrayUtilities.GetStrides(this.dimensions);
             readOnlyDimensions = null;
         }
 
@@ -276,7 +402,11 @@ namespace System.Numerics
 
         public Tensor<T> Clone()
         {
-            return new Tensor<T>((T[])Buffer.Clone(), dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<T>);
+            }
+            return new Tensor<T>((T[])Buffer.Clone(), dimensions);
         }
 
         /// <summary>
@@ -285,7 +415,11 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<T> CloneEmpty()
         {
-            return new Tensor<T>(dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<T>);
+            }
+            return new Tensor<T>(dimensions);
         }
 
 
@@ -295,7 +429,11 @@ namespace System.Numerics
         /// <returns></returns>
         public Tensor<TResult> CloneEmpty<TResult>()
         {
-            return new Tensor<TResult>(dimensions ?? ArrayUtilities.Empty<int>());
+            if (dimensions == null)
+            {
+                return default(Tensor<TResult>);
+            }
+            return new Tensor<TResult>(dimensions);
         }
 
         /// <summary>
@@ -346,42 +484,29 @@ namespace System.Numerics
             // assume square
             var axisLength = diagonalLength + Math.Abs(offset);
             dimensions[0] = dimensions[1] = axisLength;
-
-            var remainingDimensions = new int[dimensions.Length - 2];
             
             for(int i = 1; i < diagonal.dimensions.Length; i++)
             {
                 dimensions[i + 1] = diagonal.dimensions[i];
-                remainingDimensions[i - 1] = diagonal.dimensions[i];
             }
 
             var result = new Tensor<T>(dimensions);
 
-            var sizePerDiagonal = diagonal.Length / diagonalLength;
-            var destIndices = new int[result.Rank];
-            var diagnonalIndices = new int[diagonal.Rank];
-            var diagProjectionIndices = new int[remainingDimensions.Length];
+            // each element in the diagonal's 0 dimension is strides[0] appart
+            var sizePerDiagonal = diagonal.strides[0];
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
                 var destIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
                 var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
 
-                destIndices[0] = destIndex0;
-                destIndices[1] = destIndex1;
-                diagnonalIndices[0] = diagIndex;
+                var destBuffIndex = destIndex0 * result.strides[0] + destIndex1 * result.strides[1];
+                var diagBuffIndex = diagIndex * diagonal.strides[0];
 
                 for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
-                    if (remainingDimensions.Length > 0)
-                    {
-                        GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
-
-                        Array.Copy(diagProjectionIndices, 0, destIndices, 2, diagProjectionIndices.Length);
-                        Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
-                    }
-
-                    result[destIndices] = diagonal[diagnonalIndices];
+                    // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
+                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal.Buffer[diagBuffIndex + diagProjectionOffset];
                 }
             }
 
@@ -440,44 +565,26 @@ namespace System.Numerics
             var newTensorDimensions = new int[dimensions.Length - 1];
             newTensorDimensions[0] = diagonalLength;
 
-            var remainingDimensions = new int[dimensions.Length - 2];
-
             for(int i = 2; i < dimensions.Length; i++)
             {
                 newTensorDimensions[i - 1] = dimensions[i];
-                remainingDimensions[i - 2] = dimensions[i];
             }
 
             var diagonalTensor = new Tensor<T>(dimensions:newTensorDimensions);
-            var sizePerDiagonal = diagonalTensor.Length / diagonalLength;
-
-            Debug.Assert(sizePerDiagonal == GetProduct(remainingDimensions) || remainingDimensions.Length == 0);
-
-            // TODO: avoid translating to indices and back by directly accessing backing array
-            var sourceIndices = new int[Rank];
-            var diagnonalIndices = new int[diagonalTensor.Rank];
-            var diagProjectionIndices = new int[remainingDimensions.Length];
+            var sizePerDiagonal = diagonalTensor.strides[0];
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
                 var sourceIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
                 var sourceIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
-                
-                sourceIndices[0] = sourceIndex0;
-                sourceIndices[1] = sourceIndex1;
-                diagnonalIndices[0] = diagIndex;
+
+                var sourceBuffIndex = sourceIndex0 * strides[0] + sourceIndex1 * strides[1];
+                var diagBuffIndex = diagIndex * diagonalTensor.strides[0];
 
                 for(int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
-                    if (remainingDimensions.Length > 0)
-                    {
-                        GetIndicesFromOffset(diagProjectionOffset, sizePerDiagonal, remainingDimensions, diagProjectionIndices);
-
-                        Array.Copy(diagProjectionIndices, 0, sourceIndices, 2, diagProjectionIndices.Length);
-                        Array.Copy(diagProjectionIndices, 0, diagnonalIndices, 1, diagProjectionIndices.Length);
-                    }
-
-                    diagonalTensor[diagnonalIndices] = this[sourceIndices];
+                    // since the source and diagonal have the same strides for remaining dimensions we can directly sum the offset
+                    diagonalTensor.Buffer[diagBuffIndex + diagProjectionOffset] = Buffer[sourceBuffIndex + diagProjectionOffset];
                 }
             }
 
@@ -521,17 +628,7 @@ namespace System.Numerics
 
             var result = CloneEmpty();
 
-            var projectionSize = result.Length / (axisLength0 * axisLength1);
-
-            var remainingDimensions = new int[dimensions.Length - 2];
-
-            for (int i = 2; i < dimensions.Length; i++)
-            {
-                remainingDimensions[i - 2] = dimensions[i];
-            }
-
-            // TODO: avoid translating to indices and back by directly accessing backing array
-            var indices = new int[Rank];
+            var projectionSize = strides[1];
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
@@ -572,17 +669,11 @@ namespace System.Numerics
 
                 while ((triIndex1 < axisLength1) && (triIndex0 < axisLength0))
                 {
-                    indices[0] = triIndex0;
-                    indices[1] = triIndex1;
+                    var buffIndex = triIndex0 * strides[0] + triIndex1 * strides[1];
 
                     for (int projectionOffset = 0; projectionOffset < projectionSize; projectionOffset++)
                     {
-                        // copy a given tri element, projected across remaining dimensions
-                        if (indices.Length > 2)
-                        {
-                            GetIndicesFromOffset(projectionOffset, projectionSize, dimensions, indices, startIndex: 2 /* skip first two dimensions*/);
-                        }
-                        result[indices] = this[indices];
+                        result.Buffer[buffIndex + projectionOffset] = Buffer[buffIndex + projectionOffset];
                     }
 
                     if (upper)
@@ -599,6 +690,28 @@ namespace System.Numerics
             return result;
         }
 
+        static int[] s_zeroArray = new[] { 0 };
+        static int[] s_oneArray = new[] { 1 };
+        public Tensor<T> MatrixMultiply(Tensor<T> right)
+        {
+            if (Rank != 2)
+            {
+                throw new InvalidOperationException($"{nameof(MatrixMultiply)} is only valid for a {nameof(Tensor<T>)} of {nameof(Rank)} 2.");
+            }
+
+            if (right.Rank != 2)
+            {
+                throw new ArgumentException($"{nameof(Tensor<T>)} {nameof(right)} must have {nameof(Rank)} 2.", nameof(right));
+            }
+
+            if (dimensions[1] != right.dimensions[0])
+            {
+                throw new ArgumentException($"{nameof(Tensor<T>)} {nameof(right)} must have first dimension of {dimensions[1]}.", nameof(right));
+            }
+
+            return Tensor.Contract(this, right, s_oneArray, s_zeroArray);
+        }
+
         public Tensor<T> Reshape(params int[] dimensions)
         {
             if (dimensions == null)
@@ -606,7 +719,12 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            var newSize = GetProduct(dimensions);
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
+            }
+
+            var newSize = ArrayUtilities.GetProduct(dimensions);
 
             if (newSize != Length)
             {
@@ -623,7 +741,12 @@ namespace System.Numerics
                 throw new ArgumentNullException(nameof(dimensions));
             }
 
-            var newSize = (int)GetProduct(dimensions);
+            if (dimensions.Length == 0)
+            {
+                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
+            }
+
+            var newSize = (int)ArrayUtilities.GetProduct(dimensions);
 
             T[] copyBackingArray = new T[newSize];
             var copyLength = Math.Min(newSize, Length);
@@ -645,6 +768,11 @@ namespace System.Numerics
                     throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
                 }
 
+                if (index < 0 || index > Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
                 return Buffer[index];
             }
             set
@@ -652,6 +780,11 @@ namespace System.Numerics
                 if (Rank != 1)
                 {
                     throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
+                }
+
+                if (index < 0 || index > Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
                 Buffer[index] = value;
@@ -688,24 +821,25 @@ namespace System.Numerics
             }
         }
 
-        private int GetOffset(int indexRow, int indexColumn)
+        private int GetOffset(int index0, int index1)
         {
             if (Rank != 2)
             {
                 throw new ArgumentOutOfRangeException($"Cannot use 2 dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
             }
 
-            if (indexRow < 0 || indexRow >= dimensions[0])
+            if (index0 < 0 || index0 >= dimensions[0])
             {
-                throw new ArgumentOutOfRangeException(nameof(indexRow));
+                throw new ArgumentOutOfRangeException(nameof(index0));
             }
 
-            if (indexColumn < 0 || indexColumn >= dimensions[1])
+            if (index1 < 0 || index1 >= dimensions[1])
             {
-                throw new ArgumentOutOfRangeException(nameof(indexColumn));
+                throw new ArgumentOutOfRangeException(nameof(index1));
             }
 
-            return indexRow * dimensions[1] + indexColumn;
+            Debug.Assert(strides[1] == 1);
+            return index0 * strides[0] + index1;
         }
         
         private int GetOffsetFromIndices(int[] indices)
@@ -720,15 +854,8 @@ namespace System.Numerics
                 throw new ArgumentOutOfRangeException(nameof(indices));
             }
 
-            return GetOffsetFromIndicies(indices, dimensions);
+            return ArrayUtilities.GetIndex(strides, indices);
         }
-
-        // Inverse of GetOffsetFromIndices
-        private void GetIndicesFromOffset(int offset, int[] indices)
-        {
-            GetIndicesFromOffset(offset, Length, dimensions, indices);
-        }
-
         #region statics
 
         public static int Compare(Tensor<T> left, Tensor<T> right)
@@ -739,77 +866,6 @@ namespace System.Numerics
         public static bool Equals(Tensor<T> left, Tensor<T> right)
         {
             return StructuralComparisons.StructuralEqualityComparer.Equals(left, right);
-        }
-
-        private static int GetOffsetFromIndicies(int[] indices, int[] dimensions)
-        {
-            Debug.Assert(indices.Length == dimensions.Length);
-
-            int index = 0, dimension = 0;
-            for (int i = 0; i < indices.Length; i++)
-            {
-                dimension = dimensions[i];
-                if (i != 0)
-                {
-                    index *= dimension;
-                }
-
-                var currentDimensionIndex = indices[i];
-
-                if (currentDimensionIndex < 0 || currentDimensionIndex >= dimension)
-                {
-                    throw new ArgumentOutOfRangeException($"{nameof(indices)}[{i}]");
-                }
-
-                index += currentDimensionIndex;
-            }
-
-            return index;
-        }
-
-        private static void GetIndicesFromOffset(int offset, int totalLength, int[] dimensions, int[] indices, int startIndex = 0)
-        {
-            Debug.Assert(indices.Length == dimensions.Length);
-            Debug.Assert(startIndex < dimensions.Length);
-            Debug.Assert(totalLength == GetProduct(dimensions, startIndex));
-
-            var divisor = totalLength;
-
-            for (int i = startIndex; i < indices.Length; i++)
-            {
-                divisor /= dimensions[i];
-
-                var current = offset / divisor;
-
-                indices[i] = current;
-                offset %= divisor;
-            }
-        }
-
-        private static long GetProduct(int[] dimensions, int startIndex = 0)
-        {
-            if (dimensions.Length == 0)
-            {
-                return 0;
-            }
-
-            long product = 1;
-            for (int i = startIndex; i < dimensions?.Length; i++)
-            {
-                if (dimensions[i] < 0)
-                {
-                    throw new ArgumentOutOfRangeException($"{nameof(dimensions)}[{i}]");
-                }
-
-                // we use a long which should be much larger than is ever used here,
-                // but still force checked
-                checked
-                {
-                    product *= dimensions[i];
-                }
-            }
-
-            return product;
         }
         #endregion
 
@@ -1082,7 +1138,7 @@ namespace System.Numerics
             for (int i = 0; i < backingArray.Length; i++)
             {
                 var left = backingArray[i];
-                GetIndicesFromOffset(i, indices);
+                ArrayUtilities.GetIndices(strides, i, indices);
                 var right = other.GetValue(indices);
 
                 result = comparer.Compare(left, right);
@@ -1167,7 +1223,7 @@ namespace System.Numerics
             for (int i = 0; i < backingArray.Length; i++)
             {
                 var left = backingArray[i];
-                GetIndicesFromOffset(i, indices);
+                ArrayUtilities.GetIndices(strides, i, indices);
                 var right = other.GetValue(indices);
 
                 if (!comparer.Equals(left, right))

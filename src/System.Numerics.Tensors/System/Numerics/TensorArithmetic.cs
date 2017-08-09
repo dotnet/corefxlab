@@ -14,6 +14,7 @@ namespace System.Numerics
         void Add(Tensor<T> tensor, T scalar, Tensor<T> result);
         void And(Tensor<T> left, Tensor<T> right, Tensor<T> result);
         void And(Tensor<T> tensor, T scalar, Tensor<T> result);
+        void Contract(Tensor<T> left, Tensor<T> right, int[] leftAxes, int[] rightAxes, Tensor<T> result);
         void Decrement(Tensor<T> tensor, Tensor<T> result);
         void Divide(Tensor<T> left, Tensor<T> right, Tensor<T> result);
         void Divide(Tensor<T> tensor, T scalar, Tensor<T> result);
@@ -132,6 +133,10 @@ namespace System.Numerics
                 // TODO: vectorize
                 result.Buffer[i] = (bool)(tensor.Buffer[i] & scalar);
             }
+        }
+        public void Contract(Tensor<bool> left, Tensor<bool> right, int[] leftAxes, int[] rightAxes, Tensor<bool> result)
+        {
+            throw new NotSupportedException();
         }
         public void Decrement(Tensor<bool> tensor, Tensor<bool> result)
         {
@@ -288,6 +293,57 @@ namespace System.Numerics
             {
                 // TODO: vectorize
                 result.Buffer[i] = (byte)(tensor.Buffer[i] & scalar);
+            }
+        }
+        public void Contract(Tensor<byte> left, Tensor<byte> right, int[] leftAxes, int[] rightAxes, Tensor<byte> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                byte sum = (byte)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (byte)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
             }
         }
         public void Decrement(Tensor<byte> tensor, Tensor<byte> result)
@@ -519,6 +575,57 @@ namespace System.Numerics
                 result.Buffer[i] = (char)(tensor.Buffer[i] & scalar);
             }
         }
+        public void Contract(Tensor<char> left, Tensor<char> right, int[] leftAxes, int[] rightAxes, Tensor<char> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                char sum = (char)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (char)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<char> tensor, Tensor<char> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -740,6 +847,57 @@ namespace System.Numerics
         {
             throw new NotSupportedException();
         }
+        public void Contract(Tensor<decimal> left, Tensor<decimal> right, int[] leftAxes, int[] rightAxes, Tensor<decimal> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                decimal sum = (decimal)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (decimal)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<decimal> tensor, Tensor<decimal> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -937,6 +1095,57 @@ namespace System.Numerics
         {
             throw new NotSupportedException();
         }
+        public void Contract(Tensor<double> left, Tensor<double> right, int[] leftAxes, int[] rightAxes, Tensor<double> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                double sum = (double)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (double)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<double> tensor, Tensor<double> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -1133,6 +1342,57 @@ namespace System.Numerics
         public void And(Tensor<float> tensor, float scalar, Tensor<float> result)
         {
             throw new NotSupportedException();
+        }
+        public void Contract(Tensor<float> left, Tensor<float> right, int[] leftAxes, int[] rightAxes, Tensor<float> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                float sum = (float)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (float)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
         }
         public void Decrement(Tensor<float> tensor, Tensor<float> result)
         {
@@ -1337,6 +1597,57 @@ namespace System.Numerics
             {
                 // TODO: vectorize
                 result.Buffer[i] = (int)(tensor.Buffer[i] & scalar);
+            }
+        }
+        public void Contract(Tensor<int> left, Tensor<int> right, int[] leftAxes, int[] rightAxes, Tensor<int> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                int sum = (int)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (int)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
             }
         }
         public void Decrement(Tensor<int> tensor, Tensor<int> result)
@@ -1568,6 +1879,57 @@ namespace System.Numerics
                 result.Buffer[i] = (long)(tensor.Buffer[i] & scalar);
             }
         }
+        public void Contract(Tensor<long> left, Tensor<long> right, int[] leftAxes, int[] rightAxes, Tensor<long> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                long sum = (long)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (long)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<long> tensor, Tensor<long> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -1795,6 +2157,57 @@ namespace System.Numerics
             {
                 // TODO: vectorize
                 result.Buffer[i] = (sbyte)(tensor.Buffer[i] & scalar);
+            }
+        }
+        public void Contract(Tensor<sbyte> left, Tensor<sbyte> right, int[] leftAxes, int[] rightAxes, Tensor<sbyte> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                sbyte sum = (sbyte)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (sbyte)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
             }
         }
         public void Decrement(Tensor<sbyte> tensor, Tensor<sbyte> result)
@@ -2026,6 +2439,57 @@ namespace System.Numerics
                 result.Buffer[i] = (short)(tensor.Buffer[i] & scalar);
             }
         }
+        public void Contract(Tensor<short> left, Tensor<short> right, int[] leftAxes, int[] rightAxes, Tensor<short> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                short sum = (short)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (short)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<short> tensor, Tensor<short> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -2255,6 +2719,57 @@ namespace System.Numerics
                 result.Buffer[i] = (uint)(tensor.Buffer[i] & scalar);
             }
         }
+        public void Contract(Tensor<uint> left, Tensor<uint> right, int[] leftAxes, int[] rightAxes, Tensor<uint> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                uint sum = (uint)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (uint)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<uint> tensor, Tensor<uint> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -2480,6 +2995,57 @@ namespace System.Numerics
                 result.Buffer[i] = (ulong)(tensor.Buffer[i] & scalar);
             }
         }
+        public void Contract(Tensor<ulong> left, Tensor<ulong> right, int[] leftAxes, int[] rightAxes, Tensor<ulong> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                ulong sum = (ulong)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (ulong)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
+            }
+        }
         public void Decrement(Tensor<ulong> tensor, Tensor<ulong> result)
         {
             for(int i = 0; i < result.Length; i++)
@@ -2703,6 +3269,57 @@ namespace System.Numerics
             {
                 // TODO: vectorize
                 result.Buffer[i] = (ushort)(tensor.Buffer[i] & scalar);
+            }
+        }
+        public void Contract(Tensor<ushort> left, Tensor<ushort> right, int[] leftAxes, int[] rightAxes, Tensor<ushort> result)
+        {
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = ArrayUtilities.GetStrides(result.dimensions);
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.GetSplitStrides(left.dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
+            int[] rightNonSummingStrides = new int[result.Rank];
+            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.GetSplitStrides(right.dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                ushort sum = (ushort)0;
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    sum += (ushort)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                }
+
+                result.Buffer[resultIndex] = sum;
             }
         }
         public void Decrement(Tensor<ushort> tensor, Tensor<ushort> result)
