@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+
+    <!-- Platform detection -->
+  <PropertyGroup>
+    <TargetsUnix Condition="'$(OS)'=='Windows_NT'">false</TargetsUnix>
+    <TargetsUnix Condition="'$(OS)'=='Unix'">true</TargetsUnix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>Tensor class which represents and extends multi-dimensional arrays</Description>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>BCL for Azure SDK </PackageTags>
+    <!-- disable automatic compile item inclusion so that we can set the correct metadata on TextTemplate-generated sources -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="System\Azure\Authentication.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
+    <Compile Include="System\Azure\Sha256.Unix.cs" />    
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetsUnix)' == 'false'">
+    <Compile Include="System\Azure\Sha256.Windows.cs" />   
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Binary.Base64\System.Binary.Base64.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
+    <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
+  </ItemGroup>
+</Project>
