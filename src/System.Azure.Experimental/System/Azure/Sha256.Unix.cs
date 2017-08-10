@@ -6,13 +6,13 @@ using System.Security.Cryptography;
 
 namespace System.Buffers.Cryptography
 {
-    public struct Sha256_Unix
+    public struct Sha256
     {
         IncrementalHash _hash; 
-        public static Sha256_Unix Create(byte[] seed)
+        public static Sha256 Create(byte[] seed)
         {
-            var sha = new Sha256_Unix();
-            sha._hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            var sha = new Sha256();
+            sha._hash = IncrementalHash.CreateHMAC(HashAlgorithmName.SHA256, seed);
             return sha;
         }
 

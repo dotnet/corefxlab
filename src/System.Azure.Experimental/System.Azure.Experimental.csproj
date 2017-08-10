@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
+
+    <!-- Platform detection -->
+  <PropertyGroup>
+    <TargetsUnix Condition="'$(OS)'=='Windows_NT'">false</TargetsUnix>
+    <TargetsUnix Condition="'$(OS)'=='Unix'">true</TargetsUnix>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Description>Tensor class which represents and extends multi-dimensional arrays</Description>
     <TargetFramework>netstandard1.3</TargetFramework>
@@ -7,7 +14,6 @@
     <PackageTags>BCL for Azure SDK </PackageTags>
     <!-- disable automatic compile item inclusion so that we can set the correct metadata on TextTemplate-generated sources -->
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <TargetsUnix>false</TargetsUnix>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\Azure\Authentication.cs" />
