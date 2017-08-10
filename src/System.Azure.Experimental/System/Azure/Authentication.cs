@@ -19,12 +19,13 @@ namespace System.Azure.Authentication
         static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
         static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
 
+        const int AuthenticationHeaderBufferSize = 256; 
         public static unsafe int Generate(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
         {
             int written, consumed, totalWritten = 0;
 
-            var pBuffer = stackalloc byte[256];
-            var buffer = new Span<byte>(pBuffer, 256);
+            var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
+            var buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
 
             s_type.CopyTo(buffer);
             totalWritten += s_type.Length;
