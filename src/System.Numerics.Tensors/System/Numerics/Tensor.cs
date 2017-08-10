@@ -225,12 +225,15 @@ namespace System.Numerics
     {
         private readonly T[] backingArray;
         internal readonly int[] dimensions;
-        private readonly int[] strides;
+        internal readonly int[] strides;
         private IReadOnlyList<int> readOnlyDimensions;
 
         private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
-        public Tensor(Array fromArray)
+        public Tensor(Array fromArray) : this(fromArray, false)
+        { }
+
+        public Tensor(Array fromArray, bool columnMajor)
         {
             if (fromArray == null)
             {
@@ -244,24 +247,41 @@ namespace System.Numerics
                 dimensions[i] = fromArray.GetLength(i);
             }
 
-            strides = ArrayUtilities.GetStrides(dimensions);
+            strides = ArrayUtilities.GetStrides(dimensions, columnMajor);
 
             backingArray = new T[fromArray.Length];
 
             int index = 0;
-            foreach (var item in fromArray)
+            if (columnMajor)
             {
-                backingArray[index++] = (T)item;
+                // Array is always row-major
+                var sourceStrides = ArrayUtilities.GetStrides(dimensions);
+
+                foreach (var item in fromArray)
+                {
+                    var destIndex = ArrayUtilities.TransformIndexByStrides(index++, sourceStrides, strides);
+                    backingArray[destIndex] = (T)item;
+                }
+            }
+            else
+            {
+                foreach (var item in fromArray)
+                {
+                    backingArray[index++] = (T)item;
+                }
             }
 
             readOnlyDimensions = null;
         }
 
+        public Tensor(int size) : this(size, false)
+        { }
+
         /// <summary>
         /// Initializes a rank-1 Tensor using the specified <paramref name="size"/>.
         /// </summary>
         /// <param name="size">Size of the tensor</param>
-        public Tensor(int size)
+        public Tensor(int size, bool columnMajor)
         {
             if (size < 0)
             {
@@ -270,16 +290,19 @@ namespace System.Numerics
 
             backingArray = new T[size];
             dimensions = new[] { size };
-            strides = ArrayUtilities.GetStrides(dimensions);
+            strides = ArrayUtilities.GetStrides(dimensions, columnMajor);
             readOnlyDimensions = null;
         }
+
+        public Tensor(params int[] dimensions) : this(false, dimensions)
+        { }
 
         /// <summary>
         /// Initializes a rank-n Tensor using the dimensions specified in <paramref name="dimensions"/>.
         /// </summary>
         /// <param name="dimensions"></param>
-        public Tensor(params int[] dimensions)
-        {
+        public Tensor(bool columnMajor, params int[] dimensions)
+    {
             if (dimensions == null)
             {
                 throw new ArgumentNullException(nameof(dimensions));
@@ -302,14 +325,17 @@ namespace System.Numerics
                 this.dimensions[i] = dimensions[i];
                 size *= dimensions[i];
             }
-            strides = ArrayUtilities.GetStrides(this.dimensions);
+            strides = ArrayUtilities.GetStrides(this.dimensions, columnMajor);
             readOnlyDimensions = null;
 
             // could throw, let the runtime decide what that limit is
             backingArray = new T[size];
         }
 
-        public Tensor(T[] fromBackingArray, params int[] dimensions)
+        public Tensor(T[] fromBackingArray, params int[] dimensions) : this(fromBackingArray, false, dimensions)
+        { }
+
+        public Tensor(T[] fromBackingArray, bool columnMajor, params int[] dimensions)
         {
             if (fromBackingArray == null)
             {
@@ -347,7 +373,7 @@ namespace System.Numerics
                 throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
             }
 
-            strides = ArrayUtilities.GetStrides(this.dimensions);
+            strides = ArrayUtilities.GetStrides(this.dimensions, columnMajor);
             readOnlyDimensions = null;
         }
 
@@ -355,6 +381,10 @@ namespace System.Numerics
         /// Total length of the Tensor.
         /// </summary>
         public int Length => backingArray?.Length ?? 0;
+
+        public bool IsColumnMajor => (strides != null && strides.Length > 0) ? strides[0] == 1 : false;
+
+        public bool IsRowMajor => (strides != null && strides.Length > 0) ? strides[strides.Length - 1] == 1 : false;
 
         /// <summary>
         /// Rank of the tensor: number of dimensions.
@@ -406,7 +436,7 @@ namespace System.Numerics
             {
                 return default(Tensor<T>);
             }
-            return new Tensor<T>((T[])Buffer.Clone(), dimensions);
+            return new Tensor<T>((T[])Buffer.Clone(), IsColumnMajor, dimensions);
         }
 
         /// <summary>
@@ -419,7 +449,7 @@ namespace System.Numerics
             {
                 return default(Tensor<T>);
             }
-            return new Tensor<T>(dimensions);
+            return new Tensor<T>(IsColumnMajor, dimensions);
         }
 
 
@@ -433,7 +463,7 @@ namespace System.Numerics
             {
                 return default(Tensor<TResult>);
             }
-            return new Tensor<TResult>(dimensions);
+            return new Tensor<TResult>(IsColumnMajor, dimensions);
         }
 
         /// <summary>
@@ -570,8 +600,12 @@ namespace System.Numerics
                 newTensorDimensions[i - 1] = dimensions[i];
             }
 
-            var diagonalTensor = new Tensor<T>(dimensions:newTensorDimensions);
-            var sizePerDiagonal = diagonalTensor.strides[0];
+            var diagonalTensor = new Tensor<T>(IsColumnMajor, dimensions: newTensorDimensions);
+            var sizePerDiagonal = diagonalTensor.Length / diagonalTensor.Dimensions[0];
+
+            // diagonal projection will be iterated in row-major order.
+            var diagProjectionSourceStrides = ArrayUtilities.GetStrides(dimensions);
+            var diagProjectionDiagStrides = ArrayUtilities.GetStrides(newTensorDimensions);
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
@@ -581,10 +615,20 @@ namespace System.Numerics
                 var sourceBuffIndex = sourceIndex0 * strides[0] + sourceIndex1 * strides[1];
                 var diagBuffIndex = diagIndex * diagonalTensor.strides[0];
 
-                for(int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
+                for(int diagProjectionIndex = 0; diagProjectionIndex < sizePerDiagonal; diagProjectionIndex++)
                 {
-                    // since the source and diagonal have the same strides for remaining dimensions we can directly sum the offset
-                    diagonalTensor.Buffer[diagBuffIndex + diagProjectionOffset] = Buffer[sourceBuffIndex + diagProjectionOffset];
+                    // for row-major the source and diagonal have the same strides for remaining dimensions
+                    var diagOffset = diagProjectionIndex;
+                    var sourceOffset = diagProjectionIndex;
+
+                    if (IsColumnMajor)
+                    {
+                        // column major will have different strides, we'll need to transform from a continuous index to the appropriate strides for each
+                        diagOffset = ArrayUtilities.TransformIndexByStrides(diagProjectionIndex, diagProjectionDiagStrides, diagonalTensor.strides);
+                        sourceOffset = ArrayUtilities.TransformIndexByStrides(diagProjectionIndex, diagProjectionSourceStrides, strides);
+                    }
+
+                    diagonalTensor.Buffer[diagBuffIndex + diagOffset] = Buffer[sourceBuffIndex + sourceOffset];
                 }
             }
 
@@ -628,7 +672,10 @@ namespace System.Numerics
 
             var result = CloneEmpty();
 
-            var projectionSize = strides[1];
+            var projectionSize = Length / (axisLength0 * axisLength1);
+
+            // diagonal projection will be iterated in row-major order.
+            var projectionStrides = ArrayUtilities.GetStrides(dimensions);
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
@@ -671,8 +718,17 @@ namespace System.Numerics
                 {
                     var buffIndex = triIndex0 * strides[0] + triIndex1 * strides[1];
 
-                    for (int projectionOffset = 0; projectionOffset < projectionSize; projectionOffset++)
+                    for (int projectionIndex = 0; projectionIndex < projectionSize; projectionIndex++)
                     {
+                        // for row-major the source and diagonal have the same strides for remaining dimensions
+                        var projectionOffset = projectionIndex;
+
+                        if (IsColumnMajor)
+                        {
+                            // column major will have different strides, we'll need to transform from a continuous index to the appropriate strides
+                            projectionOffset = ArrayUtilities.TransformIndexByStrides(projectionOffset, projectionStrides, strides);
+                        }
+
                         result.Buffer[buffIndex + projectionOffset] = Buffer[buffIndex + projectionOffset];
                     }
 
@@ -838,8 +894,7 @@ namespace System.Numerics
                 throw new ArgumentOutOfRangeException(nameof(index1));
             }
 
-            Debug.Assert(strides[1] == 1);
-            return index0 * strides[0] + index1;
+            return index0 * strides[0] + index1 * strides[1];
         }
         
         private int GetOffsetFromIndices(int[] indices)
@@ -1106,7 +1161,14 @@ namespace System.Numerics
             // for tensors we can just rip through the backing array
             for (int i = 0; i < backingArray.Length; i++)
             {
-                result = comparer.Compare(backingArray[i], other.backingArray[i]);
+                var otherIndex = i;
+
+                if (strides[0] != other.strides[0])
+                {
+                    otherIndex = ArrayUtilities.TransformIndexByStrides(i, strides, other.strides);
+                }
+
+                result = comparer.Compare(backingArray[i], other.backingArray[otherIndex]);
 
                 if (result != 0)
                 {
@@ -1194,7 +1256,14 @@ namespace System.Numerics
             // for tensors we can just rip through the backing array
             for (int i = 0; i < backingArray.Length; i++)
             {
-                if (!comparer.Equals(backingArray[i], other.backingArray[i]))
+                var otherIndex = i;
+
+                if (strides[0] != other.strides[0])
+                {
+                    otherIndex = ArrayUtilities.TransformIndexByStrides(i, strides, other.strides);
+                }
+
+                if (!comparer.Equals(backingArray[i], other.backingArray[otherIndex]))
                 {
                     return false;
                 }
