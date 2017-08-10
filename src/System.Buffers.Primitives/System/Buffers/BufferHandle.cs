@@ -22,6 +22,8 @@ namespace System.Buffers
 
         public BufferHandle(IRetainable owner) : this(owner, null) { }
 
+        public IRetainable Owner => _owner;
+
         public void* PinnedPointer {
             get {
                 if (_pointer == null) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
