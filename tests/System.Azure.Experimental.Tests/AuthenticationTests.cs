@@ -4,6 +4,8 @@
 using System;
 using System.Azure.Authentication;
 using System.Buffers.Cryptography;
+using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
@@ -17,31 +19,49 @@ namespace tests
         string resourceType = "dbs";
         string version = "1.0";
         string resourceId = "";
+        string canonicalizedResource = "/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
 
         [Fact]
-        public void GenerateSignature()
+        public void CosmosDbSignature()
         {
             var keyBytes = Signature.ComputeKeyBytes(fakeKey);
             var sha = Sha256.Create(keyBytes);
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            var bytesWritten = Signature.Generate(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc);
+            var bytesWritten = Signature.GenerateCosmosDbAuthentication(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc);
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)
-            var expected = GenerateMasterKeyAuthorizationSignatureMsdn(fakeKey, keyType, "GET", resourceId, resourceType, version, utc);
+            var expected = CosmosDbBaselineFromMsdn(fakeKey, keyType, "GET", resourceId, resourceType, version, utc);
 
             Assert.Equal(expected, signatureAsString);
         }
 
-        static string GenerateMasterKeyAuthorizationSignatureMsdn(string key, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
+        [Fact]
+        public void StorageSignature()
+        {
+            var keyBytes = Signature.ComputeKeyBytes(fakeKey);
+            var sha = Sha256.Create(keyBytes);
+
+            // Generate using non-allocating APIs
+            var buffer = new byte[256];
+            var bytesWritten = Signature.GenerateStorageSignature(buffer, sha, "GET", canonicalizedResource, utc);
+            var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
+
+            // Generate using existing .NET APIs (sample from Asure documentation)
+            var expected = StorageBaselineFromMsdn(fakeKey, "GET", canonicalizedResource, utc);
+
+            Assert.Equal(expected, signatureAsString);
+        }
+
+        static string CosmosDbBaselineFromMsdn(string key, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
         {
             var keyBytes = Convert.FromBase64String(key);
-            var hmacSha256 = new System.Security.Cryptography.HMACSHA256 { Key = keyBytes };
+            var hmacSha256 = new HMACSHA256 { Key = keyBytes };
             string utc_date = utc.ToString("r");
 
-            string payLoad = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}\n{1}\n{2}\n{3}\n{4}\n",
+            string payLoad = string.Format(CultureInfo.InvariantCulture, "{0}\n{1}\n{2}\n{3}\n{4}\n",
                     verb.ToLowerInvariant(),
                     resourceType.ToLowerInvariant(),
                     resourceId,
@@ -49,10 +69,10 @@ namespace tests
                     ""
             );
 
-            byte[] hashPayLoad = hmacSha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(payLoad));
+            byte[] hashPayLoad = hmacSha256.ComputeHash(Encoding.UTF8.GetBytes(payLoad));
             string signature = Convert.ToBase64String(hashPayLoad);
 
-            var full = String.Format(System.Globalization.CultureInfo.InvariantCulture, "type={0}&ver={1}&sig={2}",
+            var full = String.Format(CultureInfo.InvariantCulture, "type={0}&ver={1}&sig={2}",
                 keyType,
                 tokenVersion,
                 signature);
@@ -60,6 +80,30 @@ namespace tests
             var result = System.Text.Encodings.Web.UrlEncoder.Default.Encode(full);
 
             return result;
+        }
+
+        static string StorageBaselineFromMsdn(string key, string verb, string canonicalizedResource, DateTime utc)
+        {
+            string canonicalizedString = verb + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "x-ms-date:" + utc.ToString("r") + "\n"
+               + canonicalizedResource;
+
+            using (HMACSHA256 hmacSha256 = new HMACSHA256(Convert.FromBase64String(key)))
+            {
+                Byte[] dataToHmac = Encoding.UTF8.GetBytes(canonicalizedString);
+                return Convert.ToBase64String(hmacSha256.ComputeHash(dataToHmac));
+            }
         }
     }
 }

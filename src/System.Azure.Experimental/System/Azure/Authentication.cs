@@ -18,9 +18,73 @@ namespace System.Azure.Authentication
         static readonly byte[] s_get = Encoding.UTF8.GetBytes("get\n");
         static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
         static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
+ 
+        static readonly byte[] s_GET = Encoding.UTF8.GetBytes("GET\n");
 
-        const int AuthenticationHeaderBufferSize = 256; 
-        public static unsafe int Generate(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
+        static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
+        const int AuthenticationHeaderBufferSize = 256;
+
+        public static unsafe int GenerateStorageSignature(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc)
+        {
+            int written, consumed, totalWritten = 0;
+
+            var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
+            var buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
+
+            if (verb.Equals("GET", StringComparison.Ordinal))
+            {
+                s_GET.CopyTo(output);
+                totalWritten += s_GET.Length;
+            }
+            else
+            {
+                if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
+                {
+                    throw new NotImplementedException();
+                }
+                if (Ascii.ToLowerInPlace(output.Slice(0, written), out written) != TransformationStatus.Done)
+                {
+                    throw new NotImplementedException();
+                }
+
+                output[written] = (byte)'\n';
+                totalWritten += written + 1;
+            }
+
+            var free = output.Slice(totalWritten);
+            s_emptyHeaders.CopyTo(free);
+            totalWritten += s_emptyHeaders.Length;
+
+            free = output.Slice(totalWritten);
+            if (!PrimitiveFormatter.TryFormat(utc, free, out written, 'R'))
+            {
+                throw new NotImplementedException();
+            }
+            free[written] = (byte)'\n';
+            totalWritten += written + 1;
+            free = output.Slice(totalWritten);
+
+            if (Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
+            {
+                throw new NotImplementedException();
+            }
+            totalWritten += written;
+
+            var formatted = output.Slice(0, totalWritten);
+
+            var debug = Encoding.UTF8.GetString(formatted.ToArray());
+
+            hash.Append(formatted);
+            hash.GetHash(output.Slice(0, hash.OutputSize));
+
+            if (!Base64.EncodeInPlace(output, hash.OutputSize, out written))
+            {
+                throw new NotImplementedException();
+            }
+            return written;
+        }
+
+        public static unsafe int GenerateCosmosDbAuthentication(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
         {
             int written, consumed, totalWritten = 0;
 
