@@ -8,7 +8,7 @@ namespace System.Text.Encodings.Web.Utf8
     {
         static bool[] IsAllowed = new bool[0x7F + 1];
 
-        public static void Encode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
+        public static bool TryEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
         {
             written = 0;
             for (int inputIndex = 0; inputIndex < input.Length; inputIndex++)
@@ -19,6 +19,11 @@ namespace System.Text.Encodings.Web.Utf8
                     throw new NotImplementedException();
                 }
 
+                if(written >= output.Length)
+                {
+                    written = 0;
+                    return false;
+                }
                 if (IsAllowed[next])
                 {
                     output[written++] = input[inputIndex];
@@ -26,10 +31,15 @@ namespace System.Text.Encodings.Web.Utf8
                 else
                 {
                     output[written++] = (byte)'%';
-                    PrimitiveFormatter.TryFormat(next, output.Slice(written), out int formatted, 'X');
+                    if(!PrimitiveFormatter.TryFormat(next, output.Slice(written), out int formatted, 'X'))
+                    {
+                        written = 0;
+                        return false;
+                    }
                     written += formatted;
                 }
             }
+            return true;
         }
 
         /// <summary>

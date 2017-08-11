@@ -19,7 +19,7 @@ namespace System.Azure.Authentication
         static readonly byte[] s_get = Encoding.UTF8.GetBytes("get\n");
         static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
         static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
- 
+
         static readonly byte[] s_GET = Encoding.UTF8.GetBytes("GET\n");
 
         static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
@@ -30,16 +30,9 @@ namespace System.Azure.Authentication
             int written, consumed;
             bytesWritten = 0;
 
-            Span<byte> buffer;
-            unsafe
-            {
-                var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
-                buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
-            }
-
             if (verb.Equals("GET", StringComparison.Ordinal))
             {
-                if(output.Length < 3)
+                if (output.Length < 3)
                 {
                     bytesWritten = 0;
                     return false;
@@ -95,37 +88,42 @@ namespace System.Azure.Authentication
             return true;
         }
 
-        public static unsafe int GenerateCosmosDbAuthentication(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
+        public static bool TryWriteCosmosDbAuthorizationHeader(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
         {
             int written, consumed, totalWritten = 0;
+            bytesWritten = 0;
 
-            var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
-            var buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
+            Span<byte> buffer;
+            unsafe
+            {
+                var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
+                buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
+            }
 
             s_type.CopyTo(buffer);
             totalWritten += s_type.Length;
-            var span = buffer.Slice(totalWritten);
+            var bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(keyType.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(keyType.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
             totalWritten += written;
-            span = buffer.Slice(totalWritten);
+            bufferSlice = buffer.Slice(totalWritten);
 
-            s_ver.CopyTo(span);
+            s_ver.CopyTo(bufferSlice);
             totalWritten += s_ver.Length;
 
-            span = buffer.Slice(totalWritten);
+            bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(tokenVersion.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(tokenVersion.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
             totalWritten += written;
-            span = buffer.Slice(totalWritten);
+            bufferSlice = buffer.Slice(totalWritten);
 
-            s_sig.CopyTo(span);
+            s_sig.CopyTo(bufferSlice);
             totalWritten += s_sig.Length;
 
             var front = buffer.Slice(0, totalWritten);
@@ -152,60 +150,64 @@ namespace System.Azure.Authentication
             {
                 if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("need to resize buffer");
                 }
                 if (Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != TransformationStatus.Done)
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("need to resize buffer");
                 }
 
                 payload[written] = (byte)'\n';
                 totalWritten += written + 1;
             }
 
-            span = payload.Slice(totalWritten);
+            bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceType.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceType.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
-            if (Ascii.ToLowerInPlace(span.Slice(0, written), out written) != TransformationStatus.Done)
+            if (Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
-            span[written] = (byte)'\n';
+            bufferSlice[written] = (byte)'\n';
             totalWritten += written + 1;
-            span = payload.Slice(totalWritten);
+            bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceId.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceId.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
-            span[written] = (byte)'\n';
+            bufferSlice[written] = (byte)'\n';
             totalWritten += written + 1;
-            span = payload.Slice(totalWritten);
+            bufferSlice = payload.Slice(totalWritten);
 
-            if (!PrimitiveFormatter.TryFormat(utc, span, out written, 'l'))
+            if (!PrimitiveFormatter.TryFormat(utc, bufferSlice, out written, 'l'))
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
-            span[written] = (byte)'\n';
+            bufferSlice[written] = (byte)'\n';
             totalWritten += written + 1;
-            span = payload.Slice(totalWritten);
+            bufferSlice = payload.Slice(totalWritten);
 
-            span[0] = (byte)'\n';
+            bufferSlice[0] = (byte)'\n';
             totalWritten += 1;
 
             hash.Append(buffer.Slice(front.Length, totalWritten));
             hash.GetHash(buffer.Slice(front.Length, hash.OutputSize));
             if (!Base64.EncodeInPlace(buffer.Slice(front.Length), hash.OutputSize, out written))
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
 
             var len = front.Length + written;
-            UrlEncoder.Encode(buffer.Slice(0, len), output, out int encodedBytes);
-            return encodedBytes;
+            if (!UrlEncoder.TryEncode(buffer.Slice(0, len), output, out bytesWritten))
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            return true;
         }
 
         public unsafe static byte[] ComputeKeyBytes(string key)
@@ -217,13 +219,13 @@ namespace System.Azure.Authentication
             var buffer = new Span<byte>(pBuffer, bufferLength);
             if (Utf16.ToUtf8(key.AsSpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
             var keyBytes = new byte[64];
             var result = Base64.Decode(buffer.Slice(0, written), keyBytes, out consumed, out written);
             if (result != TransformationStatus.Done || written != 64)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("need to resize buffer");
             }
             return keyBytes;
         }

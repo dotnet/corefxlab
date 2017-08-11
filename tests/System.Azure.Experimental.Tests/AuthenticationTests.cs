@@ -22,14 +22,14 @@ namespace tests
         string canonicalizedResource = "/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
 
         [Fact]
-        public void CosmosDbSignature()
+        public void CosmosDbAuthenticationHeader()
         {
             var keyBytes = Signature.ComputeKeyBytes(fakeKey);
             var sha = Sha256.Create(keyBytes);
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            var bytesWritten = Signature.GenerateCosmosDbAuthentication(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc);
+            Assert.True(Signature.TryWriteCosmosDbAuthorizationHeader(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc, out int bytesWritten));
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)
