@@ -27,12 +27,12 @@ namespace System.Text.Formatting
 
         public static void Append<TFormatter>(this TFormatter formatter, string value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            formatter.Append(value.AsSpan(), symbolTable);
+            formatter.Append(value.AsReadOnlySpan(), symbolTable);
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            return formatter.TryAppend(value.AsSpan(), symbolTable);
+            return formatter.TryAppend(value.AsReadOnlySpan(), symbolTable);
         }
 
         public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, SymbolTable symbolTable) where TFormatter : IOutput

@@ -127,7 +127,7 @@ function Get-CLIArchitecture-From-Architecture([string]$Architecture) {
         { $_ -eq "<auto>" } { return Get-CLIArchitecture-From-Architecture $(Get-Machine-Architecture) }
         { ($_ -eq "amd64") -or ($_ -eq "x64") } { return "x64" }
         { $_ -eq "x86" } { return "x86" }
-        default { throw "Architecture not supported. If you think this is a bug, please report it at https://github.com/dotnet/cli/issues" }
+        default { throw "Architecture ($Architecture) not supported. If you think this is a bug, please report it at https://github.com/dotnet/cli/issues" }
     }
 }
 

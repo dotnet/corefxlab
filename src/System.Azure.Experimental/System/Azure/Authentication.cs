@@ -19,7 +19,7 @@ namespace System.Azure.Authentication
         static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
         static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
 
-        const int AuthenticationHeaderBufferSize = 256; 
+        const int AuthenticationHeaderBufferSize = 256;
         public static unsafe int Generate(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
         {
             int written, consumed, totalWritten = 0;
@@ -31,7 +31,7 @@ namespace System.Azure.Authentication
             totalWritten += s_type.Length;
             var span = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(keyType.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException();
             }
@@ -43,7 +43,7 @@ namespace System.Azure.Authentication
 
             span = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(tokenVersion.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException();
             }
@@ -75,7 +75,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
                 {
                     throw new NotImplementedException();
                 }
@@ -90,7 +90,7 @@ namespace System.Azure.Authentication
 
             span = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceType.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException();
             }
@@ -102,7 +102,7 @@ namespace System.Azure.Authentication
             totalWritten += written + 1;
             span = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceId.AsSpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), span, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException();
             }
@@ -140,7 +140,7 @@ namespace System.Azure.Authentication
             byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
             var buffer = new Span<byte>(pBuffer, bufferLength);
-            if (Utf16.ToUtf8(key.AsSpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException();
             }
