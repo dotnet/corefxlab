@@ -42,7 +42,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -66,7 +66,7 @@ namespace System.Azure.Authentication
             bytesWritten += written + 1;
             free = output.Slice(bytesWritten);
 
-            if (Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
