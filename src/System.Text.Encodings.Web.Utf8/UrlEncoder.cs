@@ -6,6 +6,32 @@ namespace System.Text.Encodings.Web.Utf8
 {
     public class UrlEncoder
     {
+        static bool[] IsAllowed = new bool[0x7F + 1];
+
+        public static void Encode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
+        {
+            written = 0;
+            for (int inputIndex = 0; inputIndex < input.Length; inputIndex++)
+            {
+                var next = input[inputIndex];
+                if(next > 0x7F)
+                {
+                    throw new NotImplementedException();
+                }
+
+                if (IsAllowed[next])
+                {
+                    output[written++] = input[inputIndex];
+                }
+                else
+                {
+                    output[written++] = (byte)'%';
+                    PrimitiveFormatter.TryFormat(next, output.Slice(written), out int formatted, 'X');
+                    written += formatted;
+                }
+            }
+        }
+
         /// <summary>
         /// Unescape a URL path
         /// </summary>
@@ -329,6 +355,80 @@ namespace System.Text.Encodings.Web.Utf8
             }
 
             return false;
+        }
+
+        static UrlEncoder()
+        {
+            // Unreserved
+            IsAllowed['A'] = true;
+            IsAllowed['B'] = true;
+            IsAllowed['C'] = true;
+            IsAllowed['D'] = true;
+            IsAllowed['E'] = true;
+            IsAllowed['F'] = true;
+            IsAllowed['G'] = true;
+            IsAllowed['H'] = true;
+            IsAllowed['I'] = true;
+            IsAllowed['J'] = true;
+            IsAllowed['K'] = true;
+            IsAllowed['L'] = true;
+            IsAllowed['M'] = true;
+            IsAllowed['N'] = true;
+            IsAllowed['O'] = true;
+            IsAllowed['P'] = true;
+            IsAllowed['Q'] = true;
+            IsAllowed['R'] = true;
+            IsAllowed['S'] = true;
+            IsAllowed['T'] = true;
+            IsAllowed['U'] = true;
+            IsAllowed['V'] = true;
+            IsAllowed['W'] = true;
+            IsAllowed['X'] = true;
+            IsAllowed['Y'] = true;
+            IsAllowed['Z'] = true;
+
+            IsAllowed['a'] = true;
+            IsAllowed['b'] = true;
+            IsAllowed['c'] = true;
+            IsAllowed['d'] = true;
+            IsAllowed['e'] = true;
+            IsAllowed['f'] = true;
+            IsAllowed['g'] = true;
+            IsAllowed['h'] = true;
+            IsAllowed['i'] = true;
+            IsAllowed['j'] = true;
+            IsAllowed['k'] = true;
+            IsAllowed['l'] = true;
+            IsAllowed['m'] = true;
+            IsAllowed['n'] = true;
+            IsAllowed['o'] = true;
+            IsAllowed['p'] = true;
+            IsAllowed['q'] = true;
+            IsAllowed['r'] = true;
+            IsAllowed['s'] = true;
+            IsAllowed['t'] = true;
+            IsAllowed['u'] = true;
+            IsAllowed['v'] = true;
+            IsAllowed['w'] = true;
+            IsAllowed['x'] = true;
+            IsAllowed['y'] = true;
+            IsAllowed['z'] = true;
+
+            IsAllowed['0'] = true;
+            IsAllowed['1'] = true;
+            IsAllowed['2'] = true;
+            IsAllowed['3'] = true;
+            IsAllowed['4'] = true;
+            IsAllowed['5'] = true;
+            IsAllowed['6'] = true;
+            IsAllowed['7'] = true;
+            IsAllowed['8'] = true;
+            IsAllowed['9'] = true;
+
+            IsAllowed['-'] = true;
+            IsAllowed['_'] = true;
+            IsAllowed['.'] = true;
+            IsAllowed['~'] = true;
         }
     }
 }
