@@ -46,7 +46,7 @@ namespace tests
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            var bytesWritten = Signature.GenerateStorageSignature(buffer, sha, "GET", canonicalizedResource, utc);
+            Assert.True(Signature.TryWriteStorageSignature(buffer, sha, "GET", canonicalizedResource, utc, out int bytesWritten));
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)

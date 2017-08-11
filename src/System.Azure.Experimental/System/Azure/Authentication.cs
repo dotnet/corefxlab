@@ -6,10 +6,11 @@ using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Text;
 using System.Text.Encoders;
+using System.Text.Encodings.Web.Utf8;
 
 namespace System.Azure.Authentication
 {
-    public class Signature
+    public static class Signature
     {
         static readonly byte[] s_type = Encoding.UTF8.GetBytes("type=");
         static readonly byte[] s_ver = Encoding.UTF8.GetBytes("&ver=");
@@ -24,64 +25,74 @@ namespace System.Azure.Authentication
         static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
         const int AuthenticationHeaderBufferSize = 256;
 
-        public static unsafe int GenerateStorageSignature(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc)
+        public static bool TryWriteStorageSignature(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
-            int written, consumed, totalWritten = 0;
+            int written, consumed;
+            bytesWritten = 0;
 
-            var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
-            var buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
+            Span<byte> buffer;
+            unsafe
+            {
+                var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
+                buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
+            }
 
             if (verb.Equals("GET", StringComparison.Ordinal))
             {
+                if(output.Length < 3)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
                 s_GET.CopyTo(output);
-                totalWritten += s_GET.Length;
+                bytesWritten += s_GET.Length;
             }
             else
             {
                 if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
                 {
-                    throw new NotImplementedException();
-                }
-                if (Ascii.ToLowerInPlace(output.Slice(0, written), out written) != TransformationStatus.Done)
-                {
-                    throw new NotImplementedException();
+                    bytesWritten = 0;
+                    return false;
                 }
 
                 output[written] = (byte)'\n';
-                totalWritten += written + 1;
+                bytesWritten += written + 1;
             }
 
-            var free = output.Slice(totalWritten);
+            var free = output.Slice(bytesWritten);
             s_emptyHeaders.CopyTo(free);
-            totalWritten += s_emptyHeaders.Length;
+            bytesWritten += s_emptyHeaders.Length;
 
-            free = output.Slice(totalWritten);
+            free = output.Slice(bytesWritten);
             if (!PrimitiveFormatter.TryFormat(utc, free, out written, 'R'))
             {
-                throw new NotImplementedException();
+                bytesWritten = 0;
+                return false;
             }
             free[written] = (byte)'\n';
-            totalWritten += written + 1;
-            free = output.Slice(totalWritten);
+            bytesWritten += written + 1;
+            free = output.Slice(bytesWritten);
 
             if (Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
             {
-                throw new NotImplementedException();
+                bytesWritten = 0;
+                return false;
             }
-            totalWritten += written;
+            bytesWritten += written;
 
-            var formatted = output.Slice(0, totalWritten);
-
-            var debug = Encoding.UTF8.GetString(formatted.ToArray());
+            var formatted = output.Slice(0, bytesWritten);
 
             hash.Append(formatted);
             hash.GetHash(output.Slice(0, hash.OutputSize));
 
             if (!Base64.EncodeInPlace(output, hash.OutputSize, out written))
             {
-                throw new NotImplementedException();
+                bytesWritten = 0;
+                return false;
             }
-            return written;
+
+            bytesWritten = written;
+            return true;
         }
 
         public static unsafe int GenerateCosmosDbAuthentication(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
@@ -193,7 +204,7 @@ namespace System.Azure.Authentication
             }
 
             var len = front.Length + written;
-            UrlEncode(buffer.Slice(0, len), output, out int encodedBytes);
+            UrlEncoder.Encode(buffer.Slice(0, len), output, out int encodedBytes);
             return encodedBytes;
         }
 
@@ -216,99 +227,5 @@ namespace System.Azure.Authentication
             }
             return keyBytes;
         }
-
-        static void UrlEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
-        {
-            written = 0;
-            for (int inputIndex = 0; inputIndex < input.Length; inputIndex++)
-            {
-                var next = input[inputIndex];
-                if (IsAllowed[next])
-                {
-                    output[written++] = input[inputIndex];
-                }
-                else
-                {
-                    output[written++] = (byte)'%';
-                    PrimitiveFormatter.TryFormat(next, output.Slice(written), out int formatted, 'X');
-                    written += formatted;
-                }
-            }
-        }
-
-        static Signature()
-        {
-            // Unreserved
-            IsAllowed['A'] = true;
-            IsAllowed['B'] = true;
-            IsAllowed['C'] = true;
-            IsAllowed['D'] = true;
-            IsAllowed['E'] = true;
-            IsAllowed['F'] = true;
-            IsAllowed['G'] = true;
-            IsAllowed['H'] = true;
-            IsAllowed['I'] = true;
-            IsAllowed['J'] = true;
-            IsAllowed['K'] = true;
-            IsAllowed['L'] = true;
-            IsAllowed['M'] = true;
-            IsAllowed['N'] = true;
-            IsAllowed['O'] = true;
-            IsAllowed['P'] = true;
-            IsAllowed['Q'] = true;
-            IsAllowed['R'] = true;
-            IsAllowed['S'] = true;
-            IsAllowed['T'] = true;
-            IsAllowed['U'] = true;
-            IsAllowed['V'] = true;
-            IsAllowed['W'] = true;
-            IsAllowed['X'] = true;
-            IsAllowed['Y'] = true;
-            IsAllowed['Z'] = true;
-
-            IsAllowed['a'] = true;
-            IsAllowed['b'] = true;
-            IsAllowed['c'] = true;
-            IsAllowed['d'] = true;
-            IsAllowed['e'] = true;
-            IsAllowed['f'] = true;
-            IsAllowed['g'] = true;
-            IsAllowed['h'] = true;
-            IsAllowed['i'] = true;
-            IsAllowed['j'] = true;
-            IsAllowed['k'] = true;
-            IsAllowed['l'] = true;
-            IsAllowed['m'] = true;
-            IsAllowed['n'] = true;
-            IsAllowed['o'] = true;
-            IsAllowed['p'] = true;
-            IsAllowed['q'] = true;
-            IsAllowed['r'] = true;
-            IsAllowed['s'] = true;
-            IsAllowed['t'] = true;
-            IsAllowed['u'] = true;
-            IsAllowed['v'] = true;
-            IsAllowed['w'] = true;
-            IsAllowed['x'] = true;
-            IsAllowed['y'] = true;
-            IsAllowed['z'] = true;
-
-            IsAllowed['0'] = true;
-            IsAllowed['1'] = true;
-            IsAllowed['2'] = true;
-            IsAllowed['3'] = true;
-            IsAllowed['4'] = true;
-            IsAllowed['5'] = true;
-            IsAllowed['6'] = true;
-            IsAllowed['7'] = true;
-            IsAllowed['8'] = true;
-            IsAllowed['9'] = true;
-
-            IsAllowed['-'] = true;
-            IsAllowed['_'] = true;
-            IsAllowed['.'] = true;
-            IsAllowed['~'] = true;
-        }
-        static bool[] IsAllowed = new bool[256];
     }
 }
