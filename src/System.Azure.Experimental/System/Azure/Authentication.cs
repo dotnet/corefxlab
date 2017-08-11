@@ -42,7 +42,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -66,7 +66,7 @@ namespace System.Azure.Authentication
             bytesWritten += written + 1;
             free = output.Slice(bytesWritten);
 
-            if (Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
@@ -104,7 +104,7 @@ namespace System.Azure.Authentication
             totalWritten += s_type.Length;
             var bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(keyType.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -116,7 +116,7 @@ namespace System.Azure.Authentication
 
             bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(tokenVersion.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -148,7 +148,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsSpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
@@ -163,7 +163,7 @@ namespace System.Azure.Authentication
 
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceType.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -175,7 +175,7 @@ namespace System.Azure.Authentication
             totalWritten += written + 1;
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceId.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -217,7 +217,7 @@ namespace System.Azure.Authentication
             byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
             var buffer = new Span<byte>(pBuffer, bufferLength);
-            if (Utf16.ToUtf8(key.AsSpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }

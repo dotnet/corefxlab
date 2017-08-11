@@ -13,7 +13,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf16toUtf8UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
+            char[] characters = inputString.AsReadOnlySpan().ToArray();
             Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf8Length = utf8.GetByteCount(characters);
             var utf8Buffer = new byte[utf8Length];
@@ -31,7 +31,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf32toUtf8UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
+            char[] characters = inputString.AsReadOnlySpan().ToArray();
             Text.Encoding utf32 = Text.Encoding.UTF32;
             Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf32Length = utf32.GetByteCount(characters);
@@ -58,7 +58,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf8toUtf16UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
+            char[] characters = inputString.AsReadOnlySpan().ToArray();
             Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf8Length = utf8.GetByteCount(characters);
             var utf8Buffer = new byte[utf8Length];
@@ -79,7 +79,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf32toUtf16UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
+            char[] characters = inputString.AsReadOnlySpan().ToArray();
             Text.Encoding utf32 = Text.Encoding.UTF32;
             int utf32Length = utf32.GetByteCount(characters);
             var utf32Buffer = new byte[utf32Length];

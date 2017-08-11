@@ -193,7 +193,7 @@ namespace System.Text.Primitives.Tests.Encoding
             buffer = buffer.Slice(0, written);
 
             string unicodeString = plainText.ToString();
-            ReadOnlySpan<char> characters = unicodeString.AsSpan();
+            ReadOnlySpan<char> characters = unicodeString.AsReadOnlySpan();
             int byteCount = systemEncoder.GetByteCount(unicodeString);
             byte[] expectedBytes = new byte[byteCount];
 

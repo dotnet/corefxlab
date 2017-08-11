@@ -8,7 +8,7 @@ namespace System.Buffers.Cryptography
 {
     public struct Sha256
     {
-        IncrementalHash _hash; 
+        IncrementalHash _hash;
         public static Sha256 Create(byte[] seed)
         {
             var sha = new Sha256();
