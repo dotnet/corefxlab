@@ -51,6 +51,19 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void BasicArrayFormatter()
+        {
+            using (var sb = new ArrayFormatter(256, SymbolTable.InvariantUtf16))
+            {
+                sb.Append("hi");
+                sb.Append(1);
+                sb.Append("hello");
+                sb.Append((sbyte)-20);
+                Assert.Equal("hi1hello-20", Encoding.Unicode.GetString(sb.Formatted.Array, 0, sb.CommitedByteCount));
+            }
+        }
+
+        [Fact]
         public void ByteBasicTests()
         {
             CheckByte(0, null, "0");
