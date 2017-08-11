@@ -6,7 +6,7 @@
   <PropertyGroup>
     <Description>Brotli compression APIs</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
