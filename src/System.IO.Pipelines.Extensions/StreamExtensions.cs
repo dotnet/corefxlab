@@ -62,11 +62,12 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="writer"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static Task CopyToAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
         {
             // 81920 is the default bufferSize, there is not stream.CopyToAsync overload that takes only a cancellationToken
-            return stream.CopyToAsync(new PipelineWriterStream(writer, cancellationToken), bufferSize: 81920, cancellationToken: cancellationToken);
+            return stream.CopyToAsync(new PipelineWriterStream(writer), bufferSize: 81920, cancellationToken: cancellationToken);
         }
 
         public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
@@ -220,12 +221,10 @@ namespace System.IO.Pipelines
         private class PipelineWriterStream : Stream
         {
             private readonly IPipeWriter _writer;
-            private readonly CancellationToken _cancellationToken;
 
-            public PipelineWriterStream(IPipeWriter writer, CancellationToken cancellationToken)
+            public PipelineWriterStream(IPipeWriter writer)
             {
                 _writer = writer;
-                _cancellationToken = cancellationToken;
             }
 
             public override bool CanRead => false;
@@ -270,19 +269,6 @@ namespace System.IO.Pipelines
             public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                _cancellationToken.ThrowIfCancellationRequested();
-
-                if (_cancellationToken.CanBeCanceled)
-                {
-                    if (cancellationToken.CanBeCanceled)
-                    {
-                        cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cancellationToken).Token;
-                    }
-                    else
-                    {
-                        cancellationToken = _cancellationToken;
-                    }
-                }
 
                 var output = _writer.Alloc();
                 output.Write(new Span<byte>(buffer, offset, count));
