@@ -25,7 +25,7 @@
     <Compile Include="System\Azure\Sha256.Windows.cs" />   
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="$(CoreFxVersion)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Binary.Base64\System.Binary.Base64.csproj" />

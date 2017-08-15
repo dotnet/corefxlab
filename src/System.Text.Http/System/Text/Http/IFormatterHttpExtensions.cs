@@ -17,8 +17,6 @@ namespace System.Text.Http
         private static readonly byte[] s_Http11Utf8 = Encoding.UTF8.GetBytes(" HTTP/1.1\r\n");
         private static readonly byte[] s_Http20Utf8 = Encoding.UTF8.GetBytes(" HTTP/2.0\r\n");
 
-        private const int ULongMaxValueNumberOfCharacters = 20;
-
         private static readonly byte[] s_GetUtf8 = Encoding.UTF8.GetBytes("GET ");
         private static readonly byte[] s_PostUtf8 = Encoding.UTF8.GetBytes("POST ");
         private static readonly byte[] s_PutUtf8 = Encoding.UTF8.GetBytes("PUT ");
@@ -27,9 +25,9 @@ namespace System.Text.Http
         public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8String reasonCode) where TFormatter : ITextOutput
         {
             switch (version) {
-                case HttpVersion.V1_0: formatter.Append(new Utf8String(Http10)); break;
-                case HttpVersion.V1_1: formatter.Append(new Utf8String(Http11)); break;
-                case HttpVersion.V2_0: formatter.Append(new Utf8String(Http20)); break;
+                case HttpVersion.V1_0: formatter.Append(Http10); break;
+                case HttpVersion.V1_1: formatter.Append(Http11); break;
+                case HttpVersion.V2_0: formatter.Append(Http20); break;
                 default: throw new ArgumentException(nameof(version));
             }
 
@@ -47,9 +45,9 @@ namespace System.Text.Http
                 switch (method)
                 {
                     case HttpMethod.Get: formatter.AppendBytes(s_GetUtf8); break;
-                    case HttpMethod.Post: formatter.AppendBytes(s_GetUtf8); break;
+                    case HttpMethod.Post: formatter.AppendBytes(s_PostUtf8); break;
                     case HttpMethod.Put: formatter.AppendBytes(s_PutUtf8); break;
-                    case HttpMethod.Delete: formatter.AppendBytes(s_GetUtf8); break;
+                    case HttpMethod.Delete: formatter.AppendBytes(s_DeleteUtf8); break;
                     default: formatter.Append(method.ToString()); formatter.Append(' '); break;
                 }
 
@@ -71,9 +69,9 @@ namespace System.Text.Http
                 formatter.Append(' ');
                 switch (version)
                 {
-                    case HttpVersion.V1_0: formatter.Append(new Utf8String(Http10)); break;
-                    case HttpVersion.V1_1: formatter.Append(new Utf8String(Http11)); break;
-                    case HttpVersion.V2_0: formatter.Append(new Utf8String(Http20)); break;
+                    case HttpVersion.V1_0: formatter.Append(Http10); break;
+                    case HttpVersion.V1_1: formatter.Append(Http11); break;
+                    case HttpVersion.V2_0: formatter.Append(Http20); break;
                     default: throw new ArgumentException(nameof(version));
                 }
                 formatter.AppendHttpNewLine();
