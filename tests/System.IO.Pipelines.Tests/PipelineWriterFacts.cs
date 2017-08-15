@@ -2,11 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Text;
+using System.Text.Formatting;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using System.Text.Formatting;
-using System.Buffers;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -104,6 +105,30 @@ namespace System.IO.Pipelines.Tests
                 var sw = new StreamReader(stream);
 
                 Assert.Equal("Hello World", sw.ReadToEnd());
+            }
+        }
+
+        [Fact]
+        public async Task CanCancelCopyToAsync()
+        {
+            var bytes = new byte[100];
+            using (var stream = new MemoryStream(bytes))
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool, new PipeOptions
+                {
+                    // We want to block FlushAsync so we can test the CancellationToken
+                    MaximumSizeHigh = 10
+                });
+
+                var source = new CancellationTokenSource();
+                var copyTask = stream.CopyToAsync(pipe.Writer, source.Token);
+
+                Assert.False(copyTask.Wait(100));
+
+                source.Cancel();
+
+                await Assert.ThrowsAsync<OperationCanceledException>(() => copyTask);
             }
         }
 

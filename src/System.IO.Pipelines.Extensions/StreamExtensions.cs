@@ -62,17 +62,19 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="writer"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipeWriter writer)
+        public static Task CopyToAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return stream.CopyToAsync(new PipelineWriterStream(writer));
+            // 81920 is the default bufferSize, there is not stream.CopyToAsync overload that takes only a cancellationToken
+            return stream.CopyToAsync(new PipelineWriterStream(writer), bufferSize: 81920, cancellationToken: cancellationToken);
         }
 
-        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer)
+        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                await stream.CopyToAsync(writer);
+                await stream.CopyToAsync(writer, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -116,7 +118,7 @@ namespace System.IO.Pipelines
             }
             else
             {
-                // Copy required 
+                // Copy required
                 var array = memory.Span.ToArray();
                 await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
             }
@@ -218,7 +220,7 @@ namespace System.IO.Pipelines
 
         private class PipelineWriterStream : Stream
         {
-            private IPipeWriter _writer;
+            private readonly IPipeWriter _writer;
 
             public PipelineWriterStream(IPipeWriter writer)
             {
@@ -266,9 +268,11 @@ namespace System.IO.Pipelines
 
             public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var output = _writer.Alloc();
                 output.Write(new Span<byte>(buffer, offset, count));
-                await output.FlushAsync();
+                await output.FlushAsync(cancellationToken);
             }
         }
     }
