@@ -27,7 +27,7 @@ namespace System.Buffers.Cryptography
             return sha;
         }
 
-        public int OutputSize => 256 / 8;
+        public int OutputSize => 256 / 8; // Sha256 length in bytes
         public unsafe void Append(ReadOnlySpan<byte> input)
         {
             fixed (byte* pInput = &input.DangerousGetPinnableReference())

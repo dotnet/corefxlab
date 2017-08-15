@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace tests
+namespace System.Azure.Tests
 {
     public class AzureSdk
     {
