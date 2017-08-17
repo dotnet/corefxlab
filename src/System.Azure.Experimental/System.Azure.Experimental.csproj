@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Tensor class which represents and extends multi-dimensional arrays</Description>
+    <Description>Set of building blocks for Azure SDK</Description>
     <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>BCL for Azure SDK </PackageTags>
@@ -16,7 +16,9 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\Azure\Authentication.cs" />
+    <Compile Include="System\Azure\CosmosDbAuthorizationHeader.cs" />
+    <Compile Include="System\Azure\Key.cs" />
+    <Compile Include="System\Azure\StorageAccessSignature.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
     <Compile Include="System\Azure\Sha256.Unix.cs" />    
