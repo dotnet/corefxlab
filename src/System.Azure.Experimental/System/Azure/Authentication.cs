@@ -10,85 +10,49 @@ using System.Text.Encodings.Web.Utf8;
 
 namespace System.Azure.Authentication
 {
-    public static class Signature
-    {
-        static readonly byte[] s_type = Encoding.UTF8.GetBytes("type=");
-        static readonly byte[] s_ver = Encoding.UTF8.GetBytes("&ver=");
-        static readonly byte[] s_sig = Encoding.UTF8.GetBytes("&sig=");
-
-        static readonly byte[] s_get = Encoding.UTF8.GetBytes("get\n");
-        static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
-        static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
-
-        static readonly byte[] s_GET = Encoding.UTF8.GetBytes("GET\n");
-
-        static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
-        const int AuthenticationHeaderBufferSize = 256;
-
-        public static bool TryWriteStorageSignature(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
+    public static class Key {
+        public unsafe static byte[] ComputeKeyBytes(string key)
         {
+            const int bufferLength = 128;
+
+            byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
-            bytesWritten = 0;
-
-            if (verb.Equals("GET", StringComparison.Ordinal))
+            var buffer = new Span<byte>(pBuffer, bufferLength);
+            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
             {
-                if (output.Length < 3)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-                s_GET.CopyTo(output);
-                bytesWritten += s_GET.Length;
+                throw new NotImplementedException("need to resize buffer");
             }
-            else
+            var keyBytes = new byte[64];
+            var result = Base64.Decode(buffer.Slice(0, written), keyBytes, out consumed, out written);
+            if (result != TransformationStatus.Done || written != 64)
             {
-                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                output[written] = (byte)'\n';
-                bytesWritten += written + 1;
+                throw new NotImplementedException("need to resize buffer");
             }
+            return keyBytes;
+        }
+    }
+    
+    public struct CosmosDbAuthorizationHeader : IBufferFormattable {
+        public Sha256 Hash;
+        public string KeyType;
+        public string Method;
+        public string ResourceId;
+        public string ResourceType;
+        public string Version;
+        public DateTime Time;
 
-            var free = output.Slice(bytesWritten);
-            s_emptyHeaders.CopyTo(free);
-            bytesWritten += s_emptyHeaders.Length;
-
-            free = output.Slice(bytesWritten);
-            if (!PrimitiveFormatter.TryFormat(utc, free, out written, 'R'))
+        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default(ParsedFormat), SymbolTable symbolTable = null)
+        {
+            if (TryWrite(buffer, Hash, KeyType, Method, ResourceId, ResourceType, Version, Time, out written))
             {
-                bytesWritten = 0;
-                return false;
+                return true;
             }
-            free[written] = (byte)'\n';
-            bytesWritten += written + 1;
-            free = output.Slice(bytesWritten);
-
-            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            bytesWritten += written;
-
-            var formatted = output.Slice(0, bytesWritten);
-
-            hash.Append(formatted);
-            hash.GetHash(output.Slice(0, hash.OutputSize));
-
-            if (!Base64.EncodeInPlace(output, hash.OutputSize, out written))
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            bytesWritten = written;
-            return true;
+            buffer.Clear();
+            written = 0;
+            return false;
         }
 
-        public static bool TryWriteCosmosDbAuthorizationHeader(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
+        public static bool TryWrite(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
         {
             int written, consumed, totalWritten = 0;
             bytesWritten = 0;
@@ -210,24 +174,84 @@ namespace System.Azure.Authentication
             return true;
         }
 
-        public unsafe static byte[] ComputeKeyBytes(string key)
-        {
-            const int bufferLength = 128;
+        static readonly byte[] s_type = Encoding.UTF8.GetBytes("type=");
+        static readonly byte[] s_ver = Encoding.UTF8.GetBytes("&ver=");
+        static readonly byte[] s_sig = Encoding.UTF8.GetBytes("&sig=");
 
-            byte* pBuffer = stackalloc byte[bufferLength];
+        static readonly byte[] s_get = Encoding.UTF8.GetBytes("get\n");
+        static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
+        static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
+
+        const int AuthenticationHeaderBufferSize = 256;
+    }
+
+    public static class StorageAccessSignature
+    {
+        public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
+        {
             int written, consumed;
-            var buffer = new Span<byte>(pBuffer, bufferLength);
-            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
+            bytesWritten = 0;
+
+            if (verb.Equals("GET", StringComparison.Ordinal))
             {
-                throw new NotImplementedException("need to resize buffer");
+                if (output.Length < 3)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+                s_GET.CopyTo(output);
+                bytesWritten += s_GET.Length;
             }
-            var keyBytes = new byte[64];
-            var result = Base64.Decode(buffer.Slice(0, written), keyBytes, out consumed, out written);
-            if (result != TransformationStatus.Done || written != 64)
+            else
             {
-                throw new NotImplementedException("need to resize buffer");
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                output[written] = (byte)'\n';
+                bytesWritten += written + 1;
             }
-            return keyBytes;
+
+            var free = output.Slice(bytesWritten);
+            s_emptyHeaders.CopyTo(free);
+            bytesWritten += s_emptyHeaders.Length;
+
+            free = output.Slice(bytesWritten);
+            if (!PrimitiveFormatter.TryFormat(utc, free, out written, 'R'))
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            free[written] = (byte)'\n';
+            bytesWritten += written + 1;
+            free = output.Slice(bytesWritten);
+
+            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            bytesWritten += written;
+
+            var formatted = output.Slice(0, bytesWritten);
+
+            hash.Append(formatted);
+            hash.GetHash(output.Slice(0, hash.OutputSize));
+
+            if (!Base64.EncodeInPlace(output, hash.OutputSize, out written))
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            bytesWritten = written;
+            return true;
         }
+
+        static readonly byte[] s_GET = Encoding.UTF8.GetBytes("GET\n");
+
+        static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
     }
 }

@@ -22,14 +22,39 @@ namespace System.Azure.Tests
         string canonicalizedResource = "/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
 
         [Fact]
-        public void CosmosDbAuthenticationHeader()
+        public void CosmosDbAuthenticationHeaderTryWrite()
         {
-            var keyBytes = Signature.ComputeKeyBytes(fakeKey);
+            var keyBytes = Key.ComputeKeyBytes(fakeKey);
             var sha = Sha256.Create(keyBytes);
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            Assert.True(Signature.TryWriteCosmosDbAuthorizationHeader(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc, out int bytesWritten));
+            Assert.True(CosmosDbAuthorizationHeader.TryWrite(buffer, sha, keyType, "GET", resourceId, resourceType, version, utc, out int bytesWritten));
+            var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
+
+            // Generate using existing .NET APIs (sample from Asure documentation)
+            var expected = CosmosDbBaselineFromMsdn(fakeKey, keyType, "GET", resourceId, resourceType, version, utc);
+
+            Assert.Equal(expected, signatureAsString);
+        }
+
+        
+        [Fact]
+        public void CosmosDbAuthenticationHeaderTryFormat()
+        { 
+            var header = new CosmosDbAuthorizationHeader();
+            header.Hash = Sha256.Create(Key.ComputeKeyBytes(fakeKey));
+            header.KeyType = keyType;
+            header.Method = "GET";
+            header.ResourceId = resourceId;
+            header.ResourceType = resourceType;
+            header.Version = version;
+            header.Time = utc;
+
+            // Generate using non-allocating APIs
+            var buffer = new byte[256];
+            Assert.True(header.TryFormat(buffer, out int bytesWritten));
+
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)
@@ -41,12 +66,12 @@ namespace System.Azure.Tests
         [Fact]
         public void StorageSignature()
         {
-            var keyBytes = Signature.ComputeKeyBytes(fakeKey);
+            var keyBytes = Key.ComputeKeyBytes(fakeKey);
             var sha = Sha256.Create(keyBytes);
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            Assert.True(Signature.TryWriteStorageSignature(buffer, sha, "GET", canonicalizedResource, utc, out int bytesWritten));
+            Assert.True(StorageAccessSignature.TryWrite(buffer, sha, "GET", canonicalizedResource, utc, out int bytesWritten));
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)
