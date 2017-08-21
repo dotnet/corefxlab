@@ -10,14 +10,16 @@ namespace System.IO.Compression.Tests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        const string testFile = "BrotliTest.txt";
+
+        [Fact]
         public void CanDisposeState()
         {
             Brotli.State state = new Brotli.State();
             state.Dispose();
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void DoubleDisposeState()
         {
             Brotli.State state = new Brotli.State();
@@ -25,39 +27,39 @@ namespace System.IO.Compression.Tests
             state.Dispose();
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void SimpleSetQuality()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.True(state.CompressMode);
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void SimpleSetWindowSize()
         {
             Brotli.State state = new Brotli.State();
-            state.SetWindow();
+            state.SetWindow(11);
             Assert.True(state.CompressMode);
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void DecompressSetQuality()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void DecompressSetWindow()
         {
             Brotli.State state = new Brotli.State();
-            state.SetQuality();
+            state.SetQuality(1);
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out int consumed, out int written, ref state); });
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void CompressAfterDecompress()
         {
             Brotli.State state = new Brotli.State();
@@ -65,7 +67,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.Exception>(delegate { Brotli.Compress(Span<byte>.Empty, Span<byte>.Empty, out consumed, out written, ref state); });
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void DecompressAfterCompress()
         {
             Brotli.State state = new Brotli.State();
@@ -73,7 +75,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out consumed, out written, ref state); });
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void DecompressAfterFlush()
         {
             Brotli.State state = new Brotli.State();
@@ -81,7 +83,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out consumed, out written, ref state); });
         }
 
-        [Fact(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Fact]
         public void FlushAfterDecompress()
         {
             Brotli.State state = new Brotli.State();
@@ -89,7 +91,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.Exception>(delegate { Brotli.Decompress(Span<byte>.Empty, Span<byte>.Empty, out consumed, out written, ref state); });
         }
 
-        [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Theory]
         [InlineData(0, 1)]
         [InlineData(1024, 1030)]
         [InlineData(1 << 30, 1073742086)]
@@ -99,7 +101,7 @@ namespace System.IO.Compression.Tests
             Assert.Equal(Brotli.GetMaximumCompressedSize(totalSize), maxCompressedSize);
         }
 
-        [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Theory]
         [InlineData(-1)]
         [InlineData(int.MinValue)]
         [InlineData(int.MaxValue)]
@@ -109,7 +111,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.ArgumentOutOfRangeException>(delegate { Brotli.GetMaximumCompressedSize(totalSize); });
         }
 
-        [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Theory]
         [InlineData(int.MaxValue)]
         [InlineData(12)]
         public void WrongQuality(uint quality)
@@ -118,7 +120,7 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.ArgumentOutOfRangeException>(delegate { state.SetQuality(quality); });
         }
 
-        [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Theory]
         [InlineData(int.MaxValue)]
         [InlineData(0)]
         [InlineData(25)]
@@ -129,7 +131,35 @@ namespace System.IO.Compression.Tests
             Assert.Throws<System.ArgumentOutOfRangeException>(delegate { state.SetWindow(windowSize); });
         }
 
-        [Theory(Skip = "Fails in VS - System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(1024)]
+        public void DecompressRandomInvalidData(int totalSize)
+        {
+            Brotli.State state = new Brotli.State();
+            byte[] data = new byte[totalSize];
+            new Random(42).NextBytes(data);
+            Assert.Throws<System.IO.IOException>(delegate { Brotli.Decompress(data, Array.Empty<byte>(), out int consumed, out int written, ref state);  });
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(10)]
+        public void DecompressPartlyInvalidData(int correctPart)
+        {
+            Brotli.State state = new Brotli.State();
+            byte[] data = File.ReadAllBytes(Path.Combine("BrotliTestData", testFile + ".br"));
+            Span<byte> source = new Span<byte>(data, 0, data.Length / correctPart);
+            int expected = (int)new FileInfo(Path.Combine("BrotliTestData", testFile)).Length;
+            byte[] decompressed = new byte[expected];
+            TransformationStatus result = Brotli.Decompress(source, decompressed, out int consumed, out int written, ref state);
+            new Random(42).NextBytes(data);
+            Assert.Throws<System.IO.IOException>(delegate { Brotli.Decompress(data, Array.Empty<byte>(), out consumed, out written, ref state); } );
+        }
+
+        [Theory]
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(1023)]

@@ -37,7 +37,9 @@ namespace System.Text
                     return TryFormatDateTimeFormatG(value.DateTime, offset, buffer, out bytesWritten, symbolTable);
 
                 default:
-                    throw new NotImplementedException();
+                    ThrowNotImplemented();
+                    bytesWritten = 0;
+                    return false;
             }
         }
 
@@ -62,7 +64,9 @@ namespace System.Text
                     return TryFormatDateTimeFormatG(value, NullOffset, buffer, out bytesWritten, symbolTable);
 
                 default:
-                    throw new NotImplementedException();
+                    ThrowNotImplemented();
+                    bytesWritten = 0;
+                    return false;
             }
         }
 
@@ -85,8 +89,10 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatG(value, offset, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatG(value, offset, buffer, out bytesWritten);
-            else
-                throw new NotImplementedException();
+
+            ThrowNotImplemented();
+            bytesWritten = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,8 +103,10 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatO(value, offset, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatO(value, offset, buffer, out bytesWritten);
-            else
-                throw new NotImplementedException();
+
+            ThrowNotImplemented();
+            bytesWritten = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,8 +117,10 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
-            else
-                throw new NotImplementedException();
+
+            ThrowNotImplemented();
+            bytesWritten = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,8 +131,10 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatRfc1123Lowercase(value, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatRfc1123Lowercase(value, buffer, out bytesWritten);
-            else
-                throw new NotImplementedException();
+
+            ThrowNotImplemented();
+            bytesWritten = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -133,8 +145,16 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormat(value, format, buffer, out bytesWritten);
             else if (symbolTable == SymbolTable.InvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormat(value, format, buffer, out bytesWritten);
-            else
-                throw new NotImplementedException();
+
+            ThrowNotImplemented();
+            bytesWritten = 0;
+            return false;
+        }
+
+        // Methods won't be inlined if they contain a throw, so we factor out the throw to a separate method.
+        static void ThrowNotImplemented()
+        {
+            throw new NotImplementedException();
         }
     }
 }

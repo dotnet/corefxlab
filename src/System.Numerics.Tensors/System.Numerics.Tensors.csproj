@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>Tensor class which represents and extends multi-dimensional arrays</Description>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET Tensor Array corefxlab</PackageTags>
+    <!-- disable automatic compile item inclusion so that we can set the correct metadata on TextTemplate-generated sources -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="System\Numerics\ArrayUtilities.cs" />
+    <Compile Include="System\Numerics\Tensor.cs" />
+    <Compile Include="System\Numerics\TensorArithmetic.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TensorArithmetic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System\Numerics\Tensor.Operations.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Tensor.Operations.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="System\Numerics\Tensor.Operations.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Tensor.Operations.tt</DependentUpon>
+    </None>
+    <None Update="System\Numerics\TensorArithmetic.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TensorArithmetic.tt</DependentUpon>
+    </None>
+    <None Update="System\Numerics\TensorArithmetic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TensorArithmetic.cs</LastGenOutput>
+    </None>
+    <None Update="System\Numerics\Tensor.Operations.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Tensor.Operations.cs</LastGenOutput>
+    </None>
+    <None Update="System\Numerics\TensorTemplate.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- enable the TextTemplating extension -->
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+</Project>

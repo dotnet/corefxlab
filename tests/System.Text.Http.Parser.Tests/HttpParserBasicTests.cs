@@ -5,6 +5,7 @@ using Xunit;
 using System.IO.Pipelines;
 using System.Collections.Generic;
 using System.Buffers;
+using System.Text.Encoders;
 
 namespace System.Text.Http.Parser.Tests
 {
@@ -150,8 +151,8 @@ namespace System.Text.Http.Parser.Tests
 
         public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
         {
-            var nameString = PrimitiveEncoder.DecodeAscii(name);
-            var valueString = PrimitiveEncoder.DecodeAscii(value);
+            var nameString = Ascii.ToUtf16String(name);
+            var valueString = Ascii.ToUtf16String(value);
             Headers.Add(nameString, valueString);
         }
 
@@ -159,9 +160,9 @@ namespace System.Text.Http.Parser.Tests
         {
             Method = method;
             Version = version;
-            Path = PrimitiveEncoder.DecodeAscii(path);
-            Query = PrimitiveEncoder.DecodeAscii(query);
-            Target = PrimitiveEncoder.DecodeAscii(target);
+            Path = Ascii.ToUtf16String(path);
+            Query = Ascii.ToUtf16String(query);
+            Target = Ascii.ToUtf16String(target);
         }
     }
 }

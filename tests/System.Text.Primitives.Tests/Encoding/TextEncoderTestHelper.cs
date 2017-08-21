@@ -498,7 +498,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static int GetUtf8ByteCount(string utf16String)
         {
-            return GetUtf8ByteCount(utf16String.AsSpan());
+            return GetUtf8ByteCount(utf16String.AsReadOnlySpan());
         }
 
         public static int GetUtf8ByteCount(ReadOnlySpan<uint> utf32)

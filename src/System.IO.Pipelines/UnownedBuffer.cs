@@ -40,11 +40,6 @@ namespace System.IO.Pipelines
             return (OwnedBuffer<byte>)buffer;
         }
 
-// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
-// this method access modifiers need to be `protected internal`
-#if KESTREL_BY_SOURCE
-        internal
-#endif
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
@@ -52,11 +47,6 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
-        // this method access modifiers need to be `protected internal`
-#if KESTREL_BY_SOURCE
-        internal
-#endif
         public override BufferHandle Pin(int index = 0)
         {
             unsafe

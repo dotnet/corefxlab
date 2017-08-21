@@ -1,0 +1,32 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>
+<#@ include file="TensorTemplate.ttinclude" #>// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace System.Numerics
+{
+    public static partial class Tensor
+    { 
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+        public static <#= method.GetGenericResultMethodSignature("T")#>
+        {
+            <#= method.GetValidationMethod(true) #>
+
+            TensorArithmetic<T>.Instance.<#=method.MethodName#>(<#=method.GetCallArguments()#>, <#= method.ResultName #>);
+        }
+
+        public static <#= method.GetGenericMethodSignature("T")#>
+        {
+            <#= method.GetValidationMethod(false) #>
+
+            var <#= method.ResultName #> = <#=method.InitializeResult("T")#>;
+            
+            TensorArithmetic<T>.Instance.<#=method.MethodName#>(<#=method.GetCallArguments()#>, <#= method.ResultName #>);
+
+            return <#= method.ResultName #>;
+        }
+
+<# } #>
+    }
+}

@@ -44,7 +44,7 @@ public class PriorityQueue<T> : IQueue<T>
     public IComparer<T> Comparer { get; }
     public int Count { get; }
 
-    public bool IsEmpty();
+    public bool IsEmpty { get; }
     public void Clear();
     public bool Contains(T element);
 
@@ -138,7 +138,7 @@ public class PriorityQueue<TElement, TPriority> :
     public IComparer<TPriority> Comparer { get; }
     public int Count { get; }
 
-    public bool IsEmpty();
+    public bool IsEmpty { get; }
     public void Clear();
     public bool Contains(TElement element);
     public bool Contains(TElement element, out TPriority priority);
@@ -213,7 +213,7 @@ public interface IQueue<T> :
     int Count { get; }
 
     void Clear();
-    bool IsEmpty();
+    bool IsEmpty { get; }
 
     void Enqueue(T element);
 

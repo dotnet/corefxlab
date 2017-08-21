@@ -8,9 +8,9 @@ namespace System.IO.Pipelines
     {
         public static readonly InlineScheduler Default = new InlineScheduler();
 
-        public void Schedule(Action action)
+        public void Schedule(Action<object> action, object state)
         {
-            action();
+            action(state);
         }
     }
 }

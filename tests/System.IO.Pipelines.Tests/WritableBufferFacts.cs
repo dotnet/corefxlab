@@ -92,14 +92,14 @@ namespace System.IO.Pipelines.Tests
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
-                int offset = 0;
+                long offset = 0;
                 while (true)
                 {
                     var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
-
-                    Assert.True(input.EqualsTo(new Span<byte>(data, offset, input.Length)));
+                    // We are able to cast because test arguments are in range of int
+                    Assert.True(input.EqualsTo(new Span<byte>(data, (int) offset, (int) input.Length)));
                     offset += input.Length;
                     pipe.Advance(input.End);
                 }
@@ -127,7 +127,7 @@ namespace System.IO.Pipelines.Tests
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
-                int offset = 0;
+                long offset = 0;
                 while (true)
                 {
                     var result = await pipe.Reader.ReadAsync();
@@ -135,7 +135,8 @@ namespace System.IO.Pipelines.Tests
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetUtf8String(input);
-                    Assert.Equal(data.Substring(offset, input.Length), s);
+                    // We are able to cast because test arguments are in range of int
+                    Assert.Equal(data.Substring((int) offset, (int) input.Length), s);
                     offset += input.Length;
                     pipe.Advance(input.End);
                 }
@@ -162,7 +163,7 @@ namespace System.IO.Pipelines.Tests
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
-                int offset = 0;
+                long offset = 0;
                 while (true)
                 {
                     var result = await pipe.Reader.ReadAsync();
@@ -170,7 +171,8 @@ namespace System.IO.Pipelines.Tests
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetAsciiString(input);
-                    Assert.Equal(data.Substring(offset, input.Length), s);
+                    // We are able to cast because test arguments are in range of int
+                    Assert.Equal(data.Substring((int) offset, (int) input.Length), s);
                     offset += input.Length;
                     pipe.Advance(input.End);
                 }
@@ -348,6 +350,17 @@ namespace System.IO.Pipelines.Tests
                 buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());
+            }
+        }
+
+        [Fact]
+        public void EmptyWriteDoesNotThrow()
+        {
+            using (var factory = new PipeFactory())
+            {
+                var pipe = factory.Create();
+                var buffer = pipe.Writer.Alloc();
+                buffer.Write(new byte[0], 0, 0);
             }
         }
     }

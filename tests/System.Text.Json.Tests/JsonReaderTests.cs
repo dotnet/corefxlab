@@ -271,7 +271,7 @@ namespace System.Text.Json.Tests
                 return json;
             }
 
-            var jsonReader = new JsonReader(jsonString.AsSpan().AsBytes(), SymbolTable.InvariantUtf16);
+            var jsonReader = new JsonReader(jsonString.AsReadOnlySpan().AsBytes(), SymbolTable.InvariantUtf16);
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {
@@ -410,7 +410,7 @@ namespace System.Text.Json.Tests
         {
             if (jsonReader.SymbolTable == SymbolTable.InvariantUtf8)
             {
-                var status = Encoders.Utf16.ComputeEncodedBytesFromUtf8(jsonReader.Value, out int needed);
+                var status = Encoders.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
                 Assert.Equal(Buffers.TransformationStatus.Done, status);
 
                 var text = new string(' ', needed);
@@ -420,7 +420,7 @@ namespace System.Text.Json.Tests
                     {
                         var dst = new Span<byte>((byte*)pChars, needed);
 
-                        status = Encoders.Utf16.ConvertFromUtf8(jsonReader.Value, dst, out int consumed, out int written);
+                        status = Encoders.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
                         Assert.Equal(Buffers.TransformationStatus.Done, status);
                     }
                 }

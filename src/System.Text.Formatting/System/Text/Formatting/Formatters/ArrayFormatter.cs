@@ -7,7 +7,7 @@ using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
-    public class ArrayFormatter : ITextOutput
+    public class ArrayFormatter : ITextOutput, IDisposable
     {
         ResizableArray<byte> _buffer;
         SymbolTable _symbolTable;
@@ -33,7 +33,7 @@ namespace System.Text.Formatting
 
         public Span<byte> Buffer => Free.AsSpan();
 
-        void IOutput.Enlarge(int desiredBufferLength)
+        public void Enlarge(int desiredBufferLength = 0)
         {
             if (desiredBufferLength < 1) desiredBufferLength = 1;
             var doubleCount = _buffer.Free.Count * 2;
@@ -43,13 +43,20 @@ namespace System.Text.Formatting
             _pool.Return(oldArray);
         }
 
-        void IOutput.Advance(int bytes)
+        public void Advance(int bytes)
         {
             _buffer.Count += bytes;
             if(_buffer.Count > _buffer.Count)
             {
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
             }
+        }
+
+        public void Dispose()
+        {
+            var array = _buffer.Items;
+            _buffer.Items = null;
+            _pool.Return(array);
         }
     }
 }

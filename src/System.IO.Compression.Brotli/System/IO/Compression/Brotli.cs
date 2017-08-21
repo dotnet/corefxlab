@@ -1,4 +1,7 @@
-﻿using System.Buffers;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+using System.Buffers;
 using System.IO.Compression.Resources;
 
 #if BIT64
@@ -55,6 +58,8 @@ namespace System.IO.Compression
                     throw new System.Exception(BrotliEx.EncoderInstanceCreate);
                 }
                 CompressMode = true;
+                SetQuality((uint)GetQualityFromCompressionLevel(CompressionLevel.Optimal));
+                SetWindow(MaxWindowBits);
             }
 
             public void SetQuality(uint quality)
@@ -70,11 +75,6 @@ namespace System.IO.Compression
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.Quality, quality);
             }
 
-            public void SetQuality()
-            {
-                SetQuality(MaxQuality);
-            }
-
             public void SetWindow(uint window)
             {
                 if (BrotliNativeState == IntPtr.Zero)
@@ -86,11 +86,6 @@ namespace System.IO.Compression
                     throw new ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
                 }
                 BrotliNative.BrotliEncoderSetParameter(BrotliNativeState, BrotliEncoderParameter.LGWin, window);
-            }
-
-            public void SetWindow()
-            {
-                SetWindow(MaxWindowBits);
             }
         }
 
@@ -106,8 +101,7 @@ namespace System.IO.Compression
             }
             if (compress)
             {
-                state.SetQuality();
-                state.SetWindow();
+                state.InitializeEncoder();
             }
             else
             {
@@ -133,9 +127,9 @@ namespace System.IO.Compression
 
         internal static int GetQualityFromCompressionLevel(CompressionLevel level)
         {
-            if (level == CompressionLevel.Optimal) return 10;
-            if (level == CompressionLevel.NoCompression) return 1;
-            if (level == CompressionLevel.Fastest) return 2;
+            if (level == CompressionLevel.Optimal) return 11;
+            if (level == CompressionLevel.NoCompression) return 0;
+            if (level == CompressionLevel.Fastest) return 1;
             return (int)level;
         }
 

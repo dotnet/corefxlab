@@ -140,7 +140,7 @@ namespace System.Text.Primitives.Tests
             int bytesNeeded = (expectedOutput.Length + 10) * sizeof(char);
             Span<byte> actualOutput = new byte[bytesNeeded];
 
-            var result = Encoders.Utf16.ConvertFromUtf8(input, actualOutput, out int consumed, out int written);
+            var result = Encoders.Utf8.ToUtf16(input, actualOutput, out int consumed, out int written);
             Assert.Equal(expectedResult, result);
 
             Assert.Equal(expectedConsumed, consumed);
@@ -174,7 +174,7 @@ namespace System.Text.Primitives.Tests
 
             // Encoders.Utf16 version
             Span<byte> encodedData = data;
-            Assert.Equal(TransformationStatus.Done, Encoders.Utf16.ComputeEncodedBytesFromUtf8(encodedData, out int neededBytes));
+            Assert.Equal(TransformationStatus.Done, Encoders.Utf8.ToUtf16Length(encodedData, out int neededBytes));
 
             // System version
             int expectedBytes = Text.Encoding.UTF8.GetCharCount(data) * sizeof(char);
@@ -206,12 +206,12 @@ namespace System.Text.Primitives.Tests
             byte[] data = GenerateUtf8String(count, minCodePoint, maxCodePoint);
 
             Span<byte> encodedData = data;
-            var result = Encoders.Utf16.ComputeEncodedBytesFromUtf8(encodedData, out int needed);
+            var result = Encoders.Utf8.ToUtf16Length(encodedData, out int needed);
             Assert.Equal(TransformationStatus.Done, result);
 
             // Encoders.Utf16 version
             Span<byte> actual = new byte[needed];
-            result = Encoders.Utf16.ConvertFromUtf8(encodedData, actual, out int consumed, out int written);
+            result = Encoders.Utf8.ToUtf16(encodedData, actual, out int consumed, out int written);
             Assert.Equal(TransformationStatus.Done, result);
 
             // System version

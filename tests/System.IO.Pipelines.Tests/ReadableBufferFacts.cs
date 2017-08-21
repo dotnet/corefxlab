@@ -298,12 +298,12 @@ namespace System.IO.Pipelines.Tests
         {
             fixed (byte* ptr = &readBuffer.First.Span.DangerousGetPinnableReference())
             {
-                Assert.True(ptr != null);
                 string s = value.ToString(CultureInfo.InvariantCulture);
                 int written;
                 fixed (char* c = s)
                 {
-                    written = Encoding.ASCII.GetBytes(c, s.Length, ptr, readBuffer.Length);
+                    // We are able to cast because test arguments are in range of int
+                    written = Encoding.ASCII.GetBytes(c, s.Length, ptr, (int)readBuffer.Length);
                 }
                 var slice = readBuffer.Slice(0, written);
                 Assert.Equal(value, slice.GetUInt64());

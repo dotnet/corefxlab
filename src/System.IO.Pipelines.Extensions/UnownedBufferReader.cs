@@ -127,7 +127,7 @@ namespace System.IO.Pipelines
                     else if (_tail != null)
                     {
                         // Add this segment to the end of the chain
-                        _tail.Next = segment;
+                        _tail.SetNext(segment);
                     }
 
                     // Always update tail to the buffer's tail
@@ -244,6 +244,11 @@ namespace System.IO.Pipelines
             {
                 Dispose();
             }
+        }
+
+        public void OnWriterCompleted(Action<Exception, object> callback, object state)
+        {
+            _readingTcs.Task.ContinueWith((task, o) => callback(task.Exception, o), state);
         }
 
         /// <summary>

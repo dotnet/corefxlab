@@ -357,7 +357,7 @@ namespace System.Text.Json
         {
             WriteControl(JsonConstants.Quote);
             // TODO: We need to handle escaping.
-            Write(value.AsSpan());
+            Write(value.AsReadOnlySpan());
             WriteControl(JsonConstants.Quote);
         }
 
@@ -427,7 +427,7 @@ namespace System.Text.Json
 
                 while (true)
                 {
-                    var status = Encoders.Utf8.ConvertFromUtf16(source, destination, out int consumed, out int written);
+                    var status = Encoders.Utf16.ToUtf8(source, destination, out int consumed, out int written);
                     if (status == Buffers.TransformationStatus.Done)
                     {
                         _output.Advance(written);

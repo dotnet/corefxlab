@@ -228,7 +228,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.True(result.IsCancelled);
 
-            Pipe.Reader.Advance(buffer.Start, buffer.Start);
+            Pipe.Reader.Advance(result.Buffer.Start, result.Buffer.Start);
         }
 
         [Fact]

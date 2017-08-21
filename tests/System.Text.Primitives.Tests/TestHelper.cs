@@ -45,9 +45,9 @@ namespace System.Text.Primitives.Tests
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
             {
-                Assert.Equal(TransformationStatus.Done, Encoders.Utf16.ComputeEncodedBytesFromUtf8(span, out int needed));
+                Assert.Equal(TransformationStatus.Done, Encoders.Utf8.ToUtf16Length(span, out int needed));
                 Span<byte> output = new byte[needed];
-                Assert.Equal(TransformationStatus.Done, Encoders.Utf16.ConvertFromUtf8(span, output, out int consumed, out int written));
+                Assert.Equal(TransformationStatus.Done, Encoders.Utf8.ToUtf16(span, output, out int consumed, out int written));
                 return new string(output.NonPortableCast<byte, char>().ToArray());
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)

@@ -58,5 +58,23 @@ namespace System.Text.Http.Tests
             result.AsSpan().SequenceEqual(_httpMessageInBytes);
             _formatter.Clear();
         }
+
+        static string s_expectedRequest = "GET /path HTTP/1.1\r\nheader1:header_value1\r\nheader2:header_value2\r\nx-ms-date:Tue, 15 Aug 2017 01:02:03 GMT\r\nheader3:3456\r\n\r\n";
+        [Fact]
+        public void ComposeHttpRequest()
+        {
+            _formatter.AppendHttpRequestLine(HttpMethod.Get, HttpVersion.V1_1, "/path");
+
+            _formatter.AppendHttpHeader("header1:", "header_value1");
+            _formatter.AppendHttpHeader("header2:", "header_value2");
+            _formatter.AppendHttpHeader("x-ms-date:", new DateTime(2017, 8, 15, 1, 2, 3, 4));
+            _formatter.AppendHttpHeader("header3:", 3456);
+            _formatter.AppendHttpNewLine();
+
+            var result = _formatter.Formatted;
+            var text = Encoding.UTF8.GetString(result.ToArray());
+            Assert.Equal(s_expectedRequest, text);
+            _formatter.Clear();
+        }
     }
 }

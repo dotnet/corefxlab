@@ -20,6 +20,15 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
         Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
         exit -1
     }
+
+    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
+    $SharedVersion = (Get-Content "$PSScriptRoot\..\SharedRuntimeVersion.txt" -Raw).Trim()
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnet -SharedRuntime"
+    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+        Write-Error "Failed to install latest 2.1.0 shared runtime, exit code [$lastexitcode], aborting build."
+        exit -1
+    }
+
     Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 1.0.0 -InstallDir $PSScriptRoot\..\dotnet"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install framework version 1.0.0, exit code [$lastexitcode], aborting build."
@@ -55,10 +64,6 @@ if ($lastexitcode -ne 0) {
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($testFile -match ("System.IO.Compression.Tests")) {
-        Write-Warning "Skipping tests in $file. Cannot build the brotli dll yet."
-        continue
-    }
     Write-Host "Building and running tests for project $testFile..."
     Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
 

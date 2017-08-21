@@ -66,8 +66,7 @@ namespace System.IO.Compression
             _state = new Brotli.State();
             if (_mode == CompressionMode.Compress)
             {
-                _state.SetQuality();
-                _state.SetWindow();
+                _state.InitializeEncoder();
                 WriteTimeout = 0;
             }
             else

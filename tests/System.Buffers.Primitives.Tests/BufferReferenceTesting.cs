@@ -6,17 +6,30 @@ namespace System.Buffers.Tests
 {
     public class BufferReferenceTests
     {
-        public static void TestOwnedBuffer(Func<OwnedBuffer<byte>> create)
+        public static void TestOwnedBuffer(Func<OwnedBuffer<byte>> create, Action<OwnedBuffer<byte>> dispose = null)
         {
-            BufferLifetimeBasics(create());
-            MemoryHandleDoubleFree(create());
+            RunTest(BufferLifetimeBasics, create, dispose);
+            RunTest(MemoryHandleDoubleFree, create, dispose);
+            RunTest(AsSpan, create, dispose);
+            RunTest(Buffer, create, dispose);
+            RunTest(Pin, create, dispose);
+            RunTest(Dispose, create, dispose);
+            RunTest(buffer => TestBuffer(() => buffer.Buffer), create, dispose);
+            //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
+        }
 
-            AsSpan(create());
-            Buffer(create());
-            Pin(create());
-            Dispose(create());
-            // OverRelease(create()); // TODO: corfxlab #1571 
-            TestBuffer(() => { return create().Buffer; });
+        static void RunTest(Action<OwnedBuffer<byte>> test, Func<OwnedBuffer<byte>> create,
+            Action<OwnedBuffer<byte>> dispose)
+        {
+            var buffer = create();
+            try
+            {
+                test(buffer);
+            }
+            finally
+            {
+                dispose?.Invoke(buffer);
+            }
         }
 
         static void MemoryAccessBasics(OwnedBuffer<byte> buffer)

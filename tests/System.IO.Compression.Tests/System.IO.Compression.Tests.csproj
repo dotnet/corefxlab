@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.IO.Compression.Brotli\System.IO.Compression.Brotli.csproj">
-      <Private>true</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.IO.Compression.Brotli\System.IO.Compression.Brotli.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
