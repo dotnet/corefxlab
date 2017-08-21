@@ -473,7 +473,12 @@ namespace System.Numerics
         /// <returns></returns>
         public static Tensor<T> CreateIdentity(int size)
         {
-            return CreateIdentity(size, arithmetic.One);
+            return CreateIdentity(size, false, arithmetic.One);
+        }
+
+        public static Tensor<T> CreateIdentity(int size, bool columMajor)
+        {
+            return CreateIdentity(size, columMajor, arithmetic.One);
         }
 
         /// <summary>
@@ -482,9 +487,9 @@ namespace System.Numerics
         /// <param name="size"></param>
         /// <param name="oneValue"></param>
         /// <returns></returns>
-        public static Tensor<T> CreateIdentity(int size, T oneValue)
+        public static Tensor<T> CreateIdentity(int size, bool columMajor, T oneValue)
         {
-            var result = new Tensor<T>(size, size);
+            var result = new Tensor<T>(columMajor, size, size);
 
             for(int i = 0; i < size; i++)
             {
@@ -787,7 +792,7 @@ namespace System.Numerics
                 throw new ArgumentException($"Cannot reshape array due to mismatch in lengths, currently {Length} would become {newSize}.", nameof(dimensions));
             }
 
-            return new Tensor<T>(Buffer, dimensions);
+            return new Tensor<T>(Buffer, IsColumnMajor, dimensions);
         }
 
         public Tensor<T> ReshapeCopy(params int[] dimensions)
@@ -812,7 +817,7 @@ namespace System.Numerics
                 Array.Copy(Buffer, copyBackingArray, copyLength);
             }
 
-            return new Tensor<T>(copyBackingArray, dimensions);
+            return new Tensor<T>(copyBackingArray, IsColumnMajor, dimensions);
         }
 
         public T this[int index]

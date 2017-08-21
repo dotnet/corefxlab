@@ -69,6 +69,49 @@
         }
 
         public string ResultName => "result";
+        
+        public string Op1Name 
+        {
+            get
+            {
+                switch (MethodType)
+                {
+                    case MethodType.Unary:
+                    case MethodType.UnaryInPlace:
+                    case MethodType.BinaryScalar:
+                    case MethodType.BinaryInt:
+                        return "tensor";
+                    case MethodType.Binary:
+                    case MethodType.Comparison:
+                    case MethodType.Contraction:
+                        return "left";
+                    default:
+                        throw new ArgumentException();
+                };
+            }
+        }
+
+        public string Op2Name 
+        {
+            get
+            {
+                switch (MethodType)
+                {
+                    case MethodType.BinaryScalar:
+                        return "scalar";
+                    case MethodType.BinaryInt:
+                        return "value";
+                    case MethodType.Binary:
+                    case MethodType.Comparison:
+                    case MethodType.Contraction:
+                        return "right";
+                    case MethodType.Unary:
+                    case MethodType.UnaryInPlace:
+                    default:
+                        throw new ArgumentException();
+                };
+            }
+        }
 
         public string MethodName { get; }
         public MethodType MethodType { get; }
@@ -104,16 +147,16 @@
             {
                 case MethodType.Unary:
                 case MethodType.UnaryInPlace:
-                    return $"Tensor<{typeName}> tensor";
+                    return $"Tensor<{typeName}> {Op1Name}";
                 case MethodType.BinaryScalar:
-                    return $"Tensor<{typeName}> tensor, {typeName} scalar";
+                    return $"Tensor<{typeName}> {Op1Name}, {typeName} {Op2Name}";
                 case MethodType.BinaryInt:
-                    return $"Tensor<{typeName}> tensor, int value";
+                    return $"Tensor<{typeName}> {Op1Name}, int {Op2Name}";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return $"Tensor<{typeName}> left, Tensor<{typeName}> right";
+                    return $"Tensor<{typeName}> {Op1Name}, Tensor<{typeName}> {Op2Name}";
                 case MethodType.Contraction:
-                    return $"Tensor<{typeName}> left, Tensor<{typeName}> right, int[] leftAxes, int[] rightAxes";
+                    return $"Tensor<{typeName}> {Op1Name}, Tensor<{typeName}> {Op2Name}, int[] leftAxes, int[] rightAxes";
                 default:
                     throw new ArgumentException();
             }
@@ -125,14 +168,12 @@
             {
                 case MethodType.Unary:
                 case MethodType.UnaryInPlace:
-                    return "tensor";
+                    return "{Op1Name}";
                 case MethodType.BinaryScalar:
-                    return "tensor, scalar";
                 case MethodType.BinaryInt:
-                    return "tensor, value";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return "left, right";
+                    return "{Op1Name}, {Op2Name}";
                 case MethodType.Contraction:
                     return "left, right, leftAxes, rightAxes";
                 default:
@@ -149,12 +190,12 @@
                 case MethodType.UnaryInPlace:
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
-                    return $"ValidateArgs(tensor{suffix});";
+                    return $"ValidateArgs({Op1Name}{suffix});";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return $"ValidateBinaryArgs(left, right{suffix});";
+                    return $"ValidateBinaryArgs({Op1Name}, {Op2Name}{suffix});";
                 case MethodType.Contraction:
-                    return $"var resultDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes{suffix});";
+                    return $"var resultDimensions = ValidateContractArgs({Op1Name}, {Op2Name}, leftAxes, rightAxes{suffix});";
                 default:
                     throw new ArgumentException();
             }
@@ -178,23 +219,44 @@
             }
         }
 
-
-        public string GetElementOperation(string typeName, string access)
+        public string GetLinearOperationCheck()
         {
             switch (MethodType)
             {
                 case MethodType.Unary:
-                    return $"{ResultName}{access} = ({typeName}){Operator}tensor{access}";
-                case MethodType.UnaryInPlace:
-                    return $"{ResultName}{access}{Operator}";
                 case MethodType.BinaryScalar:
-                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} scalar)";
                 case MethodType.BinaryInt:
-                    return $"{ResultName}{access} = ({typeName})(tensor{access} {Operator} value)";
+                    return $"({ResultName}.IsRowMajor == {Op1Name}.IsRowMajor)";
                 case MethodType.Binary:
-                    return $"{ResultName}{access} = ({typeName})(left{access} {Operator} right{access})";
                 case MethodType.Comparison:
-                    return $"{ResultName}{access} = left{access} {Operator} right{access}";
+                    return $"(({ResultName}.IsRowMajor == {Op1Name}.IsRowMajor) && ({ResultName}.IsRowMajor == {Op2Name}.IsRowMajor))";
+                case MethodType.UnaryInPlace:
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+
+        public string GetElementOperation(string typeName, string access)
+        {
+            return GetElementOperation(typeName, access, access, access);
+        }
+
+        public string GetElementOperation(string typeName, string resultAccess, string leftAccess, string rightAccess)
+        {
+            switch (MethodType)
+            {
+                case MethodType.Unary:
+                    return $"{ResultName}{resultAccess} = ({typeName}){Operator}{Op1Name}{leftAccess}";
+                case MethodType.UnaryInPlace:
+                    return $"{ResultName}{resultAccess}{Operator}";
+                case MethodType.BinaryScalar:
+                case MethodType.BinaryInt:
+                    return $"{ResultName}{resultAccess} = ({typeName})({Op1Name}{leftAccess} {Operator} {Op2Name})";
+                case MethodType.Binary:
+                    return $"{ResultName}{resultAccess} = ({typeName})({Op1Name}{leftAccess} {Operator} {Op2Name}{rightAccess})";
+                case MethodType.Comparison:
+                    return $"{ResultName}{resultAccess} = {Op1Name}{leftAccess} {Operator} {Op2Name}{rightAccess}";
                 default:
                     throw new ArgumentException();
 
@@ -206,15 +268,14 @@
             switch (MethodType)
             {
                 case MethodType.UnaryInPlace:
-                    return $"tensor.Clone()";
+                    return $"{Op1Name}.Clone()";
                 case MethodType.Unary:
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
-                    return $"tensor.CloneEmpty()";
                 case MethodType.Binary:
-                    return $"left.CloneEmpty()";
+                    return $"{Op1Name}.CloneEmpty()";
                 case MethodType.Comparison:
-                    return $"left.CloneEmpty<bool>()";
+                    return $"{Op1Name}.CloneEmpty<bool>()";
                 case MethodType.Contraction:
                     return $"new Tensor<{typeName}>(resultDimensions)";
                 default:
