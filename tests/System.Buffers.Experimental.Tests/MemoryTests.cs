@@ -239,13 +239,14 @@ namespace System.Buffers.Tests
 
         public override bool Release()
         {
-            if (!IsRetained) throw new InvalidOperationException();
-
-            if (Interlocked.Decrement(ref _referenceCount) == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) throw new InvalidOperationException();
+            if (newRefCount == 0)
             {
-                _noReferencesCalledCount++;
+               _noReferencesCalledCount++;
+               return false;
             }
-            return IsRetained;
+            return true;
         }
     }
 

@@ -87,15 +87,14 @@ namespace System.Buffers.Internal
 
             public override bool Release()
             {
-                var newRefCount = Interlocked.Decrement(ref _referenceCount);
-                if (newRefCount == 0) {
+                int newRefCount = Interlocked.Decrement(ref _referenceCount);
+                if (newRefCount < 0) throw new InvalidOperationException();
+                if (newRefCount == 0) 
+                {
                     Dispose();
-                    return IsRetained;
+                    return false;
                 }
-                if(newRefCount < 0) {
-                    throw new InvalidOperationException();
-                }
-                return IsRetained;
+                return true;
             }
         }
     }

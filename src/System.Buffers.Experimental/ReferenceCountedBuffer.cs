@@ -19,11 +19,14 @@ namespace System.Buffers
 
         public override bool Release()
         {
-            if (!IsRetained) BuffersExperimentalThrowHelper.ThrowInvalidOperationException();
-            if (Interlocked.Decrement(ref _referenceCount) <= 0) {
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) BuffersExperimentalThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount == 0) 
+            {
                 OnNoReferences();
+                return false;
             }
-            return IsRetained;
+            return true;
         }
 
         protected override bool IsRetained => _referenceCount > 0;

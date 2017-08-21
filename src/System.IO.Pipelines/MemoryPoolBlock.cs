@@ -110,14 +110,14 @@ namespace System.IO.Pipelines
 
         public override bool Release()
         {
-            var result = Interlocked.Decrement(ref _referenceCount);
-            if (result < 0) PipelinesThrowHelper.ThrowInvalidOperationException();
-            if (result == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount == 0)
             {
                OnZeroReferences();
-               return true;
+               return false;
             }
-            return false;
+            return true;
         }
 
         protected override bool IsRetained => _referenceCount > 0;

@@ -70,12 +70,14 @@ namespace System.Buffers.Internal
 
         public override bool Release()
         {
-            if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
-            if (Interlocked.Decrement(ref _referenceCount) == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0)  BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount == 0)
             {
                 OnNoReferences();
+                return false;
             }
-            return IsRetained;
+            return true;
         }
 
         protected virtual void OnNoReferences()

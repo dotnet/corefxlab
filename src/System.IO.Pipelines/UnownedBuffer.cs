@@ -66,9 +66,13 @@ namespace System.IO.Pipelines
 
         public override bool Release()
         {
-            // TODO: should it check IsRetained?
-            Interlocked.Decrement(ref _referenceCount);
-            return IsRetained;
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount == 0)
+            {
+               return false;
+            }
+            return true;
         }
 
         protected override bool IsRetained => _referenceCount > 0;
