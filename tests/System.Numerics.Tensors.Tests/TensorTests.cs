@@ -200,10 +200,39 @@ namespace tests
         [Fact]
         public void ConstructTensorFromArrayRank3WithLowerBounds()
         {
-            var arrayWithLowerBounds = Array.CreateInstance(typeof(int), new[] { 2, 3, 4 }, new[] { 0, 5, 200 });
+            var dimensions = new[] { 2, 3, 4 };
+            var lowerBounds = new[] { 0, 5, 200 };
+            var arrayWithLowerBounds = Array.CreateInstance(typeof(int), dimensions, lowerBounds);
 
+            int value = 0;
+            for(int x = lowerBounds[0]; x < lowerBounds[0] + dimensions[0]; x++)
+            {
+                for (int y = lowerBounds[1]; y < lowerBounds[1] + dimensions[1]; y++)
+                {
+                    for (int z = lowerBounds[2]; z < lowerBounds[2] + dimensions[2]; z++)
+                    {
+                        arrayWithLowerBounds.SetValue(value++, x, y, z);
+                    }
+                }
+            }
 
-            
+            var tensor = new Tensor<int>(arrayWithLowerBounds);
+
+            var expected = new Tensor<int>(new[,,]
+                    {
+                        {
+                            { 0, 1, 2, 3 },
+                            { 4, 5, 6, 7 },
+                            { 8, 9, 10, 11 }
+                        },
+                        {
+                            { 12, 13, 14, 15 },
+                            { 16, 17, 18, 19 },
+                            { 20, 21, 22, 23 }
+                        }
+                    }
+                );
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(expected, tensor));
         }
 
 
