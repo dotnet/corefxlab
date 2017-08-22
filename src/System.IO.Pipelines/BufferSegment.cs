@@ -93,12 +93,7 @@ namespace System.IO.Pipelines
 
         public void Dispose()
         {
-            bool isRetained = _owned.Release();
-
-            if (!isRetained)
-            {
-                _owned.Dispose();
-            }
+            _owned.Release();
         }
 
 
