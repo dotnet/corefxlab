@@ -406,6 +406,7 @@ namespace System.Text.Utf8.Tests
             TrimEndTest(s);
             TrimTest(s);
         }
+
         [Theory]
         [InlineData(" ", "")]
         [InlineData("", "a")]
@@ -421,15 +422,15 @@ namespace System.Text.Utf8.Tests
         [InlineData("    1258He        llo", "1258Hello")]
         [InlineData(" a a a ", " a")]
         [InlineData("         a a a           ", " ")]
-        public void TrimStartPrefixTest(string s, string prefix)
+        public void TrimStartPrefixTest(string s, string trimCharacters)
         {
             Utf8String u8s = new Utf8String(s);
-            Utf8String u8prefix = new Utf8String(prefix);
+            Utf8String u8TrimCharacters = new Utf8String(trimCharacters);
 
-            string expected = s.TrimStart(prefix.ToCharArray());
+            string expected = s.TrimStart(trimCharacters.ToCharArray());
             Utf8String u8expected = new Utf8String(expected);
 
-            Utf8String u8trimmed = u8s.TrimStart(u8prefix);
+            Utf8String u8trimmed = u8s.TrimStart(u8TrimCharacters);
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();

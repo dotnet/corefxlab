@@ -587,16 +587,16 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public Utf8String TrimStart(Utf8String prefix)
+        public Utf8String TrimStart(Utf8String trimCharacters)
         {
-            if(prefix == Empty)
+            if (trimCharacters == Empty)
             {
                 // Trim Whitespace
                 return TrimStart();
             }
 
             CodePointEnumerator it = GetCodePointEnumerator();
-            CodePointEnumerator itPrefix = prefix.GetCodePointEnumerator();
+            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
             
             while (it.MoveNext())
             {
