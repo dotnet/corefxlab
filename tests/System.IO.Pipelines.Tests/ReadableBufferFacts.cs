@@ -20,6 +20,8 @@ namespace System.IO.Pipelines.Tests
 {
     public class ReadableBufferFacts
     {
+        const int BlockSize = 4032;
+
         [Fact]
         public void EmptyIsCorrect()
         {
@@ -34,7 +36,7 @@ namespace System.IO.Pipelines.Tests
             using (var factory = new PipeFactory())
             {
                 var readerWriter = factory.Create();
-                const int Size = 5 * 4032; // multiple blocks
+                const int Size = 5 * BlockSize; // multiple blocks
 
                 // populate with a pile of dummy data
                 byte[] data = new byte[512];
@@ -238,7 +240,10 @@ namespace System.IO.Pipelines.Tests
                 var remaining = readBuffer.Slice(cursor);
                 var handle = remaining.First.Retain(pin: true);
                 Assert.True(handle.PinnedPointer != null);
-                Assert.True((byte*)handle.PinnedPointer == addresses[i]);
+                if (i % BlockSize == 0)
+                {
+                    Assert.True((byte*)handle.PinnedPointer == addresses[i]);
+                }
                 handle.Dispose();
             }
 
@@ -262,7 +267,7 @@ namespace System.IO.Pipelines.Tests
                 var ptr = (byte*)handle.PinnedPointer;
                 for (int i = 0; i < memory.Length; i++)
                 {
-                    addresses[index++] = ptr;
+                    addresses[index++] = ptr++;
                 }
             }
             return addresses;
