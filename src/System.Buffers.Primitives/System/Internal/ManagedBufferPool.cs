@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -74,7 +75,7 @@ namespace System.Buffers.Internal
                 {
                     Retain(); // this checks IsDisposed
                     var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                    var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
+                    var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), index);
                     return new BufferHandle(this, pointer, handle);
                 }
             }
