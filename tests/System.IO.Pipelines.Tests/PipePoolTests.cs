@@ -139,7 +139,7 @@ namespace System.IO.Pipelines.Tests
                     return _array;
                 }
 
-                public override BufferHandle Pin(int index = 0)
+                public override BufferHandle Pin()
                 {
                     throw new NotImplementedException();
                 }

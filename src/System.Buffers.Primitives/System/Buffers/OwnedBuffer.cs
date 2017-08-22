@@ -43,7 +43,7 @@ namespace System.Buffers
             }
         }
 
-        public abstract BufferHandle Pin(int index = 0);
+        public abstract BufferHandle Pin();
 
         protected internal abstract bool TryGetArray(out ArraySegment<T> arraySegment);
 

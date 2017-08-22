@@ -210,14 +210,13 @@ namespace System.Buffers.Tests
             return new Span<T>(_array, 0, _array.Length);
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), index);
-                return new BufferHandle(this, pointer, handle);
+                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 
@@ -284,14 +283,13 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), index);
-                return new BufferHandle(this, pointer, handle);
+                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 
