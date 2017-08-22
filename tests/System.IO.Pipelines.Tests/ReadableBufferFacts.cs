@@ -262,7 +262,7 @@ namespace System.IO.Pipelines.Tests
                 var ptr = (byte*)handle.PinnedPointer;
                 for (int i = 0; i < memory.Length; i++)
                 {
-                    addresses[index++] = ptr++;
+                    addresses[index++] = ptr;
                 }
             }
             return addresses;
