@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -53,7 +54,7 @@ namespace System.IO.Pipelines
             {
                 Retain();
                 var handle = GCHandle.Alloc(_buffer.Array, GCHandleType.Pinned);
-                var pointer = Add((void*)handle.AddrOfPinnedObject(), index + _buffer.Offset);
+                var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), index + _buffer.Offset);
                 return new BufferHandle(this, pointer, handle);
             }
         }

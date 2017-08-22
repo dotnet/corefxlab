@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -215,7 +216,7 @@ namespace System.Buffers.Tests
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
+                var pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), index);
                 return new BufferHandle(this, pointer, handle);
             }
         }
@@ -289,7 +290,7 @@ namespace System.Buffers.Tests
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
+                var pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), index);
                 return new BufferHandle(this, pointer, handle);
             }
         }
