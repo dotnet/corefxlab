@@ -413,6 +413,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("", "")]
         [InlineData("a","")]
         [InlineData("ab", "b")]
+        [InlineData("aba", "ab")]
         [InlineData("abcdefghijklmnopqrstuvwxyz   ", "abcd")]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABD")]
         [InlineData("0123456789", "234")]
@@ -422,7 +423,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("    1258He        llo", "1258Hello")]
         [InlineData(" a a a ", " a")]
         [InlineData("         a a a           ", " ")]
-        public void TrimStartPrefixTest(string s, string trimCharacters)
+        public void TrimStartCharacterTest(string s, string trimCharacters)
         {
             Utf8String u8s = new Utf8String(s);
             Utf8String u8TrimCharacters = new Utf8String(trimCharacters);
@@ -435,7 +436,6 @@ namespace System.Text.Utf8.Tests
 
             string trimmed = u8trimmed.ToString();
             Assert.Equal(expected, trimmed);
-
         }
 
         public void TrimStartTest(string s)
