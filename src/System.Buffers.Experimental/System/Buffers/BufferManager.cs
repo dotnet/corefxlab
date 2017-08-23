@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
+using System.Runtime.CompilerServices;
+
 namespace System.Buffers.Pools
 {
     public unsafe sealed partial class NativeBufferPool : BufferPool
@@ -40,7 +42,7 @@ namespace System.Buffers.Pools
             public override BufferHandle Pin(int index = 0)
             {
                 Retain();
-                return new BufferHandle(this, Add(_pointer.ToPointer(), index));
+                return new BufferHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), index));
             }
 
             private readonly NativeBufferPool _pool;

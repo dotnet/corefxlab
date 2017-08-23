@@ -86,6 +86,7 @@ namespace Microsoft.Dotnet.Scripts
         {
             yield return GetBuildInfoDependency("Cli", "cli/master");
             yield return GetBuildInfoDependency("CoreFx", "corefx/master");
+            yield return GetBuildInfoDependency("CoreSetup", "core-setup/master");
         }
 
         private static DependencyBuildInfo GetBuildInfoDependency(string target, string fragment)
