@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Encoders
 {
     internal static class EncodingHelper
     {
