@@ -3,9 +3,9 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
-    internal static class InvariantUtf8GuidFormatter
+    public static partial class Utf8
     {
         #region Constants
 
@@ -21,7 +21,7 @@ namespace System.Text
 
         #endregion Constants
 
-        public static unsafe bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        public static unsafe bool TryFormat(Guid value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
         {
             bool dash = format.Symbol != 'N';
             bool bookEnds = (format.Symbol == 'B') || (format.Symbol == 'P');

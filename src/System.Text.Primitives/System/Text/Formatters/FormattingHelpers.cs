@@ -4,12 +4,12 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
     // All the helper methods in this class assume that the by-ref is valid and that there is
     // enough space to fit the items that will be written into the underlying memory. The calling
     // code must have already done all the necessary validation.
-    internal static class FormattingHelpers
+    static class FormattingHelpers
     {
         // For the purpose of formatting time, the format specifier contains room for
         // exactly 7 digits in the fraction portion. See "Round-trip format specifier"

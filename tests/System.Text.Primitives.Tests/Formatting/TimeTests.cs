@@ -59,7 +59,7 @@ namespace System.Text.Primitives.Tests
                 expected = dt.ToString(format.ToString(), CultureInfo.InvariantCulture);           
 
             var span = new Span<byte>(new byte[256]);
-            Assert.True(PrimitiveFormatter.TryFormat(dt, span, out int written, format, symbolTable));
+            Assert.True(Formatters.Custom.TryFormat(dt, span, out int written, format, symbolTable));
 
             var actual = TestHelper.SpanToString(span.Slice(0, written), symbolTable);
             Assert.Equal(expected, actual);
@@ -96,7 +96,7 @@ namespace System.Text.Primitives.Tests
             }
 
             var span = new Span<byte>(new byte[256]);
-            Assert.True(PrimitiveFormatter.TryFormat(dto, span, out int written, format, symbolTable));
+            Assert.True(Formatters.Custom.TryFormat(dto, span, out int written, format, symbolTable));
 
             var actual = TestHelper.SpanToString(span.Slice(0, written), symbolTable);
             Assert.Equal(expected, actual);
@@ -149,7 +149,7 @@ namespace System.Text.Primitives.Tests
             var expected = ts.ToString(format.ToString(), CultureInfo.InvariantCulture);
 
             var span = new Span<byte>(new byte[256]);
-            Assert.True(PrimitiveFormatter.TryFormat(ts, span, out int written, format, symbolTable));
+            Assert.True(Formatters.Custom.TryFormat(ts, span, out int written, format, symbolTable));
 
             var actual = TestHelper.SpanToString(span.Slice(0, written), symbolTable);
             Assert.Equal(expected, actual);

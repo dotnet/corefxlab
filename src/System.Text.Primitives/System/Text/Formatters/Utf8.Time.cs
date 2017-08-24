@@ -3,21 +3,13 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
-    internal static class InvariantUtf8TimeFormatter
+    public static partial class Utf8
     {
         #region Constants
 
         private const int DefaultFractionDigits = 7;
-
-        private const byte Colon = (byte)':';
-        private const byte Comma = (byte)',';
-        private const byte Minus = (byte)'-';
-        private const byte Period = (byte)'.';
-        private const byte Plus = (byte)'+';
-        private const byte Slash = (byte)'/';
-        private const byte Space = (byte)' ';
 
         private const byte TimeMarker = (byte)'T';
         private const byte UtcMarker = (byte)'Z';
@@ -69,7 +61,7 @@ namespace System.Text
         };
 
         private static readonly byte[][] MonthAbbreviationsLowercase = new byte[][]
-{
+        {
                 new byte[] { (byte)'j', (byte)'a', (byte)'n' },
                 new byte[] { (byte)'f', (byte)'e', (byte)'b' },
                 new byte[] { (byte)'m', (byte)'a', (byte)'r' },
@@ -82,16 +74,18 @@ namespace System.Text
                 new byte[] { (byte)'o', (byte)'c', (byte)'t' },
                 new byte[] { (byte)'n', (byte)'o', (byte)'v' },
                 new byte[] { (byte)'d', (byte)'e', (byte)'c' },
-};
+        };
+
+        private static readonly TimeSpan NullOffset = TimeSpan.MinValue;
 
         #endregion Constants
 
-        public static bool TryFormatG(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatG(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten)
         {
             const int MinimumBytesNeeded = 19;
 
             bytesWritten = MinimumBytesNeeded;
-            if (offset != PrimitiveFormatter.NullOffset)
+            if (offset != NullOffset)
             {
                 bytesWritten += 7; // Space['+'|'-']hh:ss
             }
@@ -121,7 +115,7 @@ namespace System.Text
 
             FormattingHelpers.WriteDigits(value.Second, 2, ref utf8Bytes, 17);
 
-            if (offset != PrimitiveFormatter.NullOffset)
+            if (offset != NullOffset)
             {
                 Unsafe.Add(ref utf8Bytes, 19) = Space;
 
@@ -144,14 +138,14 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatO(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatO(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten)
         {
             const int MinimumBytesNeeded = 27;
 
             bytesWritten = MinimumBytesNeeded;
             DateTimeKind kind = DateTimeKind.Local;
 
-            if (offset == PrimitiveFormatter.NullOffset)
+            if (offset == NullOffset)
             {
                 kind = value.Kind;
                 if (kind == DateTimeKind.Local)
@@ -222,7 +216,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatRfc1123(DateTime value, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatRfc1123(DateTime value, Span<byte> buffer, out int bytesWritten)
         {
             const int BytesNeeded = 29;
 
@@ -270,7 +264,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatRfc1123Lowercase(DateTime value, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatRfc1123Lowercase(DateTime value, Span<byte> buffer, out int bytesWritten)
         {
             const int BytesNeeded = 29;
 
@@ -318,7 +312,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(TimeSpan value, char format, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatTimeSpan(TimeSpan value, char format, Span<byte> buffer, out int bytesWritten)
         {
             bool longForm = (format == 'G');
             bool constant = (format == 't' || format == 'T' || format == 'c');

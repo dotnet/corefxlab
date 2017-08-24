@@ -125,7 +125,7 @@ namespace System.Azure.Authentication
             totalWritten += written + 1;
             bufferSlice = payload.Slice(totalWritten);
 
-            if (!PrimitiveFormatter.TryFormat(utc, bufferSlice, out written, 'l'))
+            if (!Text.Formatters.Utf8.TryFormat(utc, bufferSlice, out written, 'l'))
             {
                 throw new NotImplementedException("need to resize buffer");
             }

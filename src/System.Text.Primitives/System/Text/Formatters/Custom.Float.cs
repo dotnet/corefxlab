@@ -3,11 +3,11 @@
 
 using System.Diagnostics;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
-    internal static class FloatFormatter
+    public static partial class Custom
     {
-        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        private static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 

@@ -3,11 +3,11 @@
 
 using System.Diagnostics;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
-    internal static class IntegerFormatter
+    public static partial class Custom
     {
-        internal static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
+        private static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
             if (value >= 0)
             {
@@ -37,7 +37,7 @@ namespace System.Text
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
+        private static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
             switch (format.Symbol)
             {
