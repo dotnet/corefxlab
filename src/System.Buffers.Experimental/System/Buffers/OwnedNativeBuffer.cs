@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers
@@ -41,7 +42,7 @@ namespace System.Buffers
             Retain();
             unsafe
             {
-                return new BufferHandle(this, Add(_pointer.ToPointer(), index));
+                return new BufferHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), index));
             }
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)

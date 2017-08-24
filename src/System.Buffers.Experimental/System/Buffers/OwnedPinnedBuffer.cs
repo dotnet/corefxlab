@@ -58,7 +58,7 @@ namespace System.Buffers
 
         public unsafe override BufferHandle Pin(int index = 0)
         {
-            return new BufferHandle(this, Add(_pointer.ToPointer(), index));
+            return new BufferHandle(this, Unsafe.Add<T>(_pointer.ToPointer(), index));
         }
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)
