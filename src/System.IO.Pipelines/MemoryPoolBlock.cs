@@ -129,14 +129,13 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            if (index > _length) PipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, index);
             Retain();
             unsafe
             {
-                return new BufferHandle(this, (Slab.NativePointer + _offset + index).ToPointer());
+                return new BufferHandle(this, (Slab.NativePointer + _offset).ToPointer());
             }
         }
     }

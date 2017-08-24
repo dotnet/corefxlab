@@ -48,13 +48,13 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_buffer.Array, GCHandleType.Pinned);
-                var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), index + _buffer.Offset);
+                var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), _buffer.Offset);
                 return new BufferHandle(this, pointer, handle);
             }
         }
