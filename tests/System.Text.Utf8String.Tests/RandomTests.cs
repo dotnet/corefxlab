@@ -407,6 +407,37 @@ namespace System.Text.Utf8.Tests
             TrimTest(s);
         }
 
+        [Theory]
+        [InlineData(" ", "")]
+        [InlineData("", "a")]
+        [InlineData("", "")]
+        [InlineData("a","")]
+        [InlineData("ab", "b")]
+        [InlineData("aba", "ab")]
+        [InlineData("abcdefghijklmnopqrstuvwxyz   ", "abcd")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABD")]
+        [InlineData("0123456789", "234")]
+        [InlineData("1258", "1258")]
+        [InlineData("1258Hello", "Hello")]
+        [InlineData("\uABCD", "\uABCD")]
+        [InlineData("    1258He        llo", "1258Hello")]
+        [InlineData(" a a a ", " a")]
+        [InlineData("         a a a           ", " ")]
+        public void TrimStartCharacterTest(string s, string trimCharacters)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8String u8TrimCharacters = new Utf8String(trimCharacters);
+
+            string expected = s.TrimStart(trimCharacters.ToCharArray());
+            Utf8String u8expected = new Utf8String(expected);
+
+            Utf8String u8trimmed = u8s.TrimStart(u8TrimCharacters);
+            TestHelper.Validate(u8expected, u8trimmed);
+
+            string trimmed = u8trimmed.ToString();
+            Assert.Equal(expected, trimmed);
+        }
+
         public void TrimStartTest(string s)
         {
             Utf8String u8s = new Utf8String(s);

@@ -587,6 +587,43 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
+        public Utf8String TrimStart(Utf8String trimCharacters)
+        {
+            if (trimCharacters == Empty)
+            {
+                // Trim Whitespace
+                return TrimStart();
+            }
+
+            CodePointEnumerator it = GetCodePointEnumerator();
+            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
+            
+            while (it.MoveNext())
+            {
+                bool found = false;
+                // Iterate over prefix set
+                while (itPrefix.MoveNext())
+                {
+                    if (it.Current == itPrefix.Current)
+                    {
+                        // Character found, don't check further
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    // Reached the end, char was not found
+                    break;
+                }
+
+                itPrefix.Reset();
+            }
+
+            return Substring(it.PositionInCodeUnits);
+        }
+
         public Utf8String TrimEnd()
         {
             CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
