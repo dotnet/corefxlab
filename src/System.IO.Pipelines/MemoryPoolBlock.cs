@@ -108,16 +108,19 @@ namespace System.IO.Pipelines
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            // TODO: should it check IsRetained?
-            if (Interlocked.Decrement(ref _referenceCount) == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount == 0)
             {
                OnZeroReferences();
+               return false;
             }
+            return true;
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
         public override bool IsDisposed => _disposed;
 
         // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so

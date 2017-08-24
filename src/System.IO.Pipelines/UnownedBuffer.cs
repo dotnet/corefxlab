@@ -65,13 +65,18 @@ namespace System.IO.Pipelines
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            // TODO: should it check IsRetained?
-            Interlocked.Decrement(ref _referenceCount);
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount == 0)
+            {
+               return false;
+            }
+            return true;
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         protected override void Dispose(bool disposing)
         {

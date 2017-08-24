@@ -93,8 +93,6 @@ namespace System.IO.Pipelines
 
         public void Dispose()
         {
-            Debug.Assert(_owned.IsRetained);
-
             _owned.Release();
         }
 

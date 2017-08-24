@@ -68,20 +68,23 @@ namespace System.Buffers.Internal
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
-            if (Interlocked.Decrement(ref _referenceCount) == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0)  BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount == 0)
             {
                 OnNoReferences();
+                return false;
             }
+            return true;
         }
 
         protected virtual void OnNoReferences()
         {
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         public override bool IsDisposed => _array == null;
     }
