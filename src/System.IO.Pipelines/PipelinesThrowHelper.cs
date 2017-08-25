@@ -155,6 +155,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.AdvanceToInvalidCursor:
                     resourceString = "Pipe is already advanced past provided cursor";
                     break;
+                case ExceptionResource.ReferenceCountZero:
+                    resourceString = "Can't release when reference count is already zero";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -196,6 +199,7 @@ namespace System.IO.Pipelines
         AdvancingPastBufferSize,
         AdvancingWithNoBuffer,
         BackpressureDeadlock,
-        AdvanceToInvalidCursor
+        AdvanceToInvalidCursor,
+        ReferenceCountZero
     }
 }

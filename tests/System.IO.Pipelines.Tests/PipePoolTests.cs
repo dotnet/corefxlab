@@ -139,7 +139,7 @@ namespace System.IO.Pipelines.Tests
                     return _array;
                 }
 
-                public override BufferHandle Pin(int index = 0)
+                public override BufferHandle Pin()
                 {
                     throw new NotImplementedException();
                 }
@@ -158,13 +158,14 @@ namespace System.IO.Pipelines.Tests
                     throw new NotImplementedException();
                 }
 
-                public override void Release()
+                public override bool Release()
                 {
                     _bufferPool.ReturnedBlocks++;
                     _bufferPool.CurrentlyRentedBlocks--;
+                    return IsRetained;
                 }
 
-                public override bool IsRetained => true;
+                protected override bool IsRetained => true;
                 public override void Retain()
                 {
                 }

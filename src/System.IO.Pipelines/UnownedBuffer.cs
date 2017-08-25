@@ -48,13 +48,13 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_buffer.Array, GCHandleType.Pinned);
-                var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), index + _buffer.Offset);
+                var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), _buffer.Offset);
                 return new BufferHandle(this, pointer, handle);
             }
         }
@@ -65,13 +65,18 @@ namespace System.IO.Pipelines
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            // TODO: should it check IsRetained?
-            Interlocked.Decrement(ref _referenceCount);
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount == 0)
+            {
+               return false;
+            }
+            return true;
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         protected override void Dispose(bool disposing)
         {

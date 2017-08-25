@@ -3,19 +3,21 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Formatters
 {
-    internal static class InvariantUtf16IntegerFormatter
+    public static partial class Utf16
     {
-        private const char Minus = '-';
-        private const char Period = '.';
+        #region Constants
+
         private const char Seperator = ',';
 
         // Invariant formatting uses groups of 3 for each number group seperated by commas.
         //   ex. 1,234,567,890
         private const int GroupSize = 3;
 
-        public static bool TryFormatDecimalInt64(long value, byte precision, Span<byte> buffer, out int bytesWritten)
+        #endregion Constants
+
+        private static bool TryFormatDecimalInt64(long value, byte precision, Span<byte> buffer, out int bytesWritten)
         {
             int digitCount = FormattingHelpers.CountDigits(value);
             int charsNeeded = digitCount + (int)((value >> 63) & 1);
@@ -60,7 +62,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatDecimalUInt64(ulong value, byte precision, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatDecimalUInt64(ulong value, byte precision, Span<byte> buffer, out int bytesWritten)
         {
             if (value <= long.MaxValue)
                 return TryFormatDecimalInt64((long)value, precision, buffer, out bytesWritten);
@@ -91,7 +93,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatNumericInt64(long value, byte precision, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatNumericInt64(long value, byte precision, Span<byte> buffer, out int bytesWritten)
         {
             int digitCount = FormattingHelpers.CountDigits(value);
             int groupSeperators = (int)FormattingHelpers.DivMod(digitCount, GroupSize, out long firstGroup);
@@ -160,7 +162,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatNumericUInt64(ulong value, byte precision, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatNumericUInt64(ulong value, byte precision, Span<byte> buffer, out int bytesWritten)
         {
             if (value <= long.MaxValue)
                 return TryFormatNumericInt64((long)value, precision, buffer, out bytesWritten);
@@ -209,7 +211,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormatHexUInt64(ulong value, byte precision, bool useLower, Span<byte> buffer, out int bytesWritten)
+        private static bool TryFormatHexUInt64(ulong value, byte precision, bool useLower, Span<byte> buffer, out int bytesWritten)
         {
             const string HexTableLower = "0123456789abcdef";
             const string HexTableUpper = "0123456789ABCDEF";

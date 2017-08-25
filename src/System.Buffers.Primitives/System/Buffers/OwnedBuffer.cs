@@ -43,7 +43,7 @@ namespace System.Buffers
             }
         }
 
-        public abstract BufferHandle Pin(int index = 0);
+        public abstract BufferHandle Pin();
 
         protected internal abstract bool TryGetArray(out ArraySegment<T> arraySegment);
 
@@ -58,11 +58,11 @@ namespace System.Buffers
 
         protected abstract void Dispose(bool disposing);
 
-        public abstract bool IsRetained { get; }
+        protected abstract bool IsRetained { get; }
 
         public abstract void Retain();
 
-        public abstract void Release();
+        public abstract bool Release();
         #endregion
 
         internal static readonly T[] EmptyArray = new T[0];

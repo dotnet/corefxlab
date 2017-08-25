@@ -147,7 +147,7 @@ namespace System
             {
                 if (_index < 0)
                 {
-                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin(_index & bitMask);
+                    bufferHandle = Unsafe.As<OwnedBuffer<T>>(_arrayOrOwnedBuffer).Pin();
                 }
                 else
                 {

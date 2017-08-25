@@ -20,7 +20,7 @@ namespace System.Text.Formatting.Tests
 
         public bool TryFormat(Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
         {
-            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, symbolTable))
+            if (!Formatters.Custom.TryFormat(_age, buffer, out bytesWritten, format, symbolTable))
                 return false;
 
             char symbol = _inMonths ? 'm' : 'y';

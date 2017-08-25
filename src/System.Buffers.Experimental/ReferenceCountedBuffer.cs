@@ -17,15 +17,19 @@ namespace System.Buffers
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            if (!IsRetained) BuffersExperimentalThrowHelper.ThrowInvalidOperationException();
-            if (Interlocked.Decrement(ref _referenceCount) <= 0) {
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0) BuffersExperimentalThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount == 0) 
+            {
                 OnNoReferences();
+                return false;
             }
+            return true;
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         protected virtual void OnNoReferences()
         {

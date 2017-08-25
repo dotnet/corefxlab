@@ -44,7 +44,7 @@ namespace System.Azure.Authentication
             bytesWritten += s_emptyHeaders.Length;
 
             free = output.Slice(bytesWritten);
-            if (!PrimitiveFormatter.TryFormat(utc, free, out written, 'R'))
+            if (!Text.Formatters.Utf8.TryFormat(utc, free, out written, 'R'))
             {
                 bytesWritten = 0;
                 return false;

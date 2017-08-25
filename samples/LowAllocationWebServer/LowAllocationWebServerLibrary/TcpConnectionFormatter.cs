@@ -95,7 +95,7 @@ namespace Microsoft.Net.Http
         }
         int WriteChunkPrefix(Span<byte> chunkPrefixBuffer, int chunkLength)
         {
-            if (!PrimitiveFormatter.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X'))
+            if (!System.Text.Formatters.Utf8.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X'))
             {
                 throw new Exception("cannot format chunk length");
             }

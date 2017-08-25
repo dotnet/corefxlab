@@ -40,14 +40,13 @@ namespace System.Buffers.Internal
             return new Span<T>(_array, 0, _array.Length);
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                var pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), index);
-                return new BufferHandle(this, pointer, handle);
+                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 
@@ -69,20 +68,23 @@ namespace System.Buffers.Internal
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override void Release()
+        public override bool Release()
         {
-            if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
-            if (Interlocked.Decrement(ref _referenceCount) == 0)
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
+            if (newRefCount < 0)  BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount == 0)
             {
                 OnNoReferences();
+                return false;
             }
+            return true;
         }
 
         protected virtual void OnNoReferences()
         {
         }
 
-        public override bool IsRetained => _referenceCount > 0;
+        protected override bool IsRetained => _referenceCount > 0;
 
         public override bool IsDisposed => _array == null;
     }

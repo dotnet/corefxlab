@@ -31,7 +31,7 @@ namespace System.Text.Encodings.Web.Utf8
                 else
                 {
                     output[written++] = (byte)'%';
-                    if(!PrimitiveFormatter.TryFormat(next, output.Slice(written), out int formatted, 'X'))
+                    if(!Formatters.Utf8.TryFormat(next, output.Slice(written), out int formatted, 'X'))
                     {
                         written = 0;
                         return false;

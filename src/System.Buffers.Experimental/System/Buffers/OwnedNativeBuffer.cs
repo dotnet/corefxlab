@@ -37,12 +37,12 @@ namespace System.Buffers
             _pointer = IntPtr.Zero;
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public override BufferHandle Pin()
         {
             Retain();
             unsafe
             {
-                return new BufferHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), index));
+                return new BufferHandle(this, _pointer.ToPointer());
             }
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)

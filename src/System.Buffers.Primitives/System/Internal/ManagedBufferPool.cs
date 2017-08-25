@@ -45,7 +45,7 @@ namespace System.Buffers.Internal
 
             public override bool IsDisposed => _disposed;
 
-            public override bool IsRetained => _referenceCount > 0;
+            protected override bool IsRetained => _referenceCount > 0;
 
             public override Span<byte> AsSpan(int index, int length)
             {
@@ -69,14 +69,13 @@ namespace System.Buffers.Internal
                 return true;
             }
 
-            public override BufferHandle Pin(int index = 0)
+            public override BufferHandle Pin()
             {
                 unsafe
                 {
                     Retain(); // this checks IsDisposed
                     var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                    var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), index);
-                    return new BufferHandle(this, pointer, handle);
+                    return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
                 }
             }
 
@@ -86,16 +85,16 @@ namespace System.Buffers.Internal
                 Interlocked.Increment(ref _referenceCount);
             }
 
-            public override void Release()
+            public override bool Release()
             {
-                var newRefCount = Interlocked.Decrement(ref _referenceCount);
-                if (newRefCount == 0) {
+                int newRefCount = Interlocked.Decrement(ref _referenceCount);
+                if (newRefCount < 0) throw new InvalidOperationException();
+                if (newRefCount == 0) 
+                {
                     Dispose();
-                    return;
+                    return false;
                 }
-                if(newRefCount < 0) {
-                    throw new InvalidOperationException();
-                }
+                return true;
             }
         }
     }
