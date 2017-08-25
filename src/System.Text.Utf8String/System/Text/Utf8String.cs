@@ -328,6 +328,71 @@ namespace System.Text.Utf8
             return StringNotFound;
         }
 
+        // TODO: Naive algorithm, reimplement faster - implemented to keep parity with IndexOf
+        public int LastIndexOf(Utf8String value)
+        {
+            if (value.Length == 0)
+            {
+                // TODO: Could be incorrect answer - same argument as IndexOf(Utf8String value)
+                return 0;
+            }
+
+            if (Length == 0)
+            {
+                return StringNotFound;
+            }
+
+            Utf8String restOfTheString = this;
+
+            for (int i = Length - 1; i >= value.Length - 1; restOfTheString = Substring(0, i--))
+            {
+                int pos = restOfTheString.LastIndexOf(value[value.Length - 1]);
+                if (pos == StringNotFound)
+                {
+                    return StringNotFound;
+                }
+
+                int substringStart = pos - (value.Length - 1);
+                if (IsSubstringAt(substringStart, value))
+                {
+                    return substringStart;
+                }
+
+            }
+
+            return StringNotFound;
+
+        }
+
+        public int LastIndexOf(byte codeUnit)
+        {
+            for (int i = Length - 1; i >= 0; i--)
+            {
+                if (codeUnit == this[i])
+                {
+                    return i;
+                }
+            }
+
+            return StringNotFound;
+        }
+
+        public int LastIndexOf(uint codePoint)
+        {
+            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            while (it.MoveNext())
+            {
+                if (it.Current == codePoint)
+                {
+                    // Move to beginning of code point
+                    it.MoveNext();
+                    return it.PositionInCodeUnits;
+                }
+            }
+
+            return StringNotFound;
+        }
+
         // TODO: Re-evaluate all Substring family methods and check their parameters name
         public bool TrySubstringFrom(Utf8String value, out Utf8String result)
         {
