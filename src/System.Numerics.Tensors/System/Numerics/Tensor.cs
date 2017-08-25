@@ -221,88 +221,18 @@ namespace System.Numerics
     }
 
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
-    public struct Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
+    public abstract class Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
-        private readonly T[] backingArray;
+        internal static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
+
         internal readonly int[] dimensions;
         internal readonly int[] strides;
+
+        private readonly long length;
         private IReadOnlyList<int> readOnlyDimensions;
 
-        private static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
-
-        public Tensor(Array fromArray) : this(fromArray, false)
-        { }
-
-        public Tensor(Array fromArray, bool columnMajor)
+        protected Tensor(int[] dimensions, bool reverseStride)
         {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            // copy initial array
-            dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            strides = ArrayUtilities.GetStrides(dimensions, columnMajor);
-
-            backingArray = new T[fromArray.Length];
-
-            int index = 0;
-            if (columnMajor)
-            {
-                // Array is always row-major
-                var sourceStrides = ArrayUtilities.GetStrides(dimensions);
-
-                foreach (var item in fromArray)
-                {
-                    var destIndex = ArrayUtilities.TransformIndexByStrides(index++, sourceStrides, strides);
-                    backingArray[destIndex] = (T)item;
-                }
-            }
-            else
-            {
-                foreach (var item in fromArray)
-                {
-                    backingArray[index++] = (T)item;
-                }
-            }
-
-            readOnlyDimensions = null;
-        }
-
-        public Tensor(int size) : this(size, false)
-        { }
-
-        /// <summary>
-        /// Initializes a rank-1 Tensor using the specified <paramref name="size"/>.
-        /// </summary>
-        /// <param name="size">Size of the tensor</param>
-        public Tensor(int size, bool columnMajor)
-        {
-            if (size < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(size));
-            }
-
-            backingArray = new T[size];
-            dimensions = new[] { size };
-            strides = ArrayUtilities.GetStrides(dimensions, columnMajor);
-            readOnlyDimensions = null;
-        }
-
-        public Tensor(params int[] dimensions) : this(false, dimensions)
-        { }
-
-        /// <summary>
-        /// Initializes a rank-n Tensor using the dimensions specified in <paramref name="dimensions"/>.
-        /// </summary>
-        /// <param name="dimensions"></param>
-        public Tensor(bool columnMajor, params int[] dimensions)
-    {
             if (dimensions == null)
             {
                 throw new ArgumentNullException(nameof(dimensions));
@@ -313,49 +243,6 @@ namespace System.Numerics
                 throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
             }
 
-            // make a private copy of mutable dimensions array
-            this.dimensions = new int[dimensions.Length];
-            long size = 1;
-            for(int i = 0; i < dimensions.Length; i++)
-            {
-                if (dimensions[i] < 1)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
-                }
-                this.dimensions[i] = dimensions[i];
-                size *= dimensions[i];
-            }
-            strides = ArrayUtilities.GetStrides(this.dimensions, columnMajor);
-            readOnlyDimensions = null;
-
-            // could throw, let the runtime decide what that limit is
-            backingArray = new T[size];
-        }
-
-        public Tensor(T[] fromBackingArray, params int[] dimensions) : this(fromBackingArray, false, dimensions)
-        { }
-
-        public Tensor(T[] fromBackingArray, bool columnMajor, params int[] dimensions)
-        {
-            if (fromBackingArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromBackingArray));
-            }
-
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
-
-            if (dimensions.Length == 0)
-            {
-                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
-            }
-
-            // keep a reference to the backing array
-            backingArray = fromBackingArray;
-
-            // make a private copy of mutable dimensions array
             this.dimensions = new int[dimensions.Length];
             long size = 1;
             for (int i = 0; i < dimensions.Length; i++)
@@ -368,28 +255,23 @@ namespace System.Numerics
                 size *= dimensions[i];
             }
 
-            if (size != fromBackingArray.Length)
-            {
-                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({size}).");
-            }
+            strides = ArrayUtilities.GetStrides(dimensions, reverseStride);
 
-            strides = ArrayUtilities.GetStrides(this.dimensions, columnMajor);
+            length = size;
             readOnlyDimensions = null;
         }
 
         /// <summary>
         /// Total length of the Tensor.
         /// </summary>
-        public int Length => backingArray?.Length ?? 0;
-
-        public bool IsColumnMajor => (strides != null && strides.Length > 0) ? strides[0] == 1 : false;
-
-        public bool IsRowMajor => (strides != null && strides.Length > 0) ? strides[strides.Length - 1] == 1 : false;
+        public long Length => length;
 
         /// <summary>
         /// Rank of the tensor: number of dimensions.
         /// </summary>
-        public int Rank => dimensions?.Length ?? 0;
+        public int Rank => dimensions.Length;
+
+        public bool IsReversedStride => strides.Length > 0 && strides[0] == 1;
 
         /// <summary>
         /// Returns a copy of the dimensions array.
@@ -398,73 +280,52 @@ namespace System.Numerics
         {
             get
             {
-                if (dimensions == null)
-                {
-                    // make sure we don't mutate a default(Tensor<T>) object by accessing this property
-                    return ArrayUtilities.Empty<int>();
-                }
-
                 return readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
             }
         }
 
         /// <summary>
-        /// Returns a single dimensional view of this Tensor, in C-style ordering
-        /// </summary>
-        public T[] Buffer => backingArray ?? ArrayUtilities.Empty<T>();
-
-        /// <summary>
         /// Sets all elements in Tensor to <paramref name="value"/>.
         /// </summary>
         /// <param name="value">Value to fill</param>
-        public void Fill(T value)
+        public virtual void Fill(T value)
         {
-            if (backingArray != null)
+            Span<int> indices = new Span<int>(new int[Rank]);
+            
+            for (int i = 0; i < Length; i++)
             {
-                // JIT look here, lend us a hand
-                for (int i = 0; i < backingArray.Length; i++)
-                {
-                    // is it possible to fast-path when initialValue == default(T)?
-                    backingArray[i] = value;
-                }
+                ArrayUtilities.GetIndices(strides, i, indices);
+
+                this[indices] = value;
             }
         }
 
-        public Tensor<T> Clone()
-        {
-            if (dimensions == null)
-            {
-                return default(Tensor<T>);
-            }
-            return new Tensor<T>((T[])Buffer.Clone(), IsColumnMajor, dimensions);
-        }
+        public abstract Tensor<T> Clone();
 
         /// <summary>
         /// Creates a new Tensor with the same size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
-        public Tensor<T> CloneEmpty()
+        public virtual Tensor<T> CloneEmpty()
         {
-            if (dimensions == null)
-            {
-                return default(Tensor<T>);
-            }
-            return new Tensor<T>(IsColumnMajor, dimensions);
+            return CloneEmpty<T>(dimensions);
         }
 
 
+        public virtual Tensor<T> CloneEmpty(int[] dimensions)
+        {
+            return CloneEmpty<T>(dimensions);
+        }
         /// <summary>
         /// Creates a new Tensor of a different type with the same size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
-        public Tensor<TResult> CloneEmpty<TResult>()
+        public virtual Tensor<TResult> CloneEmpty<TResult>()
         {
-            if (dimensions == null)
-            {
-                return default(Tensor<TResult>);
-            }
-            return new Tensor<TResult>(IsColumnMajor, dimensions);
+            return CloneEmpty<TResult>(dimensions);
         }
+
+        public abstract Tensor<TResult> CloneEmpty<TResult>(int[] dimensions);
 
         /// <summary>
         /// Creates an identity tensor
@@ -489,7 +350,7 @@ namespace System.Numerics
         /// <returns></returns>
         public static Tensor<T> CreateIdentity(int size, bool columMajor, T oneValue)
         {
-            var result = new Tensor<T>(columMajor, size, size);
+            var result = new DenseTensor<T>(new[] { size, size }, columMajor);
 
             for(int i = 0; i < size; i++)
             {
@@ -525,10 +386,12 @@ namespace System.Numerics
                 dimensions[i + 1] = diagonal.dimensions[i];
             }
 
-            var result = new Tensor<T>(dimensions);
+            var result = new DenseTensor<T>(dimensions:dimensions);
 
             // each element in the diagonal's 0 dimension is strides[0] appart
             var sizePerDiagonal = diagonal.strides[0];
+
+            var diagIndices = new Span<int>(new int[diagonal.Rank]);
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
@@ -536,12 +399,13 @@ namespace System.Numerics
                 var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
 
                 var destBuffIndex = destIndex0 * result.strides[0] + destIndex1 * result.strides[1];
-                var diagBuffIndex = diagIndex * diagonal.strides[0];
+                diagIndices[0] = diagIndex;
 
                 for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
                     // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
-                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal.Buffer[diagBuffIndex + diagProjectionOffset];
+                    ArrayUtilities.GetIndices(diagonal.strides, diagProjectionOffset, diagIndices, 1);
+                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal[diagIndices];
                 }
             }
 
@@ -605,35 +469,33 @@ namespace System.Numerics
                 newTensorDimensions[i - 1] = dimensions[i];
             }
 
-            var diagonalTensor = new Tensor<T>(IsColumnMajor, dimensions: newTensorDimensions);
+            var diagonalTensor = CloneEmpty(newTensorDimensions);
             var sizePerDiagonal = diagonalTensor.Length / diagonalTensor.Dimensions[0];
 
             // diagonal projection will be iterated in row-major order.
             var diagProjectionSourceStrides = ArrayUtilities.GetStrides(dimensions);
             var diagProjectionDiagStrides = ArrayUtilities.GetStrides(newTensorDimensions);
 
+            //var sourceIndices = new Span<int>(new int[Rank]);
+            //var diagIndices = new Span<int>(new int[diagonalTensor.Rank]);
+
+            var sourceIndices = new int[Rank];
+            var diagIndices = new int[diagonalTensor.Rank];
+
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
-                var sourceIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
-                var sourceIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
+                sourceIndices[0] = offset < 0 ? diagIndex - offset : diagIndex;
+                sourceIndices[1] = offset > 0 ? diagIndex + offset : diagIndex;
 
-                var sourceBuffIndex = sourceIndex0 * strides[0] + sourceIndex1 * strides[1];
-                var diagBuffIndex = diagIndex * diagonalTensor.strides[0];
+                diagIndices[0] = diagIndex;
 
                 for(int diagProjectionIndex = 0; diagProjectionIndex < sizePerDiagonal; diagProjectionIndex++)
                 {
-                    // for row-major the source and diagonal have the same strides for remaining dimensions
-                    var diagOffset = diagProjectionIndex;
-                    var sourceOffset = diagProjectionIndex;
+                    ArrayUtilities.GetIndices(diagProjectionSourceStrides, diagProjectionIndex, sourceIndices, 2);
+                    ArrayUtilities.GetIndices(diagProjectionDiagStrides, diagProjectionIndex, diagIndices, 1);
 
-                    if (IsColumnMajor)
-                    {
-                        // column major will have different strides, we'll need to transform from a continuous index to the appropriate strides for each
-                        diagOffset = ArrayUtilities.TransformIndexByStrides(diagProjectionIndex, diagProjectionDiagStrides, diagonalTensor.strides);
-                        sourceOffset = ArrayUtilities.TransformIndexByStrides(diagProjectionIndex, diagProjectionSourceStrides, strides);
-                    }
 
-                    diagonalTensor.Buffer[diagBuffIndex + diagOffset] = Buffer[sourceBuffIndex + sourceOffset];
+                    diagonalTensor[diagIndices] = this[sourceIndices];
                 }
             }
 
@@ -682,6 +544,8 @@ namespace System.Numerics
             // diagonal projection will be iterated in row-major order.
             var projectionStrides = ArrayUtilities.GetStrides(dimensions);
 
+            var indices = new Span<int>(new int[Rank]);
+
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
                 // starting point for the tri
@@ -721,20 +585,14 @@ namespace System.Numerics
 
                 while ((triIndex1 < axisLength1) && (triIndex0 < axisLength0))
                 {
-                    var buffIndex = triIndex0 * strides[0] + triIndex1 * strides[1];
+                    indices[0] = triIndex0;
+                    indices[1] = triIndex1;
 
                     for (int projectionIndex = 0; projectionIndex < projectionSize; projectionIndex++)
                     {
-                        // for row-major the source and diagonal have the same strides for remaining dimensions
-                        var projectionOffset = projectionIndex;
+                        ArrayUtilities.GetIndices(projectionStrides, projectionIndex, indices, 2);
 
-                        if (IsColumnMajor)
-                        {
-                            // column major will have different strides, we'll need to transform from a continuous index to the appropriate strides
-                            projectionOffset = ArrayUtilities.TransformIndexByStrides(projectionOffset, projectionStrides, strides);
-                        }
-
-                        result.Buffer[buffIndex + projectionOffset] = Buffer[buffIndex + projectionOffset];
+                        result[indices] = this[indices];
                     }
 
                     if (upper)
@@ -773,149 +631,26 @@ namespace System.Numerics
             return Tensor.Contract(this, right, s_oneArray, s_zeroArray);
         }
 
-        public Tensor<T> Reshape(params int[] dimensions)
-        {
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
-
-            if (dimensions.Length == 0)
-            {
-                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
-            }
-
-            var newSize = ArrayUtilities.GetProduct(dimensions);
-
-            if (newSize != Length)
-            {
-                throw new ArgumentException($"Cannot reshape array due to mismatch in lengths, currently {Length} would become {newSize}.", nameof(dimensions));
-            }
-
-            return new Tensor<T>(Buffer, IsColumnMajor, dimensions);
-        }
-
-        public Tensor<T> ReshapeCopy(params int[] dimensions)
-        {
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
-
-            if (dimensions.Length == 0)
-            {
-                throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
-            }
-
-            var newSize = (int)ArrayUtilities.GetProduct(dimensions);
-
-            T[] copyBackingArray = new T[newSize];
-            var copyLength = Math.Min(newSize, Length);
-
-            if (copyLength != 0)
-            {
-                Array.Copy(Buffer, copyBackingArray, copyLength);
-            }
-
-            return new Tensor<T>(copyBackingArray, IsColumnMajor, dimensions);
-        }
-
-        public T this[int index]
-        {
-            get
-            {
-                if (Rank != 1)
-                {
-                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
-                }
-
-                if (index < 0 || index > Length)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index));
-                }
-
-                return Buffer[index];
-            }
-            set
-            {
-                if (Rank != 1)
-                {
-                    throw new ArgumentOutOfRangeException($"Cannot use single dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
-                }
-
-                if (index < 0 || index > Length)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index));
-                }
-
-                Buffer[index] = value;
-            }
-        }
-
-        public T this[int indexRow, int indexColumn]
-        {
-            get
-            {
-                var index = GetOffset(indexRow, indexColumn);
-                return Buffer[index];
-            }
-            set
-            {
-
-                var index = GetOffset(indexRow, indexColumn);
-                Buffer[index] = value;
-            }
-        }
+        public abstract Tensor<T> Reshape(params int[] dimensions);
         
-        public T this[params int[] indices]
+        public virtual T this[params int[] indices]
         {
             get
             {
-                var index = GetOffsetFromIndices(indices);
-                return Buffer[index];
+                var span = new Span<int>(indices);
+                return this[span];
             }
 
             set
             {
-                var index = GetOffsetFromIndices(indices);
-                Buffer[index] = value;
+                var span = new Span<int>(indices);
+                this[span] = value;
             }
         }
 
-        private int GetOffset(int index0, int index1)
-        {
-            if (Rank != 2)
-            {
-                throw new ArgumentOutOfRangeException($"Cannot use 2 dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
-            }
+        public abstract T this[Span<int> indices] { get; set; }
 
-            if (index0 < 0 || index0 >= dimensions[0])
-            {
-                throw new ArgumentOutOfRangeException(nameof(index0));
-            }
 
-            if (index1 < 0 || index1 >= dimensions[1])
-            {
-                throw new ArgumentOutOfRangeException(nameof(index1));
-            }
-
-            return index0 * strides[0] + index1 * strides[1];
-        }
-        
-        private int GetOffsetFromIndices(int[] indices)
-        {
-            if (indices == null)
-            {
-                throw new ArgumentNullException(nameof(indices));
-            }
-
-            if (indices.Length != dimensions?.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(indices));
-            }
-
-            return ArrayUtilities.GetIndex(strides, indices);
-        }
         #region statics
 
         public static int Compare(Tensor<T> left, Tensor<T> right)
@@ -1043,12 +778,23 @@ namespace System.Numerics
         #region IEnumerable members
         public IEnumerator GetEnumerator()
         {
-            return Buffer.GetEnumerator();
+            return Enumerate().GetEnumerator();
+        }
+
+        private IEnumerable<T> Enumerate()
+        {
+            var indices = new int[Rank];
+            for(int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, i, indices);
+                yield return this[indices];
+            }
+
         }
         #endregion
 
         #region ICollection members
-        int ICollection.Count => Buffer.Length;
+        int ICollection.Count => (int)Length;
 
         bool ICollection.IsSynchronized => false;
 
@@ -1056,7 +802,20 @@ namespace System.Numerics
 
         public void CopyTo(Array array, int index)
         {
-            Buffer.CopyTo(array, index);
+            // todo: fastpath
+            int[] destIndices = new int[array.Rank];
+            var destStrides = ArrayUtilities.GetStrides(array);
+
+            var sourceIndices = new Span<int>(new int[Rank]);
+
+            for(int i = index; i < length; i++)
+            {
+                ArrayUtilities.GetIndices(destStrides, index, destIndices);
+                ArrayUtilities.GetIndices(strides, index, sourceIndices);
+
+                array.SetValue(this[sourceIndices], destIndices);
+            }
+
         }
         #endregion
 
@@ -1065,13 +824,17 @@ namespace System.Numerics
         {
             get
             {
-                return this[index];
+                var indices = new Span<int>(new int[Rank]);
+                ArrayUtilities.GetIndices(strides, index, indices);
+                return this[indices];
             }
             set
             {
                 try
                 {
-                    this[index] = (T)value;
+                    var indices = new Span<int>(new int[Rank]);
+                    ArrayUtilities.GetIndices(strides, index, indices);
+                    this[indices] = (T)value;
                 }
                 catch (InvalidCastException)
                 {
@@ -1086,41 +849,61 @@ namespace System.Numerics
 
         int IList.Add(object value)
         {
-            // will throw
-            return ((IList)Buffer).Add(value);
+            throw new InvalidOperationException();
         }
 
         void IList.Clear()
         {
-            ((IList)Buffer).Clear();
+            Fill(default);
         }
 
         bool IList.Contains(object value)
         {
-            return ((IList)Buffer).Contains(value);
+            Span<int> indices = new Span<int>(new int[Rank]);
+
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, i, indices);
+
+                if (this[indices].Equals(value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         int IList.IndexOf(object value)
         {
-            return ((IList)Buffer).IndexOf(value);
+            Span<int> indices = new Span<int>(new int[Rank]);
+
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, i, indices);
+
+                if (this[indices].Equals(value))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         void IList.Insert(int index, object value)
         {
-            // will throw
-            ((IList)Buffer).Insert(index, value);
+            throw new InvalidOperationException();
         }
 
         void IList.Remove(object value)
         {
-            // will throw
-            ((IList)Buffer).Remove(value);
+            throw new InvalidOperationException();
         }
 
         void IList.RemoveAt(int index)
         {
-            // will throw
-            ((IList)Buffer).RemoveAt(index);
+            throw new InvalidOperationException();
         }
         #endregion
 
@@ -1163,17 +946,13 @@ namespace System.Numerics
             }
 
             int result = 0;
-            // for tensors we can just rip through the backing array
-            for (int i = 0; i < backingArray.Length; i++)
+            var indices = new Span<int>(new int[Rank]);
+
+            for (int i = 0; i < Length; i++)
             {
-                var otherIndex = i;
+                ArrayUtilities.GetIndices(strides, i, indices);
 
-                if (strides[0] != other.strides[0])
-                {
-                    otherIndex = ArrayUtilities.TransformIndexByStrides(i, strides, other.strides);
-                }
-
-                result = comparer.Compare(backingArray[i], other.backingArray[otherIndex]);
+                result = comparer.Compare(this[indices], other[indices]);
 
                 if (result != 0)
                 {
@@ -1201,14 +980,12 @@ namespace System.Numerics
             }
 
             int result = 0;
-            var indices = new int[Rank];  // consider stackalloc
-            for (int i = 0; i < backingArray.Length; i++)
+            var indices = new int[Rank];
+            for (int i = 0; i < Length; i++)
             {
-                var left = backingArray[i];
                 ArrayUtilities.GetIndices(strides, i, indices);
-                var right = other.GetValue(indices);
 
-                result = comparer.Compare(left, right);
+                result = comparer.Compare(this[indices], other.GetValue(indices));
 
                 if (result != 0)
                 {
@@ -1258,17 +1035,13 @@ namespace System.Numerics
                 }
             }
 
-            // for tensors we can just rip through the backing array
-            for (int i = 0; i < backingArray.Length; i++)
+            var indices = new Span<int>(new int[Rank]);
+
+            for (int i = 0; i < Length; i++)
             {
-                var otherIndex = i;
+                ArrayUtilities.GetIndices(strides, i, indices);
 
-                if (strides[0] != other.strides[0])
-                {
-                    otherIndex = ArrayUtilities.TransformIndexByStrides(i, strides, other.strides);
-                }
-
-                if (!comparer.Equals(backingArray[i], other.backingArray[otherIndex]))
+                if (!comparer.Equals(this[indices], other[indices]))
                 {
                     return false;
                 }
@@ -1294,13 +1067,11 @@ namespace System.Numerics
             }
             
             var indices = new int[Rank];  // consider stackalloc
-            for (int i = 0; i < backingArray.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
-                var left = backingArray[i];
                 ArrayUtilities.GetIndices(strides, i, indices);
-                var right = other.GetValue(indices);
 
-                if (!comparer.Equals(left, right))
+                if (!comparer.Equals(this[indices], other.GetValue(indices)))
                 {
                     return false;
                 }
@@ -1310,9 +1081,17 @@ namespace System.Numerics
         }
         int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)
         {
+            int hashCode = 0;
             // this ignores shape, which is fine  it just means we'll have hash collisions for things 
             // with the same content and different shape.
-            return ((IStructuralEquatable)backingArray).GetHashCode(comparer);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, i, indices);
+                hashCode ^= comparer.GetHashCode(this[indices]);
+            }
+
+            return hashCode;
         }
         #endregion
 
