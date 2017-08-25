@@ -10,27 +10,36 @@ namespace tests
 {
     public class TensorTests
     {
-        [Fact]
-        public void ConstructTensorFromArrayRank1()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConstructTensorFromArrayRank1(bool columnMajor)
         {
             // use array to avoid calling params int[] overload
             Array array = new[] { 0, 1, 2 };
-            var tensor = new Tensor<int>(array);
+            var tensor = new Tensor<int>(array, columnMajor);
 
+            // single dimensional tensors are always row and column major
+            Assert.Equal(true, tensor.IsColumnMajor);
+            Assert.Equal(true, tensor.IsRowMajor);
             Assert.Equal(0, tensor[0]);
             Assert.Equal(1, tensor[1]);
             Assert.Equal(2, tensor[2]);
         }
 
-        [Fact]
-        public void ConstructTensorFromArrayRank2()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConstructTensorFromArrayRank2(bool columnMajor)
         {
             var tensor = new Tensor<int>(new[,]
             {
                 {0, 1, 2},
                 {3, 4, 5}
-            });
+            }, columnMajor);
 
+            Assert.Equal(columnMajor, tensor.IsColumnMajor);
+            Assert.Equal(!columnMajor, tensor.IsRowMajor);
             Assert.Equal(0, tensor[0, 0]);
             Assert.Equal(1, tensor[0, 1]);
             Assert.Equal(2, tensor[0, 2]);
@@ -50,6 +59,8 @@ namespace tests
             Assert.False(defaultTensor.IsReadOnly);
             Assert.Equal(0, defaultTensor.Length);
             Assert.Equal(0, defaultTensor.Rank);
+            Assert.False(defaultTensor.IsColumnMajor);
+            Assert.False(defaultTensor.IsRowMajor);
 
             // don't throw
             var clone = defaultTensor.Clone();
@@ -101,8 +112,10 @@ namespace tests
             Assert.Throws<ArgumentException>("tensor", () => defaultTensor << 1);
         }
 
-        [Fact]
-        public void ConstructTensorFromArrayRank3()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConstructTensorFromArrayRank3(bool columnMajor)
         {
             var arr = new[, ,]
             {
@@ -123,7 +136,10 @@ namespace tests
                     {21, 22 ,23 },
                 }
             };
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
+
+            Assert.Equal(columnMajor, tensor.IsColumnMajor);
+            Assert.Equal(!columnMajor, tensor.IsRowMajor);
 
             Assert.Equal(0, tensor[0, 0, 0]);
             Assert.Equal(1, tensor[0, 0, 1]);
@@ -152,13 +168,14 @@ namespace tests
             Assert.Equal(21, tensor[3, 1, 0]);
             Assert.Equal(22, tensor[3, 1, 1]);
             Assert.Equal(23, tensor[3, 1, 2]);
-
         }
 
-        [Fact]
-        public void ConstructFromDimensions()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConstructFromDimensions(bool columnMajor)
         {
-            var tensor = new Tensor<int>(1, 2, 3);
+            var tensor = new Tensor<int>(columnMajor, 1, 2, 3);
             Assert.Equal(3, tensor.Rank);
             Assert.Equal(3, tensor.Dimensions.Count);
             Assert.Equal(1, tensor.Dimensions[0]);
@@ -181,17 +198,52 @@ namespace tests
             Assert.Equal(3, tensor.Dimensions[2]);
         }
 
-        [Fact]
-        public void ConstructTensorFromArrayRank3WithLowerBounds()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ConstructTensorFromArrayRank3WithLowerBounds(bool columnMajor)
         {
-            var arrayWithLowerBounds = Array.CreateInstance(typeof(int), new[] { 2, 3, 4 }, new[] { 0, 5, 200 });
+            var dimensions = new[] { 2, 3, 4 };
+            var lowerBounds = new[] { 0, 5, 200 };
+            var arrayWithLowerBounds = Array.CreateInstance(typeof(int), dimensions, lowerBounds);
 
+            int value = 0;
+            for(int x = lowerBounds[0]; x < lowerBounds[0] + dimensions[0]; x++)
+            {
+                for (int y = lowerBounds[1]; y < lowerBounds[1] + dimensions[1]; y++)
+                {
+                    for (int z = lowerBounds[2]; z < lowerBounds[2] + dimensions[2]; z++)
+                    {
+                        arrayWithLowerBounds.SetValue(value++, x, y, z);
+                    }
+                }
+            }
 
-            
+            var tensor = new Tensor<int>(arrayWithLowerBounds, columnMajor);
+
+            var expected = new Tensor<int>(new[,,]
+                    {
+                        {
+                            { 0, 1, 2, 3 },
+                            { 4, 5, 6, 7 },
+                            { 8, 9, 10, 11 }
+                        },
+                        {
+                            { 12, 13, 14, 15 },
+                            { 16, 17, 18, 19 },
+                            { 20, 21, 22, 23 }
+                        }
+                    }
+                );
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(expected, tensor));
+            Assert.Equal(columnMajor, tensor.IsColumnMajor);
         }
 
-        [Fact]
-        public void StructurallyEqualTensor()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void StructurallyEqualTensor(bool columnMajor, bool columnMajor2)
         {
             var arr = new[, ,]
             {
@@ -212,19 +264,24 @@ namespace tests
                     {21, 22 ,23 },
                 }
             };
-            var tensor = new Tensor<int>(arr);
-            var tensor2 = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
+            var tensor2 = new Tensor<int>(arr, columnMajor2);
 
             Assert.Equal(0, StructuralComparisons.StructuralComparer.Compare(tensor, tensor2));
             Assert.Equal(0, StructuralComparisons.StructuralComparer.Compare(tensor2, tensor));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, tensor2));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor2, tensor));
-            Assert.Equal(StructuralComparisons.StructuralEqualityComparer.GetHashCode(tensor), StructuralComparisons.StructuralEqualityComparer.GetHashCode(tensor2));
+            // Issue: should Tensors with different layout be structurally equal?
+            if (columnMajor == columnMajor2)
+            {
+                Assert.Equal(StructuralComparisons.StructuralEqualityComparer.GetHashCode(tensor), StructuralComparisons.StructuralEqualityComparer.GetHashCode(tensor2));
+            }
         }
 
-
-        [Fact]
-        public void StructurallyEqualArray()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StructurallyEqualArray(bool columnMajor)
         {
             var arr = new[, ,]
             {
@@ -245,15 +302,17 @@ namespace tests
                     {21, 22 ,23 },
                 }
             };
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
 
             Assert.Equal(0, StructuralComparisons.StructuralComparer.Compare(tensor, arr));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, arr));
 
         }
 
-        [Fact]
-        public void GetDiagonalSquare()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetDiagonalSquare(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -262,7 +321,7 @@ namespace tests
                { 1, 7, 5 },
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var diag = tensor.GetDiagonal();
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1, 3, 5 }));
             diag = tensor.GetDiagonal(1);
@@ -278,8 +337,10 @@ namespace tests
             Assert.Throws<ArgumentException>("offset", () => tensor.GetDiagonal(-3));
         }
 
-        [Fact]
-        public void GetDiagonalRectangle()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetDiagonalRectangle(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -288,7 +349,7 @@ namespace tests
                { 1, 7, 5, 2, 9 }
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var diag = tensor.GetDiagonal();
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, new[] { 1, 3, 5 }));
             diag = tensor.GetDiagonal(1);
@@ -311,8 +372,10 @@ namespace tests
         }
 
 
-        [Fact]
-        public void GetDiagonalCube()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetDiagonalCube(bool columnMajor)
         {
             var arr = new[, ,]
             {
@@ -334,7 +397,7 @@ namespace tests
 
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var diag = tensor.GetDiagonal();
             var expected = new[,]
             {
@@ -343,10 +406,13 @@ namespace tests
                 { 4, 9, 4 }
             };
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, expected));
+            Assert.Equal(columnMajor, diag.IsColumnMajor);
         }
 
-        [Fact]
-        public void GetTriangleSquare()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetTriangleSquare(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -355,8 +421,9 @@ namespace tests
                { 1, 7, 5 },
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetTriangle(0);
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
 
             var expected = new Tensor<int>(new[,]
             {
@@ -422,8 +489,10 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
         }
 
-        [Fact]
-        public void GetTriangleRectangle()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetTriangleRectangle(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -432,7 +501,7 @@ namespace tests
                { 1, 7, 5, 2, 9 }
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetTriangle(0);
             var expected = new Tensor<int>(new[,]
             {
@@ -441,6 +510,8 @@ namespace tests
                { 1, 7, 5, 0, 0 }
             });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
+
             tri = tensor.GetTriangle(1);
             expected = new Tensor<int>(new[,]
             {
@@ -516,8 +587,10 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
         }
 
-        [Fact]
-        public void GetTriangleCube()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetTriangleCube(bool columnMajor)
         {
             var arr = new[, ,]
             {
@@ -539,7 +612,7 @@ namespace tests
 
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetTriangle(0);
             var expected = new Tensor<int>(new[,,]
             {
@@ -561,10 +634,13 @@ namespace tests
 
             });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
         }
 
-        [Fact]
-        public void GetUpperTriangleSquare()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetUpperTriangleSquare(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -573,7 +649,7 @@ namespace tests
                { 1, 7, 5 },
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetUpperTriangle(0);
 
            var expected = new Tensor<int>(new[,]
@@ -583,6 +659,8 @@ namespace tests
                { 0, 0, 5 },
             });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
+
             tri = tensor.GetUpperTriangle(1);
             expected = new Tensor<int>(new[,]
             {
@@ -636,9 +714,11 @@ namespace tests
             tri = tensor.GetUpperTriangle(-300);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
         }
-        
-        [Fact]
-        public void GetUpperTriangleRectangle()
+
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetUpperTriangleRectangle(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -647,7 +727,7 @@ namespace tests
                { 1, 7, 5, 2, 9 }
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetUpperTriangle(0);
             var expected = new Tensor<int>(new[,]
             {
@@ -656,6 +736,7 @@ namespace tests
                { 0, 0, 5, 2, 9 }
             });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
             tri = tensor.GetUpperTriangle(1);
             expected = new Tensor<int>(new[,]
             {
@@ -728,9 +809,11 @@ namespace tests
             tri = tensor.GetUpperTriangle(-100);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
         }
-        
-        [Fact]
-        public void GetUpperTriangleCube()
+
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void GetUpperTriangleCube(bool columnMajor)
         {
             var arr = new[, ,]
             {
@@ -752,7 +835,7 @@ namespace tests
 
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var tri = tensor.GetUpperTriangle(0);
             var expected = new Tensor<int>(new[, ,]
             {
@@ -774,10 +857,13 @@ namespace tests
 
             });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tri, expected));
+            Assert.Equal(columnMajor, tri.IsColumnMajor);
         }
 
-        [Fact]
-        public void Reshape()
+        [Theory()]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Reshape(bool columnMajor)
         {
             var arr = new[,]
             {
@@ -785,16 +871,24 @@ namespace tests
                 { 4, 5, 6 }
             };
 
-            var tensor = new Tensor<int>(arr);
+            var tensor = new Tensor<int>(arr, columnMajor);
             var actual = tensor.Reshape(3, 2);
 
-            var expected = new[,]
-            {
-                { 1, 2 },
-                { 3, 4 },
-                { 5, 6 }
-            };
+            var expected = columnMajor ?
+                new[,]
+                {
+                    { 1, 5 },
+                    { 4, 3 },
+                    { 2, 6 }
+                } :
+                new[,]
+                {
+                    { 1, 2 },
+                    { 3, 4 },
+                    { 5, 6 }
+                };
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
         [Fact]
@@ -881,21 +975,25 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
-        [Fact]
-        public void Add()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Add(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
             var right = new Tensor<int>(
                 new[,]
                 {
                     { 6, 7 ,8 },
                     { 9, 10 ,11 },
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -906,18 +1004,21 @@ namespace tests
 
             var actual = left + right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
 
         }
 
-        [Fact]
-        public void AddScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AddScalar(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -928,41 +1029,50 @@ namespace tests
 
             var actual = tensor + 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
 
         }
 
-        [Fact]
-        public void UnaryPlus()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void UnaryPlus(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = tensor;
 
             var actual = +tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(false, ReferenceEquals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
 
-        [Fact]
-        public void Subtract()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Subtract(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
             var right = new Tensor<int>(
                 new[,]
                 {
                     { 6, 7 ,8 },
                     { 9, 10 ,11 },
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -973,18 +1083,20 @@ namespace tests
 
             var actual = left - right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
-
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void SubtractScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void SubtractScalar(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -995,17 +1107,20 @@ namespace tests
 
             var actual = tensor - 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void UnaryMinus()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void UnaryMinus(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1016,17 +1131,21 @@ namespace tests
 
             var actual = -tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(false, ReferenceEquals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void PrefixIncrement()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PrefixIncrement(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expectedResult = new Tensor<int>(
                 new[,]
@@ -1040,18 +1159,22 @@ namespace tests
             var actual = ++tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+            Assert.Equal(false, ReferenceEquals(tensor, actual));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
 
-        [Fact]
-        public void PostfixIncrement()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PostfixIncrement(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             // returns original value
             var expectedResult = new Tensor<int>(
@@ -1072,18 +1195,22 @@ namespace tests
             var actual = tensor++;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+            Assert.Equal(false, ReferenceEquals(tensor, actual));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
 
-        [Fact]
-        public void PrefixDecrement()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PrefixDecrement(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expectedResult = new Tensor<int>(
                 new[,]
@@ -1097,17 +1224,21 @@ namespace tests
             var actual = --tensor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+            Assert.Equal(false, ReferenceEquals(tensor, actual));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void PostfixDecrement()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PostfixDecrement(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             // returns original value
             var expectedResult = new Tensor<int>(
@@ -1128,17 +1259,29 @@ namespace tests
             var actual = tensor--;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expectedResult));
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(tensor, expectedTensor));
+            Assert.Equal(false, ReferenceEquals(tensor, actual));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void Multiply()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Multiply(bool leftColumnMajor, bool rightColumnMajor)
         {
-            var tensor = new Tensor<int>(
+            var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
+            var right = new Tensor<int>(
+                new[,]
+                {
+                    {0, 1, 2},
+                    {3, 4, 5}
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1147,19 +1290,22 @@ namespace tests
                     {9, 16, 25}
                 });
 
-            var actual = tensor * tensor;
+            var actual = left * right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void MultiplyScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void MultiplyScalar(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1170,24 +1316,29 @@ namespace tests
 
             var actual = tensor * 2;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void Divide()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Divide(bool dividendColumnMajor, bool divisorColumnMajor)
         {
             var dividend = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 4},
                     {9, 16, 25}
-                });
+                }, dividendColumnMajor);
 
             var divisor = new Tensor<int>(
                 new[,]
                 {
                     {1, 1, 2},
                     {3, 4, 5}
-                });
+                }, divisorColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1198,17 +1349,20 @@ namespace tests
 
             var actual = dividend / divisor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(dividendColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void DivideScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void DivideScalar(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 2, 4},
                     {6, 8, 10}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1219,24 +1373,29 @@ namespace tests
 
             var actual = tensor / 2;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void Modulo()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Modulo(bool dividendColumnMajor, bool divisorColumnMajor)
         {
             var dividend = new Tensor<int>(
                 new[,]
                 {
                     {0, 3, 8},
                     {11, 14, 17}
-                });
+                }, dividendColumnMajor);
 
             var divisor = new Tensor<int>(
                 new[,]
                 {
                     {1, 2, 3},
                     {4, 5, 6}
-                });
+                }, divisorColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1247,17 +1406,20 @@ namespace tests
 
             var actual = dividend % divisor;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(dividendColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void ModuloScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ModuloScalar(bool columnMajor)
         {
             var tensor = new Tensor<int>(
                 new[,]
                 {
                     {0, 3, 4},
                     {7, 8, 9}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1268,24 +1430,29 @@ namespace tests
 
             var actual = tensor % 2;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void And()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void And(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 3},
                     {7, 15, 31}
-                });
+                }, leftColumnMajor);
 
             var right = new Tensor<int>(
                 new[,]
                 {
                     {1, 1, 3},
                     {2, 4, 8}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1296,17 +1463,20 @@ namespace tests
 
             var actual = left & right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void AndScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AndScalar(bool columnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 3},
                     {5, 15, 31}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1317,24 +1487,29 @@ namespace tests
 
             var actual = left & 20;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void Or()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Or(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 3},
                     {7, 14, 31}
-                });
+                }, leftColumnMajor);
 
             var right = new Tensor<int>(
                 new[,]
                 {
                     {1, 2, 4},
                     {2, 4, 8}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1345,17 +1520,20 @@ namespace tests
 
             var actual = left | right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void OrScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void OrScalar(bool columMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1366,24 +1544,29 @@ namespace tests
 
             var actual = left | 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void Xor()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void Xor(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 3},
                     {7, 14, 31}
-                });
+                }, leftColumnMajor);
 
             var right = new Tensor<int>(
                 new[,]
                 {
                     {1, 2, 4},
                     {2, 4, 8}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1394,17 +1577,20 @@ namespace tests
 
             var actual = left ^ right;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void XorScalar()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void XorScalar(bool columnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1415,17 +1601,20 @@ namespace tests
 
             var actual = left ^ 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
-        
-        [Fact]
-        public void LeftShift()
+
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void LeftShift(bool columnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1436,17 +1625,20 @@ namespace tests
 
             var actual = left << 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void RightShift()
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void RightShift(bool columnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, columnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1457,23 +1649,28 @@ namespace tests
 
             var actual = left >> 1;
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(columnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void ElementWiseEquals()
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void ElementWiseEquals(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
             var right = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, -2},
                     {2, 3, 5}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<bool>(
                 new[,]
@@ -1484,24 +1681,28 @@ namespace tests
 
             var actual = Tensor.Equals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
-
-
-        [Fact]
-        public void ElementWiseNotEquals()
+        
+        [Theory()]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void ElementWiseNotEquals(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
             var right = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, -2},
                     {2, 3, 5}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<bool>(
                 new[,]
@@ -1512,17 +1713,21 @@ namespace tests
 
             var actual = Tensor.NotEquals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(leftColumnMajor, actual.IsColumnMajor);
         }
 
-        [Fact]
-        public void MatrixMultiply()
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void MatrixMultiply(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
-                });
+                }, leftColumnMajor);
 
             var right = new Tensor<int>(
                 new[,]
@@ -1530,7 +1735,7 @@ namespace tests
                     {0, 1, 2, 3, 4},
                     {5, 6, 7, 8, 9},
                     {10, 11, 12, 13, 14}
-                });
+                }, rightColumnMajor);
 
             var expected = new Tensor<int>(
                 new[,]
@@ -1543,8 +1748,11 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
-        [Fact]
-        public void Contract()
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        public void Contract(bool leftColumnMajor, bool rightColumnMajor)
         {
             var left = new Tensor<int>(
                 new[, ,]
@@ -1561,7 +1769,7 @@ namespace tests
                         {8, 9},
                         {10, 11}
                     }
-                });
+                }, leftColumnMajor);
 
             var right = new Tensor<int>(
                 new[, ,]
@@ -1586,7 +1794,7 @@ namespace tests
                         {20, 21},
                         {22, 23}
                     }
-                });
+                }, rightColumnMajor);
 
             // contract a 3*2*2 with a 4*3*2 tensor, summing on (3*2)*2 and 4*(3*2) to produce a 2*4 tensor
             var expected = new Tensor<int>(

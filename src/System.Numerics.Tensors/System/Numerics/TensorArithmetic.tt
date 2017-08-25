@@ -48,22 +48,63 @@ namespace System.Numerics
 <# if ((method.IsNumeric && !type.SupportsNumeric) ||  (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
 <# } else if (method.Operator != null) { #>
+
+<# if (method.MethodType == MethodType.UnaryInPlace) { #>
             for(int i = 0; i < <#= method.ResultName #>.Length; i++)
             {
-                // TODO: vectorize
                 <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
             }
+<# } else {#>
+            if  <#= method.GetLinearOperationCheck() #>
+            {
+                for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+                {
+                    <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
+                }
+            }
+            else
+            {
+                int rowMajorIndex = 0;
+                int colMajorIndex = 0;
+                
+                ref int resultIndex = ref RefUtilities.Ternary(<#= method.ResultName #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
+                ref int op1Index = ref RefUtilities.Ternary(<#= method.Op1Name #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
+                
+<# if ((method.MethodType == MethodType.Binary) || (method.MethodType == MethodType.Comparison)) {#>
+                ref int op2Index = ref RefUtilities.Ternary(<#= method.Op2Name #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
+
+                var rowMajorStrides = <#= method.ResultName #>.IsRowMajor ? <#= method.ResultName #>.strides :
+                                      <#= method.Op1Name #>.IsRowMajor ? <#= method.Op1Name #>.strides : 
+                                      <#= method.Op2Name #>.strides;
+                var columnMajorStrides = <#= method.ResultName #>.IsColumnMajor ? <#= method.ResultName #>.strides :
+                                         <#= method.Op1Name #>.IsColumnMajor ? <#= method.Op1Name #>.strides : 
+                                         <#= method.Op2Name #>.strides;
+<# } else {#>
+                var rowMajorStrides = <#= method.ResultName #>.IsRowMajor ? <#= method.ResultName #>.strides :
+                                      <#= method.Op1Name #>.strides;
+                var columnMajorStrides = <#= method.ResultName #>.IsColumnMajor ? <#= method.ResultName #>.strides :
+                                         <#= method.Op1Name #>.strides;
+<# } #>
+                for(;rowMajorIndex < <#= method.ResultName #>.Length; rowMajorIndex++)
+                {
+                    colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, columnMajorStrides);
+                    
+                    <#=method.GetElementOperation(type.TypeName, ".Buffer[resultIndex]", ".Buffer[op1Index]", ".Buffer[op2Index]")#>;
+
+                }
+            }
+<# } #>
 <# } else if (method.MethodName == "Contract") {#>
             var summingDimensions = new int[leftAxes.Length];
             for(int i = 0; i < leftAxes.Length; i++)
             {
-                summingDimensions[i] = left.Dimensions[leftAxes[i]];
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
             }
 
             var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
             int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
 
-            var resultStrides = ArrayUtilities.GetStrides(result.Dimensions);
+            var resultStrides = result.strides;
 
             // translates from result index to left non-summing dimensions' index portion
             // since left non-summing dimensions are given precedence in result, the end is zero-padded
@@ -71,7 +112,7 @@ namespace System.Numerics
 
             // translates from summing index to left summing dimensions' index portion
             int[] leftSummingStrides = new int[leftAxes.Length];
-            ArrayUtilities.GetSplitStrides(left.Dimensions, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+            ArrayUtilities.SplitStrides(left.strides, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
             // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
@@ -80,7 +121,7 @@ namespace System.Numerics
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
-            ArrayUtilities.GetSplitStrides(right.Dimensions, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
