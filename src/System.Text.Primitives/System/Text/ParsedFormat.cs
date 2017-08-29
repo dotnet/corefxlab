@@ -56,7 +56,7 @@ namespace System.Text
             if (string.IsNullOrEmpty(format))
                 return default;
 
-            return Parse(format.AsReadOnlySpan());
+            return Parse(format.AsSpan());
         }
     }
 }
