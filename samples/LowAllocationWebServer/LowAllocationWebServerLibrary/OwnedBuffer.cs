@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Http
