@@ -631,6 +631,37 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
+        [InlineData(0, "", "")]
+        [InlineData(2, "abc", "")]
+        [InlineData(-1, "", "a")]
+        [InlineData(-1, "", "abc")]
+        [InlineData(0, "a", "a")]
+        [InlineData(-1, "a", "b")]
+        [InlineData(0, "abc", "a")]
+        [InlineData(0, "abc", "ab")]
+        [InlineData(0, "abc", "abc")]
+        [InlineData(1, "abc", "b")]
+        [InlineData(1, "abc", "bc")]
+        [InlineData(3, "abcc", "c")]
+        [InlineData(3, "abcbc", "bc")]
+        [InlineData(38, "aaaaaaabaaaaaaaabaaaaaaaabaaaaaaaabaaaaaaaaaaab", "aaaaaaaab")]
+        [InlineData(16, "abbbbbbbabbbbbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
+        [InlineData(-1, "aaabaaa", "aabaaaa")]
+        [InlineData(-1, "aaabaaa", "aadaaaa")]
+        [InlineData(3, "ababababa", "bababa")]
+        [InlineData(-1, "abababab", "bbababa")]
+        [InlineData(-1, "abababab", "bababaa")]
+        [InlineData(7, "aaabaacaaac", "aaac")]
+        [InlineData(9, "baaaabaaabaaaa", "baaaa")]
+        [InlineData(3, "\uABC0\uABC1\uABC2", "\uABC1\uABC2")]
+        public void LastIndexOfTests(int expected, string s, string substring)
+        {
+            Utf8String utf8s = new Utf8String(s);
+            Utf8String utf8substring = new Utf8String(substring);
+            Assert.Equal(expected, utf8s.LastIndexOf(utf8substring));
+        }
+
+        [Theory]
         [InlineData("", "", "")]
         [InlineData("abc", "abc", "")]
         [InlineData(null, "", "a")]
@@ -727,6 +758,28 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
+        [InlineData("abc", 'a')]
+        [InlineData("", 'a')]
+        [InlineData("abc", 'c')]
+        [InlineData("a", 'c')]
+        [InlineData("c", 'c')]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", 'b')]
+        [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 'a')]
+        [InlineData("aaabaaa", 'b')]
+        [InlineData("aaabaaa", 'a')]
+        [InlineData("abababab", 'a')]
+        [InlineData("abababab", 'b')]
+        public void LastIndexOfUtf8CharacterTest(string s, char character)
+        {
+            int expected = s.LastIndexOf(character);
+
+            Utf8String u8s = new Utf8String(s);
+            byte u8codeUnit = (byte)(character);
+
+            Assert.Equal(expected, u8s.LastIndexOf(u8codeUnit));
+        }
+
+        [Theory]
         [InlineData(true, 0, "a", "a")]
         [InlineData(true, 0, "abc", "a")]
         [InlineData(true, 0, "abc", "ab")]
@@ -772,6 +825,31 @@ namespace System.Text.Utf8.Tests
         {
             Utf8String u8s = new Utf8String(s);
             Assert.Equal(expected, u8s.IndexOf(codePointValue));
+        }
+
+        [Theory]
+        [InlineData(-1, "", 0)]
+        [InlineData(0, "a", (uint)'a')]
+        [InlineData(-1, "a", (uint)'b')]
+        [InlineData(0, "\uABCD", 0xABCD)]
+        [InlineData(-1, "\uABCD", 0xABCE)]
+        [InlineData(0, "abc", (uint)'a')]
+        [InlineData(1, "abc", (uint)'b')]
+        [InlineData(3, "abcc", (uint)'c')]
+        [InlineData(-1, "abc", (uint)'d')]
+        [InlineData(0, "\uABC0\uABC1\uABC2", 0xABC0)]
+        [InlineData(3, "\uABC0\uABC1\uABC2", 0xABC1)]
+        [InlineData(6, "\uABC0\uABC1\uABC2", 0xABC2)]
+        [InlineData(9, "\uABC0\uABC1\uABC2\uABC0", 0xABC0)]
+        [InlineData(-1, "\uABC0\uABC1\uABC2", 0xABC3)]
+        [InlineData(0, "\uABC0bc", 0xABC0)]
+        [InlineData(1, "a\uABC1c", 0xABC1)]
+        [InlineData(2, "ab\uABC2", 0xABC2)]
+        [InlineData(-1, "\uABC0\uABC1\uABC2", (uint)'d')]
+        public void LastIndexOfUnicodeCodePoint(int expected, string s, uint codePointValue)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Assert.Equal(expected, u8s.LastIndexOf(codePointValue));
         }
 
         [Fact]
