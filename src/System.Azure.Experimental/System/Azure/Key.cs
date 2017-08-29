@@ -18,7 +18,7 @@ namespace System.Azure.Authentication
             byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
             var buffer = new Span<byte>(pBuffer, bufferLength);
-            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(key.AsSpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
