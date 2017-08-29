@@ -75,27 +75,37 @@ namespace System.Numerics
         /// </summary>
         /// <param name="dimensions"></param>
         /// <returns></returns>
-        public static int[] GetStrides(int[] dimensions)
+        public static int[] GetStrides(int[] dimensions, bool columnMajor = false)
         {
             int[] strides = new int[dimensions.Length];
 
             int stride = 1;
-            for (int i = strides.Length - 1; i >= 0; i--)
+            if (columnMajor)
             {
-                strides[i] = stride;
-                stride *= dimensions[i];
+                for (int i = 0; i < strides.Length; i++)
+                {
+                    strides[i] = stride;
+                    stride *= dimensions[i];
+                }
+            }
+            else
+            {
+                for (int i = strides.Length - 1; i >= 0; i--)
+                {
+                    strides[i] = stride;
+                    stride *= dimensions[i];
+                }
             }
 
             return strides;
         }
 
-        public static void GetSplitStrides(int[] dimensions, int[] splitAxes, int[] strides, int stridesOffset, int[] splitStrides, int splitStridesOffset)
+        public static void SplitStrides(int[] strides, int[] splitAxes, int[] newStrides, int stridesOffset, int[] splitStrides, int splitStridesOffset)
         {
-            int stride = 1;
-
-            int strideIndex = 0;
-            for (int i = dimensions.Length - 1; i >= 0; i--)
+            int newStrideIndex = 0;
+            for (int i = 0; i < strides.Length; i++)
             {
+                int stride = strides[i];
                 bool isSplit = false;
                 for (int j = 0; j < splitAxes.Length; j++)
                 {
@@ -109,10 +119,8 @@ namespace System.Numerics
 
                 if (!isSplit)
                 {
-                    strides[stridesOffset + strideIndex++] = stride;
+                    newStrides[stridesOffset + newStrideIndex++] = stride;
                 }
-
-                stride *= dimensions[i];
             }
         }
 
@@ -158,14 +166,18 @@ namespace System.Numerics
         /// <param name="startFromDimension"></param>
         public static void GetIndices(int[] strides, int index, int[] indices, int startFromDimension = 0)
         {
-            Debug.Assert(IsDescending(strides), "Index decomposition requires ordered strides");
+            bool columnMajor = strides.Length > 1 && strides[0] == 1;
+            Debug.Assert(columnMajor ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);
 
             int remainder = index;
             for (int i = startFromDimension; i < strides.Length; i++)
             {
-                var stride = strides[i];
-                indices[i] = remainder / stride;
+                // reverse the index for column major so that we divide by largest stride first
+                var nIndex = columnMajor ? strides.Length - 1 - i : i;
+
+                var stride = strides[nIndex];
+                indices[nIndex] = remainder / stride;
                 remainder %= stride;
             }
         }
@@ -175,8 +187,9 @@ namespace System.Numerics
         /// </summary>
         public static int TransformIndexByStrides(int index, int[] sourceStrides, int[] transformStrides)
         {
+            bool sourceColumnMajor = sourceStrides.Length > 1 && sourceStrides[0] == 1;
             Debug.Assert(index >= 0);
-            Debug.Assert(IsDescending(sourceStrides), "Index decomposition requires ordered strides");
+            Debug.Assert(sourceColumnMajor ? IsAscending(sourceStrides) : IsDescending(sourceStrides), "Index decomposition requires ordered strides");
             Debug.Assert(sourceStrides.Length == transformStrides.Length);
 
             int transformIndex = 0;
@@ -184,8 +197,11 @@ namespace System.Numerics
 
             for (int i = 0; i < sourceStrides.Length; i++)
             {
-                var sourceStride = sourceStrides[i];
-                var transformStride = transformStrides[i];
+                // reverse the index for column major so that we divide by largest stride first
+                var nIndex = sourceColumnMajor ? sourceStrides.Length - 1 - i: i;
+
+                var sourceStride = sourceStrides[nIndex];
+                var transformStride = transformStrides[nIndex];
 
                 transformIndex += transformStride * (remainder / sourceStride);
                 remainder %= sourceStride;

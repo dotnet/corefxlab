@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\Numerics\ArrayUtilities.cs" />
+    <Compile Include="System\Numerics\RefUtilities.cs" />
     <Compile Include="System\Numerics\Tensor.cs" />
     <Compile Include="System\Numerics\TensorArithmetic.cs">
       <DesignTime>True</DesignTime>

@@ -685,15 +685,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("-0128", true, -128, 5)] // min
         [InlineData("0128", false, 0, 0)] // positive overflow test
         [InlineData("-0129", false, 0, 0)] // negative overflow test
-        [InlineData("111", true, 111, 3)]
         [InlineData("49abcdefg", true, 49, 2)]
         [InlineData("127", true, 127, 3)] // max
         [InlineData("-128", true, -128, 4)] // min
-        [InlineData("-A", false, 0, 0)] // invalid character after a sign
-        [InlineData("I am 1", false, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0)] // invalid character test w/ char < '0'
-        [InlineData("128", false, 0, 0)] // positive overflow test
-        [InlineData("-129", false, 0, 0)] // negative overflow test
         public unsafe void ParseSByteDec(string text, bool expectSuccess, sbyte expectedValue, int expectedConsumed)
         {
             sbyte parsedValue;
@@ -879,7 +874,6 @@ namespace System.Text.Primitives.Tests
         [InlineData("-11", true, -11, 3)]
         [InlineData("00a0", true, 0, 2)]
         [InlineData("00a", true, 0, 2)]
-        [InlineData("111", true, 111, 3)]
         [InlineData("29220abcdefg", true, 29220, 5)]
         [InlineData("0", true, 0, 1)]
         [InlineData("+1", true, 1, 2)]
