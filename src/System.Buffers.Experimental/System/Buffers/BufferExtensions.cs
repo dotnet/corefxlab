@@ -165,7 +165,7 @@ namespace System.Buffers
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start)
         {
-            return new Span<T>(array, start);
+            return new Span<T>(array).Slice(start);
         }
 
         /// <summary>
