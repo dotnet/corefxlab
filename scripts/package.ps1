@@ -51,7 +51,8 @@ if ($ApiKey)
             else { 
                 $arguments = "push $file $apiKey -Source https://dotnet.myget.org/F/dotnet-corefxlab/api/v2/package"
             }
-            Start-Process -FilePath $nugetPath -ArgumentList $arguments -Wait -PassThru
+            #Start-Process -FilePath $nugetPath -ArgumentList $arguments -Wait -PassThru
+            echo "Start-Process -FilePath $nugetPath -ArgumentList $arguments -Wait -PassThru"
             Write-Host "done"
         } catch [System.Exception] {
             Write-Host "Failed to push nuget package $file with error $_.Exception.Message"

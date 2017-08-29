@@ -45,7 +45,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf16toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            ReadOnlySpan<byte> utf16 = inputString.AsReadOnlySpan().AsBytes();
+            ReadOnlySpan<byte> utf16 = inputString.AsSpan().AsBytes();
 
             var status = Encoders.Utf16.ToUtf8Length(utf16, out int needed);
             Assert.Equal(TransformationStatus.Done, status);

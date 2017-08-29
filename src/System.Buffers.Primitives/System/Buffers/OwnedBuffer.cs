@@ -65,6 +65,11 @@ namespace System.Buffers
         public abstract bool Release();
         #endregion
 
+        protected internal static unsafe void* Add(void* pointer, int offset)
+        {
+            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
+        }
+
         internal static readonly T[] EmptyArray = new T[0];
     }
 }

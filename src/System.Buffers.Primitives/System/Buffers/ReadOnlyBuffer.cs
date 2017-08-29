@@ -138,7 +138,7 @@ namespace System
                     var handle = GCHandle.Alloc(Unsafe.As<T[]>(_arrayOrOwnedBuffer), GCHandleType.Pinned);
                     unsafe
                     {
-                        void* pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), _index);
+                        var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
                         bufferHandle = new BufferHandle(null, pointer, handle);
                     }
                 }
