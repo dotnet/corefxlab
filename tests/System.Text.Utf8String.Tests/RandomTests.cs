@@ -632,7 +632,7 @@ namespace System.Text.Utf8.Tests
 
         [Theory]
         [InlineData(0, "", "")]
-        [InlineData(0, "abc", "")]
+        [InlineData(2, "abc", "")]
         [InlineData(-1, "", "a")]
         [InlineData(-1, "", "abc")]
         [InlineData(0, "a", "a")]
@@ -653,7 +653,7 @@ namespace System.Text.Utf8.Tests
         [InlineData(-1, "abababab", "bababaa")]
         [InlineData(7, "aaabaacaaac", "aaac")]
         [InlineData(9, "baaaabaaabaaaa", "baaaa")]
-        [InlineData(0, "\uABC0\uABC1\uABC2", "\uABC0\uABC1")]
+        [InlineData(3, "\uABC0\uABC1\uABC2", "\uABC1\uABC2")]
         public void LastIndexOfTests(int expected, string s, string substring)
         {
             Utf8String utf8s = new Utf8String(s);

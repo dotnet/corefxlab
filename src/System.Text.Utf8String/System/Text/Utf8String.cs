@@ -331,10 +331,11 @@ namespace System.Text.Utf8
         // TODO: Naive algorithm, reimplement faster - implemented to keep parity with IndexOf
         public int LastIndexOf(Utf8String value)
         {
+            // Special case for looking for empty strings
             if (value.Length == 0)
             {
-                // TODO: Could be incorrect answer - same argument as IndexOf(Utf8String value)
-                return 0;
+                // Maintain parity with .NET C#'s LastIndexOf
+                return Length == 0 ? 0 : Length - 1;
             }
 
             if (Length == 0)
