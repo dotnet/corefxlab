@@ -357,7 +357,7 @@ namespace System.Text.Json
         {
             WriteControl(JsonConstants.Quote);
             // TODO: We need to handle escaping.
-            Write(value.AsReadOnlySpan());
+            Write(value.AsSpan());
             WriteControl(JsonConstants.Quote);
         }
 

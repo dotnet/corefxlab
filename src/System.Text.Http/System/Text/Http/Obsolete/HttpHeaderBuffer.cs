@@ -22,7 +22,7 @@ namespace System.Text.Http.SingleSegment
                 throw new ArgumentException("newValue");
             }
 
-            _symbolTable.TryEncode(newValue.AsReadOnlySpan(), _bytes, out int consumed, out int written);
+            _symbolTable.TryEncode(newValue.AsSpan(), _bytes, out int consumed, out int written);
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }
     }

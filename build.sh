@@ -41,16 +41,6 @@ if [ ! -d "dotnet" ]; then
     echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
     exit -1
   fi
-
-  # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-  SharedVersion=$(head -n 1 "SharedRuntimeVersion.txt")
-  ./scripts/install-dotnet.sh -Channel master -Version "$SharedVersion" -InstallDir "dotnet" -SharedRuntime
-  ret=$?
-  if [ $ret -ne 0 ]; then
-    echo "Failed to install latest 2.1.0 shared runtime, exit code $ret, aborting build."
-    exit -1
-  fi
-
   ./scripts/install-dotnet.sh -Version 1.0.0 -InstallDir "dotnet"
   ret=$?
   if [ $ret -ne 0 ]; then

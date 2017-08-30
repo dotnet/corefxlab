@@ -76,7 +76,7 @@ namespace System.Text.Json.Tests
 
         private static void ReadJsonHelper(string jsonStr)
         {
-            var reader = new JsonReader(jsonStr.AsReadOnlySpan().AsBytes(), SymbolTable.InvariantUtf16);
+            var reader = new JsonReader(jsonStr.AsSpan().AsBytes(), SymbolTable.InvariantUtf16);
             while (reader.Read())
             {
                 var tokenType = reader.TokenType;
