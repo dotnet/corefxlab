@@ -24,6 +24,7 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
+    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

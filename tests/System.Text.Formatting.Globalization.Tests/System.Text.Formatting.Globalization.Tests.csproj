@@ -22,10 +22,7 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Formatting.Globalization\System.Text.Formatting.Globalization.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
-    <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

@@ -12,8 +12,6 @@
     <Compile Include="System\**\*.cs;Properties\**\*.cs" Exclude="GenerateCompatibilityTests\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
-    <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>

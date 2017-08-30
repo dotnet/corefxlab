@@ -26,7 +26,6 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->

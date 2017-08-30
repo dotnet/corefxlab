@@ -6,11 +6,7 @@
     <PackageTags>Date TimeOfDay Time corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Diagnostics.Debug" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Xml.ReaderWriter" Version="$(CoreFxVersion)" />
+  <ItemGroup>
+    <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion4_3)" />
   </ItemGroup>
 </Project>

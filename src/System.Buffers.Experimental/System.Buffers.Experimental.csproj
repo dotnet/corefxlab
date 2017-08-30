@@ -7,13 +7,10 @@
     <PackageTags>Span Spans Pool corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
-    <ProjectReference Include="..\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Buffers" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion4_4)" />
   </ItemGroup>
 </Project>

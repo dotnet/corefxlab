@@ -6,11 +6,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
     <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion4_4)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion4_4)" />
   </ItemGroup>
 </Project>

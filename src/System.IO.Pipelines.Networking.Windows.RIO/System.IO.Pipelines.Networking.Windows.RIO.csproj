@@ -9,9 +9,8 @@
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Thread" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Threading.Overlapped" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Threading.ThreadPool" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Diagnostics.Process" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.Thread" Version="$(CoreFxStableVersion4_3)" />
+    <PackageReference Include="System.Threading.Overlapped" Version="$(CoreFxStableVersion4_3)" />
+    <PackageReference Include="System.Diagnostics.Process" Version="$(CoreFxStableVersion4_3)" />
   </ItemGroup>
 </Project>

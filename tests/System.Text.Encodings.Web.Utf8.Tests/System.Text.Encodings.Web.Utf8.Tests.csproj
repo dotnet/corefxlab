@@ -25,7 +25,6 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->

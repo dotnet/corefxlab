@@ -9,8 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
-    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
-    <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
   </ItemGroup>
