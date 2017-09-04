@@ -192,52 +192,5 @@ namespace System.Threading.Tasks.Channels
                 }
             }
         }
-
-        /// <summary>Gets an async enumerator of the data in this channel.</summary>
-        /// <param name="cancellationToken">The cancellation token to use to cancel the asynchronous enumeration.</param>
-        /// <returns>The async enumerator.</returns>
-        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
-            new AsyncEnumerator(this, cancellationToken);
-
-        /// <summary>Provides an async enumerator for the data in a channel.</summary>
-        private sealed class AsyncEnumerator : IAsyncEnumerator<T>
-        {
-            /// <summary>The channel being enumerated.</summary>
-            private readonly ReadableChannel<T> _channel;
-            /// <summary>Cancellation token used to cancel the enumeration.</summary>
-            private readonly CancellationToken _cancellationToken;
-            /// <summary>The current element of the enumeration.</summary>
-            private T _current;
-
-            internal AsyncEnumerator(ReadableChannel<T> channel, CancellationToken cancellationToken)
-            {
-                _channel = channel;
-                _cancellationToken = cancellationToken;
-            }
-
-            public T Current => _current;
-
-            public Task<bool> MoveNextAsync()
-            {
-                ValueTask<T> result = _channel.ReadAsync(_cancellationToken);
-
-                if (result.IsCompletedSuccessfully)
-                {
-                    _current = result.Result;
-                    return ChannelUtilities.TrueTask;
-                }
-
-                return result.AsTask().ContinueWith((t, s) =>
-                {
-                    var thisRef = (AsyncEnumerator)s;
-                    if (t.IsFaulted && t.Exception.InnerException is ClosedChannelException cce && cce.InnerException == null)
-                    {
-                        return false;
-                    }
-                    thisRef._current = t.GetAwaiter().GetResult();
-                    return true;
-                }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
-            }
-        }
     }
 }
