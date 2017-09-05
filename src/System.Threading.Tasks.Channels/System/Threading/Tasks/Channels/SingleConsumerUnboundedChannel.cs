@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -92,7 +93,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Mark as complete for writing.
-                _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
+                _doneWriting = error ?? ChannelUtilities.s_doneWritingSentinel;
 
                 // If we have no more items remaining, then the channel needs to be marked as completed
                 // and readers need to be informed they'll never get another item.  All of that needs
@@ -191,7 +192,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -311,12 +312,12 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // Outside of the lock, check if there are any items waiting to be read.  If there are, we're done.
             if (!_items.IsEmpty)
             {
-                return ChannelUtilities.TrueTask;
+                return ChannelUtilities.s_trueTask;
             }
 
             // Now check for cancellation.
@@ -331,15 +332,15 @@ namespace System.Threading.Tasks.Channels
                 // Again while holding the lock, check to see if there are any items available.
                 if (!_items.IsEmpty)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // There aren't any items; if we're done writing, there never will be more items.
                 if (_doneWriting != null)
                 {
-                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                    return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
                         Task.FromException<bool>(_doneWriting) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // Create the new waiter.  We're a bit more tolerant of a stray waiting reader
@@ -353,16 +354,16 @@ namespace System.Threading.Tasks.Channels
             return newWaiter.Task;
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return
                 cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
-                _doneWriting == null ? ChannelUtilities.TrueTask :
-                _doneWriting != ChannelUtilities.DoneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
-                ChannelUtilities.FalseTask;
+                _doneWriting == null ? ChannelUtilities.s_trueTask :
+                _doneWriting != ChannelUtilities.s_doneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
+                ChannelUtilities.s_falseTask;
         }
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default)
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
             // so just TryWrite and return a completed task.

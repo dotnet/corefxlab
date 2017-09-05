@@ -104,7 +104,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Mark that we're done writing.
-                _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
+                _doneWriting = error ?? ChannelUtilities.s_doneWritingSentinel;
                 completeTask = _items.IsEmpty;
             }
 
@@ -130,7 +130,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -176,12 +176,12 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // If there are any items, readers can try to get them.
             if (!_items.IsEmpty)
             {
-                return ChannelUtilities.TrueTask;
+                return ChannelUtilities.s_trueTask;
             }
 
             lock (SyncObj)
@@ -191,15 +191,15 @@ namespace System.Threading.Tasks.Channels
                 // Try again to read now that we're synchronized with writers.
                 if (!_items.IsEmpty)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // There are no items, so if we're done writing, there's never going to be data available.
                 if (_doneWriting != null)
                 {
-                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                    return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
                         Task.FromException<bool>(_doneWriting) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // Queue the waiter
@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Channels
                 return true;
             }
 
-            item = default;
+            item = default(T);
             return false;
         }
 
@@ -283,13 +283,13 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default) =>
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
-            _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
-            _doneWriting != ChannelUtilities.DoneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
-            ChannelUtilities.FalseTask;
+            _doneWriting == null ? ChannelUtilities.s_trueTask : // unbounded writing can always be done if we haven't completed
+            _doneWriting != ChannelUtilities.s_doneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
+            ChannelUtilities.s_falseTask;
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default) =>
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
             TryWrite(item) ? Task.CompletedTask :
             Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));

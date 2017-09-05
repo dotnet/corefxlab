@@ -36,7 +36,7 @@ namespace System.Runtime.CompilerServices
         /// <param name="awaiter">The awaiter that represents the actual async operation being awaited.</param>
         public ValueAwaiter(IAwaiter<TResult> awaiter)
         {
-            _result = default;
+            _result = default(TResult);
             _asyncOp = awaiter;
         }
 
@@ -51,7 +51,7 @@ namespace System.Runtime.CompilerServices
             }
             else
             {
-                _result = default;
+                _result = default(TResult);
                 _asyncOp = task;
             }
         }
@@ -67,7 +67,7 @@ namespace System.Runtime.CompilerServices
             }
             else
             {
-                _result = default;
+                _result = default(TResult);
                 _asyncOp = task.AsTask();
             }
         }

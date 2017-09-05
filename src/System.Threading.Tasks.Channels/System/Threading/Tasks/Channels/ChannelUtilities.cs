@@ -11,11 +11,11 @@ namespace System.Threading.Tasks.Channels
     internal static class ChannelUtilities
     {
         /// <summary>Sentinel object used to indicate being done writing.</summary>
-        internal static readonly Exception DoneWritingSentinel = new Exception(nameof(DoneWritingSentinel));
+        internal static readonly Exception s_doneWritingSentinel = new Exception(nameof(s_doneWritingSentinel));
         /// <summary>A cached task with a Boolean true result.</summary>
-        internal static readonly Task<bool> TrueTask = Task.FromResult(true);
+        internal static readonly Task<bool> s_trueTask = Task.FromResult(true);
         /// <summary>A cached task with a Boolean false result.</summary>
-        internal static readonly Task<bool> FalseTask = Task.FromResult(false);
+        internal static readonly Task<bool> s_falseTask = Task.FromResult(false);
 
         /// <summary>Completes the specified TaskCompletionSource.</summary>
         /// <param name="tcs">The source to complete.</param>
@@ -32,19 +32,19 @@ namespace System.Threading.Tasks.Channels
             {
                 tcs.TrySetCanceled(oce.CancellationToken);
             }
-            else if (error != null && error != DoneWritingSentinel)
+            else if (error != null && error != s_doneWritingSentinel)
             {
                 tcs.TrySetException(error);
             }
             else
             {
-                tcs.TrySetResult(default);
+                tcs.TrySetResult(default(VoidResult));
             }
         }
 
         /// <summary>Gets a value task representing an error.</summary>
         /// <typeparam name="T">Specifies the type of the value that would have been returned.</typeparam>
-        /// <param name="error">The error.  This may be <see cref="DoneWritingSentinel"/>.</param>
+        /// <param name="error">The error.  This may be <see cref="s_doneWritingSentinel"/>.</param>
         /// <returns>The failed task.</returns>
         internal static ValueTask<T> GetInvalidCompletionValueTask<T>(Exception error)
         {
@@ -52,7 +52,7 @@ namespace System.Threading.Tasks.Channels
 
             Task<T> t;
 
-            if (error == DoneWritingSentinel)
+            if (error == s_doneWritingSentinel)
             {
                 t = Task.FromException<T>(CreateInvalidCompletionException());
             }
@@ -139,7 +139,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         internal static Exception CreateInvalidCompletionException(Exception inner = null) =>
             inner is OperationCanceledException ? inner :
-            inner != null && inner != DoneWritingSentinel ? new ClosedChannelException(inner) :
+            inner != null && inner != s_doneWritingSentinel ? new ClosedChannelException(inner) :
             new ClosedChannelException();
     }
 }

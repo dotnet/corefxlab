@@ -123,7 +123,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Mark that we're done writing.
-                _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
+                _doneWriting = error ?? ChannelUtilities.s_doneWritingSentinel;
                 completeTask = _items.IsEmpty;
             }
 
@@ -151,7 +151,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // Fast-path cancellation check
             if (cancellationToken.IsCancellationRequested)
@@ -183,7 +183,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -197,15 +197,15 @@ namespace System.Threading.Tasks.Channels
                 // If there are any items available, a read is possible.
                 if (!_items.IsEmpty)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // There were no items available, so if we're done writing, a read will never be possible.
                 if (_doneWriting != null)
                 {
-                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                    return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
                         Task.FromException<bool>(_doneWriting) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // There were no items available, but there could be in the future, so ensure
@@ -227,7 +227,7 @@ namespace System.Threading.Tasks.Channels
                     return true;
                 }
             }
-            item = default;
+            item = default(T);
             return false;
         }
 
@@ -254,7 +254,7 @@ namespace System.Threading.Tasks.Channels
             while (!_blockedWriters.IsEmpty)
             {
                 WriterInteractor<T> w = _blockedWriters.DequeueHead();
-                if (w.Success(default))
+                if (w.Success(default(VoidResult)))
                 {
                     _items.EnqueueTail(w.Item);
                     return item;
@@ -363,7 +363,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -377,9 +377,9 @@ namespace System.Threading.Tasks.Channels
                 // If we're done writing, no writes will ever succeed.
                 if (_doneWriting != null)
                 {
-                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                    return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
                         Task.FromException<bool>(_doneWriting) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // If there's space to write, a write is possible.
@@ -387,7 +387,7 @@ namespace System.Threading.Tasks.Channels
                 // full we'll just drop an element to make room.
                 if (_items.Count < _bufferedCapacity || _mode != BoundedChannelFullMode.Wait)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // We're still allowed to write, but there's no space, so ensure a waiter is queued and return it.
@@ -395,7 +395,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default)
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -444,7 +444,7 @@ namespace System.Threading.Tasks.Channels
                         waitingReaders = _waitingReaders;
                         if (waitingReaders == null)
                         {
-                            return ChannelUtilities.TrueTask;
+                            return ChannelUtilities.s_trueTask;
                         }
                         _waitingReaders = null;
                     }
@@ -455,7 +455,7 @@ namespace System.Threading.Tasks.Channels
                     // since there's room, we can simply store the item and exit without having to
                     // worry about blocked/waiting readers.
                     _items.EnqueueTail(item);
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
                 else if (_mode == BoundedChannelFullMode.Wait)
                 {
@@ -473,7 +473,7 @@ namespace System.Threading.Tasks.Channels
                         _items.DequeueTail() :
                         _items.DequeueHead();
                     _items.EnqueueTail(item);
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
             }
 
@@ -493,7 +493,7 @@ namespace System.Threading.Tasks.Channels
                 waitingReaders.Success(item: true);
             }
 
-            return ChannelUtilities.TrueTask;
+            return ChannelUtilities.s_trueTask;
         }
 
         /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>

@@ -106,7 +106,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -142,7 +142,7 @@ namespace System.Threading.Tasks.Channels
                 while (!_blockedWriters.IsEmpty)
                 {
                     WriterInteractor<T> w = _blockedWriters.DequeueHead();
-                    if (w.Success(default))
+                    if (w.Success(default(VoidResult)))
                     {
                         return new ValueTask<T>(w.Item);
                     }
@@ -169,7 +169,7 @@ namespace System.Threading.Tasks.Channels
                 while (!_blockedWriters.IsEmpty)
                 {
                     WriterInteractor<T> w = _blockedWriters.DequeueHead();
-                    if (w.Success(default))
+                    if (w.Success(default(VoidResult)))
                     {
                         item = w.Item;
                         return true;
@@ -178,7 +178,7 @@ namespace System.Threading.Tasks.Channels
             }
 
             // None found
-            item = default;
+            item = default(T);
             return false;
         }
 
@@ -203,7 +203,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        private Task WriteAsync(T item, CancellationToken cancellationToken = default)
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -245,7 +245,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -254,13 +254,13 @@ namespace System.Threading.Tasks.Channels
                 {
                     return _completion.Task.IsFaulted ?
                         Task.FromException<bool>(_completion.Task.Exception.InnerException) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // If there's a blocked writer, we can read.
                 if (!_blockedWriters.IsEmpty)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // Otherwise, queue the waiter.
@@ -268,7 +268,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default)
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -277,13 +277,13 @@ namespace System.Threading.Tasks.Channels
                 {
                     return _completion.Task.IsFaulted ?
                         Task.FromException<bool>(_completion.Task.Exception.InnerException) :
-                        ChannelUtilities.FalseTask;
+                        ChannelUtilities.s_falseTask;
                 }
 
                 // If there's a blocked reader, we can write
                 if (!_blockedReaders.IsEmpty)
                 {
-                    return ChannelUtilities.TrueTask;
+                    return ChannelUtilities.s_trueTask;
                 }
 
                 // Otherwise, queue the writer

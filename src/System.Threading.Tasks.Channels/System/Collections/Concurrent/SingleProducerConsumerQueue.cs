@@ -2,12 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 
-namespace System.Threading.Tasks.Channels
+namespace System.Collections.Concurrent
 {
     /// <summary>
     /// Provides a producer/consumer queue safe to be used by only one producer and one consumer concurrently.
@@ -15,7 +15,7 @@ namespace System.Threading.Tasks.Channels
     /// <typeparam name="T">Specifies the type of data contained in the queue.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(SingleProducerSingleConsumerQueue<>.SingleProducerSingleConsumerQueue_DebugView))]
-    public sealed class SingleProducerSingleConsumerQueue<T> : IEnumerable<T>
+    internal sealed class SingleProducerSingleConsumerQueue<T> : IEnumerable<T>
     {
         // Design:
         //
@@ -137,7 +137,7 @@ namespace System.Threading.Tasks.Channels
             if (first != segment._state._lastCopy)
             {
                 result = array[first];
-                array[first] = default; // Clear the slot to release the element
+                array[first] = default(T); // Clear the slot to release the element
                 segment._state._first = (first + 1) & (array.Length - 1);
                 return true;
             }
@@ -172,12 +172,12 @@ namespace System.Threading.Tasks.Channels
 
             if (first == segment._state._last)
             {
-                result = default;
+                result = default(T);
                 return false;
             }
 
             result = array[first];
-            array[first] = default; // Clear the slot to release the element
+            array[first] = default(T); // Clear the slot to release the element
             segment._state._first = (first + 1) & (segment._array.Length - 1);
             segment._state._lastCopy = segment._state._last; // Refresh _lastCopy to ensure that _first has not passed _lastCopy
 
