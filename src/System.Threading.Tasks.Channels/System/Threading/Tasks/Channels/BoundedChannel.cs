@@ -332,6 +332,12 @@ namespace System.Threading.Tasks.Channels
                     // Simply exit and let the caller know we didn't write the data.
                     return false;
                 }
+                else if (_mode == BoundedChannelFullMode.Ignore)
+                {
+                    // The channel is full.  Just ignore the item being added
+                    // but say we added it.
+                    return true;
+                }
                 else
                 {
                     // The channel is full, and we're in a dropping mode.
@@ -383,7 +389,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // If there's space to write, a write is possible.
-                // And if the mode involves dropping, we can always write, as even if it's
+                // And if the mode involves dropping/ignoring, we can always write, as even if it's
                 // full we'll just drop an element to make room.
                 if (_items.Count < _bufferedCapacity || _mode != BoundedChannelFullMode.Wait)
                 {
@@ -464,6 +470,12 @@ namespace System.Threading.Tasks.Channels
                     var writer = WriterInteractor<T>.Create(true, cancellationToken, item);
                     _blockedWriters.EnqueueTail(writer);
                     return writer.Task;
+                }
+                else if (_mode == BoundedChannelFullMode.Ignore)
+                {
+                    // The channel is full and we're in ignore mode.
+                    // Ignore the item but say we accepted it.
+                    return ChannelUtilities.s_trueTask;
                 }
                 else
                 {

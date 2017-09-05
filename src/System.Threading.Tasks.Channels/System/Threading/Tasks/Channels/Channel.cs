@@ -28,11 +28,15 @@ namespace System.Threading.Tasks.Channels
             {
                 throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
             }
-            if (mode != BoundedChannelFullMode.DropNewest &&
-                mode != BoundedChannelFullMode.DropOldest &&
-                mode != BoundedChannelFullMode.Wait)
+            switch (mode)
             {
-                throw new ArgumentOutOfRangeException(nameof(mode));
+                case BoundedChannelFullMode.DropNewest:
+                case BoundedChannelFullMode.DropOldest:
+                case BoundedChannelFullMode.Ignore:
+                case BoundedChannelFullMode.Wait:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode));
             }
 
             bool runContinuationsAsynchronously = optimizations == null || !optimizations.AllowSynchronousContinuations;
