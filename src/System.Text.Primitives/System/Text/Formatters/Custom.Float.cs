@@ -48,7 +48,7 @@ namespace System.Text.Formatters
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var status = Encoders.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out bytesWritten);
-                return status == Buffers.TransformationStatus.Done;
+                return status == Buffers.OperationStatus.Done;
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
@@ -64,7 +64,7 @@ namespace System.Text.Formatters
                 // TODO: This is currently pretty expensive. Can this be done more efficiently?
                 //       Note: removing the hack might solve this problem a very different way.
                 var status = Encoders.Utf16.ToUtf8Length(utf16Bytes, out int needed);
-                if (status != Buffers.TransformationStatus.Done)
+                if (status != Buffers.OperationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -78,7 +78,7 @@ namespace System.Text.Formatters
                 }
 
                 status = Encoders.Utf16.ToUtf8(utf16Bytes, temp, out int consumed, out written);
-                if (status != Buffers.TransformationStatus.Done)
+                if (status != Buffers.OperationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;

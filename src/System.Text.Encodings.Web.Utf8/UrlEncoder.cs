@@ -2,12 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Text.Encodings.Web.Buffers;
+using System.Text.Encodings.Web.Internal;
+
 namespace System.Text.Encodings.Web.Utf8
 {
     public class UrlEncoder
     {
         static bool[] IsAllowed = new bool[0x7F + 1];
 
+        [Obsolete("Use UrlEncoder.Utf8.TryEncode")]
         public static bool TryEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
         {
             written = 0;
@@ -48,6 +52,7 @@ namespace System.Text.Encodings.Web.Utf8
         /// <param name="source">The byte span represents a UTF8 encoding url path.</param>
         /// <param name="destination">The byte span where unescaped url path is copied to.</param>
         /// <returns>The length of the byte sequence of the unescaped url path.</returns>
+        [Obsolete("Use UrlDecoder.Utf8.TryDecode")]
         public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
             if (destination.Length < source.Length)
@@ -71,6 +76,7 @@ namespace System.Text.Encodings.Web.Utf8
         /// The unescape is done in place, which means after decoding the result is the subset of 
         /// the input span.
         /// </remarks>
+        [Obsolete("Use UrlDecoder.Utf8.DecodeInPlace")]
         public static int DecodeInPlace(Span<byte> buffer)
         {
             // the slot to read the input
@@ -440,5 +446,7 @@ namespace System.Text.Encodings.Web.Utf8
             IsAllowed['.'] = true;
             IsAllowed['~'] = true;
         }
+
+        public static BufferEncoder Utf8 { get; } = new Utf8UriEncoder();
     }
 }

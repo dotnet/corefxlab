@@ -41,13 +41,13 @@ namespace System.Buffers
                     Span<byte> spanToTransform = stackSpan.Slice(0, amountOfData);
 
                     TryTransformWithRemainder:
-                    TransformationStatus status = transformation.Transform(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
-                    if (status != TransformationStatus.Done)
+                    OperationStatus status = transformation.Transform(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
+                    if (status != OperationStatus.Done)
                     {
                         destination.Advance(bytesWritten);
                         spanToTransform = spanToTransform.Slice(bytesConsumed);
 
-                        if (status == TransformationStatus.DestinationTooSmall)
+                        if (status == OperationStatus.DestinationTooSmall)
                         {
                             destination.Enlarge();  // output buffer is too small
                             outputSpan = destination.Buffer;
@@ -60,7 +60,7 @@ namespace System.Buffers
                         }
                         else
                         {
-                            if (status == TransformationStatus.InvalidData)
+                            if (status == OperationStatus.InvalidData)
                             {
                                 continue; // source buffer contains invalid bytes, user decides what to do for fallback
                             }
@@ -81,15 +81,15 @@ namespace System.Buffers
                 }
 
                 TryTransform:
-                TransformationStatus result = transformation.Transform(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
+                OperationStatus result = transformation.Transform(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
                 afterMergeSlice = 0;
                 destination.Advance(written);
                 sourceSpan = sourceSpan.Slice(consumed);
 
-                if (result == TransformationStatus.Done) continue;
+                if (result == OperationStatus.Done) continue;
 
                 // Not successful
-                if (result == TransformationStatus.DestinationTooSmall)
+                if (result == OperationStatus.DestinationTooSmall)
                 {
                     destination.Enlarge();  // output buffer is too small
                     outputSpan = destination.Buffer;
@@ -101,7 +101,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (result == TransformationStatus.InvalidData)
+                    if (result == OperationStatus.InvalidData)
                     {
                         continue; // source buffer contains invalid bytes, user decides what to do for fallback
                     }

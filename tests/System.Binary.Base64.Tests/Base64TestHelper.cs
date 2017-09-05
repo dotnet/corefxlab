@@ -104,7 +104,7 @@ namespace System.Binary.Base64.Tests
         {
             bytesConsumed = 0;
             bytesWritten = 0;
-            if (Base64.Decoder.Transform(source1, destination, out int consumed1, out int written1) == TransformationStatus.Done)
+            if (Base64.Decoder.Transform(source1, destination, out int consumed1, out int written1) == OperationStatus.Done)
             {
                 Base64.Decoder.Transform(source2, destination.Slice(written1), out int consumed2, out int written2);
                 bytesConsumed = consumed2;
@@ -119,7 +119,7 @@ namespace System.Binary.Base64.Tests
             bytesConsumed = 0;
             bytesWritten = 0;
             int afterMergeSlice = 0;
-            if (Base64.Decoder.Transform(source1, destination, out int consumed1, out int written1) != TransformationStatus.Done)
+            if (Base64.Decoder.Transform(source1, destination, out int consumed1, out int written1) != OperationStatus.Done)
             {
                 int leftOverBytes = source1.Length - consumed1;
                 if (leftOverBytes < 4)

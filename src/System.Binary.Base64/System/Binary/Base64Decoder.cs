@@ -84,7 +84,7 @@ namespace System.Binary.Base64
             Unsafe.Add(ref destBytes, 2) = (byte)i0;
         }
 
-        public static TransformationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -168,22 +168,22 @@ namespace System.Binary.Base64
             DoneExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             DestinationSmallExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.DestinationTooSmall;
+            return OperationStatus.DestinationTooSmall;
 
             NeedMoreExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreSourceData;
 
             InvalidExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.InvalidData;
+            return OperationStatus.InvalidData;
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace System.Binary.Base64
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static TransformationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
+        public static OperationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
         {
             ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
@@ -269,22 +269,22 @@ namespace System.Binary.Base64
             DoneExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             NeedMoreExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreSourceData;
 
             InvalidExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.InvalidData;
+            return OperationStatus.InvalidData;
         }
 
         sealed class FromBase64 : Transformation
         {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public override OperationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => Decode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }
