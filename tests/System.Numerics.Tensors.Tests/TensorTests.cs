@@ -1715,19 +1715,22 @@ namespace tests
         }
 
         [Theory]
-        [InlineData(false, false)]
-        [InlineData(false, true)]
-        [InlineData(true, true)]
-        public void MatrixMultiply(bool leftColumnMajor, bool rightColumnMajor)
+        [InlineData(false, false, TensorType.Dense)]
+        [InlineData(false, true, TensorType.Dense)]
+        [InlineData(true, true, TensorType.Dense)]
+        [InlineData(false, false, TensorType.Sparse)]
+        [InlineData(false, true, TensorType.Sparse)]
+        [InlineData(true, true, TensorType.Sparse)]
+        public void MatrixMultiply(bool leftColumnMajor, bool rightColumnMajor, TensorType tensorType)
         {
-            var left = new DenseTensor<int>(
+            var left = CreateTensor<int>(tensorType,
                 new[,]
                 {
                     {0, 1, 2},
                     {3, 4, 5}
                 }, leftColumnMajor);
 
-            var right = new DenseTensor<int>(
+            var right = CreateTensor<int>(tensorType,
                 new[,]
                 {
                     {0, 1, 2, 3, 4},
@@ -1735,7 +1738,7 @@ namespace tests
                     {10, 11, 12, 13, 14}
                 }, rightColumnMajor);
 
-            var expected = new DenseTensor<int>(
+            var expected = CreateTensor<int>(tensorType,
                 new[,]
                 {
                     {0*0 + 1*5 + 2*10, 0*1 + 1*6 + 2*11, 0*2 + 1*7 + 2*12, 0*3 + 1*8 + 2*13, 0*4 + 1*9 + 2*14},
@@ -1745,6 +1748,27 @@ namespace tests
             var actual = left.MatrixMultiply(right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
+
+
+        public enum TensorType
+        {
+            Dense,
+            Sparse
+        }
+        
+        private static Tensor<T> CreateTensor<T>(TensorType tensorType, Array array, bool reverseStride = false)
+        {
+            switch(tensorType)
+            {
+                case TensorType.Dense:
+                    return new DenseTensor<T>(array, reverseStride);
+                case TensorType.Sparse:
+                    return new SparseTensor<T>(array, reverseStride);
+            }
+            return null;
+        }
+
+
 
         [Theory]
         [InlineData(false, false)]
