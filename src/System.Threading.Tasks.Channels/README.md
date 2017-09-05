@@ -25,9 +25,9 @@ public abstract class Channel<TWrite, TRead>
 public abstract class ReadableChannel<T>
 {
     public abstract bool TryRead(out T item);
-    public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task Completion { get; }
+    public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public virtual ValueAwaiter<T> GetAwaiter();
 	...
 }
@@ -35,9 +35,9 @@ public abstract class ReadableChannel<T>
 public abstract class WritableChannel<in T>
 {
     public abstract bool TryWrite(T item);
-    public abstract Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract bool TryComplete(Exception error = null);
+    public virtual Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
 	public virtual ValueAwaiter<bool> GetAwaiter();
 	...
 }

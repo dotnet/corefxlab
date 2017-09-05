@@ -21,15 +21,6 @@ namespace System.Threading.Tasks.Channels
         /// </summary>
         public abstract Task Completion { get; }
 
-        /// <summary>Gets an awaiter used to read an item from the channel.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        /// <summary>Asynchronously reads an item from the channel.</summary>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
-        /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
-        public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default);
-
         /// <summary>Attempts to read an item to the channel.</summary>
         /// <param name="item">The read item, or a default value if no item could be read.</param>
         /// <returns>true if an item was read; otherwise, false if no item was read.</returns>
@@ -42,6 +33,45 @@ namespace System.Threading.Tasks.Channels
         /// or with a <c>false</c> result when no further data will ever be available to be read.
         /// </returns>
         public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>Gets an awaiter used to read an item from the channel.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
+
+        /// <summary>Asynchronously reads an item from the channel.</summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
+        /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
+        public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+            }
+
+            try
+            {
+                return TryRead(out T item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                return new ValueTask<T>(Task.FromException<T>(e));
+            }
+
+            async ValueTask<T> ReadAsyncCore(CancellationToken ct)
+            {
+                while (await WaitToReadAsync(ct).ConfigureAwait(false))
+                {
+                    if (TryRead(out T item))
+                    {
+                        return item;
+                    }
+                }
+
+                throw ChannelUtilities.CreateInvalidCompletionException();
+            }
+        }
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
         private static readonly ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable =
