@@ -5,6 +5,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -127,80 +128,83 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            T item;
-            return TryRead(out item) ?
-                new ValueTask<T>(item) :
-                ReadAsyncCore(cancellationToken);
-        }
-
-        private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
             {
-                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+                return TryRead(out T item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
             }
 
-            lock (SyncObj)
+            ValueTask<T> ReadAsyncCore(CancellationToken ct)
             {
-                AssertInvariants();
-
-                // If there are any items, return one.
-                T item;
-                if (_items.TryDequeue(out item))
+                if (ct.IsCancellationRequested)
                 {
-                    // Dequeue an item
-                    if (_doneWriting != null && _items.IsEmpty)
+                    return new ValueTask<T>(Task.FromCanceled<T>(ct));
+                }
+
+                lock (SyncObj)
+                {
+                    AssertInvariants();
+
+                    // If there are any items, return one.
+                    if (_items.TryDequeue(out T item))
                     {
-                        // If we've now emptied the items queue and we're not getting any more, complete.
-                        ChannelUtilities.Complete(_completion, _doneWriting);
+                        // Dequeue an item
+                        if (_doneWriting != null && _items.IsEmpty)
+                        {
+                            // If we've now emptied the items queue and we're not getting any more, complete.
+                            ChannelUtilities.Complete(_completion, _doneWriting);
+                        }
+
+                        return new ValueTask<T>(item);
                     }
 
-                    return new ValueTask<T>(item);
-                }
+                    // There are no items, so if we're done writing, fail.
+                    if (_doneWriting != null)
+                    {
+                        return ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting);
+                    }
 
-                // There are no items, so if we're done writing, fail.
-                if (_doneWriting != null)
-                {
-                    return ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting);
+                    // Otherwise, queue the reader.
+                    ReaderInteractor<T> reader = ReaderInteractor<T>.Create(_runContinuationsAsynchronously, ct);
+                    _blockedReaders.EnqueueTail(reader);
+                    return new ValueTask<T>(reader.Task);
                 }
-
-                // Otherwise, queue the reader.
-                ReaderInteractor<T> reader = ReaderInteractor<T>.Create(_runContinuationsAsynchronously, cancellationToken);
-                _blockedReaders.EnqueueTail(reader);
-                return new ValueTask<T>(reader.Task);
             }
         }
 
         private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // If there are any items, readers can try to get them.
-            if (!_items.IsEmpty)
+            return !_items.IsEmpty ?
+                ChannelUtilities.s_trueTask :
+                WaitToReadAsyncCore(cancellationToken);
+
+            Task<bool> WaitToReadAsyncCore(CancellationToken ct)
             {
-                return ChannelUtilities.s_trueTask;
-            }
-
-            lock (SyncObj)
-            {
-                AssertInvariants();
-
-                // Try again to read now that we're synchronized with writers.
-                if (!_items.IsEmpty)
+                lock (SyncObj)
                 {
-                    return ChannelUtilities.s_trueTask;
-                }
+                    AssertInvariants();
 
-                // There are no items, so if we're done writing, there's never going to be data available.
-                if (_doneWriting != null)
-                {
-                    return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
-                        Task.FromException<bool>(_doneWriting) :
-                        ChannelUtilities.s_falseTask;
-                }
+                    // Try again to read now that we're synchronized with writers.
+                    if (!_items.IsEmpty)
+                    {
+                        return ChannelUtilities.s_trueTask;
+                    }
 
-                // Queue the waiter
-                return ChannelUtilities.GetOrCreateWaiter(ref _waitingReaders, _runContinuationsAsynchronously, cancellationToken);
+                    // There are no items, so if we're done writing, there's never going to be data available.
+                    if (_doneWriting != null)
+                    {
+                        return _doneWriting != ChannelUtilities.s_doneWritingSentinel ?
+                            Task.FromException<bool>(_doneWriting) :
+                            ChannelUtilities.s_falseTask;
+                    }
+
+                    // Queue the waiter
+                    return ChannelUtilities.GetOrCreateWaiter(ref _waitingReaders, _runContinuationsAsynchronously, ct);
+                }
             }
         }
 
@@ -280,15 +284,17 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
-            cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting == null ? ChannelUtilities.s_trueTask : // unbounded writing can always be done if we haven't completed
+            cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting != ChannelUtilities.s_doneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
             ChannelUtilities.s_falseTask;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
+            TryWrite(item) ? ChannelUtilities.s_trueTask :
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
-            TryWrite(item) ? Task.CompletedTask :
             Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));
 
         /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>

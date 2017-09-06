@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -103,56 +104,56 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            T item;
-            return TryRead(out item) ?
+            return TryRead(out T item) ?
                 new ValueTask<T>(item) :
                 ReadAsyncCore(cancellationToken);
-        }
 
-        private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
+            ValueTask<T> ReadAsyncCore(CancellationToken ct)
             {
-                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
-            }
-
-            lock (SyncObj)
-            {
-                AssertInvariants();
-
-                // If we're already completed, nothing to read.
-                if (_completion.Task.IsCompleted)
+                if (ct.IsCancellationRequested)
                 {
-                    return new ValueTask<T>(
-                        _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
-                        Task.FromException<T>(
-                            _completion.Task.IsFaulted ?
-                            ChannelUtilities.CreateInvalidCompletionException(_completion.Task.Exception.InnerException) :
-                            ChannelUtilities.CreateInvalidCompletionException()));
+                    return new ValueTask<T>(Task.FromCanceled<T>(ct));
                 }
 
-                // If there are any blocked writers, find one to pair up with
-                // and get its data.  Writers that got canceled will remain in the queue,
-                // so we need to loop to skip past them.
-                while (!_blockedWriters.IsEmpty)
+                lock (SyncObj)
                 {
-                    WriterInteractor<T> w = _blockedWriters.DequeueHead();
-                    if (w.Success(default(VoidResult)))
+                    AssertInvariants();
+
+                    // If we're already completed, nothing to read.
+                    if (_completion.Task.IsCompleted)
                     {
-                        return new ValueTask<T>(w.Item);
+                        return new ValueTask<T>(
+                            _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
+                            Task.FromException<T>(
+                                _completion.Task.IsFaulted ?
+                                ChannelUtilities.CreateInvalidCompletionException(_completion.Task.Exception.InnerException) :
+                                ChannelUtilities.CreateInvalidCompletionException()));
                     }
+
+                    // If there are any blocked writers, find one to pair up with
+                    // and get its data.  Writers that got canceled will remain in the queue,
+                    // so we need to loop to skip past them.
+                    while (!_blockedWriters.IsEmpty)
+                    {
+                        WriterInteractor<T> w = _blockedWriters.DequeueHead();
+                        if (w.Success(default(VoidResult)))
+                        {
+                            return new ValueTask<T>(w.Item);
+                        }
+                    }
+
+                    // No writer found to pair with.  Queue the reader.
+                    var r = ReaderInteractor<T>.Create(true, ct);
+                    _blockedReaders.EnqueueTail(r);
+
+                    // And let any waiting writers know it's their lucky day.
+                    ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: true);
+
+                    return new ValueTask<T>(r.Task);
                 }
-
-                // No writer found to pair with.  Queue the reader.
-                var r = ReaderInteractor<T>.Create(true, cancellationToken);
-                _blockedReaders.EnqueueTail(r);
-
-                // And let any waiting writers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: true);
-
-                return new ValueTask<T>(r.Task);
             }
         }
 
