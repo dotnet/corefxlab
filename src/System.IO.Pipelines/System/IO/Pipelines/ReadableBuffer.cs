@@ -196,7 +196,7 @@ namespace System.IO.Pipelines
             var sb = new StringBuilder();
             foreach (var buffer in this)
             {
-                SpanExtensions.AppendAsLiteral(buffer.Span, sb);
+                SpanLiteralExtensions.AppendAsLiteral(buffer.Span, sb);
             }
             return sb.ToString();
         }

@@ -252,7 +252,7 @@ namespace System.IO.Pipelines
 
             var sb = new StringBuilder();
             Span<byte> span = Segment.Buffer.Span.Slice(Index, Segment.End - Index);
-            SpanExtensions.AppendAsLiteral(span, sb);
+            SpanLiteralExtensions.AppendAsLiteral(span, sb);
             return sb.ToString();
         }
 
@@ -287,7 +287,7 @@ namespace System.IO.Pipelines
 
         internal bool GreaterOrEqual(ReadCursor other)
         {
-            // This is other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index 
+            // This is other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index
             // fliped to avoid overflows
 
             return other.Segment.RunningLength - Index <= Segment.RunningLength - other.Index;

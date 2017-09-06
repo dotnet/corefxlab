@@ -21,12 +21,12 @@ namespace System.IO.Pipelines
             _pool = pool;
         }
 
-        public IPipe Create()
+        public Pipe Create()
         {
             return new Pipe(_pool);
         }
 
-        public IPipe Create(PipeOptions options)
+        public Pipe Create(PipeOptions options)
         {
             return new Pipe(_pool, options);
         }
