@@ -52,7 +52,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Readable : ReadableChannel<T>
         {
             internal readonly SingleConsumerUnboundedChannel<T> _parent;
-            internal Readable(SingleConsumerUnboundedChannel<T> parent) { _parent = parent; }
+            internal Readable(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
 
@@ -110,8 +110,7 @@ namespace System.Threading.Tasks.Channels
                     lock (parent.SyncObj)
                     {
                         // Now that we hold the lock, try reading again.
-                        T item;
-                        if (TryRead(out item))
+                        if (TryRead(out T item))
                         {
                             return new ValueTask<T>(item);
                         }
@@ -126,7 +125,7 @@ namespace System.Threading.Tasks.Channels
                             "Incorrect usage; multiple outstanding reads were issued against this single-consumer channel");
 
                         // Store the reader to be completed by a writer.
-                        ReaderInteractor<T> reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
+                        var reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
                         parent._blockedReader = reader;
                         return new ValueTask<T>(reader.Task);
                     }
@@ -196,7 +195,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Writable : WritableChannel<T>
         {
             internal readonly SingleConsumerUnboundedChannel<T> _parent;
-            internal Writable(SingleConsumerUnboundedChannel<T> parent) { _parent = parent; }
+            internal Writable(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {
@@ -250,8 +249,7 @@ namespace System.Threading.Tasks.Channels
                 {
                     error = ChannelUtilities.CreateInvalidCompletionException(error);
 
-                    ReaderInteractor<T> interactor = blockedReader as ReaderInteractor<T>;
-                    if (interactor != null)
+                    if (blockedReader is ReaderInteractor<T> interactor)
                     {
                         interactor.Fail(error);
                     }
@@ -331,8 +329,7 @@ namespace System.Threading.Tasks.Channels
                     // have been completed due to cancellation by the time we get here.  In that case,
                     // we'll loop around to try again so as not to lose the item being written.
                     Debug.Assert(blockedReader != null);
-                    ReaderInteractor<T> interactor = blockedReader as ReaderInteractor<T>;
-                    if (interactor != null)
+                    if (blockedReader is ReaderInteractor<T> interactor)
                     {
                         if (interactor.Success(item))
                         {

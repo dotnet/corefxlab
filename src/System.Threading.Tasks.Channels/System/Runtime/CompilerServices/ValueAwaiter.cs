@@ -77,80 +77,74 @@ namespace System.Runtime.CompilerServices
         {
             get
             {
-                if (_asyncOp == null)
+                switch (_asyncOp)
                 {
-                    return true;
-                }
+                    case null:
+                        return true;
 
-                IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-                if (awaiter != null)
-                {
-                    return awaiter.IsCompleted;
-                }
+                    case IAwaiter<TResult> awaiter:
+                        return awaiter.IsCompleted;
 
-                Task<TResult> task = (Task<TResult>)_asyncOp;
-                return task.IsCompleted;
+                    default:
+                        return ((Task<TResult>)_asyncOp).IsCompleted;
+                }
             }
         }
 
         /// <summary>Gets the result of the completed awaited operation.</summary>
         public TResult GetResult()
         {
-            if (_asyncOp == null)
+            switch (_asyncOp)
             {
-                return _result;
-            }
+                case null:
+                    return _result;
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                return awaiter.GetResult();
-            }
+                case IAwaiter<TResult> awaiter:
+                    return awaiter.GetResult();
 
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            return task.GetAwaiter().GetResult();
+                default:
+                    return ((Task<TResult>)_asyncOp).GetAwaiter().GetResult();
+            }
         }
 
         /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
         /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void OnCompleted(Action continuation)
         {
-            if (_asyncOp == null)
+            switch (_asyncOp)
             {
-                Task.Run(continuation);
-                return;
-            }
+                case null:
+                    Task.Run(continuation);
+                    break;
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                awaiter.OnCompleted(continuation);
-                return;
-            }
+                case IAwaiter<TResult> awaiter:
+                    awaiter.OnCompleted(continuation);
+                    break;
 
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            task.GetAwaiter().OnCompleted(continuation);
+                default:
+                    ((Task<TResult>)_asyncOp).GetAwaiter().OnCompleted(continuation);
+                    break;
+            }
         }
 
         /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
         /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void UnsafeOnCompleted(Action continuation)
         {
-            if (_asyncOp == null)
+            switch (_asyncOp)
             {
-                Task.Run(continuation);
-                return;
-            }
+                case null:
+                    Task.Run(continuation);
+                    break;
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                awaiter.UnsafeOnCompleted(continuation);
-                return;
-            }
+                case IAwaiter<TResult> awaiter:
+                    awaiter.UnsafeOnCompleted(continuation);
+                    break;
 
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            task.GetAwaiter().UnsafeOnCompleted(continuation);
+                default:
+                    ((Task<TResult>)_asyncOp).GetAwaiter().UnsafeOnCompleted(continuation);
+                    break;
+            }
         }
     }
 }

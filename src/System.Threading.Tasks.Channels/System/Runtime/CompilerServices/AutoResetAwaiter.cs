@@ -33,10 +33,8 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Iniitalize the awaiter.</summary>
         /// <param name="runContinuationsAsynchronously">true if the producer should invoke the continuation asynchronously; otherwise, false.</param>
-        public AutoResetAwaiter(bool runContinuationsAsynchronously = true)
-        {
+        public AutoResetAwaiter(bool runContinuationsAsynchronously = true) =>
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
-        }
 
         /// <summary>Gets whether the operation has already completed.</summary>
         public bool IsCompleted
@@ -89,10 +87,8 @@ namespace System.Runtime.CompilerServices
         }
 
         /// <summary>Set that the operation was canceled.</summary>
-        public void SetCanceled(CancellationToken token = default(CancellationToken))
-        {
+        public void SetCanceled(CancellationToken token = default(CancellationToken)) =>
             SetException(token.IsCancellationRequested ? new OperationCanceledException(token) : new OperationCanceledException());
-        }
 
         /// <summary>Set the failure for the operation.</summary>
         public void SetException(Exception exception)

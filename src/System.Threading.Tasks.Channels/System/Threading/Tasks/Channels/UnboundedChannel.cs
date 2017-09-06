@@ -83,7 +83,7 @@ namespace System.Threading.Tasks.Channels
                         }
 
                         // Otherwise, queue the reader.
-                        ReaderInteractor<T> reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
+                        var reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
                         parent._blockedReaders.EnqueueTail(reader);
                         return new ValueTask<T>(reader.Task);
                     }

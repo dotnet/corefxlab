@@ -27,8 +27,7 @@ namespace System.Threading.Tasks.Channels
         /// </param>
         internal static void Complete(TaskCompletionSource<VoidResult> tcs, Exception error = null)
         {
-            OperationCanceledException oce = error as OperationCanceledException;
-            if (oce != null)
+            if (error is OperationCanceledException oce)
             {
                 tcs.TrySetCanceled(oce.CancellationToken);
             }
@@ -50,19 +49,10 @@ namespace System.Threading.Tasks.Channels
         {
             Debug.Assert(error != null);
 
-            Task<T> t;
-
-            if (error == s_doneWritingSentinel)
-            {
-                t = Task.FromException<T>(CreateInvalidCompletionException());
-            }
-            else
-            {
-                OperationCanceledException oce = error as OperationCanceledException;
-                t = oce != null ?
-                    Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
-                    Task.FromException<T>(CreateInvalidCompletionException(error));
-            }
+            Task<T> t =
+                error == s_doneWritingSentinel ? Task.FromException<T>(CreateInvalidCompletionException()) :
+                error is OperationCanceledException oce ? Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
+                Task.FromException<T>(CreateInvalidCompletionException(error));
 
             return new ValueTask<T>(t);
         }

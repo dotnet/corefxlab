@@ -28,6 +28,7 @@ namespace System.Threading.Tasks.Channels
             {
                 throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
             }
+
             switch (mode)
             {
                 case BoundedChannelFullMode.DropNewest:

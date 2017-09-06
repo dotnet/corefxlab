@@ -53,7 +53,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Readable : ReadableChannel<T>
         {
             internal readonly BoundedChannel<T> _parent;
-            internal Readable(BoundedChannel<T> parent) { _parent = parent; }
+            internal Readable(BoundedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
 
@@ -184,7 +184,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Writable : WritableChannel<T>
         {
             internal readonly BoundedChannel<T> _parent;
-            internal Writable(BoundedChannel<T> parent) { _parent = parent; }
+            internal Writable(BoundedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {

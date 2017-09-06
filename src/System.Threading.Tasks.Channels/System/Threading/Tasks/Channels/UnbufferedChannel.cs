@@ -4,12 +4,11 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
-    [DebuggerDisplay("Writers Waiting/Blocked: {WaitingWritersCountForDebugger}/{BlockedWritersCountForDebugger}, Readers Waiting/Blocked: {WaitingReadersCountForDebugger}/{BlockedReadersCountForDebugger}")]
+    [DebuggerDisplay("Writers Waiting/Blocked: {WaitingWritersForDebugger}/{BlockedWritersCountForDebugger}, Readers Waiting/Blocked: {WaitingReadersForDebugger}/{BlockedReadersCountForDebugger}")]
     [DebuggerTypeProxy(typeof(UnbufferedChannel<>.DebugView))]
     internal sealed class UnbufferedChannel<T> : Channel<T>
     {
@@ -19,6 +18,7 @@ namespace System.Threading.Tasks.Channels
         private readonly Dequeue<ReaderInteractor<T>> _blockedReaders = new Dequeue<ReaderInteractor<T>>();
         /// <summary>A queue of writers blocked waiting to be matched with a reader.</summary>
         private readonly Dequeue<WriterInteractor<T>> _blockedWriters = new Dequeue<WriterInteractor<T>>();
+
         /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
         private ReaderInteractor<bool> _waitingReaders;
         /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
@@ -27,7 +27,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Readable : ReadableChannel<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
-            internal Readable(UnbufferedChannel<T> parent) { _parent = parent; }
+            internal Readable(UnbufferedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
 
@@ -134,7 +134,7 @@ namespace System.Threading.Tasks.Channels
         private sealed class Writable : WritableChannel<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
-            internal Writable(UnbufferedChannel<T> parent) { _parent = parent; }
+            internal Writable(UnbufferedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {
@@ -284,9 +284,9 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Gets whether there are any waiting writers.  This should only be used by the debugger.</summary>
-        private bool WaitingWritersCountForDebugger => _waitingWriters != null;
+        private bool WaitingWritersForDebugger => _waitingWriters != null;
         /// <summary>Gets whether there are any waiting readers.  This should only be used by the debugger.</summary>
-        private bool WaitingReadersCountForDebugger => _waitingReaders != null;
+        private bool WaitingReadersForDebugger => _waitingReaders != null;
         /// <summary>Gets the number of blocked writers.  This should only be used by the debugger.</summary>
         private int BlockedWritersCountForDebugger => _blockedWriters.Count;
         /// <summary>Gets the number of blocked readers.  This should only be used by the debugger.</summary>
@@ -296,10 +296,7 @@ namespace System.Threading.Tasks.Channels
         {
             private readonly UnbufferedChannel<T> _channel;
 
-            public DebugView(UnbufferedChannel<T> channel)
-            {
-                _channel = channel;
-            }
+            public DebugView(UnbufferedChannel<T> channel) => _channel = channel;
 
             public bool WaitingReaders => _channel._waitingReaders != null;
             public bool WaitingWriters => _channel._waitingWriters != null;

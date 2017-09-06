@@ -130,8 +130,7 @@ namespace System.Threading.Tasks.Channels
                                 break;
                             }
 
-                            T item;
-                            if (_channel.TryRead(out item))
+                            if (_channel.TryRead(out T item))
                             {
                                 foreach (IObserver<T> observer in _observers)
                                 {
