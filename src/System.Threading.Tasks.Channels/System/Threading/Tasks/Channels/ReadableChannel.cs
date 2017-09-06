@@ -43,15 +43,11 @@ namespace System.Threading.Tasks.Channels
         /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
         public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
-            }
-
             try
             {
-                return TryRead(out T item) ?
-                    new ValueTask<T>(item) :
+                return
+                    TryRead(out T item) ? new ValueTask<T>(item) :
+                    cancellationToken.IsCancellationRequested ? new ValueTask<T>(Task.FromCanceled<T>(cancellationToken)) :
                     ReadAsyncCore(cancellationToken);
             }
             catch (Exception e)
