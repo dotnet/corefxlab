@@ -6,6 +6,16 @@ namespace System.Runtime.CompilerServices
 {
     /// <summary>Provides an interface that may be implemented by an awaiter.</summary>
     /// <typeparam name="T">Specifies the result type of the await operation using this awaiter.</typeparam>
+    public interface IAwaiter : ICriticalNotifyCompletion
+    {
+        /// <summary>Gets whether the awaiter is completed.</summary>
+        bool IsCompleted { get; }
+        /// <summary>Gets the result of the completed, awaited operation.</summary>
+        void GetResult();
+    }
+
+    /// <summary>Provides an interface that may be implemented by an awaiter.</summary>
+    /// <typeparam name="T">Specifies the result type of the await operation using this awaiter.</typeparam>
     public interface IAwaiter<T> : ICriticalNotifyCompletion
     {
         /// <summary>Gets whether the awaiter is completed.</summary>
