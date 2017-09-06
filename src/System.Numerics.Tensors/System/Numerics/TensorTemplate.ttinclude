@@ -228,10 +228,10 @@
                 case MethodType.Unary:
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
-                    return $"({ResultName}.IsReveresedStride == {Op1Name}.IsReveresedStride)";
+                    return $"({ResultName}.IsReversedStride == {Op1Name}.IsReversedStride)";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return $"(({ResultName}.IsReveresedStride == {Op1Name}.IsReveresedStride) && ({ResultName}.IsReveresedStride == {Op2Name}.IsReveresedStride))";
+                    return $"(({ResultName}.IsReversedStride == {Op1Name}.IsReversedStride) && ({ResultName}.IsReversedStride == {Op2Name}.IsReversedStride))";
                 case MethodType.UnaryInPlace:
                 default:
                     throw new ArgumentException();
@@ -279,7 +279,7 @@
                 case MethodType.Comparison:
                     return $"{Op1Name}.CloneEmpty<bool>()";
                 case MethodType.Contraction:
-                    return $"new DenseTensor<{typeName}>(dimensions:resultDimensions)";
+                    return $"{Op1Name}.CloneEmpty(resultDimensions)";
                 default:
                     throw new ArgumentException();
             }

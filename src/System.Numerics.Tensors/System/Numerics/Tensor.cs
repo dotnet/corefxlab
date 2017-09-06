@@ -227,6 +227,7 @@ namespace System.Numerics
 
         internal readonly int[] dimensions;
         internal readonly int[] strides;
+        private readonly bool isReversedStride;
 
         private readonly long length;
         private IReadOnlyList<int> readOnlyDimensions;
@@ -256,6 +257,7 @@ namespace System.Numerics
             }
 
             strides = ArrayUtilities.GetStrides(dimensions, reverseStride);
+            isReversedStride = reverseStride;
 
             length = size;
             readOnlyDimensions = null;
@@ -271,7 +273,7 @@ namespace System.Numerics
         /// </summary>
         public int Rank => dimensions.Length;
 
-        public bool IsReversedStride => strides.Length > 0 && strides[0] == 1;
+        public bool IsReversedStride => isReversedStride;
 
         /// <summary>
         /// Returns a copy of the dimensions array.
@@ -294,7 +296,7 @@ namespace System.Numerics
             
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 this[indices] = value;
             }
@@ -404,7 +406,7 @@ namespace System.Numerics
                 for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
                 {
                     // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
-                    ArrayUtilities.GetIndices(diagonal.strides, diagProjectionOffset, diagIndices, 1);
+                    ArrayUtilities.GetIndices(diagonal.strides, diagonal.IsReversedStride, diagProjectionOffset, diagIndices, 1);
                     result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal[diagIndices];
                 }
             }
@@ -491,8 +493,8 @@ namespace System.Numerics
 
                 for(int diagProjectionIndex = 0; diagProjectionIndex < sizePerDiagonal; diagProjectionIndex++)
                 {
-                    ArrayUtilities.GetIndices(diagProjectionSourceStrides, diagProjectionIndex, sourceIndices, 2);
-                    ArrayUtilities.GetIndices(diagProjectionDiagStrides, diagProjectionIndex, diagIndices, 1);
+                    ArrayUtilities.GetIndices(diagProjectionSourceStrides, false, diagProjectionIndex, sourceIndices, 2);
+                    ArrayUtilities.GetIndices(diagProjectionDiagStrides, false, diagProjectionIndex, diagIndices, 1);
 
 
                     diagonalTensor[diagIndices] = this[sourceIndices];
@@ -590,7 +592,7 @@ namespace System.Numerics
 
                     for (int projectionIndex = 0; projectionIndex < projectionSize; projectionIndex++)
                     {
-                        ArrayUtilities.GetIndices(projectionStrides, projectionIndex, indices, 2);
+                        ArrayUtilities.GetIndices(projectionStrides, false, projectionIndex, indices, 2);
 
                         result[indices] = this[indices];
                     }
@@ -786,7 +788,7 @@ namespace System.Numerics
             var indices = new int[Rank];
             for(int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
                 yield return this[indices];
             }
 
@@ -810,8 +812,8 @@ namespace System.Numerics
 
             for(int i = index; i < length; i++)
             {
-                ArrayUtilities.GetIndices(destStrides, index, destIndices);
-                ArrayUtilities.GetIndices(strides, index, sourceIndices);
+                ArrayUtilities.GetIndices(destStrides, false, index, destIndices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, index, sourceIndices);
 
                 array.SetValue(this[sourceIndices], destIndices);
             }
@@ -825,7 +827,7 @@ namespace System.Numerics
             get
             {
                 var indices = new Span<int>(new int[Rank]);
-                ArrayUtilities.GetIndices(strides, index, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, index, indices);
                 return this[indices];
             }
             set
@@ -833,7 +835,7 @@ namespace System.Numerics
                 try
                 {
                     var indices = new Span<int>(new int[Rank]);
-                    ArrayUtilities.GetIndices(strides, index, indices);
+                    ArrayUtilities.GetIndices(strides, IsReversedStride, index, indices);
                     this[indices] = (T)value;
                 }
                 catch (InvalidCastException)
@@ -863,7 +865,7 @@ namespace System.Numerics
 
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 if (this[indices].Equals(value))
                 {
@@ -880,7 +882,7 @@ namespace System.Numerics
 
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 if (this[indices].Equals(value))
                 {
@@ -950,7 +952,7 @@ namespace System.Numerics
 
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 result = comparer.Compare(this[indices], other[indices]);
 
@@ -983,7 +985,7 @@ namespace System.Numerics
             var indices = new int[Rank];
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 result = comparer.Compare(this[indices], other.GetValue(indices));
 
@@ -1039,7 +1041,7 @@ namespace System.Numerics
 
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 if (!comparer.Equals(this[indices], other[indices]))
                 {
@@ -1069,7 +1071,7 @@ namespace System.Numerics
             var indices = new int[Rank];  // consider stackalloc
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
                 if (!comparer.Equals(this[indices], other.GetValue(indices)))
                 {
@@ -1087,7 +1089,7 @@ namespace System.Numerics
             Span<int> indices = new Span<int>(new int[Rank]);
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, i, indices);
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
                 hashCode ^= comparer.GetHashCode(this[indices]);
             }
 

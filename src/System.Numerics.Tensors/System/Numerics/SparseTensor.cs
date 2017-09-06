@@ -30,7 +30,7 @@ namespace System.Numerics
 
                 foreach (var item in fromArray)
                 {
-                    var destIndex = ArrayUtilities.TransformIndexByStrides(index++, sourceStrides, strides);
+                    var destIndex = ArrayUtilities.TransformIndexByStrides(index++, sourceStrides, false, strides);
                     values[destIndex] = (T)item;
                 }
             }

@@ -198,9 +198,8 @@ namespace System.Numerics
         /// <param name="index"></param>
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
-        public static void GetIndices(int[] strides, int index, int[] indices, int startFromDimension = 0)
+        public static void GetIndices(int[] strides, bool reverseStride, int index, int[] indices, int startFromDimension = 0)
         {
-            bool reverseStride = strides.Length > 1 && strides[0] == 1;
             Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);
 
@@ -223,9 +222,8 @@ namespace System.Numerics
         /// <param name="index"></param>
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
-        public static void GetIndices(int[] strides, int index, Span<int> indices, int startFromDimension = 0)
+        public static void GetIndices(int[] strides, bool reverseStride, int index, Span<int> indices, int startFromDimension = 0)
         {
-            bool reverseStride = strides.Length > 1 && strides[0] == 1;
             Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);
 
@@ -244,9 +242,8 @@ namespace System.Numerics
         /// <summary>
         /// Takes an 1-d index over n-d sourceStrides and recalculates it assuming same n-d coordinates over a different n-d strides
         /// </summary>
-        public static int TransformIndexByStrides(int index, int[] sourceStrides, int[] transformStrides)
+        public static int TransformIndexByStrides(int index, int[] sourceStrides, bool sourceReverseStride, int[] transformStrides)
         {
-            bool sourceReverseStride = sourceStrides.Length > 1 && sourceStrides[0] == 1;
             Debug.Assert(index >= 0);
             Debug.Assert(sourceReverseStride ? IsAscending(sourceStrides) : IsDescending(sourceStrides), "Index decomposition requires ordered strides");
             Debug.Assert(sourceStrides.Length == transformStrides.Length);
