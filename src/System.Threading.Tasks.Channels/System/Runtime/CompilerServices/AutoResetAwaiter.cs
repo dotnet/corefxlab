@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 {
     /// <summary>Provides a reusable object that can be awaited by a consumer and manually completed by a producer.</summary>
     /// <typeparam name="TResult">The type of data being passed from producer to consumer.</typeparam>
-    public sealed class AutoResetAwaiter<TResult> : IAwaiter<TResult>
+    internal sealed class AutoResetAwaiter<TResult> : IAwaiter<TResult>
     {
         /// <summary>Sentinel object indicating that the operation has completed prior to OnCompleted being called.</summary>
         private static readonly Action s_completionSentinel = () => Debug.Fail("Completion sentinel should never be invoked");
@@ -110,7 +110,7 @@ namespace System.Runtime.CompilerServices
 
                 if (_runContinuationsAsynchronously)
                 {
-                    Task.Run(c);
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(c);
                 }
                 else
                 {
@@ -128,12 +128,22 @@ namespace System.Runtime.CompilerServices
             if (c != null)
             {
                 Debug.Assert(c == s_completionSentinel);
-                Task.Run(continuation);
+                Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(continuation);
             }
         }
 
         /// <summary>Register the continuation to invoke when the operation completes.</summary>
-        public void UnsafeOnCompleted(Action continuation) => OnCompleted(continuation);
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            Debug.Assert(continuation != null);
+
+            Action c = _continuation ?? Interlocked.CompareExchange(ref _continuation, continuation, null);
+            if (c != null)
+            {
+                Debug.Assert(c == s_completionSentinel);
+                Task.CompletedTask.ConfigureAwait(false).GetAwaiter().UnsafeOnCompleted(continuation);
+            }
+        }
 
         [Conditional("DEBUG")]
         private void AssertResultConsistency(bool expectedCompleted)

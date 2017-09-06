@@ -114,7 +114,7 @@ namespace System.Runtime.CompilerServices
             switch (_asyncOp)
             {
                 case null:
-                    Task.Run(continuation);
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(continuation);
                     break;
 
                 case IAwaiter<TResult> awaiter:
@@ -134,7 +134,7 @@ namespace System.Runtime.CompilerServices
             switch (_asyncOp)
             {
                 case null:
-                    Task.Run(continuation);
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().UnsafeOnCompleted(continuation);
                     break;
 
                 case IAwaiter<TResult> awaiter:
