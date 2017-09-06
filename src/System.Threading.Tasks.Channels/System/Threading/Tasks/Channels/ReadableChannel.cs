@@ -21,6 +21,12 @@ namespace System.Threading.Tasks.Channels
         /// </summary>
         public abstract Task Completion { get; }
 
+        /// <summary>
+        /// Gets a <see cref="CancellationToken"/> that is signaled when no more data will ever
+        /// be available to be read from this channel.
+        /// </summary>
+        public virtual CancellationToken CompletionCancellationToken => ChannelUtilities.GetCompletionToken(Completion);
+
         /// <summary>Attempts to read an item to the channel.</summary>
         /// <param name="item">The read item, or a default value if no item could be read.</param>
         /// <returns>true if an item was read; otherwise, false if no item was read.</returns>
@@ -70,12 +76,12 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
-        private static readonly ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable =
-            new ConditionalWeakTable<ReadableChannel<T>, ChannelObservable>();
+        private static ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable;
 
         /// <summary>Creates an observable for this channel.</summary>
         /// <returns>An observable that pulls data from this channel.</returns>
-        public virtual IObservable<T> AsObservable() => s_channelToObservable.GetValue(this, s => new ChannelObservable(s));
+        public virtual IObservable<T> AsObservable() =>
+            LazyInitializer.EnsureInitialized(ref s_channelToObservable).GetValue(this, s => new ChannelObservable(s));
 
         /// <summary>Provides an observable for a readable channel.</summary>
         internal sealed class ChannelObservable : IObservable<T>
