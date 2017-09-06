@@ -23,11 +23,6 @@ namespace System.IO.Pipelines
         /// </summary>
         public Buffer<byte> Buffer => _pipe.Buffer;
 
-        /// <summary>
-        /// Returns the number of bytes currently written and uncommitted.
-        /// </summary>
-        public long BytesWritten => AsReadableBuffer().Length;
-
         Span<byte> IOutput.Buffer => Buffer.Span;
 
         void IOutput.Enlarge(int desiredBufferLength) => Ensure(ComputeActualSize(desiredBufferLength));
@@ -36,15 +31,7 @@ namespace System.IO.Pipelines
         {
             if (desiredBufferLength < 256) desiredBufferLength = 256;
             if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
-            return desiredBufferLength; 
-        }
-
-        /// <summary>
-        /// Obtain a readable buffer over the data written but uncommitted to this buffer.
-        /// </summary>
-        public ReadableBuffer AsReadableBuffer()
-        {
-            return _pipe.AsReadableBuffer();
+            return desiredBufferLength;
         }
 
         /// <summary>

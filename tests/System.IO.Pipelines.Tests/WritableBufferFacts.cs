@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -192,130 +193,6 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-
-        [Fact]
-        public void CanReReadDataThatHasNotBeenCommitted_SmallData()
-        {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(memoryPool);
-                var output = pipe.Writer.Alloc();
-
-                Assert.True(output.AsReadableBuffer().IsEmpty);
-                Assert.Equal(0, output.AsReadableBuffer().Length);
-
-
-                output.Append("hello world", SymbolTable.InvariantUtf8);
-                var readable = output.AsReadableBuffer();
-
-                // check that looks about right
-                Assert.False(readable.IsEmpty);
-                Assert.Equal(11, readable.Length);
-                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello world")));
-                Assert.True(readable.Slice(1, 3).EqualsTo(Encoding.UTF8.GetBytes("ell")));
-
-                // check it all works after we write more
-                output.Append("more data", SymbolTable.InvariantUtf8);
-
-                // note that the snapshotted readable should not have changed by this
-                Assert.False(readable.IsEmpty);
-                Assert.Equal(11, readable.Length);
-                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello world")));
-                Assert.True(readable.Slice(1, 3).EqualsTo(Encoding.UTF8.GetBytes("ell")));
-
-                // if we fetch it again, we can see everything
-                readable = output.AsReadableBuffer();
-                Assert.False(readable.IsEmpty);
-                Assert.Equal(20, readable.Length);
-                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello worldmore data")));
-            }
-        }
-
-        [Fact]
-        public void CanReReadDataThatHasNotBeenCommitted_LargeData()
-        {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(memoryPool);
-
-                var output = pipe.Writer.Alloc();
-
-                byte[] predictablyGibberish = new byte[512];
-                const int SEED = 1235412;
-                Random random = new Random(SEED);
-                for (int i = 0; i < 50; i++)
-                {
-                    for (int j = 0; j < predictablyGibberish.Length; j++)
-                    {
-                        // doing it this way to be 100% sure about repeating the PRNG order
-                        predictablyGibberish[j] = (byte)random.Next(0, 256);
-                    }
-                    output.Write(predictablyGibberish);
-                }
-
-                var readable = output.AsReadableBuffer();
-                Assert.False(readable.IsSingleSpan);
-                Assert.False(readable.IsEmpty);
-                Assert.Equal(50 * 512, readable.Length);
-
-                random = new Random(SEED);
-                int correctCount = 0;
-                foreach (var memory in readable)
-                {
-                    var span = memory.Span;
-                    for (int i = 0; i < span.Length; i++)
-                    {
-                        if (span[i] == (byte)random.Next(0, 256)) correctCount++;
-                    }
-                }
-                Assert.Equal(50 * 512, correctCount);
-            }
-        }
-
-        [Fact]
-        public async Task CanAppendSelfWhileEmpty()
-        { // not really an expectation; just an accepted caveat
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(memoryPool);
-
-                var output = pipe.Writer.Alloc();
-                var readable = output.AsReadableBuffer();
-                output.Append(readable);
-                Assert.Equal(0, output.AsReadableBuffer().Length);
-
-                await output.FlushAsync();
-            }
-        }
-
-        [Fact]
-        public async Task CanAppendSelfWhileNotEmpty()
-        {
-            byte[] chunk = new byte[512];
-            new Random().NextBytes(chunk);
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(memoryPool);
-
-                var output = pipe.Writer.Alloc();
-
-                for (int i = 0; i < 20; i++)
-                {
-                    output.Write(chunk);
-                }
-                var readable = output.AsReadableBuffer();
-                Assert.Equal(512 * 20, readable.Length);
-
-                output.Append(readable);
-                Assert.Equal(512 * 20, readable.Length);
-
-                readable = output.AsReadableBuffer();
-                Assert.Equal(2 * 512 * 20, readable.Length);
-
-                await output.FlushAsync();
-            }
-        }
-
         [Fact]
         public void EnsureMoreThanPoolBlockSizeThrows()
         {
@@ -341,15 +218,18 @@ namespace System.IO.Pipelines.Tests
 
         [Theory]
         [MemberData(nameof(HexNumbers))]
-        public void WriteHex(int value, string hex)
+        public async Task WriteHex(int value, string hex)
         {
             using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
                 var buffer = pipe.Writer.Alloc();
                 buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
+                await buffer.FlushAsync();
+                var result = await pipe.Reader.ReadAsync();
 
-                Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());
+                Assert.Equal(hex, result.Buffer.GetAsciiString());
+                pipe.Reader.Advance(result.Buffer.End);
             }
         }
 

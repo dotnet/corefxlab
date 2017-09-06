@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.IO.Pipelines.Networking.Sockets.Internal;
 using System.Collections.Generic;
 using System.Net;
@@ -374,7 +375,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                         }
 
                         bool isEOF = false;
-                        while (Socket.Available != 0 && buffer.BytesWritten < FlushInputEveryBytes)
+                        var bytesWritten = bytesFromInitialDataBuffer;
+                        while (Socket.Available != 0 && bytesWritten < FlushInputEveryBytes)
                         {
                             buffer.Ensure(); // ask for *something*, then use whatever is available (usually much much more)
                             SetBuffer(buffer.Buffer, args);
@@ -396,6 +398,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
                             // record what data we filled into the buffer
                             buffer.Advance(len);
+                            bytesWritten += len;
                         }
                         if (isEOF)
                         {

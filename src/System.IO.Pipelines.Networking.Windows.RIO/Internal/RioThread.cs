@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
@@ -126,7 +127,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             long startAddress;
             long spanAddress = spanPtr.ToInt64();
             var bufferId = GetBufferId(spanPtr, out startAddress);
-            
+
             checked
             {
                 var offset = (uint)(spanAddress - startAddress);

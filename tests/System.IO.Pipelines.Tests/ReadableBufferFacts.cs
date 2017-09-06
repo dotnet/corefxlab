@@ -331,7 +331,7 @@ namespace System.IO.Pipelines.Tests
                 var output = readerWriter.Writer.Alloc();
                 output.Append(input, SymbolTable.InvariantUtf8);
 
-                var readable = output.AsReadableBuffer();
+                var readable = BufferUtilities.CreateBuffer(input);
 
                 // via struct API
                 var iter = readable.Split((byte)delimiter);
@@ -526,38 +526,16 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadableBufferSequenceWorks()
         {
-            using (var factory = new PipeFactory())
+            var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyBuffer<byte>>;
+            var position = Position.First;
+            ReadOnlyBuffer<byte> memory;
+            int spanCount = 0;
+            while (readable.TryGet(ref position, out memory))
             {
-                var readerWriter = factory.Create();
-                var output = readerWriter.Writer.Alloc();
-
-                {
-                    // empty buffer
-                    var readable = output.AsReadableBuffer() as ISequence<ReadOnlyBuffer<byte>>;
-                    var position = Position.First;
-                    ReadOnlyBuffer<byte> memory;
-                    int spanCount = 0;
-                    while (readable.TryGet(ref position, out memory))
-                    {
-                        spanCount++;
-                        Assert.Equal(0, memory.Length);
-                    }
-                    Assert.Equal(1, spanCount);
-                }
-
-                {
-                    var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyBuffer<byte>>;
-                    var position = Position.First;
-                    ReadOnlyBuffer<byte> memory;
-                    int spanCount = 0;
-                    while (readable.TryGet(ref position, out memory))
-                    {
-                        spanCount++;
-                        Assert.Equal(spanCount, memory.Length);
-                    }
-                    Assert.Equal(3, spanCount);
-                }
+                spanCount++;
+                Assert.Equal(spanCount, memory.Length);
             }
+            Assert.Equal(3, spanCount);
         }
 
         [Theory]
