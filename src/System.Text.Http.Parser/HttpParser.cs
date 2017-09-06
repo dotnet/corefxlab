@@ -23,7 +23,7 @@ namespace System.Text.Http.Parser
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
 
-        public unsafe bool ParseRequestLine<T>(T handler, ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -42,7 +42,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                span = TryGetNewLineSpan(ref buffer, out consumed);
+                span = TryGetNewLineSpan(buffer, out consumed);
                 if (span.Length == 0)
                 {
                     // No request line end
@@ -61,7 +61,7 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(ref T handler, ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
             var span = buffer.First.Span;
@@ -95,14 +95,13 @@ namespace System.Text.Http.Parser
 
         private unsafe void ParseRequestLine<T>(T handler, byte* data, int length) where T : IHttpRequestLineHandler
         {
-            int offset;
-            ReadOnlySpan<byte> customMethod;
             // Get Method and set the offset
-            var method = HttpUtilities.GetKnownMethod(data, length, out offset);
-            if (method == Http.Method.Custom)
-            {
-                customMethod = GetUnknownMethod(data, length, out offset);
-            }
+            var method = HttpUtilities.GetKnownMethod(data, length, out var offset);
+
+            ReadOnlySpan<byte> customMethod =
+                method == Http.Method.Custom ?
+                    GetUnknownMethod(data, length, out offset) :
+                    default;
 
             // Skip space
             offset++;
@@ -212,7 +211,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -589,7 +588,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Span<byte> TryGetNewLineSpan(ref ReadableBuffer buffer, out ReadCursor end)
+        private static Span<byte> TryGetNewLineSpan(in ReadableBuffer buffer, out ReadCursor end)
         {
             var start = buffer.Start;
             if (ReadCursorOperations.Seek(start, buffer.End, out end, ByteLF) != -1)

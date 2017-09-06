@@ -97,7 +97,7 @@ namespace System.Text.Json
             ref byte next = ref Unsafe.Add(ref bytes, skip);
             length -= skip;
 
-            int step = GetNextCharAscii(ref next, length, out char ch);
+            int step = GetNextCharAscii(this, ref next, length, out char ch);
             if (step == 0) return false;
 
             switch (TokenType)
@@ -206,7 +206,7 @@ namespace System.Text.Json
                             return skip + ConsumePropertyName(ref next, length);
                         else if (InArray)
                         {
-                            int step = GetNextCharAscii(ref next, length, out char ch);
+                            int step = GetNextCharAscii(this, ref next, length, out char ch);
                             if (step == 0) return 0;
                             return skip + ConsumeValue(ch, step, ref next, length);
                         }
@@ -264,7 +264,7 @@ namespace System.Text.Json
                     return ConsumeNumber(ref src, length);
 
                 case '-':
-                    int step = GetNextCharAscii(ref src, length, out char ch);
+                    int step = GetNextCharAscii(this, ref src, length, out char ch);
                     if (step == 0) throw new JsonReaderException();
                     return (ch == 'I')
                         ? ConsumeInfinity(ref src, length, true)
@@ -777,7 +777,7 @@ namespace System.Text.Json
             int idx = 0;
             while (idx < length)
             {
-                int skip = GetNextCharAscii(ref Unsafe.Add(ref src, idx), length, out char ch);
+                int skip = GetNextCharAscii(this, ref Unsafe.Add(ref src, idx), length, out char ch);
                 if (skip == 0)
                     break;
 
@@ -799,9 +799,9 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetNextCharAscii(ref byte src, int length, out char ch)
+        private static int GetNextCharAscii(in JsonReader reader, ref byte src, int length, out char ch)
         {
-            if (UseFastUtf8)
+            if (reader.UseFastUtf8)
             {
                 if (length < 1)
                 {
@@ -812,7 +812,7 @@ namespace System.Text.Json
                 ch = (char)src;
                 return 1;
             }
-            else if (UseFastUtf16)
+            else if (reader.UseFastUtf16)
             {
                 if (length < 2)
                 {

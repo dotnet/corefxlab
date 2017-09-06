@@ -39,64 +39,62 @@ namespace System.Text.Http.SingleSegment
             }
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminator, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, char terminator, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo((byte)terminator, out consumedBytes);
+            return buffer.SliceTo((byte)terminator, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminator, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminator, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo(start, (byte)terminator, out consumedBytes);
+            return buffer.SliceTo(start, (byte)terminator, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, byte terminator, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, byte terminator, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo(0, terminator, out consumedBytes);
+            return buffer.SliceTo(0, terminator, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out ReadOnlySpan<byte> slice)
         {
-            var slice = buffer.Slice(start);
+            slice = buffer.Slice(start);
             var index = System.SpanExtensions.IndexOf(slice, terminator);
             if (index == -1) {
-                consumedBytes = 0;
-                return Span<byte>.Empty;
+                return 0;
             }
-            consumedBytes = index;
-            return slice.Slice(0, index);
+            slice = slice.Slice(0, index);
+            return index;
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminatorFirst, char terminatorSecond, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, char terminatorFirst, char terminatorSecond, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo((byte)terminatorFirst, (byte)terminatorSecond, out consumedBytes);
+            return buffer.SliceTo((byte)terminatorFirst, (byte)terminatorSecond, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminatorFirst, char terminatorSecond, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminatorFirst, char terminatorSecond, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo(start, (byte)terminatorFirst, (byte)terminatorSecond, out consumedBytes);
+            return buffer.SliceTo(start, (byte)terminatorFirst, (byte)terminatorSecond, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, byte terminatorFirst, byte terminatorSecond, out ReadOnlySpan<byte> slice)
         {
-            return buffer.SliceTo(0, terminatorFirst, terminatorSecond, out consumedBytes);
+            return buffer.SliceTo(0, terminatorFirst, terminatorSecond, out slice);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        internal static int SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminatorFirst, byte terminatorSecond, out ReadOnlySpan<byte> slice)
         {
             int offset = 0;
             while (true)
             {
-                var slice = buffer.Slice(start + offset);
+                slice = buffer.Slice(start + offset);
                 var index = System.SpanExtensions.IndexOf(slice, terminatorFirst);
                 if (index == -1 || index == slice.Length - 1)
                 {
-                    consumedBytes = 0;
-                    return Span<byte>.Empty;
+                    return 0;
                 }
                 if (slice[index + 1] == terminatorSecond)
                 {
-                    consumedBytes = index;
-                    return slice.Slice(0, index + offset);
+                    slice = slice.Slice(0, index + offset);
+                    return index;
                 }
                 else
                 {
