@@ -37,39 +37,43 @@ namespace System.Text.Parsing
             }
 
             // Combine the first, the second, and potentially more segments into a stack allocated buffer
-            ReadOnlySpan<byte> combinedSpan;
-            unsafe
+            // make 'combinedSpan' formally stack-referring or we won't be able to reference stack data later
+            ReadOnlySpan<byte> combinedSpan = stackalloc byte[0];
+
+            if (first.Length < StackBufferSize)
             {
-                if (first.Length < StackBufferSize) {
-                    var data = stackalloc byte[StackBufferSize];
-                    var destination = new Span<byte>(data, StackBufferSize);
+                Span<byte> destination = stackalloc byte[StackBufferSize];
 
-                    first.CopyTo(destination);
-                    var free = destination.Slice(first.Length);
+                first.CopyTo(destination);
+                var free = destination.Slice(first.Length);
 
-                    if (second.Length > free.Length) second = second.Slice(0, free.Length);
-                    second.CopyTo(free);
-                    free = free.Slice(second.Length);
+                if (second.Length > free.Length) second = second.Slice(0, free.Length);
+                second.CopyTo(free);
+                free = free.Slice(second.Length);
 
-                    ReadOnlyBuffer<byte> next;
-                    while (free.Length > 0) {
-                        if (bufferSequence.TryGet(ref position, out next)) {
-                            if (next.Length > free.Length) next = next.Slice(0, free.Length);
-                            next.CopyTo(free);
-                            free = free.Slice(next.Length);
-                        }
-                        else {
-                            break;
-                        }
+                ReadOnlyBuffer<byte> next;
+                while (free.Length > 0)
+                {
+                    if (bufferSequence.TryGet(ref position, out next))
+                    {
+                        if (next.Length > free.Length) next = next.Slice(0, free.Length);
+                        next.CopyTo(free);
+                        free = free.Slice(next.Length);
                     }
+                    else
+                    {
+                        break;
+                    }
+                }
 
-                    combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
+                combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
 
-                    // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                    if (PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedSpan, out value, out consumed)) {
-                        if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
-                            return true;
-                        }
+                // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
+                if (PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedSpan, out value, out consumed))
+                {
+                    if (consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize)
+                    {
+                        return true;
                     }
                 }
             }
@@ -110,39 +114,37 @@ namespace System.Text.Parsing
             }
 
             // Combine the first, the second, and potentially more segments into a stack allocated buffer
-            ReadOnlySpan<byte> combinedSpan;
-            unsafe
-            {
-                if (first.Length < StackBufferSize) {
-                    var data = stackalloc byte[StackBufferSize];
-                    var destination = new Span<byte>(data, StackBufferSize);
+            // make 'combinedSpan' formally stack-referring or we won't be able to reference stack data later
+            ReadOnlySpan<byte> combinedSpan = stackalloc byte[0];
+            if (first.Length < StackBufferSize) {
 
-                    first.CopyTo(destination);
-                    var free = destination.Slice(first.Length);
+                Span<byte> destination = stackalloc byte[StackBufferSize];
 
-                    if (second.Length > free.Length) second = second.Slice(0, free.Length);
-                    second.CopyTo(free);
-                    free = free.Slice(second.Length);
+                first.CopyTo(destination);
+                var free = destination.Slice(first.Length);
 
-                    ReadOnlyBuffer<byte> next;
-                    while (free.Length > 0) {
-                        if (bufferSequence.TryGet(ref position, out next)) {
-                            if (next.Length > free.Length) next = next.Slice(0, free.Length);
-                            next.CopyTo(free);
-                            free = free.Slice(next.Length);
-                        }
-                        else {
-                            break;
-                        }
+                if (second.Length > free.Length) second = second.Slice(0, free.Length);
+                second.CopyTo(free);
+                free = free.Slice(second.Length);
+
+                ReadOnlyBuffer<byte> next;
+                while (free.Length > 0) {
+                    if (bufferSequence.TryGet(ref position, out next)) {
+                        if (next.Length > free.Length) next = next.Slice(0, free.Length);
+                        next.CopyTo(free);
+                        free = free.Slice(next.Length);
                     }
+                    else {
+                        break;
+                    }
+                }
 
-                    combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
+                combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
 
-                    // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                    if (PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
-                        if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
-                            return true;
-                        }
+                // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
+                if (PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
+                    if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
+                        return true;
                     }
                 }
             }

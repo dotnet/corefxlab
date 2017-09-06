@@ -67,22 +67,20 @@ namespace System.Text.Http.Parser.Internal
             return methodNames;
         }
 
-        private unsafe static ulong GetAsciiStringAsLong(string str)
+        private static ulong GetAsciiStringAsLong(string str)
         {
             Debug.Assert(str.Length == 8, "String must be exactly 8 (ASCII) characters long.");
 
-            var buffer = stackalloc byte[8];
-            Span<byte> span = new Span<byte>(buffer, 8);
+            Span<byte> span = stackalloc byte[8];
             Encoders.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<ulong>();
         }
 
-        private unsafe static uint GetAsciiStringAsInt(string str)
+        private static uint GetAsciiStringAsInt(string str)
         {
             Debug.Assert(str.Length == 4, "String must be exactly 4 (ASCII) characters long.");
 
-            var buffer = stackalloc byte[4];
-            Span<byte> span = new Span<byte>(buffer, 4);
+            Span<byte> span = stackalloc byte[4];
             Encoders.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<uint>();
         }

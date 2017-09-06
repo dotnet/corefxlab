@@ -35,12 +35,7 @@ namespace System.Azure.Authentication
             int written, consumed, totalWritten = 0;
             bytesWritten = 0;
 
-            Span<byte> buffer;
-            unsafe
-            {
-                var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
-                buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
-            }
+            Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
 
             s_type.CopyTo(buffer);
             totalWritten += s_type.Length;

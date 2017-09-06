@@ -125,12 +125,7 @@ namespace System.Text
                 return true;
             }
 
-            Span<byte> temp;
-            unsafe
-            {
-                byte* pTemp = stackalloc byte[BufferSize];
-                temp = new Span<byte>(pTemp, BufferSize);
-            }
+            Span<byte> temp = stackalloc byte[BufferSize];
 
             bytesWritten = 0;
             bytesConsumed = 0;

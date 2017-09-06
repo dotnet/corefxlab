@@ -203,14 +203,14 @@ namespace System.IO.Pipelines.Text.Primitives
         /// Decodes the utf8 encoded bytes in the <see cref="ReadableBuffer"/> into a <see cref="string"/>
         /// </summary>
         /// <param name="buffer">The buffer to decode</param>
-        public static unsafe string GetUtf8String(this ReadableBuffer buffer)
+        public static string GetUtf8String(this ReadableBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
                 return null;
             }
 
-            ReadOnlySpan<byte> textSpan;
+            ReadOnlySpan<byte> textSpan = stackalloc byte[0];
 
             if (buffer.IsSingleSpan)
             {
@@ -218,9 +218,7 @@ namespace System.IO.Pipelines.Text.Primitives
             }
             else if (buffer.Length < 128) // REVIEW: What's a good number
             {
-                var data = stackalloc byte[128];
-                var destination = new Span<byte>(data, 128);
-
+                Span<byte> destination = stackalloc byte[128];
                 buffer.CopyTo(destination);
 
                 // We are able to cast because buffer.Length < 128

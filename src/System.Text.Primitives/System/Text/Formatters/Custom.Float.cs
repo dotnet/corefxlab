@@ -70,12 +70,7 @@ namespace System.Text.Formatters
                     return false;
                 }
 
-                Span<byte> temp;
-                unsafe
-                {
-                    var buf = stackalloc byte[needed];
-                    temp = new Span<byte>(buf, needed);
-                }
+                Span<byte> temp = stackalloc byte[needed];
 
                 status = Encoders.Utf16.ToUtf8(utf16Bytes, temp, out int consumed, out written);
                 if (status != Buffers.OperationStatus.Done)
