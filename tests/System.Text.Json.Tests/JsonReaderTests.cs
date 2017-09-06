@@ -411,7 +411,7 @@ namespace System.Text.Json.Tests
             if (jsonReader.SymbolTable == SymbolTable.InvariantUtf8)
             {
                 var status = Encoders.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
-                Assert.Equal(Buffers.TransformationStatus.Done, status);
+                Assert.Equal(Buffers.OperationStatus.Done, status);
 
                 var text = new string(' ', needed);
                 unsafe
@@ -421,7 +421,7 @@ namespace System.Text.Json.Tests
                         var dst = new Span<byte>((byte*)pChars, needed);
 
                         status = Encoders.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
-                        Assert.Equal(Buffers.TransformationStatus.Done, status);
+                        Assert.Equal(Buffers.OperationStatus.Done, status);
                     }
                 }
 

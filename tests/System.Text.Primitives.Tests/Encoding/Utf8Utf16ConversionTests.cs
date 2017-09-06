@@ -20,121 +20,121 @@ namespace System.Text.Primitives.Tests
                 0,
                 new byte[] { 0x80, 0x41, 0x42 },
                 new char[] { },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // short; slow loop only; starts with invalid first byte
                 0,
                 new byte[] { 0xA0, 0x41, 0x42 },
                 new char[] { },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] {  // short; slow loop only; invalid long code after first byte
                 0,
                 new byte[] { 0xC0, 0x00 },
                 new char[] {},
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] {  // short; slow loop only; invalid long code started after consuming a byte
                 1,
                 new byte[] { 0x41, 0xC0, 0x00 },
                 new char[] { 'A' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // short; slow loop only; incomplete 2-byte long code at end of buffer
                 2,
                 new byte[] { 0x41, 0x42, 0xC0 },
                 new char[] { 'A', 'B' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] { // short; slow loop only; incomplete 3-byte long code at end of buffer
                 2,
                 new byte[] { 0x41, 0x42, 0xE0, 0x83 },
                 new char[] { 'A', 'B' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] { // short; slow loop only; incomplete 4-byte long code at end of buffer
                 2,
                 new byte[] { 0x41, 0x42, 0xF0, 0x83, 0x84 },
                 new char[] { 'A', 'B' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] {  // long; fast loop only; starts with invalid first byte
                 0,
                 new byte[] { 0x80, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
                 new char[] { },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; fast loop only; starts with invalid first byte
                 0,
                 new byte[] { 0xA0, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
                 new char[] { },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] {  // long; fast loop only; invalid long code after first byte
                 0,
                 new byte[] { 0xC0, 0x00, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
                 new char[] {},
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] {  // long; fast loop only; invalid long code started after consuming a byte
                 1,
                 new byte[] { 0x41, 0xC0, 0x00, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
                 new char[] { 'A' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; incomplete 2-byte long code at end of buffer
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xC0 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] { // long; incomplete 3-byte long code at end of buffer
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xE0, 0x83 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] { // long; incomplete 4-byte long code at end of buffer
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xF0, 0x83, 0x84 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                TransformationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreSourceData,
             },
             new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
                 3,
                 new byte[] { 0x41, 0x42, 0x43, 0xC0, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
                 new char[] { 'A', 'B', 'C' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
                 3,
                 new byte[] { 0x41, 0x42, 0x43, 0xE0, 0x83, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
                 new char[] { 'A', 'B', 'C' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
                 3,
                 new byte[] { 0x41, 0x42, 0x43, 0xF0, 0x83, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
                 new char[] { 'A', 'B', 'C' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; fast loop only; incomplete long code inside unrolled loop
                 9,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0xF0, 0x83, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
             new object[] { // long; fast loop only; bad long code starting byte inside unrolled loop
                 9,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x85, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' },
-                TransformationStatus.InvalidData,
+                OperationStatus.InvalidData,
             },
         };
 
         [Theory]
         [MemberData("InvalidUtf8ToUtf16SequenceData")]
-        public void InvalidUtf8ToUtf16SequenceTests(int expectedConsumed, byte[] input, char[] expectedOutput, TransformationStatus expectedResult)
+        public void InvalidUtf8ToUtf16SequenceTests(int expectedConsumed, byte[] input, char[] expectedOutput, OperationStatus expectedResult)
         {
             // Allocate a buffer large enough to hold expected output plus a bit of room to see what happens.
             int bytesNeeded = (expectedOutput.Length + 10) * sizeof(char);
@@ -174,7 +174,7 @@ namespace System.Text.Primitives.Tests
 
             // Encoders.Utf16 version
             Span<byte> encodedData = data;
-            Assert.Equal(TransformationStatus.Done, Encoders.Utf8.ToUtf16Length(encodedData, out int neededBytes));
+            Assert.Equal(OperationStatus.Done, Encoders.Utf8.ToUtf16Length(encodedData, out int neededBytes));
 
             // System version
             int expectedBytes = Text.Encoding.UTF8.GetCharCount(data) * sizeof(char);
@@ -207,12 +207,12 @@ namespace System.Text.Primitives.Tests
 
             Span<byte> encodedData = data;
             var result = Encoders.Utf8.ToUtf16Length(encodedData, out int needed);
-            Assert.Equal(TransformationStatus.Done, result);
+            Assert.Equal(OperationStatus.Done, result);
 
             // Encoders.Utf16 version
             Span<byte> actual = new byte[needed];
             result = Encoders.Utf8.ToUtf16(encodedData, actual, out int consumed, out int written);
-            Assert.Equal(TransformationStatus.Done, result);
+            Assert.Equal(OperationStatus.Done, result);
 
             // System version
             int neededChars = Text.Encoding.UTF8.GetCharCount(data);

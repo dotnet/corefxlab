@@ -18,8 +18,8 @@ namespace System.Text.Encoders
         /// </summary>
         /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
         /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
-        public static TransformationStatus FromUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+        /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
+        public static OperationStatus FromUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             => Utf8.ToUtf16Length(source, out bytesNeeded);
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace System.Text.Encoders
         /// <param name="destination">A span to write the UTF-16 bytes into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
         /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
-        public static TransformationStatus FromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
+        public static OperationStatus FromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             => Utf8.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace System.Text.Encoders
         /// </summary>
         /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
         /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
-        public static TransformationStatus ToUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+        /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
+        public static OperationStatus ToUtf8Length(ReadOnlySpan<byte> source, out int bytesNeeded)
         {
             bytesNeeded = 0;
 
@@ -70,7 +70,7 @@ namespace System.Text.Encoders
                     else
                     {
                         if (++i >= utf16Length)
-                            return TransformationStatus.NeedMoreSourceData;
+                            return OperationStatus.NeedMoreSourceData;
 
                         uint codePoint = (uint)char.ConvertToUtf32(ch, Unsafe.Add(ref utf16, i));
                         bytesNeeded += EncodingHelper.GetUtf8EncodedBytes(codePoint);
@@ -78,13 +78,13 @@ namespace System.Text.Encoders
                 }
 
                 if ((utf16Length << 1) != source.Length)
-                    return TransformationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreSourceData;
 
-                return TransformationStatus.Done;
+                return OperationStatus.Done;
             }
             catch (ArgumentOutOfRangeException)
             {
-                return TransformationStatus.InvalidData;
+                return OperationStatus.InvalidData;
             }
         }
 
@@ -101,8 +101,8 @@ namespace System.Text.Encoders
         /// <param name="destination">A span to write the UTF-8 bytes into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
         /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
-        public unsafe static TransformationStatus ToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
+        public unsafe static OperationStatus ToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             //
             //
@@ -375,22 +375,22 @@ namespace System.Text.Encoders
 
                 bytesConsumed = (int)((byte*)pSrc - chars);
                 bytesWritten = (int)(pTarget - bytes);
-                return TransformationStatus.Done;
+                return OperationStatus.Done;
 
             InvalidData:
                 bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
                 bytesWritten = (int)(pTarget - bytes);
-                return TransformationStatus.InvalidData;
+                return OperationStatus.InvalidData;
 
             DestinationFull:
                 bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
                 bytesWritten = (int)(pTarget - bytes);
-                return TransformationStatus.DestinationTooSmall;
+                return OperationStatus.DestinationTooSmall;
 
             NeedMoreData:
                 bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
                 bytesWritten = (int)(pTarget - bytes);
-                return TransformationStatus.NeedMoreSourceData;
+                return OperationStatus.NeedMoreSourceData;
             }
         }
 
@@ -405,8 +405,8 @@ namespace System.Text.Encoders
         /// </summary>
         /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
         /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
-        public static TransformationStatus FromUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+        /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
+        public static OperationStatus FromUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             => Utf32.ToUtf16Length(source, out bytesNeeded);
 
         /// <summary>
@@ -422,8 +422,8 @@ namespace System.Text.Encoders
         /// <param name="destination">A span to write the UTF-16 bytes into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
         /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
-        public static TransformationStatus FromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
+        public static OperationStatus FromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             => Utf32.ToUtf16(source, destination, out bytesConsumed, out bytesWritten);
 
         /// <summary>
@@ -433,8 +433,8 @@ namespace System.Text.Encoders
         /// </summary>
         /// <param name="source">A span containing a sequence of UTF-16 bytes.</param>
         /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the expected state of the conversion.</returns>
-        public static TransformationStatus ToUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+        /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
+        public static OperationStatus ToUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
         {
             bytesNeeded = 0;
 
@@ -448,14 +448,14 @@ namespace System.Text.Encoders
                 if (EncodingHelper.IsSurrogate(codePoint))
                 {
                     if (!EncodingHelper.IsHighSurrogate(codePoint))
-                        return TransformationStatus.InvalidData;
+                        return OperationStatus.InvalidData;
 
                     if (srcLength - srcIndex < sizeof(char) * 2)
-                        return TransformationStatus.NeedMoreSourceData;
+                        return OperationStatus.NeedMoreSourceData;
 
                     uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex + 2));
                     if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
-                        return TransformationStatus.InvalidData;
+                        return OperationStatus.InvalidData;
 
                     srcIndex += 2;
                 }
@@ -464,7 +464,7 @@ namespace System.Text.Encoders
                 bytesNeeded += 4;
             }
 
-            return srcIndex < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
+            return srcIndex < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
         }
 
         /// <summary>
@@ -480,8 +480,8 @@ namespace System.Text.Encoders
         /// <param name="destination">A span to write the UTF-32 bytes into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
         /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
-        /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
-        public static TransformationStatus ToUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
+        public static OperationStatus ToUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             bytesConsumed = 0;
             bytesWritten = 0;
@@ -495,20 +495,20 @@ namespace System.Text.Encoders
             while (srcLength - bytesConsumed >= sizeof(char))
             {
                 if (dstLength - bytesWritten < sizeof(uint))
-                    return TransformationStatus.DestinationTooSmall;
+                    return OperationStatus.DestinationTooSmall;
 
                 uint codePoint = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed));
                 if (EncodingHelper.IsSurrogate(codePoint))
                 {
                     if (!EncodingHelper.IsHighSurrogate(codePoint))
-                        return TransformationStatus.InvalidData;
+                        return OperationStatus.InvalidData;
 
                     if (srcLength - bytesConsumed < sizeof(char) * 2)
-                        return TransformationStatus.NeedMoreSourceData;
+                        return OperationStatus.NeedMoreSourceData;
 
                     uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed + 2));
                     if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
-                        return TransformationStatus.InvalidData;
+                        return OperationStatus.InvalidData;
 
                     codePoint -= EncodingHelper.HighSurrogateStart;
                     lowSurrogate -= EncodingHelper.LowSurrogateStart;
@@ -521,7 +521,7 @@ namespace System.Text.Encoders
                 bytesWritten += 4;
             }
 
-            return bytesConsumed < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
+            return bytesConsumed < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
         }
 
         #endregion UTF-32 Conversions

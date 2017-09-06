@@ -44,7 +44,7 @@ namespace System.Text.Formatting
 
             byte[] idBytes = new byte[maxIdLength];
             var status = Encoders.Utf16.ToUtf8(localeId.AsReadOnlySpan().AsBytes(), idBytes, out int consumed, out int idByteCount);
-            if (status != System.Buffers.TransformationStatus.Done)
+            if (status != System.Buffers.OperationStatus.Done)
                 throw new Exception("bad locale id");
 
             var id = new Utf8String(idBytes.AsSpan().Slice(0, idByteCount));

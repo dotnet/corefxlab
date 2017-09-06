@@ -128,14 +128,14 @@ namespace System.Text.Utf8
         public override string ToString()
         {
             var status = Encoders.Utf8.ToUtf16Length(this.Bytes, out int needed);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return string.Empty;
 
             // UTF-16 is 2 bytes per char
             var chars = new char[needed >> 1];
             var utf16 = new Span<char>(chars).AsBytes();
             status = Encoders.Utf8.ToUtf16(this.Bytes, utf16, out int consumed, out int written);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return string.Empty;
 
             return new string(chars);
@@ -621,12 +621,12 @@ namespace System.Text.Utf8
         {
             var utf16 = str.AsReadOnlySpan().AsBytes();
             var status = Encoders.Utf16.ToUtf8Length(utf16, out int needed);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return null;
 
             var utf8 = new byte[needed];
             status = Encoders.Utf16.ToUtf8(utf16, utf8, out int consumed, out int written);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 // This shouldn't happen...
                 return null;
 

@@ -137,7 +137,7 @@ namespace System.Text
             while (srcLength > bytesConsumed)
             {
                 var status = Encoders.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written);
-                if (status == Buffers.TransformationStatus.InvalidData)
+                if (status == Buffers.OperationStatus.InvalidData)
                     goto ExitFailed;
 
                 srcBytes = srcBytes.Slice(consumed);

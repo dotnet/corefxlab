@@ -103,7 +103,7 @@ namespace System.Binary.Base64
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns>Number of bytes written to the destination.</returns>
-        public static TransformationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -143,12 +143,12 @@ namespace System.Binary.Base64
 
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             DestinationSmallExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.DestinationTooSmall;
+            return OperationStatus.DestinationTooSmall;
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace System.Binary.Base64
 
         sealed class ToBase64 : Transformation
         {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public override OperationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => Encode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }

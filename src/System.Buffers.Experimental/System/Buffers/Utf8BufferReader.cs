@@ -26,7 +26,7 @@ namespace System.Buffers.Adapters {
             unsafe
             {
                 var destination = new Span<char>(&result, 1).AsBytes();
-                if (Utf8.ToUtf16(utf8Unread, destination, out int consumed, out int written) == TransformationStatus.InvalidData)
+                if (Utf8.ToUtf16(utf8Unread, destination, out int consumed, out int written) == OperationStatus.InvalidData)
                 {
                     throw new Exception("invalid UTF8 byte at " + _index.ToString());
                 }
@@ -43,7 +43,7 @@ namespace System.Buffers.Adapters {
             unsafe
             {
                 var destination = new Span<char>(&result, 1).AsBytes();
-                if (Utf8.ToUtf16(utf8Unread, destination, out int consumed, out int written) == TransformationStatus.InvalidData)
+                if (Utf8.ToUtf16(utf8Unread, destination, out int consumed, out int written) == OperationStatus.InvalidData)
                 {
                     throw new Exception("invalid UTF8 byte at " + _index.ToString());
                 }
@@ -55,7 +55,7 @@ namespace System.Buffers.Adapters {
         {
             var utf8Unread = _buffer.Span.Slice(_index);
             var utf16Buffer = buffer.AsSpan().Slice(index, count);
-            if(Utf8.ToUtf16(utf8Unread, utf16Buffer.AsBytes(), out int bytesConsumed, out int bytesWritten)== TransformationStatus.InvalidData)
+            if(Utf8.ToUtf16(utf8Unread, utf16Buffer.AsBytes(), out int bytesConsumed, out int bytesWritten)== OperationStatus.InvalidData)
             {
                 throw new Exception("invalid UTF8 byte at " + _index.ToString());
             }
@@ -89,7 +89,7 @@ namespace System.Buffers.Adapters {
         static string Utf8ToString(ReadOnlySpan<byte> utf8)
         {
             var result = Utf8.ToUtf16Length(utf8, out int bytesNeeded);
-            if (result == TransformationStatus.InvalidData || result == TransformationStatus.NeedMoreSourceData)
+            if (result == OperationStatus.InvalidData || result == OperationStatus.NeedMoreSourceData)
             {
                 throw new Exception("invalid UTF8 byte");
             }
@@ -99,7 +99,7 @@ namespace System.Buffers.Adapters {
                 fixed (char* pStr = str)
                 {
                     var strSpan = new Span<char>(pStr, str.Length);
-                    if (Utf8.ToUtf16(utf8, strSpan.AsBytes(), out int consumed, out int written) != TransformationStatus.Done)
+                    if (Utf8.ToUtf16(utf8, strSpan.AsBytes(), out int consumed, out int written) != OperationStatus.Done)
                     {
                         throw new Exception();
                     }
