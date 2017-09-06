@@ -28,17 +28,27 @@ namespace System.Numerics
                 // Array is always row-major
                 var sourceStrides = ArrayUtilities.GetStrides(dimensions);
 
-                foreach (var item in fromArray)
+                foreach (T item in fromArray)
                 {
-                    var destIndex = ArrayUtilities.TransformIndexByStrides(index++, sourceStrides, false, strides);
-                    values[destIndex] = (T)item;
+                    if (!item.Equals(arithmetic.Zero))
+                    {
+                        var destIndex = ArrayUtilities.TransformIndexByStrides(index, sourceStrides, false, strides);
+                        values[destIndex] = item;
+                    }
+
+                    index++;
                 }
             }
             else
             {
-                foreach (var item in fromArray)
+                foreach (T item in fromArray)
                 {
-                    values[index++] = (T)item;
+                    if (!item.Equals(arithmetic.Zero))
+                    {
+                        values[index] = item;
+                    }
+
+                    index++;
                 }
             }
         }
@@ -63,7 +73,14 @@ namespace System.Numerics
             {
                 var index = ArrayUtilities.GetIndex(strides, indices);
 
-                values[index] = value;
+                if (value.Equals(arithmetic.Zero))
+                {
+                    values.Remove(index);
+                }
+                else
+                {
+                    values[index] = value;
+                }
             }
         }
 
