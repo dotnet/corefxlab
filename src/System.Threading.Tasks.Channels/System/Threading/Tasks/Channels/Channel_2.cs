@@ -14,10 +14,10 @@ namespace System.Threading.Tasks.Channels
     public abstract class Channel<TWrite, TRead>
     {
         /// <summary>Gets the readable half of this channel.</summary>
-        public abstract ReadableChannel<TRead> In { get; }
+        public ReadableChannel<TRead> In { get; protected set; }
 
         /// <summary>Gets the writable half of this channel.</summary>
-        public abstract WritableChannel<TWrite> Out { get; }
+        public WritableChannel<TWrite> Out { get; protected set; }
 
         /// <summary>Implicit cast from a channel to its readable half.</summary>
         /// <param name="channel">The channel being cast.</param>

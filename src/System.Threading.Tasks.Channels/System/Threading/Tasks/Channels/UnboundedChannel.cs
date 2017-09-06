@@ -57,9 +57,6 @@ namespace System.Threading.Tasks.Channels
             public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
         }
 
-        public override ReadableChannel<T> In { get; }
-        public override WritableChannel<T> Out { get; }
-
         /// <summary>Gets the object used to synchronize access to all state on this instance.</summary>
         private object SyncObj => _items;
 

@@ -72,9 +72,6 @@ namespace System.Threading.Tasks.Channels
             public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
         }
 
-        public override ReadableChannel<T> In { get; }
-        public override WritableChannel<T> Out { get; }
-
         private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]

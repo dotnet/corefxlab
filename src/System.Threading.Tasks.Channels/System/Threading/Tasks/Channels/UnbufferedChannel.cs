@@ -52,9 +52,6 @@ namespace System.Threading.Tasks.Channels
             Out = new Writable(this);
         }
 
-        public override ReadableChannel<T> In { get; }
-        public override WritableChannel<T> Out { get; }
-
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>
         private object SyncObj => _completion;
 
