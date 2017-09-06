@@ -5,6 +5,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -43,50 +44,51 @@ namespace System.Threading.Tasks.Channels
 
             public override Task Completion => _parent._completion.Task;
 
-            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken)
+            public override ValueAwaiter<T> GetAwaiter() =>
+                TryRead(out T item) ?
+                    new ValueAwaiter<T>(item) :
+                    new ValueAwaiter<T>(ReadAsyncCore(CancellationToken.None));
+
+            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) =>
+                TryRead(out T item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
+
+            private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
             {
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    return TryRead(out T item) ?
-                        new ValueTask<T>(item) :
-                        ReadAsyncCore(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
                 }
 
-                ValueTask<T> ReadAsyncCore(CancellationToken ct)
+                UnboundedChannel<T> parent = _parent;
+                lock (parent.SyncObj)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        return new ValueTask<T>(Task.FromCanceled<T>(ct));
-                    }
+                    parent.AssertInvariants();
 
-                    UnboundedChannel<T> parent = _parent;
-                    lock (parent.SyncObj)
+                    // If there are any items, return one.
+                    if (parent._items.TryDequeue(out T item))
                     {
-                        parent.AssertInvariants();
-
-                        // If there are any items, return one.
-                        if (parent._items.TryDequeue(out T item))
+                        // Dequeue an item
+                        if (parent._doneWriting != null && parent._items.IsEmpty)
                         {
-                            // Dequeue an item
-                            if (parent._doneWriting != null && parent._items.IsEmpty)
-                            {
-                                // If we've now emptied the items queue and we're not getting any more, complete.
-                                ChannelUtilities.Complete(parent._completion, parent._doneWriting);
-                            }
-
-                            return new ValueTask<T>(item);
+                            // If we've now emptied the items queue and we're not getting any more, complete.
+                            ChannelUtilities.Complete(parent._completion, parent._doneWriting);
                         }
 
-                        // There are no items, so if we're done writing, fail.
-                        if (parent._doneWriting != null)
-                        {
-                            return ChannelUtilities.GetInvalidCompletionValueTask<T>(parent._doneWriting);
-                        }
-
-                        // Otherwise, queue the reader.
-                        var reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
-                        parent._blockedReaders.EnqueueTail(reader);
-                        return new ValueTask<T>(reader.Task);
+                        return new ValueTask<T>(item);
                     }
+
+                    // There are no items, so if we're done writing, fail.
+                    if (parent._doneWriting != null)
+                    {
+                        return ChannelUtilities.GetInvalidCompletionValueTask<T>(parent._doneWriting);
+                    }
+
+                    // Otherwise, queue the reader.
+                    var reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, cancellationToken);
+                    parent._blockedReaders.EnqueueTail(reader);
+                    return new ValueTask<T>(reader.Task);
                 }
             }
 
@@ -250,6 +252,15 @@ namespace System.Threading.Tasks.Channels
                         return true;
                     }
                 }
+            }
+
+            public override ValueAwaiter<bool> GetAwaiter()
+            {
+                Exception doneWriting = _parent._doneWriting;
+                return
+                    doneWriting == null ? new ValueAwaiter<bool>(true) : // unbounded writing can always be done if we haven't completed
+                    doneWriting != ChannelUtilities.s_doneWritingSentinel ? new ValueAwaiter<bool>(Task.FromException<bool>(doneWriting)) :
+                    new ValueAwaiter<bool>(false);
             }
 
             public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)

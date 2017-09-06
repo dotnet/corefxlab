@@ -33,11 +33,6 @@ namespace System.Threading.Tasks.Channels
 
             public override ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
-                if (TryRead(out T item))
-                {
-                    return new ValueTask<T>(item);
-                }
-
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
@@ -47,6 +42,16 @@ namespace System.Threading.Tasks.Channels
                 lock (parent.SyncObj)
                 {
                     parent.AssertInvariants();
+
+                    // Try to find a writer to pair with
+                    while (!parent._blockedWriters.IsEmpty)
+                    {
+                        WriterInteractor<T> w = parent._blockedWriters.DequeueHead();
+                        if (w.Success(default(VoidResult)))
+                        {
+                            return new ValueTask<T>(w.Item);
+                        }
+                    }
 
                     // If we're already completed, nothing to read.
                     if (parent._completion.Task.IsCompleted)

@@ -344,6 +344,15 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
+            public override ValueAwaiter<bool> GetAwaiter()
+            {
+                Exception doneWriting = _parent._doneWriting;
+                return
+                    doneWriting == null ? new ValueAwaiter<bool>(true) :
+                    doneWriting != ChannelUtilities.s_doneWritingSentinel ? new ValueAwaiter<bool>(Task.FromException<bool>(doneWriting)) :
+                    new ValueAwaiter<bool>(false);
+            }
+
             public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
                 Exception doneWriting = _parent._doneWriting;

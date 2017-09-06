@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -103,6 +104,7 @@ namespace System.Threading.Tasks.Channels
                         return true;
                     }
                 }
+
                 item = default(T);
                 return false;
             }
@@ -138,8 +140,6 @@ namespace System.Threading.Tasks.Channels
                     return ChannelUtilities.GetOrCreateWaiter(ref parent._waitingReaders, parent._runContinuationsAsynchronously, cancellationToken);
                 }
             }
-
-
 
             /// <summary>Dequeues an item, and then fixes up our state around writers and completion.</summary>
             /// <returns>The dequeued item.</returns>
