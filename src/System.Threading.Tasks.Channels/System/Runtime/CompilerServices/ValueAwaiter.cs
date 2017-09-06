@@ -44,7 +44,7 @@ namespace System.Runtime.CompilerServices
         /// <param name="task">The task that represents the actual async operation being awaited.</param>
         public ValueAwaiter(Task<TResult> task)
         {
-            if (task.Status == TaskStatus.RanToCompletion)
+            if (task.Status == TaskStatus.RanToCompletion) // TODO: task.IsCompletedSuccessfully
             {
                 _result = task.Result;
                 _asyncOp = null;
@@ -77,34 +77,24 @@ namespace System.Runtime.CompilerServices
         {
             get
             {
-                switch (_asyncOp)
-                {
-                    case null:
-                        return true;
+                return _asyncOp == null ? true : IsCompletedCore(_asyncOp);
 
-                    case IAwaiter<TResult> awaiter:
-                        return awaiter.IsCompleted;
-
-                    default:
-                        return ((Task<TResult>)_asyncOp).IsCompleted;
-                }
+                bool IsCompletedCore(object asyncOp) =>
+                    asyncOp is IAwaiter<TResult> awaiter ?
+                        awaiter.IsCompleted :
+                        ((Task<TResult>)asyncOp).IsCompleted;
             }
         }
 
         /// <summary>Gets the result of the completed awaited operation.</summary>
         public TResult GetResult()
         {
-            switch (_asyncOp)
-            {
-                case null:
-                    return _result;
+            return _asyncOp == null ? _result : GetResultCore(_asyncOp);
 
-                case IAwaiter<TResult> awaiter:
-                    return awaiter.GetResult();
-
-                default:
-                    return ((Task<TResult>)_asyncOp).GetAwaiter().GetResult();
-            }
+            TResult GetResultCore(object asyncOp) =>
+                asyncOp is IAwaiter<TResult> awaiter ?
+                    awaiter.GetResult() :
+                    ((Task<TResult>)asyncOp).GetAwaiter().GetResult();
         }
 
         /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
