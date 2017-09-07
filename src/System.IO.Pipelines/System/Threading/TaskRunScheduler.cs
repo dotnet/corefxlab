@@ -4,7 +4,7 @@
 
 using System.Threading.Tasks;
 
-namespace System.IO.Pipelines
+namespace System.Threading
 {
     public class TaskRunScheduler : IScheduler
     {
