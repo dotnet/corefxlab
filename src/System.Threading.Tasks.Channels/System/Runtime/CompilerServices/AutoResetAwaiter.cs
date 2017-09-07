@@ -37,15 +37,7 @@ namespace System.Runtime.CompilerServices
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
 
         /// <summary>Gets whether the operation has already completed.</summary>
-        public bool IsCompleted
-        {
-            get
-            {
-                Action c = Volatile.Read(ref _continuation);
-                Debug.Assert(c == null || c == s_completionSentinel);
-                return c != null;
-            }
-        }
+        public bool IsCompleted => Volatile.Read(ref _continuation) == s_completionSentinel;
 
         /// <summary>Gets the result of the completed, awaited operation, reseting the instance for reuse.</summary>
         /// <returns>The result.</returns>
@@ -86,10 +78,6 @@ namespace System.Runtime.CompilerServices
             NotifyAwaiter();
         }
 
-        /// <summary>Set that the operation was canceled.</summary>
-        public void SetCanceled(CancellationToken token = default(CancellationToken)) =>
-            SetException(token.IsCancellationRequested ? new OperationCanceledException(token) : new OperationCanceledException());
-
         /// <summary>Set the failure for the operation.</summary>
         public void SetException(Exception exception)
         {
@@ -103,7 +91,7 @@ namespace System.Runtime.CompilerServices
         /// <summary>Alerts any awaiter that the operation has completed.</summary>
         private void NotifyAwaiter()
         {
-            Action c = _continuation ?? Interlocked.CompareExchange(ref _continuation, s_completionSentinel, null);
+            Action c = Interlocked.Exchange(ref _continuation, s_completionSentinel);
             if (c != null)
             {
                 Debug.Assert(c != s_completionSentinel);

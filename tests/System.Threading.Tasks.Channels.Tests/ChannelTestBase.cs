@@ -28,6 +28,16 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public void Cast_MatchesInOut()
+        {
+            Channel<int> c = CreateChannel();
+            ReadableChannel<int> rc = c;
+            WritableChannel<int> wc = c;
+            Assert.Same(rc, c.In);
+            Assert.Same(wc, c.Out);
+        }
+
+        [Fact]
         public void Completion_Idempotent()
         {
             Channel<int> c = CreateChannel();
@@ -40,6 +50,52 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.Same(completion, c.In.Completion);
 
             Assert.Equal(TaskStatus.RanToCompletion, completion.Status);
+        }
+
+        [Fact]
+        public void CompletionCancellationToken_Idempotent()
+        {
+            Channel<int> c = CreateChannel();
+
+            CancellationToken ct1 = c.In.CompletionCancellationToken;
+            CancellationToken ct2 = c.In.CompletionCancellationToken;
+
+            Assert.Equal(ct1, ct2);
+            Assert.False(ct1.IsCancellationRequested);
+            Assert.True(ct1.CanBeCanceled);
+
+            c.Out.Complete();
+
+            var mres = new ManualResetEventSlim();
+            ct1.Register(mres.Set);
+            mres.Wait();
+        }
+
+        [Fact]
+        public void CompletionCancellationToken_ParallelAccess_Idempotent()
+        {
+            Channel<int> c = CreateChannel();
+            CancellationToken[] tokens = new CancellationToken[2];
+            using (var b = new Barrier(2, _ => { Assert.Equal(tokens[0], tokens[1]); c = CreateChannel(); }))
+            {
+                Task.WaitAll((from p in Enumerable.Range(0, b.ParticipantCount)
+                              select Task.Run(() =>
+                              {
+                                  for (int i = 0; i < 1000; i++)
+                                  {
+                                      tokens[p] = c.In.CompletionCancellationToken;
+                                      b.SignalAndWait();
+                                  }
+                              })).ToArray());
+            }
+        }
+
+        [Fact]
+        public void CompletionCancellationToken_AccessAfterCompletion_Canceled()
+        {
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Assert.True(c.In.CompletionCancellationToken.IsCancellationRequested);
         }
 
         [Fact]
@@ -354,13 +410,14 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public void WaitToWriteAsync_AfterComplete_SynchronouslyCompletes()
+        public async Task WaitToWriteAsync_AfterComplete_SynchronouslyCompletes()
         {
             Channel<int> c = CreateChannel();
             c.Out.Complete();
             Task<bool> write = c.Out.WaitToWriteAsync();
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
             Assert.False(write.Result);
+            Assert.False(await c.Out);
         }
 
         [Fact]
@@ -485,6 +542,7 @@ namespace System.Threading.Tasks.Channels.Tests
             c.Out.Complete(exc);
             Task<int> read = c.In.ReadAsync().AsTask();
             Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => read)).InnerException);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(async () => await c.In)).InnerException);
         }
 
         [Fact]
@@ -538,6 +596,7 @@ namespace System.Threading.Tasks.Channels.Tests
             c.Out.Complete(exc);
             Task<bool> write = c.Out.WaitToWriteAsync();
             await Assert.ThrowsAsync<FormatException>(() => write);
+            await Assert.ThrowsAsync<FormatException>(async () => await c.Out);
         }
 
         [Theory]

@@ -17,6 +17,8 @@ namespace System.Threading.Tasks.Channels
         internal static readonly Task<bool> s_trueTask = Task.FromResult(true);
         /// <summary>A cached task with a Boolean false result.</summary>
         internal static readonly Task<bool> s_falseTask = Task.FromResult(false);
+        /// <summary>A cached task that never completes.</summary>
+        internal static readonly Task s_neverCompletingTask = new TaskCompletionSource<bool>().Task;
         /// <summary>Mapping of Tasks to CancellationTokenSources that are canceled when the associated task completes. Lazily initialized.</summary>
         private static ConditionalWeakTable<Task, CancellationTokenSource> s_completionTokenTable;
 

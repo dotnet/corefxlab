@@ -43,16 +43,6 @@ namespace System.Threading.Tasks.Channels
                 {
                     parent.AssertInvariants();
 
-                    // Try to find a writer to pair with
-                    while (!parent._blockedWriters.IsEmpty)
-                    {
-                        WriterInteractor<T> w = parent._blockedWriters.DequeueHead();
-                        if (w.Success(default(VoidResult)))
-                        {
-                            return new ValueTask<T>(w.Item);
-                        }
-                    }
-
                     // If we're already completed, nothing to read.
                     if (parent._completion.Task.IsCompleted)
                     {

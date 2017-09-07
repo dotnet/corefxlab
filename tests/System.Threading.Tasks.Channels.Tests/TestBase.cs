@@ -33,42 +33,6 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.True(task.Result);
         }
 
-        protected void AssertSynchronousFalse(Task<bool> task)
-        {
-            AssertSynchronousSuccess(task);
-            Assert.False(task.Result);
-        }
-
-        internal sealed class DelegateEnumerable<T> : IEnumerable<T>
-        {
-            public Func<IEnumerator<T>> GetEnumeratorDelegate;
-
-            public IEnumerator<T> GetEnumerator() =>
-                GetEnumeratorDelegate != null ? 
-                    GetEnumeratorDelegate() :
-                    null;
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-
-        internal sealed class DelegateEnumerator<T> : IEnumerator<T>
-        {
-            public Func<T> CurrentDelegate;
-            public Action DisposeDelegate;
-            public Func<bool> MoveNextDelegate;
-            public Action ResetDelegate;
-
-            public T Current => CurrentDelegate != null ? CurrentDelegate() : default(T);
-
-            object IEnumerator.Current => Current;
-
-            public void Dispose() => DisposeDelegate?.Invoke();
-
-            public bool MoveNext() => MoveNextDelegate?.Invoke() ?? false;
-
-            public void Reset() => ResetDelegate?.Invoke();
-        }
-
         internal sealed class DelegateObserver<T> : IObserver<T>
         {
             public Action<T> OnNextDelegate = null;

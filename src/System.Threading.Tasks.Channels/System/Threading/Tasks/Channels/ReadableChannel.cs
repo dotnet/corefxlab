@@ -19,7 +19,7 @@ namespace System.Threading.Tasks.Channels
         /// Gets a <see cref="Task"/> that completes when no more data will ever
         /// be available to be read from this channel.
         /// </summary>
-        public abstract Task Completion { get; }
+        public virtual Task Completion => ChannelUtilities.s_neverCompletingTask;
 
         /// <summary>
         /// Gets a <see cref="CancellationToken"/> that is signaled when no more data will ever
@@ -52,8 +52,8 @@ namespace System.Threading.Tasks.Channels
             try
             {
                 return
-                    TryRead(out T item) ? new ValueTask<T>(item) :
                     cancellationToken.IsCancellationRequested ? new ValueTask<T>(Task.FromCanceled<T>(cancellationToken)) :
+                    TryRead(out T item) ? new ValueTask<T>(item) :
                     ReadAsyncCore(cancellationToken);
             }
             catch (Exception e)

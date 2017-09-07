@@ -18,9 +18,9 @@ namespace System.Threading.Tasks.Channels
         /// <param name="error">An <see cref="Exception"/> indicating the failure causing no more data to be written, or null for success.</param>
         /// <returns>
         /// true if this operation successfully completes the channel; otherwise, false if the channel could not be marked for completion,
-        /// for example due to having already been marked as such.
+        /// for example due to having already been marked as such, or due to not supporting completion.
         /// </returns>
-        public abstract bool TryComplete(Exception error = null);
+        public virtual bool TryComplete(Exception error = null) => false;
 
         /// <summary>Attempts to write the specified item to the channel.</summary>
         /// <param name="item">The item to write.</param>
@@ -41,15 +41,11 @@ namespace System.Threading.Tasks.Channels
         /// <returns>A <see cref="Task"/> that represents the asynchronous write operation.</returns>
         public virtual Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<T>(cancellationToken);
-            }
-
             try
             {
-                return TryWrite(item) ?
-                    Task.CompletedTask :
+                return
+                    cancellationToken.IsCancellationRequested ? Task.FromCanceled<T>(cancellationToken) :
+                    TryWrite(item) ? Task.CompletedTask :
                     WriteAsyncCore(item, cancellationToken);
             }
             catch (Exception e)
