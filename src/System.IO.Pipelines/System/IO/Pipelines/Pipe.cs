@@ -105,7 +105,7 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        Buffer<byte> IPipeWriter.Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -148,7 +148,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal void Ensure(int count = 1)
+        void IPipeWriter.Ensure(int count)
         {
             EnsureAlloc();
 
@@ -216,7 +216,7 @@ namespace System.IO.Pipelines
             return segment;
         }
 
-        internal void Append(ReadableBuffer buffer)
+        void IPipeWriter.Append(ReadableBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -266,7 +266,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal void Commit()
+        void IPipeWriter.Commit()
         {
             // Changing commit head shared with Reader
             lock (_sync)
@@ -309,7 +309,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AdvanceWriter(int bytesWritten)
+        void IPipeWriter.Advance(int bytesWritten)
         {
             EnsureAlloc();
             if (bytesWritten > 0)
@@ -339,7 +339,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
+        WritableBufferAwaitable IPipeWriter.FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -817,14 +817,14 @@ namespace System.IO.Pipelines
         {
             lock (_sync)
             {
-            if (!_disposed)
-            {
-                throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
-            }
+                if (!_disposed)
+                {
+                    throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+                }
 
-            _disposed = false;
-            ResetState();
+                _disposed = false;
+                ResetState();
+            }
         }
     }
-}
 }

@@ -35,15 +35,16 @@ namespace System.IO.Pipelines.Samples
             var connection = await state.ConnectionTask;
 
             var requestBuffer = connection.Output.Alloc();
-            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", SymbolTable.InvariantUtf8);
-            WriteHeaders(request.Headers, ref requestBuffer);
+            var output = requestBuffer.AsOutput();
+            output.Append($"{request.Method} {path} HTTP/1.1", SymbolTable.InvariantUtf8);
+            WriteHeaders(request.Headers, ref output);
 
             // End of the headers
-            requestBuffer.Append("\r\n\r\n", SymbolTable.InvariantUtf8);
+            output.Append("\r\n\r\n", SymbolTable.InvariantUtf8);
 
             if (request.Method != HttpMethod.Get && request.Method != HttpMethod.Head)
             {
-                WriteHeaders(request.Content.Headers, ref requestBuffer);
+                WriteHeaders(request.Content.Headers, ref output);
 
                 await requestBuffer.FlushAsync();
 
@@ -250,7 +251,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        private static void WriteHeaders(HttpHeaders headers, ref WritableBuffer buffer)
+        private static void WriteHeaders(HttpHeaders headers, ref PipeOutput buffer)
         {
             foreach (var header in headers)
             {

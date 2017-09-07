@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Threading;
 
 namespace System.IO.Pipelines
@@ -9,30 +8,19 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can write a sequential series of bytes.
     /// </summary>
-    public struct WritableBuffer : IOutput
+    public struct WritableBuffer
     {
-        private Pipe _pipe;
+        internal IPipeWriter PipeWriter { get; }
 
-        internal WritableBuffer(Pipe pipe)
+        internal WritableBuffer(IPipeWriter pipe)
         {
-            _pipe = pipe;
+            PipeWriter = pipe;
         }
 
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => _pipe.Buffer;
-
-        Span<byte> IOutput.Buffer => Buffer.Span;
-
-        void IOutput.Enlarge(int desiredBufferLength) => Ensure(ComputeActualSize(desiredBufferLength));
-
-        private int ComputeActualSize(int desiredBufferLength)
-        {
-            if (desiredBufferLength < 256) desiredBufferLength = 256;
-            if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
-            return desiredBufferLength;
-        }
+        public Buffer<byte> Buffer => PipeWriter.Buffer;
 
         /// <summary>
         /// Ensures the specified number of bytes are available.
@@ -47,7 +35,7 @@ namespace System.IO.Pipelines
         /// </exception>
         public void Ensure(int count = 1)
         {
-            _pipe.Ensure(count);
+            PipeWriter.Ensure(count);
         }
 
         /// <summary>
@@ -56,7 +44,7 @@ namespace System.IO.Pipelines
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
         public void Append(ReadableBuffer buffer)
         {
-            _pipe.Append(buffer);
+            PipeWriter.Append(buffer);
         }
 
         /// <summary>
@@ -68,7 +56,7 @@ namespace System.IO.Pipelines
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)
         {
-            _pipe.AdvanceWriter(bytesWritten);
+            PipeWriter.Advance(bytesWritten);
         }
 
         /// <summary>
@@ -80,7 +68,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public void Commit()
         {
-            _pipe.Commit();
+            PipeWriter.Commit();
         }
 
         /// <summary>
@@ -90,7 +78,7 @@ namespace System.IO.Pipelines
         /// <returns>A task that completes when the data is fully flushed.</returns>
         public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
         {
-            return _pipe.FlushAsync(cancellationToken);
+            return PipeWriter.FlushAsync(cancellationToken);
         }
     }
 }

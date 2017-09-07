@@ -218,7 +218,6 @@ namespace System.IO.Pipelines.Tests
             byte huntValue = (byte)~emptyValue;
 
             var handles = new List<BufferHandle>();
-
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
@@ -329,7 +328,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append(input, SymbolTable.InvariantUtf8);
+                output.AsOutput().Append(input, SymbolTable.InvariantUtf8);
 
                 var readable = BufferUtilities.CreateBuffer(input);
 
@@ -410,7 +409,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append("Hello World", SymbolTable.InvariantUtf8);
+                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();
@@ -431,7 +430,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append("Hello World", SymbolTable.InvariantUtf8);
+                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();
@@ -526,7 +525,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadableBufferSequenceWorks()
         {
-            var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyBuffer<byte>>;
+            var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
             var position = Position.First;
             ReadOnlyBuffer<byte> memory;
             int spanCount = 0;

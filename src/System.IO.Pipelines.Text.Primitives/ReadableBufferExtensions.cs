@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Text.Primitives
         {
             uint value;
             int consumed;
-            if (!buffer.TryParseUInt32(out value, out consumed))
+            if (!buffer.AsSequence().TryParseUInt32(out value, out consumed))
             {
                 throw new InvalidOperationException("could not parse uint");
             }

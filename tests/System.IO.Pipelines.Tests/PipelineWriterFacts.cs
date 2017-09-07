@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", SymbolTable.InvariantUtf8);
+            buffer.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", SymbolTable.InvariantUtf8);
+            buffer.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Tests
             writer = stream.AsPipelineWriter();
 
             buffer = writer.Alloc();
-            buffer.Append("Hello World", SymbolTable.InvariantUtf8);
+            buffer.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello WorldHello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", SymbolTable.InvariantUtf8);
+            buffer.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", SymbolTable.InvariantUtf8);
+            buffer.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
 
             Assert.Equal(0, stream.Length);
             buffer.Commit();
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Tests
                 var writer = stream.AsPipelineWriter();
 
                 var output = writer.Alloc();
-                output.Append("Hello World", SymbolTable.InvariantUtf8);
+                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 writer.Complete();
 
@@ -167,6 +167,33 @@ namespace System.IO.Pipelines.Tests
             {
                 return _pipe.Writer.Alloc(minimumSize);
             }
+
+            public void Ensure(int count = 1)
+            {
+                _pipe.Writer.Ensure(count);
+            }
+
+            public void Advance(int bytesWritten)
+            {
+                _pipe.Writer.Advance(bytesWritten);
+            }
+
+            public void Append(ReadableBuffer buffer)
+            {
+                _pipe.Writer.Append(buffer);
+            }
+
+            public void Commit()
+            {
+                _pipe.Writer.Commit();
+            }
+
+            public new WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
+            {
+               return  _pipe.Writer.FlushAsync(cancellationToken);
+            }
+
+            public Buffer<byte> Buffer { get; }
 
             public void Complete(Exception exception = null)
             {

@@ -99,9 +99,9 @@ namespace System.IO.Pipelines.Samples.Http
             foreach (var header in _headers)
             {
                 buffer.Write(_headersStartBytes);
-                buffer.Append(header.Key, SymbolTable.InvariantUtf8);
+                buffer.AsOutput().Append(header.Key, SymbolTable.InvariantUtf8);
                 buffer.Write(_headersSeperatorBytes);
-                buffer.Append(header.Value.ToString(), SymbolTable.InvariantUtf8);
+                buffer.AsOutput().Append(header.Value.ToString(), SymbolTable.InvariantUtf8);
             }
 
             if (chunk)
