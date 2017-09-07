@@ -15,6 +15,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
+        [Obsolete("Use members of "+nameof(IPipeWriter) + " directly")]
         WritableBuffer Alloc(int minimumSize = 0);
 
         /// <summary>
