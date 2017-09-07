@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Sockets\System.IO.Pipelines.Networking.Sockets.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Libuv\System.IO.Pipelines.Networking.Libuv.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Windows.RIO\System.IO.Pipelines.Networking.Windows.RIO.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Testing\System.IO.Pipelines.Testing.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />

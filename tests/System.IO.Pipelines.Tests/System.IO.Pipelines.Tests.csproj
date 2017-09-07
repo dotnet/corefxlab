@@ -28,6 +28,7 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Testing\System.IO.Pipelines.Testing.csproj" />
     <ProjectReference Include="..\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
