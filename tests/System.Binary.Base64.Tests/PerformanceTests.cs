@@ -194,13 +194,7 @@ namespace System.Binary.Base64.Tests
             Base64TestHelper.SplitSourceIntoSpans(source, true, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 
             Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
-
-            Span<byte> stackSpan;
-            unsafe
-            {
-                byte* stackBytes = stackalloc byte[stackSize];
-                stackSpan = new Span<byte>(stackBytes, stackSize);
-            }
+            Span<byte> stackSpan = stackalloc byte[stackSize];
 
             int bytesConsumed = 0;
             int bytesWritten = 0;

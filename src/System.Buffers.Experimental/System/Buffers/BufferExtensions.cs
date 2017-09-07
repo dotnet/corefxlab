@@ -15,14 +15,14 @@ namespace System.Buffers
         public static void Pipe(this Transformation transformation, ReadOnlyBytes source, IOutput destination)
         {
             int afterMergeSlice = 0;
-            ReadOnlySpan<byte> remainder;
-            Span<byte> stackSpan;
 
-            unsafe
-            {
-                byte* stackBytes = stackalloc byte[stackLength];
-                stackSpan = new Span<byte>(stackBytes, stackLength);
-            }
+            // TODO: "ReadOnlySpan<byte> remainder = stackalloc byte[0]" would fit better here, 
+            //       but it emits substandard IL, see https://github.com/dotnet/roslyn/issues/21952
+            //
+            // Assign 'remainder' to something formally stack-referring.
+            // The default classification is "returnable, not referring to stack", we want the opposite in this case.
+            ReadOnlySpan<byte> remainder = true ? new ReadOnlySpan<byte>() : stackalloc byte[0];
+            Span<byte> stackSpan = stackalloc byte[stackLength];
 
             var poisition = Position.First;
             while (source.TryGet(ref poisition, out var sourceBuffer, true))
@@ -325,21 +325,11 @@ namespace System.Buffers
             // this check is a small optimization: if the first byte from the value does not exist in the bytesToSearchAgain, there is no reason to combine
             if (bytesToSearchAgain.IndexOf(value[0]) != -1)
             {
-                Span<byte> combined;
                 var combinedBufferLength = value.Length << 1;
-                if (combinedBufferLength < 128)
-                {
-                    unsafe
-                    {
-                        byte* temp = stackalloc byte[combinedBufferLength];
-                        combined = new Span<byte>(temp, combinedBufferLength);
-                    }
-                }
-                else
-                {
-                    // TODO (pri 3): I think this could be eliminated by chunking values
-                    combined = new byte[combinedBufferLength];
-                }
+                var combined = combinedBufferLength < 128 ?
+                                        stackalloc byte[combinedBufferLength] :
+                                        // TODO (pri 3): I think this could be eliminated by chunking values
+                                        (Span<byte>)new byte[combinedBufferLength];
 
                 bytesToSearchAgain.CopyTo(combined);
                 int combinedLength = bytesToSearchAgain.Length + rest.CopyTo(combined.Slice(bytesToSearchAgain.Length));

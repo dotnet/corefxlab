@@ -11,13 +11,12 @@ using System.Text.Encodings.Web.Utf8;
 namespace System.Azure.Authentication
 {
     public static class Key {
-        public unsafe static byte[] ComputeKeyBytes(string key)
+        public static byte[] ComputeKeyBytes(string key)
         {
             const int bufferLength = 128;
 
-            byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
-            var buffer = new Span<byte>(pBuffer, bufferLength);
+            Span<byte> buffer = stackalloc byte[bufferLength];
             if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");

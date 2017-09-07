@@ -52,18 +52,16 @@ namespace System.IO.Pipelines
             return value;
         }
 
-        private static unsafe T ReadMultiBig<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
+        private static T ReadMultiBig<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
         {
-            byte* local = stackalloc byte[len];
-            var localSpan = new Span<byte>(local, len);
+            Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);
             return localSpan.ReadBigEndian<T>();
         }
 
-        private static unsafe T ReadMultiLittle<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
+        private static T ReadMultiLittle<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
         {
-            byte* local = stackalloc byte[len];
-            var localSpan = new Span<byte>(local, len);
+            Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);
             return localSpan.ReadLittleEndian<T>();
         }
