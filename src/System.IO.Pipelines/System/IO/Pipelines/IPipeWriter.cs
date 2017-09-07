@@ -15,8 +15,14 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-        [Obsolete("Use members of "+nameof(IPipeWriter) + " directly")]
+        [Obsolete("Use "  + nameof(Allocate ) + " and  members of " + nameof(IPipeWriter) + " directly")]
         WritableBuffer Alloc(int minimumSize = 0);
+
+        /// <summary>
+        /// Allocates memory from the pipeline to write into.
+        /// </summary>
+        /// <param name="minimumSize">The minimum size buffer to allocate</param>
+        void Allocate(int minimumSize = 0);
 
         /// <summary>
         /// Ensures the specified number of bytes are available.

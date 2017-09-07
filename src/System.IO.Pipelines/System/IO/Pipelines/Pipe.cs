@@ -114,6 +114,12 @@ namespace System.IO.Pipelines
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
         WritableBuffer IPipeWriter.Alloc(int minimumSize)
         {
+            ((IPipeWriter)this).Allocate(minimumSize);
+            return new WritableBuffer(this);
+        }
+
+        void IPipeWriter.Allocate(int minimumSize)
+        {
             if (_writerCompletion.IsCompleted)
             {
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
@@ -144,7 +150,6 @@ namespace System.IO.Pipelines
                 }
 
                 _currentWriteLength = 0;
-                return new WritableBuffer(this);
             }
         }
 
