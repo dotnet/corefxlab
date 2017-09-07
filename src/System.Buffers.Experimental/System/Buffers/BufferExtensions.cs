@@ -16,8 +16,11 @@ namespace System.Buffers
         {
             int afterMergeSlice = 0;
 
+            // TODO: "ReadOnlySpan<byte> remainder = stackalloc byte[0]" would fit better here, 
+            //       but it emits substandard IL, see https://github.com/dotnet/roslyn/issues/21952
+            //
             // make 'remainder' formally stack-referring or we won't be able to reference stack data later
-            ReadOnlySpan<byte> remainder = stackalloc byte[0]; 
+            var remainder = true ? new ReadOnlySpan<byte>() : stackalloc byte[0];
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
             var poisition = Position.First;

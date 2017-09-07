@@ -37,9 +37,6 @@ namespace System.Text.Parsing
             }
 
             // Combine the first, the second, and potentially more segments into a stack allocated buffer
-            // make 'combinedSpan' formally stack-referring or we won't be able to reference stack data later
-            ReadOnlySpan<byte> combinedSpan = stackalloc byte[0];
-
             if (first.Length < StackBufferSize)
             {
                 Span<byte> destination = stackalloc byte[StackBufferSize];
@@ -66,12 +63,12 @@ namespace System.Text.Parsing
                     }
                 }
 
-                combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
+                var combinedStackSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                 // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                if (PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedSpan, out value, out consumed))
+                if (PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedStackSpan, out value, out consumed))
                 {
-                    if (consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize)
+                    if (consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize)
                     {
                         return true;
                     }
@@ -80,8 +77,8 @@ namespace System.Text.Parsing
 
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
-            combinedSpan = bufferSequence.ToSpan();
-            if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(first.Span, out value, out consumed)) {
+            var combinedSpan = bufferSequence.ToSpan();
+            if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedSpan, out value, out consumed)) {
                 return false;
             }
             return true;
@@ -114,8 +111,6 @@ namespace System.Text.Parsing
             }
 
             // Combine the first, the second, and potentially more segments into a stack allocated buffer
-            // make 'combinedSpan' formally stack-referring or we won't be able to reference stack data later
-            ReadOnlySpan<byte> combinedSpan = stackalloc byte[0];
             if (first.Length < StackBufferSize) {
 
                 Span<byte> destination = stackalloc byte[StackBufferSize];
@@ -139,11 +134,11 @@ namespace System.Text.Parsing
                     }
                 }
 
-                combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
+                var combinedStackSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                 // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                if (PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
-                    if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
+                if (PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedStackSpan, out value, out consumed)) {
+                    if(consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize) {
                         return true;
                     }
                 }
@@ -151,7 +146,7 @@ namespace System.Text.Parsing
 
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
-            combinedSpan = bufferSequence.ToSpan();
+            var combinedSpan = bufferSequence.ToSpan();
             if (!PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
                 return false;
             }
