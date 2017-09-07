@@ -44,100 +44,30 @@ namespace System.Threading.Tasks.Channels.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]
-        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity)
-        {
+        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity) =>
             Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.CreateBounded<int>(bufferedCapacity));
-        }
 
         [Theory]
         [InlineData((BoundedChannelFullMode)(-1))]
-        [InlineData((BoundedChannelFullMode)(3))]
-        public void CreateBounded_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode)
-        {
+        [InlineData((BoundedChannelFullMode)(4))]
+        public void CreateBounded_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode) =>
             Assert.Throws<ArgumentOutOfRangeException>("mode", () => Channel.CreateBounded<int>(1, mode));
-        }
 
         [Theory]
         [InlineData(1)]
-        public void CreateBounded_ValidBufferSizes_Success(int bufferedCapacity)
-        {
+        public void CreateBounded_ValidBufferSizes_Success(int bufferedCapacity) =>
             Assert.NotNull(Channel.CreateBounded<int>(bufferedCapacity));
-        }
 
         [Fact]
         public void AsObservable_SameSource_Idempotent()
         {
-            Channel<int> c = Channel.CreateUnbounded<int>();
+            var c = Channel.CreateUnbounded<int>();
             Assert.Same(c.In.AsObservable(), c.In.AsObservable());
-        }
-
-        [Fact]
-        public void CaseRead_Sync_InvalidArguments_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, (Action<int>)null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, i => { }));
-            Assert.Throws<ArgumentNullException>("action", () => Channel.CaseRead<int>(Channel.CreateUnbounded<int>().In, (Action<int>)null));
-        }
-
-        [Fact]
-        public void CaseRead_Async_InvalidArguments_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseRead<int>(null, i => Task.CompletedTask));
-            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseRead<int>(Channel.CreateUnbounded<int>().In, null));
-        }
-
-        [Fact]
-        public void CaseWrite_Sync_InvalidArguments_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, (Action)null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, delegate { }));
-            Assert.Throws<ArgumentNullException>("action", () => Channel.CaseWrite<int>(Channel.CreateUnbounded<int>().Out, 0, (Action)null));
-        }
-
-        [Fact]
-        public void CaseWrite_Async_InvalidArguments_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.CaseWrite<int>(null, 0, delegate { return Task.CompletedTask; }));
-            Assert.Throws<ArgumentNullException>("func", () => Channel.CaseWrite<int>(Channel.CreateUnbounded<int>().Out, 0, null));
-        }
-
-        [Fact]
-        public void CaseRead_Sync_DifferentResultsEachCall()
-        {
-            Assert.NotSame(
-                Channel.CaseRead(Channel.CreateUnbounded<int>().In, i => { }),
-                Channel.CaseRead(Channel.CreateUnbounded<int>().In, i => { }));
-        }
-
-        [Fact]
-        public void CaseRead_Async_DifferentResultsEachCall()
-        {
-            Assert.NotSame(
-                Channel.CaseRead(Channel.CreateUnbounded<int>().In, i => Task.CompletedTask),
-                Channel.CaseRead(Channel.CreateUnbounded<int>().In, i => Task.CompletedTask));
-        }
-
-        [Fact]
-        public void CaseWrite_Sync_DifferentResultsEachCall()
-        {
-            Assert.NotSame(
-                Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => { }),
-                Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => { }));
-        }
-
-        [Fact]
-        public void CaseWrite_Async_DifferentResultsEachCall()
-        {
-            Assert.NotSame(
-                Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => Task.CompletedTask),
-                Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => Task.CompletedTask));
         }
 
         private sealed class CanReadFalseStream : MemoryStream
         {
-            public override bool CanRead { get { return false; } }
+            public override bool CanRead => false;
         }
     }
 }

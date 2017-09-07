@@ -28,8 +28,7 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             Channel<int> c = CreateChannel();
             Assert.False(c.Out.TryWrite(42));
-            int result;
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.In.TryRead(out int result));
             Assert.Equal(result, 0);
         }
 
@@ -50,8 +49,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
             Task w = c.Out.WriteAsync(42);
             Assert.False(w.IsCompleted);
-            int result;
-            Assert.True(c.In.TryRead(out result));
+            Assert.True(c.In.TryRead(out int result));
             Assert.Equal(42, result);
         }
 

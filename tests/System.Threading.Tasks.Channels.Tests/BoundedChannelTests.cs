@@ -18,7 +18,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
         {
-            Channel<int> c = Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
             Assert.True(c.Out.TryWrite(42));
             c.Out.Complete();
             Assert.False(c.In.Completion.IsCompleted);
@@ -29,7 +29,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
         {
-            Channel<int> c = Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
             Assert.True(c.Out.TryWrite(42));
             Task write2 = c.Out.WriteAsync(43);
             c.Out.Complete();
@@ -44,7 +44,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_Wait(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
+            var c = Channel.CreateBounded<int>(bufferedCapacity);
 
             for (int i = 0; i < bufferedCapacity; i++)
             {
@@ -69,7 +69,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -93,7 +93,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -117,7 +117,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -143,7 +143,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -166,7 +166,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task TryWrite_DropNewest_WrappedAroundInternalQueue()
         {
-            Channel<int> c = Channel.CreateBounded<int>(3, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(3, BoundedChannelFullMode.DropNewest);
 
             // Move head of dequeue beyond the beginning
             Assert.True(c.Out.TryWrite(1));
@@ -189,7 +189,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task CancelPendingWrite_Reading_DataTransferredFromCorrectWriter()
         {
-            Channel<int> c = Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
             Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
 
             var cts = new CancellationTokenSource();
@@ -214,14 +214,13 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_OneAtATime(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
+            var c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
             {
                 Assert.True(c.Out.TryWrite(i));
-                int result;
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.In.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -232,7 +231,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void SingleProducerConsumer_ConcurrentReadWrite_WithBufferedCapacity_Success(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
+            var c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumItems = 10000;
             Task.WaitAll(
@@ -258,7 +257,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void ManyProducerConsumer_ConcurrentReadWrite_WithBufferedCapacity_Success(int bufferedCapacity)
         {
-            Channel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
+            var c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumWriters = 10;
             const int NumReaders = 10;
@@ -274,11 +273,14 @@ namespace System.Threading.Tasks.Channels.Tests
             {
                 tasks[i] = Task.Run(async () =>
                 {
-                    IAsyncEnumerator<int> e = c.In.GetAsyncEnumerator();
-                    while (await e.MoveNextAsync())
+                    try
                     {
-                        Interlocked.Add(ref readTotal, e.Current);
+                        while (true)
+                        {
+                            Interlocked.Add(ref readTotal, await c.In.ReadAsync());
+                        }
                     }
+                    catch (ClosedChannelException) { }
                 });
             }
 
@@ -296,7 +298,9 @@ namespace System.Threading.Tasks.Channels.Tests
                         await c.Out.WriteAsync(value + 1);
                     }
                     if (Interlocked.Decrement(ref remainingWriters) == 0)
+                    {
                         c.Out.Complete();
+                    }
                 });
             }
 
@@ -307,7 +311,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task WaitToWriteAsync_AfterFullThenRead_ReturnsTrue()
         {
-            Channel<int> c = Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
             Assert.True(c.Out.TryWrite(1));
 
             Task<bool> write1 = c.Out.WaitToWriteAsync();
@@ -327,7 +331,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(true)]
         public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            Channel<int> c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
             Task r = c.In.ReadAsync().AsTask().ContinueWith(_ =>
@@ -345,7 +349,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(true)]
         public void AllowSynchronousContinuations_CompletionTask_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            Channel<int> c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
             Task r = c.In.Completion.ContinueWith(_ =>

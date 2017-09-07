@@ -106,7 +106,7 @@ namespace System.Threading.Tasks.Channels.Tests
             public Action<Action> UnsafeOnCompletedDelegate;
 
             public bool IsCompleted => IsCompletedDelegate?.Invoke() ?? true;
-            public T GetResult() => GetResultDelegate != null ? GetResultDelegate() : default;
+            public T GetResult() => GetResultDelegate != null ? GetResultDelegate() : default(T);
             public void OnCompleted(Action action) => OnCompletedDelegate?.Invoke(action);
             public void UnsafeOnCompleted(Action action) => UnsafeOnCompletedDelegate?.Invoke(action);
         }
