@@ -9,7 +9,6 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO.Pipelines.Text.Primitives;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
@@ -48,13 +47,13 @@ namespace System.IO.Pipelines.Tests
 
             // Write 10 and flush
             buffer = _pipe.Writer.Alloc();
-            buffer.WriteLittleEndian(10);
+            buffer.Write(new byte[] { 0, 0, 0, 10});
 
             // Write 9
-            buffer.WriteLittleEndian(9);
+            buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Write 8
-            buffer.WriteLittleEndian(8);
+            buffer.Write(new byte[] { 0, 0, 0, 8 });
 
             // Make sure we don't see it yet
             var result = await _pipe.Reader.ReadAsync();
@@ -71,9 +70,9 @@ namespace System.IO.Pipelines.Tests
             reader = (await _pipe.Reader.ReadAsync()).Buffer;
 
             Assert.Equal(12, reader.Length);
-            Assert.Equal(10, reader.ReadLittleEndian<int>());
-            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-            Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
+            Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 8 }, reader.Slice(8, 4).ToArray());
 
             _pipe.Reader.Advance(reader.Start, reader.Start);
         }
@@ -137,13 +136,13 @@ namespace System.IO.Pipelines.Tests
             var gotData = _pipe.Reader.TryRead(out var result);
             Assert.True(gotData);
 
-            Assert.Equal("Hello World", result.Buffer.GetAsciiString());
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
             _pipe.Reader.Advance(result.Buffer.Move(result.Buffer.Start, 6));
 
             result = await _pipe.Reader.ReadAsync();
 
-            Assert.Equal("World", result.Buffer.GetAsciiString());
+            Assert.Equal("World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
             _pipe.Reader.Advance(result.Buffer.End);
         }
@@ -153,22 +152,22 @@ namespace System.IO.Pipelines.Tests
         {
             // Write 10 and flush
             var buffer = _pipe.Writer.Alloc();
-            buffer.WriteLittleEndian(10);
+            buffer.Write(new byte[] { 0, 0, 0, 10 });
             await buffer.FlushAsync();
 
             // Write 9
             buffer = _pipe.Writer.Alloc();
-            buffer.WriteLittleEndian(9);
+            buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Write 8
-            buffer.WriteLittleEndian(8);
+            buffer.Write(new byte[] { 0, 0, 0, 8 });
 
             // Make sure we don't see it yet
             var result = await _pipe.Reader.ReadAsync();
             var reader = result.Buffer;
 
             Assert.Equal(4, reader.Length);
-            Assert.Equal(10, reader.ReadLittleEndian<int>());
+            Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.ToArray());
 
             // Don't move
             _pipe.Reader.Advance(reader.Start);
@@ -179,9 +178,9 @@ namespace System.IO.Pipelines.Tests
             reader = (await _pipe.Reader.ReadAsync()).Buffer;
 
             Assert.Equal(12, reader.Length);
-            Assert.Equal(10, reader.ReadLittleEndian<int>());
-            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-            Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
+            Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 8 }, reader.Slice(8, 4).ToArray());
 
             _pipe.Reader.Advance(reader.Start, reader.Start);
         }
@@ -191,7 +190,7 @@ namespace System.IO.Pipelines.Tests
         {
             // Write 10 and flush
             var buffer = _pipe.Writer.Alloc();
-            buffer.WriteLittleEndian(10);
+            buffer.Write(new byte[] { 0, 0, 0, 10 });
             await buffer.FlushAsync();
 
             // Write Hello to another pipeline and get the buffer
@@ -206,7 +205,7 @@ namespace System.IO.Pipelines.Tests
 
             // Write 9 to the buffer
             buffer = _pipe.Writer.Alloc();
-            buffer.WriteLittleEndian(9);
+            buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Append the data from the other pipeline
             buffer.Append(c2Buffer);
@@ -219,7 +218,7 @@ namespace System.IO.Pipelines.Tests
             var reader = result.Buffer;
 
             Assert.Equal(4, reader.Length);
-            Assert.Equal(10, reader.ReadLittleEndian<int>());
+            Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
 
             // Consume nothing
             _pipe.Reader.Advance(reader.Start);
@@ -231,9 +230,9 @@ namespace System.IO.Pipelines.Tests
 
             // int, int, "Hello"
             Assert.Equal(13, reader.Length);
-            Assert.Equal(10, reader.ReadLittleEndian<int>());
-            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-            Assert.Equal("Hello", reader.Slice(8).GetUtf8String());
+            Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
+            Assert.Equal("Hello", Encoding.ASCII.GetString(reader.Slice(8).ToArray()));
 
             _pipe.Reader.Advance(reader.Start, reader.Start);
         }
@@ -354,72 +353,6 @@ namespace System.IO.Pipelines.Tests
             spans[1].Span.CopyTo(worldBytes);
             Assert.Equal("Hello", Encoding.ASCII.GetString(helloBytes));
             Assert.Equal(" World", Encoding.ASCII.GetString(worldBytes));
-        }
-
-        [Fact]
-        public async Task IndexOfNotFoundReturnsEnd()
-        {
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-
-            await _pipe.Writer.WriteAsync(bytes);
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-            ReadableBuffer slice;
-            ReadCursor cursor;
-
-            Assert.False(buffer.TrySliceTo(10, out slice, out cursor));
-
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
-        }
-
-        [Fact]
-        public async Task FastPathIndexOfAcrossBlocks()
-        {
-            const int blockSize = 4032;
-            //     block 1       ->    block2
-            // [padding..hello]  ->  [  world   ]
-            var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
-            writeBuffer.Write(paddingBytes);
-            writeBuffer.Write(bytes);
-            await writeBuffer.FlushAsync();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-            ReadableBuffer slice;
-            ReadCursor cursor;
-            Assert.False(buffer.TrySliceTo((byte)'R', out slice, out cursor));
-
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
-        }
-
-        [Fact]
-        public async Task SlowPathIndexOfAcrossBlocks()
-        {
-            const int blockSize = 4032;
-            //     block 1       ->    block2
-            // [padding..hello]  ->  [  world   ]
-            var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
-            writeBuffer.Write(paddingBytes);
-            writeBuffer.Write(bytes);
-            await writeBuffer.FlushAsync();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-            ReadableBuffer slice;
-            ReadCursor cursor;
-            Assert.False(buffer.IsSingleSpan);
-            Assert.True(buffer.TrySliceTo((byte)' ', out slice, out cursor));
-
-            slice = buffer.Slice(cursor).Slice(1);
-            var array = slice.ToArray();
-
-            Assert.Equal("World", Encoding.ASCII.GetString(array));
-
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
 
         [Fact]

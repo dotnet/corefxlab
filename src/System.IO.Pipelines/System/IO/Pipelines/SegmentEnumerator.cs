@@ -15,7 +15,7 @@ namespace System.IO.Pipelines
         private readonly BufferSegment _endSegment;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public SegmentEnumerator(ReadCursor start, ReadCursor end)
         {
