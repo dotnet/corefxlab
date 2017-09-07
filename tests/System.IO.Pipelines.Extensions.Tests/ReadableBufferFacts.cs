@@ -20,6 +20,7 @@ namespace System.IO.Pipelines.Tests
 {
     public class ReadableBufferFacts
     {
+        const int BlockSize = 4032;
 
         [Fact]
         public void ReadableBufferSequenceWorks()

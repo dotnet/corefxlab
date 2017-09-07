@@ -168,6 +168,11 @@ namespace System.IO.Pipelines.Tests
                 return _pipe.Writer.Alloc(minimumSize);
             }
 
+            public void Allocate(int minimumSize = 0)
+            {
+                _pipe.Writer.Allocate(minimumSize);
+            }
+
             public void Ensure(int count = 1)
             {
                 _pipe.Writer.Ensure(count);
