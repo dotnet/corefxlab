@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RuntimeFrameworkVersion>2.1.0-preview2-25610-02</RuntimeFrameworkVersion>
     <CoreFxVersion>4.3.0</CoreFxVersion>
-    <RoslynVersion>2.6.0-rdonly-ref-62106-01</RoslynVersion>
+    <RoslynVersion>2.6.0-rdonly-ref-62111-06</RoslynVersion>
     <SystemMemoryVersion>4.5.0-preview2-25610-02</SystemMemoryVersion>
     <SystemCompilerServicesUnsafeVersion>4.5.0-preview2-25610-02</SystemCompilerServicesUnsafeVersion>
     <SystemNumericsVectorsVersion>4.5.0-preview2-25610-02</SystemNumericsVectorsVersion>
