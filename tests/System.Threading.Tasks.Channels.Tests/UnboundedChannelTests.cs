@@ -13,8 +13,8 @@ namespace System.Threading.Tasks.Channels.Tests
         protected override Channel<int> CreateChannel() => Channel.CreateUnbounded<int>(
             new ChannelOptimizations
             {
-                SingleReader = this.RequiresSingleReader,
-                AllowSynchronousContinuations = this.AllowSynchronousContinuations
+                SingleReader = RequiresSingleReader,
+                AllowSynchronousContinuations = AllowSynchronousContinuations
             });
         protected override Channel<int> CreateFullChannel() => null;
 
@@ -41,8 +41,7 @@ namespace System.Threading.Tasks.Channels.Tests
             }
             for (int i = 0; i < NumItems; i++)
             {
-                int result;
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.In.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -55,8 +54,7 @@ namespace System.Threading.Tasks.Channels.Tests
             for (int i = 0; i < 10; i++)
             {
                 Assert.True(c.Out.TryWrite(i));
-                int result;
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.In.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -146,7 +144,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.True(c.Out.TryWrite(1));
             Assert.True(c.Out.TryWrite(2));
 
-            var queue = DebuggerAttributes.GetFieldValue(c, "_items");
+            object queue = DebuggerAttributes.GetFieldValue(c, "_items");
             DebuggerAttributes.ValidateDebuggerDisplayReferences(queue);
             DebuggerAttributes.ValidateDebuggerTypeProxyProperties(queue);
         }
@@ -174,8 +172,7 @@ namespace System.Threading.Tasks.Channels.Tests
                     int received = 0;
                     while (await c.In.WaitToReadAsync())
                     {
-                        int i;
-                        while (c.In.TryRead(out i))
+                        while (c.In.TryRead(out int i))
                         {
                             Assert.Equal(received, i);
                             received++;

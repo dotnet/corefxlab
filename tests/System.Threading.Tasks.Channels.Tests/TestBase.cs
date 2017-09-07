@@ -25,68 +25,12 @@ namespace System.Threading.Tasks.Channels.Tests
             AssertSynchronouslyCanceled(task, token);
         }
 
+        protected void AssertSynchronousSuccess(Task task) => Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+
         protected void AssertSynchronousTrue(Task<bool> task)
         {
-            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            AssertSynchronousSuccess(task);
             Assert.True(task.Result);
-        }
-
-        protected void AssertSynchronousFalse(Task<bool> task)
-        {
-            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.False(task.Result);
-        }
-
-        internal sealed class DelegateEnumerable<T> : IEnumerable<T>
-        {
-            public Func<IEnumerator<T>> GetEnumeratorDelegate;
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return GetEnumeratorDelegate != null ? 
-                    GetEnumeratorDelegate() :
-                    null;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
-        }
-
-        internal sealed class DelegateEnumerator<T> : IEnumerator<T>
-        {
-            public Func<T> CurrentDelegate;
-            public Action DisposeDelegate;
-            public Func<bool> MoveNextDelegate;
-            public Action ResetDelegate;
-
-            public T Current
-            {
-                get
-                {
-                    return CurrentDelegate != null ? 
-                        CurrentDelegate() :
-                        default; }
-            }
-
-            object IEnumerator.Current { get { return Current; } }
-
-            public void Dispose()
-            {
-                if (DisposeDelegate != null)
-                    DisposeDelegate();
-            }
-
-            public bool MoveNext()
-            {
-                return MoveNextDelegate != null ? 
-                    MoveNextDelegate() :
-                    false;
-            }
-
-            public void Reset()
-            {
-                if (ResetDelegate != null)
-                    ResetDelegate();
-            }
         }
 
         internal sealed class DelegateObserver<T> : IObserver<T>
@@ -95,23 +39,11 @@ namespace System.Threading.Tasks.Channels.Tests
             public Action<Exception> OnErrorDelegate = null;
             public Action OnCompletedDelegate = null;
 
-            void IObserver<T>.OnNext(T value)
-            {
-                if (OnNextDelegate != null)
-                    OnNextDelegate(value);
-            }
+            void IObserver<T>.OnNext(T value) => OnNextDelegate?.Invoke(value);
 
-            void IObserver<T>.OnError(Exception error)
-            {
-                if (OnErrorDelegate != null)
-                    OnErrorDelegate(error);
-            }
+            void IObserver<T>.OnError(Exception error) => OnErrorDelegate?.Invoke(error);
 
-            void IObserver<T>.OnCompleted()
-            {
-                if (OnCompletedDelegate != null)
-                    OnCompletedDelegate();
-            }
+            void IObserver<T>.OnCompleted() => OnCompletedDelegate?.Invoke();
         }
     }
 }

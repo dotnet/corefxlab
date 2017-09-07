@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Linq;
 using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
@@ -28,8 +29,7 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             Channel<int> c = CreateChannel();
             Assert.False(c.Out.TryWrite(42));
-            int result;
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.In.TryRead(out int result));
             Assert.Equal(result, 0);
         }
 
@@ -50,13 +50,12 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
             Task w = c.Out.WriteAsync(42);
             Assert.False(w.IsCompleted);
-            int result;
-            Assert.True(c.In.TryRead(out result));
+            Assert.True(c.In.TryRead(out int result));
             Assert.Equal(42, result);
         }
 
         [Fact]
-        public async Task Cancel_UnpartneredWrite_ThrowsCancellationException()
+        public async Task Cancel_ReadAsync_UnpartneredWrite_ThrowsCancellationException()
         {
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
@@ -72,6 +71,36 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.True(c.Out.TryWrite(42));
             Assert.Equal(42, await r);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task Read_MultipleUnpartneredWrites_CancelSome_ReadSucceeds(bool useReadAsync)
+        {
+            Channel<int> c = CreateChannel();
+            var cts = new CancellationTokenSource();
+
+            Task[] cancelableWrites = (from i in Enumerable.Range(0, 10) select c.Out.WriteAsync(42, cts.Token)).ToArray();
+            Assert.All(cancelableWrites, cw => Assert.Equal(TaskStatus.WaitingForActivation, cw.Status));
+
+            Task w = c.Out.WriteAsync(84);
+
+            cts.Cancel();
+            foreach (Task t in cancelableWrites)
+            {
+                await AssertCanceled(t, cts.Token);
+            }
+
+            if (useReadAsync)
+            {
+                Assert.True(c.In.TryRead(out int result));
+                Assert.Equal(84, result);
+            }
+            else
+            {
+                Assert.Equal(84, await c.In.ReadAsync());
+            }
         }
 
         [Fact]
@@ -110,7 +139,7 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public async Task Cancel_PartneredRead_Success()
+        public async Task Cancel_PartneredReadAsync_Success()
         {
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
@@ -124,6 +153,7 @@ namespace System.Threading.Tasks.Channels.Tests
             cts.Cancel();
             Assert.Equal(42, await r);
         }
+
 
     }
 }
