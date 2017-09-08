@@ -9,14 +9,14 @@ namespace System.Numerics
     public static partial class Tensor
     { 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        public static <#= method.GetGenericResultMethodSignature("T")#>
+        public static <#= method.GetGenericResultMethodSignature("Tensor", "T")#>
         {
             <#= method.GetValidationMethod(true) #>
 
             TensorArithmetic<T>.Instance.<#=method.MethodName#>(<#=method.GetCallArguments()#>, <#= method.ResultName #>);
         }
 
-        public static <#= method.GetGenericMethodSignature("T")#>
+        public static <#= method.GetGenericMethodSignature("Tensor", "T")#>
         {
             <#= method.GetValidationMethod(false) #>
 
