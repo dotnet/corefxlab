@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        private static void WriteHeaders(HttpHeaders headers, ref PipeOutput buffer)
+        private static void WriteHeaders(HttpHeaders headers, ref PipeWriterOutput buffer)
         {
             foreach (var header in headers)
             {

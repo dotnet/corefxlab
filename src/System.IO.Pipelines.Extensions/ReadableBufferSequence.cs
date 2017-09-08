@@ -5,16 +5,16 @@ using System.Collections.Sequences;
 
 namespace System.IO.Pipelines
 {
-    public struct PipeSequence : ISequence<ReadOnlyBuffer<byte>>
+    public struct ReadableBufferSequence : ISequence<ReadOnlyBuffer<byte>>
     {
         private readonly ReadableBuffer _buffer;
 
-        public PipeSequence(ReadableBuffer buffer) : this()
+        public ReadableBufferSequence(ReadableBuffer buffer) : this()
         {
             _buffer = buffer;
         }
 
-        bool ISequence<ReadOnlyBuffer<byte>>.TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance)
+        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
         {
             if (position == Position.First)
             {
