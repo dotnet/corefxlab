@@ -12,7 +12,7 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this Transformation transformation, ReadOnlyBytes source, IOutput destination)
+        public static void Pipe(this IBufferOperation transformation, ReadOnlyBytes source, IOutput destination)
         {
             int afterMergeSlice = 0;
 
@@ -41,7 +41,7 @@ namespace System.Buffers
                     Span<byte> spanToTransform = stackSpan.Slice(0, amountOfData);
 
                     TryTransformWithRemainder:
-                    OperationStatus status = transformation.Transform(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
+                    OperationStatus status = transformation.Execute(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
                     if (status != OperationStatus.Done)
                     {
                         destination.Advance(bytesWritten);
@@ -81,7 +81,7 @@ namespace System.Buffers
                 }
 
                 TryTransform:
-                OperationStatus result = transformation.Transform(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
+                OperationStatus result = transformation.Execute(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
                 afterMergeSlice = 0;
                 destination.Advance(written);
                 sourceSpan = sourceSpan.Slice(consumed);

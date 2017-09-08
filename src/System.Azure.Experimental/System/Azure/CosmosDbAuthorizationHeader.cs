@@ -139,7 +139,7 @@ namespace System.Azure.Authentication
             }
 
             var len = front.Length + written;
-            if (!UrlEncoder.TryEncode(buffer.Slice(0, len), output, out bytesWritten))
+            if (UrlEncoder.Utf8.Encode(buffer.Slice(0, len), output, out consumed, out bytesWritten) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;

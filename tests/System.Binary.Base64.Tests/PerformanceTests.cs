@@ -25,7 +25,7 @@ namespace System.Binary.Base64.Tests
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.Encoder.Transform(source, destination, out int consumed, out int written);
+                        Base64.Encoder.Encode(source, destination, out int consumed, out int written);
                 }
             }
         }
@@ -59,12 +59,12 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
             Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
-            Base64.Encoder.Transform(source, encoded, out int consumed, out int written);
+            Base64.Encoder.Encode(source, encoded, out int consumed, out int written);
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.Decoder.Transform(encoded, source, out int bytesConsumed, out int bytesWritten);
+                        Base64.Decoder.Decode(encoded, source, out int bytesConsumed, out int bytesWritten);
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace System.Binary.Base64.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         Span<byte> encodedSpan = new byte[length];
-                        Base64.Encoder.Transform(source, encodedSpan, out int consumed, out int written);
+                        Base64.Encoder.Encode(source, encodedSpan, out int consumed, out int written);
                         Base64.DecodeInPlace(encodedSpan, out int bytesConsumed, out int bytesWritten);
                     }
                 }
@@ -124,7 +124,7 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[inputBufferSize];
             Base64TestHelper.InitalizeDecodableBytes(source);
             Span<byte> expected = new byte[inputBufferSize];
-            Base64.Decoder.Transform(source, expected, out int expectedConsumed, out int expectedWritten);
+            Base64.Decoder.Decode(source, expected, out int expectedConsumed, out int expectedWritten);
 
             Base64TestHelper.SplitSourceIntoSpans(source, false, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 
@@ -189,7 +189,7 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[inputBufferSize];
             Base64TestHelper.InitalizeDecodableBytes(source);
             Span<byte> expected = new byte[inputBufferSize];
-            Base64.Decoder.Transform(source, expected, out int expectedConsumed, out int expectedWritten);
+            Base64.Decoder.Decode(source, expected, out int expectedConsumed, out int expectedWritten);
 
             Base64TestHelper.SplitSourceIntoSpans(source, true, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 

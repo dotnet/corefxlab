@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Text.Encodings.Web.Buffers;
 
 namespace System.Text.Encodings.Web.Internal
 {
@@ -19,11 +18,6 @@ namespace System.Text.Encodings.Web.Internal
 
             // TODO: this needs to be implemented properly
             throw new NotImplementedException();
-        }
-
-        public override bool TryEncode(ReadOnlySpan<byte> input, Span<byte> output, out int written)
-        {
-            return Utf8.UrlEncoder.TryEncode(input, output, out written);
         }
     }
 

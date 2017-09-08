@@ -38,20 +38,6 @@ namespace System.Text.Encodings.Web.Utf8.Tests
         }
     }
 
-    public class UrlDecoderUtf8DecodeTryDecode : UrlDecoderTests
-    {
-        protected override void TestCore(string encoded, string decoded)
-        {
-            var input = GetBytes(encoded);
-            var output = new byte[input.Length];
-            Assert.True(UrlDecoder.Utf8.TryDecode(input, output, out int written));
-            Assert.True(written <= input.Length);
-
-            var decodedString = Encoding.UTF8.GetString(output, 0, written);
-            Assert.Equal(decoded, decodedString);
-        }
-    }
-
     public class UrlDecoderUtf8DecodeInPlace : UrlDecoderTests
     {
         protected override void TestCore(string encoded, string decoded)

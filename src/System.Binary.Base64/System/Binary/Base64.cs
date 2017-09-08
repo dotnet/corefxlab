@@ -6,7 +6,7 @@ namespace System.Binary.Base64
 {
     public static partial class Base64
     {
-        public static readonly Transformation Encoder = new ToBase64();
-        public static readonly Transformation Decoder = new FromBase64();
+        public static readonly BufferEncoder Encoder = new ToBase64();
+        public static readonly BufferDecoder Decoder = new FromBase64();
     }
 }
