@@ -192,10 +192,10 @@ namespace System.Binary.Base64
             return false;
         }
 
-        sealed class ToBase64 : Transformation
+        sealed class ToBase64 : BufferEncoder
         {
-            public override OperationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Encode(source, destination, out bytesConsumed, out bytesWritten);
+            public override OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Base64.Encode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }
 }

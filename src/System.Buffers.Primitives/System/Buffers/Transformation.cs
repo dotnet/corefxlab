@@ -9,11 +9,6 @@ namespace System.Buffers
         OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written);
     }
 
-    public abstract class Transformation
-    {
-        public abstract OperationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten);
-    }
-
     public enum OperationStatus
     {
         Done,

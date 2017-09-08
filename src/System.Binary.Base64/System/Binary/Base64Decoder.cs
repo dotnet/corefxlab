@@ -282,10 +282,10 @@ namespace System.Binary.Base64
             return OperationStatus.InvalidData;
         }
 
-        sealed class FromBase64 : Transformation
+        sealed class FromBase64 : BufferDecoder
         {
-            public override OperationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Decode(source, destination, out bytesConsumed, out bytesWritten);
+            public override OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Base64.Decode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }
 }
