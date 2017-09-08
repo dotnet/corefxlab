@@ -5,11 +5,11 @@ using System.Buffers;
 
 namespace System.IO.Pipelines
 {
-    public struct PipeOutput : IOutput
+    public struct PipeWriterOutput : IOutput
     {
         private readonly IPipeWriter _writer;
 
-        public PipeOutput(IPipeWriter writer) : this()
+        public PipeWriterOutput(IPipeWriter writer) : this()
         {
             _writer = writer;
         }

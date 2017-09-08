@@ -64,7 +64,7 @@ namespace System.IO.Pipelines
         /// and seals the <see cref="WritableBuffer"/> so no more data can be committed.
         /// </summary>
         /// <remarks>
-        /// While an on-going conncurent read may pick up the data, <see cref="FlushAsync"/> should be called to signal the reader.
+        /// While an on-going concurrent read may pick up the data, <see cref="FlushAsync"/> should be called to signal the reader.
         /// </remarks>
         public void Commit()
         {

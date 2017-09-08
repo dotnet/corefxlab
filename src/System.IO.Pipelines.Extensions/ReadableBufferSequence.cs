@@ -14,7 +14,6 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-
         bool ISequence<ReadOnlyBuffer<byte>>.TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance)
         {
             if (position == Position.First)
