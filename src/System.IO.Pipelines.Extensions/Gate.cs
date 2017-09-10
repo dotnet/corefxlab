@@ -26,7 +26,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Returns a boolean indicating if the gate is "open"
         /// </summary>
-        public bool IsCompleted => _gateState == _gateIsOpen;
+        public bool IsCompleted => ReferenceEquals(_gateState, _gateIsOpen);
 
         public void UnsafeOnCompleted(Action continuation) => OnCompleted(continuation);
 
