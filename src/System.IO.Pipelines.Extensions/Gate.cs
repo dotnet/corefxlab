@@ -26,14 +26,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Returns a boolean indicating if the gate is "open"
         /// </summary>
-        public bool IsCompleted => _gateState == _gateIsOpen;
+        public bool IsCompleted => ReferenceEquals(_gateState, _gateIsOpen);
 
         public void UnsafeOnCompleted(Action continuation) => OnCompleted(continuation);
 
         public void OnCompleted(Action continuation)
         {
             // If we're already completed, call the continuation immediately
-            if (_gateState == _gateIsOpen)
+            if (ReferenceEquals(_gateState, _gateIsOpen))
             {
                 continuation();
             }
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines
             {
                 // Otherwise, if the current continuation is null, atomically store the new continuation in the field and return the old value
                 var previous = Interlocked.CompareExchange(ref _gateState, continuation, null);
-                if (previous == _gateIsOpen)
+                if (ReferenceEquals(previous, _gateIsOpen))
                 {
                     // It got completed in the time between the previous the method and the cmpexch.
                     // So call the continuation (the value of _continuation will remain _completed because cmpexch is atomic,
@@ -67,7 +67,7 @@ namespace System.IO.Pipelines
         {
             // Set the stored continuation value to a sentinel that indicates the state is completed, then call the previous value.
             var completion = Interlocked.Exchange(ref _gateState, _gateIsOpen);
-            if (completion != _gateIsOpen)
+            if (!ReferenceEquals(completion, _gateIsOpen))
             {
                 completion?.Invoke();
             }
