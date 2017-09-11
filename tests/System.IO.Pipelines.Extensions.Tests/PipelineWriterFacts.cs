@@ -168,38 +168,6 @@ namespace System.IO.Pipelines.Tests
                 return _pipe.Writer.Alloc(minimumSize);
             }
 
-            public void Allocate(int minimumSize = 0)
-            {
-                _pipe.Writer.Allocate(minimumSize);
-            }
-
-            public void Ensure(int count = 1)
-            {
-                _pipe.Writer.Ensure(count);
-            }
-
-            public void Advance(int bytesWritten)
-            {
-                _pipe.Writer.Advance(bytesWritten);
-            }
-
-            public void Append(ReadableBuffer buffer)
-            {
-                _pipe.Writer.Append(buffer);
-            }
-
-            public void Commit()
-            {
-                _pipe.Writer.Commit();
-            }
-
-            public new WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
-            {
-               return  _pipe.Writer.FlushAsync(cancellationToken);
-            }
-
-            public Buffer<byte> Buffer { get; }
-
             public void Complete(Exception exception = null)
             {
                 _pipe.Writer.Complete(exception);

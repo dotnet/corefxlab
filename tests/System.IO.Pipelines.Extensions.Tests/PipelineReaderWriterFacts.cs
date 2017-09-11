@@ -97,7 +97,5 @@ namespace System.IO.Pipelines.Tests
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
-
-
     }
 }

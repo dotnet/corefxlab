@@ -105,7 +105,7 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        Buffer<byte> IPipeWriter.Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -113,12 +113,6 @@ namespace System.IO.Pipelines
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
         WritableBuffer IPipeWriter.Alloc(int minimumSize)
-        {
-            ((IPipeWriter)this).Allocate(minimumSize);
-            return new WritableBuffer(this);
-        }
-
-        void IPipeWriter.Allocate(int minimumSize)
         {
             if (_writerCompletion.IsCompleted)
             {
@@ -151,9 +145,11 @@ namespace System.IO.Pipelines
 
                 _currentWriteLength = 0;
             }
+
+            return new WritableBuffer(this);
         }
 
-        void IPipeWriter.Ensure(int count)
+        internal void Ensure(int count)
         {
             EnsureAlloc();
 
@@ -221,7 +217,7 @@ namespace System.IO.Pipelines
             return segment;
         }
 
-        void IPipeWriter.Append(ReadableBuffer buffer)
+        internal void Append(ReadableBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -271,7 +267,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        void IPipeWriter.Commit()
+        internal void Commit()
         {
             // Changing commit head shared with Reader
             lock (_sync)
@@ -314,7 +310,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void IPipeWriter.Advance(int bytesWritten)
+        internal void Advance(int bytesWritten)
         {
             EnsureAlloc();
             if (bytesWritten > 0)
@@ -344,7 +340,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        WritableBufferAwaitable IPipeWriter.FlushAsync(CancellationToken cancellationToken)
+        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;

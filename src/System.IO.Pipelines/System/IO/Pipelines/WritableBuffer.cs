@@ -10,17 +10,17 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct WritableBuffer
     {
-        internal IPipeWriter PipeWriter { get; }
+        internal Pipe Pipe { get; }
 
-        internal WritableBuffer(IPipeWriter pipe)
+        internal WritableBuffer(Pipe pipe)
         {
-            PipeWriter = pipe;
+            Pipe = pipe;
         }
 
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => PipeWriter.Buffer;
+        public Buffer<byte> Buffer => Pipe.Buffer;
 
         /// <summary>
         /// Ensures the specified number of bytes are available.
@@ -35,7 +35,7 @@ namespace System.IO.Pipelines
         /// </exception>
         public void Ensure(int count = 1)
         {
-            PipeWriter.Ensure(count);
+            Pipe.Ensure(count);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace System.IO.Pipelines
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
         public void Append(ReadableBuffer buffer)
         {
-            PipeWriter.Append(buffer);
+            Pipe.Append(buffer);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace System.IO.Pipelines
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)
         {
-            PipeWriter.Advance(bytesWritten);
+            Pipe.Advance(bytesWritten);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public void Commit()
         {
-            PipeWriter.Commit();
+            Pipe.Commit();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines
         /// <returns>A task that completes when the data is fully flushed.</returns>
         public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
         {
-            return PipeWriter.FlushAsync(cancellationToken);
+            return Pipe.FlushAsync(cancellationToken);
         }
     }
 }

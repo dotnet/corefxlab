@@ -5,14 +5,9 @@ namespace System.IO.Pipelines
 {
     public static class PipeExtensions
     {
-        public static PipeWriterOutput AsOutput(this IPipeWriter writer)
+        public static WritableBufferOutput AsOutput(this WritableBuffer buffer)
         {
-            return new PipeWriterOutput(writer);
-        }
-
-        public static PipeWriterOutput AsOutput(this WritableBuffer buffer)
-        {
-            return new PipeWriterOutput(buffer.PipeWriter);
+            return new WritableBufferOutput(buffer);
         }
 
         public static ReadableBufferSequence AsSequence(this ReadableBuffer buffer)
