@@ -15,6 +15,5 @@ namespace System.Buffers
         DestinationTooSmall,
         NeedMoreSourceData,
         InvalidData, // TODO: how do we communicate details of the error
-        NotSupported,
     }
 }

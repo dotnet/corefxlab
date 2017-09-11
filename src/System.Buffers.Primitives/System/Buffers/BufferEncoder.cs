@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.ComponentModel;
+
 namespace System.Buffers
 {
     public abstract class BufferEncoder : IBufferOperation
@@ -10,12 +12,29 @@ namespace System.Buffers
 
         public virtual OperationStatus EncodeInPlace(Span<byte> buffer, int inputLength, out int written)
         {
-            written = 0;
-            return OperationStatus.NotSupported;
+            throw new NotSupportedException();
         }
+
+        public virtual bool IsEncodeInPlaceSupported { get; } = false;
 
         OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written) =>
             Encode(input, output, out consumed, out written);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
 
