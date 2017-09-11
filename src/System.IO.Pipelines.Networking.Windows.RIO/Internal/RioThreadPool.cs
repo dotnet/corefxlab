@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
+using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 {

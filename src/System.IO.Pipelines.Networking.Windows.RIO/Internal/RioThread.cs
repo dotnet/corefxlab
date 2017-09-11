@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 {
@@ -20,11 +21,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         private readonly IntPtr _completionPort;
         private readonly IntPtr _completionQueue;
         private readonly Thread _completionThread;
-        private readonly object _notify;
-        private readonly Thread _notifyThread;
         private readonly CancellationToken _token;
-        private readonly Queue<NotifyBatch> _notifyBatches;
-        private readonly Queue<NotifyBatch> _processedBatches;
 
         private PipeFactory _factory;
         private Dictionary<long, RioTcpConnection> _connections;
@@ -44,35 +41,22 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             _rio = rio;
             _token = token;
 
-            if (CpuInfo.LogicalProcessorCount > CpuInfo.PhysicalCoreCount)
-            {
-                _completionThread = new Thread(RunLogicalCompletions)
-                {
-                    Name = $"RIO Completion Thread {id:00}",
-                    IsBackground = true
-                };
+            _connections = new Dictionary<long, RioTcpConnection>();
+            _bufferIdMappings = new List<BufferMapping>();
 
-                _notifyBatches = new Queue<NotifyBatch>(16);
-                _notify = new object();
-
-                _notifyThread = new Thread(RunNotifies)
-                {
-                    Name = $"RIO Notify Thread {id:00}",
-                    IsBackground = true
-                };
-                _processedBatches = new Queue<NotifyBatch>(16);
-            }
-            else
-            {
-                _completionThread = new Thread(RunPhysicalCompletions)
-                {
-                    Name = $"RIO Completion Thread {id:00}",
-                    IsBackground = true
-                };
-            }
+            var memoryPool = new MemoryPool();
+            memoryPool.RegisterSlabAllocationCallback((slab) => OnSlabAllocated(slab));
+            memoryPool.RegisterSlabDeallocationCallback((slab) => OnSlabDeallocated(slab));
+            _factory = new PipeFactory(memoryPool);
 
             _completionPort = completionPort;
             _completionQueue = completionQueue;
+
+            _completionThread = new Thread(RunCompletions)
+            {
+                Name = $"RIO Completion Thread {id:00}",
+                IsBackground = true
+            };
         }
 
         public void AddConnection(long key, RioTcpConnection value)
@@ -172,12 +156,10 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         public void Start()
         {
             _completionThread.Start(this);
-            _notifyThread?.Start(this);
         }
 
-        private static void RunLogicalCompletions(object state)
+        private static void RunCompletions(object state)
         {
-
             var thread = ((RioThread)state);
 #if NET451
             Thread.BeginThreadAffinity();
@@ -185,119 +167,15 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             var nativeThread = GetCurrentThread();
             var affinity = GetAffinity(thread._id);
             nativeThread.ProcessorAffinity = new IntPtr((long)affinity);
-
-            thread._connections = new Dictionary<long, RioTcpConnection>();
-            thread._bufferIdMappings = new List<BufferMapping>();
-
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
-            thread._factory = new PipeFactory(memoryPool);
-
-            thread.ProcessLogicalCompletions();
+            
+            thread.ProcessCompletions();
 
 #if NET451
             Thread.EndThreadAffinity();
 #endif
         }
-
-        private static void RunPhysicalCompletions(object state)
-        {
-
-            var thread = ((RioThread)state);
-#if NET451
-            Thread.BeginThreadAffinity();
-#endif
-            var nativeThread = GetCurrentThread();
-            var affinity = GetAffinity(thread._id);
-            nativeThread.ProcessorAffinity = new IntPtr((long)affinity);
-
-            thread._connections = new Dictionary<long, RioTcpConnection>();
-            thread._bufferIdMappings = new List<BufferMapping>();
-
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
-            thread._factory = new PipeFactory(memoryPool);
-
-            thread.ProcessPhysicalCompletions();
-
-#if NET451
-            Thread.EndThreadAffinity();
-#endif
-        }
-
-        private static void RunNotifies(object state)
-        {
-
-            var thread = ((RioThread)state);
-#if NET451
-            Thread.BeginThreadAffinity();
-#endif
-            var nativeThread = GetCurrentThread();
-            var affinity = GetPairedAffinity(thread._id);
-            nativeThread.ProcessorAffinity = new IntPtr((long)affinity);
-
-            thread.ProcessNotifies();
-#if NET451
-            Thread.EndThreadAffinity();
-#endif
-        }
-
-        private struct NotifyBatch
-        {
-            public RioTcpConnection[] ConnectionsToSignal;
-            public uint Count;
-        }
-
-        private void ProcessNotifies()
-        {
-            while (!_token.IsCancellationRequested)
-            {
-                NotifyBatch batch;
-                lock (_notify)
-                {
-                    if (_notifyBatches.Count == 0)
-                    {
-                        Monitor.Wait(_notify);
-                    }
-
-                    batch = _notifyBatches.Dequeue();
-                }
-
-                var count = batch.Count;
-                var connectionsToSignal = batch.ConnectionsToSignal;
-
-                Notify(connectionsToSignal, count);
-
-                lock (_processedBatches)
-                {
-                    _processedBatches.Enqueue(batch);
-                }
-            }
-        }
-
-        private static void Notify(RioTcpConnection[] connectionsToSignal, uint count)
-        {
-            for (var i = 0; i < connectionsToSignal.Length; i++)
-            {
-                if (i >= count)
-                {
-                    break;
-                }
-
-                var connection = connectionsToSignal[i];
-
-                if (connection != null)
-                {
-                    connection.ReceiveEndComplete();
-                    connectionsToSignal[i] = null;
-                }
-            }
-        }
-
-
-        private void ProcessLogicalCompletions()
+        
+        private void ProcessCompletions()
         {
             RioRequestResult* results = stackalloc RioRequestResult[maxResults];
 
@@ -324,44 +202,13 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
                             break;
                         }
-
-                        var gotBatch = false;
-                        var batch = default(NotifyBatch);
-                        lock (_processedBatches)
-                        {
-                            if (_processedBatches.Count > 0)
-                            {
-                                batch = _processedBatches.Dequeue();
-                                batch.Count = count;
-                                gotBatch = true;
-                            }
-                        }
-
-                        if (!gotBatch)
-                        {
-                            batch = new NotifyBatch()
-                            {
-                                ConnectionsToSignal = new RioTcpConnection[maxResults],
-                                Count = count
-                            };
-                        }
-
-                        var connectionsToSignal = batch.ConnectionsToSignal;
-
-                        Complete(results, count, connectionsToSignal);
-
-                        lock (_notify)
-                        {
-                            _notifyBatches.Enqueue(batch);
-
-                            Monitor.Pulse(_notify);
-                        }
-
+                        
+                        Complete(results, count);
+                        
                         if (!activatedNotify)
                         {
                             activatedNotify = true;
                             _rio.Notify(ReceiveCompletionQueue);
-
                         }
                     }
                 }
@@ -376,7 +223,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        private unsafe void Complete(RioRequestResult* results, uint count, RioTcpConnection[] connectionsToSignal)
+        private unsafe void Complete(RioRequestResult* results, uint count)
         {
             for (var i = 0; i < count; i++)
             {
@@ -393,69 +240,11 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 {
                     if (result.RequestCorrelation >= 0)
                     {
-                        connection.ReceiveBeginComplete(result.BytesTransferred);
-                        connectionsToSignal[i] = connection;
+                        connection.ReceiveComplete(result.BytesTransferred);
                     }
                     else
                     {
                         connection.SendComplete(result.RequestCorrelation);
-                        connectionsToSignal[i] = null;
-                    }
-                }
-                else
-                {
-                    connectionsToSignal[i] = null;
-                }
-            }
-        }
-
-        private void ProcessPhysicalCompletions()
-        {
-            RioRequestResult* results = stackalloc RioRequestResult[maxResults];
-            var connectionsToSignal = new RioTcpConnection[maxResults];
-
-            _rio.Notify(ReceiveCompletionQueue);
-            while (!_token.IsCancellationRequested)
-            {
-                NativeOverlapped* overlapped;
-                uint bytes, key;
-                var success = GetQueuedCompletionStatus(CompletionPort, out bytes, out key, out overlapped, -1);
-                if (success)
-                {
-                    var activatedNotify = false;
-                    while (true)
-                    {
-                        var count = _rio.DequeueCompletion(ReceiveCompletionQueue, (IntPtr)results, maxResults);
-                        if (count == 0)
-                        {
-                            if (!activatedNotify)
-                            {
-                                activatedNotify = true;
-                                _rio.Notify(ReceiveCompletionQueue);
-                                continue;
-                            }
-
-                            break;
-                        }
-
-                        Complete(results, count, connectionsToSignal);
-
-                        Notify(connectionsToSignal, count);
-
-                        if (!activatedNotify)
-                        {
-                            activatedNotify = true;
-                            _rio.Notify(ReceiveCompletionQueue);
-
-                        }
-                    }
-                }
-                else
-                {
-                    var error = GetLastError();
-                    if (error != 258)
-                    {
-                        throw new Exception($"ERROR: GetQueuedCompletionStatusEx returned {error}");
                     }
                 }
             }
