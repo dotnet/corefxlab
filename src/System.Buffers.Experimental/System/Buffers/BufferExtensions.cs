@@ -133,7 +133,6 @@ namespace System.Buffers
         /// Creates a new slice over the portion of the target array segment.
         /// </summary>
         /// <param name="arraySegment">The target array segment.</param>
-        /// </exception>
         public static Span<T> Slice<T>(this ArraySegment<T> arraySegment)
         {
             return new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
@@ -161,7 +160,7 @@ namespace System.Buffers
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
+        /// Thrown when the specified start index is not in range (&lt;0 or &gt;=length).
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start)
         {
@@ -179,7 +178,7 @@ namespace System.Buffers
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
+        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;=length).
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start, int length)
         {
