@@ -133,7 +133,7 @@ namespace System.Azure.Authentication
 
             hash.Append(buffer.Slice(front.Length, totalWritten));
             hash.GetHash(buffer.Slice(front.Length, hash.OutputSize));
-            if (!Base64.EncodeInPlace(buffer.Slice(front.Length), hash.OutputSize, out written))
+            if (Base64.BytesToUtf8InPlace(buffer.Slice(front.Length), hash.OutputSize, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
