@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
     /// <summary>
     /// Slab tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
@@ -32,7 +32,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// True as long as the blocks from this slab are to be considered returnable to the pool. In order to shrink the 
+        /// True as long as the blocks from this slab are to be considered returnable to the pool. In order to shrink the
         /// memory pool size an entire slab must be removed. That is done by (1) setting IsActive to false and removing the
         /// slab from the pool's _slabs collection, (2) as each block currently in use is Return()ed to the pool it will
         /// be allowed to be garbage collected rather than re-pooled, and (3) when all block tracking objects are garbage

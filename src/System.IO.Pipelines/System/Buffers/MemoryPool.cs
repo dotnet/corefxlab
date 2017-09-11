@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO.Pipelines;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
     /// <summary>
     /// Used to allocate and distribute re-usable blocks of memory.
@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
         private const int _blockStride = 4096;
 
         /// <summary>
-        /// The last 64 bytes of a block are unused to prevent CPU from pre-fetching the next 64 byte into it's memory cache. 
+        /// The last 64 bytes of a block are unused to prevent CPU from pre-fetching the next 64 byte into it's memory cache.
         /// See https://github.com/aspnet/KestrelHttpServer/issues/117 and https://www.youtube.com/watch?v=L7zSU9HI-6I
         /// </summary>
         private const int _blockUnused = 64;
@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
         private const int _blockLength = _blockStride - _blockUnused;
 
         /// <summary>
-        /// Max allocation block size for pooled blocks, 
+        /// Max allocation block size for pooled blocks,
         /// larger values can be leased but they will be disposed after use rather than returned to the pool.
         /// </summary>
         public const int MaxPooledBlockLength = _blockLength;
@@ -53,7 +53,7 @@ namespace System.IO.Pipelines
         private readonly ConcurrentQueue<MemoryPoolBlock> _blocks = new ConcurrentQueue<MemoryPoolBlock>();
 
         /// <summary>
-        /// Thread-safe collection of slabs which have been allocated by this pool. As long as a slab is in this collection and slab.IsActive, 
+        /// Thread-safe collection of slabs which have been allocated by this pool. As long as a slab is in this collection and slab.IsActive,
         /// the blocks will be added to _blocks when returned.
         /// </summary>
         private readonly ConcurrentStack<MemoryPoolSlab> _slabs = new ConcurrentStack<MemoryPoolSlab>();
@@ -122,7 +122,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the 
+        /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the
         /// block tracking objects, and adds them all to the pool.
         /// </summary>
         private MemoryPoolBlock AllocateSlab()

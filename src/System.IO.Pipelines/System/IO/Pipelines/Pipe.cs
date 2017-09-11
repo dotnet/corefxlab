@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    public class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
@@ -144,11 +144,12 @@ namespace System.IO.Pipelines
                 }
 
                 _currentWriteLength = 0;
-                return new WritableBuffer(this);
             }
+
+            return new WritableBuffer(this);
         }
 
-        internal void Ensure(int count = 1)
+        internal void Ensure(int count)
         {
             EnsureAlloc();
 
@@ -309,7 +310,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AdvanceWriter(int bytesWritten)
+        internal void Advance(int bytesWritten)
         {
             EnsureAlloc();
             if (bytesWritten > 0)
@@ -339,7 +340,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
+        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -817,14 +818,14 @@ namespace System.IO.Pipelines
         {
             lock (_sync)
             {
-            if (!_disposed)
-            {
-                throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
-            }
+                if (!_disposed)
+                {
+                    throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+                }
 
-            _disposed = false;
-            ResetState();
+                _disposed = false;
+                ResetState();
+            }
         }
     }
-}
 }

@@ -2,15 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.IO.Pipelines
+using System.Threading.Tasks;
+
+namespace System.Threading
 {
-    public class InlineScheduler : IScheduler
+    public class TaskRunScheduler : IScheduler
     {
-        public static readonly InlineScheduler Default = new InlineScheduler();
+        public static TaskRunScheduler Default = new TaskRunScheduler();
 
         public void Schedule(Action<object> action, object state)
         {
-            action(state);
+            Task.Factory.StartNew(action, state);
         }
     }
 }

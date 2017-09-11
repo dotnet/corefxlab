@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Threading;
 
 namespace System.IO.Pipelines
@@ -9,43 +8,19 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can write a sequential series of bytes.
     /// </summary>
-    public struct WritableBuffer : IOutput
+    public struct WritableBuffer
     {
-        private Pipe _pipe;
+        internal Pipe Pipe { get; }
 
         internal WritableBuffer(Pipe pipe)
         {
-            _pipe = pipe;
+            Pipe = pipe;
         }
 
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => _pipe.Buffer;
-
-        /// <summary>
-        /// Returns the number of bytes currently written and uncommitted.
-        /// </summary>
-        public long BytesWritten => AsReadableBuffer().Length;
-
-        Span<byte> IOutput.Buffer => Buffer.Span;
-
-        void IOutput.Enlarge(int desiredBufferLength) => Ensure(ComputeActualSize(desiredBufferLength));
-
-        private int ComputeActualSize(int desiredBufferLength)
-        {
-            if (desiredBufferLength < 256) desiredBufferLength = 256;
-            if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
-            return desiredBufferLength; 
-        }
-
-        /// <summary>
-        /// Obtain a readable buffer over the data written but uncommitted to this buffer.
-        /// </summary>
-        public ReadableBuffer AsReadableBuffer()
-        {
-            return _pipe.AsReadableBuffer();
-        }
+        public Buffer<byte> Buffer => Pipe.Buffer;
 
         /// <summary>
         /// Ensures the specified number of bytes are available.
@@ -60,7 +35,7 @@ namespace System.IO.Pipelines
         /// </exception>
         public void Ensure(int count = 1)
         {
-            _pipe.Ensure(count);
+            Pipe.Ensure(count);
         }
 
         /// <summary>
@@ -69,7 +44,7 @@ namespace System.IO.Pipelines
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
         public void Append(ReadableBuffer buffer)
         {
-            _pipe.Append(buffer);
+            Pipe.Append(buffer);
         }
 
         /// <summary>
@@ -81,7 +56,7 @@ namespace System.IO.Pipelines
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)
         {
-            _pipe.AdvanceWriter(bytesWritten);
+            Pipe.Advance(bytesWritten);
         }
 
         /// <summary>
@@ -89,11 +64,11 @@ namespace System.IO.Pipelines
         /// and seals the <see cref="WritableBuffer"/> so no more data can be committed.
         /// </summary>
         /// <remarks>
-        /// While an on-going conncurent read may pick up the data, <see cref="FlushAsync"/> should be called to signal the reader.
+        /// While an on-going concurrent read may pick up the data, <see cref="FlushAsync"/> should be called to signal the reader.
         /// </remarks>
         public void Commit()
         {
-            _pipe.Commit();
+            Pipe.Commit();
         }
 
         /// <summary>
@@ -103,7 +78,7 @@ namespace System.IO.Pipelines
         /// <returns>A task that completes when the data is fully flushed.</returns>
         public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
         {
-            return _pipe.FlushAsync(cancellationToken);
+            return Pipe.FlushAsync(cancellationToken);
         }
     }
 }

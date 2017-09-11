@@ -250,7 +250,7 @@ namespace System.IO.Pipelines.Tests
 
                 var ch = (char)buffer.First.Span[0];
                 Assert.Equal(message[index++], ch);
-                reader.Advance(buffer.Start.Seek(1, buffer.End));
+                reader.Advance(buffer.Move(buffer.Start, 1));
             }
 
             Assert.Equal(message.Length, index);
@@ -374,7 +374,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     var ch = (char)buffer.First.Span[0];
                     Assert.Equal(message[index++], ch);
-                    reader.Advance(buffer.Start.Seek(1, buffer.End), buffer.End);
+                    reader.Advance(buffer.Move(buffer.Start, 1), buffer.End);
                 }
             }
 
@@ -413,7 +413,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     var ch = (char)buffer.First.Span[0];
                     Assert.Equal(message[index++], ch);
-                    reader.Advance(buffer.Start.Seek(1, buffer.End));
+                    reader.Advance(buffer.Move(buffer.Start, 1));
                 }
             }
 
@@ -446,7 +446,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(message.Substring(0, index), ch);
 
                 // Never consume, to force buffers to be copied
-                reader.Advance(buffer.Start, buffer.Start.Seek(index, buffer.End));
+                reader.Advance(buffer.Start, buffer.Move(buffer.Start, index));
 
                 // Yield the task. This will ensure that we don't have any Tasks idling
                 // around in UnownedBufferReader.OnCompleted

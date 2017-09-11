@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
+using System.IO.Pipelines;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
     /// <summary>
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
@@ -88,7 +88,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanExtensions.AppendAsLiteral(Buffer.Span, builder);
+            SpanLiteralExtensions.AppendAsLiteral(Buffer.Span, builder);
             return builder.ToString();
         }
 

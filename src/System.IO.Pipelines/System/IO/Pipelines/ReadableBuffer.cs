@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
-using System.Collections.Sequences;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -11,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public struct ReadableBuffer : ISequence<ReadOnlyBuffer<byte>>
+    public struct ReadableBuffer
     {
         internal ReadCursor BufferStart;
         internal ReadCursor BufferEnd;
@@ -196,7 +194,7 @@ namespace System.IO.Pipelines
             var sb = new StringBuilder();
             foreach (var buffer in this)
             {
-                SpanExtensions.AppendAsLiteral(buffer.Span, sb);
+                SpanLiteralExtensions.AppendAsLiteral(buffer.Span, sb);
             }
             return sb.ToString();
         }
@@ -271,55 +269,6 @@ namespace System.IO.Pipelines
             segment.Start = offset;
             segment.End = offset + length;
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
-        }
-
-        bool ISequence<ReadOnlyBuffer<byte>>.TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance)
-        {
-            if (position == Position.First)
-            {
-                // First is already sliced
-                item = First;
-                if (advance)
-                {
-                    if (BufferStart.IsEnd)
-                    {
-                        position = Position.AfterLast;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = BufferStart.Segment.Next;
-                        if (position.ObjectPosition == null)
-                        {
-                            position = Position.AfterLast;
-                        }
-                    }
-                }
-                return true;
-            }
-            else if (position == Position.AfterLast)
-            {
-                item = default;
-                return false;
-            }
-
-            var currentSegment = (BufferSegment)position.ObjectPosition;
-            if (advance)
-            {
-                position.ObjectPosition = currentSegment.Next;
-                if (position.ObjectPosition == null)
-                {
-                    position = Position.AfterLast;
-                }
-            }
-            if (currentSegment == BufferEnd.Segment)
-            {
-                item = currentSegment.Buffer.Slice(currentSegment.Start, BufferEnd.Index - currentSegment.Start);
-            }
-            else
-            {
-                item = currentSegment.Buffer.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
-            }
-            return true;
         }
 
         public ReadCursor Move(ReadCursor cursor, long count)

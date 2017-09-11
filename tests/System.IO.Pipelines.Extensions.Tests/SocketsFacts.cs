@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Tests
                     try
                     {
                         var output = client.Output.Alloc();
-                        output.Append(MessageToSend, SymbolTable.InvariantUtf8);
+                        output.AsOutput().Append(MessageToSend, SymbolTable.InvariantUtf8);
                         await output.FlushAsync();
                         client.Output.Complete();
 
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-// Issue #1687 - The test intermittently fails on linux - 
+// Issue #1687 - The test intermittently fails on linux -
 // Reason: Unhandled Exception: System.IO.Pipelines.Networking.Libuv.Interop.UvException: Error -16 EBUSY resource busy or locked
 #if (Windows || OSX)
         [Fact]
