@@ -11,14 +11,14 @@ namespace System.Text.Primitives.Tests.Encoding
     {
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
-            new object[] { new byte[] { }, new char[]{ (char)0x0050 }, TransformationStatus.DestinationTooSmall },
+            new object[] { new byte[] { }, new char[]{ (char)0x0050 }, OperationStatus.DestinationTooSmall },
             // multiple bytes
             new object[] { new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
-                new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 }, TransformationStatus.Done },
+                new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 }, OperationStatus.Done },
         };
 
         [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
-        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(byte[] expectedBytes, char[] chars, TransformationStatus expectedReturnVal)
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(byte[] expectedBytes, char[] chars, OperationStatus expectedReturnVal)
         {
             ReadOnlySpan<byte> utf16 = new ReadOnlySpan<char>(chars).NonPortableCast<char, byte>();
             Span<byte> buffer = new byte[expectedBytes.Length];
@@ -35,28 +35,28 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
              // empty
-            new object[] { true, new byte[] { }, new uint[] { 0x50 }, Buffers.TransformationStatus.DestinationTooSmall },
-            new object[] { false, new byte[] { }, new uint[] { 0x50 }, Buffers.TransformationStatus.DestinationTooSmall },
+            new object[] { true, new byte[] { }, new uint[] { 0x50 }, Buffers.OperationStatus.DestinationTooSmall },
+            new object[] { false, new byte[] { }, new uint[] { 0x50 }, Buffers.OperationStatus.DestinationTooSmall },
             // multiple bytes
             new object[] { true, new byte[] { 0x50, 0xCF, 0xA8, 0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.TransformationStatus.Done },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.OperationStatus.Done },
             new object[] { false, new byte[] { 0x50, 0x00, 0xE8, 0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD },
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.TransformationStatus.Done },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.OperationStatus.Done },
             // multiple bytes - buffer too small
             new object[] { true, new byte[] { 0x50 },
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.TransformationStatus.DestinationTooSmall },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.OperationStatus.DestinationTooSmall },
             new object[] { false, new byte[] { 0x50, 0x00 },
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.TransformationStatus.DestinationTooSmall },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , Buffers.OperationStatus.DestinationTooSmall },
         };
 
         [Theory, MemberData("TryEncodeFromUnicodeMultipleCodePointsTestData")]
-        public void TryEncodeFromUnicodeMultipleCodePoints(bool useUtf8Encoder, byte[] expectedBytes, uint[] codePointsArray, Buffers.TransformationStatus expectedReturnVal)
+        public void TryEncodeFromUnicodeMultipleCodePoints(bool useUtf8Encoder, byte[] expectedBytes, uint[] codePointsArray, Buffers.OperationStatus expectedReturnVal)
         {
             ReadOnlySpan<byte> codePoints = codePointsArray.AsSpan().AsBytes();
             Span<byte> buffer = new byte[expectedBytes.Length];
             int written;
             int consumed;
-            Buffers.TransformationStatus result;
+            Buffers.OperationStatus result;
 
             if (useUtf8Encoder)
                 result = Encoders.Utf32.ToUtf8(codePoints, buffer, out consumed, out written);
@@ -66,7 +66,7 @@ namespace System.Text.Primitives.Tests.Encoding
             Assert.Equal(expectedReturnVal, result);
             Assert.Equal(expectedBytes.Length, written);
 
-            if (result == Buffers.TransformationStatus.Done)
+            if (result == Buffers.OperationStatus.Done)
                 Assert.Equal(codePoints.Length, consumed);
 
             Assert.True(buffer.Slice(0, written).SequenceEqual(expectedBytes), "Bad output sequence");
@@ -74,24 +74,24 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static object[][] TryDecodeToUnicodeMultipleCodePointsTestData = {
             //empty
-            new object[] { true, new uint[] {}, new byte[] {}, Buffers.TransformationStatus.Done },
-            new object[] { false, new uint[] {}, new byte[] {}, Buffers.TransformationStatus.Done },
+            new object[] { true, new uint[] {}, new byte[] {}, Buffers.OperationStatus.Done },
+            new object[] { false, new uint[] {}, new byte[] {}, Buffers.OperationStatus.Done },
             // multiple bytes
             new object[] { true,
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },  Buffers.TransformationStatus.Done },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },  Buffers.OperationStatus.Done },
             new object[] { false,
-                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] {  0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD },  Buffers.TransformationStatus.Done },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] {  0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD },  Buffers.OperationStatus.Done },
         };
 
         [Theory, MemberData("TryDecodeToUnicodeMultipleCodePointsTestData")]
-        public void TryDecodeToUnicodeMultipleCodePoints(bool useUtf8Encoder, uint[] expectedCodePointsArray, byte[] inputBytesArray, Buffers.TransformationStatus expectedReturnVal)
+        public void TryDecodeToUnicodeMultipleCodePoints(bool useUtf8Encoder, uint[] expectedCodePointsArray, byte[] inputBytesArray, Buffers.OperationStatus expectedReturnVal)
         {
             ReadOnlySpan<byte> expectedBytes = expectedCodePointsArray.AsSpan().AsBytes();
             ReadOnlySpan<byte> inputBytes = inputBytesArray;
             Span<byte> codePoints = new byte[expectedBytes.Length];
             int written;
             int consumed;
-            Buffers.TransformationStatus result;
+            Buffers.OperationStatus result;
 
             if (useUtf8Encoder)
                 result = Encoders.Utf8.ToUtf32(inputBytes, codePoints, out consumed, out written);
@@ -129,9 +129,9 @@ namespace System.Text.Primitives.Tests.Encoding
             int written;
 
             if (useUtf8Encoder)
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
             else
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
 
             Assert.Equal(allCodePoints.AsBytes().Length, consumed);
             buffer = buffer.Slice(0, written);
@@ -139,9 +139,9 @@ namespace System.Text.Primitives.Tests.Encoding
             Span<uint> utf32 = new uint[maximumValidCodePoint + 1];
 
             if (useUtf8Encoder)
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf8.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf8.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
             else
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf16.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf16.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
 
             Assert.Equal(buffer.Length, consumed);
             Assert.Equal((maximumValidCodePoint + 1) * sizeof(uint), written);
@@ -186,9 +186,9 @@ namespace System.Text.Primitives.Tests.Encoding
             int consumed;
 
             if (useUtf8Encoder)
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
             else
-                Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
 
             buffer = buffer.Slice(0, written);
 
@@ -237,14 +237,14 @@ namespace System.Text.Primitives.Tests.Encoding
             ReadOnlySpan<byte> input = inputBytes;
             Span<byte> output = new byte[outputSize];
 
-            Assert.Equal(Buffers.TransformationStatus.DestinationTooSmall, Encoders.Utf8.ToUtf16(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encoders.Utf8.ToUtf16(input, output, out consumed, out written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected1), "Bad first segment of partial sequence");
 
             input = input.Slice(consumed);
             output = new byte[expected2.Length];
-            Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf8.ToUtf16(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf8.ToUtf16(input, output, out consumed, out written));
             Assert.Equal(expected2.Length, written);
             Assert.Equal(input.Length, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected2), "Bad second segment of partial sequence");
@@ -284,14 +284,14 @@ namespace System.Text.Primitives.Tests.Encoding
             ReadOnlySpan<byte> input = inputBytes.AsSpan().AsBytes();
             Span<byte> output = new byte[outputSize];
 
-            Assert.Equal(Buffers.TransformationStatus.DestinationTooSmall, Encoders.Utf16.ToUtf8(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encoders.Utf16.ToUtf8(input, output, out consumed, out written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected1), "Bad first segment of partial sequence");
 
             input = input.Slice(consumed);
             output = new byte[expected2.Length];
-            Assert.Equal(Buffers.TransformationStatus.Done, Encoders.Utf16.ToUtf8(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf16.ToUtf8(input, output, out consumed, out written));
             Assert.Equal(expected2.Length, written);
             Assert.Equal(input.Length, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected2), "Bad second segment of partial sequence");

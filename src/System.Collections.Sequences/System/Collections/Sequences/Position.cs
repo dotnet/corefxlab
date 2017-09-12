@@ -23,7 +23,7 @@ namespace System.Collections.Sequences
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator!=(Position left, Position right)
         {
-            return left.Equals(right);
+            return !left.Equals(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

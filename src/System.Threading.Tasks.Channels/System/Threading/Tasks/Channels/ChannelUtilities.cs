@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -11,11 +12,54 @@ namespace System.Threading.Tasks.Channels
     internal static class ChannelUtilities
     {
         /// <summary>Sentinel object used to indicate being done writing.</summary>
-        internal static readonly Exception DoneWritingSentinel = new Exception(nameof(DoneWritingSentinel));
+        internal static readonly Exception s_doneWritingSentinel = new Exception(nameof(s_doneWritingSentinel));
         /// <summary>A cached task with a Boolean true result.</summary>
-        internal static readonly Task<bool> TrueTask = Task.FromResult(true);
+        internal static readonly Task<bool> s_trueTask = Task.FromResult(true);
         /// <summary>A cached task with a Boolean false result.</summary>
-        internal static readonly Task<bool> FalseTask = Task.FromResult(false);
+        internal static readonly Task<bool> s_falseTask = Task.FromResult(false);
+        /// <summary>A cached task that never completes.</summary>
+        internal static readonly Task s_neverCompletingTask = new TaskCompletionSource<bool>().Task;
+        /// <summary>Mapping of Tasks to CancellationTokenSources that are canceled when the associated task completes. Lazily initialized.</summary>
+        private static ConditionalWeakTable<Task, CancellationTokenSource> s_completionTokenTable;
+
+        /// <summary>Gets a <see cref="CancellationToken"/> that will have cancellation requested when the specified <see cref="Task"/> completes.</summary>
+        /// <param name="completionTask"></param>
+        /// <returns></returns>
+        internal static CancellationToken GetCompletionToken(Task completionTask)
+        {
+            // If the task is already completed, return a canceled task.
+            if (completionTask.IsCompleted)
+            {
+                return new CancellationToken(canceled: true);
+            }
+
+            // If someone has previously requested a token for this task, return it.
+            ConditionalWeakTable<Task, CancellationTokenSource> table = LazyInitializer.EnsureInitialized(ref s_completionTokenTable);
+            if (table.TryGetValue(completionTask, out CancellationTokenSource cts))
+            {
+                return cts.Token;
+            }
+
+            // We don't have an existing token for this task.  Create one and try to store it.
+            cts = new CancellationTokenSource();
+            try
+            {
+                table.Add(completionTask, cts);
+            }
+            catch (ArgumentException) // Currently no TryAdd. If that exists in the future, switch to it.
+            {
+                // We failed to add because we lost a race to another thread adding for the same task.
+                // Use whatever one is currently there.
+                bool gotSource = table.TryGetValue(completionTask, out cts);
+                Debug.Assert(gotSource, "There must be a source, as we just failed to add because there was one.");
+                return cts.Token;
+            }
+
+            // We successfully stored the Task->CTS mapping.  Configure the CTS to be canceled
+            // when the task completes.
+            completionTask.ConfigureAwait(false).GetAwaiter().OnCompleted(cts.Cancel); // delegate allocation, but this is faster than ContinueWith, which also allocates
+            return cts.Token;
+        }
 
         /// <summary>Completes the specified TaskCompletionSource.</summary>
         /// <param name="tcs">The source to complete.</param>
@@ -27,42 +71,32 @@ namespace System.Threading.Tasks.Channels
         /// </param>
         internal static void Complete(TaskCompletionSource<VoidResult> tcs, Exception error = null)
         {
-            OperationCanceledException oce = error as OperationCanceledException;
-            if (oce != null)
+            if (error is OperationCanceledException oce)
             {
                 tcs.TrySetCanceled(oce.CancellationToken);
             }
-            else if (error != null && error != DoneWritingSentinel)
+            else if (error != null && error != s_doneWritingSentinel)
             {
                 tcs.TrySetException(error);
             }
             else
             {
-                tcs.TrySetResult(default);
+                tcs.TrySetResult(default(VoidResult));
             }
         }
 
         /// <summary>Gets a value task representing an error.</summary>
         /// <typeparam name="T">Specifies the type of the value that would have been returned.</typeparam>
-        /// <param name="error">The error.  This may be <see cref="DoneWritingSentinel"/>.</param>
+        /// <param name="error">The error.  This may be <see cref="s_doneWritingSentinel"/>.</param>
         /// <returns>The failed task.</returns>
         internal static ValueTask<T> GetInvalidCompletionValueTask<T>(Exception error)
         {
             Debug.Assert(error != null);
 
-            Task<T> t;
-
-            if (error == DoneWritingSentinel)
-            {
-                t = Task.FromException<T>(CreateInvalidCompletionException());
-            }
-            else
-            {
-                OperationCanceledException oce = error as OperationCanceledException;
-                t = oce != null ?
-                    Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
-                    Task.FromException<T>(CreateInvalidCompletionException(error));
-            }
+            Task<T> t =
+                error == s_doneWritingSentinel ? Task.FromException<T>(CreateInvalidCompletionException()) :
+                error is OperationCanceledException oce ? Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
+                Task.FromException<T>(CreateInvalidCompletionException(error));
 
             return new ValueTask<T>(t);
         }
@@ -139,7 +173,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         internal static Exception CreateInvalidCompletionException(Exception inner = null) =>
             inner is OperationCanceledException ? inner :
-            inner != null && inner != DoneWritingSentinel ? new ClosedChannelException(inner) :
+            inner != null && inner != s_doneWritingSentinel ? new ClosedChannelException(inner) :
             new ClosedChannelException();
     }
 }

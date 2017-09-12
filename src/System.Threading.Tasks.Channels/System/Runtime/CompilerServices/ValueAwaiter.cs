@@ -36,7 +36,7 @@ namespace System.Runtime.CompilerServices
         /// <param name="awaiter">The awaiter that represents the actual async operation being awaited.</param>
         public ValueAwaiter(IAwaiter<TResult> awaiter)
         {
-            _result = default;
+            _result = default(TResult);
             _asyncOp = awaiter;
         }
 
@@ -44,14 +44,14 @@ namespace System.Runtime.CompilerServices
         /// <param name="task">The task that represents the actual async operation being awaited.</param>
         public ValueAwaiter(Task<TResult> task)
         {
-            if (task.Status == TaskStatus.RanToCompletion)
+            if (task.Status == TaskStatus.RanToCompletion) // TODO: task.IsCompletedSuccessfully
             {
                 _result = task.Result;
                 _asyncOp = null;
             }
             else
             {
-                _result = default;
+                _result = default(TResult);
                 _asyncOp = task;
             }
         }
@@ -67,7 +67,7 @@ namespace System.Runtime.CompilerServices
             }
             else
             {
-                _result = default;
+                _result = default(TResult);
                 _asyncOp = task.AsTask();
             }
         }
@@ -77,80 +77,64 @@ namespace System.Runtime.CompilerServices
         {
             get
             {
-                if (_asyncOp == null)
-                {
-                    return true;
-                }
+                return _asyncOp == null ? true : IsCompletedCore(_asyncOp);
 
-                IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-                if (awaiter != null)
-                {
-                    return awaiter.IsCompleted;
-                }
-
-                Task<TResult> task = (Task<TResult>)_asyncOp;
-                return task.IsCompleted;
+                bool IsCompletedCore(object asyncOp) =>
+                    asyncOp is IAwaiter<TResult> awaiter ?
+                        awaiter.IsCompleted :
+                        ((Task<TResult>)asyncOp).IsCompleted;
             }
         }
 
         /// <summary>Gets the result of the completed awaited operation.</summary>
         public TResult GetResult()
         {
-            if (_asyncOp == null)
-            {
-                return _result;
-            }
+            return _asyncOp == null ? _result : GetResultCore(_asyncOp);
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                return awaiter.GetResult();
-            }
-
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            return task.GetAwaiter().GetResult();
+            TResult GetResultCore(object asyncOp) =>
+                asyncOp is IAwaiter<TResult> awaiter ?
+                    awaiter.GetResult() :
+                    ((Task<TResult>)asyncOp).GetAwaiter().GetResult();
         }
 
         /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
         /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void OnCompleted(Action continuation)
         {
-            if (_asyncOp == null)
+            switch (_asyncOp)
             {
-                Task.Run(continuation);
-                return;
-            }
+                case null:
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(continuation);
+                    break;
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                awaiter.OnCompleted(continuation);
-                return;
-            }
+                case IAwaiter<TResult> awaiter:
+                    awaiter.OnCompleted(continuation);
+                    break;
 
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            task.GetAwaiter().OnCompleted(continuation);
+                default:
+                    ((Task<TResult>)_asyncOp).GetAwaiter().OnCompleted(continuation);
+                    break;
+            }
         }
 
         /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
         /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void UnsafeOnCompleted(Action continuation)
         {
-            if (_asyncOp == null)
+            switch (_asyncOp)
             {
-                Task.Run(continuation);
-                return;
-            }
+                case null:
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().UnsafeOnCompleted(continuation);
+                    break;
 
-            IAwaiter<TResult> awaiter = _asyncOp as IAwaiter<TResult>;
-            if (awaiter != null)
-            {
-                awaiter.UnsafeOnCompleted(continuation);
-                return;
-            }
+                case IAwaiter<TResult> awaiter:
+                    awaiter.UnsafeOnCompleted(continuation);
+                    break;
 
-            Task<TResult> task = (Task<TResult>)_asyncOp;
-            task.GetAwaiter().UnsafeOnCompleted(continuation);
+                default:
+                    ((Task<TResult>)_asyncOp).GetAwaiter().UnsafeOnCompleted(continuation);
+                    break;
+            }
         }
     }
 }

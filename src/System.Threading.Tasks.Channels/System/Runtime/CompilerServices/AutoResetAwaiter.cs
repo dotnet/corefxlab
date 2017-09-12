@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 {
     /// <summary>Provides a reusable object that can be awaited by a consumer and manually completed by a producer.</summary>
     /// <typeparam name="TResult">The type of data being passed from producer to consumer.</typeparam>
-    public sealed class AutoResetAwaiter<TResult> : IAwaiter<TResult>
+    internal sealed class AutoResetAwaiter<TResult> : IAwaiter<TResult>
     {
         /// <summary>Sentinel object indicating that the operation has completed prior to OnCompleted being called.</summary>
         private static readonly Action s_completionSentinel = () => Debug.Fail("Completion sentinel should never be invoked");
@@ -33,21 +33,11 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Iniitalize the awaiter.</summary>
         /// <param name="runContinuationsAsynchronously">true if the producer should invoke the continuation asynchronously; otherwise, false.</param>
-        public AutoResetAwaiter(bool runContinuationsAsynchronously = true)
-        {
+        public AutoResetAwaiter(bool runContinuationsAsynchronously = true) =>
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
-        }
 
         /// <summary>Gets whether the operation has already completed.</summary>
-        public bool IsCompleted
-        {
-            get
-            {
-                Action c = Volatile.Read(ref _continuation);
-                Debug.Assert(c == null || c == s_completionSentinel);
-                return c != null;
-            }
-        }
+        public bool IsCompleted => Volatile.Read(ref _continuation) == s_completionSentinel;
 
         /// <summary>Gets the result of the completed, awaited operation, reseting the instance for reuse.</summary>
         /// <returns>The result.</returns>
@@ -70,7 +60,7 @@ namespace System.Runtime.CompilerServices
 
             // The operation completed successfully.  Clear and return the result.
             TResult result = _result;
-            _result = default;
+            _result = default(TResult);
 #if DEBUG
             _resultSet = false;
 #endif
@@ -88,12 +78,6 @@ namespace System.Runtime.CompilerServices
             NotifyAwaiter();
         }
 
-        /// <summary>Set that the operation was canceled.</summary>
-        public void SetCanceled(CancellationToken token = default)
-        {
-            SetException(token.IsCancellationRequested ? new OperationCanceledException(token) : new OperationCanceledException());
-        }
-
         /// <summary>Set the failure for the operation.</summary>
         public void SetException(Exception exception)
         {
@@ -107,14 +91,14 @@ namespace System.Runtime.CompilerServices
         /// <summary>Alerts any awaiter that the operation has completed.</summary>
         private void NotifyAwaiter()
         {
-            Action c = _continuation ?? Interlocked.CompareExchange(ref _continuation, s_completionSentinel, null);
+            Action c = Interlocked.Exchange(ref _continuation, s_completionSentinel);
             if (c != null)
             {
                 Debug.Assert(c != s_completionSentinel);
 
                 if (_runContinuationsAsynchronously)
                 {
-                    Task.Run(c);
+                    Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(c);
                 }
                 else
                 {
@@ -132,12 +116,22 @@ namespace System.Runtime.CompilerServices
             if (c != null)
             {
                 Debug.Assert(c == s_completionSentinel);
-                Task.Run(continuation);
+                Task.CompletedTask.ConfigureAwait(false).GetAwaiter().OnCompleted(continuation);
             }
         }
 
         /// <summary>Register the continuation to invoke when the operation completes.</summary>
-        public void UnsafeOnCompleted(Action continuation) => OnCompleted(continuation);
+        public void UnsafeOnCompleted(Action continuation)
+        {
+            Debug.Assert(continuation != null);
+
+            Action c = _continuation ?? Interlocked.CompareExchange(ref _continuation, continuation, null);
+            if (c != null)
+            {
+                Debug.Assert(c == s_completionSentinel);
+                Task.CompletedTask.ConfigureAwait(false).GetAwaiter().UnsafeOnCompleted(continuation);
+            }
+        }
 
         [Conditional("DEBUG")]
         private void AssertResultConsistency(bool expectedCompleted)

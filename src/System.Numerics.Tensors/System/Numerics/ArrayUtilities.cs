@@ -75,12 +75,12 @@ namespace System.Numerics
         /// </summary>
         /// <param name="dimensions"></param>
         /// <returns></returns>
-        public static int[] GetStrides(int[] dimensions, bool columnMajor = false)
+        public static int[] GetStrides(int[] dimensions, bool reverseStride = false)
         {
             int[] strides = new int[dimensions.Length];
 
             int stride = 1;
-            if (columnMajor)
+            if (reverseStride)
             {
                 for (int i = 0; i < strides.Length; i++)
                 {
@@ -95,6 +95,20 @@ namespace System.Numerics
                     strides[i] = stride;
                     stride *= dimensions[i];
                 }
+            }
+
+            return strides;
+        }
+
+        public static int[] GetStrides(Array array)
+        {
+            int[] strides = new int[array.Rank];
+
+            int stride = 1;
+            for (int i = strides.Length - 1; i >= 0; i--)
+            {
+                strides[i] = stride;
+                stride *= array.GetLength(i);
             }
 
             return strides;
@@ -145,6 +159,26 @@ namespace System.Numerics
         }
 
         /// <summary>
+        /// Calculates the 1-d index for n-d indices in layout specified by strides.
+        /// </summary>
+        /// <param name="strides"></param>
+        /// <param name="indices"></param>
+        /// <param name="startFromDimension"></param>
+        /// <returns></returns>
+        public static int GetIndex(int[] strides, Span<int> indices, int startFromDimension = 0)
+        {
+            Debug.Assert(strides.Length == indices.Length);
+
+            int index = 0;
+            for (int i = startFromDimension; i < indices.Length; i++)
+            {
+                index += strides[i] * indices[i];
+            }
+
+            return index;
+        }
+
+        /// <summary>
         /// Calculates the 1-d index for 2-d indices in layout specified by strides.
         /// </summary>
         /// <param name="strides"></param>
@@ -164,17 +198,40 @@ namespace System.Numerics
         /// <param name="index"></param>
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
-        public static void GetIndices(int[] strides, int index, int[] indices, int startFromDimension = 0)
+        public static void GetIndices(int[] strides, bool reverseStride, int index, int[] indices, int startFromDimension = 0)
         {
-            bool columnMajor = strides.Length > 1 && strides[0] == 1;
-            Debug.Assert(columnMajor ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
+            Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);
 
             int remainder = index;
             for (int i = startFromDimension; i < strides.Length; i++)
             {
-                // reverse the index for column major so that we divide by largest stride first
-                var nIndex = columnMajor ? strides.Length - 1 - i : i;
+                // reverse the index for reverseStride so that we divide by largest stride first
+                var nIndex = reverseStride ? strides.Length - 1 - i : i;
+
+                var stride = strides[nIndex];
+                indices[nIndex] = remainder / stride;
+                remainder %= stride;
+            }
+        }
+
+        /// <summary>
+        /// Calculates the n-d indices from the 1-d index in a layoyut specificed by strides
+        /// </summary>
+        /// <param name="strides"></param>
+        /// <param name="index"></param>
+        /// <param name="indices"></param>
+        /// <param name="startFromDimension"></param>
+        public static void GetIndices(int[] strides, bool reverseStride, int index, Span<int> indices, int startFromDimension = 0)
+        {
+            Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
+            Debug.Assert(strides.Length == indices.Length);
+
+            int remainder = index;
+            for (int i = startFromDimension; i < strides.Length; i++)
+            {
+                // reverse the index for reverseStride so that we divide by largest stride first
+                var nIndex = reverseStride ? strides.Length - 1 - i : i;
 
                 var stride = strides[nIndex];
                 indices[nIndex] = remainder / stride;
@@ -185,11 +242,10 @@ namespace System.Numerics
         /// <summary>
         /// Takes an 1-d index over n-d sourceStrides and recalculates it assuming same n-d coordinates over a different n-d strides
         /// </summary>
-        public static int TransformIndexByStrides(int index, int[] sourceStrides, int[] transformStrides)
+        public static int TransformIndexByStrides(int index, int[] sourceStrides, bool sourceReverseStride, int[] transformStrides)
         {
-            bool sourceColumnMajor = sourceStrides.Length > 1 && sourceStrides[0] == 1;
             Debug.Assert(index >= 0);
-            Debug.Assert(sourceColumnMajor ? IsAscending(sourceStrides) : IsDescending(sourceStrides), "Index decomposition requires ordered strides");
+            Debug.Assert(sourceReverseStride ? IsAscending(sourceStrides) : IsDescending(sourceStrides), "Index decomposition requires ordered strides");
             Debug.Assert(sourceStrides.Length == transformStrides.Length);
 
             int transformIndex = 0;
@@ -197,8 +253,8 @@ namespace System.Numerics
 
             for (int i = 0; i < sourceStrides.Length; i++)
             {
-                // reverse the index for column major so that we divide by largest stride first
-                var nIndex = sourceColumnMajor ? sourceStrides.Length - 1 - i: i;
+                // reverse the index for reverseStride so that we divide by largest stride first
+                var nIndex = sourceReverseStride ? sourceStrides.Length - 1 - i: i;
 
                 var sourceStride = sourceStrides[nIndex];
                 var transformStride = transformStrides[nIndex];

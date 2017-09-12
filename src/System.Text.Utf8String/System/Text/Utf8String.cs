@@ -128,14 +128,14 @@ namespace System.Text.Utf8
         public override string ToString()
         {
             var status = Encoders.Utf8.ToUtf16Length(this.Bytes, out int needed);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return string.Empty;
 
             // UTF-16 is 2 bytes per char
             var chars = new char[needed >> 1];
             var utf16 = new Span<char>(chars).AsBytes();
             status = Encoders.Utf8.ToUtf16(this.Bytes, utf16, out int consumed, out int written);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return string.Empty;
 
             return new string(chars);
@@ -321,6 +321,72 @@ namespace System.Text.Utf8
             {
                 if (it.Current == codePoint)
                 {
+                    return it.PositionInCodeUnits;
+                }
+            }
+
+            return StringNotFound;
+        }
+
+        // TODO: Naive algorithm, reimplement faster - implemented to keep parity with IndexOf
+        public int LastIndexOf(Utf8String value)
+        {
+            // Special case for looking for empty strings
+            if (value.Length == 0)
+            {
+                // Maintain parity with .NET C#'s LastIndexOf
+                return Length == 0 ? 0 : Length - 1;
+            }
+
+            if (Length == 0)
+            {
+                return StringNotFound;
+            }
+
+            Utf8String restOfTheString = this;
+
+            for (int i = Length - 1; i >= value.Length - 1; restOfTheString = Substring(0, i--))
+            {
+                int pos = restOfTheString.LastIndexOf(value[value.Length - 1]);
+                if (pos == StringNotFound)
+                {
+                    return StringNotFound;
+                }
+
+                int substringStart = pos - (value.Length - 1);
+                if (IsSubstringAt(substringStart, value))
+                {
+                    return substringStart;
+                }
+
+            }
+
+            return StringNotFound;
+
+        }
+
+        public int LastIndexOf(byte codeUnit)
+        {
+            for (int i = Length - 1; i >= 0; i--)
+            {
+                if (codeUnit == this[i])
+                {
+                    return i;
+                }
+            }
+
+            return StringNotFound;
+        }
+
+        public int LastIndexOf(uint codePoint)
+        {
+            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            while (it.MoveNext())
+            {
+                if (it.Current == codePoint)
+                {
+                    // Move to beginning of code point
+                    it.MoveNext();
                     return it.PositionInCodeUnits;
                 }
             }
@@ -555,12 +621,12 @@ namespace System.Text.Utf8
         {
             var utf16 = str.AsReadOnlySpan().AsBytes();
             var status = Encoders.Utf16.ToUtf8Length(utf16, out int needed);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 return null;
 
             var utf8 = new byte[needed];
             status = Encoders.Utf16.ToUtf8(utf16, utf8, out int consumed, out int written);
-            if (status != Buffers.TransformationStatus.Done)
+            if (status != Buffers.OperationStatus.Done)
                 // This shouldn't happen...
                 return null;
 

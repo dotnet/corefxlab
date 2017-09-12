@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Xunit;
 
@@ -73,18 +74,28 @@ namespace System.Threading.Tasks.Channels.Tests
                         UnsafeOnCompletedDelegate = a => tcs.Task.GetAwaiter().UnsafeOnCompleted(a),
                     }) };
                 }
+
+                {
+                    var tcs = new TaskCompletionSource<int>();
+                    var c = Channel.CreateUnbounded<int>(new ChannelOptimizations { SingleReader = true });
+                    tcs.Task.ContinueWith(t =>
+                    {
+                        c.Out.TryWrite(t.Result);
+                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    yield return new object[] { completionMode, tcs, c.In.GetAwaiter() };
+                }
             }
         }
 
         [Theory]
         [MemberData(nameof(Ctor_NotYetCompleted_MemberData))]
-        public void Ctor_NotYetCompleted(int completionMode, TaskCompletionSource<int> tcs, ValueAwaiter<int> va)
+        public async Task Ctor_NotYetCompleted(int completionMode, TaskCompletionSource<int> tcs, ValueAwaiter<int> va)
         {
             Assert.False(tcs.Task.IsCompleted);
             Assert.False(va.IsCompleted);
 
-            var are = new AutoResetEvent(false);
-            Action action = () => are.Set();
+            var signal = new TaskCompletionSource<bool>();
+            Action action = () => signal.SetResult(true);
             switch (completionMode)
             {
                 case 0: va.OnCompleted(action); break;
@@ -92,7 +103,7 @@ namespace System.Threading.Tasks.Channels.Tests
             }
 
             tcs.SetResult(42);
-            are.WaitOne();
+            await signal.Task;
 
             Assert.True(va.IsCompleted);
             Assert.Equal(42, va.GetResult());
@@ -106,7 +117,7 @@ namespace System.Threading.Tasks.Channels.Tests
             public Action<Action> UnsafeOnCompletedDelegate;
 
             public bool IsCompleted => IsCompletedDelegate?.Invoke() ?? true;
-            public T GetResult() => GetResultDelegate != null ? GetResultDelegate() : default;
+            public T GetResult() => GetResultDelegate != null ? GetResultDelegate() : default(T);
             public void OnCompleted(Action action) => OnCompletedDelegate?.Invoke(action);
             public void UnsafeOnCompleted(Action action) => UnsafeOnCompletedDelegate?.Invoke(action);
         }

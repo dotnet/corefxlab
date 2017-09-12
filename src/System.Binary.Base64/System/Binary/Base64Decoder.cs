@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
@@ -28,8 +29,9 @@ namespace System.Binary.Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         };
 
+        [Obsolete("Use Base64.Utf8ToBytesLength")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
+        public static int ComputeDecodedUtf8Length(ReadOnlySpan<byte> source)
         {
             int srcLength = source.Length;
 
@@ -84,7 +86,9 @@ namespace System.Binary.Base64
             Unsafe.Add(ref destBytes, 2) = (byte)i0;
         }
 
-        public static TransformationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        [Obsolete("Use Base64.Utf8ToBytes")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -168,22 +172,22 @@ namespace System.Binary.Base64
             DoneExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             DestinationSmallExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.DestinationTooSmall;
+            return OperationStatus.DestinationTooSmall;
 
             NeedMoreExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreSourceData;
 
             InvalidExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.InvalidData;
+            return OperationStatus.InvalidData;
         }
 
         /// <summary>
@@ -191,7 +195,9 @@ namespace System.Binary.Base64
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static TransformationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
+        [Obsolete("Use Base64.Utf8ToBytesInPlace")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static OperationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
         {
             ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
@@ -269,23 +275,28 @@ namespace System.Binary.Base64
             DoneExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             NeedMoreExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreSourceData;
 
             InvalidExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.InvalidData;
+            return OperationStatus.InvalidData;
         }
 
-        sealed class FromBase64 : Transformation
+        sealed class FromBase64Utf8 : BufferDecoder
         {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Decode(source, destination, out bytesConsumed, out bytesWritten);
+            public override OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Base64.Decode(source, destination, out bytesConsumed, out bytesWritten);
+
+            public override OperationStatus DecodeInPlace(Span<byte> buffer, int inputLength, out int written)
+                => Base64.DecodeInPlace(buffer.Slice(0, inputLength), out var consumed, out written);
+
+            public override bool IsDecodeInPlaceSupported => true;
         }
     }
 }

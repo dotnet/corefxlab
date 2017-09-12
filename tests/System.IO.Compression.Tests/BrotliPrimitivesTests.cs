@@ -154,7 +154,7 @@ namespace System.IO.Compression.Tests
             Span<byte> source = new Span<byte>(data, 0, data.Length / correctPart);
             int expected = (int)new FileInfo(Path.Combine("BrotliTestData", testFile)).Length;
             byte[] decompressed = new byte[expected];
-            TransformationStatus result = Brotli.Decompress(source, decompressed, out int consumed, out int written, ref state);
+            OperationStatus result = Brotli.Decompress(source, decompressed, out int consumed, out int written, ref state);
             new Random(42).NextBytes(data);
             Assert.Throws<System.IO.IOException>(delegate { Brotli.Decompress(data, Array.Empty<byte>(), out consumed, out written, ref state); } );
         }
@@ -171,14 +171,14 @@ namespace System.IO.Compression.Tests
             byte[] compressed = new byte[Brotli.GetMaximumCompressedSize(totalSize)];
             Assert.NotEqual(compressed.Length, 0);
             Brotli.State state = new Brotli.State();
-            TransformationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
-            while (consumed != 0 || result != TransformationStatus.Done)
+            OperationStatus result = Brotli.Compress(data, compressed, out int consumed, out int written, ref state);
+            while (consumed != 0 || result != OperationStatus.Done)
             {
                 result = Brotli.Compress(data, compressed, out consumed, out written, ref state);
             }
             byte[] flush = new byte[0];
             result = Brotli.FlushEncoder(flush, compressed, out consumed, out written, ref state);
-            Assert.Equal(TransformationStatus.Done, result);
+            Assert.Equal(OperationStatus.Done, result);
             Assert.Equal(consumed, 0);
             byte[] resultCompressed = new byte[written];
             Array.Copy(compressed, resultCompressed, written);
@@ -189,8 +189,8 @@ namespace System.IO.Compression.Tests
         {
             byte[] decompressed = new byte[expected.Length];
             Brotli.State state = new Brotli.State();
-            TransformationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
-            Assert.Equal<TransformationStatus>(TransformationStatus.Done, result);
+            OperationStatus result = Brotli.Decompress(data, decompressed, out int consumed, out int written, ref state);
+            Assert.Equal<OperationStatus>(OperationStatus.Done, result);
             Assert.Equal<long>(expected.Length, written);
             Assert.Equal<long>(consumed, 0);
             Assert.Equal<byte>(expected, decompressed);

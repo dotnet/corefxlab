@@ -11,9 +11,9 @@ namespace System.Text.Encodings.Tests
     public class AsciiCasingTests
     {
         [Theory]
-        [InlineData(0, 128, TransformationStatus.Done, 128)]
-        [InlineData(0, 129, TransformationStatus.InvalidData, 128)]
-        public void ToUpper(int from, int to, TransformationStatus expectedStatus, int expectedProcessed)
+        [InlineData(0, 128, OperationStatus.Done, 128)]
+        [InlineData(0, 129, OperationStatus.InvalidData, 128)]
+        public void ToUpper(int from, int to, OperationStatus expectedStatus, int expectedProcessed)
         {
             var buffer = Create(from, to);
             var copy = new byte[buffer.Length];
@@ -31,9 +31,9 @@ namespace System.Text.Encodings.Tests
         }
 
         [Theory]
-        [InlineData(0, 128, TransformationStatus.Done, 128)]
-        [InlineData(0, 129, TransformationStatus.InvalidData, 128)]
-        public void ToUpperInPlace(int from, int to, TransformationStatus expectedStatus, int expectedProcessed)
+        [InlineData(0, 128, OperationStatus.Done, 128)]
+        [InlineData(0, 129, OperationStatus.InvalidData, 128)]
+        public void ToUpperInPlace(int from, int to, OperationStatus expectedStatus, int expectedProcessed)
         {
             var buffer = Create(from, to);
             var copy = new byte[buffer.Length];
@@ -48,9 +48,9 @@ namespace System.Text.Encodings.Tests
         }
 
         [Theory]
-        [InlineData(0, 128, TransformationStatus.Done, 128)]
-        [InlineData(0, 129, TransformationStatus.InvalidData, 128)]
-        public void ToLower(int from, int to, TransformationStatus expectedStatus, int expectedProcessed)
+        [InlineData(0, 128, OperationStatus.Done, 128)]
+        [InlineData(0, 129, OperationStatus.InvalidData, 128)]
+        public void ToLower(int from, int to, OperationStatus expectedStatus, int expectedProcessed)
         {
             var buffer = Create(from, to);
             var copy = new byte[buffer.Length];
@@ -68,9 +68,9 @@ namespace System.Text.Encodings.Tests
         }
 
         [Theory]
-        [InlineData(0, 128, TransformationStatus.Done, 128)]
-        [InlineData(0, 129, TransformationStatus.InvalidData, 128)]
-        public void ToLowerInPlace(int from, int to, TransformationStatus expectedStatus, int expectedProcessed)
+        [InlineData(0, 128, OperationStatus.Done, 128)]
+        [InlineData(0, 129, OperationStatus.InvalidData, 128)]
+        public void ToLowerInPlace(int from, int to, OperationStatus expectedStatus, int expectedProcessed)
         {
             var buffer = Create(from, to);
             var copy = new byte[buffer.Length];

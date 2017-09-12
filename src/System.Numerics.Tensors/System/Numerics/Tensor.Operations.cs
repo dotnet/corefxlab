@@ -88,7 +88,7 @@ namespace System.Numerics
         {
             var resultDimensions = ValidateContractArgs(left, right, leftAxes, rightAxes);
 
-            var result = new Tensor<T>(resultDimensions);
+            var result = left.CloneEmpty(resultDimensions);
             
             TensorArithmetic<T>.Instance.Contract(left, right, leftAxes, rightAxes, result);
 

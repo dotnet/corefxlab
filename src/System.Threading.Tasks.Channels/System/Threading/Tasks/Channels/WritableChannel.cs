@@ -18,9 +18,9 @@ namespace System.Threading.Tasks.Channels
         /// <param name="error">An <see cref="Exception"/> indicating the failure causing no more data to be written, or null for success.</param>
         /// <returns>
         /// true if this operation successfully completes the channel; otherwise, false if the channel could not be marked for completion,
-        /// for example due to having already been marked as such.
+        /// for example due to having already been marked as such, or due to not supporting completion.
         /// </returns>
-        public abstract bool TryComplete(Exception error = null);
+        public virtual bool TryComplete(Exception error = null) => false;
 
         /// <summary>Attempts to write the specified item to the channel.</summary>
         /// <param name="item">The item to write.</param>
@@ -33,13 +33,39 @@ namespace System.Threading.Tasks.Channels
         /// A <see cref="Task{Boolean}"/> that will complete with a <c>true</c> result when space is available to write an item
         /// or with a <c>false</c> result when no further writing will be permitted.
         /// </returns>
-        public abstract Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default);
+        public abstract Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>Asynchronously writes an item to the channel.</summary>
         /// <param name="item">The value to write to the channel.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the write operation.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous write operation.</returns>
-        public abstract Task WriteAsync(T item, CancellationToken cancellationToken = default);
+        public virtual Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                return
+                    cancellationToken.IsCancellationRequested ? Task.FromCanceled<T>(cancellationToken) :
+                    TryWrite(item) ? Task.CompletedTask :
+                    WriteAsyncCore(item, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
+
+            async Task WriteAsyncCore(T innerItem, CancellationToken ct)
+            {
+                while (await WaitToWriteAsync(ct).ConfigureAwait(false))
+                {
+                    if (TryWrite(innerItem))
+                    {
+                        return;
+                    }
+                }
+
+                throw ChannelUtilities.CreateInvalidCompletionException();
+            }
+        }
 
         /// <summary>Gets an awaiter used to wait for space to be available in the channel.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

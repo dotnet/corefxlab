@@ -29,7 +29,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -53,7 +53,7 @@ namespace System.Azure.Authentication
             bytesWritten += written + 1;
             free = output.Slice(bytesWritten);
 
-            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
@@ -65,7 +65,7 @@ namespace System.Azure.Authentication
             hash.Append(formatted);
             hash.GetHash(output.Slice(0, hash.OutputSize));
 
-            if (!Base64.EncodeInPlace(output, hash.OutputSize, out written))
+            if (Base64.BytesToUtf8InPlace(output, hash.OutputSize, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;

@@ -10,9 +10,6 @@ used, but currently only for the completion tasks and read tasks, not for write 
 based on SingleReader/SingleWriter, either individually or in combination. If nothing else, GetAwaiter should be optimizable to use a cached
 awaiter when SingleReader.
 - *ChannelOptimizations in CreateUnbuffered*: CreateUnbuffered currently doesn't use ChannelOptimizations at all.
-- *Add multi item operations*: We should likely add several virtual methods to ReadableChannel and WritableChannel for writing
-multiple items at a time, e.g. ```public virtual Task<int> WriteAsync(ReadOnlyMemory<T> items)```,
-```public virtual Task<int> WriteAsync(IEnumerable<T> items```, etc.
 - *Continued perf measuring and tweaks*: There's likely a good deal more that can be done to get more throughput.  Currently the
 biggest contributor to overheads is locking.
 - *More tests*: Code coverage is currently very high, ~99% line coverage and ~98% branch coverage, but we need more concurrency

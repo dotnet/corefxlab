@@ -428,13 +428,13 @@ namespace System.Text.Json
                 while (true)
                 {
                     var status = Encoders.Utf16.ToUtf8(source, destination, out int consumed, out int written);
-                    if (status == Buffers.TransformationStatus.Done)
+                    if (status == Buffers.OperationStatus.Done)
                     {
                         _output.Advance(written);
                         return;
                     }
 
-                    if (status == Buffers.TransformationStatus.DestinationTooSmall)
+                    if (status == Buffers.OperationStatus.DestinationTooSmall)
                     {
                         destination = EnsureBuffer();
                         continue;

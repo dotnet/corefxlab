@@ -4,11 +4,12 @@
 <#+
     public class TypeConfiguration
     {
-        public TypeConfiguration(string typeName, string classPrefix = null, string oneLiteral = "1", bool supportsNumeric = true, bool supportsBitwise = true, IEnumerable<string> unsupportedMethods = null)
+        public TypeConfiguration(string typeName, string classPrefix = null, string oneLiteral = "1", string zeroLiteral = "0", bool supportsNumeric = true, bool supportsBitwise = true, IEnumerable<string> unsupportedMethods = null)
         {
             TypeName = typeName;
             ClassPrefix = classPrefix ?? char.ToUpper(typeName[0]) + typeName.Substring(1);
             OneLiteral = oneLiteral;
+            ZeroLiteral = zeroLiteral;
             SupportsNumeric = supportsNumeric;
             SupportsBitwise = supportsBitwise;
             UnsupportedMethods = new HashSet<string>(unsupportedMethods ?? Enumerable.Empty<string>());
@@ -17,6 +18,7 @@
         public string TypeName { get; }
         public string ClassPrefix { get; }
         public string OneLiteral { get; }
+        public string ZeroLiteral { get; }
         
         public bool SupportsNumeric { get; }
         public bool SupportsBitwise { get; }
@@ -31,9 +33,9 @@
 
     public TypeConfiguration[] typeConfiguration = new []
     {
-        new TypeConfiguration("bool", oneLiteral:"true", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),
+        new TypeConfiguration("bool", oneLiteral:"true", zeroLiteral:"false", supportsNumeric: false, unsupportedMethods: new[] {"LeftShift", "RightShift"}),
         new TypeConfiguration("byte"),
-        new TypeConfiguration("char", oneLiteral:"(char)1"),
+        new TypeConfiguration("char", oneLiteral:"(char)1", zeroLiteral:"(char)0"),
         new TypeConfiguration("decimal", supportsBitwise: false),
         new TypeConfiguration("double", oneLiteral:"1.0", supportsBitwise: false),
         new TypeConfiguration("float", oneLiteral:"1.0f", supportsBitwise: false),
@@ -117,46 +119,46 @@
         public MethodType MethodType { get; }
         public string Operator { get; }
         
-        public string GetGenericMethodSignature(string typeName)
+        public string GetGenericMethodSignature(string tensorType, string genericType)
         {
-            var resultType = GetResultType(typeName);
-            var arguments = GetMethodArguments(typeName);
+            var resultType = GetResultType(tensorType, genericType);
+            var arguments = GetMethodArguments(tensorType, genericType);
 
-            return $"{resultType} {MethodName}<{typeName}>({arguments})";
+            return $"{resultType} {MethodName}<{genericType}>({arguments})";
         }
         
-        public string GetGenericResultMethodSignature(string typeName)
+        public string GetGenericResultMethodSignature(string tensorType, string genericType)
         {
-            var resultType = GetResultType(typeName);
-            var arguments = GetMethodArguments(typeName);
+            var resultType = GetResultType(tensorType, genericType);
+            var arguments = GetMethodArguments(tensorType, genericType);
 
-            return $"void {MethodName}<{typeName}>({arguments}, {resultType} {ResultName})";
+            return $"void {MethodName}<{genericType}>({arguments}, {resultType} {ResultName})";
         }
 
-        public string GetResultMethodSignature(string typeName)
+        public string GetResultMethodSignature(string tensorType, string genericType)
         {
-            var resultType = GetResultType(typeName);
-            var arguments = GetMethodArguments(typeName);
+            var resultType = GetResultType(tensorType, genericType);
+            var arguments = GetMethodArguments(tensorType, genericType);
 
             return $"void {MethodName}({arguments}, {resultType} {ResultName})";
         }
 
-        public string GetMethodArguments(string typeName)
+        public string GetMethodArguments(string tensorType, string genericType)
         {
             switch (MethodType)
             {
                 case MethodType.Unary:
                 case MethodType.UnaryInPlace:
-                    return $"Tensor<{typeName}> {Op1Name}";
+                    return $"{tensorType}<{genericType}> {Op1Name}";
                 case MethodType.BinaryScalar:
-                    return $"Tensor<{typeName}> {Op1Name}, {typeName} {Op2Name}";
+                    return $"{tensorType}<{genericType}> {Op1Name}, {genericType} {Op2Name}";
                 case MethodType.BinaryInt:
-                    return $"Tensor<{typeName}> {Op1Name}, int {Op2Name}";
+                    return $"{tensorType}<{genericType}> {Op1Name}, int {Op2Name}";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return $"Tensor<{typeName}> {Op1Name}, Tensor<{typeName}> {Op2Name}";
+                    return $"{tensorType}<{genericType}> {Op1Name}, {tensorType}<{genericType}> {Op2Name}";
                 case MethodType.Contraction:
-                    return $"Tensor<{typeName}> {Op1Name}, Tensor<{typeName}> {Op2Name}, int[] leftAxes, int[] rightAxes";
+                    return $"{tensorType}<{genericType}> {Op1Name}, {tensorType}<{genericType}> {Op2Name}, int[] leftAxes, int[] rightAxes";
                 default:
                     throw new ArgumentException();
             }
@@ -168,12 +170,12 @@
             {
                 case MethodType.Unary:
                 case MethodType.UnaryInPlace:
-                    return "{Op1Name}";
+                    return $"{Op1Name}";
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return "{Op1Name}, {Op2Name}";
+                    return $"{Op1Name}, {Op2Name}";
                 case MethodType.Contraction:
                     return "left, right, leftAxes, rightAxes";
                 default:
@@ -201,7 +203,7 @@
             }
         }
 
-        public string GetResultType(string typeName)
+        public string GetResultType(string tensorType, string typeName)
         {
             switch (MethodType)
             {
@@ -211,9 +213,9 @@
                 case MethodType.BinaryInt:
                 case MethodType.Binary:
                 case MethodType.Contraction:
-                    return $"Tensor<{typeName}>";
+                    return $"{tensorType}<{typeName}>";
                 case MethodType.Comparison:
-                    return $"Tensor<bool>";
+                    return $"{tensorType}<bool>";
                 default:
                     throw new ArgumentException();
             }
@@ -226,10 +228,10 @@
                 case MethodType.Unary:
                 case MethodType.BinaryScalar:
                 case MethodType.BinaryInt:
-                    return $"({ResultName}.IsRowMajor == {Op1Name}.IsRowMajor)";
+                    return $"({ResultName}.IsReversedStride == {Op1Name}.IsReversedStride)";
                 case MethodType.Binary:
                 case MethodType.Comparison:
-                    return $"(({ResultName}.IsRowMajor == {Op1Name}.IsRowMajor) && ({ResultName}.IsRowMajor == {Op2Name}.IsRowMajor))";
+                    return $"(({ResultName}.IsReversedStride == {Op1Name}.IsReversedStride) && ({ResultName}.IsReversedStride == {Op2Name}.IsReversedStride))";
                 case MethodType.UnaryInPlace:
                 default:
                     throw new ArgumentException();
@@ -277,7 +279,7 @@
                 case MethodType.Comparison:
                     return $"{Op1Name}.CloneEmpty<bool>()";
                 case MethodType.Contraction:
-                    return $"new Tensor<{typeName}>(resultDimensions)";
+                    return $"{Op1Name}.CloneEmpty(resultDimensions)";
                 default:
                     throw new ArgumentException();
             }

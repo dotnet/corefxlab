@@ -45,20 +45,21 @@ namespace System.Text.Http.SingleSegment
 
         public static HttpRequestSingleSegment Parse(ReadOnlySpan<byte> bytes)
         {
-            int parsed;
-            HttpRequestLine requestLine;
-            if (!HttpRequestParser.TryParseRequestLine(bytes, out requestLine, out parsed)){
+            int parsed = HttpRequestParser.TryParseRequestLine(bytes, out var requestLine);
+            if (parsed == 0)
+            {
                 throw new NotImplementedException("request line parser");
             }
+
             bytes = bytes.Slice(parsed);
 
-            HttpHeadersSingleSegment headers;
-            if (!HttpRequestParser.TryParseHeaders(bytes, out headers, out parsed))
+            parsed = HttpRequestParser.TryParseHeaders(bytes, out var headers);
+            if (parsed == 0)
             {
                 throw new NotImplementedException("headers parser");
             }
-            var body = bytes.Slice(parsed);
 
+            var body = bytes.Slice(parsed);
             var request = new HttpRequestSingleSegment(requestLine, headers, body);
 
             return request;
@@ -113,8 +114,8 @@ namespace System.Text.Http.SingleSegment
         internal Utf8String ReadRequestUri()
         {
             Utf8String requestUri;
-            int parsedBytes;
-            if (!HttpRequestParser.TryParseRequestUri(Buffer, out requestUri, out parsedBytes))
+            int parsedBytes = HttpRequestParser.TryParseRequestUri(Buffer, out requestUri);
+            if (parsedBytes == 0)
             {
                 return Utf8String.Empty;
             }
@@ -125,8 +126,8 @@ namespace System.Text.Http.SingleSegment
         Utf8String ReadHttpVersionAsUtf8String()
         {
             Utf8String httpVersion;
-            int parsedBytes;
-            if (!HttpRequestParser.TryParseHttpVersion(Buffer, out httpVersion, out parsedBytes))
+            int parsedBytes = HttpRequestParser.TryParseHttpVersion(Buffer, out httpVersion);
+            if (parsedBytes == 0)
             {
                 return Utf8String.Empty;
             }
@@ -160,8 +161,7 @@ namespace System.Text.Http.SingleSegment
 
         public Utf8String ReadHeader()
         {
-            int parsedBytes;
-            var header = Buffer.SliceTo(s_CR, s_LF, out parsedBytes);
+            int parsedBytes = Buffer.SliceTo(s_CR, s_LF, out var header);
             if (parsedBytes > Buffer.Length)
             {
                 Buffer = Buffer.Slice(parsedBytes);
@@ -188,26 +188,24 @@ namespace System.Text.Http.SingleSegment
         static Utf8String s_Delete => new Utf8String(b_Delete);
 
 
-        internal static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
+        internal static int TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine)
         {
             requestLine = new HttpRequestLine();
-            totalParsedBytes = 0;
 
             var reader = new HttpRequestReader();
             reader.Buffer = buffer;
 
             requestLine.Method = reader.ReadMethod();
-            if(requestLine.Method == HttpMethod.Unknown) { return false; }
+            if(requestLine.Method == HttpMethod.Unknown) { return 0; }
 
             requestLine.RequestUri = reader.ReadRequestUri().Bytes.ToArray();
-            if(requestLine.RequestUri.Length == 0) { return false; }
+            if(requestLine.RequestUri.Length == 0) { return 0; }
             reader.Buffer = reader.Buffer.Slice(1);
 
             requestLine.Version = reader.ReadHttpVersion();
-            if (requestLine.Version == HttpVersion.Unknown) { return false; }
+            if (requestLine.Version == HttpVersion.Unknown) { return 0; }
 
-            totalParsedBytes = buffer.Length - reader.Buffer.Length;
-            return true;
+            return buffer.Length - reader.Buffer.Length;
         }
 
         internal static bool TryParseMethod(ReadOnlySpan<byte> buffer, out HttpMethod method, out int parsedBytes)
@@ -246,33 +244,31 @@ namespace System.Text.Http.SingleSegment
             return false;
         }
 
-        internal static bool TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri, out int parsedBytes)
+        internal static int TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri)
         {
-            var uriSpan = buffer.SliceTo(HttpRequestReader.s_SP, out parsedBytes);
+            var parsedBytes = buffer.SliceTo(HttpRequestReader.s_SP, out var uriSpan);
             requestUri = new Utf8String(uriSpan);
-            return parsedBytes != 0;
+            return parsedBytes;
         }
 
-        internal static bool TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
+        internal static int TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion)
         {
-            var versionSpan = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
+            var parsedBytes = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out var versionSpan);
             httpVersion = new Utf8String(versionSpan);
-            return parsedBytes != 0;
+            return parsedBytes;
         }
 
-        internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeadersSingleSegment headers, out int parsed)
+        internal static int TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeadersSingleSegment headers)
         {
             var index = bytes.IndexOf(HttpRequestReader.Eoh);
             if(index == -1)
             {
                 headers = default;
-                parsed = 0;
-                return false;
+                return 0;
             }
 
             headers = new HttpHeadersSingleSegment(bytes.Slice(0, index + HttpRequestReader.Eol.Length));
-            parsed = index + HttpRequestReader.Eoh.Length;
-            return true;
+            return index + HttpRequestReader.Eoh.Length;
         }
     }
 }
