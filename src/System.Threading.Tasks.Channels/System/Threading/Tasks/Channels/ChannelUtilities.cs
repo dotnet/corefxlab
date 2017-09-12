@@ -173,7 +173,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         internal static Exception CreateInvalidCompletionException(Exception inner = null) =>
             inner is OperationCanceledException ? inner :
-            inner != null && inner != s_doneWritingSentinel ? new ClosedChannelException(inner) :
-            new ClosedChannelException();
+            inner != null && inner != s_doneWritingSentinel ? new ChannelClosedException(inner) :
+            new ChannelClosedException();
     }
 }

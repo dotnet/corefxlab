@@ -79,7 +79,7 @@ namespace System.Threading.Tasks.Channels.Tests
             {
                 Assert.Equal(i, await c.ReadAsync());
             }
-            await Assert.ThrowsAsync<ClosedChannelException>(async () => await c.ReadAsync());
+            await Assert.ThrowsAsync<ChannelClosedException>(async () => await c.ReadAsync());
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace System.Threading.Tasks.Channels.Tests
                     await c.WriteAsync(count++);
                 }
             }
-            catch (ClosedChannelException) { }
+            catch (ChannelClosedException) { }
             Assert.Equal(11, count);
         }
 

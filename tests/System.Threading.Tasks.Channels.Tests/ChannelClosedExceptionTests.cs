@@ -5,21 +5,21 @@ using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
 {
-    public class ClosedChannelExceptionTests
+    public class ChannelClosedExceptionTests
     {
         [Fact]
         public void Ctors()
         {
-            var e = new ClosedChannelException();
+            var e = new ChannelClosedException();
             Assert.NotEmpty(e.Message);
             Assert.Null(e.InnerException);
 
-            e = new ClosedChannelException("hello");
+            e = new ChannelClosedException("hello");
             Assert.Equal("hello", e.Message);
             Assert.Null(e.InnerException);
 
             var inner = new FormatException();
-            e = new ClosedChannelException("hello", inner);
+            e = new ChannelClosedException("hello", inner);
             Assert.Equal("hello", e.Message);
             Assert.Same(inner, e.InnerException);
         }

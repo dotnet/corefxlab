@@ -276,7 +276,7 @@ namespace System.Threading.Tasks.Channels.Tests
                             Interlocked.Add(ref readTotal, await c.In.ReadAsync());
                         }
                     }
-                    catch (ClosedChannelException) { }
+                    catch (ChannelClosedException) { }
                 });
             }
 
@@ -342,7 +342,7 @@ namespace System.Threading.Tasks.Channels.Tests
                             Interlocked.Add(ref readTotal, await c.In);
                         }
                     }
-                    catch (ClosedChannelException) { }
+                    catch (ChannelClosedException) { }
                 });
             }
 
@@ -518,7 +518,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<int> read = c.In.ReadAsync().AsTask();
             var exc = new FormatException();
             c.Out.Complete(exc);
-            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => read)).InnerException);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => read)).InnerException);
         }
 
         [Fact]
@@ -530,7 +530,7 @@ namespace System.Threading.Tasks.Channels.Tests
                 Task write = c.Out.WriteAsync(42);
                 var exc = new FormatException();
                 c.Out.Complete(exc);
-                Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => write)).InnerException);
+                Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => write)).InnerException);
             }
         }
 
@@ -541,8 +541,8 @@ namespace System.Threading.Tasks.Channels.Tests
             var exc = new FormatException();
             c.Out.Complete(exc);
             Task<int> read = c.In.ReadAsync().AsTask();
-            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => read)).InnerException);
-            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(async () => await c.In)).InnerException);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => read)).InnerException);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(async () => await c.In)).InnerException);
         }
 
         [Fact]
@@ -552,7 +552,7 @@ namespace System.Threading.Tasks.Channels.Tests
             var exc = new FormatException();
             c.Out.Complete(exc);
             Task write = c.Out.WriteAsync(42);
-            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => write)).InnerException);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => write)).InnerException);
         }
 
         [Fact]
@@ -836,7 +836,7 @@ namespace System.Threading.Tasks.Channels.Tests
                         Assert.Equal(received++, await c.In.ReadAsync());
                     }
                 }
-                catch (ClosedChannelException e) when (e.InnerException == null) { }
+                catch (ChannelClosedException e) when (e.InnerException == null) { }
             });
 
             for (int i = 0; i < 10; i++)
@@ -853,7 +853,7 @@ namespace System.Threading.Tasks.Channels.Tests
                 case TaskStatus.Faulted:
                     var exc = new FormatException();
                     o.OnError(exc);
-                    Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => reader)).InnerException);
+                    Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => reader)).InnerException);
                     break;
                 case TaskStatus.Canceled:
                     o.OnError(new OperationCanceledException());

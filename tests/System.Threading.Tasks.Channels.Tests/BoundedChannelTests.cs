@@ -328,7 +328,7 @@ namespace System.Threading.Tasks.Channels.Tests
                             Interlocked.Add(ref readTotal, await c.In.ReadAsync());
                         }
                     }
-                    catch (ClosedChannelException) { }
+                    catch (ChannelClosedException) { }
                 });
             }
 

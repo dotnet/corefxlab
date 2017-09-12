@@ -146,7 +146,7 @@ namespace System.Threading.Tasks.Channels
                         }
                     }
                 }
-                catch (ClosedChannelException exc)
+                catch (ChannelClosedException exc)
                 {
                     error = exc.InnerException;
                 }
