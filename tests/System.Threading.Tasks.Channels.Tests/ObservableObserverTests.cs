@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_InvalidSubscribe_ThrowsException()
         {
-            Channel<int> c = Channel.CreateUnbounded<int>();
+            var c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.In.AsObservable();
             Assert.Throws<ArgumentNullException>("observer", () => o.Subscribe(null));
         }
@@ -20,7 +20,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_Subscribe_Dispose_Success()
         {
-            Channel<int> c = Channel.CreateUnbounded<int>();
+            var c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.In.AsObservable();
 
             using (o.Subscribe(new DelegateObserver<int>()))
@@ -37,7 +37,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_Subscribe_DisposeMultipleTimes_Success()
         {
-            Channel<int> c = Channel.CreateUnbounded<int>();
+            var c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.In.AsObservable();
 
             IDisposable d = o.Subscribe(new DelegateObserver<int>());
@@ -48,7 +48,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task AsObservable_SubscribeUnsubscribeSubscribe_NoItemsMissed()
         {
-            Channel<int> c = Channel.CreateUnbounded<int>();
+            var c = Channel.CreateUnbounded<int>();
 
             int total = 0;
             Action<int> addToTotal = i => Interlocked.Add(ref total, i);
@@ -86,9 +86,9 @@ namespace System.Threading.Tasks.Channels.Tests
             var results = new HashSet<int>();
             var tcs = new TaskCompletionSource<bool>();
 
-            Channel<int> c = Channel.CreateBounded<int>(1);
+            var c = Channel.CreateBounded<int>(1);
 
-            Task writer = Task.Run(async () =>
+            var writer = Task.Run(async () =>
             {
                 for (int i = 0; i < Items; i++)
                 {
@@ -99,16 +99,24 @@ namespace System.Threading.Tasks.Channels.Tests
 
             c.In.AsObservable().Subscribe(new DelegateObserver<int>
             {
-                OnNextDelegate = i => { lock (results) results.Add(i); },
+                OnNextDelegate = i => 
+                {
+                    lock (results)
+                    {
+                        results.Add(i);
+                    }
+                },
                 OnCompletedDelegate = () => tcs.TrySetResult(true)
             });
 
             while (await c.In.WaitToReadAsync())
             {
-                int item;
-                if (c.In.TryRead(out item))
+                if (c.In.TryRead(out int item))
                 {
-                    lock (results) results.Add(item);
+                    lock (results)
+                    {
+                        results.Add(item);
+                    }
                 }
             }
 

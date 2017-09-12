@@ -28,11 +28,16 @@ namespace System.Threading.Tasks.Channels
             {
                 throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
             }
-            if (mode != BoundedChannelFullMode.DropNewest &&
-                mode != BoundedChannelFullMode.DropOldest &&
-                mode != BoundedChannelFullMode.Wait)
+
+            switch (mode)
             {
-                throw new ArgumentOutOfRangeException(nameof(mode));
+                case BoundedChannelFullMode.DropNewest:
+                case BoundedChannelFullMode.DropOldest:
+                case BoundedChannelFullMode.Ignore:
+                case BoundedChannelFullMode.Wait:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode));
             }
 
             bool runContinuationsAsynchronously = optimizations == null || !optimizations.AllowSynchronousContinuations;
@@ -44,35 +49,5 @@ namespace System.Threading.Tasks.Channels
         /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
         /// <returns>The created channel.</returns>
         public static Channel<T> CreateUnbuffered<T>(ChannelOptimizations optimizations = null) => new UnbufferedChannel<T>();
-
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="action">The action to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="func">The asynchronous function to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="action">The action to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
     }
 }

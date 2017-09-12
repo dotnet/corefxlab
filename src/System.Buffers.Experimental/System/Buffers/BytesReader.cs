@@ -246,21 +246,11 @@ namespace System.Buffers
 
             if (bytesToSearchAgain.IndexOf(value[0]) != -1)
             {
-                Span<byte> tempSpan;
                 var tempLen = value.Length << 1;
-                if (tempLen < 128)
-                {
-                    unsafe
-                    {
-                        byte* temp = stackalloc byte[tempLen];
-                        tempSpan = new Span<byte>(temp, tempLen);
-                    }
-                }
-                else
-                {
-                    // TODO (pri 3): I think this could be imporved by chunking values
-                    tempSpan = new byte[tempLen];
-                }
+                var tempSpan = tempLen < 128 ?
+                                        (Span<byte>)stackalloc byte[tempLen] :
+                                        // TODO (pri 3): I think this could be imporved by chunking values
+                                        new byte[tempLen];
 
                 bytesToSearchAgain.CopyTo(tempSpan);
                 rest.CopyTo(tempSpan.Slice(bytesToSearchAgain.Length));
@@ -305,17 +295,13 @@ namespace System.Buffers
                 }
             }
 
-            unsafe
-            {
-                byte* temp = stackalloc byte[15];
-                var tempSpan = new Span<byte>(temp, 15);
-                var copied = CopyTo(tempSpan);
+            Span<byte> tempSpan = stackalloc byte[15];
+            var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
-                {
-                    Advance(consumed);
-                    return true;
-                }
+            if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
+            {
+                Advance(consumed);
+                return true;
             }
 
             return false;
@@ -334,17 +320,13 @@ namespace System.Buffers
                 }
             }
 
-            unsafe
-            {
-                byte* temp = stackalloc byte[32];
-                var tempSpan = new Span<byte>(temp, 32);
-                var copied = CopyTo(tempSpan);
+            Span<byte> tempSpan = stackalloc byte[32];
+            var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
-                {
-                    Advance(consumed);
-                    return true;
-                }
+            if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
+            {
+                Advance(consumed);
+                return true;
             }
 
             return false;

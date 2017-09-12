@@ -10,7 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\Numerics\ArrayUtilities.cs" />
+    <Compile Include="System\Numerics\DenseTensor.cs" />
     <Compile Include="System\Numerics\RefUtilities.cs" />
+    <Compile Include="System\Numerics\SparseTensor.cs" />
     <Compile Include="System\Numerics\Tensor.cs" />
     <Compile Include="System\Numerics\TensorArithmetic.cs">
       <DesignTime>True</DesignTime>
@@ -43,6 +45,9 @@
       <LastGenOutput>Tensor.Operations.cs</LastGenOutput>
     </None>
     <None Update="System\Numerics\TensorTemplate.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
     <!-- enable the TextTemplating extension -->

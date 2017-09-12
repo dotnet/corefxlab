@@ -25,9 +25,9 @@ public abstract class Channel<TWrite, TRead>
 public abstract class ReadableChannel<T>
 {
     public abstract bool TryRead(out T item);
-    public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task Completion { get; }
+    public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public virtual ValueAwaiter<T> GetAwaiter();
 	...
 }
@@ -35,9 +35,9 @@ public abstract class ReadableChannel<T>
 public abstract class WritableChannel<in T>
 {
     public abstract bool TryWrite(T item);
-    public abstract Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
     public abstract Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract bool TryComplete(Exception error = null);
+    public virtual Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
 	public virtual ValueAwaiter<bool> GetAwaiter();
 	...
 }
@@ -276,27 +276,6 @@ As noted earlier, a channel is not considered to be completed (meaning its ```Co
 to a completed state) until the channel has both been marked for completion by the writer and has no more data
 available, making the above polling/spinning loop safe from a concurrency perspective.
 
-## Additional Support for Reading
-
-In addition to reading from a channel via the ```TryRead```/```ReadAsync```/```WaitForReadAsync``` / ```GetAwaiter``` methods,
-the library also includes a prototype for an ```IAsyncEnumerator<T>```, which can be used to asynchronously
-read all of the data out of a channel:
-```C#
-IAsyncEnumerator<T> e = channel.GetAsyncEnumerator();
-while (await e.MoveNextAsync())
-{
-     Use(e.Current);
-}
-```
-If C# were to gain support for such async enumerators (e.g. https://github.com/dotnet/roslyn/issues/261), 
-such iteration could be performed using those language features, e.g. with hypothetical syntax:
-```C#
-foreach (await T item in channel)
-{
-    Use(item);
-}
-```
-
 ### Integration With Existing Types
 
 ```ReadableChannel<T>``` and ```WritableChannel<T>``` also provide virtual methods for interop between channels and observables / observers:
@@ -315,74 +294,6 @@ public abstract class WritableChannel<T>
 This allows for subscribing a writable channel to an observable as an observer, and subscribing other observers 
 to a readable channel as an observable.  With this support, IObservable-based LINQ queries can be written against
 data in channels.
-
-## Selecting
-
-```Channel``` also serves as an entry point for building up case-select constructs, where pairs of channels
-and associated delegates are provided, with the implementation asynchronously waiting for data or space to
-be available in the associated channel and then executing the associated delegate.
-```C#
-public static class Channel
-{
-    public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Action<T> action);
-    public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Func<T, Task> func);
-    public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Action action);
-    public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Func<Task> func);
-	...
-}
-```
-The ```CaseBuilder``` that's returned provides additional operations that can be chained on, providing a fluent interface:
-```C#
-public sealed class CaseBuilder
-{
-    public CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Action<T> action)
-    public CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Func<T, Task> func)
-
-    public CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Action action)
-    public CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Func<Task> func)
-
-    public CaseBuilder CaseDefault(Action action)
-    public CaseBuilder CaseDefault(Func<Task> func)
-
-    public Task<bool>  SelectAsync(CancellationToken cancellationToken = default(CancellationToken))
-    public Task<int>   SelectUntilAsync(Func<int, bool> conditionFunc, CancellationToken cancellationToken = default(CancellationToken))
-}
-```
-For example, we can build up a case-select that will read from the first of three channels that has data available,
-executing just one of their delegates, and leaving the other channels intact:
-```C#
-Channel<int>    c1 = Channel.Create<int>();
-Channel<string> c2 = Channel.CreateUnbuffered<string>();
-Channel<double> c3 = Channel.Create<double>();
-...
-await Channel
-    .CaseRead(c1, i => HandleInt32(i))
-	.CaseRead(c2, s => HandleString(s))
-	.CaseRead(c3, d => HandleDouble(d))
-	.SelectAsync();
-```
-A ```CaseDefault``` may be added for cases where some default action should be performed if the other cases 
-aren't satisfiable immediately.
-
-Additionally, as it's potentially desirable to want to select in a loop (a ```CaseBuilder``` may be reused
-for multiple select operations), a ```SelectUntilAsync``` is provided that performs such a loop internally
-until a particular condition is met.  For example, this will read all of the data out of all of the previously
-instantiated channels until all of the channels are completed:
-```C#
-await Channel
-    .CaseRead(c1, i => HandleInt32(i))
-	.CaseRead(c2, s => HandleString(s))
-	.CaseRead(c3, d => HandleDouble(d))
-	.SelectUntilAsync(_ => true);
-```
-whereas this will stop after 5 items have been processed:
-```C#
-await Channel
-    .CaseRead(c1, i => HandleInt32(i))
-	.CaseRead(c2, s => HandleString(s))
-	.CaseRead(c3, d => HandleDouble(d))
-	.SelectUntilAsync(completions => completions < 5);
-```
 
 ## Relationship with TPL Dataflow
 

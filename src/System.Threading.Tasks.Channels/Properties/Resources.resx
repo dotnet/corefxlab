@@ -120,7 +120,4 @@
   <data name="ClosedChannelException_DefaultMessage" xml:space="preserve">
     <value>The channel has been closed.</value>
   </data>
-  <data name="InvalidOperationException_DefaultCaseAlreadyExists" xml:space="preserve">
-    <value>A default case already exists.</value>
-  </data>
 </root>

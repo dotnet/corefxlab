@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
@@ -23,7 +24,8 @@ namespace System.Binary.Base64
         const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ComputeEncodedLength(int sourceLength)
+        [Obsolete("Use Base64.BytesToUtf8Length")]
+        public static int ComputeEncodedUtf8Length(int sourceLength)
         {
             Diagnostics.Debug.Assert(sourceLength >= 0);
             return ((sourceLength + 2) / 3) << 2;
@@ -103,7 +105,9 @@ namespace System.Binary.Base64
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns>Number of bytes written to the destination.</returns>
-        public static TransformationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Use Base64.BytesToUtf8InPlace")]
+        public static OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -143,12 +147,12 @@ namespace System.Binary.Base64
 
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
 
             DestinationSmallExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
-            return TransformationStatus.DestinationTooSmall;
+            return OperationStatus.DestinationTooSmall;
         }
 
         /// <summary>
@@ -157,9 +161,11 @@ namespace System.Binary.Base64
         /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
         /// <param name="sourceLength">Number of bytes to encode.</param>
         /// <returns>Number of bytes written to the buffer.</returns>
+        [Obsolete("Use Base64.BytesToUtf8InPlace")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool EncodeInPlace(Span<byte> buffer, int sourceLength, out int bytesWritten)
         {
-            var encodedLength = ComputeEncodedLength(sourceLength);
+            var encodedLength = ComputeEncodedUtf8Length(sourceLength);
             if (buffer.Length < encodedLength) goto FalseExit;
 
             var leftover = sourceLength - sourceLength / 3 * 3; // how many bytes after packs of 3
@@ -192,10 +198,15 @@ namespace System.Binary.Base64
             return false;
         }
 
-        sealed class ToBase64 : Transformation
+        sealed class ToBase64Utf8 : BufferEncoder
         {
-            public override TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Encode(source, destination, out bytesConsumed, out bytesWritten);
+            public override OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Base64.Encode(source, destination, out bytesConsumed, out bytesWritten);
+
+            public override OperationStatus EncodeInPlace(Span<byte> buffer, int inputLength, out int written)
+                => Base64.EncodeInPlace(buffer, inputLength, out written)?OperationStatus.Done:OperationStatus.DestinationTooSmall;
+
+            public override bool IsEncodeInPlaceSupported => true;
         }
     }
 }

@@ -133,22 +133,22 @@ namespace System.IO.Compression
             return (int)level;
         }
 
-        private static TransformationStatus GetTransformationStatusFromBrotliDecoderResult(BrotliDecoderResult result)
+        private static OperationStatus GetTransformationStatusFromBrotliDecoderResult(BrotliDecoderResult result)
         {
-            if (result == BrotliDecoderResult.Success) return TransformationStatus.Done;
-            if (result == BrotliDecoderResult.NeedsMoreOutput) return TransformationStatus.DestinationTooSmall;
-            if (result == BrotliDecoderResult.NeedsMoreInput) return TransformationStatus.NeedMoreSourceData;
-            return TransformationStatus.InvalidData;
+            if (result == BrotliDecoderResult.Success) return OperationStatus.Done;
+            if (result == BrotliDecoderResult.NeedsMoreOutput) return OperationStatus.DestinationTooSmall;
+            if (result == BrotliDecoderResult.NeedsMoreInput) return OperationStatus.NeedMoreSourceData;
+            return OperationStatus.InvalidData;
         }
 
-        public static TransformationStatus FlushEncoder(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state, bool isFinished = true)
+        public static OperationStatus FlushEncoder(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state, bool isFinished = true)
         {
             EnsureInitialized(ref state, true);
             BrotliEncoderOperation operation = isFinished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
             bytesWritten = destination.Length;
             bytesConsumed = 0;
-            if (state.BrotliNativeState == IntPtr.Zero) return TransformationStatus.InvalidData;
-            if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState)) return TransformationStatus.Done;
+            if (state.BrotliNativeState == IntPtr.Zero) return OperationStatus.InvalidData;
+            if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState)) return OperationStatus.Done;
             unsafe
             {
                 IntPtr bufIn, bufOut;
@@ -161,7 +161,7 @@ namespace System.IO.Compression
                     nuint consumed = (nuint)source.Length;
                     if (!BrotliNative.BrotliEncoderCompressStream(state.BrotliNativeState, operation, ref consumed, ref bufIn, ref availableOutput, ref bufOut, out nuint totalOut))
                     {
-                        return TransformationStatus.InvalidData;
+                        return OperationStatus.InvalidData;
                     }
                     bytesConsumed = (int)consumed;
                     bytesWritten = (int)availableOutput;
@@ -169,14 +169,14 @@ namespace System.IO.Compression
                 bytesWritten = destination.Length - bytesWritten;
                 if (bytesWritten > 0)
                 {
-                    if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState)) return TransformationStatus.Done;
-                    else return TransformationStatus.DestinationTooSmall;
+                    if (BrotliNative.BrotliEncoderIsFinished(state.BrotliNativeState)) return OperationStatus.Done;
+                    else return OperationStatus.DestinationTooSmall;
                 }
             }
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
         }
 
-        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
+        public static OperationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
             EnsureInitialized(ref state, true);
             bytesWritten = destination.Length;
@@ -195,26 +195,26 @@ namespace System.IO.Compression
                         nuint consumed = (nuint)bytesConsumed;
                         if (!BrotliNative.BrotliEncoderCompressStream(state.BrotliNativeState, BrotliEncoderOperation.Process, ref consumed, ref bufIn, ref availableOutput, ref bufOut, out nuint totalOut))
                         {
-                            return TransformationStatus.InvalidData;
+                            return OperationStatus.InvalidData;
                         };
                         bytesConsumed = (int)consumed;
                         bytesWritten = destination.Length - (int)availableOutput;
                         if (availableOutput != (nuint)destination.Length)
                         {
-                            return TransformationStatus.DestinationTooSmall;
+                            return OperationStatus.DestinationTooSmall;
                         }
                     }
                 }
-                return TransformationStatus.Done;
+                return OperationStatus.Done;
             }
         }
 
-        public static TransformationStatus Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
+        public static OperationStatus Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, ref State state)
         {
             EnsureInitialized(ref state, false);
             bytesConsumed = source.Length;
             bytesWritten = destination.Length;
-            if (BrotliNative.BrotliDecoderIsFinished(state.BrotliNativeState)) return TransformationStatus.Done;
+            if (BrotliNative.BrotliDecoderIsFinished(state.BrotliNativeState)) return OperationStatus.Done;
             unsafe
             {
                 IntPtr bufIn, bufOut;
@@ -231,11 +231,11 @@ namespace System.IO.Compression
                 }
                 if (state.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                 {
-                    return TransformationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreSourceData;
                 }
                 else if (state.LastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
                 {
-                    return TransformationStatus.DestinationTooSmall;
+                    return OperationStatus.DestinationTooSmall;
                 }
 
                 if (state.LastDecoderResult == BrotliDecoderResult.Error || !BrotliNative.BrotliDecoderIsFinished(state.BrotliNativeState))

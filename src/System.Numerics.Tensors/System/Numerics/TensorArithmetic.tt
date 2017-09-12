@@ -13,8 +13,9 @@ namespace System.Numerics
     internal interface ITensorArithmetic<T>
     {
         T One { get; }
+        T Zero { get; }
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        <#= method.GetResultMethodSignature("T")#>;
+        <#= method.GetResultMethodSignature("Tensor", "T")#>;
 <# } #>
     }
 
@@ -41,9 +42,87 @@ namespace System.Numerics
     internal class <#=type.ClassPrefix#>Arithmetic : ITensorArithmetic<<#=type.TypeName#>>
     {
         public <#=type.TypeName#> One => <#=type.OneLiteral#>;
+        public <#=type.TypeName#> Zero => <#=type.ZeroLiteral#>;
 
 <# foreach (MethodConfiguration method in methodConfiguration) { #>
-        public <#= method.GetResultMethodSignature(type.TypeName)#>
+        public <#= method.GetResultMethodSignature("Tensor", type.TypeName)#>
+        {
+<# if ((method.IsNumeric && !type.SupportsNumeric) ||  (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
+            throw new NotSupportedException();
+<# } else if (method.Operator != null) { #>
+
+            Span<int> indices = new Span<int>(new int[result.Rank]);
+            for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+            {
+                ArrayUtilities.GetIndices(result.strides, result.IsReversedStride, i, indices);
+                <#=method.GetElementOperation(type.TypeName, "[indices]")#>;
+            }
+            
+<# } else if (method.MethodName == "Contract") {#>
+            var leftIndices = new int[left.Rank];
+            var rightIndices = new int[right.Rank];
+            var resultIndices = new int[result.Rank];
+
+            var summingDimensions = new int[leftAxes.Length];
+            for(int i = 0; i < leftAxes.Length; i++)
+            {
+                summingDimensions[i] = left.dimensions[leftAxes[i]];
+            }
+
+            var summingStrides = ArrayUtilities.GetStrides(summingDimensions);
+            int summingLength = (int)ArrayUtilities.GetProduct(summingDimensions);
+
+            var resultStrides = result.strides;
+
+            // translates from result index to left non-summing dimensions' index portion
+            // since left non-summing dimensions are given precedence in result, the end is zero-padded
+            int[] leftNonSummingStrides = new int[result.Rank];
+
+            // translates from summing index to left summing dimensions' index portion
+            int[] leftSummingStrides = new int[leftAxes.Length];
+            ArrayUtilities.SplitStrides(left.strides, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
+
+            // translates from result index to right non-summing dimensions' index portion
+            int[] rightNonSummingStrides = new int[result.Rank];
+            //  right non-summing dimensions appear after left non-summing dimensions.
+            int rightNonSummingStridesOffset = (left.Rank - leftAxes.Length);
+
+            // translates from summing index to right summing dimensions' index portion
+            int[] rightSummingStrides = new int[rightAxes.Length];
+            ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+
+            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            {
+                <#=type.TypeName#> sum = (<#=type.TypeName#>)0;
+                
+                ArrayUtilities.GetIndices(result.strides, result.IsReversedStride, resultIndex, resultIndices);
+
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, result.IsReversedStride, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, result.IsReversedStride, rightNonSummingStrides);
+
+                for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
+                {
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, false, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, false, rightSummingStrides);
+
+                    int leftIndex = leftIndexNonSumming + leftIndexSumming;
+                    int rightIndex = rightIndexNonSumming + rightIndexSumming;
+
+                    // todo, make this more efficient
+                    ArrayUtilities.GetIndices(left.strides, left.IsReversedStride, leftIndex, leftIndices);
+                    ArrayUtilities.GetIndices(right.strides, right.IsReversedStride, rightIndex, rightIndices);
+
+                    sum += (<#=type.TypeName#>)(left[leftIndices] * right[rightIndices]);
+                }
+                
+                result[resultIndices] = sum;
+            }
+<# } #>
+        }
+<# } #>
+
+<# foreach (MethodConfiguration method in methodConfiguration) { #>
+        public <#= method.GetResultMethodSignature("DenseTensor", type.TypeName)#>
         {
 <# if ((method.IsNumeric && !type.SupportsNumeric) ||  (method.IsBitwise && !type.SupportsBitwise) || (type.UnsupportedMethods.Contains(method.MethodName))) { #>
             throw new NotSupportedException();
@@ -67,27 +146,27 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(<#= method.ResultName #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(<#= method.Op1Name #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
+                ref int resultIndex = ref RefUtilities.Ternary(<#= method.ResultName #>.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
+                ref int op1Index = ref RefUtilities.Ternary(<#= method.Op1Name #>.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
                 
 <# if ((method.MethodType == MethodType.Binary) || (method.MethodType == MethodType.Comparison)) {#>
-                ref int op2Index = ref RefUtilities.Ternary(<#= method.Op2Name #>.IsRowMajor, ref rowMajorIndex , ref colMajorIndex);
+                ref int op2Index = ref RefUtilities.Ternary(<#= method.Op2Name #>.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
 
-                var rowMajorStrides = <#= method.ResultName #>.IsRowMajor ? <#= method.ResultName #>.strides :
-                                      <#= method.Op1Name #>.IsRowMajor ? <#= method.Op1Name #>.strides : 
+                var rowMajorStrides = !<#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
+                                      !<#= method.Op1Name #>.IsReversedStride ? <#= method.Op1Name #>.strides : 
                                       <#= method.Op2Name #>.strides;
-                var columnMajorStrides = <#= method.ResultName #>.IsColumnMajor ? <#= method.ResultName #>.strides :
-                                         <#= method.Op1Name #>.IsColumnMajor ? <#= method.Op1Name #>.strides : 
+                var columnMajorStrides = <#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
+                                         <#= method.Op1Name #>.IsReversedStride ? <#= method.Op1Name #>.strides : 
                                          <#= method.Op2Name #>.strides;
 <# } else {#>
-                var rowMajorStrides = <#= method.ResultName #>.IsRowMajor ? <#= method.ResultName #>.strides :
+                var rowMajorStrides = !<#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                       <#= method.Op1Name #>.strides;
-                var columnMajorStrides = <#= method.ResultName #>.IsColumnMajor ? <#= method.ResultName #>.strides :
+                var columnMajorStrides = <#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                          <#= method.Op1Name #>.strides;
 <# } #>
                 for(;rowMajorIndex < <#= method.ResultName #>.Length; rowMajorIndex++)
                 {
-                    colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, columnMajorStrides);
+                    colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
                     <#=method.GetElementOperation(type.TypeName, ".Buffer[resultIndex]", ".Buffer[op1Index]", ".Buffer[op2Index]")#>;
 
@@ -115,9 +194,9 @@ namespace System.Numerics
             ArrayUtilities.SplitStrides(left.strides, leftAxes, leftNonSummingStrides, 0, leftSummingStrides, 0);
 
             // translates from result index to right non-summing dimensions' index portion
-            // since right non-summing dimensions are given not precedence in result, the begingin is zero-padded to account for dimensions that come from left.
             int[] rightNonSummingStrides = new int[result.Rank];
-            int rightNonSummingStridesOffset = result.Rank - (left.Rank - leftAxes.Length);
+            //  right non-summing dimensions appear after left non-summing dimensions.
+            int rightNonSummingStridesOffset = (left.Rank - leftAxes.Length);
 
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
@@ -127,13 +206,13 @@ namespace System.Numerics
             {
                 <#=type.TypeName#> sum = (<#=type.TypeName#>)0;
 
-                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, leftNonSummingStrides);
-                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, rightNonSummingStrides);
+                int leftIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, result.IsReversedStride, leftNonSummingStrides);
+                int rightIndexNonSumming = ArrayUtilities.TransformIndexByStrides(resultIndex, resultStrides, result.IsReversedStride, rightNonSummingStrides);
 
                 for (int summingIndex = 0; summingIndex < summingLength; summingIndex++)
                 {
-                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, leftSummingStrides);
-                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, rightSummingStrides);
+                    int leftIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, false, leftSummingStrides);
+                    int rightIndexSumming = ArrayUtilities.TransformIndexByStrides(summingIndex, summingStrides, false, rightSummingStrides);
 
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;

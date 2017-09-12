@@ -69,14 +69,5 @@ namespace System.Threading.Tasks.Channels.Properties {
                 return ResourceManager.GetString("ClosedChannelException_DefaultMessage", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A default case already exists..
-        /// </summary>
-        internal static string InvalidOperationException_DefaultCaseAlreadyExists {
-            get {
-                return ResourceManager.GetString("InvalidOperationException_DefaultCaseAlreadyExists", resourceCulture);
-            }
-        }
     }
 }

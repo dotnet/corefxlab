@@ -13,12 +13,14 @@ namespace System.Threading.Tasks.Channels
         /// based on knowing about the single-writer guarantee. The default is false.
         /// </summary>
         public bool SingleWriter { get; set; }
+        
         /// <summary>
         /// true if code using the channel guarantees that there will only ever be at most one read operation at a time;
         /// false if no such constraint is guaranteed.  If true, the channel may be able to optimize certain operations
         /// based on knowing about the single-reader guarantee. The default is false.
         /// </summary>
         public bool SingleReader { get; set; }
+
         /// <summary>
         /// true if operations performed on a channel may synchronously invoke continuations subscribed to notifications
         /// of pending async operations, e.g. if a ```TryWrite``` on a channel may synchronously invoke a continuation off

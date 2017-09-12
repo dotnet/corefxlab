@@ -35,18 +35,13 @@ namespace System.Azure.Authentication
             int written, consumed, totalWritten = 0;
             bytesWritten = 0;
 
-            Span<byte> buffer;
-            unsafe
-            {
-                var pBuffer = stackalloc byte[AuthenticationHeaderBufferSize];
-                buffer = new Span<byte>(pBuffer, AuthenticationHeaderBufferSize);
-            }
+            Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
 
             s_type.CopyTo(buffer);
             totalWritten += s_type.Length;
             var bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -58,7 +53,7 @@ namespace System.Azure.Authentication
 
             bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -90,11 +85,11 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != TransformationStatus.Done)
+                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
-                if (Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != TransformationStatus.Done)
+                if (Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
@@ -105,11 +100,11 @@ namespace System.Azure.Authentication
 
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
-            if (Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != TransformationStatus.Done)
+            if (Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -117,7 +112,7 @@ namespace System.Azure.Authentication
             totalWritten += written + 1;
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -138,13 +133,13 @@ namespace System.Azure.Authentication
 
             hash.Append(buffer.Slice(front.Length, totalWritten));
             hash.GetHash(buffer.Slice(front.Length, hash.OutputSize));
-            if (!Base64.EncodeInPlace(buffer.Slice(front.Length), hash.OutputSize, out written))
+            if (Base64.BytesToUtf8InPlace(buffer.Slice(front.Length), hash.OutputSize, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
 
             var len = front.Length + written;
-            if (!UrlEncoder.TryEncode(buffer.Slice(0, len), output, out bytesWritten))
+            if (UrlEncoder.Utf8.Encode(buffer.Slice(0, len), output, out consumed, out bytesWritten) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;

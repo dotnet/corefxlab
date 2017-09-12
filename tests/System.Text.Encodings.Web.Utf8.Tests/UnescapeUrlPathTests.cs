@@ -9,7 +9,7 @@ namespace System.Text.Encodings.Web.Utf8.Tests
     /// <summary>
     /// See <typeparamref name="UrlEncoderTests"/> for test scenarios
     /// </summary>
-    public class UnescapeUrlPathTests : UrlEncoderTests
+    public class UnescapeUrlPathTests : UrlCoderTests
     {
         protected override void TestCore(string raw, string expected)
         {

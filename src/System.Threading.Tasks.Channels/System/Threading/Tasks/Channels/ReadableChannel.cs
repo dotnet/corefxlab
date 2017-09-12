@@ -19,16 +19,13 @@ namespace System.Threading.Tasks.Channels
         /// Gets a <see cref="Task"/> that completes when no more data will ever
         /// be available to be read from this channel.
         /// </summary>
-        public abstract Task Completion { get; }
+        public virtual Task Completion => ChannelUtilities.s_neverCompletingTask;
 
-        /// <summary>Gets an awaiter used to read an item from the channel.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        /// <summary>Asynchronously reads an item from the channel.</summary>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
-        /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
-        public abstract ValueTask<T> ReadAsync(CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Gets a <see cref="CancellationToken"/> that is signaled when no more data will ever
+        /// be available to be read from this channel.
+        /// </summary>
+        public virtual CancellationToken CompletionCancellationToken => ChannelUtilities.GetCompletionToken(Completion);
 
         /// <summary>Attempts to read an item to the channel.</summary>
         /// <param name="item">The read item, or a default value if no item could be read.</param>
@@ -41,15 +38,50 @@ namespace System.Threading.Tasks.Channels
         /// A <see cref="Task{Boolean}"/> that will complete with a <c>true</c> result when data is available to read
         /// or with a <c>false</c> result when no further data will ever be available to be read.
         /// </returns>
-        public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default);
+        public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>Gets an awaiter used to read an item from the channel.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
+
+        /// <summary>Asynchronously reads an item from the channel.</summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
+        /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
+        public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                return
+                    cancellationToken.IsCancellationRequested ? new ValueTask<T>(Task.FromCanceled<T>(cancellationToken)) :
+                    TryRead(out T item) ? new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                return new ValueTask<T>(Task.FromException<T>(e));
+            }
+
+            async ValueTask<T> ReadAsyncCore(CancellationToken ct)
+            {
+                while (await WaitToReadAsync(ct).ConfigureAwait(false))
+                {
+                    if (TryRead(out T item))
+                    {
+                        return item;
+                    }
+                }
+
+                throw ChannelUtilities.CreateInvalidCompletionException();
+            }
+        }
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
-        private static readonly ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable =
-            new ConditionalWeakTable<ReadableChannel<T>, ChannelObservable>();
+        private static ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable;
 
         /// <summary>Creates an observable for this channel.</summary>
         /// <returns>An observable that pulls data from this channel.</returns>
-        public virtual IObservable<T> AsObservable() => s_channelToObservable.GetValue(this, s => new ChannelObservable(s));
+        public virtual IObservable<T> AsObservable() =>
+            LazyInitializer.EnsureInitialized(ref s_channelToObservable).GetValue(this, s => new ChannelObservable(s));
 
         /// <summary>Provides an observable for a readable channel.</summary>
         internal sealed class ChannelObservable : IObservable<T>
@@ -104,8 +136,7 @@ namespace System.Threading.Tasks.Channels
                                 break;
                             }
 
-                            T item;
-                            if (_channel.TryRead(out item))
+                            if (_channel.TryRead(out T item))
                             {
                                 foreach (IObserver<T> observer in _observers)
                                 {
@@ -190,53 +221,6 @@ namespace System.Threading.Tasks.Channels
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>Gets an async enumerator of the data in this channel.</summary>
-        /// <param name="cancellationToken">The cancellation token to use to cancel the asynchronous enumeration.</param>
-        /// <returns>The async enumerator.</returns>
-        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
-            new AsyncEnumerator(this, cancellationToken);
-
-        /// <summary>Provides an async enumerator for the data in a channel.</summary>
-        private sealed class AsyncEnumerator : IAsyncEnumerator<T>
-        {
-            /// <summary>The channel being enumerated.</summary>
-            private readonly ReadableChannel<T> _channel;
-            /// <summary>Cancellation token used to cancel the enumeration.</summary>
-            private readonly CancellationToken _cancellationToken;
-            /// <summary>The current element of the enumeration.</summary>
-            private T _current;
-
-            internal AsyncEnumerator(ReadableChannel<T> channel, CancellationToken cancellationToken)
-            {
-                _channel = channel;
-                _cancellationToken = cancellationToken;
-            }
-
-            public T Current => _current;
-
-            public Task<bool> MoveNextAsync()
-            {
-                ValueTask<T> result = _channel.ReadAsync(_cancellationToken);
-
-                if (result.IsCompletedSuccessfully)
-                {
-                    _current = result.Result;
-                    return ChannelUtilities.TrueTask;
-                }
-
-                return result.AsTask().ContinueWith((t, s) =>
-                {
-                    var thisRef = (AsyncEnumerator)s;
-                    if (t.IsFaulted && t.Exception.InnerException is ClosedChannelException cce && cce.InnerException == null)
-                    {
-                        return false;
-                    }
-                    thisRef._current = t.GetAwaiter().GetResult();
-                    return true;
-                }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             }
         }
     }

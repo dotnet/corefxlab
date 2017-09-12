@@ -125,19 +125,14 @@ namespace System.Text
                 return true;
             }
 
-            Span<byte> temp;
-            unsafe
-            {
-                byte* pTemp = stackalloc byte[BufferSize];
-                temp = new Span<byte>(pTemp, BufferSize);
-            }
+            Span<byte> temp = stackalloc byte[BufferSize];
 
             bytesWritten = 0;
             bytesConsumed = 0;
             while (srcLength > bytesConsumed)
             {
                 var status = Encoders.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written);
-                if (status == Buffers.TransformationStatus.InvalidData)
+                if (status == Buffers.OperationStatus.InvalidData)
                     goto ExitFailed;
 
                 srcBytes = srcBytes.Slice(consumed);

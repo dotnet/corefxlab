@@ -11,20 +11,20 @@ using System.Text.Encodings.Web.Utf8;
 namespace System.Azure.Authentication
 {
     public static class Key {
-        public unsafe static byte[] ComputeKeyBytes(string key)
+        public static byte[] ComputeKeyBytes(string key)
         {
-            const int bufferLength = 128;
+            int size = key.Length * 2;
+            var buffer = size < 128 ? stackalloc byte[size] : (Span<byte>)new byte[size];
 
-            byte* pBuffer = stackalloc byte[bufferLength];
             int written, consumed;
-            var buffer = new Span<byte>(pBuffer, bufferLength);
-            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != TransformationStatus.Done)
+            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
+
             var keyBytes = new byte[64];
-            var result = Base64.Decode(buffer.Slice(0, written), keyBytes, out consumed, out written);
-            if (result != TransformationStatus.Done || written != 64)
+            var result = Base64.Utf8ToBytes(buffer.Slice(0, written), keyBytes, out consumed, out written);
+            if (result != OperationStatus.Done || written != 64)
             {
                 throw new NotImplementedException("need to resize buffer");
             }

@@ -20,53 +20,53 @@ namespace System.Text.Encoders
             }
         }
 
-        public static TransformationStatus ToLowerInPlace(Span<byte> ascii, out int bytesChanged)
+        public static OperationStatus ToLowerInPlace(Span<byte> ascii, out int bytesChanged)
         {
             for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
             {
                 byte next = ascii[bytesChanged];
                 if (next > 127)
                 {
-                    return TransformationStatus.InvalidData;
+                    return OperationStatus.InvalidData;
                 }
                 ascii[bytesChanged] = s_toLower[next];
             }
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
         }
 
-        public static TransformationStatus ToLower(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
+        public static OperationStatus ToLower(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
         {
             int min = input.Length < output.Length ? input.Length : output.Length;
             for (processedBytes = 0; processedBytes < min; processedBytes++)
             {
                 byte next = input[processedBytes];
-                if (next > 127) return TransformationStatus.InvalidData;
+                if (next > 127) return OperationStatus.InvalidData;
                 output[processedBytes] = s_toLower[next];
             }
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
         }
 
-        public static TransformationStatus ToUpperInPlace(Span<byte> ascii, out int bytesChanged)
+        public static OperationStatus ToUpperInPlace(Span<byte> ascii, out int bytesChanged)
         {
             for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
             {
                 byte next = ascii[bytesChanged];
-                if (next > 127) return TransformationStatus.InvalidData;
+                if (next > 127) return OperationStatus.InvalidData;
                 ascii[bytesChanged] = s_toUpper[next];
             }
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
         }
 
-        public static TransformationStatus ToUpper(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
+        public static OperationStatus ToUpper(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
         {
             int min = input.Length < output.Length ? input.Length : output.Length;
             for (processedBytes = 0; processedBytes < min; processedBytes++)
             {
                 byte next = input[processedBytes];
-                if (next > 127) return TransformationStatus.InvalidData;
+                if (next > 127) return OperationStatus.InvalidData;
                 output[processedBytes] = s_toUpper[next];
             }
-            return TransformationStatus.Done;
+            return OperationStatus.Done;
         }
     }
 }

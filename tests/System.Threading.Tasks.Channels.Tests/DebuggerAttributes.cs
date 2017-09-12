@@ -10,15 +10,12 @@ namespace System.Diagnostics
 {
     internal static class DebuggerAttributes
     {
-        internal static object GetFieldValue(object obj, string fieldName)
-        {
-            return GetField(obj, fieldName).GetValue(obj);
-        }
+        internal static object GetFieldValue(object obj, string fieldName) => GetField(obj, fieldName).GetValue(obj);
 
         internal static void ValidateDebuggerTypeProxyProperties(object obj)
         {
             // Get the DebuggerTypeProxyAttibute for obj
-            var attrs = 
+            CustomAttributeData[] attrs = 
                 obj.GetType().GetTypeInfo().CustomAttributes
                 .Where(a => a.AttributeType == typeof(DebuggerTypeProxyAttribute))
                 .ToArray();
@@ -27,7 +24,7 @@ namespace System.Diagnostics
                 throw new InvalidOperationException(
                     string.Format("Expected one DebuggerTypeProxyAttribute on {0}.", obj));
             }
-            var cad = attrs[0];
+            CustomAttributeData cad = attrs[0];
 
             // Get the proxy type.  As written, this only works if the proxy and the target type
             // have the same generic parameters, e.g. Dictionary<TKey,TValue> and Proxy<TKey,TValue>.
@@ -36,7 +33,7 @@ namespace System.Diagnostics
             Type proxyType = cad.ConstructorArguments[0].ArgumentType == typeof(Type) ?
                 (Type)cad.ConstructorArguments[0].Value :
                 Type.GetType((string)cad.ConstructorArguments[0].Value);
-            var genericArguments = obj.GetType().GenericTypeArguments;
+            Type[] genericArguments = obj.GetType().GenericTypeArguments;
             if (genericArguments.Length > 0)
             {
                 proxyType = proxyType.MakeGenericType(genericArguments);
@@ -45,7 +42,7 @@ namespace System.Diagnostics
             // Create an instance of the proxy type, and make sure we can access all of the instance properties 
             // on the type without exception
             object proxyInstance = Activator.CreateInstance(proxyType, obj);
-            foreach (var pi in proxyInstance.GetType().GetTypeInfo().DeclaredProperties)
+            foreach (PropertyInfo pi in proxyInstance.GetType().GetTypeInfo().DeclaredProperties)
             {
                 pi.GetValue(proxyInstance, null);
             }
@@ -54,7 +51,7 @@ namespace System.Diagnostics
         internal static void ValidateDebuggerDisplayReferences(object obj)
         {
             // Get the DebuggerDisplayAttribute for obj
-            var attrs = 
+            CustomAttributeData[] attrs = 
                 obj.GetType().GetTypeInfo().CustomAttributes
                 .Where(a => a.AttributeType == typeof(DebuggerDisplayAttribute))
                 .ToArray();
@@ -63,7 +60,7 @@ namespace System.Diagnostics
                 throw new InvalidOperationException(
                     string.Format("Expected one DebuggerDisplayAttribute on {0}.", obj));
             }
-            var cad = attrs[0];
+            CustomAttributeData cad = attrs[0];
 
             // Get the text of the DebuggerDisplayAttribute
             string attrText = (string)cad.ConstructorArguments[0].Value;
@@ -74,9 +71,16 @@ namespace System.Diagnostics
             while (true)
             {
                 int openBrace = attrText.IndexOf('{', pos);
-                if (openBrace < pos) break;
+                if (openBrace < pos)
+                {
+                    break;
+                }
+
                 int closeBrace = attrText.IndexOf('}', openBrace);
-                if (closeBrace < openBrace) break;
+                if (closeBrace < openBrace)
+                {
+                    break;
+                }
 
                 string reference = attrText.Substring(openBrace + 1, closeBrace - openBrace - 1).Replace(",nq", "");
                 pos = closeBrace + 1;
@@ -91,7 +95,7 @@ namespace System.Diagnostics
 
             // Make sure that each referenced expression is a simple field or property name, and that we can
             // invoke the property's get accessor or read from the field.
-            foreach (var reference in references)
+            foreach (string reference in references)
             {
                 PropertyInfo pi = GetProperty(obj, reference);
                 if (pi != null)

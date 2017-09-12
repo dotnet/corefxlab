@@ -54,7 +54,7 @@ namespace System.Text
             public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
                 var status = Encoders.Utf8.ToUtf16(utf8, destination, out bytesConsumed, out bytesWritten);
-                if (status != TransformationStatus.Done)
+                if (status != OperationStatus.Done)
                 {
                     bytesConsumed = bytesWritten = 0;
                     return false;
@@ -85,7 +85,7 @@ namespace System.Text
             public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
             {
                 var status = Encoders.Utf16.ToUtf8(source, utf8, out bytesConsumed, out bytesWritten);
-                if (status != TransformationStatus.Done)
+                if (status != OperationStatus.Done)
                 {
                     bytesConsumed = bytesWritten = 0;
                     return false;

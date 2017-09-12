@@ -12,17 +12,17 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this Transformation transformation, ReadOnlyBytes source, IOutput destination)
+        public static void Pipe(this IBufferOperation transformation, ReadOnlyBytes source, IOutput destination)
         {
             int afterMergeSlice = 0;
-            ReadOnlySpan<byte> remainder;
-            Span<byte> stackSpan;
 
-            unsafe
-            {
-                byte* stackBytes = stackalloc byte[stackLength];
-                stackSpan = new Span<byte>(stackBytes, stackLength);
-            }
+            // TODO: "ReadOnlySpan<byte> remainder = stackalloc byte[0]" would fit better here, 
+            //       but it emits substandard IL, see https://github.com/dotnet/roslyn/issues/21952
+            //
+            // Assign 'remainder' to something formally stack-referring.
+            // The default classification is "returnable, not referring to stack", we want the opposite in this case.
+            ReadOnlySpan<byte> remainder = true ? new ReadOnlySpan<byte>() : stackalloc byte[0];
+            Span<byte> stackSpan = stackalloc byte[stackLength];
 
             var poisition = Position.First;
             while (source.TryGet(ref poisition, out var sourceBuffer, true))
@@ -41,13 +41,13 @@ namespace System.Buffers
                     Span<byte> spanToTransform = stackSpan.Slice(0, amountOfData);
 
                     TryTransformWithRemainder:
-                    TransformationStatus status = transformation.Transform(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
-                    if (status != TransformationStatus.Done)
+                    OperationStatus status = transformation.Execute(spanToTransform, outputSpan, out int bytesConsumed, out int bytesWritten);
+                    if (status != OperationStatus.Done)
                     {
                         destination.Advance(bytesWritten);
                         spanToTransform = spanToTransform.Slice(bytesConsumed);
 
-                        if (status == TransformationStatus.DestinationTooSmall)
+                        if (status == OperationStatus.DestinationTooSmall)
                         {
                             destination.Enlarge();  // output buffer is too small
                             outputSpan = destination.Buffer;
@@ -60,7 +60,7 @@ namespace System.Buffers
                         }
                         else
                         {
-                            if (status == TransformationStatus.InvalidData)
+                            if (status == OperationStatus.InvalidData)
                             {
                                 continue; // source buffer contains invalid bytes, user decides what to do for fallback
                             }
@@ -81,15 +81,15 @@ namespace System.Buffers
                 }
 
                 TryTransform:
-                TransformationStatus result = transformation.Transform(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
+                OperationStatus result = transformation.Execute(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
                 afterMergeSlice = 0;
                 destination.Advance(written);
                 sourceSpan = sourceSpan.Slice(consumed);
 
-                if (result == TransformationStatus.Done) continue;
+                if (result == OperationStatus.Done) continue;
 
                 // Not successful
-                if (result == TransformationStatus.DestinationTooSmall)
+                if (result == OperationStatus.DestinationTooSmall)
                 {
                     destination.Enlarge();  // output buffer is too small
                     outputSpan = destination.Buffer;
@@ -101,7 +101,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (result == TransformationStatus.InvalidData)
+                    if (result == OperationStatus.InvalidData)
                     {
                         continue; // source buffer contains invalid bytes, user decides what to do for fallback
                     }
@@ -133,7 +133,6 @@ namespace System.Buffers
         /// Creates a new slice over the portion of the target array segment.
         /// </summary>
         /// <param name="arraySegment">The target array segment.</param>
-        /// </exception>
         public static Span<T> Slice<T>(this ArraySegment<T> arraySegment)
         {
             return new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
@@ -161,7 +160,7 @@ namespace System.Buffers
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
+        /// Thrown when the specified start index is not in range (&lt;0 or &gt;=length).
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start)
         {
@@ -179,7 +178,7 @@ namespace System.Buffers
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
+        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;=length).
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start, int length)
         {
@@ -325,21 +324,11 @@ namespace System.Buffers
             // this check is a small optimization: if the first byte from the value does not exist in the bytesToSearchAgain, there is no reason to combine
             if (bytesToSearchAgain.IndexOf(value[0]) != -1)
             {
-                Span<byte> combined;
                 var combinedBufferLength = value.Length << 1;
-                if (combinedBufferLength < 128)
-                {
-                    unsafe
-                    {
-                        byte* temp = stackalloc byte[combinedBufferLength];
-                        combined = new Span<byte>(temp, combinedBufferLength);
-                    }
-                }
-                else
-                {
-                    // TODO (pri 3): I think this could be eliminated by chunking values
-                    combined = new byte[combinedBufferLength];
-                }
+                var combined = combinedBufferLength < 128 ?
+                                        stackalloc byte[combinedBufferLength] :
+                                        // TODO (pri 3): I think this could be eliminated by chunking values
+                                        (Span<byte>)new byte[combinedBufferLength];
 
                 bytesToSearchAgain.CopyTo(combined);
                 int combinedLength = bytesToSearchAgain.Length + rest.CopyTo(combined.Slice(bytesToSearchAgain.Length));
