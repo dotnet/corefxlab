@@ -27,7 +27,7 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
