@@ -13,14 +13,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
         /// the Start is guaranteed to be equal to 0. The value of Start may be assigned anywhere between 0 and
-        /// Memory.Length, and must be equal to or less than End.
+        /// Buffer.Length, and must be equal to or less than End.
         /// </summary>
         public int Start;
 
         /// <summary>
         /// The End represents the offset into Array where the range of "active" bytes ends. At the point when the block is leased
         /// the End is guaranteed to be equal to Start. The value of Start may be assigned anywhere between 0 and
-        /// Memory.Length, and must be equal to or less than End.
+        /// Buffer.Length, and must be equal to or less than End.
         /// </summary>
         public int End;
 

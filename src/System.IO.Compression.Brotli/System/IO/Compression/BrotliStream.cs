@@ -7,6 +7,7 @@ using System.IO.Compression.Resources;
 #if BIT64
     using nuint = System.UInt64;
 #else
+    using nuint = System.UInt32;
 #endif
 
 namespace System.IO.Compression

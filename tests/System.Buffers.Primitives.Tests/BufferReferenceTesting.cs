@@ -143,7 +143,7 @@ namespace System.Buffers.Tests
 
             Assert.ThrowsAny<ObjectDisposedException>((Action)(() =>
             {
-                System.ReadOnlyMemory<byte> roBuffer = buffer.AsMemory;
+                ReadOnlyMemory<byte> roBuffer = buffer.AsMemory;
             }));
         }
 

@@ -444,7 +444,7 @@ namespace System.IO.Pipelines.Tests
         {
             // Append one full segment to a pipe
             var buffer = _pipe.Writer.Alloc(1);
-            buffer.Advance((int)buffer.Buffer.Length);
+            buffer.Advance(buffer.Buffer.Length);
             buffer.Commit();
             await buffer.FlushAsync();
 

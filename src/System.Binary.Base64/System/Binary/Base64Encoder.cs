@@ -215,7 +215,7 @@ namespace System.Binary.Base64
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="buffer">Memory containing source bytes and empty space for the encoded bytes</param>
+        /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
         /// <param name="sourceLength">Number of bytes to encode.</param>
         /// <returns>Number of bytes written to the buffer.</returns>
         [Obsolete("Use Base64.BytesToUtf8InPlace")]
