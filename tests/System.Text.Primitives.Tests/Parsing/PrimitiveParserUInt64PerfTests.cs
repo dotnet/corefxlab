@@ -71,56 +71,56 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
-        [InlineData("2134567890")] // standard parse
-        [InlineData("18446744073709551615")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void PrimitiveParserByteStarToUInt64(string text)
-        {
-            int length = text.Length;
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < TestHelper.LoadIterations; i++)
-                        {
-                            ulong value;
-                            Parsers.Utf8.TryParseUInt64(utf8ByteStar, length, out value);
-                            TestHelper.DoNotIgnore(value, 0);
-                        }
-                    }
-                }
-            }
-        }
+        //[Benchmark]
+        //[InlineData("2134567890")] // standard parse
+        //[InlineData("18446744073709551615")] // max value
+        //[InlineData("0")] // min value
+        //private unsafe static void PrimitiveParserByteStarToUInt64(string text)
+        //{
+        //    int length = text.Length;
+        //    byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        fixed (byte* utf8ByteStar = utf8ByteArray)
+        //        {
+        //            using (iteration.StartMeasurement())
+        //            {
+        //                for (int i = 0; i < TestHelper.LoadIterations; i++)
+        //                {
+        //                    ulong value;
+        //                    Parsers.Utf8.TryParseUInt64(utf8ByteStar, length, out value);
+        //                    TestHelper.DoNotIgnore(value, 0);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        [Benchmark]
-        [InlineData("2134567890")] // standard parse
-        [InlineData("18446744073709551615")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void PrimitiveParserByteStarToUInt64_BytesConsumed(string text)
-        {
-            int length = text.Length;
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < TestHelper.LoadIterations; i++)
-                        {
-                            ulong value;
-                            int bytesConsumed;
-                            Parsers.Utf8.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
-                            TestHelper.DoNotIgnore(value, bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
+        //[Benchmark]
+        //[InlineData("2134567890")] // standard parse
+        //[InlineData("18446744073709551615")] // max value
+        //[InlineData("0")] // min value
+        //private unsafe static void PrimitiveParserByteStarToUInt64_BytesConsumed(string text)
+        //{
+        //    int length = text.Length;
+        //    byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        fixed (byte* utf8ByteStar = utf8ByteArray)
+        //        {
+        //            using (iteration.StartMeasurement())
+        //            {
+        //                for (int i = 0; i < TestHelper.LoadIterations; i++)
+        //                {
+        //                    ulong value;
+        //                    int bytesConsumed;
+        //                    Parsers.Utf8.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
+        //                    TestHelper.DoNotIgnore(value, bytesConsumed);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         [Benchmark]
         [InlineData("2134567890")] // standard parse
@@ -167,56 +167,56 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
-        [InlineData("abcdef")] // standard parse
-        [InlineData("ffffffffffffffff")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void PrimitiveParserByteStarToUInt64Hex(string text)
-        {
-            int length = text.Length;
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < TestHelper.LoadIterations; i++)
-                        {
-                            ulong value;
-                            Parsers.Utf8.Hex.TryParseUInt64(utf8ByteStar, length, out value);
-                            TestHelper.DoNotIgnore(value, 0);
-                        }
-                    }
-                }
-            }
-        }
+        //[Benchmark]
+        //[InlineData("abcdef")] // standard parse
+        //[InlineData("ffffffffffffffff")] // max value
+        //[InlineData("0")] // min value
+        //private unsafe static void PrimitiveParserByteStarToUInt64Hex(string text)
+        //{
+        //    int length = text.Length;
+        //    byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        fixed (byte* utf8ByteStar = utf8ByteArray)
+        //        {
+        //            using (iteration.StartMeasurement())
+        //            {
+        //                for (int i = 0; i < TestHelper.LoadIterations; i++)
+        //                {
+        //                    ulong value;
+        //                    Parsers.Utf8.Hex.TryParseUInt64(utf8ByteStar, length, out value);
+        //                    TestHelper.DoNotIgnore(value, 0);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        [Benchmark]
-        [InlineData("abcdef")] // standard parse
-        [InlineData("ffffffffffffffff")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void PrimitiveParserByteStarToUInt64Hex_BytesConsumed(string text)
-        {
-            int length = text.Length;
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < TestHelper.LoadIterations; i++)
-                        {
-                            ulong value;
-                            int bytesConsumed;
-                            Parsers.Utf8.Hex.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
-                            TestHelper.DoNotIgnore(value, bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
+        //[Benchmark]
+        //[InlineData("abcdef")] // standard parse
+        //[InlineData("ffffffffffffffff")] // max value
+        //[InlineData("0")] // min value
+        //private unsafe static void PrimitiveParserByteStarToUInt64Hex_BytesConsumed(string text)
+        //{
+        //    int length = text.Length;
+        //    byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        fixed (byte* utf8ByteStar = utf8ByteArray)
+        //        {
+        //            using (iteration.StartMeasurement())
+        //            {
+        //                for (int i = 0; i < TestHelper.LoadIterations; i++)
+        //                {
+        //                    ulong value;
+        //                    int bytesConsumed;
+        //                    Parsers.Utf8.Hex.TryParseUInt64(utf8ByteStar, length, out value, out bytesConsumed);
+        //                    TestHelper.DoNotIgnore(value, bytesConsumed);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         [Benchmark]
         [InlineData("abcdef")] // standard parse

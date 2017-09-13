@@ -33,19 +33,19 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
-            fixed (byte* bytePointer = byteBuffer)
-            {
-                result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue);
+            //fixed (byte* bytePointer = byteBuffer)
+            //{
+            //    result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue);
 
-                Assert.True(result);
-                Assert.Equal(expectedValue, actualValue);
+            //    Assert.True(result);
+            //    Assert.Equal(expectedValue, actualValue);
 
-                result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue, out actualConsumed);
+            //    result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue, out actualConsumed);
 
-                Assert.True(result);
-                Assert.Equal(expectedValue, actualValue);
-                Assert.Equal(expectedConsumed, actualConsumed);
-            }
+            //    Assert.True(result);
+            //    Assert.Equal(expectedValue, actualValue);
+            //    Assert.Equal(expectedConsumed, actualConsumed);
+            //}
 
             result = Parsers.Utf8.TryParseDecimal(byteSpan, out actualValue);
 
@@ -64,19 +64,19 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
 
-            fixed (char* charPointer = charBuffer)
-            {
-                result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue);
+            //fixed (char* charPointer = charBuffer)
+            //{
+            //    result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue);
 
-                Assert.True(result);
-                Assert.Equal(expectedValue, actualValue);
+            //    Assert.True(result);
+            //    Assert.Equal(expectedValue, actualValue);
 
-                result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue, out actualConsumed);
+            //    result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue, out actualConsumed);
 
-                Assert.True(result);
-                Assert.Equal(expectedValue, actualValue);
-                Assert.Equal(expectedConsumed, actualConsumed);
-            }
+            //    Assert.True(result);
+            //    Assert.Equal(expectedValue, actualValue);
+            //    Assert.Equal(expectedConsumed, actualConsumed);
+            //}
 
             result = Parsers.Utf16.TryParseDecimal(charSpan, out actualValue);
 

@@ -88,7 +88,7 @@ namespace System.Buffers.Adapters {
         static string Utf8ToString(ReadOnlySpan<byte> utf8)
         {
             var result = Encodings.Utf8.ToUtf16Length(utf8, out int bytesNeeded);
-            if (result == OperationStatus.InvalidData || result == OperationStatus.NeedMoreSourceData)
+            if (result == OperationStatus.InvalidData || result == OperationStatus.NeedMoreData)
             {
                 throw new Exception("invalid UTF8 byte");
             }

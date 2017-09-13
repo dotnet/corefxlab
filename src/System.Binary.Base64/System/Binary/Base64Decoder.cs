@@ -106,7 +106,7 @@ namespace System.Binary.Base64
             NeedMoreExit:
             consumed = sourceIndex;
             written = destIndex;
-            return OperationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreData;
 
             InvalidExit:
             consumed = sourceIndex;
@@ -197,7 +197,7 @@ namespace System.Binary.Base64
             NeedMoreExit:
             consumed = sourceIndex;
             written = destIndex;
-            return OperationStatus.NeedMoreSourceData;
+            return OperationStatus.NeedMoreData;
 
             InvalidExit:
             consumed = sourceIndex;

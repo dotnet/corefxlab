@@ -12,7 +12,7 @@ namespace System.Buffers
     {
         public static partial class Utf8
         {
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
+            unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
             {
                 if (length >= 4)
                 {
@@ -43,7 +43,7 @@ namespace System.Buffers
                 value = default;
                 return false;
             }
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
+            unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
             {
                 if (length >= 4)
                 {
@@ -139,7 +139,7 @@ namespace System.Buffers
         }
         public static partial class Utf16
         {
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value)
+            unsafe static bool TryParseBoolean(char* text, int length, out bool value)
             {
                 if (length >= 4)
                 {
@@ -170,7 +170,7 @@ namespace System.Buffers
                 value = default;
                 return false;
             }
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charsConsumed)
+            unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charsConsumed)
             {
                 if (length >= 4)
                 {

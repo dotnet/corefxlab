@@ -95,48 +95,33 @@ namespace System.IO.Pipelines.Text.Primitives
         /// Parses a <see cref="ulong"/> from the specified <see cref="ReadableBuffer"/>
         /// </summary>
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to parse</param>
-        public unsafe static ulong GetUInt64(this ReadableBuffer buffer)
+        public static ulong GetUInt64(this ReadableBuffer buffer)
         {
-            byte* addr;
             ulong value;
-            var len = buffer.Length;
-            if (buffer.IsSingleSpan)
+            if (Parsers.Utf8.TryParseUInt64(buffer.First.Span, out value))
             {
-                // It fits!
-                fixed (byte* source = &buffer.First.Span.DangerousGetPinnableReference())
-                {
-                    // We are able to cast because IsSingleSpan and span size is int
-                    if (!Parsers.Utf8.TryParseUInt64(source, (int) len, out value))
-                    {
-                        ThrowInvalidOperation();
-                    }
-                }
-            }
-            else if (len < 128) // REVIEW: What's a good number
-            {
-                // We are able to cast because len < 128
-                var length = (int) len;
-                var data = stackalloc byte[length];
-                buffer.CopyTo(new Span<byte>(data, length));
-                addr = data;
-                if (!Parsers.Utf8.TryParseUInt64(addr, length, out value))
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-            else
-            {
-                // Heap allocated copy to parse into array (should be rare)
-                var arr = buffer.ToArray();
-                if (!Parsers.Utf8.TryParseUInt64(arr, out value))
-                {
-                    throw new InvalidOperationException();
-                }
-
                 return value;
             }
 
-            return value;
+            if (buffer.IsSingleSpan) // no more data to parse
+            {
+                throw new InvalidOperationException();
+            }
+
+            var bufferLength = buffer.Length;
+
+            int toParseLength = 21; // longest invariant UTF8 UInt64 + 1 (so we know there is a delimiter at teh end)
+            if (bufferLength < 21) toParseLength = (int)bufferLength;
+
+            Span<byte> toParseBuffer = stackalloc byte[toParseLength];
+            buffer.CopyTo(toParseBuffer);
+
+            if (Parsers.Utf8.TryParseUInt64(toParseBuffer, out value))
+            {
+                return value;
+            }
+
+            throw new InvalidOperationException();
         }
 
         [Obsolete("Use System.Text.Encoders.Ascii.ToUtf16String method")]

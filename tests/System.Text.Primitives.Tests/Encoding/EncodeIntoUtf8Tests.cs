@@ -300,7 +300,7 @@ namespace System.Text.Primitives.Tests.Encoding
             ReadOnlySpan<byte> expected = Text.Encoding.UTF8.GetBytes(inputString1 + inputString2);
             Span<byte> output = new byte[expected.Length];
 
-            Assert.Equal(OperationStatus.NeedMoreSourceData, Encodings.Utf16.ToUtf8(input1, output, out int consumed, out int written));
+            Assert.Equal(OperationStatus.NeedMoreData, Encodings.Utf16.ToUtf8(input1, output, out int consumed, out int written));
             Assert.Equal(input1.Length - 2, consumed);
             Assert.NotEqual(expected.Length, written);
             Assert.True(expected.Slice(0, written).SequenceEqual(output.Slice(0, written)), "Invalid output sequence [first half]");
@@ -327,7 +327,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
             ReadOnlySpan<byte> input = inputAll.AsSpan().Slice(0, codepoints1.Length).AsBytes();
             input = input.Slice(0, input.Length - 2); // Strip a couple bytes from last good code point
-            Assert.Equal(OperationStatus.NeedMoreSourceData, Encodings.Utf32.ToUtf8(input, output, out int consumed, out int written));
+            Assert.Equal(OperationStatus.NeedMoreData, Encodings.Utf32.ToUtf8(input, output, out int consumed, out int written));
             Assert.True(input.Length > consumed, "Consumed too many bytes [first half]");
             Assert.NotEqual(expected.Length, written);
             Assert.True(expected.Slice(0, written).SequenceEqual(output.Slice(0, written)), "Invalid output sequence [first half]");

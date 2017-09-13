@@ -71,7 +71,7 @@ namespace System.Buffers
                         else
                         {
                             if (++i >= utf16Length)
-                                return OperationStatus.NeedMoreSourceData;
+                                return OperationStatus.NeedMoreData;
 
                             uint codePoint = (uint)char.ConvertToUtf32(ch, Unsafe.Add(ref utf16, i));
                             bytesNeeded += EncodingHelper.GetUtf8EncodedBytes(codePoint);
@@ -79,7 +79,7 @@ namespace System.Buffers
                     }
 
                     if ((utf16Length << 1) != source.Length)
-                        return OperationStatus.NeedMoreSourceData;
+                        return OperationStatus.NeedMoreData;
 
                     return OperationStatus.Done;
                 }
@@ -391,7 +391,7 @@ namespace System.Buffers
                     NeedMoreData:
                     bytesConsumed = (int)((byte*)(pSrc - 1) - chars);
                     bytesWritten = (int)(pTarget - bytes);
-                    return OperationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreData;
                 }
             }
 
@@ -452,7 +452,7 @@ namespace System.Buffers
                             return OperationStatus.InvalidData;
 
                         if (srcLength - srcIndex < sizeof(char) * 2)
-                            return OperationStatus.NeedMoreSourceData;
+                            return OperationStatus.NeedMoreData;
 
                         uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, srcIndex + 2));
                         if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
@@ -465,7 +465,7 @@ namespace System.Buffers
                     bytesNeeded += 4;
                 }
 
-                return srcIndex < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
+                return srcIndex < srcLength ? OperationStatus.NeedMoreData : OperationStatus.Done;
             }
 
             /// <summary>
@@ -505,7 +505,7 @@ namespace System.Buffers
                             return OperationStatus.InvalidData;
 
                         if (srcLength - bytesConsumed < sizeof(char) * 2)
-                            return OperationStatus.NeedMoreSourceData;
+                            return OperationStatus.NeedMoreData;
 
                         uint lowSurrogate = Unsafe.As<byte, char>(ref Unsafe.Add(ref src, bytesConsumed + 2));
                         if (!EncodingHelper.IsLowSurrogate(lowSurrogate))
@@ -522,7 +522,7 @@ namespace System.Buffers
                     bytesWritten += 4;
                 }
 
-                return bytesConsumed < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
+                return bytesConsumed < srcLength ? OperationStatus.NeedMoreData : OperationStatus.Done;
             }
 
             #endregion UTF-32 Conversions
