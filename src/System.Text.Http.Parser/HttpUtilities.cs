@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Binary;
+using System.Buffers;
 
 namespace System.Text.Http.Parser.Internal
 {
@@ -72,7 +73,7 @@ namespace System.Text.Http.Parser.Internal
             Debug.Assert(str.Length == 8, "String must be exactly 8 (ASCII) characters long.");
 
             Span<byte> span = stackalloc byte[8];
-            Encoders.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
+            Encodings.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<ulong>();
         }
 
@@ -81,7 +82,7 @@ namespace System.Text.Http.Parser.Internal
             Debug.Assert(str.Length == 4, "String must be exactly 4 (ASCII) characters long.");
 
             Span<byte> span = stackalloc byte[4];
-            Encoders.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
+            Encodings.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
             return span.Read<uint>();
         }
 

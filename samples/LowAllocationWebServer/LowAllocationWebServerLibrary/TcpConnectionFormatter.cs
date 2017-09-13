@@ -5,6 +5,7 @@
 using Microsoft.Net.Sockets;
 using System;
 using System.Buffers;
+using System.Buffers.Text;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Http;
@@ -95,7 +96,7 @@ namespace Microsoft.Net.Http
         }
         int WriteChunkPrefix(Span<byte> chunkPrefixBuffer, int chunkLength)
         {
-            if (!System.Text.Formatters.Utf8.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X'))
+            if (!Formatters.Utf8.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X'))
             {
                 throw new Exception("cannot format chunk length");
             }

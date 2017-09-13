@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests.Parsing
 {
@@ -43,7 +44,7 @@ namespace System.Text.Primitives.Tests.Parsing
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        PrimitiveParser.InvariantUtf8.TryParseInt16(utf8ByteSpan, out short value);
+                        Parsers.Utf8.TryParseInt16(utf8ByteSpan, out short value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -110,7 +111,7 @@ namespace System.Text.Primitives.Tests.Parsing
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        PrimitiveParser.InvariantUtf8.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
+                        Parsers.Utf8.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -134,7 +135,7 @@ namespace System.Text.Primitives.Tests.Parsing
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        PrimitiveParser.InvariantUtf8.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
+                        Parsers.Utf8.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -272,7 +273,7 @@ namespace System.Text.Primitives.Tests.Parsing
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        PrimitiveParser.TryParseInt16(utf8Span, out short value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
+                        Parsers.Custom.TryParseInt16(utf8Span, out short value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }

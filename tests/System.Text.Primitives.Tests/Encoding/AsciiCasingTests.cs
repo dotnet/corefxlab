@@ -3,10 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Text.Encoders;
+using System.Text;
 using Xunit;
 
-namespace System.Text.Encodings.Tests
+namespace System.Buffers.Tests
 {
     public class AsciiCasingTests
     {
@@ -20,7 +20,7 @@ namespace System.Text.Encodings.Tests
             buffer.AsSpan().CopyTo(copy);
             var output = new byte[buffer.Length];
 
-            var status = Ascii.ToUpper(buffer, output, out int processedBytes);
+            var status = Encodings.Ascii.ToUpper(buffer, output, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -39,7 +39,7 @@ namespace System.Text.Encodings.Tests
             var copy = new byte[buffer.Length];
             buffer.AsSpan().CopyTo(copy);
 
-            var status = Ascii.ToUpperInPlace(buffer, out int processedBytes);
+            var status = Encodings.Ascii.ToUpperInPlace(buffer, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -57,7 +57,7 @@ namespace System.Text.Encodings.Tests
             buffer.AsSpan().CopyTo(copy);
             var output = new byte[buffer.Length];
 
-            var status = Ascii.ToLower(buffer, output, out int processedBytes);
+            var status = Encodings.Ascii.ToLower(buffer, output, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 
@@ -76,7 +76,7 @@ namespace System.Text.Encodings.Tests
             var copy = new byte[buffer.Length];
             buffer.AsSpan().CopyTo(copy);
 
-            var status = Ascii.ToLowerInPlace(buffer, out int processedBytes);
+            var status = Encodings.Ascii.ToLowerInPlace(buffer, out int processedBytes);
             Assert.Equal(expectedStatus, status);
             Assert.Equal(expectedProcessed, processedBytes);
 

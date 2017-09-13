@@ -2,10 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Text;
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
         const int ByteOverflowLength = 3;
         const int ByteOverflowLengthHex = 2;

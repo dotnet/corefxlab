@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Parsing;
@@ -105,7 +106,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 fixed (byte* source = &buffer.First.Span.DangerousGetPinnableReference())
                 {
                     // We are able to cast because IsSingleSpan and span size is int
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(source, (int) len, out value))
+                    if (!Parsers.Utf8.TryParseUInt64(source, (int) len, out value))
                     {
                         ThrowInvalidOperation();
                     }
@@ -118,7 +119,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 var data = stackalloc byte[length];
                 buffer.CopyTo(new Span<byte>(data, length));
                 addr = data;
-                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(addr, length, out value))
+                if (!Parsers.Utf8.TryParseUInt64(addr, length, out value))
                 {
                     throw new InvalidOperationException();
                 }
@@ -127,7 +128,7 @@ namespace System.IO.Pipelines.Text.Primitives
             {
                 // Heap allocated copy to parse into array (should be rare)
                 var arr = buffer.ToArray();
-                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(arr, out value))
+                if (!Parsers.Utf8.TryParseUInt64(arr, out value))
                 {
                     throw new InvalidOperationException();
                 }

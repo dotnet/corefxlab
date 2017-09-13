@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
             public unsafe static bool TryParseDecimal(byte* text, int length, out decimal value)
             {

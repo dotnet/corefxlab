@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Formatters
+namespace System.Buffers
 {
     // All the helper methods in this class assume that the by-ref is valid and that there is
     // enough space to fit the items that will be written into the underlying memory. The calling
