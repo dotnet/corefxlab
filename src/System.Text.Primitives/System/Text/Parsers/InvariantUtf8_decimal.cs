@@ -8,13 +8,13 @@ namespace System.Buffers
     {
         public static partial class Utf8
         {
-            public unsafe static bool TryParseDecimal(byte* text, int length, out decimal value)
+            unsafe static bool TryParseDecimal(byte* text, int length, out decimal value)
             {
                 int consumed;
                 var span = new ReadOnlySpan<byte>(text, length);
                 return TryParseDecimal(span, out value, out consumed);
             }
-            public unsafe static bool TryParseDecimal(byte* text, int length, out decimal value, out int bytesConsumed)
+            unsafe static bool TryParseDecimal(byte* text, int length, out decimal value, out int bytesConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length);
                 return TryParseDecimal(span, out value, out bytesConsumed);

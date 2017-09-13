@@ -335,7 +335,7 @@ namespace System.Buffers
 
                     NeedMoreData:
                     bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
-                    return OperationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreData;
 
                     InvalidData:
                     bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
@@ -698,7 +698,7 @@ namespace System.Buffers
                     NeedMoreData:
                     bytesConsumed = EncodingHelper.PtrDiff(pSrc - 2, pUtf8);
                     bytesWritten = EncodingHelper.PtrDiff((byte*)pDst, pUtf16);
-                    return OperationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreData;
 
                     InvalidData:
                     bytesConsumed = EncodingHelper.PtrDiff(pSrc - 2, pUtf8);
@@ -772,7 +772,7 @@ namespace System.Buffers
                 return OperationStatus.InvalidData;
 
                 NeedMoreData:
-                return OperationStatus.NeedMoreSourceData;
+                return OperationStatus.NeedMoreData;
             }
 
             /// <summary>
@@ -832,7 +832,7 @@ namespace System.Buffers
                 return OperationStatus.InvalidData;
 
                 NeedMoreData:
-                return OperationStatus.NeedMoreSourceData;
+                return OperationStatus.NeedMoreData;
             }
 
             #endregion UTF-32 Conversions

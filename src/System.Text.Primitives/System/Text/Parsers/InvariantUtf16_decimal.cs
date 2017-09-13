@@ -7,13 +7,13 @@ namespace System.Buffers
     {
         public static partial class Utf16
         {
-            public unsafe static bool TryParseDecimal(char* text, int length, out decimal value)
+            unsafe static bool TryParseDecimal(char* text, int length, out decimal value)
             {
                 int consumed;
                 var span = new ReadOnlySpan<char>(text, length);
                 return TryParseDecimal(span, out value, out consumed);
             }
-            public unsafe static bool TryParseDecimal(char* text, int length, out decimal value, out int charactersConsumed)
+            unsafe static bool TryParseDecimal(char* text, int length, out decimal value, out int charactersConsumed)
             {
                 var span = new ReadOnlySpan<char>(text, length);
                 return TryParseDecimal(span, out value, out charactersConsumed);

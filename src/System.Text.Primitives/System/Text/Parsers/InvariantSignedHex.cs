@@ -12,7 +12,7 @@ namespace System.Buffers
     {
         public static partial class Utf8
         {
-            public static partial class Hex
+            internal static partial class Hex
             {
                 #region SByte
                 public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
@@ -1302,7 +1302,7 @@ namespace System.Buffers
         }
         public static partial class Utf16
         {
-            public static partial class Hex
+            internal static partial class Hex
             {
                 #region SByte
                 public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)

@@ -65,7 +65,7 @@ namespace System.Buffers
                 }
 
                 if (utf32Length << 2 != source.Length)
-                    return OperationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreData;
 
                 return OperationStatus.Done;
             }
@@ -137,7 +137,7 @@ namespace System.Buffers
                     bytesWritten += bytesNeeded;
                 }
 
-                return bytesConsumed < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
+                return bytesConsumed < srcLength ? OperationStatus.NeedMoreData : OperationStatus.Done;
             }
 
             #endregion UTF-8 Conversions
@@ -199,7 +199,7 @@ namespace System.Buffers
                     index += 4;
                 }
 
-                return index < length ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
+                return index < length ? OperationStatus.NeedMoreData : OperationStatus.Done;
             }
 
             /// <summary>
@@ -252,7 +252,7 @@ namespace System.Buffers
                     bytesConsumed += 4;
                 }
 
-                return bytesConsumed < srcLength ? OperationStatus.NeedMoreSourceData : OperationStatus.Done;
+                return bytesConsumed < srcLength ? OperationStatus.NeedMoreData : OperationStatus.Done;
             }
 
             #endregion UTF-16 Conversions
