@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     interface IDebugEnumerable<T>
     {

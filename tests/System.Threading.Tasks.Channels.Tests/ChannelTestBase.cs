@@ -3,9 +3,11 @@
 
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Threading.Tasks.Channels.Tests
+namespace System.IO.Channels.Tests
 {
     public abstract class ChannelTestBase : TestBase
     {

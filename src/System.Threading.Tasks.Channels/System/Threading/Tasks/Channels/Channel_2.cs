@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>
     /// Provides a base class for channels that support reading elements of type <typeparamref name="TRead"/>

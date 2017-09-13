@@ -4,8 +4,10 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
     [DebuggerDisplay("Writers Waiting/Blocked: {WaitingWritersForDebugger}/{BlockedWritersCountForDebugger}, Readers Waiting/Blocked: {WaitingReadersForDebugger}/{BlockedReadersCountForDebugger}")]

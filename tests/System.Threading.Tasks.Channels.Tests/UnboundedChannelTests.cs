@@ -3,9 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Threading.Tasks.Channels.Tests
+namespace System.IO.Channels.Tests
 {
     public abstract class UnboundedChannelTests : ChannelTestBase
     {
