@@ -81,9 +81,9 @@ namespace System.IO.Channels.Tests
                     var c = Channel.CreateUnbounded<int>(new ChannelOptimizations { SingleReader = true });
                     tcs.Task.ContinueWith(t =>
                     {
-                        c.Out.TryWrite(t.Result);
+                        c.Writer.TryWrite(t.Result);
                     }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-                    yield return new object[] { completionMode, tcs, c.In.GetAwaiter() };
+                    yield return new object[] { completionMode, tcs, c.Reader.GetAwaiter() };
                 }
             }
         }

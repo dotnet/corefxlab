@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 namespace System.IO.Channels
 {
     /// <summary>
-    /// Provides a base class for channels that support reading elements.
+    /// Provides a base class for reading from a channel.
     /// </summary>
     /// <typeparam name="T">Specifies the type of data that may be read from the channel.</typeparam>
-    public abstract class ReadableChannel<T>
+    public abstract class ChannelReader<T>
     {
         /// <summary>
         /// Gets a <see cref="Task"/> that completes when no more data will ever
@@ -78,7 +78,7 @@ namespace System.IO.Channels
         }
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
-        private static ConditionalWeakTable<ReadableChannel<T>, ChannelObservable> s_channelToObservable;
+        private static ConditionalWeakTable<ChannelReader<T>, ChannelObservable> s_channelToObservable;
 
         /// <summary>Creates an observable for this channel.</summary>
         /// <returns>An observable that pulls data from this channel.</returns>
@@ -89,10 +89,10 @@ namespace System.IO.Channels
         internal sealed class ChannelObservable : IObservable<T>
         {
             private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
-            private readonly ReadableChannel<T> _channel;
+            private readonly ChannelReader<T> _channel;
             private bool _active;
 
-            internal ChannelObservable(ReadableChannel<T> channel)
+            internal ChannelObservable(ChannelReader<T> channel)
             {
                 Debug.Assert(channel != null);
                 _channel = channel;

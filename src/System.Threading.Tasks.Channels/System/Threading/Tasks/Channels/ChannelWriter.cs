@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 namespace System.IO.Channels
 {
     /// <summary>
-    /// Provides a base class for channels that support writing elements.
+    /// Provides a base class for writing to a channel.
     /// </summary>
     /// <typeparam name="T">Specifies the type of data that may be written to the channel.</typeparam>
-    public abstract class WritableChannel<T>
+    public abstract class ChannelWriter<T>
     {
         /// <summary>Attempts to mark the channel as being completed, meaning no more data will be written to it.</summary>
         /// <param name="error">An <see cref="Exception"/> indicating the failure causing no more data to be written, or null for success.</param>
@@ -91,9 +91,9 @@ namespace System.IO.Channels
         /// <summary>Provides an observer for a Writable channel.</summary>
         private sealed class ChannelObserver : IObserver<T>
         {
-            private readonly WritableChannel<T> _channel;
+            private readonly ChannelWriter<T> _channel;
 
-            internal ChannelObserver(WritableChannel<T> channel)
+            internal ChannelObserver(ChannelWriter<T> channel)
             {
                 Debug.Assert(channel != null);
                 _channel = channel;

@@ -18,10 +18,10 @@ namespace System.IO.Channels.Tests
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
         {
             Channel<int> c = CreateChannel();
-            Task write1 = c.Out.WriteAsync(42);
-            Task write2 = c.Out.WriteAsync(43);
-            c.Out.Complete();
-            await c.In.Completion;
+            Task write1 = c.Writer.WriteAsync(42);
+            Task write2 = c.Writer.WriteAsync(43);
+            c.Writer.Complete();
+            await c.Reader.Completion;
             await Assert.ThrowsAnyAsync<InvalidOperationException>(() => write1);
             await Assert.ThrowsAnyAsync<InvalidOperationException>(() => write2);
         }
@@ -30,8 +30,8 @@ namespace System.IO.Channels.Tests
         public void TryReadWrite_NoPartner_Fail()
         {
             Channel<int> c = CreateChannel();
-            Assert.False(c.Out.TryWrite(42));
-            Assert.False(c.In.TryRead(out int result));
+            Assert.False(c.Writer.TryWrite(42));
+            Assert.False(c.Reader.TryRead(out int result));
             Assert.Equal(result, 0);
         }
 
@@ -39,10 +39,10 @@ namespace System.IO.Channels.Tests
         public void ReadAsync_TryWrite_Success()
         {
             Channel<int> c = CreateChannel();
-            ValueTask<int> r = c.In.ReadAsync();
+            ValueTask<int> r = c.Reader.ReadAsync();
             Assert.False(r.IsCompletedSuccessfully);
             Assert.False(r.AsTask().IsCompleted);
-            Assert.True(c.Out.TryWrite(42));
+            Assert.True(c.Writer.TryWrite(42));
             Assert.Equal(42, r.Result);
         }
 
@@ -50,9 +50,9 @@ namespace System.IO.Channels.Tests
         public void TryRead_WriteAsync_Success()
         {
             Channel<int> c = CreateChannel();
-            Task w = c.Out.WriteAsync(42);
+            Task w = c.Writer.WriteAsync(42);
             Assert.False(w.IsCompleted);
-            Assert.True(c.In.TryRead(out int result));
+            Assert.True(c.Reader.TryRead(out int result));
             Assert.Equal(42, result);
         }
 
@@ -62,16 +62,16 @@ namespace System.IO.Channels.Tests
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            Task w = c.Out.WriteAsync(42, cts.Token);
+            Task w = c.Writer.WriteAsync(42, cts.Token);
             Assert.False(w.IsCompleted);
 
             cts.Cancel();
             await AssertCanceled(w, cts.Token);
 
-            ValueTask<int> r = c.In.ReadAsync();
+            ValueTask<int> r = c.Reader.ReadAsync();
             Assert.False(r.IsCompleted);
 
-            Assert.True(c.Out.TryWrite(42));
+            Assert.True(c.Writer.TryWrite(42));
             Assert.Equal(42, await r);
         }
 
@@ -83,10 +83,10 @@ namespace System.IO.Channels.Tests
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            Task[] cancelableWrites = (from i in Enumerable.Range(0, 10) select c.Out.WriteAsync(42, cts.Token)).ToArray();
+            Task[] cancelableWrites = (from i in Enumerable.Range(0, 10) select c.Writer.WriteAsync(42, cts.Token)).ToArray();
             Assert.All(cancelableWrites, cw => Assert.Equal(TaskStatus.WaitingForActivation, cw.Status));
 
-            Task w = c.Out.WriteAsync(84);
+            Task w = c.Writer.WriteAsync(84);
 
             cts.Cancel();
             foreach (Task t in cancelableWrites)
@@ -96,12 +96,12 @@ namespace System.IO.Channels.Tests
 
             if (useReadAsync)
             {
-                Assert.True(c.In.TryRead(out int result));
+                Assert.True(c.Reader.TryRead(out int result));
                 Assert.Equal(84, result);
             }
             else
             {
-                Assert.Equal(84, await c.In.ReadAsync());
+                Assert.Equal(84, await c.Reader.ReadAsync());
             }
         }
 
@@ -111,16 +111,16 @@ namespace System.IO.Channels.Tests
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            Task r = c.In.ReadAsync(cts.Token).AsTask();
+            Task r = c.Reader.ReadAsync(cts.Token).AsTask();
             Assert.False(r.IsCompleted);
 
             cts.Cancel();
             await AssertCanceled(r, cts.Token);
 
-            Task w = c.Out.WriteAsync(42);
+            Task w = c.Writer.WriteAsync(42);
             Assert.False(w.IsCompleted);
 
-            Assert.Equal(42, await c.In.ReadAsync());
+            Assert.Equal(42, await c.Reader.ReadAsync());
             await w;
         }
 
@@ -130,10 +130,10 @@ namespace System.IO.Channels.Tests
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            Task w = c.Out.WriteAsync(42, cts.Token);
+            Task w = c.Writer.WriteAsync(42, cts.Token);
             Assert.False(w.IsCompleted);
 
-            ValueTask<int> r = c.In.ReadAsync();
+            ValueTask<int> r = c.Reader.ReadAsync();
             Assert.True(r.IsCompletedSuccessfully);
 
             cts.Cancel();
@@ -146,10 +146,10 @@ namespace System.IO.Channels.Tests
             Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            ValueTask<int> r = c.In.ReadAsync(cts.Token);
+            ValueTask<int> r = c.Reader.ReadAsync(cts.Token);
             Assert.False(r.IsCompletedSuccessfully);
 
-            Task w = c.Out.WriteAsync(42);
+            Task w = c.Writer.WriteAsync(42);
             Assert.True(w.IsCompleted);
 
             cts.Cancel();

@@ -48,11 +48,11 @@ namespace System.IO.Channels
             _mode = mode;
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
             _completion = new TaskCompletionSource<VoidResult>(runContinuationsAsynchronously ? TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None);
-            In = new Readable(this);
-            Out = new Writable(this);
+            Reader = new Readable(this);
+            Writer = new Writable(this);
         }
 
-        private sealed class Readable : ReadableChannel<T>
+        private sealed class Readable : ChannelReader<T>
         {
             internal readonly BoundedChannel<T> _parent;
             internal Readable(BoundedChannel<T> parent) => _parent = parent;
@@ -182,7 +182,7 @@ namespace System.IO.Channels
             }
         }
 
-        private sealed class Writable : WritableChannel<T>
+        private sealed class Writable : ChannelWriter<T>
         {
             internal readonly BoundedChannel<T> _parent;
             internal Writable(BoundedChannel<T> parent) => _parent = parent;

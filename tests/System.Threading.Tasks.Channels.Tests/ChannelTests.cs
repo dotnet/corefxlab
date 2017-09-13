@@ -66,13 +66,13 @@ namespace System.IO.Channels.Tests
         public void AsObservable_SameSource_Idempotent()
         {
             var c = Channel.CreateUnbounded<int>();
-            Assert.Same(c.In.AsObservable(), c.In.AsObservable());
+            Assert.Same(c.Reader.AsObservable(), c.Reader.AsObservable());
         }
 
         [Fact]
         public async Task DefaultReadAsync_UsesWaitToReadAsyncAndTryRead()
         {
-            var c = new TestReadableChannel<int>(Enumerable.Range(10, 10));
+            var c = new TestChannelReader<int>(Enumerable.Range(10, 10));
             Assert.NotNull(c.Completion);
             Assert.False(c.Completion.IsCompleted);
             Assert.Equal(TaskStatus.Canceled, c.ReadAsync(new CancellationToken(true)).AsTask().Status);
@@ -87,7 +87,7 @@ namespace System.IO.Channels.Tests
         [Fact]
         public async Task DefaultWriteAsync_UsesWaitToWriteAsyncAndTryWrite()
         {
-            var c = new TestWritableChannel<int>(10);
+            var c = new TestChannelWriter<int>(10);
             Assert.False(c.TryComplete());
             Assert.Equal(TaskStatus.Canceled, c.WriteAsync(42, new CancellationToken(true)).Status);
 
@@ -103,13 +103,13 @@ namespace System.IO.Channels.Tests
             Assert.Equal(11, count);
         }
 
-        private sealed class TestWritableChannel<T> : WritableChannel<T>
+        private sealed class TestChannelWriter<T> : ChannelWriter<T>
         {
             private readonly Random _rand = new Random(42);
             private readonly int _max;
             private int _count;
 
-            public TestWritableChannel(int max) => _max = max;
+            public TestChannelWriter(int max) => _max = max;
 
             public override bool TryWrite(T item) => _rand.Next(0, 2) == 0 && _count++ < _max; // succeed if we're under our limit, and add random failures
 
@@ -119,14 +119,14 @@ namespace System.IO.Channels.Tests
                 Task.FromResult(true);
         }
 
-        private sealed class TestReadableChannel<T> : ReadableChannel<T>
+        private sealed class TestChannelReader<T> : ChannelReader<T>
         {
             private Random _rand = new Random(42);
             private IEnumerator<T> _enumerator;
             private int _count;
             private bool _closed;
 
-            public TestReadableChannel(IEnumerable<T> enumerable) => _enumerator = enumerable.GetEnumerator();
+            public TestChannelReader(IEnumerable<T> enumerable) => _enumerator = enumerable.GetEnumerator();
 
             public override bool TryRead(out T item)
             {

@@ -26,7 +26,7 @@ namespace System.IO.Channels
         /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
         private ReaderInteractor<bool> _waitingWriters;
 
-        private sealed class Readable : ReadableChannel<T>
+        private sealed class Readable : ChannelReader<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
             internal Readable(UnbufferedChannel<T> parent) => _parent = parent;
@@ -128,7 +128,7 @@ namespace System.IO.Channels
             }
         }
 
-        private sealed class Writable : WritableChannel<T>
+        private sealed class Writable : ChannelWriter<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
             internal Writable(UnbufferedChannel<T> parent) => _parent = parent;
@@ -252,8 +252,8 @@ namespace System.IO.Channels
         /// <summary>Initialize the channel.</summary>
         internal UnbufferedChannel()
         {
-            In = new Readable(this);
-            Out = new Writable(this);
+            Reader = new Readable(this);
+            Writer = new Writable(this);
         }
 
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>

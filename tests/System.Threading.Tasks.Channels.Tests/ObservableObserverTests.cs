@@ -15,7 +15,7 @@ namespace System.IO.Channels.Tests
         public void AsObservable_InvalidSubscribe_ThrowsException()
         {
             var c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.In.AsObservable();
+            IObservable<int> o = c.Reader.AsObservable();
             Assert.Throws<ArgumentNullException>("observer", () => o.Subscribe(null));
         }
 
@@ -23,7 +23,7 @@ namespace System.IO.Channels.Tests
         public void AsObservable_Subscribe_Dispose_Success()
         {
             var c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.In.AsObservable();
+            IObservable<int> o = c.Reader.AsObservable();
 
             using (o.Subscribe(new DelegateObserver<int>()))
             {
@@ -40,7 +40,7 @@ namespace System.IO.Channels.Tests
         public void AsObservable_Subscribe_DisposeMultipleTimes_Success()
         {
             var c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.In.AsObservable();
+            IObservable<int> o = c.Reader.AsObservable();
 
             IDisposable d = o.Subscribe(new DelegateObserver<int>());
             d.Dispose();
@@ -56,26 +56,26 @@ namespace System.IO.Channels.Tests
             Action<int> addToTotal = i => Interlocked.Add(ref total, i);
             var tcs = new TaskCompletionSource<bool>();
 
-            await c.Out.WriteAsync(1);
+            await c.Writer.WriteAsync(1);
 
-            IObservable<int> o = c.In.AsObservable();
+            IObservable<int> o = c.Reader.AsObservable();
 
-            await c.Out.WriteAsync(2);
+            await c.Writer.WriteAsync(2);
 
             IDisposable d = o.Subscribe(new DelegateObserver<int> { OnNextDelegate = addToTotal });
 
-            await c.Out.WriteAsync(3);
+            await c.Writer.WriteAsync(3);
 
             d.Dispose();
 
-            await c.Out.WriteAsync(4);
+            await c.Writer.WriteAsync(4);
             await Task.Delay(250);
 
             d = o.Subscribe(new DelegateObserver<int> { OnNextDelegate = addToTotal, OnCompletedDelegate = () => tcs.SetResult(true) });
 
-            await c.Out.WriteAsync(5);
+            await c.Writer.WriteAsync(5);
 
-            c.Out.Complete();
+            c.Writer.Complete();
             await tcs.Task;
 
             Assert.Equal(15, total);
@@ -94,12 +94,12 @@ namespace System.IO.Channels.Tests
             {
                 for (int i = 0; i < Items; i++)
                 {
-                    await c.Out.WriteAsync(i);
+                    await c.Writer.WriteAsync(i);
                 }
-                c.Out.Complete();
+                c.Writer.Complete();
             });
 
-            c.In.AsObservable().Subscribe(new DelegateObserver<int>
+            c.Reader.AsObservable().Subscribe(new DelegateObserver<int>
             {
                 OnNextDelegate = i => 
                 {
@@ -111,9 +111,9 @@ namespace System.IO.Channels.Tests
                 OnCompletedDelegate = () => tcs.TrySetResult(true)
             });
 
-            while (await c.In.WaitToReadAsync())
+            while (await c.Reader.WaitToReadAsync())
             {
-                if (c.In.TryRead(out int item))
+                if (c.Reader.TryRead(out int item))
                 {
                     lock (results)
                     {
