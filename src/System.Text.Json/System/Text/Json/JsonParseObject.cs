@@ -225,7 +225,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             bool result;
-            if(!PrimitiveParser.InvariantUtf8.TryParseBoolean(slice, out result)){
+            if(!Parsers.Utf8.TryParseBoolean(slice, out result)){
                 throw new InvalidCastException();
             }
             return result;
@@ -241,7 +241,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             int result;
-            if (!PrimitiveParser.InvariantUtf8.TryParseInt32(slice, out result)) {
+            if (!Parsers.Utf8.TryParseInt32(slice, out result)) {
                 throw new InvalidCastException();
             }
             return result;

@@ -6,14 +6,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
             #region Byte
-            public unsafe static bool TryParseByte(byte* text, int length, out byte value)
+            unsafe static bool TryParseByte(byte* text, int length, out byte value)
             {
                 if (length < 1)
                 {
@@ -81,7 +81,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(byte* text, int length, out byte value, out int bytesConsumed)
+            unsafe static bool TryParseByte(byte* text, int length, out byte value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -302,7 +302,7 @@ namespace System.Text
             #endregion
 
             #region UInt16
-            public unsafe static bool TryParseUInt16(byte* text, int length, out ushort value)
+            unsafe static bool TryParseUInt16(byte* text, int length, out ushort value)
             {
                 if (length < 1)
                 {
@@ -370,7 +370,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(byte* text, int length, out ushort value, out int bytesConsumed)
+            unsafe static bool TryParseUInt16(byte* text, int length, out ushort value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -591,7 +591,7 @@ namespace System.Text
             #endregion
 
             #region UInt32
-            public unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
+            unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
             {
                 if (length < 1)
                 {
@@ -659,7 +659,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(byte* text, int length, out uint value, out int bytesConsumed)
+            unsafe static bool TryParseUInt32(byte* text, int length, out uint value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -880,7 +880,7 @@ namespace System.Text
             #endregion
 
             #region UInt64
-            public unsafe static bool TryParseUInt64(byte* text, int length, out ulong value)
+            unsafe static bool TryParseUInt64(byte* text, int length, out ulong value)
             {
                 if (length < 1)
                 {
@@ -948,7 +948,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(byte* text, int length, out ulong value, out int bytesConsumed)
+            unsafe static bool TryParseUInt64(byte* text, int length, out ulong value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -1169,10 +1169,10 @@ namespace System.Text
             #endregion
 
         }
-        public static partial class InvariantUtf16
+        public static partial class Utf16
         {
             #region Byte
-            public unsafe static bool TryParseByte(char* text, int length, out byte value)
+            unsafe static bool TryParseByte(char* text, int length, out byte value)
             {
                 if (length < 1)
                 {
@@ -1240,7 +1240,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(char* text, int length, out byte value, out int charsConsumed)
+            unsafe static bool TryParseByte(char* text, int length, out byte value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -1461,7 +1461,7 @@ namespace System.Text
             #endregion
 
             #region UInt16
-            public unsafe static bool TryParseUInt16(char* text, int length, out ushort value)
+            unsafe static bool TryParseUInt16(char* text, int length, out ushort value)
             {
                 if (length < 1)
                 {
@@ -1529,7 +1529,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charsConsumed)
+            unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -1750,7 +1750,7 @@ namespace System.Text
             #endregion
 
             #region UInt32
-            public unsafe static bool TryParseUInt32(char* text, int length, out uint value)
+            unsafe static bool TryParseUInt32(char* text, int length, out uint value)
             {
                 if (length < 1)
                 {
@@ -1818,7 +1818,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charsConsumed)
+            unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -2039,7 +2039,7 @@ namespace System.Text
             #endregion
 
             #region UInt64
-            public unsafe static bool TryParseUInt64(char* text, int length, out ulong value)
+            unsafe static bool TryParseUInt64(char* text, int length, out ulong value)
             {
                 if (length < 1)
                 {
@@ -2107,7 +2107,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charsConsumed)
+            unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charsConsumed)
             {
                 if (length < 1)
                 {

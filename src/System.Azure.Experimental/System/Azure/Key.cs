@@ -3,7 +3,6 @@
 
 using System.Binary.Base64;
 using System.Buffers;
-using System.Text.Encoders;
 
 namespace System.Azure.Authentication
 {
@@ -14,7 +13,7 @@ namespace System.Azure.Authentication
             var buffer = size < 128 ? stackalloc byte[size] : (Span<byte>)new byte[size];
 
             int written, consumed;
-            if (Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }

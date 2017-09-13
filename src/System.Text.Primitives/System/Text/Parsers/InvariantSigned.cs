@@ -6,14 +6,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
             #region SByte
-            public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
+            unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
             {
                 if (length < 1)
                 {
@@ -97,7 +97,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value, out int bytesConsumed)
+            unsafe static bool TryParseSByte(byte* text, int length, out sbyte value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -271,7 +271,7 @@ namespace System.Text
             #endregion
 
             #region Int16
-            public unsafe static bool TryParseInt16(byte* text, int length, out short value)
+            unsafe static bool TryParseInt16(byte* text, int length, out short value)
             {
                 if (length < 1)
                 {
@@ -355,7 +355,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt16(byte* text, int length, out short value, out int bytesConsumed)
+            unsafe static bool TryParseInt16(byte* text, int length, out short value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -540,7 +540,7 @@ namespace System.Text
             #endregion
 
             #region Int32
-            public unsafe static bool TryParseInt32(byte* text, int length, out int value)
+            unsafe static bool TryParseInt32(byte* text, int length, out int value)
             {
                 if (length < 1)
                 {
@@ -624,7 +624,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed)
+            unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -839,7 +839,7 @@ namespace System.Text
             #endregion
 
             #region Int64
-            public unsafe static bool TryParseInt64(byte* text, int length, out long value)
+            unsafe static bool TryParseInt64(byte* text, int length, out long value)
             {
                 if (length < 1)
                 {
@@ -923,7 +923,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt64(byte* text, int length, out long value, out int bytesConsumed)
+            unsafe static bool TryParseInt64(byte* text, int length, out long value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -1192,10 +1192,10 @@ namespace System.Text
             #endregion
 
         }
-        public static partial class InvariantUtf16
+        public static partial class Utf16
         {
             #region SByte
-            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
+            unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
             {
                 if (length < 1)
                 {
@@ -1279,7 +1279,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charsConsumed)
+            unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -1476,7 +1476,7 @@ namespace System.Text
             #endregion
 
             #region Int16
-            public unsafe static bool TryParseInt16(char* text, int length, out short value)
+            unsafe static bool TryParseInt16(char* text, int length, out short value)
             {
                 if (length < 1)
                 {
@@ -1560,7 +1560,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt16(char* text, int length, out short value, out int charsConsumed)
+            unsafe static bool TryParseInt16(char* text, int length, out short value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -1757,7 +1757,7 @@ namespace System.Text
             #endregion
 
             #region Int32
-            public unsafe static bool TryParseInt32(char* text, int length, out int value)
+            unsafe static bool TryParseInt32(char* text, int length, out int value)
             {
                 if (length < 1)
                 {
@@ -1841,7 +1841,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt32(char* text, int length, out int value, out int charsConsumed)
+            unsafe static bool TryParseInt32(char* text, int length, out int value, out int charsConsumed)
             {
                 if (length < 1)
                 {
@@ -2038,7 +2038,7 @@ namespace System.Text
             #endregion
 
             #region Int64
-            public unsafe static bool TryParseInt64(char* text, int length, out long value)
+            unsafe static bool TryParseInt64(char* text, int length, out long value)
             {
                 if (length < 1)
                 {
@@ -2122,7 +2122,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt64(char* text, int length, out long value, out int charsConsumed)
+            unsafe static bool TryParseInt64(char* text, int length, out long value, out int charsConsumed)
             {
                 if (length < 1)
                 {

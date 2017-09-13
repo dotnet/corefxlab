@@ -7,6 +7,7 @@ using Xunit;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
 {
@@ -45,9 +46,9 @@ namespace System.Text.Primitives.Tests
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
             {
-                Assert.Equal(OperationStatus.Done, Encoders.Utf8.ToUtf16Length(span, out int needed));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf16Length(span, out int needed));
                 Span<byte> output = new byte[needed];
-                Assert.Equal(OperationStatus.Done, Encoders.Utf8.ToUtf16(span, output, out int consumed, out int written));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf16(span, output, out int consumed, out int written));
                 return new string(output.NonPortableCast<byte, char>().ToArray());
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)

@@ -5,7 +5,6 @@ using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Text;
-using System.Text.Encoders;
 
 namespace System.Azure.Authentication
 {
@@ -28,7 +27,7 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
+                if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
                 {
                     bytesWritten = 0;
                     return false;
@@ -43,7 +42,7 @@ namespace System.Azure.Authentication
             bytesWritten += s_emptyHeaders.Length;
 
             free = output.Slice(bytesWritten);
-            if (!Text.Formatters.Utf8.TryFormat(utc, free, out written, 'R'))
+            if (!Formatters.Utf8.TryFormat(utc, free, out written, 'R'))
             {
                 bytesWritten = 0;
                 return false;
@@ -52,7 +51,7 @@ namespace System.Azure.Authentication
             bytesWritten += written + 1;
             free = output.Slice(bytesWritten);
 
-            if (Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;

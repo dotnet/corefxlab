@@ -8,6 +8,7 @@ using System.Text.Formatting;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Samples.Framing
 {

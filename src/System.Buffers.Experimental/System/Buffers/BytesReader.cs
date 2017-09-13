@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -280,13 +281,13 @@ namespace System.Buffers
 
         #region Parsing Methods
         // TODO: how to we chose the lengths of the temp buffers?
-        // TODO: these methods call the slow overloads of PrimitiveParser.TryParseXXX. Do we need fast path?
+        // TODO: these methods call the slow overloads of Parsers.Custom.TryParseXXX. Do we need fast path?
         // TODO: these methods hardcode the format. Do we need this to be something that can be specified?
         public bool TryParseBoolean(out bool value)
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
+            if (Parsers.Custom.TryParseBoolean(unread, out value, out consumed, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -298,7 +299,7 @@ namespace System.Buffers
             Span<byte> tempSpan = stackalloc byte[15];
             var copied = CopyTo(tempSpan);
 
-            if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
+            if (Parsers.Custom.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
             {
                 Advance(consumed);
                 return true;
@@ -311,7 +312,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
+            if (Parsers.Custom.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -323,7 +324,7 @@ namespace System.Buffers
             Span<byte> tempSpan = stackalloc byte[32];
             var copied = CopyTo(tempSpan);
 
-            if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
+            if (Parsers.Custom.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
             {
                 Advance(consumed);
                 return true;

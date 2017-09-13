@@ -4,6 +4,7 @@
 
 using Xunit;
 using System.Text.Formatting;
+using System.Buffers.Text;
 
 namespace System.Text.Json.Tests
 {

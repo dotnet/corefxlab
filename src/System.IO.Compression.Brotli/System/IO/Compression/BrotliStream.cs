@@ -69,7 +69,7 @@ namespace System.IO.Compression
                 ReadTimeout = 0;
             }
             _buffer = new byte[_bufferSize];
-            _transformationResult = OperationStatus.NeedMoreSourceData;
+            _transformationResult = OperationStatus.NeedMoreData;
             _availableOutput = _bufferSize;
         }
 
@@ -201,7 +201,7 @@ namespace System.IO.Compression
             }
             while (true)
             {
-                if (_transformationResult == OperationStatus.NeedMoreSourceData)
+                if (_transformationResult == OperationStatus.NeedMoreData)
                 {
                     _availableInput = _stream.Read(_buffer, 0, _bufferSize);
                     if ((int)_availableInput <= 0)

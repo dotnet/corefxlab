@@ -6,13 +6,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
+            unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
             {
                 if (length >= 4)
                 {
@@ -43,7 +43,7 @@ namespace System.Text
                 value = default;
                 return false;
             }
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
+            unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
             {
                 if (length >= 4)
                 {
@@ -137,9 +137,9 @@ namespace System.Text
                 return false;
             }
         }
-        public static partial class InvariantUtf16
+        public static partial class Utf16
         {
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value)
+            unsafe static bool TryParseBoolean(char* text, int length, out bool value)
             {
                 if (length >= 4)
                 {
@@ -170,7 +170,7 @@ namespace System.Text
                 value = default;
                 return false;
             }
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charsConsumed)
+            unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charsConsumed)
             {
                 if (length >= 4)
                 {

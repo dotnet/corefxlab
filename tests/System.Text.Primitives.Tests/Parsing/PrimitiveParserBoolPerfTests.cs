@@ -4,6 +4,7 @@
 
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests
 {
@@ -42,33 +43,33 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
-                        PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
                     }
                 }
             }
         }
 
-        [Benchmark]
-        [InlineData("True")]
-        [InlineData("False")]
-        private unsafe static void PrimitiveParserByteStarToBool(string text)
-        {
-            bool value;
-            int bytesConsumed;
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < TestHelper.LoadIterations; i++)
-                        {
-                            PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
+        //[Benchmark]
+        //[InlineData("True")]
+        //[InlineData("False")]
+        //private unsafe static void PrimitiveParserByteStarToBool(string text)
+        //{
+        //    bool value;
+        //    int bytesConsumed;
+        //    byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
+        //    foreach (var iteration in Benchmark.Iterations)
+        //    {
+        //        fixed (byte* utf8ByteStar = utf8ByteArray)
+        //        {
+        //            using (iteration.StartMeasurement())
+        //            {
+        //                for (int i = 0; i < TestHelper.LoadIterations; i++)
+        //                {
+        //                    Parsers.Utf8.TryParseBoolean(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

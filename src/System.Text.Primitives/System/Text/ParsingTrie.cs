@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Text
+namespace System.Buffers.Text
 {
     internal static class ParsingTrie
     {

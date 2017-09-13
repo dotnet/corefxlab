@@ -6,13 +6,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
-            public static partial class Hex
+            internal static partial class Hex
             {
                 #region Byte
                 public unsafe static bool TryParseByte(byte* text, int length, out byte value)
@@ -1300,9 +1300,9 @@ namespace System.Text
 
             }
         }
-        public static partial class InvariantUtf16
+        public static partial class Utf16
         {
-            public static partial class Hex
+            internal static partial class Hex
             {
                 #region Byte
                 public unsafe static bool TryParseByte(char* text, int length, out byte value)

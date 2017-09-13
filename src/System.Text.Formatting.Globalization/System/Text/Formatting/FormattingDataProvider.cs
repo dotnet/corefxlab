@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -43,7 +45,7 @@ namespace System.Text.Formatting
             resourceStream.Read(index, 0, indexSize);
 
             byte[] idBytes = new byte[maxIdLength];
-            var status = Encoders.Utf16.ToUtf8(localeId.AsReadOnlySpan().AsBytes(), idBytes, out int consumed, out int idByteCount);
+            var status = Encodings.Utf16.ToUtf8(localeId.AsReadOnlySpan().AsBytes(), idBytes, out int consumed, out int idByteCount);
             if (status != System.Buffers.OperationStatus.Done)
                 throw new Exception("bad locale id");
 

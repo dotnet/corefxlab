@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.Buffers.Text;
 using System.Linq;
 using System.Net.Libuv;
 using System.Text;
