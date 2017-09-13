@@ -69,10 +69,6 @@ namespace System.IO.Channels
             }
         }
 
-        /// <summary>Gets an awaiter used to wait for space to be available in the channel.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ValueAwaiter<bool> GetAwaiter() => new ValueAwaiter<bool>(WaitToWriteAsync());
-
         /// <summary>Creates an observer for this channel.</summary>
         /// <returns>An observer that forwards to this channel.</returns>
         public virtual IObserver<T> AsObserver() => new ChannelObserver(this);

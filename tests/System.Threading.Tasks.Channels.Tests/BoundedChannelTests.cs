@@ -251,8 +251,8 @@ namespace System.IO.Channels.Tests
 
             Task write2 = c.Writer.WriteAsync(44);
 
-            Assert.Equal(42, await c.Reader);
-            Assert.Equal(44, await c.Reader);
+            Assert.Equal(42, await c.Reader.ReadAsync());
+            Assert.Equal(44, await c.Reader.ReadAsync());
 
             await AssertCanceled(write1, cts.Token);
             await write2;

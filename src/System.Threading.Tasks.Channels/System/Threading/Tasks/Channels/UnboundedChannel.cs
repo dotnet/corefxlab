@@ -46,11 +46,6 @@ namespace System.IO.Channels
 
             public override Task Completion => _parent._completion.Task;
 
-            public override ValueAwaiter<T> GetAwaiter() =>
-                TryRead(out T item) ?
-                    new ValueAwaiter<T>(item) :
-                    new ValueAwaiter<T>(ReadAsyncCore(CancellationToken.None));
-
             public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) =>
                 TryRead(out T item) ?
                     new ValueTask<T>(item) :
@@ -254,15 +249,6 @@ namespace System.IO.Channels
                         return true;
                     }
                 }
-            }
-
-            public override ValueAwaiter<bool> GetAwaiter()
-            {
-                Exception doneWriting = _parent._doneWriting;
-                return
-                    doneWriting == null ? new ValueAwaiter<bool>(true) : // unbounded writing can always be done if we haven't completed
-                    doneWriting != ChannelUtilities.s_doneWritingSentinel ? new ValueAwaiter<bool>(Task.FromException<bool>(doneWriting)) :
-                    new ValueAwaiter<bool>(false);
             }
 
             public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)

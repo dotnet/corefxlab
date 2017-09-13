@@ -192,29 +192,6 @@ namespace System.IO.Channels.Tests
         }
 
         [Fact]
-        public void SingleProducerConsumer_ConcurrentAwaitWrite_Success()
-        {
-            Channel<int> c = CreateChannel();
-
-            const int NumItems = 100000;
-            Task.WaitAll(
-                Task.Run(async () =>
-                {
-                    for (int i = 0; i < NumItems; i++)
-                    {
-                        await c.Writer.WriteAsync(i);
-                    }
-                }),
-                Task.Run(async () =>
-                {
-                    for (int i = 0; i < NumItems; i++)
-                    {
-                        Assert.Equal(i, await c.Reader);
-                    }
-                }));
-        }
-
-        [Fact]
         public void SingleProducerConsumer_PingPong_Success()
         {
             Channel<int> c1 = CreateChannel();
@@ -226,7 +203,7 @@ namespace System.IO.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.Equal(i, await c1.Reader);
+                        Assert.Equal(i, await c1.Reader.ReadAsync());
                         await c2.Writer.WriteAsync(i);
                     }
                 }),
@@ -235,7 +212,7 @@ namespace System.IO.Channels.Tests
                     for (int i = 0; i < NumItems; i++)
                     {
                         await c1.Writer.WriteAsync(i);
-                        Assert.Equal(i, await c2.Reader);
+                        Assert.Equal(i, await c2.Reader.ReadAsync());
                     }
                 }));
         }
@@ -306,72 +283,6 @@ namespace System.IO.Channels.Tests
             Assert.Equal((NumItems * (NumItems + 1L)) / 2, readTotal);
         }
 
-        [Theory]
-        [InlineData(1, 1)]
-        [InlineData(1, 10)]
-        [InlineData(10, 1)]
-        [InlineData(10, 10)]
-        public void ManyProducerConsumer_ConcurrentAwaitWrite_Success(int numReaders, int numWriters)
-        {
-            if (RequiresSingleReader && numReaders > 1)
-            {
-                return;
-            }
-
-            if (RequiresSingleWriter && numWriters > 1)
-            {
-                return;
-            }
-
-            Channel<int> c = CreateChannel();
-
-            const int NumItems = 10000;
-
-            long readTotal = 0;
-            int remainingWriters = numWriters;
-            int remainingItems = NumItems;
-
-            Task[] tasks = new Task[numWriters + numReaders];
-
-            for (int i = 0; i < numReaders; i++)
-            {
-                tasks[i] = Task.Run(async () =>
-                {
-                    try
-                    {
-                        while (true)
-                        {
-                            Interlocked.Add(ref readTotal, await c.Reader);
-                        }
-                    }
-                    catch (ChannelClosedException) { }
-                });
-            }
-
-            for (int i = 0; i < numWriters; i++)
-            {
-                tasks[numReaders + i] = Task.Run(async () =>
-                {
-                    while (true)
-                    {
-                        int value = Interlocked.Decrement(ref remainingItems);
-                        if (value < 0)
-                        {
-                            break;
-                        }
-                        await c.Writer.WriteAsync(value + 1);
-                    }
-                    if (Interlocked.Decrement(ref remainingWriters) == 0)
-                    {
-                        c.Writer.Complete();
-                    }
-                });
-            }
-
-            Task.WaitAll(tasks);
-            Assert.Equal((NumItems * (NumItems + 1L)) / 2, readTotal);
-        }
-
         [Fact]
         public void WaitToReadAsync_DataAvailableBefore_CompletesSynchronously()
         {
@@ -412,14 +323,13 @@ namespace System.IO.Channels.Tests
         }
 
         [Fact]
-        public async Task WaitToWriteAsync_AfterComplete_SynchronouslyCompletes()
+        public void WaitToWriteAsync_AfterComplete_SynchronouslyCompletes()
         {
             Channel<int> c = CreateChannel();
             c.Writer.Complete();
             Task<bool> write = c.Writer.WaitToWriteAsync();
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
             Assert.False(write.Result);
-            Assert.False(await c.Writer);
         }
 
         [Fact]
@@ -544,7 +454,6 @@ namespace System.IO.Channels.Tests
             c.Writer.Complete(exc);
             Task<int> read = c.Reader.ReadAsync().AsTask();
             Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(() => read)).InnerException);
-            Assert.Same(exc, (await Assert.ThrowsAsync<ChannelClosedException>(async () => await c.Reader)).InnerException);
         }
 
         [Fact]
@@ -598,7 +507,6 @@ namespace System.IO.Channels.Tests
             c.Writer.Complete(exc);
             Task<bool> write = c.Writer.WaitToWriteAsync();
             await Assert.ThrowsAsync<FormatException>(() => write);
-            await Assert.ThrowsAsync<FormatException>(async () => await c.Writer);
         }
 
         [Theory]
@@ -756,42 +664,6 @@ namespace System.IO.Channels.Tests
             Assert.Equal(42, await c.Reader.ReadAsync());
             await write;
         }
-
-        [Fact]
-        public async Task AwaitRead_CompletedChannel_Throws()
-        {
-            Channel<int> c = CreateChannel();
-            c.Writer.Complete();
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () => await c.Reader);
-        }
-
-        [Fact]
-        public async Task AwaitRead_ChannelAfterExistingData_ReturnsData()
-        {
-            Channel<int> c = CreateChannel();
-            Task write = c.Writer.WriteAsync(42);
-            Assert.Equal(42, await c.Reader);
-            Assert.Equal(TaskStatus.RanToCompletion, write.Status);
-        }
-
-        [Fact]
-        public async Task AwaitWriteAvailable_CompletedChannel_ReturnsFalse()
-        {
-            Channel<int> c = CreateChannel();
-            c.Writer.Complete();
-            Assert.False(await c.Writer);
-        }
-
-        [Fact]
-        public async Task AwaitWriteAvailable_ChannelWhenPendingRead_ReturnsTrue()
-        {
-            Channel<int> c = CreateChannel();
-            ValueTask<int> pendingRead = c.Reader.ReadAsync();
-            Assert.False(pendingRead.IsCompleted);
-            Assert.True(await c.Writer);
-        }
-
-        
 
         [Fact]
         public async Task TryWrite_BlockedReader_Success()

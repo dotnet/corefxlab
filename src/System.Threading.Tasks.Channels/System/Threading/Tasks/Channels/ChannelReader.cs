@@ -42,10 +42,6 @@ namespace System.IO.Channels
         /// </returns>
         public abstract Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        /// <summary>Gets an awaiter used to read an item from the channel.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
         /// <summary>Asynchronously reads an item from the channel.</summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the read operation.</param>
         /// <returns>A <see cref="ValueTask{TResult}"/> that represents the asynchronous read operation.</returns>
