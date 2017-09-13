@@ -1862,5 +1862,64 @@ namespace tests
             var actual = Tensor.Contract(leftReshaped, right, new[] { 0 }, new[] { 1 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void GetArrayString(TensorConstructor constructor)
+        {
+            var tensor = constructor.CreateFromArray<int>(
+                new[, ,]
+                {
+                    {
+                        {0, 1},
+                        {2, 3},
+                        {4, 5}
+                    },
+                    {
+                        {6, 7},
+                        {8, 9},
+                        {10, 11}
+                    },
+                    {
+                        {12, 13},
+                        {14, 15},
+                        {16, 17}
+                    },
+                    {
+                        {18, 19},
+                        {20, 21},
+                        {22, 23}
+                    }
+                });
+
+            var expected =
+@"{
+    {
+        {0,1},
+        {2,3},
+        {4,5}
+    },
+    {
+        {6,7},
+        {8,9},
+        {10,11}
+    },
+    {
+        {12,13},
+        {14,15},
+        {16,17}
+    },
+    {
+        {18,19},
+        {20,21},
+        {22,23}
+    }
+}";
+
+            Assert.Equal(expected, tensor.GetArrayString());
+
+            var expectedNoSpace = expected.Replace(Environment.NewLine, "").Replace(" ", "");
+            Assert.Equal(expectedNoSpace, tensor.GetArrayString(false));
+        }
     }
 }
