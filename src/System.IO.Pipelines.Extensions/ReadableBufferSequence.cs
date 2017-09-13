@@ -5,7 +5,7 @@ using System.Collections.Sequences;
 
 namespace System.IO.Pipelines
 {
-    public struct ReadableBufferSequence : ISequence<ReadOnlyBuffer<byte>>
+    public struct ReadableBufferSequence : ISequence<ReadOnlyMemory<byte>>
     {
         private readonly ReadableBuffer _buffer;
 
@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             if (position == Position.First)
             {

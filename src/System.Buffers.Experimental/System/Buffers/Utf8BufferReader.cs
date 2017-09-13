@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace System.Buffers.Adapters {
     public sealed class Utf8BufferReader : TextReader
     {
-        ReadOnlyBuffer<byte> _buffer;
+        ReadOnlyMemory<byte> _buffer;
         int _index;
 
-        public Utf8BufferReader(ReadOnlyBuffer<byte> buffer)
+        public Utf8BufferReader(ReadOnlyMemory<byte> buffer)
         {
             _buffer = buffer;
             _index = 0;
@@ -112,7 +112,7 @@ namespace System.Buffers.Adapters {
 
         protected override void Dispose(bool disposing)
         {
-            _buffer = default(ReadOnlyBuffer<byte>);
+            _buffer = default(ReadOnlyMemory<byte>);
             _index = 0;
         }
     }

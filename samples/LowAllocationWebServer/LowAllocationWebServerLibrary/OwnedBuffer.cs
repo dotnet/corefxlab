@@ -27,46 +27,46 @@ namespace Microsoft.Net.Http
         {
         }
 
-        public Buffer<byte> First => Buffer;
+        public Memory<byte> First => AsMemory;
 
         public IBufferList<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        ReadOnlyBuffer<byte> IReadOnlyBufferList<byte>.First => Buffer;
+        ReadOnlyMemory<byte> IReadOnlyBufferList<byte>.First => AsMemory;
 
         IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
 
         public override int Length => _array.Length;
 
-        public override Span<byte> AsSpan(int index, int length)
+        public override Span<byte> AsSpan()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
-            return _array.AsSpan().Slice(index, length);
+            return _array.AsSpan();
         }
 
         public int CopyTo(Span<byte> buffer)
         {
             if (buffer.Length > _written) {
-                Buffer.Slice(0, _written).CopyTo(buffer);
+                AsMemory.Slice(0, _written).Span.CopyTo(buffer);
                 return _next.CopyTo(buffer.Slice(_written));
             }
 
-            Buffer.Slice(0, buffer.Length).CopyTo(buffer);
+            AsMemory.Slice(0, buffer.Length).Span.CopyTo(buffer);
             return buffer.Length;
         }
 
-        public bool TryGet(ref Position position, out Buffer<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
             if (position == Position.First) {
-                item = Buffer.Slice(0, _written);
+                item = AsMemory.Slice(0, _written);
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
-            item = sequence.Buffer.Slice(0, _written);
+            item = sequence.AsMemory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
                     position.ObjectPosition = _next;
@@ -79,17 +79,17 @@ namespace Microsoft.Net.Http
             return true;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             if (position == Position.First) {
-                item = Buffer.Slice(0, _written);
+                item = AsMemory.Slice(0, _written);
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
-            item = sequence.Buffer.Slice(0, _written);
+            item = sequence.AsMemory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
                     position.ObjectPosition = _next;
@@ -131,13 +131,13 @@ namespace Microsoft.Net.Http
             return true;
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 

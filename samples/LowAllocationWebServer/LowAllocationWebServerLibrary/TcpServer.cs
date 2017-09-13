@@ -171,7 +171,7 @@ namespace Microsoft.Net.Sockets
             }
         }
 
-        public int Send(ReadOnlyBuffer<byte> buffer)
+        public int Send(ReadOnlyMemory<byte> buffer)
         {
             return Send(buffer.Span);
         }
@@ -201,7 +201,7 @@ namespace Microsoft.Net.Sockets
             }
         }
 
-        public int Receive(Buffer<byte> buffer)
+        public int Receive(Memory<byte> buffer)
         {
             return Receive(buffer.Span);
         }

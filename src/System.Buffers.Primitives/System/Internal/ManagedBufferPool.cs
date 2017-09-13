@@ -20,7 +20,7 @@ namespace System.Buffers.Internal
             }
         }
 
-        public override OwnedBuffer<byte> Rent(int minimumBufferSize)
+        public override OwnedMemory<byte> Rent(int minimumBufferSize)
         {
             var buffer = new ArrayPoolBuffer(minimumBufferSize);
             return buffer;
@@ -30,7 +30,7 @@ namespace System.Buffers.Internal
         {
         }
 
-        private sealed class ArrayPoolBuffer : OwnedBuffer<byte>
+        private sealed class ArrayPoolBuffer : OwnedMemory<byte>
         {
             byte[] _array;
             bool _disposed;
@@ -47,10 +47,10 @@ namespace System.Buffers.Internal
 
             protected override bool IsRetained => _referenceCount > 0;
 
-            public override Span<byte> AsSpan(int index, int length)
+            public override Span<byte> AsSpan()
             {
                 if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
-                return new Span<byte>(_array, index, length);
+                return new Span<byte>(_array);
             }
 
             protected override void Dispose(bool disposing)
@@ -62,20 +62,20 @@ namespace System.Buffers.Internal
                 }
             }
 
-            protected internal override bool TryGetArray(out ArraySegment<byte> arraySegment)
+            protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
             {
                 if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                 arraySegment = new ArraySegment<byte>(_array);
                 return true;
             }
 
-            public override BufferHandle Pin()
+            public override MemoryHandle Pin()
             {
                 unsafe
                 {
                     Retain(); // this checks IsDisposed
                     var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                    return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                    return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
                 }
             }
 

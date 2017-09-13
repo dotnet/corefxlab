@@ -11,7 +11,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that is owned by an external component.
     /// </summary>
-    public class UnownedBuffer : OwnedBuffer<byte>
+    public class UnownedBuffer : OwnedMemory<byte>
     {
         private ArraySegment<byte> _buffer;
         private int _referenceCount;
@@ -24,21 +24,20 @@ namespace System.IO.Pipelines
 
         public override int Length => _buffer.Count;
 
-        public override Span<byte> AsSpan(int index, int length)
+        public override Span<byte> AsSpan()
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
-            if (length > _buffer.Count - index) throw new ArgumentOutOfRangeException();
-            return new Span<byte>(_buffer.Array, _buffer.Offset + index, length);
+            return new Span<byte>(_buffer.Array).Slice(_buffer.Offset);
         }
 
-        public OwnedBuffer<byte> MakeCopy(int offset, int length, out int newStart, out int newEnd)
+        public OwnedMemory<byte> MakeCopy(int offset, int length, out int newStart, out int newEnd)
         {
-            // Copy to a new Owned Buffer.
+            // Copy to a new Owned Memory.
             var buffer = new byte[length];
             global::System.Buffer.BlockCopy(_buffer.Array, _buffer.Offset + offset, buffer, 0, length);
             newStart = 0;
             newEnd = length;
-            return (OwnedBuffer<byte>)buffer;
+            return new OwnedArray<byte>(buffer);
         }
 
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
@@ -48,14 +47,14 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_buffer.Array, GCHandleType.Pinned);
                 var pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), _buffer.Offset);
-                return new BufferHandle(this, pointer, handle);
+                return new MemoryHandle(this, pointer, handle);
             }
         }
 

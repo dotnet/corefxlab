@@ -6,7 +6,7 @@ namespace System.Buffers.Tests
 {
     public class BufferReferenceTests
     {
-        public static void TestOwnedBuffer(Func<OwnedBuffer<byte>> create, Action<OwnedBuffer<byte>> dispose = null)
+        public static void TestOwnedBuffer(Func<OwnedMemory<byte>> create, Action<OwnedMemory<byte>> dispose = null)
         {
             RunTest(BufferLifetimeBasics, create, dispose);
             RunTest(MemoryHandleDoubleFree, create, dispose);
@@ -14,12 +14,12 @@ namespace System.Buffers.Tests
             RunTest(Buffer, create, dispose);
             RunTest(Pin, create, dispose);
             RunTest(Dispose, create, dispose);
-            RunTest(buffer => TestBuffer(() => buffer.Buffer), create, dispose);
+            RunTest(buffer => TestBuffer(() => buffer.AsMemory), create, dispose);
             //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
         }
 
-        static void RunTest(Action<OwnedBuffer<byte>> test, Func<OwnedBuffer<byte>> create,
-            Action<OwnedBuffer<byte>> dispose)
+        static void RunTest(Action<OwnedMemory<byte>> test, Func<OwnedMemory<byte>> create,
+            Action<OwnedMemory<byte>> dispose)
         {
             var buffer = create();
             try
@@ -32,7 +32,7 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void MemoryAccessBasics(OwnedBuffer<byte> buffer)
+        static void MemoryAccessBasics(OwnedMemory<byte> buffer)
         {
             var span = buffer.AsSpan();
             span[10] = 10;
@@ -40,7 +40,7 @@ namespace System.Buffers.Tests
             Assert.Equal(buffer.Length, span.Length);
             Assert.Equal(10, span[10]);
 
-            var memory = buffer.Buffer;
+            var memory = buffer.AsMemory;
             Assert.Equal(buffer.Length, memory.Length);
             Assert.Equal(10, memory.Span[10]);
 
@@ -49,22 +49,22 @@ namespace System.Buffers.Tests
             Assert.Equal(10, array[10]);
 
             Span<byte> copy = new byte[20];
-            memory.Slice(10, 20).CopyTo(copy);
+            memory.Slice(10, 20).Span.CopyTo(copy);
             Assert.Equal(10, copy[0]);
         }
 
-        // tests OwnedBuffer.AsSpan overloads
-        static void AsSpan(OwnedBuffer<byte> buffer)
+        // tests OwnedMemory.AsSpan overloads
+        static void AsSpan(OwnedMemory<byte> buffer)
         {
             var span = buffer.AsSpan();
-            var fullSlice = buffer.AsSpan(0, buffer.Length);
+            var fullSlice = buffer.AsSpan().Slice(0, buffer.Length);
             for (int i = 0; i < span.Length; i++)
             {
                 span[i] = (byte)(i % 254 + 1);
                 Assert.Equal(span[i], fullSlice[i]);
             }
 
-            var slice = buffer.AsSpan(5, buffer.Length - 5);
+            var slice = buffer.AsSpan().Slice(5, buffer.Length - 5);
             Assert.Equal(span.Length - 5, slice.Length);
 
             for (int i = 0; i < slice.Length; i++)
@@ -74,22 +74,22 @@ namespace System.Buffers.Tests
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.AsSpan(buffer.Length, 1);
+                buffer.AsSpan().Slice(buffer.Length, 1);
             });
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.AsSpan(1, buffer.Length);
+                buffer.AsSpan().Slice(1, buffer.Length);
             });
         }
 
-        // tests that OwnedBuffer.Buffer and OwnedBuffer.ReadOnlyBuffer point to the same memory
-        static void Buffer(OwnedBuffer<byte> buffer)
+        // tests that OwnedMemory.Memory and OwnedMemory.ReadOnlyMemory point to the same memory
+        static void Buffer(OwnedMemory<byte> buffer)
         {
-            var rwBuffer = buffer.Buffer;
+            var rwBuffer = buffer.AsMemory;
             var rwSpan = rwBuffer.Span;
 
-            var roBuffer = buffer.ReadOnlyBuffer;
+            ReadOnlyMemory<byte> roBuffer = buffer.AsMemory;
             var roSpan = roBuffer.Span;
 
             Assert.Equal(roSpan.Length, rwSpan.Length);
@@ -103,9 +103,9 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void Pin(OwnedBuffer<byte> buffer)
+        static void Pin(OwnedMemory<byte> buffer)
         {
-            var memory = buffer.Buffer;
+            var memory = buffer.AsMemory;
             var handle = memory.Retain(pin: true);
             unsafe
             {
@@ -114,7 +114,7 @@ namespace System.Buffers.Tests
             handle.Dispose();
         }
 
-        static void Dispose(OwnedBuffer<byte> buffer)
+        static void Dispose(OwnedMemory<byte> buffer)
         {
             var length = buffer.Length;
 
@@ -128,7 +128,7 @@ namespace System.Buffers.Tests
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                buffer.AsSpan(0, length);
+                buffer.AsSpan().Slice(0, length);
             });
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
@@ -138,16 +138,16 @@ namespace System.Buffers.Tests
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                var rwBuffer = buffer.Buffer;
+                var rwBuffer = buffer.AsMemory;
             });
 
-            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            Assert.ThrowsAny<ObjectDisposedException>((Action)(() =>
             {
-                var roBuffer = buffer.ReadOnlyBuffer;
-            });
+                System.ReadOnlyMemory<byte> roBuffer = buffer.AsMemory;
+            }));
         }
 
-        static void OverRelease(OwnedBuffer<byte> buffer)
+        static void OverRelease(OwnedMemory<byte> buffer)
         {
             Assert.ThrowsAny<InvalidOperationException>(() =>
             {
@@ -155,13 +155,13 @@ namespace System.Buffers.Tests
             });
         }
 
-        static void BufferLifetimeBasics(OwnedBuffer<byte> buffer)
+        static void BufferLifetimeBasics(OwnedMemory<byte> buffer)
         {
-            Buffer<byte> copyStoredForLater;
+            Memory<byte> copyStoredForLater;
             try
             {
-                Buffer<byte> memory = buffer.Buffer;
-                Buffer<byte> slice = memory.Slice(10);
+                Memory<byte> memory = buffer.AsMemory;
+                Memory<byte> slice = memory.Slice(10);
                 copyStoredForLater = slice;
                 var handle = slice.Retain();
                 try
@@ -189,9 +189,9 @@ namespace System.Buffers.Tests
             Assert.True(buffer.IsDisposed);
         }
 
-        static void MemoryHandleDoubleFree(OwnedBuffer<byte> buffer)
+        static void MemoryHandleDoubleFree(OwnedMemory<byte> buffer)
         {
-            var memory = buffer.Buffer;
+            var memory = buffer.AsMemory;
             var handle = memory.Retain(pin: true);
             buffer.Retain();
             handle.Dispose();
@@ -199,19 +199,19 @@ namespace System.Buffers.Tests
             Assert.False(buffer.Release());
         }
 
-        public static void TestBuffer(Func<Buffer<byte>> create)
+        public static void TestBuffer(Func<Memory<byte>> create)
         {
             BufferBasics(create());
             BufferLifetime(create());
         }
 
-        public static void TestBuffer(Func<ReadOnlyBuffer<byte>> create)
+        public static void TestBuffer(Func<ReadOnlyMemory<byte>> create)
         {
             BufferBasics(create());
             BufferLifetime(create());
         }
 
-        static void BufferBasics(Buffer<byte> buffer)
+        static void BufferBasics(Memory<byte> buffer)
         {
             var span = buffer.Span;
             Assert.Equal(buffer.Length, span.Length);
@@ -238,7 +238,7 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void BufferLifetime(Buffer<byte> buffer)
+        static void BufferLifetime(Memory<byte> buffer)
         {
             var array = buffer.ToArray();
             using (var pinned = buffer.Retain(pin: true))
@@ -261,7 +261,7 @@ namespace System.Buffers.Tests
             //}
         }
 
-        static void BufferBasics(ReadOnlyBuffer<byte> buffer)
+        static void BufferBasics(ReadOnlyMemory<byte> buffer)
         {
             var span = buffer.Span;
             Assert.Equal(buffer.Length, span.Length);
@@ -278,7 +278,7 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void BufferLifetime(ReadOnlyBuffer<byte> buffer)
+        static void BufferLifetime(ReadOnlyMemory<byte> buffer)
         {
             var array = buffer.ToArray();
             using (var pinned = buffer.Retain(pin: true))

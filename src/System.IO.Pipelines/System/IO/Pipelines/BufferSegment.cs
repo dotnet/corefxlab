@@ -13,14 +13,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
         /// the Start is guaranteed to be equal to 0. The value of Start may be assigned anywhere between 0 and
-        /// Buffer.Length, and must be equal to or less than End.
+        /// Memory.Length, and must be equal to or less than End.
         /// </summary>
         public int Start;
 
         /// <summary>
         /// The End represents the offset into Array where the range of "active" bytes ends. At the point when the block is leased
         /// the End is guaranteed to be equal to Start. The value of Start may be assigned anywhere between 0 and
-        /// Buffer.Length, and must be equal to or less than End.
+        /// Memory.Length, and must be equal to or less than End.
         /// </summary>
         public int End;
 
@@ -40,21 +40,21 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The buffer being tracked
         /// </summary>
-        private OwnedBuffer<byte> _owned;
+        private OwnedMemory<byte> _owned;
 
-        private Buffer<byte> _buffer;
+        private Memory<byte> _buffer;
 
-        public BufferSegment(OwnedBuffer<byte> buffer)
+        public BufferSegment(OwnedMemory<byte> buffer)
         {
             _owned = buffer;
             Start = 0;
             End = 0;
 
             _owned.Retain();
-            _buffer = _owned.Buffer;
+            _buffer = _owned.AsMemory;
         }
 
-        public BufferSegment(OwnedBuffer<byte> buffer, int start, int end)
+        public BufferSegment(OwnedMemory<byte> buffer, int start, int end)
         {
             _owned = buffer;
             Start = start;
@@ -70,10 +70,10 @@ namespace System.IO.Pipelines
             }
 
             _owned.Retain();
-            _buffer = _owned.Buffer;
+            _buffer = _owned.AsMemory;
         }
 
-        public Buffer<byte> Buffer => _buffer;
+        public Memory<byte> Buffer => _buffer;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -104,7 +104,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            var data = _owned.Buffer.Slice(Start, ReadableBytes).Span;
+            var data = _owned.AsMemory.Slice(Start, ReadableBytes).Span;
 
             for (int i = 0; i < ReadableBytes; i++)
             {

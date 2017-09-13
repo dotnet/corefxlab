@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Tests
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
             var position = Position.First;
-            ReadOnlyBuffer<byte> memory;
+            ReadOnlyMemory<byte> memory;
             int spanCount = 0;
             while (readable.TryGet(ref position, out memory))
             {
@@ -79,7 +79,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            OwnedBuffer<byte> owned = data;
+            OwnedMemory<byte> owned = new OwnedArray<byte>(data);
             var buffer = ReadableBuffer.Create(owned, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
@@ -322,7 +322,7 @@ namespace System.IO.Pipelines.Tests
         {
             byte huntValue = (byte)~emptyValue;
 
-            var handles = new List<BufferHandle>();
+            var handles = new List<MemoryHandle>();
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
@@ -359,7 +359,7 @@ namespace System.IO.Pipelines.Tests
             handles.Clear();
         }
 
-        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer, List<BufferHandle> handles)
+        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer, List<MemoryHandle> handles)
         {
 
             byte*[] addresses = new byte*[readBuffer.Length];

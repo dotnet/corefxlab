@@ -12,13 +12,13 @@ namespace System.Buffers
     /// </summary>
     public struct ReadOnlyBytes : IReadOnlyBufferList<byte>
     {
-        ReadOnlyBuffer<byte> _first;
+        ReadOnlyMemory<byte> _first;
         int _totalLength;
         IReadOnlyBufferList<byte> _rest;
         
-        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyBuffer<byte>.Empty);
+        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyBuffer<byte> first, IReadOnlyBufferList<byte> rest, int length)
+        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> rest, int length)
         {
             Debug.Assert(rest != null || length <= first.Length);
             _rest = rest;
@@ -26,12 +26,12 @@ namespace System.Buffers
             _totalLength = length;
         }
 
-        public ReadOnlyBytes(ReadOnlyBuffer<byte> first, IReadOnlyBufferList<byte> rest) :
+        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> rest) :
             this(first, rest, rest==null?first.Length:Unspecified)
         {
         }
 
-        public ReadOnlyBytes(ReadOnlyBuffer<byte> buffer) :
+        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer) :
             this(buffer, null, buffer.Length)
         { }
 
@@ -43,7 +43,7 @@ namespace System.Buffers
             this(segments.First, segments.Rest, Unspecified)
         { }
 
-        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> value, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
             if (position == Position.First)
             {
@@ -80,7 +80,7 @@ namespace System.Buffers
             return true;
         }
 
-        public ReadOnlyBuffer<byte> First => _first;
+        public ReadOnlyMemory<byte> First => _first;
 
         public IReadOnlyBufferList<byte> Rest => _rest;
 
@@ -183,10 +183,10 @@ namespace System.Buffers
             var firstLength = first.Length;
             if (firstLength > buffer.Length)
             {
-                first.Slice(0, buffer.Length).CopyTo(buffer);
+                first.Slice(0, buffer.Length).Span.CopyTo(buffer);
                 return buffer.Length;
             }
-            first.CopyTo(buffer);
+            first.Span.CopyTo(buffer);
             if (buffer.Length == firstLength || _rest == null) return firstLength;
             return firstLength + _rest.CopyTo(buffer.Slice(firstLength));
         }
@@ -197,7 +197,7 @@ namespace System.Buffers
             {
                 if (First.Length == index && length == 0)
                 {
-                    return new ReadOnlyBytes(ReadOnlyBuffer<byte>.Empty);
+                    return new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
                 }
                 else
                 {
@@ -221,7 +221,7 @@ namespace System.Buffers
             if (_rest != null)
             {
                 Position position = new Position();
-                ReadOnlyBuffer<byte> segment;
+                ReadOnlyMemory<byte> segment;
                 while (_rest.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
@@ -237,9 +237,9 @@ namespace System.Buffers
 
         class BufferListNode : IReadOnlyBufferList<byte>
         {
-            internal ReadOnlyBuffer<byte> _first;
+            internal ReadOnlyMemory<byte> _first;
             internal BufferListNode _rest;
-            public ReadOnlyBuffer<byte> First => _first;
+            public ReadOnlyMemory<byte> First => _first;
 
             public int? Length {
                 get {
@@ -253,7 +253,7 @@ namespace System.Buffers
             {
                 int copied = 0;
                 var position = Position.First;
-                ReadOnlyBuffer<byte> segment;
+                ReadOnlyMemory<byte> segment;
                 var free = buffer;
                 while (TryGet(ref position, out segment, true))
                 {
@@ -264,7 +264,7 @@ namespace System.Buffers
                     }
                     else
                     {
-                        segment.CopyTo(free);
+                        segment.Span.CopyTo(free);
                         copied += segment.Length;
                     }
                     free = buffer.Slice(copied);
@@ -273,7 +273,7 @@ namespace System.Buffers
                 return copied;
             }
 
-            public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
+            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
             {
                 if (position == Position.First)
                 {

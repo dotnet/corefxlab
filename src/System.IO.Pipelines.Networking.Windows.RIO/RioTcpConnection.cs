@@ -109,7 +109,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _output.Reader.Complete();
         }
 
-        private Task SendAsync(Buffer<byte> memory, bool endOfMessage)
+        private Task SendAsync(Memory<byte> memory, bool endOfMessage)
         {
             if (!IsReadyToSend)
             {
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             return _completedTask;
         }
 
-        private async Task SendAsyncAwaited(Buffer<byte> memory, bool endOfMessage)
+        private async Task SendAsyncAwaited(Memory<byte> memory, bool endOfMessage)
         {
             await ReadyToSend;
 

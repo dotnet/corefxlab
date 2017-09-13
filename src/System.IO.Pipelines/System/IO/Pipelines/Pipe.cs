@@ -105,7 +105,7 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        internal Memory<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.

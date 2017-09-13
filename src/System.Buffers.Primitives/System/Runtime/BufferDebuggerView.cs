@@ -7,9 +7,9 @@ namespace System.Runtime
 {
     internal class BufferDebuggerView<T>
     {
-        private ReadOnlyBuffer<T> _buffer;
+        private ReadOnlyMemory<T> _buffer;
 
-        public BufferDebuggerView(Buffer<T> buffer)
+        public BufferDebuggerView(Memory<T> buffer)
         {
             _buffer = buffer;
         }

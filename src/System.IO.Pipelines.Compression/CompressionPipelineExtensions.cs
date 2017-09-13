@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
-                List<BufferHandle> handles = new List<BufferHandle>();
+                List<MemoryHandle> handles = new List<MemoryHandle>();
 
                 while (true)
                 {
@@ -216,7 +216,7 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
-                List<BufferHandle> handles = new List<BufferHandle>();
+                List<MemoryHandle> handles = new List<MemoryHandle>();
 
                 while (true)
                 {

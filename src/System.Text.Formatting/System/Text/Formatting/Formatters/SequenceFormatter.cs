@@ -9,15 +9,15 @@ namespace System.Text.Formatting
 {
     public static class SequenceFormatterExtensions
     {
-        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, SymbolTable symbolTable = null) where TSequence : ISequence<Buffer<byte>>
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, SymbolTable symbolTable = null) where TSequence : ISequence<Memory<byte>>
         {
             return new SequenceFormatter<TSequence>(sequence, symbolTable);
         }
     }
 
-    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Buffer<byte>>
+    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Memory<byte>>
     {
-        ISequence<Buffer<byte>> _buffers;
+        ISequence<Memory<byte>> _buffers;
         SymbolTable _symbolTable;
 
         Position _currentPosition = Position.First;
@@ -40,17 +40,17 @@ namespace System.Text.Formatting
             }
         }
 
-        private Buffer<byte> Current {
+        private Memory<byte> Current {
             get {
-                Buffer<byte> result;
+                Memory<byte> result;
                 if (!_buffers.TryGet(ref _currentPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
-        private Buffer<byte> Previous
+        private Memory<byte> Previous
         {
             get {
-                Buffer<byte> result;
+                Memory<byte> result;
                 if (!_buffers.TryGet(ref _previousPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
@@ -68,7 +68,7 @@ namespace System.Text.Formatting
             _previousPosition = _currentPosition;
             _previousWrittenBytes = _currentWrittenBytes;
 
-            Buffer<byte> span;
+            Memory<byte> span;
             if (!_buffers.TryGet(ref _currentPosition, out span)) {
                 throw new InvalidOperationException();
             }
@@ -82,13 +82,13 @@ namespace System.Text.Formatting
                 var previous = Previous;
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
                 if(spaceInPrevious < bytes) {
-                    current.Slice(0, spaceInPrevious).CopyTo(previous.Span.Slice(_previousWrittenBytes));
-                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current.Span);
+                    current.Slice(0, spaceInPrevious).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).Span.CopyTo(current.Span);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
                 else {
-                    current.Slice(0, bytes).CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Slice(0, bytes).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     _currentPosition = _previousPosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }

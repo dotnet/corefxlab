@@ -19,7 +19,7 @@ namespace System.IO.Pipelines.Samples
             var factory = new PipeFactory();
             var listener = new FakeListener(factory, concurrentConnections);
 
-            listener.OnConnection(async connection =>
+            listener.OnConnection((Func<IPipeConnection, Task>)(async connection =>
             {
                 while (true)
                 {
@@ -42,12 +42,12 @@ namespace System.IO.Pipelines.Samples
                             continue;
                         }
                         // Parse the input http request
-                        WritableBuffer output = WriteResponse(writeResponse, connection, requestBuffer);
+                        WritableBuffer output = RawInMemoryHttpServer.WriteResponse((WriteResponseDelegate)writeResponse, (IPipeConnection)connection, (Memory<byte>)requestBuffer);
                         await output.FlushAsync();
                     }
                     catch (Exception e)
                     {
-                        var istr = new Utf8String(input.First.Span).ToString();
+                        var istr = new Utf8String((ReadOnlySpan<byte>)input.First.Span).ToString();
                         Debug.WriteLine(e.Message);
                     }
                     finally
@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Samples
                         connection.Input.Advance(input.End, input.End);
                     }
                 }
-            });
+            }));
 
             var tasks = new Task[numberOfRequests];
             for (int i = 0; i < numberOfRequests; i++)
@@ -70,7 +70,7 @@ namespace System.IO.Pipelines.Samples
             factory.Dispose();
         }
 
-        private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Buffer<byte> requestBuffer)
+        private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Memory<byte> requestBuffer)
         {
             HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBuffer.Span);
 

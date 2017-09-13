@@ -31,7 +31,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<Buffer<byte>> ReadCompleted;
+        public event Action<Memory<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -81,7 +81,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(Buffer<byte> data)
+        public unsafe void TryWrite(Memory<byte> data)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
@@ -145,7 +145,7 @@ namespace System.Net.Libuv
             else
             {
                 using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
-                    OnReadCompleted(owned.Buffer);
+                    OnReadCompleted(owned.AsMemory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }
             }
@@ -175,13 +175,13 @@ namespace System.Net.Libuv
             else
             {
                 using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
-                    OnReadCompleted(owned.Buffer);
+                    OnReadCompleted(owned.AsMemory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }
             }
         }
 
-        void OnReadCompleted(Buffer<byte> bytesRead)
+        void OnReadCompleted(Memory<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {

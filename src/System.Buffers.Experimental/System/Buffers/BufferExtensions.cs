@@ -114,10 +114,10 @@ namespace System.Buffers
             return;
         }
 
-        public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyBuffer<byte>>
+        public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             Position position = Position.First;
-            ReadOnlyBuffer<byte> buffer;
+            ReadOnlyMemory<byte> buffer;
             ResizableArray<byte> array = new ResizableArray<byte>(1024); 
             while (bufferSequence.TryGet(ref position, out buffer))
             {
@@ -351,7 +351,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this ReadOnlyBuffer<byte> buffer, ReadOnlySpan<byte> values)
+        public static int IndexOf(this ReadOnlyMemory<byte> buffer, ReadOnlySpan<byte> values)
         {
             return SpanExtensions.IndexOf(buffer.Span, values);
         }

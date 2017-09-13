@@ -15,7 +15,7 @@ namespace System.Buffers
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
-        ReadOnlyBuffer<byte> _currentSegment;
+        ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
 
         public BytesReader(ReadOnlyBytes bytes, SymbolTable symbolTable)
@@ -27,7 +27,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes, SymbolTable symbolTable)
+        public BytesReader(ReadOnlyMemory<byte> bytes, SymbolTable symbolTable)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
@@ -36,7 +36,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
+        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
         public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
@@ -182,7 +182,7 @@ namespace System.Buffers
                 if (newSegments == null && toAdvance == 0)
                 {
                     _unreadSegments = ReadOnlyBytes.Empty;
-                    _currentSegment = ReadOnlyBuffer<byte>.Empty;
+                    _currentSegment = ReadOnlyMemory<byte>.Empty;
                     _currentSegmentIndex = 0;
                     return;
                 }

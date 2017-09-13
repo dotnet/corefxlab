@@ -338,7 +338,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(buffer.IsSingleSpan);
             var helloBuffer = buffer.Slice(blockSize - 5);
             Assert.False(helloBuffer.IsSingleSpan);
-            var memory = new List<Buffer<byte>>();
+            var memory = new List<Memory<byte>>();
             foreach (var m in helloBuffer)
             {
                 memory.Add(m);
@@ -446,7 +446,7 @@ namespace System.IO.Pipelines.Tests
         {
             // Append one full segment to a pipe
             var buffer = _pipe.Writer.Alloc(1);
-            buffer.Advance(buffer.Buffer.Length);
+            buffer.Advance((int)buffer.Buffer.Length);
             buffer.Commit();
             await buffer.FlushAsync();
 

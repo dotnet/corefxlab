@@ -10,7 +10,7 @@ namespace System.Buffers.Tests
         public void OwnedArrayReferenceTests()
         {
             BufferReferenceTests.TestOwnedBuffer(() => {
-                return (OwnedBuffer<byte>)new byte[1024];
+                return new CustomMemoryForTest<byte>(new byte[1024]);
             });
         }
 
@@ -26,7 +26,7 @@ namespace System.Buffers.Tests
         public void ArrayBufferReferenceTests()
         {
             BufferReferenceTests.TestBuffer(() => {
-                return (Buffer<byte>)new byte[1024];
+                return (Memory<byte>)new byte[1024];
             });
         }
 
@@ -34,7 +34,7 @@ namespace System.Buffers.Tests
         public void EmptyBufferReferenceTests()
         {
             BufferReferenceTests.TestBuffer(() => {
-                return Buffer<byte>.Empty;
+                return Memory<byte>.Empty;
             });
         }
 
@@ -42,7 +42,7 @@ namespace System.Buffers.Tests
         public void EmptyReadOnlyBufferReferenceTests()
         {
             BufferReferenceTests.TestBuffer(() => {
-                return ReadOnlyBuffer<byte>.Empty;
+                return ReadOnlyMemory<byte>.Empty;
             });
         }
     }
