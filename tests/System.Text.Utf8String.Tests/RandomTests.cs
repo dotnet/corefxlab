@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Utf16;
@@ -347,10 +348,10 @@ namespace System.Text.Utf8.Tests
         private byte[] GetUtf8BytesFromCodePoints(List<uint> codePoints)
         {
             ReadOnlySpan<byte> utf32 = codePoints.ToArray().AsSpan().AsBytes();
-            Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf8Length(utf32, out int needed));
+            Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf8Length(utf32, out int needed));
 
             byte[] utf8 = new byte[needed];
-            Assert.Equal(Buffers.OperationStatus.Done, Encoders.Utf32.ToUtf8(utf32, utf8, out int consumed, out int written));
+            Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf8(utf32, utf8, out int consumed, out int written));
             Assert.Equal(needed, written);
 
             return utf8;

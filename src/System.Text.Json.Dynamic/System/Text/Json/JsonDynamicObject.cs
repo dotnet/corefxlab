@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Utf8;
@@ -96,7 +98,7 @@ namespace System.Text.Json
             {
                 throw new InvalidOperationException();
             }
-            return PrimitiveParser.InvariantUtf8.TryParseUInt32(jsonValue.Value.Bytes, out value);
+            return Parsers.Utf8.TryParseUInt32(jsonValue.Value.Bytes, out value);
         }
 
         public bool TryGetString(Utf8String property, out Utf8String value)

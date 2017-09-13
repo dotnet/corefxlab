@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text.Formatting;
 
@@ -427,7 +429,7 @@ namespace System.Text.Json
 
                 while (true)
                 {
-                    var status = Encoders.Utf16.ToUtf8(source, destination, out int consumed, out int written);
+                    var status = Encodings.Utf16.ToUtf8(source, destination, out int consumed, out int written);
                     if (status == Buffers.OperationStatus.Done)
                     {
                         _output.Advance(written);

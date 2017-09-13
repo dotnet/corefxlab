@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -25,7 +27,7 @@ namespace System.Text.Primitives.Tests
             decimal actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseDecimal(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
+            result = Parsers.Custom.TryParseDecimal(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -33,55 +35,55 @@ namespace System.Text.Primitives.Tests
 
             fixed (byte* bytePointer = byteBuffer)
             {
-                result = PrimitiveParser.InvariantUtf8.TryParseDecimal(bytePointer, length, out actualValue);
+                result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf8.TryParseDecimal(bytePointer, length, out actualValue, out actualConsumed);
+                result = Parsers.Utf8.TryParseDecimal(bytePointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf8.TryParseDecimal(byteSpan, out actualValue);
+            result = Parsers.Utf8.TryParseDecimal(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf8.TryParseDecimal(byteSpan, out actualValue, out actualConsumed);
+            result = Parsers.Utf8.TryParseDecimal(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
-            result = PrimitiveParser.TryParseDecimal(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
+            result = Parsers.Custom.TryParseDecimal(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
 
             fixed (char* charPointer = charBuffer)
             {
-                result = PrimitiveParser.InvariantUtf16.TryParseDecimal(charPointer, length, out actualValue);
+                result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf16.TryParseDecimal(charPointer, length, out actualValue, out actualConsumed);
+                result = Parsers.Utf16.TryParseDecimal(charPointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf16.TryParseDecimal(charSpan, out actualValue);
+            result = Parsers.Utf16.TryParseDecimal(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf16.TryParseDecimal(charSpan, out actualValue, out actualConsumed);
+            result = Parsers.Utf16.TryParseDecimal(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);

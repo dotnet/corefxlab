@@ -47,7 +47,7 @@ namespace System.Text.Primitives.Tests
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<byte> utf16 = inputString.AsReadOnlySpan().AsBytes();
 
-            var status = Encoders.Utf16.ToUtf8Length(utf16, out int needed);
+            var status = Encodings.Utf16.ToUtf8Length(utf16, out int needed);
             Assert.Equal(OperationStatus.Done, status);
 
             Span<byte> utf8 = new byte[needed];
@@ -58,7 +58,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        status = Encoders.Utf16.ToUtf8(utf16, utf8, out int consumed, out int written);
+                        status = Encodings.Utf16.ToUtf8(utf16, utf8, out int consumed, out int written);
                         if (status != OperationStatus.Done)
                             throw new Exception();
                     }
@@ -73,7 +73,7 @@ namespace System.Text.Primitives.Tests
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<byte> utf32 = Text.Encoding.UTF32.GetBytes(inputString);
 
-            var status = Encoders.Utf32.ToUtf8Length(utf32, out int needed);
+            var status = Encodings.Utf32.ToUtf8Length(utf32, out int needed);
             Assert.Equal(OperationStatus.Done, status);
 
             Span<byte> utf8 = new byte[needed];
@@ -84,7 +84,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        status = Encoders.Utf32.ToUtf8(utf32, utf8, out int consumed, out int written);
+                        status = Encodings.Utf32.ToUtf8(utf32, utf8, out int consumed, out int written);
                         if (status != OperationStatus.Done)
                             throw new Exception();
                     }
@@ -99,7 +99,7 @@ namespace System.Text.Primitives.Tests
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<byte> utf8 = Text.Encoding.UTF8.GetBytes(inputString);
 
-            var status = Encoders.Utf8.ToUtf16Length(utf8, out int needed);
+            var status = Encodings.Utf8.ToUtf16Length(utf8, out int needed);
             Assert.Equal(OperationStatus.Done, status);
 
             Span<byte> utf16 = new byte[needed];
@@ -110,7 +110,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        status = Encoders.Utf8.ToUtf16(utf8, utf16, out int consumed, out int written);
+                        status = Encodings.Utf8.ToUtf16(utf8, utf16, out int consumed, out int written);
                         if (status != OperationStatus.Done)
                             throw new Exception();
                     }
@@ -125,7 +125,7 @@ namespace System.Text.Primitives.Tests
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<byte> utf32 = Text.Encoding.UTF32.GetBytes(inputString);
 
-            var status = Encoders.Utf32.ToUtf16Length(utf32, out int needed);
+            var status = Encodings.Utf32.ToUtf16Length(utf32, out int needed);
             Assert.Equal(OperationStatus.Done, status);
 
             Span<byte> utf16 = new byte[needed];
@@ -136,7 +136,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        status = Encoders.Utf32.ToUtf16(utf32, utf16, out int consumed, out int written);
+                        status = Encodings.Utf32.ToUtf16(utf32, utf16, out int consumed, out int written);
                         if (status != OperationStatus.Done)
                             throw new Exception();
                     }

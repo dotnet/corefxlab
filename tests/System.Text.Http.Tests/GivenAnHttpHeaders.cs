@@ -5,6 +5,7 @@ using FluentAssertions;
 using Xunit;
 using System.Text.Utf8;
 using System.Text.Http.SingleSegment;
+using System.Buffers.Text;
 
 namespace System.Text.Http.Tests
 {

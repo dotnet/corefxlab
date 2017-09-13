@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Linq;
-using System.Text.Encoders;
 using Xunit;
 
 namespace System.Text.Http.Parser.Tests
@@ -410,16 +409,16 @@ namespace System.Text.Http.Parser.Tests
 
             public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
             {
-                Headers[Ascii.ToUtf16String(name)] = Ascii.ToUtf16String(value);
+                Headers[Encodings.Ascii.ToUtf16String(name)] = Encodings.Ascii.ToUtf16String(value);
             }
 
             public void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded)
             {
-                Method = method != Http.Method.Custom ? method.ToString().ToUpper() : Ascii.ToUtf16String(customMethod);
+                Method = method != Http.Method.Custom ? method.ToString().ToUpper() : Encodings.Ascii.ToUtf16String(customMethod);
                 Version = ToString(version);
-                RawTarget = Ascii.ToUtf16String(target);
-                RawPath = Ascii.ToUtf16String(path);
-                Query = Ascii.ToUtf16String(query);
+                RawTarget = Encodings.Ascii.ToUtf16String(target);
+                RawPath = Encodings.Ascii.ToUtf16String(path);
+                Query = Encodings.Ascii.ToUtf16String(query);
                 PathEncoded = pathEncoded;
             }
 

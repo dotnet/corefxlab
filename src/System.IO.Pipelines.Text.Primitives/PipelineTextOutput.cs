@@ -3,7 +3,7 @@
 
 using System.Threading.Tasks;
 using System.Text.Formatting;
-using System.Text;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Text.Primitives
 {

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -27,7 +29,7 @@ namespace System.Text.Primitives.Tests
             bool actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
+            result = Parsers.Custom.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -35,55 +37,55 @@ namespace System.Text.Primitives.Tests
 
             fixed (byte* bytePointer = byteBuffer)
             {
-                result = PrimitiveParser.InvariantUtf8.TryParseBoolean(bytePointer, length, out actualValue);
+                result = Parsers.Utf8.TryParseBoolean(bytePointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf8.TryParseBoolean(bytePointer, length, out actualValue, out actualConsumed);
+                result = Parsers.Utf8.TryParseBoolean(bytePointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf8.TryParseBoolean(byteSpan, out actualValue);
+            result = Parsers.Utf8.TryParseBoolean(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf8.TryParseBoolean(byteSpan, out actualValue, out actualConsumed);
+            result = Parsers.Utf8.TryParseBoolean(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
-            result = PrimitiveParser.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
+            result = Parsers.Custom.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
 
             fixed (char* charPointer = charBuffer)
             {
-                result = PrimitiveParser.InvariantUtf16.TryParseBoolean(charPointer, length, out actualValue);
+                result = Parsers.Utf16.TryParseBoolean(charPointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf16.TryParseBoolean(charPointer, length, out actualValue, out actualConsumed);
+                result = Parsers.Utf16.TryParseBoolean(charPointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf16.TryParseBoolean(charSpan, out actualValue);
+            result = Parsers.Utf16.TryParseBoolean(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf16.TryParseBoolean(charSpan, out actualValue, out actualConsumed);
+            result = Parsers.Utf16.TryParseBoolean(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);

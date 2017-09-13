@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
 using System.Text.Formatting;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Tests
 {

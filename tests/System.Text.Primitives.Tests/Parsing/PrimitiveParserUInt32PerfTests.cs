@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests
 {
@@ -165,7 +166,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             uint value;
-                            PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteStar, length, out value);
+                            Parsers.Utf8.TryParseUInt32(utf8ByteStar, length, out value);
                             TestHelper.DoNotIgnore(value, 0);
                         }
                     }
@@ -192,7 +193,7 @@ namespace System.Text.Primitives.Tests
                         fixed (byte* utf8ByteStar = utf8ByteArray)
                         {
                             uint value;
-                            PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value);
+                            Parsers.Utf8.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value);
                             TestHelper.DoNotIgnore(value, 0);
                         }
                     }
@@ -218,7 +219,7 @@ namespace System.Text.Primitives.Tests
                         {
                             uint value;
                             int bytesConsumed;
-                            PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteStar, length, out value, out bytesConsumed);
+                            Parsers.Utf8.TryParseUInt32(utf8ByteStar, length, out value, out bytesConsumed);
                             TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -246,7 +247,7 @@ namespace System.Text.Primitives.Tests
                         {
                             uint value;
                             int bytesConsumed;
-                            PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
+                            Parsers.Utf8.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
                             TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -269,7 +270,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         uint value;
-                        PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value);
+                        Parsers.Utf8.TryParseUInt32(utf8ByteSpan, out value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -294,7 +295,7 @@ namespace System.Text.Primitives.Tests
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
                         uint value;
-                        PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value);
+                        Parsers.Utf8.TryParseUInt32(utf8ByteSpan, out value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -317,7 +318,7 @@ namespace System.Text.Primitives.Tests
                     {
                         uint value;
                         int bytesConsumed;
-                        PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -342,7 +343,7 @@ namespace System.Text.Primitives.Tests
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
                         uint value;
                         int bytesConsumed;
-                        PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -366,7 +367,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
                             uint value;
-                            PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteStar, length, out value);
+                            Parsers.Utf8.Hex.TryParseUInt32(utf8ByteStar, length, out value);
                             TestHelper.DoNotIgnore(value, 0);
                         }
                     }
@@ -393,7 +394,7 @@ namespace System.Text.Primitives.Tests
                         fixed (byte* utf8ByteStar = utf8ByteArray)
                         {
                             uint value;
-                            PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value);
+                            Parsers.Utf8.Hex.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value);
                             TestHelper.DoNotIgnore(value, 0);
                         }
                     }
@@ -419,7 +420,7 @@ namespace System.Text.Primitives.Tests
                         {
                             uint value;
                             int bytesConsumed;
-                            PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteStar, length, out value, out bytesConsumed);
+                            Parsers.Utf8.Hex.TryParseUInt32(utf8ByteStar, length, out value, out bytesConsumed);
                             TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -447,7 +448,7 @@ namespace System.Text.Primitives.Tests
                         {
                             uint value;
                             int bytesConsumed;
-                            PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
+                            Parsers.Utf8.Hex.TryParseUInt32(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
                             TestHelper.DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -470,7 +471,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
                         uint value;
-                        PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value);
+                        Parsers.Utf8.Hex.TryParseUInt32(utf8ByteSpan, out value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -494,7 +495,7 @@ namespace System.Text.Primitives.Tests
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
                         uint value;
-                        PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value);
+                        Parsers.Utf8.Hex.TryParseUInt32(utf8ByteSpan, out value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -517,7 +518,7 @@ namespace System.Text.Primitives.Tests
                     {
                         uint value;
                         int bytesConsumed;
-                        PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.Hex.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -542,7 +543,7 @@ namespace System.Text.Primitives.Tests
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
                         uint value;
                         int bytesConsumed;
-                        PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.Hex.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }

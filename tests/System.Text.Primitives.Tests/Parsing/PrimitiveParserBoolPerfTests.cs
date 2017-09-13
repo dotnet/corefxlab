@@ -4,6 +4,7 @@
 
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests
 {
@@ -42,7 +43,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
-                        PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
+                        Parsers.Utf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
                     }
                 }
             }
@@ -64,7 +65,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < TestHelper.LoadIterations; i++)
                         {
-                            PrimitiveParser.InvariantUtf8.TryParseBoolean(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
+                            Parsers.Utf8.TryParseBoolean(utf8ByteStar, utf8ByteArray.Length, out value, out bytesConsumed);
                         }
                     }
                 }

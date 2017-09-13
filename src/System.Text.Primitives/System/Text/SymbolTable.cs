@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers.Text
 {
     public abstract partial class SymbolTable
     {
@@ -131,9 +131,7 @@ namespace System.Text
             bytesConsumed = 0;
             while (srcLength > bytesConsumed)
             {
-                var status = Encoders.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written);
-                if (status == Buffers.OperationStatus.InvalidData)
-                    goto ExitFailed;
+                if(Encodings.Utf16.ToUtf8(srcBytes, temp, out int consumed, out int written) == OperationStatus.InvalidData)                     goto ExitFailed;
 
                 srcBytes = srcBytes.Slice(consumed);
                 bytesConsumed += consumed;

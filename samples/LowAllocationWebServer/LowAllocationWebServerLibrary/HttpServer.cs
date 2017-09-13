@@ -11,6 +11,7 @@ using System.Text.Http;
 using System.Threading.Tasks;
 using System.Text;
 using System.Threading;
+using System.Buffers.Text;
 
 namespace Microsoft.Net.Http
 {
