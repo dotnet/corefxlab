@@ -19,6 +19,10 @@ namespace System.Buffers
             private const byte Plus = (byte)'+';
             private const byte Slash = (byte)'/';
             private const byte Space = (byte)' ';
+            private static readonly byte[] s_True = Encoding.UTF8.GetBytes("True");
+            private static readonly byte[] s_False = Encoding.UTF8.GetBytes("False");
+            private static readonly byte[] s_true = Encoding.UTF8.GetBytes("true");
+            private static readonly byte[] s_false = Encoding.UTF8.GetBytes("false");
 
             #endregion Common constants
 
@@ -193,6 +197,62 @@ namespace System.Buffers
                 => Custom.TryFormat(value, buffer, out bytesWritten, format, SymbolTable.InvariantUtf8);
 
             #endregion Floating-point APIs
+
+            #region Other
+            public static bool TryFormat(bool value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+            {
+                if (value)
+                {
+                    if(buffer.Length < 4) /// 4 bytes for "true"
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+
+                    if (format.IsDefault || format.Symbol == 'G')
+                    {
+                        s_True.CopyTo(buffer);
+                        bytesWritten = s_True.Length;
+                        return true;
+                    }
+                    else if(format.Symbol == 'l')
+                    {
+                        s_true.CopyTo(buffer);
+                        bytesWritten = s_true.Length;
+                        return true;
+                    }
+                    else
+                    {
+                        throw new FormatException();
+                    }
+                }
+                else
+                {
+                    if (buffer.Length < 5) // 5 bytes for "false"
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+
+                    if (format.IsDefault || format.Symbol == 'G')
+                    {
+                        s_False.CopyTo(buffer);
+                        bytesWritten = s_False.Length;
+                        return true;
+                    }
+                    else if (format.Symbol == 'l')
+                    {
+                        s_false.CopyTo(buffer);
+                        bytesWritten = s_false.Length;
+                        return true;
+                    }
+                    else
+                    {
+                        throw new FormatException();
+                    }
+                }
+            }
+            #endregion
         }
     }
 }
