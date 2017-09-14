@@ -3,10 +3,6 @@
 // See the LICENSE file in the project root for more information.
 using Microsoft.Xunit.Performance;
 using System.Collections.Generic;
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace System.IO.Compression.Tests

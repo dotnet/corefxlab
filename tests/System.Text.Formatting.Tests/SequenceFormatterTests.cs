@@ -12,7 +12,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void SequenceFormatterBasics()
         {
-            var list = new ArrayList<Buffer<byte>>();
+            var list = new ArrayList<Memory<byte>>();
             list.Add(new byte[10]);
             list.Add(new byte[10]);
             list.Add(new byte[10]);

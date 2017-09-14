@@ -174,7 +174,7 @@ namespace System.Buffers.Tests
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                while (bytes.TryGet(ref position, out ReadOnlyBuffer<byte> segment))
+                while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     sb.Append(new Utf8String(segment.Span).ToString());
                 }

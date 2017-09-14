@@ -6,12 +6,12 @@ namespace System.Buffers
 {
     public static class BufferExtensions
     {
-        public static bool SequenceEqual<T>(this Buffer<T> first, Buffer<T> second) where T : struct, IEquatable<T>
+        public static bool SequenceEqual<T>(this Memory<T> first, Memory<T> second) where T : struct, IEquatable<T>
         {
             return first.Span.SequenceEqual(second.Span);
         }
 
-        public static bool SequenceEqual<T>(this ReadOnlyBuffer<T> first, ReadOnlyBuffer<T> second) where T : struct, IEquatable<T>
+        public static bool SequenceEqual<T>(this ReadOnlyMemory<T> first, ReadOnlyMemory<T> second) where T : struct, IEquatable<T>
         {
             return first.Span.SequenceEqual(second.Span);
         }

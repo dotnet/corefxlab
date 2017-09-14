@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
-        private BufferHandle _inputBufferPin;
+        private MemoryHandle _inputBufferPin;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {

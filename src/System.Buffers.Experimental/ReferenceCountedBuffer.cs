@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    public abstract class ReferenceCountedBuffer<T> : OwnedBuffer<T>
+    public abstract class ReferenceCountedBuffer<T> : OwnedMemory<T>
     {
         int _referenceCount;
         bool _disposed;

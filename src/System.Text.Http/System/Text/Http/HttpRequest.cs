@@ -13,7 +13,7 @@ namespace System.Text.Http
     {
         public HttpMethod Method;
         public HttpVersion Version;
-        public Buffer<byte> RequestUri;
+        public Memory<byte> RequestUri;
 
         public override string ToString()
         {
@@ -151,7 +151,7 @@ namespace System.Text.Http
             return ToString(bytes.Value, symbolTable);
         }
 
-        public static string ToString(this Buffer<byte> bytes, SymbolTable symbolTable)
+        public static string ToString(this Memory<byte> bytes, SymbolTable symbolTable)
         {
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
@@ -169,7 +169,7 @@ namespace System.Text.Http
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                ReadOnlyBuffer<byte> segment;
+                ReadOnlyMemory<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
                     sb.Append(new Utf8String(segment.Span).ToString());
@@ -194,7 +194,7 @@ namespace System.Text.Http
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                ReadOnlyBuffer<byte> segment;
+                ReadOnlyMemory<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
                     sb.Append(new Utf8String(segment.Span));

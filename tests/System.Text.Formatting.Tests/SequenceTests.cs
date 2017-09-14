@@ -46,9 +46,9 @@ namespace System.Text.Parsing.Tests
             Assert.Equal(expectedConsumed, consumed);
         }
 
-        static ArrayList<ReadOnlyBuffer<byte>> ToUtf8Buffers(params string[] segments)
+        static ArrayList<ReadOnlyMemory<byte>> ToUtf8Buffers(params string[] segments)
         {
-            var buffers = new ArrayList<ReadOnlyBuffer<byte>>();
+            var buffers = new ArrayList<ReadOnlyMemory<byte>>();
             foreach (var segment in segments) {
                 buffers.Add(new Utf8String(segment).Bytes.ToArray());
             }

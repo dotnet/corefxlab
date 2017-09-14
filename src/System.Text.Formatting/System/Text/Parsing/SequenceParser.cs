@@ -10,14 +10,14 @@ namespace System.Text.Parsing
     {
         const int StackBufferSize = 128;
 
-        public static bool TryParseUInt64<T>(this T bufferSequence, out ulong value, out int consumed) where T : ISequence<ReadOnlyBuffer<byte>>
+        public static bool TryParseUInt64<T>(this T bufferSequence, out ulong value, out int consumed) where T : ISequence<ReadOnlyMemory<byte>>
         {
             value = default;
             consumed = default;
             Position position = Position.First;
 
             // Fetch the first segment
-            ReadOnlyBuffer<byte> first;
+            ReadOnlyMemory<byte> first;
             if (!bufferSequence.TryGet(ref position, out first)) {
                 return false;
             }
@@ -29,7 +29,7 @@ namespace System.Text.Parsing
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            ReadOnlyBuffer<byte> second;
+            ReadOnlyMemory<byte> second;
             if (!bufferSequence.TryGet(ref position, out second)) {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
@@ -41,20 +41,20 @@ namespace System.Text.Parsing
             {
                 Span<byte> destination = stackalloc byte[StackBufferSize];
 
-                first.CopyTo(destination);
+                first.Span.CopyTo(destination);
                 var free = destination.Slice(first.Length);
 
                 if (second.Length > free.Length) second = second.Slice(0, free.Length);
-                second.CopyTo(free);
+                second.Span.CopyTo(free);
                 free = free.Slice(second.Length);
 
-                ReadOnlyBuffer<byte> next;
+                ReadOnlyMemory<byte> next;
                 while (free.Length > 0)
                 {
                     if (bufferSequence.TryGet(ref position, out next))
                     {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
-                        next.CopyTo(free);
+                        next.Span.CopyTo(free);
                         free = free.Slice(next.Length);
                     }
                     else
@@ -84,14 +84,14 @@ namespace System.Text.Parsing
             return true;
         }
 
-        public static bool TryParseUInt32<T>(this T bufferSequence, out uint value, out int consumed) where T : ISequence<ReadOnlyBuffer<byte>>
+        public static bool TryParseUInt32<T>(this T bufferSequence, out uint value, out int consumed) where T : ISequence<ReadOnlyMemory<byte>>
         {
             value = default;
             consumed = default;
             Position position = Position.First;
 
             // Fetch the first segment
-            ReadOnlyBuffer<byte> first;
+            ReadOnlyMemory<byte> first;
             if (!bufferSequence.TryGet(ref position, out first)) {
                 return false;
             }
@@ -103,7 +103,7 @@ namespace System.Text.Parsing
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            ReadOnlyBuffer<byte> second;
+            ReadOnlyMemory<byte> second;
             if (!bufferSequence.TryGet(ref position, out second)) {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
@@ -115,18 +115,18 @@ namespace System.Text.Parsing
 
                 Span<byte> destination = stackalloc byte[StackBufferSize];
 
-                first.CopyTo(destination);
+                first.Span.CopyTo(destination);
                 var free = destination.Slice(first.Length);
 
                 if (second.Length > free.Length) second = second.Slice(0, free.Length);
-                second.CopyTo(free);
+                second.Span.CopyTo(free);
                 free = free.Slice(second.Length);
 
-                ReadOnlyBuffer<byte> next;
+                ReadOnlyMemory<byte> next;
                 while (free.Length > 0) {
                     if (bufferSequence.TryGet(ref position, out next)) {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
-                        next.CopyTo(free);
+                        next.Span.CopyTo(free);
                         free = free.Slice(next.Length);
                     }
                     else {

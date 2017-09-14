@@ -361,26 +361,10 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public void DangerousTryGetArray()
-        {
-            var array = new byte[] { 1, 2, 3, 4, 5 };
-            OwnedBuffer<byte> owned = array;
-            ReadOnlyBuffer<byte> buffer = owned.ReadOnlyBuffer;
-
-            Assert.True(buffer.DangerousTryGetArray(out var dangerousArray));
-            Assert.Equal(array.Length, dangerousArray.Count);
-
-            for(int i=dangerousArray.Offset; i<dangerousArray.Count+dangerousArray.Offset; i++)
-            {
-                Assert.Equal(array[i], dangerousArray.Array[i]);
-            }          
-        }
-
-        [Fact]
         public void OwnedBufferDisposedAfterFinalizerGCKeepAliveTest()
         {
-            var owned = (OwnedBuffer<byte>)new byte[1024];
-            var buffer = owned.Buffer;
+            OwnedMemory<byte> owned = new CustomMemoryForTest<byte>(new byte[1024]);
+            var buffer = owned.AsMemory;
             var slice = buffer.Slice(1);
 
             var span = buffer.Span;

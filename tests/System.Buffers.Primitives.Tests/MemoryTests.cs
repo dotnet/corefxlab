@@ -9,7 +9,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void MemoryHandleFreeUninitialized()
         {
-            var handle = default(BufferHandle);
+            var handle = default(MemoryHandle);
             handle.Dispose();
         }
     }

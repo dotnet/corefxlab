@@ -7,7 +7,7 @@ namespace System.Buffers
     {
         public static BufferPool Default => Internal.ManagedBufferPool.Shared;
 
-        public abstract OwnedBuffer<byte> Rent(int minimumBufferSize);
+        public abstract OwnedMemory<byte> Rent(int minimumBufferSize);
 
         public void Dispose()
         {

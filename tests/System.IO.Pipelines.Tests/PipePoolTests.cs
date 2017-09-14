@@ -107,7 +107,7 @@ namespace System.IO.Pipelines.Tests
 
         private class DisposeTrackingBufferPool : BufferPool
         {
-            public override OwnedBuffer<byte> Rent(int size)
+            public override OwnedMemory<byte> Rent(int size)
             {
                 return new DisposeTrackingOwnedMemory(new byte[2048], this);
             }
@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Tests
 
             }
 
-            private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
+            private class DisposeTrackingOwnedMemory : OwnedMemory<byte>
             {
                 private readonly DisposeTrackingBufferPool _bufferPool;
 
@@ -132,14 +132,14 @@ namespace System.IO.Pipelines.Tests
                 }
 
                 public override int Length => _array.Length;
-                public override Span<byte> AsSpan(int index, int length)
+                public override Span<byte> AsSpan()
                 {
                     if (IsDisposed)
                         PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     return _array;
                 }
 
-                public override BufferHandle Pin()
+                public override MemoryHandle Pin()
                 {
                     throw new NotImplementedException();
                 }

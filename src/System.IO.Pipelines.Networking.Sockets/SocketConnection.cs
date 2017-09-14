@@ -608,7 +608,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         }
 
         // unsafe+async not good friends
-        private unsafe void SetBuffer(Buffer<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
+        private unsafe void SetBuffer(Memory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
         {
             ArraySegment<byte> segment;
             if (!memory.TryGetArray(out segment))
