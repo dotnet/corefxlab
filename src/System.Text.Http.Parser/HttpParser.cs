@@ -23,6 +23,18 @@ namespace System.Text.Http.Parser
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
 
+        private readonly bool _showErrorDetails;
+
+        public HttpParser()
+            : this(showErrorDetails: true)
+        {
+        }
+
+        public HttpParser(bool showErrorDetails)
+        {
+            _showErrorDetails = showErrorDetails;
+        }
+
         public unsafe bool ParseRequestLine<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
@@ -668,7 +680,10 @@ namespace System.Text.Http.Parser
 
         private unsafe BadHttpRequestException GetInvalidRequestException(RequestRejectionReason reason, byte* detail, int length)
         {
-            return BadHttpRequestException.GetException(reason, "");
+            string errorDetails = _showErrorDetails ?
+                new Span<byte>(detail, length).GetAsciiStringEscaped(Constants.MaxExceptionDetailSize) :
+                string.Empty;
+            return BadHttpRequestException.GetException(reason, errorDetails);
         }
 
         public void Reset()
