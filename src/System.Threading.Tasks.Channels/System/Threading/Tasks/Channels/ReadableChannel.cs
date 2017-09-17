@@ -215,8 +215,11 @@ namespace System.Threading.Tasks.Channels
                     {
                         if (_observer != null)
                         {
-                            bool removed = _observable._observers.Remove(_observer);
-                            Debug.Assert(removed);
+                            if (!_observable._channel.Completion.IsCompleted)
+                            {
+                                bool removed = _observable._observers.Remove(_observer);
+                                Debug.Assert(removed);
+                            }
                             _observer = null;
                         }
                     }
