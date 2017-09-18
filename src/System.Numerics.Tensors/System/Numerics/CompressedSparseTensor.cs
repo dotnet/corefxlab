@@ -54,7 +54,7 @@ namespace System.Numerics
             this.nonZeroCount = nonZeroCount;
         }
 
-        public CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
             nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;

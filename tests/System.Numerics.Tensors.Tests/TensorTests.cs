@@ -30,11 +30,11 @@ namespace tests
                 switch (TensorType)
                 {
                     case TensorType.Dense:
-                        return new DenseTensor<T>(array, IsReversedStride);
+                        return array.ToTensor<T>(IsReversedStride);
                     case TensorType.Sparse:
-                        return new SparseTensor<T>(array, IsReversedStride);
+                        return array.ToSparseTensor<T>(IsReversedStride);
                     case TensorType.CompressedSparse:
-                        return new CompressedSparseTensor<T>(array, IsReversedStride);
+                        return array.ToCompressedSparseTensor<T>(IsReversedStride);
                 }
 
                 throw new ArgumentException(nameof(TensorType));
@@ -1749,12 +1749,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {true, true, false },
                     {false, false, true}
-                });
+                }.ToTensor();
 
             var actual = Tensor.Equals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1778,12 +1777,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {false, false, true},
                     {true, true, false}
-                });
+                }.ToTensor();
 
             var actual = Tensor.NotEquals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));

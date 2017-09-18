@@ -17,7 +17,7 @@ namespace System.Numerics
             this.values = values;
         }
 
-        public SparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
             values = new Dictionary<int, T>(fromArray.Length);
 

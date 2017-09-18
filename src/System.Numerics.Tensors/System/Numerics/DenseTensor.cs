@@ -4,7 +4,7 @@
     {
         private readonly T[] backingArray;
 
-        public DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
             // copy initial array
             backingArray = new T[fromArray.Length];
