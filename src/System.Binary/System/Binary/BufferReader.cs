@@ -4,7 +4,7 @@
 using System.Runtime;
 using System.Runtime.CompilerServices;
 
-namespace System.Binary
+namespace System.Buffers
 {
     /// <summary>
     /// Reads bytes as primitives with specific endianness
@@ -13,71 +13,43 @@ namespace System.Binary
     /// For native formats, SpanExtensions.Read&lt;T&gt; should be used.
     /// Use these helpers when you need to read specific endinanness.
     /// </remarks>
-    public static class BufferReader
+    public static partial class Binary
     {
         /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadBigEndian<[Primitive]T>(this ReadOnlySpan<byte> span) where T : struct
-            => BitConverter.IsLittleEndian ? UnsafeUtilities.Reverse(span.Read<T>()) : span.Read<T>();
-
-        /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadLittleEndian<[Primitive]T>(this ReadOnlySpan<byte> span) where T : struct
-            => BitConverter.IsLittleEndian ? span.Read<T>() : UnsafeUtilities.Reverse(span.Read<T>());
-
-        /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadBigEndian<[Primitive]T>(this Span<byte> span) where T : struct
-            => BitConverter.IsLittleEndian ? UnsafeUtilities.Reverse(span.Read<T>()) : span.Read<T>();
-
-        /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadLittleEndian<[Primitive]T>(this Span<byte> span) where T : struct
-            => BitConverter.IsLittleEndian ? span.Read<T>() : UnsafeUtilities.Reverse(span.Read<T>());
-
-        /// <summary>
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Read<[Primitive]T>(this Span<byte> slice)
+        public static T Read<[Primitive]T>(this Span<byte> buffer)
             where T : struct
         {
-            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)buffer.Length);
+            return Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
         }
 
         /// <summary>
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
+        public static T Read<[Primitive]T>(this ReadOnlySpan<byte> buffer)
             where T : struct
         {
-            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)buffer.Length);
+            return Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
         }
 
         /// <summary>
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryRead<[Primitive]T>(this ReadOnlySpan<byte> slice, out T value)
+        public static bool TryRead<[Primitive]T>(this ReadOnlySpan<byte> buffer, out T value)
             where T : struct
         {
-            if (Unsafe.SizeOf<T>() > (uint)slice.Length)
+            if (Unsafe.SizeOf<T>() > (uint)buffer.Length)
             {
                 value = default;
                 return false;
             }
-            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            value = Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
             return true;
         }
 
@@ -85,20 +57,20 @@ namespace System.Binary
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryRead<[Primitive]T>(this Span<byte> slice, out T value)
+        public static bool TryRead<[Primitive]T>(this Span<byte> buffer, out T value)
             where T : struct
         {
-            if (Unsafe.SizeOf<T>() > (uint)slice.Length)
+            if (Unsafe.SizeOf<T>() > (uint)buffer.Length)
             {
                 value = default;
                 return false;
             }
-            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            value = Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInInclusiveRange(int start, uint length)
+        static void RequiresInInclusiveRange(int start, uint length)
         {
             if ((uint)start > length)
             {

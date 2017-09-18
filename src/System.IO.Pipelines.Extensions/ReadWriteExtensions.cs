@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary;
+using System.Buffers;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;

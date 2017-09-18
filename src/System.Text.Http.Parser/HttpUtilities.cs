@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Binary;
 using System.Buffers;
 
 namespace System.Text.Http.Parser.Internal
