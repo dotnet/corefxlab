@@ -190,11 +190,50 @@ namespace System.Buffers
 
             #region Floating-point APIs
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="buffer"></param>
+            /// <param name="bytesWritten"></param>
+            /// <param name="format">only 'G' format is supported</param>
+            /// <returns></returns>
             public static bool TryFormat(double value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
                 => Custom.TryFormat(value, buffer, out bytesWritten, format, SymbolTable.InvariantUtf8);
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="buffer"></param>
+            /// <param name="bytesWritten"></param>
+            /// <param name="format">only 'G' format is supported</param>
+            /// <returns></returns>
             public static bool TryFormat(float value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
                 => Custom.TryFormat(value, buffer, out bytesWritten, format, SymbolTable.InvariantUtf8);
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="buffer"></param>
+            /// <param name="bytesWritten"></param>
+            /// <param name="format">only 'G' format is supported</param>
+            /// <returns></returns>
+            public static bool TryFormat(decimal value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+            {
+                if (format.IsDefault) format = 'G';
+                else if (format.Symbol != 'G') throw new FormatException();
+
+                var text = value.ToString("G");
+                if (text.AsReadOnlySpan().AsBytes().TryCopyTo(buffer))
+                {
+                    bytesWritten = text.Length * 2;
+                    return true;
+                }
+                bytesWritten = 0;
+                return false;
+            }
 
             #endregion Floating-point APIs
 
