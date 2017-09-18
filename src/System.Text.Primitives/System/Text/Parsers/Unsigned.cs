@@ -33,17 +33,17 @@ namespace System.Buffers
                 else if (symbolTable == SymbolTable.InvariantUtf16)
                 {
                     ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
-                    int charsConsumed;
+                    int charactersConsumed;
                     bool result;
                     if (IsHexFormat(format))
                     {
-                        result = Utf16.Hex.TryParseByte(utf16Text, out value, out charsConsumed);
+                        result = Utf16.Hex.TryParseByte(utf16Text, out value, out charactersConsumed);
                     }
                     else
                     {
-                        result = Utf16.TryParseByte(utf16Text, out value, out charsConsumed);
+                        result = Utf16.TryParseByte(utf16Text, out value, out charactersConsumed);
                     }
-                    bytesConsumed = charsConsumed * sizeof(char);
+                    bytesConsumed = charactersConsumed * sizeof(char);
                     return result;
                 }
 
@@ -127,17 +127,17 @@ namespace System.Buffers
                 else if (symbolTable == SymbolTable.InvariantUtf16)
                 {
                     ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
-                    int charsConsumed;
+                    int charactersConsumed;
                     bool result;
                     if (IsHexFormat(format))
                     {
-                        result = Utf16.Hex.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                        result = Utf16.Hex.TryParseUInt16(utf16Text, out value, out charactersConsumed);
                     }
                     else
                     {
-                        result = Utf16.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                        result = Utf16.TryParseUInt16(utf16Text, out value, out charactersConsumed);
                     }
-                    bytesConsumed = charsConsumed * sizeof(char);
+                    bytesConsumed = charactersConsumed * sizeof(char);
                     return result;
                 }
 
@@ -221,17 +221,17 @@ namespace System.Buffers
                 else if (symbolTable == SymbolTable.InvariantUtf16)
                 {
                     ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
-                    int charsConsumed;
+                    int charactersConsumed;
                     bool result;
                     if (IsHexFormat(format))
                     {
-                        result = Utf16.Hex.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                        result = Utf16.Hex.TryParseUInt32(utf16Text, out value, out charactersConsumed);
                     }
                     else
                     {
-                        result = Utf16.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                        result = Utf16.TryParseUInt32(utf16Text, out value, out charactersConsumed);
                     }
-                    bytesConsumed = charsConsumed * sizeof(char);
+                    bytesConsumed = charactersConsumed * sizeof(char);
                     return result;
                 }
 
@@ -315,17 +315,17 @@ namespace System.Buffers
                 else if (symbolTable == SymbolTable.InvariantUtf16)
                 {
                     ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
-                    int charsConsumed;
+                    int charactersConsumed;
                     bool result;
                     if (IsHexFormat(format))
                     {
-                        result = Utf16.Hex.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                        result = Utf16.Hex.TryParseUInt64(utf16Text, out value, out charactersConsumed);
                     }
                     else
                     {
-                        result = Utf16.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                        result = Utf16.TryParseUInt64(utf16Text, out value, out charactersConsumed);
                     }
-                    bytesConsumed = charsConsumed * sizeof(char);
+                    bytesConsumed = charactersConsumed * sizeof(char);
                     return result;
                 }
 
