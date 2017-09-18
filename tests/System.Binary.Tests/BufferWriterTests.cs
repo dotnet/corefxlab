@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Xunit;
 
-namespace System.Binary.Tests
+namespace System.Buffers.Tests
 {
     public class BufferWriterTests
     {   
@@ -18,7 +18,22 @@ namespace System.Binary.Tests
             var span = new Span<byte>(new byte[4]);
             span.WriteBigEndian(value);
             uint read = span.ReadBigEndian<uint>();
-            Assert.Equal(value,read);         
+            Assert.Equal(value, read);
+
+            span.Clear();
+            Assert.True(span.TryWriteBigEndian(value));
+            read = span.ReadBigEndian<uint>();
+            Assert.Equal(value,read);
+
+            span.Clear();
+            span.WriteLittleEndian(value);
+            read = span.ReadLittleEndian<uint>();
+            Assert.Equal(value, read);
+
+            span.Clear();
+            Assert.True(span.TryWriteLittleEndian(value));
+            read = span.ReadLittleEndian<uint>();
+            Assert.Equal(value, read);
         }
     }
 }
