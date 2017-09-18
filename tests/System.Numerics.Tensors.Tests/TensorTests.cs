@@ -982,7 +982,7 @@ namespace tests
         [Fact]
         public void Identity()
         {
-            var actual = Tensor<double>.CreateIdentity(3);
+            var actual = Tensor.CreateIdentity<double>(3);
 
             var expected = new[,]
             {
@@ -999,7 +999,7 @@ namespace tests
         public void CreateWithDiagonal(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4, 5 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal);
+            var actual = Tensor.CreateFromDiagonal(diagonal);
 
             var expected = new[,]
             {
@@ -1018,7 +1018,7 @@ namespace tests
         public void CreateWithDiagonalAndOffset(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal, 1);
+            var actual = Tensor.CreateFromDiagonal(diagonal, 1);
 
             var expected = new[,]
             {
@@ -1032,7 +1032,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -1);
+            actual = Tensor.CreateFromDiagonal(diagonal, -1);
 
             expected = new[,]
             {
@@ -1046,7 +1046,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -4);
+            actual = Tensor.CreateFromDiagonal(diagonal, -4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 0 },
@@ -1058,7 +1058,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, 4);
+            actual = Tensor.CreateFromDiagonal(diagonal, 4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 1 },
