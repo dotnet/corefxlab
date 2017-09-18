@@ -20,7 +20,7 @@ namespace System.Numerics
         private int[] compressedCounts;
         private int[] indices;
 
-        private int valueCount;
+        private int nonZeroCount;
 
         private readonly int[] nonCompressedStrides;
         private readonly int compressedDimension;
@@ -33,16 +33,17 @@ namespace System.Numerics
 
         public CompressedSparseTensor(int[] dimensions, int capacity, bool reverseStride = false) : base(dimensions, reverseStride)
         {
-            valueCount = 0;
+            nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
             nonCompressedStrides[compressedDimension] = 0;
             var compressedDimensionLength = dimensions[compressedDimension];
             compressedCounts = new int[compressedDimensionLength + 1];
-            EnsureCapacity(capacity);
+            values = new T[capacity];
+            indices = new int[capacity];
         }
 
-        public CompressedSparseTensor(T[] values, int[] compressedCounts, int[] indices, int valueCount, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        public CompressedSparseTensor(T[] values, int[] compressedCounts, int[] indices, int nonZeroCount, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
@@ -50,12 +51,12 @@ namespace System.Numerics
             this.values = values;
             this.compressedCounts = compressedCounts;
             this.indices = indices;
-            this.valueCount = valueCount;
+            this.nonZeroCount = nonZeroCount;
         }
 
         public CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
-            valueCount = 0;
+            nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
             nonCompressedStrides[compressedDimension] = 0;
@@ -125,9 +126,11 @@ namespace System.Numerics
             }
         }
 
+        public int Capacity => values.Length;
+        public int NonZeroCount => nonZeroCount;
+
         // unsafe accessors
         public T[] Values => values;
-        public int ValueCount => valueCount;
         public int[] CompressedCounts => compressedCounts;
         public int[] Indices => indices;
 
@@ -150,16 +153,16 @@ namespace System.Numerics
                 T[] newValues = new T[newCapacity];
                 int[] newIndices = new int[newCapacity];
 
-                if (valueCount > 0)
+                if (nonZeroCount > 0)
                 {
                     if (allocateIndex == -1)
                     {
-                        Array.Copy(values, newValues, valueCount);
-                        Array.Copy(indices, newIndices, valueCount);
+                        Array.Copy(values, newValues, nonZeroCount);
+                        Array.Copy(indices, newIndices, nonZeroCount);
                     }
                     else
                     {
-                        Debug.Assert(allocateIndex <= valueCount);
+                        Debug.Assert(allocateIndex <= nonZeroCount);
                         // leave a gap at allocateIndex
 
                         // copy range before allocateIndex
@@ -169,10 +172,10 @@ namespace System.Numerics
                             Array.Copy(indices, newIndices, allocateIndex);
                         }
 
-                        if (allocateIndex < valueCount)
+                        if (allocateIndex < nonZeroCount)
                         {
-                            Array.Copy(values, allocateIndex, newValues, allocateIndex + 1, valueCount - allocateIndex);
-                            Array.Copy(indices, allocateIndex, newIndices, allocateIndex + 1, valueCount - allocateIndex);
+                            Array.Copy(values, allocateIndex, newValues, allocateIndex + 1, nonZeroCount - allocateIndex);
+                            Array.Copy(indices, allocateIndex, newIndices, allocateIndex + 1, nonZeroCount - allocateIndex);
                         }
                     }
                 }
@@ -184,7 +187,7 @@ namespace System.Numerics
 
         private void InsertAt(int valueIndex, T value, int compressedIndex, int nonCompressedIndex)
         {
-            Debug.Assert(valueIndex <= valueCount);
+            Debug.Assert(valueIndex <= nonZeroCount);
             Debug.Assert(compressedIndex < compressedCounts.Length - 1);
 
             if (values == null || values.Length <= valueIndex)
@@ -196,11 +199,11 @@ namespace System.Numerics
                 values[valueIndex] = value;
                 indices[valueIndex] = nonCompressedIndex;
             }
-            else if (valueCount != valueIndex)
+            else if (nonZeroCount != valueIndex)
             {
                 // shift values to make a gap
-                Array.Copy(values, valueIndex, values, valueIndex + 1, valueCount - valueIndex);
-                Array.Copy(indices, valueIndex, indices, valueIndex + 1, valueCount - valueIndex);
+                Array.Copy(values, valueIndex, values, valueIndex + 1, nonZeroCount - valueIndex);
+                Array.Copy(indices, valueIndex, indices, valueIndex + 1, nonZeroCount - valueIndex);
             }
 
             values[valueIndex] = value;
@@ -210,23 +213,23 @@ namespace System.Numerics
             {
                 compressedCounts[i]++;
             }
-            valueCount++;
+            nonZeroCount++;
         }
 
         private void RemoveAt(int valueIndex, int compressedIndex)
         {
-            Debug.Assert(valueIndex < valueCount);
+            Debug.Assert(valueIndex < nonZeroCount);
             Debug.Assert(compressedIndex < compressedCounts.Length - 1);
 
             // shift values to close the gap
-            Array.Copy(values, valueIndex + 1, values, valueIndex, valueCount - valueIndex - 1);
-            Array.Copy(indices, valueIndex + 1, indices, valueIndex, valueCount - valueIndex - 1);
+            Array.Copy(values, valueIndex + 1, values, valueIndex, nonZeroCount - valueIndex - 1);
+            Array.Copy(indices, valueIndex + 1, indices, valueIndex, nonZeroCount - valueIndex - 1);
 
             for (int i = compressedIndex + 1; i < compressedCounts.Length; i++)
             {
                 compressedCounts[i]--;
             }
-            valueCount--;
+            nonZeroCount--;
         }
 
         private void SetAt(T value, int compressedIndex, int nonCompressedIndex)
@@ -261,7 +264,7 @@ namespace System.Numerics
         /// <returns>True if element is found at specific index, false if no specific index is found and insertion point is returned</returns>
         private bool TryFindIndex(int compressedIndex, int nonCompressedIndex, out int valueIndex)
         {
-            if (valueCount == 0)
+            if (nonZeroCount == 0)
             {
                 valueIndex = 0;
                 return false;
@@ -303,7 +306,7 @@ namespace System.Numerics
 
         public override Tensor<T> Clone()
         {
-            return new CompressedSparseTensor<T>((T[])values.Clone(), (int[])compressedCounts.Clone(), (int[])indices.Clone(), valueCount, dimensions, IsReversedStride);
+            return new CompressedSparseTensor<T>((T[])values.Clone(), (int[])compressedCounts.Clone(), (int[])indices.Clone(), nonZeroCount, dimensions, IsReversedStride);
         }
 
         public override Tensor<TResult> CloneEmpty<TResult>(int[] dimensions)
@@ -327,11 +330,12 @@ namespace System.Numerics
 
             var compressedIndex = 0;
 
-            for (int valueIndex = 0; valueIndex < valueCount; valueIndex++)
+            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
             {
                 while (valueIndex >= compressedCounts[compressedIndex + 1])
                 {
                     compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
                 }
 
                 var currentIndex = indices[valueIndex] + compressedIndex * strides[compressedDimension];
@@ -342,7 +346,8 @@ namespace System.Numerics
                 newCompressedCounts[newCompressedIndex + 1] = valueIndex + 1;
             }
 
-            return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, valueCount, dimensions, IsReversedStride);
+            return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, nonZeroCount, dimensions, IsReversedStride);
+        }
         }
     }
 }

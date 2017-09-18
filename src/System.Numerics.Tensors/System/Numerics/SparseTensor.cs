@@ -83,6 +83,8 @@ namespace System.Numerics
             }
         }
 
+        public int NonZeroCount => values.Count;
+
         private static int[] GetDimensionsFromArray(Array fromArray)
         {
             if (fromArray == null)
