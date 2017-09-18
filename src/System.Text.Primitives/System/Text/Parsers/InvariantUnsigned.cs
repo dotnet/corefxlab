@@ -1240,11 +1240,11 @@ namespace System.Buffers
                 return true;
             }
 
-            unsafe static bool TryParseByte(char* text, int length, out byte value, out int charsConsumed)
+            unsafe static bool TryParseByte(char* text, int length, out byte value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1253,7 +1253,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1267,7 +1267,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1283,7 +1283,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1294,7 +1294,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1302,7 +1302,7 @@ namespace System.Buffers
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1310,7 +1310,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = (byte)(parsedValue);
                 return true;
             }
@@ -1383,11 +1383,11 @@ namespace System.Buffers
                 return true;
             }
 
-            public static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charsConsumed)
+            public static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1396,7 +1396,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1410,7 +1410,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1426,7 +1426,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1437,7 +1437,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (byte)(parsedValue);
                             return true;
                         }
@@ -1445,7 +1445,7 @@ namespace System.Buffers
                         // if parsedValue == (byte.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > byte.MaxValue / 10 || (parsedValue == byte.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1453,7 +1453,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = (byte)(parsedValue);
                 return true;
             }
@@ -1529,11 +1529,11 @@ namespace System.Buffers
                 return true;
             }
 
-            unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charsConsumed)
+            unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1542,7 +1542,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1556,7 +1556,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1572,7 +1572,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1583,7 +1583,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1591,7 +1591,7 @@ namespace System.Buffers
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1599,7 +1599,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = (ushort)(parsedValue);
                 return true;
             }
@@ -1672,11 +1672,11 @@ namespace System.Buffers
                 return true;
             }
 
-            public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charsConsumed)
+            public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1685,7 +1685,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1699,7 +1699,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1715,7 +1715,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1726,7 +1726,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (ushort)(parsedValue);
                             return true;
                         }
@@ -1734,7 +1734,7 @@ namespace System.Buffers
                         // if parsedValue == (ushort.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ushort.MaxValue / 10 || (parsedValue == ushort.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1742,7 +1742,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = (ushort)(parsedValue);
                 return true;
             }
@@ -1818,11 +1818,11 @@ namespace System.Buffers
                 return true;
             }
 
-            unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charsConsumed)
+            unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1831,7 +1831,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1845,7 +1845,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -1861,7 +1861,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -1872,7 +1872,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -1880,7 +1880,7 @@ namespace System.Buffers
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1888,7 +1888,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = parsedValue;
                 return true;
             }
@@ -1961,11 +1961,11 @@ namespace System.Buffers
                 return true;
             }
 
-            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charsConsumed)
+            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1974,7 +1974,7 @@ namespace System.Buffers
                 uint firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1988,7 +1988,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2004,7 +2004,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2015,7 +2015,7 @@ namespace System.Buffers
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2023,7 +2023,7 @@ namespace System.Buffers
                         // if parsedValue == (uint.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > uint.MaxValue / 10 || (parsedValue == uint.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2031,7 +2031,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = parsedValue;
                 return true;
             }
@@ -2107,11 +2107,11 @@ namespace System.Buffers
                 return true;
             }
 
-            unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charsConsumed)
+            unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2120,7 +2120,7 @@ namespace System.Buffers
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2134,7 +2134,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2150,7 +2150,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2161,7 +2161,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2169,7 +2169,7 @@ namespace System.Buffers
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2177,7 +2177,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = parsedValue;
                 return true;
             }
@@ -2250,11 +2250,11 @@ namespace System.Buffers
                 return true;
             }
 
-            public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charsConsumed)
+            public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2263,7 +2263,7 @@ namespace System.Buffers
                 ulong firstDigit = text[0] - 48u; // '0'
                 if (firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2277,7 +2277,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2293,7 +2293,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2304,7 +2304,7 @@ namespace System.Buffers
                         ulong nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue;
                             return true;
                         }
@@ -2312,7 +2312,7 @@ namespace System.Buffers
                         // if parsedValue == (ulong.MaxValue / 10), any nextDigit greater than 5 implies overflow.
                         if (parsedValue > ulong.MaxValue / 10 || (parsedValue == ulong.MaxValue / 10 && nextDigit > 5))
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2320,7 +2320,7 @@ namespace System.Buffers
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = parsedValue;
                 return true;
             }
