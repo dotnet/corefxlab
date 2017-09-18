@@ -348,6 +348,61 @@ namespace System.Numerics
 
             return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, nonZeroCount, dimensions, IsReversedStride);
         }
+
+        public override DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(dimensions, reverseStride: IsReversedStride);
+
+            var compressedIndex = 0;
+
+            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
+            {
+                while (valueIndex >= compressedCounts[compressedIndex + 1])
+                {
+                    compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
+                }
+
+                var index = indices[valueIndex] + compressedIndex * strides[compressedDimension];
+
+                denseTensor.Buffer[index] = values[valueIndex];
+            }
+
+            return denseTensor;
+        }
+
+        public override CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            var newValues = new T[NonZeroCount];
+            Array.Copy(values, newValues, NonZeroCount);
+
+            var newIndicies = new int[NonZeroCount];
+            Array.Copy(indices, newIndicies, NonZeroCount);
+
+            return new CompressedSparseTensor<T>(newValues, (int[])compressedCounts.Clone(), newIndicies, nonZeroCount, dimensions, IsReversedStride);
+        }
+
+        public override SparseTensor<T> ToSparseTensor()
+        {
+            var sparseTensor = new SparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
+
+            var compressedIndex = 0;
+
+            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
+            {
+                while (valueIndex >= compressedCounts[compressedIndex + 1])
+                {
+                    compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
+                }
+
+                var index = indices[valueIndex] + compressedIndex * strides[compressedDimension];
+
+                // interals access :( remove if we expose layout-based indexing
+                sparseTensor.values[index] = values[valueIndex];
+            }
+
+            return sparseTensor;
         }
     }
 }

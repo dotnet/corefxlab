@@ -1097,6 +1097,47 @@ namespace System.Numerics
             return hashCode;
         }
         #endregion
+
+        #region Translations
+
+        public virtual DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                denseTensor[indices] = this[indices];
+            }
+            return denseTensor;
+        }
+
+        public virtual SparseTensor<T> ToSparseTensor()
+        {
+            var sparseTensor = new SparseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                sparseTensor[indices] = this[indices];
+            }
+            return sparseTensor;
+        }
+
+        public virtual CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                compressedSparseTensor[indices] = this[indices];
+            }
+            return compressedSparseTensor;
+        }
+
+        #endregion
+
         public string GetArrayString(bool includeWhitespace = true)
         {
             var builder = new StringBuilder();
