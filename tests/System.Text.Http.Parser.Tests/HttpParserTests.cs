@@ -7,6 +7,8 @@ using System.IO.Pipelines;
 using System.Linq;
 using Xunit;
 
+using BufferUtilities = System.IO.Pipelines.Testing.BufferUtilities;
+
 namespace System.Text.Http.Parser.Tests
 {
     public class HttpParserTests
@@ -300,6 +302,20 @@ namespace System.Text.Http.Parser.Tests
 
             //Assert.Equal(expectedExceptionMessage, exception.Message);
             //Assert.Equal(StatusCodes.Status400BadRequest, exception.StatusCode);
+        }
+
+        [Fact]
+        public void ParseRequestLineSplitBufferWithoutNewLineDoesNotUpdateConsumed()
+        {
+            HttpParser parser = new HttpParser();
+
+            ReadableBuffer buffer = BufferUtilities.CreateBuffer("GET ", "/");
+            RequestHandler requestHandler = new RequestHandler();
+
+            bool result = parser.ParseRequestLine(requestHandler, buffer, out ReadCursor consumed, out ReadCursor examined);
+            Assert.False(result);
+            Assert.Equal(buffer.Start, consumed);
+            Assert.Equal(buffer.End, examined);
         }
 
         //[Fact]

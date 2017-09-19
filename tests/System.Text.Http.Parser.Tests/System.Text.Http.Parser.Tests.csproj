@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Testing\System.IO.Pipelines.Testing.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

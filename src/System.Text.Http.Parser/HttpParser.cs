@@ -54,8 +54,12 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                span = TryGetNewLineSpan(buffer, out consumed);
-                if (span.Length == 0)
+                if (TryGetNewLineSpan(buffer, out ReadCursor found))
+                {
+                    span = buffer.Slice(consumed, found).ToSpan();
+                    consumed = found;
+                }
+                else
                 {
                     // No request line end
                     return false;
@@ -600,17 +604,17 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Span<byte> TryGetNewLineSpan(in ReadableBuffer buffer, out ReadCursor end)
+        private static bool TryGetNewLineSpan(in ReadableBuffer buffer, out ReadCursor found)
         {
             var start = buffer.Start;
-            if (ReadCursorOperations.Seek(start, buffer.End, out end, ByteLF) != -1)
+            if (ReadCursorOperations.Seek(start, buffer.End, out found, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
-                end = buffer.Move(end, 1);
-                return buffer.Slice(start, end).ToSpan();
+                found = buffer.Move(found, 1);
+                return true;
             }
 
-            return default;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
