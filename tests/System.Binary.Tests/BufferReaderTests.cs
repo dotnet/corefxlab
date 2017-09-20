@@ -89,26 +89,44 @@ namespace System.Buffers.Tests
                 L0 = long.MaxValue,
                 US0 = ushort.MaxValue,
                 UI0 = uint.MaxValue,
-                UL0 = ulong.MaxValue
+                UL0 = ulong.MaxValue,
+                S1 = short.MinValue,
+                I1 = int.MinValue,
+                L1 = long.MinValue,
+                US1 = ushort.MinValue,
+                UI1 = uint.MinValue,
+                UL1 = ulong.MinValue
             };
 
             Span<byte> spanBE = new byte[Unsafe.SizeOf<TestStruct>()];
 
             spanBE.WriteBigEndianInt16(myStruct.S0);
             spanBE.Slice(2).WriteBigEndianInt32(myStruct.I0);
-            spanBE.Slice(2 + 4).WriteBigEndianInt64(myStruct.L0);
-            spanBE.Slice(2 + 4 + 8).WriteBigEndianUInt16(myStruct.US0);
-            spanBE.Slice(2 + 4 + 8 + 2).WriteBigEndianUInt32(myStruct.UI0);
-            spanBE.Slice(2 + 4 + 8 + 2 + 4).WriteBigEndianUInt64(myStruct.UL0);
+            spanBE.Slice(6).WriteBigEndianInt64(myStruct.L0);
+            spanBE.Slice(14).WriteBigEndianUInt16(myStruct.US0);
+            spanBE.Slice(16).WriteBigEndianUInt32(myStruct.UI0);
+            spanBE.Slice(20).WriteBigEndianUInt64(myStruct.UL0);
+            spanBE.Slice(28).WriteBigEndianInt16(myStruct.S1);
+            spanBE.Slice(30).WriteBigEndianInt32(myStruct.I1);
+            spanBE.Slice(34).WriteBigEndianInt64(myStruct.L1);
+            spanBE.Slice(42).WriteBigEndianUInt16(myStruct.US1);
+            spanBE.Slice(44).WriteBigEndianUInt32(myStruct.UI1);
+            spanBE.Slice(48).WriteBigEndianUInt64(myStruct.UL1);
 
             var readStruct = new TestStruct
             {
                 S0 = spanBE.ReadBigEndianInt16(),
                 I0 = spanBE.Slice(2).ReadBigEndianInt32(),
-                L0 = spanBE.Slice(2 + 4).ReadBigEndianInt64(),
-                US0 = spanBE.Slice(2 + 4 + 8).ReadBigEndianUInt16(),
-                UI0 = spanBE.Slice(2 + 4 + 8 + 2).ReadBigEndianUInt32(),
-                UL0 = spanBE.Slice(2 + 4 + 8 + 2 + 4).ReadBigEndianUInt64(),
+                L0 = spanBE.Slice(6).ReadBigEndianInt64(),
+                US0 = spanBE.Slice(14).ReadBigEndianUInt16(),
+                UI0 = spanBE.Slice(16).ReadBigEndianUInt32(),
+                UL0 = spanBE.Slice(20).ReadBigEndianUInt64(),
+                S1 = spanBE.Slice(28).ReadBigEndianInt16(),
+                I1 = spanBE.Slice(30).ReadBigEndianInt32(),
+                L1 = spanBE.Slice(34).ReadBigEndianInt64(),
+                US1 = spanBE.Slice(42).ReadBigEndianUInt16(),
+                UI1 = spanBE.Slice(44).ReadBigEndianUInt32(),
+                UL1 = spanBE.Slice(48).ReadBigEndianUInt64()
             };
 
             Assert.Equal(myStruct.S0, readStruct.S0);
@@ -117,6 +135,12 @@ namespace System.Buffers.Tests
             Assert.Equal(myStruct.US0, readStruct.US0);
             Assert.Equal(myStruct.UI0, readStruct.UI0);
             Assert.Equal(myStruct.UL0, readStruct.UL0);
+            Assert.Equal(myStruct.S1, readStruct.S1);
+            Assert.Equal(myStruct.I1, readStruct.I1);
+            Assert.Equal(myStruct.L1, readStruct.L1);
+            Assert.Equal(myStruct.US1, readStruct.US1);
+            Assert.Equal(myStruct.UI1, readStruct.UI1);
+            Assert.Equal(myStruct.UL1, readStruct.UL1);
         }
 
         [Fact]
@@ -131,26 +155,44 @@ namespace System.Buffers.Tests
                 L0 = long.MaxValue,
                 US0 = ushort.MaxValue,
                 UI0 = uint.MaxValue,
-                UL0 = ulong.MaxValue
+                UL0 = ulong.MaxValue,
+                S1 = short.MinValue,
+                I1 = int.MinValue,
+                L1 = long.MinValue,
+                US1 = ushort.MinValue,
+                UI1 = uint.MinValue,
+                UL1 = ulong.MinValue
             };
 
             Span<byte> spanLE = new byte[Unsafe.SizeOf<TestStruct>()];
 
             spanLE.WriteLittleEndianInt16(myStruct.S0);
             spanLE.Slice(2).WriteLittleEndianInt32(myStruct.I0);
-            spanLE.Slice(2 + 4).WriteLittleEndianInt64(myStruct.L0);
-            spanLE.Slice(2 + 4 + 8).WriteLittleEndianUInt16(myStruct.US0);
-            spanLE.Slice(2 + 4 + 8 + 2).WriteLittleEndianUInt32(myStruct.UI0);
-            spanLE.Slice(2 + 4 + 8 + 2 + 4).WriteLittleEndianUInt64(myStruct.UL0);
+            spanLE.Slice(6).WriteLittleEndianInt64(myStruct.L0);
+            spanLE.Slice(14).WriteLittleEndianUInt16(myStruct.US0);
+            spanLE.Slice(16).WriteLittleEndianUInt32(myStruct.UI0);
+            spanLE.Slice(20).WriteLittleEndianUInt64(myStruct.UL0);
+            spanLE.Slice(28).WriteLittleEndianInt16(myStruct.S1);
+            spanLE.Slice(30).WriteLittleEndianInt32(myStruct.I1);
+            spanLE.Slice(34).WriteLittleEndianInt64(myStruct.L1);
+            spanLE.Slice(42).WriteLittleEndianUInt16(myStruct.US1);
+            spanLE.Slice(44).WriteLittleEndianUInt32(myStruct.UI1);
+            spanLE.Slice(48).WriteLittleEndianUInt64(myStruct.UL1);
 
             var readStruct = new TestStruct
             {
                 S0 = spanLE.ReadLittleEndianInt16(),
                 I0 = spanLE.Slice(2).ReadLittleEndianInt32(),
-                L0 = spanLE.Slice(2 + 4).ReadLittleEndianInt64(),
-                US0 = spanLE.Slice(2 + 4 + 8).ReadLittleEndianUInt16(),
-                UI0 = spanLE.Slice(2 + 4 + 8 + 2).ReadLittleEndianUInt32(),
-                UL0 = spanLE.Slice(2 + 4 + 8 + 2 + 4).ReadLittleEndianUInt64(),
+                L0 = spanLE.Slice(6).ReadLittleEndianInt64(),
+                US0 = spanLE.Slice(14).ReadLittleEndianUInt16(),
+                UI0 = spanLE.Slice(16).ReadLittleEndianUInt32(),
+                UL0 = spanLE.Slice(20).ReadLittleEndianUInt64(),
+                S1 = spanLE.Slice(28).ReadLittleEndianInt16(),
+                I1 = spanLE.Slice(30).ReadLittleEndianInt32(),
+                L1 = spanLE.Slice(34).ReadLittleEndianInt64(),
+                US1 = spanLE.Slice(42).ReadLittleEndianUInt16(),
+                UI1 = spanLE.Slice(44).ReadLittleEndianUInt32(),
+                UL1 = spanLE.Slice(48).ReadLittleEndianUInt64()
             };
 
             Assert.Equal(myStruct.S0, readStruct.S0);
@@ -159,6 +201,12 @@ namespace System.Buffers.Tests
             Assert.Equal(myStruct.US0, readStruct.US0);
             Assert.Equal(myStruct.UI0, readStruct.UI0);
             Assert.Equal(myStruct.UL0, readStruct.UL0);
+            Assert.Equal(myStruct.S1, readStruct.S1);
+            Assert.Equal(myStruct.I1, readStruct.I1);
+            Assert.Equal(myStruct.L1, readStruct.L1);
+            Assert.Equal(myStruct.US1, readStruct.US1);
+            Assert.Equal(myStruct.UI1, readStruct.UI1);
+            Assert.Equal(myStruct.UL1, readStruct.UL1);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -170,6 +218,12 @@ namespace System.Buffers.Tests
             public ushort US0;
             public uint UI0;
             public ulong UL0;
+            public short S1;
+            public int I1;
+            public long L1;
+            public ushort US1;
+            public uint UI1;
+            public ulong UL1;
         }
     }
 }
