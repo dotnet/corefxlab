@@ -51,7 +51,7 @@ namespace System.Binary.Tests
             var myStruct = new HomogenousTestStruct
             {
                 I0 = 12345, // 00 00 48 57 => BE => 959447040
-                I1 = 5316513, // 00 81 31 161 => BE => 2703184128
+                I1 = 5316513, // 00 81 31 161 => BE => 2703184128 => (integer overflow) -1591783168
                 I2 = 790 // 00 00 03 22 => BE => 369295360
             };
 
