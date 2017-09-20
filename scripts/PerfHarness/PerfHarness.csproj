@@ -7,7 +7,6 @@
     <AssemblyName>PerfHarness</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>PerfHarness</PackageId>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
