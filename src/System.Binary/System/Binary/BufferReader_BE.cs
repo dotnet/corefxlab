@@ -293,23 +293,5 @@ namespace System.Buffers
             return success;
         }
         #endregion
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer, out T value) where T : struct
-        {
-            if (!BitConverter.IsLittleEndian) return buffer.TryRead(out value);
-            if (!buffer.TryRead(out value)) return false;
-            value = UnsafeUtilities.Reverse(value);
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndian<[Primitive]T>(this Span<byte> buffer, out T value) where T : struct
-        {
-            if (!BitConverter.IsLittleEndian) return buffer.TryRead(out value);
-            if (!buffer.TryRead(out value)) return false;
-            value = UnsafeUtilities.Reverse(value);
-            return true;
-        }
     }
 }
