@@ -3,7 +3,7 @@
 
 namespace System.IO.Pipelines
 {
-    public static class PipeExtensions
+    public static class PipeSequencesExtensions
     {
         public static WritableBufferOutput AsOutput(this WritableBuffer buffer)
         {

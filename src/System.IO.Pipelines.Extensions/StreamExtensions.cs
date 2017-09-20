@@ -10,54 +10,6 @@ namespace System.IO.Pipelines
     public static class StreamExtensions
     {
         /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public static IPipeWriter AsPipelineWriter(this Stream stream)
-        {
-            return (stream as IPipeWriter) ?? stream.AsPipelineWriter(BufferPool.Default);
-        }
-
-        /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="pool"></param>
-        /// <returns></returns>
-        public static IPipeWriter AsPipelineWriter(this Stream stream, BufferPool pool)
-        {
-            var pipe = new Pipe(pool);
-            pipe.CopyToAsync(stream);
-            return pipe;
-        }
-
-        /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeReader"/>.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public static IPipeReader AsPipelineReader(this Stream stream) => AsPipelineReader(stream, CancellationToken.None);
-
-        /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeReader"/>.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static IPipeReader AsPipelineReader(this Stream stream, CancellationToken cancellationToken)
-        {
-            if (stream is IPipeReader)
-            {
-                return (IPipeReader)stream;
-            }
-
-            var streamAdaptor = new UnownedBufferStream(stream);
-            streamAdaptor.Produce(cancellationToken);
-            return streamAdaptor.Reader;
-        }
-
-        /// <summary>
         /// Copies the content of a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
@@ -142,80 +94,6 @@ namespace System.IO.Pipelines
                 return;
             }
             return;
-        }
-
-        private class UnownedBufferStream : Stream
-        {
-            private readonly Stream _stream;
-            private readonly UnownedBufferReader _reader;
-
-            public IPipeReader Reader => _reader;
-
-            public override bool CanRead => false;
-            public override bool CanSeek => false;
-            public override bool CanWrite => true;
-
-            public override long Length => throw new NotSupportedException();
-
-            public override long Position
-            {
-                get => throw new NotSupportedException();
-                set => throw new NotSupportedException();
-            }
-
-            public UnownedBufferStream(Stream stream)
-            {
-                _stream = stream;
-                _reader = new UnownedBufferReader();
-            }
-
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                WriteAsync(buffer, offset, count).Wait();
-            }
-
-            public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-            {
-                await _reader.WriteAsync(new ArraySegment<byte>(buffer, offset, count), cancellationToken);
-            }
-
-            // *gasp* Async Void!? It works here because we still have _reader.Writing to track completion.
-            internal async void Produce(CancellationToken cancellationToken)
-            {
-                // Wait for a reader
-                await _reader.ReadingStarted;
-
-                try
-                {
-                    // We have to provide a buffer size in order to provide a cancellation token. Weird but meh.
-                    // 4096 is the "default" value.
-                    await _stream.CopyToAsync(this, 4096, cancellationToken);
-                    _reader.CompleteWriter();
-                }
-                catch (Exception ex)
-                {
-                    _reader.CompleteWriter(ex);
-                }
-            }
-
-            public override void Flush()
-            {
-            }
-
-            public override long Seek(long offset, SeekOrigin origin)
-            {
-                throw new NotSupportedException();
-            }
-
-            public override void SetLength(long value)
-            {
-                throw new NotSupportedException();
-            }
-
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                throw new NotSupportedException();
-            }
         }
 
         private class PipelineWriterStream : Stream

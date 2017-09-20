@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Text;
 
 namespace System.IO.Pipelines.Testing
@@ -24,8 +25,7 @@ namespace System.IO.Pipelines.Testing
             {
                 var s = inputs[i];
                 var length = s.Length;
-                var memoryOffset = length;
-                var dataOffset = length * 2;
+                var dataOffset = length;
                 var chars = new byte[length * 8];
 
                 for (int j = 0; j < length; j++)
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Testing
                 }
 
                 // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
-                var ownedBuffer = new UnownedBuffer(new ArraySegment<byte>(chars, memoryOffset, length * 3));
+                var ownedBuffer = new OwnedArray<byte>(chars);
                 var current = new BufferSegment(ownedBuffer, length, length * 2);
                 if (first == null)
                 {

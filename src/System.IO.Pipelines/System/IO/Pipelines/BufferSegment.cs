@@ -61,14 +61,6 @@ namespace System.IO.Pipelines
             End = end;
             ReadOnly = true;
 
-            // For unowned buffers, we need to make a copy here so that the caller can
-            // give up the give this buffer back to the caller
-            var unowned = buffer as UnownedBuffer;
-            if (unowned != null)
-            {
-                _owned = unowned.MakeCopy(start, end - start, out Start, out End);
-            }
-
             _owned.Retain();
             _buffer = _owned.AsMemory;
         }
@@ -95,7 +87,6 @@ namespace System.IO.Pipelines
         {
             _owned.Release();
         }
-
 
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
-    public static class PipelineWriterExtensions
+    public static class PipelineExtensions
     {
         private readonly static Task _completedTask = Task.FromResult(0);
 
