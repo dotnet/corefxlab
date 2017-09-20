@@ -15,19 +15,16 @@ namespace System.IO.Pipelines.Tests
         {
             var pool = new DisposeTrackingBufferPool();
 
-            using (var factory = new PipeFactory(pool))
-            {
-                var readerWriter = factory.Create();
-                await readerWriter.Writer.WriteAsync(new byte[] {1});
+            var readerWriter = new Pipe(new PipeOptions(pool));
+            await readerWriter.Writer.WriteAsync(new byte[] {1});
 
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.ReturnedBlocks);
+            readerWriter.Writer.Complete();
+            readerWriter.Reader.Complete();
+            Assert.Equal(1, pool.ReturnedBlocks);
 
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.ReturnedBlocks);
-            }
+            readerWriter.Writer.Complete();
+            readerWriter.Reader.Complete();
+            Assert.Equal(1, pool.ReturnedBlocks);
         }
 
         [Fact]
@@ -37,21 +34,18 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            using (var factory = new PipeFactory(pool))
+            var pipe = new Pipe(new PipeOptions(pool));
+            while (pool.CurrentlyRentedBlocks != 3)
             {
-                var pipe = factory.Create();
-                while (pool.CurrentlyRentedBlocks != 3)
-                {
-                    var writableBuffer = pipe.Writer.Alloc(writeSize);
-                    writableBuffer.Advance(writeSize);
-                    await writableBuffer.FlushAsync();
-                }
-
-                var readResult = await pipe.Reader.ReadAsync();
-                pipe.Reader.Advance(readResult.Buffer.End);
-
-                Assert.Equal(0, pool.CurrentlyRentedBlocks);
+                var writableBuffer = pipe.Writer.Alloc(writeSize);
+                writableBuffer.Advance(writeSize);
+                await writableBuffer.FlushAsync();
             }
+
+            var readResult = await pipe.Reader.ReadAsync();
+            pipe.Reader.Advance(readResult.Buffer.End);
+
+            Assert.Equal(0, pool.CurrentlyRentedBlocks);
         }
 
         [Fact]
@@ -61,19 +55,16 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            using (var factory = new PipeFactory(pool))
-            {
-                var pipe = factory.Create();
-                await pipe.Writer.WriteAsync(new byte[writeSize]);
+            var pipe = new Pipe(new PipeOptions(pool));
+            await pipe.Writer.WriteAsync(new byte[writeSize]);
 
-                var buffer = pipe.Writer.Alloc(writeSize);
-                var readResult = await pipe.Reader.ReadAsync();
-                pipe.Reader.Advance(readResult.Buffer.End);
-                buffer.Write(new byte[writeSize]);
-                buffer.Commit();
+            var buffer = pipe.Writer.Alloc(writeSize);
+            var readResult = await pipe.Reader.ReadAsync();
+            pipe.Reader.Advance(readResult.Buffer.End);
+            buffer.Write(new byte[writeSize]);
+            buffer.Commit();
 
-                Assert.Equal(1, pool.CurrentlyRentedBlocks);
-            }
+            Assert.Equal(1, pool.CurrentlyRentedBlocks);
         }
 
         [Fact]
@@ -83,26 +74,23 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            using (var factory = new PipeFactory(pool))
-            {
-                var pipe = factory.Create();
+            var pipe = new Pipe(new PipeOptions(pool));
 
-                // Write two blocks
-                var buffer = pipe.Writer.Alloc(writeSize);
-                buffer.Advance(buffer.Buffer.Length);
-                buffer.Ensure(buffer.Buffer.Length);
-                buffer.Advance(writeSize);
-                await buffer.FlushAsync();
+            // Write two blocks
+            var buffer = pipe.Writer.Alloc(writeSize);
+            buffer.Advance(buffer.Buffer.Length);
+            buffer.Ensure(buffer.Buffer.Length);
+            buffer.Advance(writeSize);
+            await buffer.FlushAsync();
 
-                Assert.Equal(2, pool.CurrentlyRentedBlocks);
+            Assert.Equal(2, pool.CurrentlyRentedBlocks);
 
-                // Read everything
-                var readResult = await pipe.Reader.ReadAsync();
-                pipe.Reader.Advance(readResult.Buffer.End);
+            // Read everything
+            var readResult = await pipe.Reader.ReadAsync();
+            pipe.Reader.Advance(readResult.Buffer.End);
 
-                // Try writing more
-                await pipe.Writer.WriteAsync(new byte[writeSize]);
-            }
+            // Try writing more
+            await pipe.Writer.WriteAsync(new byte[writeSize]);
         }
 
         private class DisposeTrackingBufferPool : BufferPool

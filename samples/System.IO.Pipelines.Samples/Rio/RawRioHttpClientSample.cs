@@ -2,17 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
 {
     public class RawRioHttpClientSample : RawHttpClientSampleBase
     {
-        private PipeFactory factory;
+        private BufferPool factory;
 
         public RawRioHttpClientSample()
         {
-            factory = new PipeFactory();
+            factory = new MemoryPool();
         }
 
         protected override Task<IPipeConnection> GetConnection()
@@ -22,7 +23,7 @@ namespace System.IO.Pipelines.Samples
             throw new NotImplementedException();
         }
 
-        protected override PipeFactory GetPipeFactory()
+        protected override BufferPool GetPipeFactory()
         {
             throw new NotImplementedException();
         }

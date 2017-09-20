@@ -29,14 +29,14 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = _thread.PipeFactory.Create(new PipeOptions
+            _input = new Pipe(new PipeOptions(thread.Pool)
             {
                 // ReaderScheduler = TaskRunScheduler.Default, // execute user code on the thread pool
                 // ReaderScheduler = thread,
                 WriterScheduler = thread // resume from back pressure on the uv thread
             });
 
-            _output = _thread.PipeFactory.Create(new PipeOptions
+            _output = new Pipe(new PipeOptions(thread.Pool)
             {
                 // WriterScheduler = TaskRunScheduler.Default, // Execute the flush callback on the thread pool
                 // WriterScheduler = thread,

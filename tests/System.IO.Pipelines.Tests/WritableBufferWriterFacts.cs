@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Buffers;
 using System.Linq;
 using Xunit;
 
@@ -8,21 +9,21 @@ namespace System.IO.Pipelines.Tests
 {
     public class WritableBufferWriterFacts : IDisposable
     {
-        private PipeFactory _pipeFactory;
-        private IPipe _pipe;
         private WritableBuffer _buffer;
+        private MemoryPool _pool;
+        private Pipe _pipe;
 
         public WritableBufferWriterFacts()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create();
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory.Dispose();
+            _pool?.Dispose();
         }
 
         private byte[] Read()

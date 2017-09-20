@@ -2,12 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Threading;
 
 namespace System.IO.Pipelines
 {
     public class PipeOptions
     {
+        public PipeOptions(BufferPool bufferPool)
+        {
+            BufferPool = bufferPool;
+        }
+
         public long MaximumSizeHigh { get; set; }
 
         public long MaximumSizeLow { get; set; }
@@ -15,5 +21,7 @@ namespace System.IO.Pipelines
         public IScheduler WriterScheduler { get; set; }
 
         public IScheduler ReaderScheduler { get; set; }
+
+        public BufferPool BufferPool { get; set; }
     }
 }

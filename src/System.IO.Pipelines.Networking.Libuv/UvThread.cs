@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading;
 using System.IO.Pipelines.Networking.Libuv.Interop;
 using System.IO.Pipelines.Networking.Libuv.Internal;
@@ -29,7 +30,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public UvLoopHandle Loop { get; private set; }
 
-        public PipeFactory PipeFactory { get; } = new PipeFactory();
+        public MemoryPool Pool { get; } = new MemoryPool();
 
         public WriteReqPool WriteReqPool { get; }
 
@@ -135,7 +136,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         {
             Stop();
 
-            PipeFactory.Dispose();
+            Pool.Dispose();
         }
 
         public void Schedule(Action<object> action, object state)

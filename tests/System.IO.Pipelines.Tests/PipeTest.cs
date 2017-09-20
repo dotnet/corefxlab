@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
+
 namespace System.IO.Pipelines.Tests
 {
     public abstract class PipeTest : IDisposable
@@ -8,15 +10,16 @@ namespace System.IO.Pipelines.Tests
         protected const int MaximumSizeHigh = 65;
 
         protected IPipe Pipe;
-        private readonly PipeFactory _pipeFactory;
+        private readonly MemoryPool _pool;
 
         public PipeTest()
         {
-            _pipeFactory = new PipeFactory();
-            Pipe = _pipeFactory.Create(new PipeOptions()
+            _pool = new MemoryPool();
+            Pipe = new Pipe(new PipeOptions(_pool)
             {
                 MaximumSizeHigh = 65,
-                MaximumSizeLow = 6
+                MaximumSizeLow = 6,
+                BufferPool = _pool
             });
         }
 
@@ -24,7 +27,7 @@ namespace System.IO.Pipelines.Tests
         {
             Pipe.Writer.Complete();
             Pipe.Reader.Complete();
-            _pipeFactory.Dispose();
+            _pool.Dispose();
         }
     }
 }

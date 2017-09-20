@@ -54,15 +54,11 @@ namespace System.IO.Pipelines
             _buffer = _owned.AsMemory;
         }
 
-        public BufferSegment(OwnedMemory<byte> buffer, int start, int end)
+        public BufferSegment(OwnedMemory<byte> buffer, int start, int end): this(buffer)
         {
-            _owned = buffer;
             Start = start;
             End = end;
             ReadOnly = true;
-
-            _owned.Retain();
-            _buffer = _owned.AsMemory;
         }
 
         public Memory<byte> Buffer => _buffer;

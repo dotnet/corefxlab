@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -12,22 +13,22 @@ namespace System.IO.Pipelines.Networking.Sockets
     /// </summary>
     public class SocketListener : IDisposable
     {
-        private readonly bool _ownsFactory;
+        private readonly bool _ownsPool;
         private Socket _socket;
         private Socket Socket => _socket;
-        private PipeFactory _factory;
-        private PipeFactory PipeFactory => _factory;
+        private MemoryPool _pool;
+        private MemoryPool PipePool => _pool;
         private Func<SocketConnection, Task> Callback { get; set; }
         static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
         /// <summary>
         /// Creates a new SocketListener instance
         /// </summary>
-        /// <param name="factory">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the listener</param>
-        public SocketListener(PipeFactory factory = null)
+        /// <param name="factory">Optionally allows the underlying <see cref="PipePool"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipePool"/> will be instantiated and owned by the listener</param>
+        public SocketListener(MemoryPool factory = null)
         {
-            _ownsFactory = factory == null;
-            _factory = factory ?? new PipeFactory();
+            _ownsPool = factory == null;
+            _pool = factory ?? new MemoryPool();
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                 GC.SuppressFinalize(this);
                 _socket?.Dispose();
                 _socket = null;
-                if (_ownsFactory) { _factory?.Dispose(); }
-                _factory = null;
+                if (_ownsPool) { _pool?.Dispose(); }
+                _pool = null;
             }
         }
 
@@ -127,7 +128,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (e.SocketError == SocketError.Success)
             {
-                var conn = new SocketConnection(e.AcceptSocket, PipeFactory);
+                var conn = new SocketConnection(e.AcceptSocket, PipePool);
                 e.AcceptSocket = null;
                 ExecuteConnection(conn);
             }

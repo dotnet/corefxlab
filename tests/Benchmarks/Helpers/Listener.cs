@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,11 +13,11 @@ namespace System.IO.Pipelines.Samples
         private readonly List<PipeConnection> _connections = new List<PipeConnection>();
         private Task[] _connectionTasks;
 
-        public FakeListener(PipeFactory factory, int concurrentConnections)
+        public FakeListener(MemoryPool factory, int concurrentConnections)
         {
             for (int i = 0; i < concurrentConnections; i++)
             {
-                _connections.Add(new PipeConnection(factory));
+                _connections.Add(new PipeConnection(new PipeOptions(factory)));
             }
         }
 

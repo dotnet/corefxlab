@@ -28,7 +28,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer.Alloc();
                 output.AsOutput().Append(data, SymbolTable.InvariantUtf8);
@@ -65,7 +65,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer.Alloc();
                 output.AsOutput().Append(data, SymbolTable.InvariantUtf8);
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.AsOutput().Append(value, SymbolTable.InvariantUtf8);
                 await buffer.FlushAsync();
@@ -141,9 +141,9 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public async Task WriteHex(int value, string hex)
         {
-            using (var factory = new PipeFactory())
+            using (var factory = new MemoryPool())
             {
-                var pipe = factory.Create();
+                var pipe = new Pipe(new PipeOptions(factory));
                 var buffer = pipe.Writer.Alloc();
                 buffer.AsOutput().Append(value, SymbolTable.InvariantUtf8, 'x');
                 await buffer.FlushAsync();

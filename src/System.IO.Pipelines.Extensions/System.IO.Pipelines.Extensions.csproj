@@ -13,7 +13,4 @@
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxVersion)" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
 </Project>

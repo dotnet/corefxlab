@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Net;
 using System.Threading.Tasks;
 using System.Net.Sockets;
@@ -10,23 +11,23 @@ namespace System.IO.Pipelines.Samples
 {
     public class RawSocketHttpClientSample : RawHttpClientSampleBase
     {
-        private PipeFactory factory;
+        private BufferPool pool;
 
         public RawSocketHttpClientSample()
         {
-            factory = new PipeFactory();
+            pool = new MemoryPool();
         }
 
         protected override Task<IPipeConnection> GetConnection()
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(IPAddress.Loopback, 5000));
-            return Task.FromResult(factory.CreateConnection(new NetworkStream(s)));
+            return Task.FromResult((IPipeConnection)new StreamPipeConnection(new PipeOptions(pool), new NetworkStream(s)));
         }
 
-        protected override PipeFactory GetPipeFactory()
+        protected override BufferPool GetPipeFactory()
         {
-            return factory;
+            return pool;
         }
     }
 }

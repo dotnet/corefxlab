@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -9,21 +10,20 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipeLengthTests : IDisposable
     {
-        private PipeFactory _pipeFactory;
-
+        private MemoryPool _pool;
         private Pipe _pipe;
 
         public PipeLengthTests()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = (Pipe)_pipeFactory.Create();
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory?.Dispose();
+            _pool?.Dispose();
         }
 
         [Fact]

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -9,15 +10,13 @@ namespace System.IO.Pipelines.Tests
 {
     public class BackpressureTests : IDisposable
     {
-        private PipeFactory _pipeFactory;
-
-        private IPipe _pipe;
+        private MemoryPool _pool;
+        private Pipe _pipe;
 
         public BackpressureTests()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create(new PipeOptions
-            {
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool) {
                 MaximumSizeLow = 32,
                 MaximumSizeHigh = 64
             });
@@ -27,7 +26,7 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory?.Dispose();
+            _pool?.Dispose();
         }
 
         [Fact]

@@ -6,10 +6,10 @@ namespace System.IO.Pipelines
 {
     public class PipeConnection : IPipeConnection
     {
-        public PipeConnection(PipeFactory factory)
+        public PipeConnection(PipeOptions pipeOptions)
         {
-            Input = factory.Create();
-            Output = factory.Create();
+            Input = new Pipe(pipeOptions);
+            Output = new Pipe(pipeOptions);
         }
 
         IPipeReader IPipeConnection.Input => Input.Reader;
