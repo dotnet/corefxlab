@@ -77,5 +77,33 @@ namespace System.Buffers
                 throw new ArgumentOutOfRangeException();
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe static int ReverseEndianness(this int num)
+        {
+            uint val = 0;
+            Unsafe.Write(&val, num);
+            val = (val << 24)
+                | ((val & 0xFF00) << 8)
+                | ((val & 0xFF0000) >> 8)
+                | (val >> 24);
+            return Unsafe.Read<int>(&val);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe static long ReverseEndianness(this long num)
+        {
+            ulong val = 0;
+            Unsafe.Write(&val, num);
+            val = (val << 56)
+                | ((val & 0xFF00) << 40)
+                | ((val & 0xFF0000) << 24)
+                | ((val & 0xFF000000) << 8)
+                | ((val & 0xFF00000000) >> 8)
+                | ((val & 0xFF0000000000) >> 24)
+                | ((val & 0xFF000000000000) >> 40)
+                | (val >> 56);
+            return Unsafe.Read<long>(&val);
+        }
     }
 }
