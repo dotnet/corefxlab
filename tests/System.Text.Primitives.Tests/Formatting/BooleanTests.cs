@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Text.Primitives.Tests
 {
-    public class FormattingTests
+    public partial class FormattingTests
     {
         [Theory]
         [InlineData('G', true, "True")]

@@ -1381,11 +1381,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public unsafe static bool TryParseByte(char* text, int length, out byte value, out int charsConsumed)
+                public unsafe static bool TryParseByte(char* text, int length, out byte value, out int charactersConsumed)
                 {
                     if (length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1400,7 +1400,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1415,7 +1415,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
@@ -1432,7 +1432,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
@@ -1444,14 +1444,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -1459,7 +1459,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = length;
+                    charactersConsumed = length;
                     value = (byte)(parsedValue);
                     return true;
                 }
@@ -1540,11 +1540,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charsConsumed)
+                public static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charactersConsumed)
                 {
                     if (text.Length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1559,7 +1559,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1574,7 +1574,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
@@ -1591,7 +1591,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
@@ -1603,14 +1603,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (byte)(parsedValue);
                                 return true;
                             }
                             // If we try to append a digit to anything larger than byte.MaxValue / 0x10, there will be overflow
                             if (parsedValue > byte.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -1618,7 +1618,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = text.Length;
+                    charactersConsumed = text.Length;
                     value = (byte)(parsedValue);
                     return true;
                 }
@@ -1702,11 +1702,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charsConsumed)
+                public unsafe static bool TryParseUInt16(char* text, int length, out ushort value, out int charactersConsumed)
                 {
                     if (length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1721,7 +1721,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1736,7 +1736,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
@@ -1753,7 +1753,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
@@ -1765,14 +1765,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -1780,7 +1780,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = length;
+                    charactersConsumed = length;
                     value = (ushort)(parsedValue);
                     return true;
                 }
@@ -1861,11 +1861,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charsConsumed)
+                public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charactersConsumed)
                 {
                     if (text.Length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1880,7 +1880,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -1895,7 +1895,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
@@ -1912,7 +1912,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
@@ -1924,14 +1924,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = (ushort)(parsedValue);
                                 return true;
                             }
                             // If we try to append a digit to anything larger than ushort.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ushort.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -1939,7 +1939,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = text.Length;
+                    charactersConsumed = text.Length;
                     value = (ushort)(parsedValue);
                     return true;
                 }
@@ -2023,11 +2023,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charsConsumed)
+                public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
                 {
                     if (length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2042,7 +2042,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2057,7 +2057,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2074,7 +2074,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2086,14 +2086,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -2101,7 +2101,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = length;
+                    charactersConsumed = length;
                     value = parsedValue;
                     return true;
                 }
@@ -2182,11 +2182,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charsConsumed)
+                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
                 {
                     if (text.Length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2201,7 +2201,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2216,7 +2216,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2233,7 +2233,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2245,14 +2245,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
                             // If we try to append a digit to anything larger than uint.MaxValue / 0x10, there will be overflow
                             if (parsedValue > uint.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -2260,7 +2260,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = text.Length;
+                    charactersConsumed = text.Length;
                     value = parsedValue;
                     return true;
                 }
@@ -2344,11 +2344,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charsConsumed)
+                public unsafe static bool TryParseUInt64(char* text, int length, out ulong value, out int charactersConsumed)
                 {
                     if (length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2363,7 +2363,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2378,7 +2378,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2395,7 +2395,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2407,14 +2407,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -2422,7 +2422,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = length;
+                    charactersConsumed = length;
                     value = parsedValue;
                     return true;
                 }
@@ -2503,11 +2503,11 @@ namespace System.Buffers
                     return true;
                 }
 
-                public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charsConsumed)
+                public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charactersConsumed)
                 {
                     if (text.Length < 1)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2522,7 +2522,7 @@ namespace System.Buffers
                     nextDigit = hexLookup[(byte)nextCharacter];
                     if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                     {
-                        charsConsumed = 0;
+                        charactersConsumed = 0;
                         value = default;
                         return false;
                     }
@@ -2537,7 +2537,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2554,7 +2554,7 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
@@ -2566,14 +2566,14 @@ namespace System.Buffers
                             nextDigit = hexLookup[(byte)nextCharacter];
                             if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)
                             {
-                                charsConsumed = index;
+                                charactersConsumed = index;
                                 value = parsedValue;
                                 return true;
                             }
                             // If we try to append a digit to anything larger than ulong.MaxValue / 0x10, there will be overflow
                             if (parsedValue > ulong.MaxValue / 0x10)
                             {
-                                charsConsumed = 0;
+                                charactersConsumed = 0;
                                 value = default;
                                 return false;
                             }
@@ -2581,7 +2581,7 @@ namespace System.Buffers
                         }
                     }
 
-                    charsConsumed = text.Length;
+                    charactersConsumed = text.Length;
                     value = parsedValue;
                     return true;
                 }
