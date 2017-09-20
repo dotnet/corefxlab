@@ -67,8 +67,7 @@ namespace System.Runtime
 
         public static short ReverseEndianness(short value)
         {
-            return (short)((value & 0xFF) << 8 | 
-                (short)(((ushort)value & 0xFF00) >> 8));
+            return (short)(value << 8 | value >> 8);
         }
 
         public static int ReverseEndianness(int value)
@@ -93,8 +92,7 @@ namespace System.Runtime
 
         public static ushort ReverseEndianness(ushort value)
         {
-            return (ushort)((value & 0xFFU) << 8 |
-                (value & 0xFF00U) >> 8);
+            return (ushort)(value << 8 | value >> 8);
         }
 
         public static uint ReverseEndianness(uint value)
