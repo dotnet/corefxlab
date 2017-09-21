@@ -15,12 +15,10 @@ namespace System.IO.Pipelines.Tests
         public PipeTest()
         {
             _pool = new MemoryPool();
-            Pipe = new Pipe(new PipeOptions(_pool)
-            {
-                MaximumSizeHigh = 65,
-                MaximumSizeLow = 6,
-                BufferPool = _pool
-            });
+            Pipe = new Pipe(new PipeOptions(_pool,
+                maximumSizeHigh: 65,
+                maximumSizeLow: 6
+            ));
         }
 
         public void Dispose()

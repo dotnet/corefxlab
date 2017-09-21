@@ -9,19 +9,28 @@ namespace System.IO.Pipelines
 {
     public class PipeOptions
     {
-        public PipeOptions(BufferPool bufferPool)
+        public PipeOptions(
+            BufferPool bufferPool,
+            IScheduler readerScheduler = null,
+            IScheduler writerScheduler = null,
+            long maximumSizeHigh = 0,
+            long maximumSizeLow = 0)
         {
             BufferPool = bufferPool;
+            ReaderScheduler = readerScheduler;
+            WriterScheduler = writerScheduler;
+            MaximumSizeHigh = maximumSizeHigh;
+            MaximumSizeLow = maximumSizeLow;
         }
 
-        public long MaximumSizeHigh { get; set; }
+        public long MaximumSizeHigh { get; }
 
-        public long MaximumSizeLow { get; set; }
+        public long MaximumSizeLow { get; }
 
-        public IScheduler WriterScheduler { get; set; }
+        public IScheduler WriterScheduler { get; }
 
-        public IScheduler ReaderScheduler { get; set; }
+        public IScheduler ReaderScheduler { get; }
 
-        public BufferPool BufferPool { get; set; }
+        public BufferPool BufferPool { get; }
     }
 }

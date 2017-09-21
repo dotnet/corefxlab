@@ -16,10 +16,7 @@ namespace System.IO.Pipelines.Tests
         public BackpressureTests()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool) {
-                MaximumSizeLow = 32,
-                MaximumSizeHigh = 64
-            });
+            _pipe = new Pipe(new PipeOptions(_pool, maximumSizeLow: 32, maximumSizeHigh: 64));
         }
 
         public void Dispose()

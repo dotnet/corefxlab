@@ -20,10 +20,7 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool)
-                    {
-                        ReaderScheduler = scheduler
-                    });
+                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -58,12 +55,10 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool)
-                    {
-                        MaximumSizeLow = 32,
-                        MaximumSizeHigh = 64,
-                        WriterScheduler = scheduler
-                    });
+                    var pipe = new Pipe(new PipeOptions(pool,
+                        maximumSizeLow: 32,
+                        maximumSizeHigh: 64,
+                        writerScheduler: scheduler));
 
                     var writableBuffer = pipe.Writer.Alloc(64);
                     writableBuffer.Advance(64);
@@ -136,11 +131,10 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool)
-                {
-                    MaximumSizeLow = 32,
-                    MaximumSizeHigh = 64
-                });
+                var pipe = new Pipe(new PipeOptions(pool,
+                    maximumSizeLow: 32,
+                    maximumSizeHigh: 64
+                ));
 
                 var writableBuffer = pipe.Writer.Alloc(64);
                 writableBuffer.Advance(64);

@@ -26,7 +26,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) { WriterScheduler = scheduler });
+            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Reader.Complete();
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
@@ -44,7 +44,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) { ReaderScheduler = scheduler });
+            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Writer.Complete();
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) { WriterScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) { ReaderScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -110,7 +110,7 @@ namespace System.IO.Pipelines.Tests
         {
             var exception = new Exception();
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) {  WriterScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((e, state) => throw exception, null);
             pipe.Reader.Complete();
 
@@ -124,7 +124,7 @@ namespace System.IO.Pipelines.Tests
         {
             var exception = new Exception();
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) {  ReaderScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((e, state) => throw exception, null);
             pipe.Writer.Complete();
 
@@ -138,7 +138,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) {  WriterScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, writerScheduler: scheduler));
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -163,7 +163,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
-            var pipe = new Pipe(new PipeOptions(_pool) {  ReaderScheduler = scheduler});
+            var pipe = new Pipe(new PipeOptions(_pool, readerScheduler: scheduler));
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
@@ -413,7 +413,7 @@ namespace System.IO.Pipelines.Tests
         {
             var callbackRan = false;
             var continuationRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) {  MaximumSizeHigh = 5});
+            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -440,7 +440,7 @@ namespace System.IO.Pipelines.Tests
         public void CompletingReaderFromWriterCallbackWorks()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) {  MaximumSizeHigh = 5});
+            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -460,7 +460,7 @@ namespace System.IO.Pipelines.Tests
         public void CompletingWriterFromReaderCallbackWorks()
         {
             var callbackRan = false;
-            var pipe = new Pipe(new PipeOptions(_pool) {  MaximumSizeHigh = 5});
+            var pipe = new Pipe(new PipeOptions(_pool, maximumSizeHigh: 5));
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {

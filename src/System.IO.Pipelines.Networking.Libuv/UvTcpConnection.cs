@@ -29,19 +29,13 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = new Pipe(new PipeOptions(thread.Pool)
-            {
-                // ReaderScheduler = TaskRunScheduler.Default, // execute user code on the thread pool
-                // ReaderScheduler = thread,
-                WriterScheduler = thread // resume from back pressure on the uv thread
-            });
+            _input = new Pipe(new PipeOptions(thread.Pool,
+                // resume from back pressure on the uv thread
+                writerScheduler: thread));
 
-            _output = new Pipe(new PipeOptions(thread.Pool)
-            {
-                // WriterScheduler = TaskRunScheduler.Default, // Execute the flush callback on the thread pool
-                // WriterScheduler = thread,
-                ReaderScheduler = thread // user code will dispatch back to the uv thread for writes,
-            });
+            _output = new Pipe(new PipeOptions(thread.Pool,
+                // user code will dispatch back to the uv thread for writes,
+                readerScheduler: thread));
 
             StartReading();
             _sendingTask = ProcessWrites();

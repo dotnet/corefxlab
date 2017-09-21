@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Buffers;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
@@ -25,13 +26,13 @@ namespace System.IO.Pipelines.Performance.Tests
         };
 
         private IPipe _pipe;
-        private PipeFactory _pipelineFactory;
+        private MemoryPool _memoryPool;
 
         [Setup]
         public void Setup()
         {
-            _pipelineFactory = new PipeFactory();
-            _pipe = _pipelineFactory.Create();
+            _memoryPool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_memoryPool));
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
