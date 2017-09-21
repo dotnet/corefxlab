@@ -33,10 +33,17 @@ Ensure-Nuget-Exists
 Write-Host "** Creating NuGet packages from nuspec. **"
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\external", "*.nuspec", "AllDirectories")) {
     Write-Host "Creating NuGet package for $file..."
-    Invoke-Expression "$nugetPath pack $file -o $packagesPath"
+    if (!$file.contains("Brotli")) {
+        Invoke-Expression "$nugetPath pack $file -o $packagesPath"
+    }
+    else {
+        # Update this if a new version of Brotli Native needs to be published.
+        # Version 0.0.1 already exists and overwriting packages is forbidden.
+        Write-Host "Skipping creation of package from $file"
+    }
     
     if (!$?) {
-        Write-Error "Failed to create NuGet package for project $brotliExternalFile"
+        Write-Error "Failed to create NuGet package for project $file"
     }
 }
 
