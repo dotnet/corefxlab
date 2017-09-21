@@ -800,7 +800,7 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetNextCharAscii(in JsonReader reader, ref byte src, int length, out char ch)
+        private static int GetNextCharAscii(ref readonly JsonReader reader, ref byte src, int length, out char ch)
         {
             if (reader.UseFastUtf8)
             {
