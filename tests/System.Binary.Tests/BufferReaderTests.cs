@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Xunit;
 using Microsoft.Xunit.Performance;
-using System.Runtime;
 
 namespace System.Buffers.Tests
 {
@@ -184,18 +183,18 @@ namespace System.Buffers.Tests
             TestStructExplicit readStructAndReverse = spanBE.Read<TestStructExplicit>();
             if (BitConverter.IsLittleEndian)
             {
-                readStructAndReverse.S0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.S0);
-                readStructAndReverse.I0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.I0);
-                readStructAndReverse.L0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.L0);
-                readStructAndReverse.US0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.US0);
-                readStructAndReverse.UI0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.UI0);
-                readStructAndReverse.UL0 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.UL0);
-                readStructAndReverse.S1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.S1);
-                readStructAndReverse.I1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.I1);
-                readStructAndReverse.L1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.L1);
-                readStructAndReverse.US1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.US1);
-                readStructAndReverse.UI1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.UI1);
-                readStructAndReverse.UL1 = UnsafeUtilities.ReverseEndianness(readStructAndReverse.UL1);
+                readStructAndReverse.S0 = readStructAndReverse.S0.Reverse();
+                readStructAndReverse.I0 = readStructAndReverse.I0.Reverse();
+                readStructAndReverse.L0 = readStructAndReverse.L0.Reverse();
+                readStructAndReverse.US0 = readStructAndReverse.US0.Reverse();
+                readStructAndReverse.UI0 = readStructAndReverse.UI0.Reverse();
+                readStructAndReverse.UL0 = readStructAndReverse.UL0.Reverse();
+                readStructAndReverse.S1 = readStructAndReverse.S1.Reverse();
+                readStructAndReverse.I1 = readStructAndReverse.I1.Reverse();
+                readStructAndReverse.L1 = readStructAndReverse.L1.Reverse();
+                readStructAndReverse.US1 = readStructAndReverse.US1.Reverse();
+                readStructAndReverse.UI1 = readStructAndReverse.UI1.Reverse();
+                readStructAndReverse.UL1 = readStructAndReverse.UL1.Reverse();
             }
 
             TestStructExplicit readStructByField = new TestStructExplicit
@@ -355,18 +354,18 @@ namespace System.Buffers.Tests
                         readStruct = spanBE.Read<TestStructExplicit>();
                         if (BitConverter.IsLittleEndian)
                         {
-                            readStruct.S0 = UnsafeUtilities.ReverseEndianness(readStruct.S0);
-                            readStruct.I0 = UnsafeUtilities.ReverseEndianness(readStruct.I0);
-                            readStruct.L0 = UnsafeUtilities.ReverseEndianness(readStruct.L0);
-                            readStruct.US0 = UnsafeUtilities.ReverseEndianness(readStruct.US0);
-                            readStruct.UI0 = UnsafeUtilities.ReverseEndianness(readStruct.UI0);
-                            readStruct.UL0 = UnsafeUtilities.ReverseEndianness(readStruct.UL0);
-                            readStruct.S1 = UnsafeUtilities.ReverseEndianness(readStruct.S1);
-                            readStruct.I1 = UnsafeUtilities.ReverseEndianness(readStruct.I1);
-                            readStruct.L1 = UnsafeUtilities.ReverseEndianness(readStruct.L1);
-                            readStruct.US1 = UnsafeUtilities.ReverseEndianness(readStruct.US1);
-                            readStruct.UI1 = UnsafeUtilities.ReverseEndianness(readStruct.UI1);
-                            readStruct.UL1 = UnsafeUtilities.ReverseEndianness(readStruct.UL1);
+                            readStruct.S0 = readStruct.S0.Reverse();
+                            readStruct.I0 = readStruct.I0.Reverse();
+                            readStruct.L0 = readStruct.L0.Reverse();
+                            readStruct.US0 = readStruct.US0.Reverse();
+                            readStruct.UI0 = readStruct.UI0.Reverse();
+                            readStruct.UL0 = readStruct.UL0.Reverse();
+                            readStruct.S1 = readStruct.S1.Reverse();
+                            readStruct.I1 = readStruct.I1.Reverse();
+                            readStruct.L1 = readStruct.L1.Reverse();
+                            readStruct.US1 = readStruct.US1.Reverse();
+                            readStruct.UI1 = readStruct.UI1.Reverse();
+                            readStruct.UL1 = readStruct.UL1.Reverse();
                         }
                     }
                 }

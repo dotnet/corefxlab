@@ -15,7 +15,7 @@ namespace System.Buffers
             short result = buffer.Read<short>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -26,7 +26,7 @@ namespace System.Buffers
             int result = buffer.Read<int>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -37,7 +37,7 @@ namespace System.Buffers
             long result = buffer.Read<long>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -48,7 +48,7 @@ namespace System.Buffers
             ushort result = buffer.Read<ushort>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -59,7 +59,7 @@ namespace System.Buffers
             uint result = buffer.Read<uint>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -70,7 +70,7 @@ namespace System.Buffers
             ulong result = buffer.Read<ulong>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -83,7 +83,7 @@ namespace System.Buffers
             short result = buffer.Read<short>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -94,7 +94,7 @@ namespace System.Buffers
             int result = buffer.Read<int>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -105,7 +105,7 @@ namespace System.Buffers
             long result = buffer.Read<long>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -116,7 +116,7 @@ namespace System.Buffers
             ushort result = buffer.Read<ushort>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -127,7 +127,7 @@ namespace System.Buffers
             uint result = buffer.Read<uint>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -138,7 +138,7 @@ namespace System.Buffers
             ulong result = buffer.Read<ulong>();
             if (BitConverter.IsLittleEndian)
             {
-                result = UnsafeUtilities.ReverseEndianness(result);
+                result = result.Reverse();
             }
             return result;
         }
@@ -151,7 +151,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -162,7 +162,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -173,7 +173,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -184,7 +184,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -195,7 +195,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -206,7 +206,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -219,7 +219,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -230,7 +230,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -241,7 +241,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -252,7 +252,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -263,7 +263,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
@@ -274,7 +274,7 @@ namespace System.Buffers
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
             {
-                value = UnsafeUtilities.ReverseEndianness(value);
+                value = value.Reverse();
             }
             return success;
         }
