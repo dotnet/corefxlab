@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Samples
     {
         public async Task Run()
         {
-            var consoleOutput = StreamPipeConnection.CreateWriter(new PipeOptions(GetPipeFactory()), Console.OpenStandardOutput());
+            var consoleOutput = StreamPipeConnection.CreateWriter(new PipeOptions(GetBufferPool()), Console.OpenStandardOutput());
             var connection = await GetConnection();
 
             while (true)
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        protected abstract BufferPool GetPipeFactory();
+        protected abstract BufferPool GetBufferPool();
 
         protected abstract Task<IPipeConnection> GetConnection();
 

@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Samples
 
         public static void RunSingleSegmentParser(int numberOfRequests, int concurrentConnections, byte[] requestPayload, WriteResponseDelegate writeResponse)
         {
-            var factory = new MemoryPool();
+            var memoryPool = new MemoryPool();
             var listener = new FakeListener(new MemoryPool(), concurrentConnections);
 
             listener.OnConnection(async connection =>
@@ -67,7 +67,7 @@ namespace System.IO.Pipelines.Samples
             Task.WaitAll(tasks);
 
             listener.Dispose();
-            factory.Dispose();
+            memoryPool.Dispose();
         }
 
         private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Memory<byte> requestBuffer)
@@ -82,8 +82,8 @@ namespace System.IO.Pipelines.Samples
 
         public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<HttpRequest, WritableBuffer> writeResponse)
         {
-            var factory = new MemoryPool();
-            var listener = new FakeListener(factory, concurrentConnections);
+            var memoryPool = new MemoryPool();
+            var listener = new FakeListener(memoryPool, concurrentConnections);
 
             listener.OnConnection(async connection => {
                 while (true)
@@ -136,7 +136,7 @@ namespace System.IO.Pipelines.Samples
             Task.WaitAll(tasks);
 
             listener.Dispose();
-            factory.Dispose();
+            memoryPool.Dispose();
         }
 
     }

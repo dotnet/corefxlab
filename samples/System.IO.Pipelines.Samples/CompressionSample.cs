@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Samples
     {
         public Task Run()
         {
-            using (var factory = new MemoryPool())
+            using (var bufferPool = new MemoryPool())
             {
                 var filePath = Path.GetFullPath("Program.cs");
 
@@ -26,7 +26,7 @@ namespace System.IO.Pipelines.Samples
                 //compressStream.Flush();
                 //compressed.Seek(0, SeekOrigin.Begin);
 
-                var options = new PipeOptions(factory);
+                var options = new PipeOptions(bufferPool);
 
                 var input = ReadableFilePipelineFactoryExtensions.ReadFile(options, filePath)
                               .DeflateCompress(options, CompressionLevel.Optimal)

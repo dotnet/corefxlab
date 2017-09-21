@@ -24,11 +24,11 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// <summary>
         /// Creates a new SocketListener instance
         /// </summary>
-        /// <param name="factory">Optionally allows the underlying <see cref="PipePool"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipePool"/> will be instantiated and owned by the listener</param>
-        public SocketListener(MemoryPool factory = null)
+        /// <param name="pool">Optionally allows the underlying <see cref="PipePool"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipePool"/> will be instantiated and owned by the listener</param>
+        public SocketListener(MemoryPool pool = null)
         {
-            _ownsPool = factory == null;
-            _pool = factory ?? new MemoryPool();
+            _ownsPool = pool == null;
+            _pool = pool ?? new MemoryPool();
         }
 
         /// <summary>

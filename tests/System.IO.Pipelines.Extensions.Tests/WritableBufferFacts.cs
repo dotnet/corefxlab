@@ -141,9 +141,9 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public async Task WriteHex(int value, string hex)
         {
-            using (var factory = new MemoryPool())
+            using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(factory));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.AsOutput().Append(value, SymbolTable.InvariantUtf8, 'x');
                 await buffer.FlushAsync();

@@ -25,7 +25,7 @@ namespace System.IO.Pipelines.Samples
             return Task.FromResult((IPipeConnection)new StreamPipeConnection(new PipeOptions(pool), new NetworkStream(s)));
         }
 
-        protected override BufferPool GetPipeFactory()
+        protected override BufferPool GetBufferPool()
         {
             return pool;
         }

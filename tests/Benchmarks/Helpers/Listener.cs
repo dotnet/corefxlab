@@ -13,11 +13,11 @@ namespace System.IO.Pipelines.Samples
         private readonly List<PipeConnection> _connections = new List<PipeConnection>();
         private Task[] _connectionTasks;
 
-        public FakeListener(MemoryPool factory, int concurrentConnections)
+        public FakeListener(MemoryPool pool, int concurrentConnections)
         {
             for (int i = 0; i < concurrentConnections; i++)
             {
-                _connections.Add(new PipeConnection(new PipeOptions(factory)));
+                _connections.Add(new PipeConnection(new PipeOptions(pool)));
             }
         }
 

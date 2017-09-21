@@ -9,13 +9,6 @@ namespace System.IO.Pipelines.Samples
 {
     public class RawRioHttpClientSample : RawHttpClientSampleBase
     {
-        private BufferPool factory;
-
-        public RawRioHttpClientSample()
-        {
-            factory = new MemoryPool();
-        }
-
         protected override Task<IPipeConnection> GetConnection()
         {
             //var client = new RioTcpClientPool();
@@ -23,7 +16,7 @@ namespace System.IO.Pipelines.Samples
             throw new NotImplementedException();
         }
 
-        protected override BufferPool GetPipeFactory()
+        protected override BufferPool GetBufferPool()
         {
             throw new NotImplementedException();
         }
