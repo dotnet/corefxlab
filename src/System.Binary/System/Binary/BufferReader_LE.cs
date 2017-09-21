@@ -8,20 +8,6 @@ namespace System.Buffers
 {
     public static partial class Binary
     {
-        /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadLittleEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer) where T : struct
-            => BitConverter.IsLittleEndian ? buffer.Read<T>() : UnsafeUtilities.Reverse(buffer.Read<T>());
-
-        /// <summary>
-        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadLittleEndian<[Primitive]T>(this Span<byte> buffer) where T : struct
-            => BitConverter.IsLittleEndian ? buffer.Read<T>() : UnsafeUtilities.Reverse(buffer.Read<T>());
-
         #region ReadLittleEndianROSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short ReadInt16LittleEndian(this ReadOnlySpan<byte> buffer)

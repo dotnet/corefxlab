@@ -43,20 +43,6 @@ namespace System.Buffers
             return true;
         }
 
-        /// <summary>
-        /// Writes a structure of type T to a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteBigEndian<[Primitive]T>(this Span<byte> buffer, T value) where T : struct
-            => buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.Reverse(value) : value);
-
-        /// <summary>
-        /// Writes a structure of type T to a span of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteLittleEndian<[Primitive]T>(this Span<byte> buffer, T value) where T : struct
-            => buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.Reverse(value));
-
         #region WriteBigEndianSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt16BigEndian(this Span<byte> buffer, short value)
