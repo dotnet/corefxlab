@@ -18,7 +18,7 @@ namespace System.IO.Pipelines.Tests
                 block1.Retain();
                 block1.Release();
 
-                OwnedBuffer<byte> block2 = null;
+                OwnedMemory<byte> block2 = null;
 
                 // Lease-return until we get same block
                 while (block1 != block2)

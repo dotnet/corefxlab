@@ -268,7 +268,7 @@ namespace System.IO.Pipelines.Tests
 
             var reader = stream.AsPipelineReader();
 
-            var data = Buffer<byte>.Empty;
+            var data = Memory<byte>.Empty;
 
             while (true)
             {
@@ -323,13 +323,13 @@ namespace System.IO.Pipelines.Tests
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        static Span<byte> EnsureSpanValid(Buffer<byte> buffer)
+        static Span<byte> EnsureSpanValid(Memory<byte> buffer)
         {
             return buffer.Span;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        static void EnsureSpanDisposed(Buffer<byte> buffer)
+        static void EnsureSpanDisposed(Memory<byte> buffer)
         {
             try
             {

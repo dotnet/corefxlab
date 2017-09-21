@@ -4,69 +4,72 @@
 
 using System.Buffers;
 
-namespace System.Text.Encoders
+namespace System.Buffers
 {
-    public static partial class Ascii
+    public static partial class Encodings
     {
-        static readonly byte[] s_toLower = new byte[128];
-        static readonly byte[] s_toUpper = new byte[128];
-
-        static Ascii()
+        public static partial class Ascii
         {
-            for (int i = 0; i < s_toLower.Length; i++)
-            {
-                s_toLower[i] = (byte)char.ToLowerInvariant(((char)i));
-                s_toUpper[i] = (byte)char.ToUpperInvariant(((char)i));
-            }
-        }
+            static readonly byte[] s_toLower = new byte[128];
+            static readonly byte[] s_toUpper = new byte[128];
 
-        public static OperationStatus ToLowerInPlace(Span<byte> ascii, out int bytesChanged)
-        {
-            for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+            static Ascii()
             {
-                byte next = ascii[bytesChanged];
-                if (next > 127)
+                for (int i = 0; i < s_toLower.Length; i++)
                 {
-                    return OperationStatus.InvalidData;
+                    s_toLower[i] = (byte)char.ToLowerInvariant(((char)i));
+                    s_toUpper[i] = (byte)char.ToUpperInvariant(((char)i));
                 }
-                ascii[bytesChanged] = s_toLower[next];
             }
-            return OperationStatus.Done;
-        }
 
-        public static OperationStatus ToLower(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
-        {
-            int min = input.Length < output.Length ? input.Length : output.Length;
-            for (processedBytes = 0; processedBytes < min; processedBytes++)
+            public static OperationStatus ToLowerInPlace(Span<byte> ascii, out int bytesChanged)
             {
-                byte next = input[processedBytes];
-                if (next > 127) return OperationStatus.InvalidData;
-                output[processedBytes] = s_toLower[next];
+                for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+                {
+                    byte next = ascii[bytesChanged];
+                    if (next > 127)
+                    {
+                        return OperationStatus.InvalidData;
+                    }
+                    ascii[bytesChanged] = s_toLower[next];
+                }
+                return OperationStatus.Done;
             }
-            return OperationStatus.Done;
-        }
 
-        public static OperationStatus ToUpperInPlace(Span<byte> ascii, out int bytesChanged)
-        {
-            for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+            public static OperationStatus ToLower(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
             {
-                byte next = ascii[bytesChanged];
-                if (next > 127) return OperationStatus.InvalidData;
-                ascii[bytesChanged] = s_toUpper[next];
+                int min = input.Length < output.Length ? input.Length : output.Length;
+                for (processedBytes = 0; processedBytes < min; processedBytes++)
+                {
+                    byte next = input[processedBytes];
+                    if (next > 127) return OperationStatus.InvalidData;
+                    output[processedBytes] = s_toLower[next];
+                }
+                return OperationStatus.Done;
             }
-            return OperationStatus.Done;
-        }
 
-        public static OperationStatus ToUpper(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
-        {
-            int min = input.Length < output.Length ? input.Length : output.Length;
-            for (processedBytes = 0; processedBytes < min; processedBytes++)
+            public static OperationStatus ToUpperInPlace(Span<byte> ascii, out int bytesChanged)
             {
-                byte next = input[processedBytes];
-                if (next > 127) return OperationStatus.InvalidData;
-                output[processedBytes] = s_toUpper[next];
+                for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+                {
+                    byte next = ascii[bytesChanged];
+                    if (next > 127) return OperationStatus.InvalidData;
+                    ascii[bytesChanged] = s_toUpper[next];
+                }
+                return OperationStatus.Done;
             }
-            return OperationStatus.Done;
+
+            public static OperationStatus ToUpper(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
+            {
+                int min = input.Length < output.Length ? input.Length : output.Length;
+                for (processedBytes = 0; processedBytes < min; processedBytes++)
+                {
+                    byte next = input[processedBytes];
+                    if (next > 127) return OperationStatus.InvalidData;
+                    output[processedBytes] = s_toUpper[next];
+                }
+                return OperationStatus.Done;
+            }
         }
     }
 }

@@ -70,7 +70,7 @@ namespace System.IO.Pipelines.Samples
             factory.Dispose();
         }
 
-        private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Buffer<byte> requestBuffer)
+        private static WritableBuffer WriteResponse(WriteResponseDelegate writeResponse, IPipeConnection connection, Memory<byte> requestBuffer)
         {
             HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBuffer.Span);
 

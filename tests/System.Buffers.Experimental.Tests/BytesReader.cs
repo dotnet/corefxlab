@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers.Text;
 using System.Collections.Sequences;
 using System.Text;
 using System.Text.Utf8;
@@ -173,7 +174,7 @@ namespace System.Buffers.Tests
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                while (bytes.TryGet(ref position, out ReadOnlyBuffer<byte> segment))
+                while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     sb.Append(new Utf8String(segment.Span).ToString());
                 }

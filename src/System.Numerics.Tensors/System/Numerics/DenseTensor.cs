@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace System.Numerics
+﻿namespace System.Numerics
 {
     public class DenseTensor<T> : Tensor<T>
     {
@@ -104,41 +100,6 @@ namespace System.Numerics
             }
 
             return dimensions;
-        }
-
-        private int GetOffset(int index0, int index1)
-        {
-            if (Rank != 2)
-            {
-                throw new ArgumentOutOfRangeException($"Cannot use 2 dimension indexer on {nameof(Tensor<T>)} with {Rank} dimensions.");
-            }
-
-            if (index0 < 0 || index0 >= dimensions[0])
-            {
-                throw new ArgumentOutOfRangeException(nameof(index0));
-            }
-
-            if (index1 < 0 || index1 >= dimensions[1])
-            {
-                throw new ArgumentOutOfRangeException(nameof(index1));
-            }
-
-            return index0 * strides[0] + index1 * strides[1];
-        }
-
-        private int GetOffsetFromIndices(int[] indices)
-        {
-            if (indices == null)
-            {
-                throw new ArgumentNullException(nameof(indices));
-            }
-
-            if (indices.Length != dimensions?.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(indices));
-            }
-
-            return ArrayUtilities.GetIndex(strides, indices);
         }
 
         public override Tensor<T> Reshape(params int[] dimensions)

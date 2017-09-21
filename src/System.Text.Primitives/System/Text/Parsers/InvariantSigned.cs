@@ -6,14 +6,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
             #region SByte
-            public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
+            unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
             {
                 if (length < 1)
                 {
@@ -97,7 +97,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value, out int bytesConsumed)
+            unsafe static bool TryParseSByte(byte* text, int length, out sbyte value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -271,7 +271,7 @@ namespace System.Text
             #endregion
 
             #region Int16
-            public unsafe static bool TryParseInt16(byte* text, int length, out short value)
+            unsafe static bool TryParseInt16(byte* text, int length, out short value)
             {
                 if (length < 1)
                 {
@@ -355,7 +355,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt16(byte* text, int length, out short value, out int bytesConsumed)
+            unsafe static bool TryParseInt16(byte* text, int length, out short value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -540,7 +540,7 @@ namespace System.Text
             #endregion
 
             #region Int32
-            public unsafe static bool TryParseInt32(byte* text, int length, out int value)
+            unsafe static bool TryParseInt32(byte* text, int length, out int value)
             {
                 if (length < 1)
                 {
@@ -624,7 +624,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed)
+            unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -839,7 +839,7 @@ namespace System.Text
             #endregion
 
             #region Int64
-            public unsafe static bool TryParseInt64(byte* text, int length, out long value)
+            unsafe static bool TryParseInt64(byte* text, int length, out long value)
             {
                 if (length < 1)
                 {
@@ -923,7 +923,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt64(byte* text, int length, out long value, out int bytesConsumed)
+            unsafe static bool TryParseInt64(byte* text, int length, out long value, out int bytesConsumed)
             {
                 if (length < 1)
                 {
@@ -1192,10 +1192,10 @@ namespace System.Text
             #endregion
 
         }
-        public static partial class InvariantUtf16
+        public static partial class Utf16
         {
             #region SByte
-            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
+            unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
             {
                 if (length < 1)
                 {
@@ -1279,11 +1279,11 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charsConsumed)
+            unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1306,7 +1306,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1320,7 +1320,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1336,7 +1336,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1347,7 +1347,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1357,7 +1357,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1365,7 +1365,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = (sbyte)(parsedValue * sign);
                 return true;
             }
@@ -1375,11 +1375,11 @@ namespace System.Text
                 return TryParseSByte(text, out value, out int bytesConsumed);
             }
 
-            public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value, out int charsConsumed)
+            public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1398,7 +1398,7 @@ namespace System.Text
 
                 if (indexOfFirstDigit >= text.Length)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1409,7 +1409,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1423,7 +1423,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1439,7 +1439,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1450,7 +1450,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (sbyte)(parsedValue * sign);
                             return true;
                         }
@@ -1460,7 +1460,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1468,7 +1468,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = (sbyte)(parsedValue * sign);
                 return true;
             }
@@ -1476,7 +1476,7 @@ namespace System.Text
             #endregion
 
             #region Int16
-            public unsafe static bool TryParseInt16(char* text, int length, out short value)
+            unsafe static bool TryParseInt16(char* text, int length, out short value)
             {
                 if (length < 1)
                 {
@@ -1560,11 +1560,11 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt16(char* text, int length, out short value, out int charsConsumed)
+            unsafe static bool TryParseInt16(char* text, int length, out short value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1587,7 +1587,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1601,7 +1601,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1617,7 +1617,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1628,7 +1628,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1638,7 +1638,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1646,21 +1646,21 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = (short)(parsedValue * sign);
                 return true;
             }
 
             public static bool TryParseInt16(ReadOnlySpan<char> text, out short value)
             {
-                return TryParseInt16(text, out value, out int charsConsumed);
+                return TryParseInt16(text, out value, out int charactersConsumed);
             }
 
-            public static bool TryParseInt16(ReadOnlySpan<char> text, out short value, out int charsConsumed)
+            public static bool TryParseInt16(ReadOnlySpan<char> text, out short value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1679,7 +1679,7 @@ namespace System.Text
 
                 if (indexOfFirstDigit >= text.Length)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1690,7 +1690,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1704,7 +1704,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1720,7 +1720,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1731,7 +1731,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = (short)(parsedValue * sign);
                             return true;
                         }
@@ -1741,7 +1741,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1749,7 +1749,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = (short)(parsedValue * sign);
                 return true;
             }
@@ -1757,7 +1757,7 @@ namespace System.Text
             #endregion
 
             #region Int32
-            public unsafe static bool TryParseInt32(char* text, int length, out int value)
+            unsafe static bool TryParseInt32(char* text, int length, out int value)
             {
                 if (length < 1)
                 {
@@ -1841,11 +1841,11 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt32(char* text, int length, out int value, out int charsConsumed)
+            unsafe static bool TryParseInt32(char* text, int length, out int value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1868,7 +1868,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1882,7 +1882,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -1898,7 +1898,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -1909,7 +1909,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -1919,7 +1919,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -1927,21 +1927,21 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = parsedValue * sign;
                 return true;
             }
 
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value)
             {
-                return TryParseInt32(text, out value, out int charsConsumed);
+                return TryParseInt32(text, out value, out int charactersConsumed);
             }
 
-            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charsConsumed)
+            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1960,7 +1960,7 @@ namespace System.Text
 
                 if (indexOfFirstDigit >= text.Length)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1971,7 +1971,7 @@ namespace System.Text
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -1985,7 +1985,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2001,7 +2001,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2012,7 +2012,7 @@ namespace System.Text
                         int nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2022,7 +2022,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2030,7 +2030,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = parsedValue * sign;
                 return true;
             }
@@ -2038,7 +2038,7 @@ namespace System.Text
             #endregion
 
             #region Int64
-            public unsafe static bool TryParseInt64(char* text, int length, out long value)
+            unsafe static bool TryParseInt64(char* text, int length, out long value)
             {
                 if (length < 1)
                 {
@@ -2122,11 +2122,11 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseInt64(char* text, int length, out long value, out int charsConsumed)
+            unsafe static bool TryParseInt64(char* text, int length, out long value, out int charactersConsumed)
             {
                 if (length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2149,7 +2149,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2163,7 +2163,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2179,7 +2179,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2190,7 +2190,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2200,7 +2200,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2208,7 +2208,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = length;
+                charactersConsumed = length;
                 value = parsedValue * sign;
                 return true;
             }
@@ -2297,11 +2297,11 @@ namespace System.Text
                 return true;
             }
 
-            public static bool TryParseInt64(ReadOnlySpan<char> text, out long value, out int charsConsumed)
+            public static bool TryParseInt64(ReadOnlySpan<char> text, out long value, out int charactersConsumed)
             {
                 if (text.Length < 1)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2324,7 +2324,7 @@ namespace System.Text
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-                    charsConsumed = 0;
+                    charactersConsumed = 0;
                     value = default;
                     return false;
                 }
@@ -2338,7 +2338,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2354,7 +2354,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2365,7 +2365,7 @@ namespace System.Text
                         long nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-                            charsConsumed = index;
+                            charactersConsumed = index;
                             value = parsedValue * sign;
                             return true;
                         }
@@ -2375,7 +2375,7 @@ namespace System.Text
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
-                            charsConsumed = 0;
+                            charactersConsumed = 0;
                             value = default;
                             return false;
                         }
@@ -2383,7 +2383,7 @@ namespace System.Text
                     }
                 }
 
-                charsConsumed = text.Length;
+                charactersConsumed = text.Length;
                 value = parsedValue * sign;
                 return true;
             }

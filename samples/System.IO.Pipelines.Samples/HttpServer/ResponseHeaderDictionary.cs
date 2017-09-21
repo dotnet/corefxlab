@@ -9,6 +9,7 @@ using System.Text.Formatting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Internal.Http;
 using Microsoft.Extensions.Primitives;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Samples.Http
 {

@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => Pipe.Buffer;
+        public Memory<byte> Buffer => Pipe.Buffer;
 
         /// <summary>
         /// Ensures the specified number of bytes are available.

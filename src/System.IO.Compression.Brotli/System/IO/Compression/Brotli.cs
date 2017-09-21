@@ -137,7 +137,7 @@ namespace System.IO.Compression
         {
             if (result == BrotliDecoderResult.Success) return OperationStatus.Done;
             if (result == BrotliDecoderResult.NeedsMoreOutput) return OperationStatus.DestinationTooSmall;
-            if (result == BrotliDecoderResult.NeedsMoreInput) return OperationStatus.NeedMoreSourceData;
+            if (result == BrotliDecoderResult.NeedsMoreInput) return OperationStatus.NeedMoreData;
             return OperationStatus.InvalidData;
         }
 
@@ -231,7 +231,7 @@ namespace System.IO.Compression
                 }
                 if (state.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                 {
-                    return OperationStatus.NeedMoreSourceData;
+                    return OperationStatus.NeedMoreData;
                 }
                 else if (state.LastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
                 {

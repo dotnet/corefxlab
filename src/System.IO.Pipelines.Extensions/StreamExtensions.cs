@@ -108,7 +108,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static async Task WriteToStream(Stream stream, Buffer<byte> memory)
+        private static async Task WriteToStream(Stream stream, Memory<byte> memory)
         {
             ArraySegment<byte> data;
             if (memory.TryGetArray(out data))

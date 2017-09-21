@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     public struct BufferEnumerator
     {
         private SegmentEnumerator _segmentEnumerator;
-        private Buffer<byte> _current;
+        private Memory<byte> _current;
 
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The current <see cref="Buffer{Byte}"/>
         /// </summary>
-        public Buffer<byte> Current => _current;
+        public Memory<byte> Current => _current;
 
         /// <summary>
         /// Moves to the next <see cref="Buffer{Byte}"/> in the <see cref="ReadableBuffer"/>

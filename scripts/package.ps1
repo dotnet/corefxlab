@@ -15,7 +15,7 @@ Function Ensure-Nuget-Exists {
             New-Item -ItemType directory -Path "$repoRoot\nuget"
         }
         Write-Host "nuget.exe not found. Downloading to $nugetPath"
-        Invoke-WebRequest "https://nuget.org/nuget.exe" -OutFile $nugetPath
+        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/v4.3.0/nuget.exe" -OutFile $nugetPath
     }
 }
 
@@ -33,10 +33,17 @@ Ensure-Nuget-Exists
 Write-Host "** Creating NuGet packages from nuspec. **"
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\external", "*.nuspec", "AllDirectories")) {
     Write-Host "Creating NuGet package for $file..."
-    Invoke-Expression "$nugetPath pack $file -o $packagesPath"
+    if (!$file.contains("Brotli")) {
+        Invoke-Expression "$nugetPath pack $file -o $packagesPath"
+    }
+    else {
+        # Update this if a new version of Brotli Native needs to be published.
+        # Version 0.0.1 already exists and overwriting packages is forbidden.
+        Write-Host "Skipping creation of package from $file"
+    }
     
     if (!$?) {
-        Write-Error "Failed to create NuGet package for project $brotliExternalFile"
+        Write-Error "Failed to create NuGet package for project $file"
     }
 }
 
@@ -51,8 +58,14 @@ if ($ApiKey)
             else { 
                 $arguments = "push $file $apiKey -Source https://dotnet.myget.org/F/dotnet-corefxlab/api/v2/package"
             }
-            Start-Process -FilePath $nugetPath -ArgumentList $arguments -Wait -PassThru
-            Write-Host "done"
+            $process = Start-Process -FilePath $nugetPath -ArgumentList $arguments -Wait -PassThru -NoNewWindow
+            $RetVal = $process.ExitCode
+            if($RetVal -eq 0) {
+                Write-Host "done"
+            }
+            else {
+                Write-Error "Failed to push nuget package $file with error code $RetVal"
+            }
         } catch [System.Exception] {
             Write-Host "Failed to push nuget package $file with error $_.Exception.Message"
         }

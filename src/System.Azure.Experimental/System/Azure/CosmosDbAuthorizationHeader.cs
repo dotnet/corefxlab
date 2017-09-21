@@ -4,8 +4,8 @@
 using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Cryptography;
+using System.Buffers.Text;
 using System.Text;
-using System.Text.Encoders;
 using System.Text.Encodings.Web.Utf8;
 
 namespace System.Azure.Authentication
@@ -41,7 +41,7 @@ namespace System.Azure.Authentication
             totalWritten += s_type.Length;
             var bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -53,7 +53,7 @@ namespace System.Azure.Authentication
 
             bufferSlice = buffer.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -85,11 +85,11 @@ namespace System.Azure.Authentication
             }
             else
             {
-                if (Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
+                if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
-                if (Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
+                if (Encodings.Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
                 {
                     throw new NotImplementedException("need to resize buffer");
                 }
@@ -100,19 +100,11 @@ namespace System.Azure.Authentication
 
             bufferSlice = payload.Slice(totalWritten);
 
-            if (Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
-            if (Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            bufferSlice[written] = (byte)'\n';
-            totalWritten += written + 1;
-            bufferSlice = payload.Slice(totalWritten);
-
-            if (Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -120,7 +112,15 @@ namespace System.Azure.Authentication
             totalWritten += written + 1;
             bufferSlice = payload.Slice(totalWritten);
 
-            if (!Text.Formatters.Utf8.TryFormat(utc, bufferSlice, out written, 'l'))
+            if (Encodings.Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+            {
+                throw new NotImplementedException("need to resize buffer");
+            }
+            bufferSlice[written] = (byte)'\n';
+            totalWritten += written + 1;
+            bufferSlice = payload.Slice(totalWritten);
+
+            if (!Formatters.Utf8.TryFormat(utc, bufferSlice, out written, 'l'))
             {
                 throw new NotImplementedException("need to resize buffer");
             }

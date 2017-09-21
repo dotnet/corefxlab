@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Buffers.Text
 {
     public partial class SymbolTable
     {
@@ -53,7 +52,7 @@ namespace System.Text
 
             public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                var status = Encoders.Utf8.ToUtf16(utf8, destination, out bytesConsumed, out bytesWritten);
+                var status = Encodings.Utf8.ToUtf16(utf8, destination, out bytesConsumed, out bytesWritten);
                 if (status != OperationStatus.Done)
                 {
                     bytesConsumed = bytesWritten = 0;
@@ -84,7 +83,7 @@ namespace System.Text
 
             public override bool TryParse(ReadOnlySpan<byte> source, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
             {
-                var status = Encoders.Utf16.ToUtf8(source, utf8, out bytesConsumed, out bytesWritten);
+                var status = Encodings.Utf16.ToUtf8(source, utf8, out bytesConsumed, out bytesWritten);
                 if (status != OperationStatus.Done)
                 {
                     bytesConsumed = bytesWritten = 0;

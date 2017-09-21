@@ -30,11 +30,11 @@ namespace System.IO.Pipelines
         /// </summary>
         public bool IsSingleSpan => BufferStart.Segment == BufferEnd.Segment;
 
-        public Buffer<byte> First
+        public Memory<byte> First
         {
             get
             {
-                BufferStart.TryGetBuffer(BufferEnd, out Buffer<byte> first);
+                BufferStart.TryGetBuffer(BufferEnd, out Memory<byte> first);
                 return first;
             }
         }
@@ -223,7 +223,7 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            OwnedBuffer<byte> buffer = data;
+            OwnedMemory<byte> buffer = new OwnedArray<byte>(data);
             return CreateInternal(buffer, 0, data.Length);
         }
 
@@ -237,13 +237,13 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create((OwnedBuffer<byte>)data, offset, length);
+            return Create(new OwnedArray<byte>(data), offset, length);
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an OwnedBuffer.
+        /// Create a <see cref="ReadableBuffer"/> over an OwnedMemory.
         /// </summary>
-        public static ReadableBuffer Create(OwnedBuffer<byte> data, int offset, int length)
+        public static ReadableBuffer Create(OwnedMemory<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -263,7 +263,7 @@ namespace System.IO.Pipelines
             return CreateInternal(data, offset, length);
         }
 
-        private static ReadableBuffer CreateInternal(OwnedBuffer<byte> data, int offset, int length)
+        private static ReadableBuffer CreateInternal(OwnedMemory<byte> data, int offset, int length)
         {
             var segment = new BufferSegment(data);
             segment.Start = offset;

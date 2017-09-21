@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Text.Json.Tests.Resources;
 using Xunit;
@@ -301,7 +303,7 @@ namespace System.Text.Json.Tests
                     value.StringValue = ReadString(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    PrimitiveParser.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
+                    Parsers.Custom.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:
@@ -410,7 +412,7 @@ namespace System.Text.Json.Tests
         {
             if (jsonReader.SymbolTable == SymbolTable.InvariantUtf8)
             {
-                var status = Encoders.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
+                var status = Encodings.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
                 Assert.Equal(Buffers.OperationStatus.Done, status);
 
                 var text = new string(' ', needed);
@@ -420,7 +422,7 @@ namespace System.Text.Json.Tests
                     {
                         var dst = new Span<byte>((byte*)pChars, needed);
 
-                        status = Encoders.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
+                        status = Encodings.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
                         Assert.Equal(Buffers.OperationStatus.Done, status);
                     }
                 }

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -37,7 +36,7 @@ namespace System.Text.Json
 
     internal struct TwoStacks
     {
-        Buffer<byte> _memory;
+        Memory<byte> _memory;
         int topOfStackObj;
         int topOfStackArr;
         int capacity;
@@ -54,7 +53,7 @@ namespace System.Text.Json
             }
         }
 
-        public TwoStacks(Buffer<byte> db)
+        public TwoStacks(Memory<byte> db)
         {
             _memory = db;
             topOfStackObj = _memory.Length;
@@ -102,7 +101,7 @@ namespace System.Text.Json
             return value;
         }
 
-        internal void Resize(Buffer<byte> newStackMemory)
+        internal void Resize(Memory<byte> newStackMemory)
         {
             _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).Span.CopyTo(newStackMemory.Span);
             _memory = newStackMemory;
@@ -111,10 +110,10 @@ namespace System.Text.Json
 
     internal ref struct JsonParser
     {
-        private Buffer<byte> _db;
+        private Memory<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
-        private Buffer<byte> _scratchMemory;
-        private OwnedBuffer<byte> _scratchManager;
+        private Memory<byte> _scratchMemory;
+        private OwnedMemory<byte> _scratchManager;
         BufferPool _pool;
         TwoStacks _stack;
 
@@ -146,7 +145,7 @@ namespace System.Text.Json
             _pool = pool;
             if (_pool == null) _pool = BufferPool.Default;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchMemory = _scratchManager.Buffer;
+            _scratchMemory = _scratchManager.AsMemory;
 
             int dbLength = _scratchMemory.Length / 2;
             _db = _scratchMemory.Slice(0, dbLength);
@@ -219,11 +218,11 @@ namespace System.Text.Json
             var newScratch = _pool.Rent(_scratchMemory.Length * 2);
             int dbLength = newScratch.Length / 2;
 
-            var newDb = newScratch.Buffer.Slice(0, dbLength);
+            var newDb = newScratch.AsMemory.Slice(0, dbLength);
             _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);
             _db = newDb;
 
-            var newStackMemory = newScratch.Buffer.Slice(dbLength);
+            var newStackMemory = newScratch.AsMemory.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;

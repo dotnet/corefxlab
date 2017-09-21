@@ -67,7 +67,7 @@ namespace System.Buffers
 
         private Action<MemoryPoolSlab> _slabDeallocationCallback;
 
-        public override OwnedBuffer<byte> Rent(int size)
+        public override OwnedMemory<byte> Rent(int size)
         {
             if (size > _blockLength)
             {

@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -338,7 +336,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(buffer.IsSingleSpan);
             var helloBuffer = buffer.Slice(blockSize - 5);
             Assert.False(helloBuffer.IsSingleSpan);
-            var memory = new List<Buffer<byte>>();
+            var memory = new List<Memory<byte>>();
             foreach (var m in helloBuffer)
             {
                 memory.Add(m);

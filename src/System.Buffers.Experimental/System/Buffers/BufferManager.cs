@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Pools
 {
@@ -21,10 +20,10 @@ namespace System.Buffers.Pools
 
             public override int Length => _length;
 
-            public override Span<byte> AsSpan(int index, int length)
+            public override Span<byte> AsSpan()
             {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
-                return new Span<byte>(_pointer.ToPointer(), _length).Slice(index, length);
+                return new Span<byte>(_pointer.ToPointer(), _length);
             }
 
             protected override void Dispose(bool disposing)
@@ -39,10 +38,10 @@ namespace System.Buffers.Pools
                 return false;
             }
 
-            public override BufferHandle Pin()
+            public override MemoryHandle Pin()
             {
                 Retain();
-                return new BufferHandle(this, _pointer.ToPointer());
+                return new MemoryHandle(this, _pointer.ToPointer());
             }
 
             private readonly NativeBufferPool _pool;

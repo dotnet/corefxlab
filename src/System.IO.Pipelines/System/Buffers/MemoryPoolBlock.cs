@@ -12,7 +12,7 @@ namespace System.Buffers
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independent array segments.
     /// </summary>
-    public class MemoryPoolBlock : OwnedBuffer<byte>
+    public class MemoryPoolBlock : OwnedMemory<byte>
     {
         private readonly int _offset;
         private readonly int _length;
@@ -43,11 +43,10 @@ namespace System.Buffers
 
         public override int Length => _length;
 
-        public override Span<byte> AsSpan(int index, int length)
+        public override Span<byte> AsSpan()
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            if (length > _length - index) throw new ArgumentOutOfRangeException();
-            return new Span<byte>(Slab.Array, _offset + index, length);
+            return new Span<byte>(Slab.Array, _offset, _length);
         }
 
 #if BLOCK_LEASE_TRACKING
@@ -88,7 +87,7 @@ namespace System.Buffers
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanLiteralExtensions.AppendAsLiteral(Buffer.Span, builder);
+            SpanLiteralExtensions.AppendAsLiteral(AsMemory.Span, builder);
             return builder.ToString();
         }
 
@@ -123,7 +122,7 @@ namespace System.Buffers
         protected override bool IsRetained => _referenceCount > 0;
         public override bool IsDisposed => _disposed;
 
-        // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+        // In kestrel both MemoryPoolBlock and OwnedMemory end up in the same assembly so
         // this method access modifiers need to be `protected internal`
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
@@ -132,13 +131,13 @@ namespace System.Buffers
             return true;
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             Retain();
             unsafe
             {
-                return new BufferHandle(this, (Slab.NativePointer + _offset).ToPointer());
+                return new MemoryHandle(this, (Slab.NativePointer + _offset).ToPointer());
             }
         }
     }

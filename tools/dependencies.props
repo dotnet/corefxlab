@@ -2,7 +2,7 @@
   <PropertyGroup>
     <CoreFxStableVersion4_3>4.3.0</CoreFxStableVersion4_3>
     <CoreFxStableVersion4_4>4.4.0</CoreFxStableVersion4_4>
-    <RoslynVersion>2.6.0-rdonly-ref-62106-01</RoslynVersion>
+    <RoslynVersion>2.6.0-rdonly-ref-62111-06</RoslynVersion>
     <SystemMemoryVersion>4.5.0-preview1-25712-02</SystemMemoryVersion>
     <SystemCompilerServicesUnsafeVersion>4.5.0-preview1-25712-02</SystemCompilerServicesUnsafeVersion>
     <LibuvVersion>1.9.1</LibuvVersion>

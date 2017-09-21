@@ -13,7 +13,7 @@ namespace System.Buffers
     {
         Done,
         DestinationTooSmall,
-        NeedMoreSourceData,
+        NeedMoreData,
         InvalidData, // TODO: how do we communicate details of the error
     }
 }

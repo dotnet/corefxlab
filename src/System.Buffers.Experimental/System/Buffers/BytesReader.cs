@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace System.Buffers
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
-        ReadOnlyBuffer<byte> _currentSegment;
+        ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
 
         public BytesReader(ReadOnlyBytes bytes, SymbolTable symbolTable)
@@ -27,7 +28,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes, SymbolTable symbolTable)
+        public BytesReader(ReadOnlyMemory<byte> bytes, SymbolTable symbolTable)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
@@ -36,7 +37,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyBuffer<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
+        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
         public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
@@ -182,7 +183,7 @@ namespace System.Buffers
                 if (newSegments == null && toAdvance == 0)
                 {
                     _unreadSegments = ReadOnlyBytes.Empty;
-                    _currentSegment = ReadOnlyBuffer<byte>.Empty;
+                    _currentSegment = ReadOnlyMemory<byte>.Empty;
                     _currentSegmentIndex = 0;
                     return;
                 }
@@ -280,13 +281,13 @@ namespace System.Buffers
 
         #region Parsing Methods
         // TODO: how to we chose the lengths of the temp buffers?
-        // TODO: these methods call the slow overloads of PrimitiveParser.TryParseXXX. Do we need fast path?
+        // TODO: these methods call the slow overloads of Parsers.Custom.TryParseXXX. Do we need fast path?
         // TODO: these methods hardcode the format. Do we need this to be something that can be specified?
         public bool TryParseBoolean(out bool value)
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
+            if (Parsers.Custom.TryParseBoolean(unread, out value, out consumed, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -298,7 +299,7 @@ namespace System.Buffers
             Span<byte> tempSpan = stackalloc byte[15];
             var copied = CopyTo(tempSpan);
 
-            if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
+            if (Parsers.Custom.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
             {
                 Advance(consumed);
                 return true;
@@ -311,7 +312,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
+            if (Parsers.Custom.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
@@ -323,7 +324,7 @@ namespace System.Buffers
             Span<byte> tempSpan = stackalloc byte[32];
             var copied = CopyTo(tempSpan);
 
-            if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
+            if (Parsers.Custom.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
             {
                 Advance(consumed);
                 return true;

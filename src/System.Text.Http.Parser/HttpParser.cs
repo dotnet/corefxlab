@@ -23,7 +23,19 @@ namespace System.Text.Http.Parser
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
+        private readonly bool _showErrorDetails;
+
+        public HttpParser()
+            : this(showErrorDetails: true)
+        {
+        }
+
+        public HttpParser(bool showErrorDetails)
+        {
+            _showErrorDetails = showErrorDetails;
+        }
+
+        public unsafe bool ParseRequestLine<T>(T handler, ref readonly ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -42,8 +54,12 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                span = TryGetNewLineSpan(buffer, out consumed);
-                if (span.Length == 0)
+                if (TryGetNewLineSpan(buffer, out ReadCursor found))
+                {
+                    span = buffer.Slice(consumed, found).ToSpan();
+                    consumed = found;
+                }
+                else
                 {
                     // No request line end
                     return false;
@@ -61,7 +77,7 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, ref readonly ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
             var span = buffer.First.Span;
@@ -211,7 +227,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, ref readonly ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -588,17 +604,17 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Span<byte> TryGetNewLineSpan(in ReadableBuffer buffer, out ReadCursor end)
+        private static bool TryGetNewLineSpan(ref readonly ReadableBuffer buffer, out ReadCursor found)
         {
             var start = buffer.Start;
-            if (ReadCursorOperations.Seek(start, buffer.End, out end, ByteLF) != -1)
+            if (ReadCursorOperations.Seek(start, buffer.End, out found, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
-                end = buffer.Move(end, 1);
-                return buffer.Slice(start, end).ToSpan();
+                found = buffer.Move(found, 1);
+                return true;
             }
 
-            return default;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -668,7 +684,10 @@ namespace System.Text.Http.Parser
 
         private unsafe BadHttpRequestException GetInvalidRequestException(RequestRejectionReason reason, byte* detail, int length)
         {
-            return BadHttpRequestException.GetException(reason, "");
+            string errorDetails = _showErrorDetails ?
+                new Span<byte>(detail, length).GetAsciiStringEscaped(Constants.MaxExceptionDetailSize) :
+                string.Empty;
+            return BadHttpRequestException.GetException(reason, errorDetails);
         }
 
         public void Reset()

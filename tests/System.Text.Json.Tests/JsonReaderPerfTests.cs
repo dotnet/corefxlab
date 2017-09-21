@@ -5,6 +5,7 @@ using Xunit;
 using Microsoft.Xunit.Performance;
 using System.IO;
 using System.Text.Json.Tests.Resources;
+using System.Buffers.Text;
 
 namespace System.Text.Json.Tests
 {

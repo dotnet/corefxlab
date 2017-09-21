@@ -2,13 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace System.Buffers.Internal
+namespace System.Buffers
 {
-    internal class OwnedArray<T> : OwnedBuffer<T>
+    public class OwnedArray<T> : OwnedMemory<T>
     {
         T[] _array;
         int _referenceCount;
@@ -28,29 +27,23 @@ namespace System.Buffers.Internal
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan(int index, int length)
-        {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
-            return new Span<T>(_array, index, length);
-        }
-
         public override Span<T> AsSpan()
         {
             if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
-            return new Span<T>(_array, 0, _array.Length);
+            return new Span<T>(_array);
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 
-        protected internal override bool TryGetArray(out ArraySegment<T> arraySegment)
+        protected override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
             if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
             arraySegment = new ArraySegment<T>(_array);

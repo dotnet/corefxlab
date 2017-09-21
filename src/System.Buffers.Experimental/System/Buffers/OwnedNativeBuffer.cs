@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers
@@ -37,12 +36,12 @@ namespace System.Buffers
             _pointer = IntPtr.Zero;
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             Retain();
             unsafe
             {
-                return new BufferHandle(this, _pointer.ToPointer());
+                return new MemoryHandle(this, _pointer.ToPointer());
             }
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
@@ -55,10 +54,10 @@ namespace System.Buffers
 
         public override int Length => _length;
         
-        public unsafe override Span<byte> AsSpan(int index, int length)
+        public unsafe override Span<byte> AsSpan()
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
-            return new Span<byte>(_pointer.ToPointer(), _length).Slice(index, length);
+            return new Span<byte>(_pointer.ToPointer(), _length);
         }
 
         int _length;

@@ -10,6 +10,7 @@ using System.IO.Pipelines.Samples;
 using System.IO.Pipelines;
 using System.Text.Formatting;
 using System.Text.Json;
+using System.Buffers.Text;
 
 public partial class E2EPipelineTests
 {

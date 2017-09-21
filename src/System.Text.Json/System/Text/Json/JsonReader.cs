@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Json
@@ -799,7 +800,7 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetNextCharAscii(in JsonReader reader, ref byte src, int length, out char ch)
+        private static int GetNextCharAscii(ref readonly JsonReader reader, ref byte src, int length, out char ch)
         {
             if (reader.UseFastUtf8)
             {

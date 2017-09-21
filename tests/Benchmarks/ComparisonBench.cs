@@ -15,10 +15,10 @@ namespace Benchmarks
         const int SliceSpanIterations = 100000;
         const int SliceSpanDataSize = 1000;
 
-        static readonly Buffer<int> SliceSpanBuffer = new int[SliceSpanDataSize];
+        static readonly Memory<int> SliceSpanBuffer = new int[SliceSpanDataSize];
 
         /// <summary>
-        /// A method that tests slicing a Buffer<T> before reading the Span property.
+        /// A method that tests slicing a Memory<T> before reading the Span property.
         /// 
         /// The useful attribute to this test is more likely the instructions retired
         /// than the time it takes. Compare these results with the other method for doing
@@ -36,7 +36,7 @@ namespace Benchmarks
         }
 
         /// <summary>
-        /// A method that tests reading the Span from a Buffer<T> then slicing the Span.
+        /// A method that tests reading the Span from a Memory<T> then slicing the Span.
         /// 
         /// The useful attribute to this test is more likely the instructions retired
         /// than the time it takes. Compare these results with the other method for doing

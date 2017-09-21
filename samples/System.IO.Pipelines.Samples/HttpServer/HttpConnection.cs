@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting.Server;
 using System.Text.Formatting;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Samples.Http
 {

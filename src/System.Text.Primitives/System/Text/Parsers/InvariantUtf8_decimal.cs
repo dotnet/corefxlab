@@ -2,19 +2,19 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-namespace System.Text
+namespace System.Buffers
 {
-    public static partial class PrimitiveParser
+    public static partial class Parsers
     {
-        public static partial class InvariantUtf8
+        public static partial class Utf8
         {
-            public unsafe static bool TryParseDecimal(byte* text, int length, out decimal value)
+            unsafe static bool TryParseDecimal(byte* text, int length, out decimal value)
             {
                 int consumed;
                 var span = new ReadOnlySpan<byte>(text, length);
                 return TryParseDecimal(span, out value, out consumed);
             }
-            public unsafe static bool TryParseDecimal(byte* text, int length, out decimal value, out int bytesConsumed)
+            unsafe static bool TryParseDecimal(byte* text, int length, out decimal value, out int bytesConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length);
                 return TryParseDecimal(span, out value, out bytesConsumed);

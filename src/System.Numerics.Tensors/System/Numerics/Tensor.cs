@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 
 namespace System.Numerics
 {
@@ -220,6 +220,7 @@ namespace System.Numerics
         }
     }
 
+    [DebuggerDisplay("{GetArrayString(false)}")]
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
     public abstract class Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
     {
@@ -1096,6 +1097,94 @@ namespace System.Numerics
             return hashCode;
         }
         #endregion
+        public string GetArrayString(bool includeWhitespace = true)
+        {
+            var builder = new StringBuilder();
 
+            var strides = ArrayUtilities.GetStrides(dimensions);
+            var indices = new int[Rank];
+            var innerDimension = Rank - 1;
+            var innerLength = dimensions[innerDimension];
+            var outerLength = Length / innerLength;
+
+            int indent = 0;
+            for (int outerIndex = 0; outerIndex < Length; outerIndex += innerLength)
+            {
+                ArrayUtilities.GetIndices(strides, false, outerIndex, indices);
+
+                while ((indent < innerDimension) && (indices[indent] == 0))
+                {
+                    // start up
+                    if (includeWhitespace)
+                    {
+                        Indent(builder, indent);
+                    }
+                    indent++;
+                    builder.Append('{');
+                    if (includeWhitespace)
+                    {
+                        builder.AppendLine();
+                    }
+                }
+
+                for(int innerIndex = 0; innerIndex < innerLength; innerIndex++)
+                {
+                    indices[innerDimension] = innerIndex;
+
+                    if ((innerIndex == 0))
+                    {
+                        if (includeWhitespace)
+                        {
+                            Indent(builder, indent);
+                        }
+                        builder.Append('{');
+                    }
+                    else
+                    {
+                        builder.Append(',');
+                    }
+                    builder.Append(this[indices]);
+                }
+                builder.Append('}');
+
+                for(int i = Rank - 2; i >= 0; i--)
+                {
+                    var lastIndex = dimensions[i] - 1;
+                    if (indices[i] == lastIndex)
+                    {
+                        // close out
+                        --indent;
+                        if (includeWhitespace)
+                        {
+                            builder.AppendLine();
+                            Indent(builder, indent);
+                        }
+                        builder.Append('}');
+                    }
+                    else
+                    {
+                        builder.Append(',');
+                        if (includeWhitespace)
+                        {
+                            builder.AppendLine();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        private static void Indent(StringBuilder builder, int tabs, int spacesPerTab = 4)
+        {
+            for(int tab = 0; tab < tabs; tab++)
+            {
+                for(int space = 0; space < spacesPerTab; space++)
+                {
+                    builder.Append(' ');
+                }
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary;
+using System.Buffers;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -10,6 +10,25 @@ namespace System.IO.Pipelines
 {
     public static class ReadWriteExtensions
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static T ReadBigEndian<[Primitive]T>(this Span<byte> buffer) where T : struct
+            => BitConverter.IsLittleEndian ? Binary.Reverse(buffer.Read<T>()) : buffer.Read<T>();
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static T ReadLittleEndian<[Primitive]T>(this Span<byte> buffer) where T : struct
+            => BitConverter.IsLittleEndian ? buffer.Read<T>() : Binary.Reverse(buffer.Read<T>());
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static void WriteBigEndian<[Primitive]T>(this Span<byte> buffer, T value) where T : struct
+            => buffer.Write(BitConverter.IsLittleEndian ? Binary.Reverse(value) : value);
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static void WriteLittleEndian<[Primitive]T>(this Span<byte> buffer, T value) where T : struct
+            => buffer.Write(BitConverter.IsLittleEndian ? value : Binary.Reverse(value));
+
         public static async Task<ReadableBuffer> ReadToEndAsync(this IPipeReader input)
         {
             while (true)

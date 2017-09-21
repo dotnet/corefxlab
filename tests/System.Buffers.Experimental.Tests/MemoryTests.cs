@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,13 +17,13 @@ namespace System.Buffers.Tests
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.Buffer;
+                var memory = owned.AsMemory;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
 
                 Span<byte> copy = new byte[20];
-                memory.Slice(10, 20).CopyTo(copy);
+                memory.Slice(10, 20).Span.CopyTo(copy);
                 Assert.Equal(10, copy[0]);
             }
 
@@ -35,13 +34,13 @@ namespace System.Buffers.Tests
 
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.Buffer;
+                var memory = owned.AsMemory;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
 
                 Span<byte> copy = new byte[20];
-                memory.Slice(10, 20).CopyTo(copy);
+                memory.Slice(10, 20).Span.CopyTo(copy);
                 Assert.Equal(10, copy[0]);
             }
         }
@@ -63,12 +62,12 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void TestLifetime(OwnedBuffer<byte> owned)
+        static void TestLifetime(OwnedMemory<byte> owned)
         {
-            Buffer<byte> copyStoredForLater;
+            Memory<byte> copyStoredForLater;
             try {
-                Buffer<byte> memory = owned.Buffer;
-                Buffer<byte> memorySlice = memory.Slice(10);
+                Memory<byte> memory = owned.AsMemory;
+                Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Retain();
                 try {
@@ -92,9 +91,9 @@ namespace System.Buffers.Tests
         [Fact]
         public void AutoDispose()
         {
-            OwnedBuffer<byte> owned = new AutoPooledBuffer(1000);
+            OwnedMemory<byte> owned = new AutoPooledBuffer(1000);
             owned.Retain();
-            var memory = owned.Buffer;
+            var memory = owned.AsMemory;
             Assert.Equal(false, owned.IsDisposed);
             var reservation = memory.Retain();
             Assert.Equal(false, owned.IsDisposed);
@@ -108,7 +107,7 @@ namespace System.Buffers.Tests
         public void OnNoReferencesTest()
         {
             var owned = new CustomBuffer<byte>(255);
-            var memory = owned.Buffer;
+            var memory = owned.AsMemory;
             Assert.Equal(0, owned.OnNoRefencesCalledCount);
             
             using (memory.Retain())
@@ -123,17 +122,17 @@ namespace System.Buffers.Tests
         {
             for (int k = 0; k < 1000; k++)
             {
-                var owners = new OwnedBuffer<byte>[128];
-                var memories = new Buffer<byte>[owners.Length];
-                var reserves = new BufferHandle[owners.Length];
+                var owners = new OwnedMemory<byte>[128];
+                var memories = new Memory<byte>[owners.Length];
+                var reserves = new MemoryHandle[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 
                 for (int i = 0; i < owners.Length; i++)
                 {
                     var array = new byte[1024];
-                    owners[i] = array;
-                    memories[i] = owners[i].Buffer;
+                    owners[i] = new OwnedArray<byte>(array);
+                    memories[i] = owners[i].AsMemory;
                 }
 
                 var dispose_task = Task.Run(() => {
@@ -176,7 +175,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class CustomBuffer<T> : OwnedBuffer<T>
+    class CustomBuffer<T> : OwnedMemory<T>
     {
         bool _disposed;
         int _referenceCount;
@@ -196,25 +195,19 @@ namespace System.Buffers.Tests
 
         protected override bool IsRetained => _referenceCount > 0;
 
-        public override Span<T> AsSpan(int index, int length)
-        {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
-            return new Span<T>(_array, index, length);
-        }
-
         public override Span<T> AsSpan()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
-            return new Span<T>(_array, 0, _array.Length);
+            return new Span<T>(_array);
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 
@@ -259,10 +252,10 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan(int index, int length)
+        public override Span<T> AsSpan()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-            return new Span<T>(_array, index, length);
+            return new Span<T>(_array);
         }
 
         protected override void Dispose(bool disposing)
@@ -283,13 +276,13 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        public override BufferHandle Pin()
+        public override MemoryHandle Pin()
         {
             unsafe
             {
                 Retain();
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new BufferHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
 

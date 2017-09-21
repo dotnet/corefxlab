@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Text;
 using System.Collections.Sequences;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void SequenceFormatterBasics()
         {
-            var list = new ArrayList<Buffer<byte>>();
+            var list = new ArrayList<Memory<byte>>();
             list.Add(new byte[10]);
             list.Add(new byte[10]);
             list.Add(new byte[10]);

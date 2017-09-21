@@ -44,19 +44,19 @@ namespace System.Text.Primitives.Tests
                 2,
                 new byte[] { 0x41, 0x42, 0xC0 },
                 new char[] { 'A', 'B' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] { // short; slow loop only; incomplete 3-byte long code at end of buffer
                 2,
                 new byte[] { 0x41, 0x42, 0xE0, 0x83 },
                 new char[] { 'A', 'B' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] { // short; slow loop only; incomplete 4-byte long code at end of buffer
                 2,
                 new byte[] { 0x41, 0x42, 0xF0, 0x83, 0x84 },
                 new char[] { 'A', 'B' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] {  // long; fast loop only; starts with invalid first byte
                 0,
@@ -86,19 +86,19 @@ namespace System.Text.Primitives.Tests
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xC0 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] { // long; incomplete 3-byte long code at end of buffer
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xE0, 0x83 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] { // long; incomplete 4-byte long code at end of buffer
                 15,
                 new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xF0, 0x83, 0x84 },
                 new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
-                OperationStatus.NeedMoreSourceData,
+                OperationStatus.NeedMoreData,
             },
             new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
                 3,
@@ -140,7 +140,7 @@ namespace System.Text.Primitives.Tests
             int bytesNeeded = (expectedOutput.Length + 10) * sizeof(char);
             Span<byte> actualOutput = new byte[bytesNeeded];
 
-            var result = Encoders.Utf8.ToUtf16(input, actualOutput, out int consumed, out int written);
+            var result = Encodings.Utf8.ToUtf16(input, actualOutput, out int consumed, out int written);
             Assert.Equal(expectedResult, result);
 
             Assert.Equal(expectedConsumed, consumed);
@@ -174,7 +174,7 @@ namespace System.Text.Primitives.Tests
 
             // Encoders.Utf16 version
             Span<byte> encodedData = data;
-            Assert.Equal(OperationStatus.Done, Encoders.Utf8.ToUtf16Length(encodedData, out int neededBytes));
+            Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf16Length(encodedData, out int neededBytes));
 
             // System version
             int expectedBytes = Text.Encoding.UTF8.GetCharCount(data) * sizeof(char);
@@ -206,12 +206,12 @@ namespace System.Text.Primitives.Tests
             byte[] data = GenerateUtf8String(count, minCodePoint, maxCodePoint);
 
             Span<byte> encodedData = data;
-            var result = Encoders.Utf8.ToUtf16Length(encodedData, out int needed);
+            var result = Encodings.Utf8.ToUtf16Length(encodedData, out int needed);
             Assert.Equal(OperationStatus.Done, result);
 
             // Encoders.Utf16 version
             Span<byte> actual = new byte[needed];
-            result = Encoders.Utf8.ToUtf16(encodedData, actual, out int consumed, out int written);
+            result = Encodings.Utf8.ToUtf16(encodedData, actual, out int consumed, out int written);
             Assert.Equal(OperationStatus.Done, result);
 
             // System version

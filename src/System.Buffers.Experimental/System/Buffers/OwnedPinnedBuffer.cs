@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    // This is to support secnarios today covered by Buffer<T> in corefxlab
+    // This is to support secnarios today covered by Memory<T> in corefxlab
     public class OwnedPinnedBuffer<T> : ReferenceCountedBuffer<T>
     {
         public unsafe OwnedPinnedBuffer(T[] array, void* pointer, GCHandle handle = default)
@@ -35,10 +35,10 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan(int index, int length)
+        public override Span<T> AsSpan()
         {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
-                return new Span<T>(_array, index, length);
+                return new Span<T>(_array);
         }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
@@ -56,9 +56,9 @@ namespace System.Buffers
             base.Dispose(disposing);
         }
 
-        public unsafe override BufferHandle Pin()
+        public unsafe override MemoryHandle Pin()
         {
-            return new BufferHandle(this, _pointer.ToPointer());
+            return new MemoryHandle(this, _pointer.ToPointer());
         }
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)

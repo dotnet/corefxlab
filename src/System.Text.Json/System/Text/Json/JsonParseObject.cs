@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Text.Utf8;
@@ -11,7 +10,7 @@ namespace System.Text.Json
     public ref struct JsonObject
     {
         private BufferPool _pool;
-        private OwnedBuffer<byte> _dbMemory;
+        private OwnedMemory<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
@@ -29,7 +28,7 @@ namespace System.Text.Json
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedBuffer<byte> dbMemory = null)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedMemory<byte> dbMemory = null)
         {
             _db = db;
             _values = values;
@@ -225,7 +224,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             bool result;
-            if(!PrimitiveParser.InvariantUtf8.TryParseBoolean(slice, out result)){
+            if(!Parsers.Utf8.TryParseBoolean(slice, out result)){
                 throw new InvalidCastException();
             }
             return result;
@@ -241,7 +240,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             int result;
-            if (!PrimitiveParser.InvariantUtf8.TryParseInt32(slice, out result)) {
+            if (!Parsers.Utf8.TryParseInt32(slice, out result)) {
                 throw new InvalidCastException();
             }
             return result;

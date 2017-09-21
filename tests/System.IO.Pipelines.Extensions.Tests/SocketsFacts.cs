@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using System.Text.Formatting;
+using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Tests
 {
