@@ -16,23 +16,23 @@ namespace System.Buffers.Tests
         public void WriteUInt32(uint value)
         {
             var span = new Span<byte>(new byte[4]);
-            span.WriteBigEndianUInt32(value);
-            uint read = span.ReadBigEndianUInt32();
+            span.WriteUInt32BigEndian(value);
+            uint read = span.ReadUInt32BigEndian();
             Assert.Equal(value, read);
 
             span.Clear();
-            Assert.True(span.TryWriteBigEndianUInt32(value));
-            read = span.ReadBigEndianUInt32();
+            Assert.True(span.TryWriteUInt32BigEndian(value));
+            read = span.ReadUInt32BigEndian();
             Assert.Equal(value,read);
 
             span.Clear();
-            span.WriteLittleEndianUInt32(value);
-            read = span.ReadLittleEndianUInt32();
+            span.WriteUInt32LittleEndian(value);
+            read = span.ReadUInt32LittleEndian();
             Assert.Equal(value, read);
 
             span.Clear();
-            Assert.True(span.TryWriteLittleEndianUInt32(value));
-            read = span.ReadLittleEndianUInt32();
+            Assert.True(span.TryWriteUInt32LittleEndian(value));
+            read = span.ReadUInt32LittleEndian();
             Assert.Equal(value, read);
         }
     }

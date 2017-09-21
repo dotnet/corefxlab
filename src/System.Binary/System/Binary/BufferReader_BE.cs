@@ -24,7 +24,7 @@ namespace System.Buffers
 
         #region ReadBigEndianROSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static short ReadBigEndianInt16(this ReadOnlySpan<byte> buffer)
+        public static short ReadInt16BigEndian(this ReadOnlySpan<byte> buffer)
         {
             short result = buffer.Read<short>();
             if (BitConverter.IsLittleEndian)
@@ -35,7 +35,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ReadBigEndianInt32(this ReadOnlySpan<byte> buffer)
+        public static int ReadInt32BigEndian(this ReadOnlySpan<byte> buffer)
         {
             int result = buffer.Read<int>();
             if (BitConverter.IsLittleEndian)
@@ -46,7 +46,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long ReadBigEndianInt64(this ReadOnlySpan<byte> buffer)
+        public static long ReadInt64BigEndian(this ReadOnlySpan<byte> buffer)
         {
             long result = buffer.Read<long>();
             if (BitConverter.IsLittleEndian)
@@ -57,7 +57,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ReadBigEndianUInt16(this ReadOnlySpan<byte> buffer)
+        public static ushort ReadUInt16BigEndian(this ReadOnlySpan<byte> buffer)
         {
             ushort result = buffer.Read<ushort>();
             if (BitConverter.IsLittleEndian)
@@ -68,7 +68,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ReadBigEndianUInt32(this ReadOnlySpan<byte> buffer)
+        public static uint ReadUInt32BigEndian(this ReadOnlySpan<byte> buffer)
         {
             uint result = buffer.Read<uint>();
             if (BitConverter.IsLittleEndian)
@@ -79,7 +79,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ulong ReadBigEndianUInt64(this ReadOnlySpan<byte> buffer)
+        public static ulong ReadUInt64BigEndian(this ReadOnlySpan<byte> buffer)
         {
             ulong result = buffer.Read<ulong>();
             if (BitConverter.IsLittleEndian)
@@ -92,7 +92,7 @@ namespace System.Buffers
 
         #region ReadBigEndianSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static short ReadBigEndianInt16(this Span<byte> buffer)
+        public static short ReadInt16BigEndian(this Span<byte> buffer)
         {
             short result = buffer.Read<short>();
             if (BitConverter.IsLittleEndian)
@@ -103,7 +103,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ReadBigEndianInt32(this Span<byte> buffer)
+        public static int ReadInt32BigEndian(this Span<byte> buffer)
         {
             int result = buffer.Read<int>();
             if (BitConverter.IsLittleEndian)
@@ -114,7 +114,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long ReadBigEndianInt64(this Span<byte> buffer)
+        public static long ReadInt64BigEndian(this Span<byte> buffer)
         {
             long result = buffer.Read<long>();
             if (BitConverter.IsLittleEndian)
@@ -125,7 +125,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ReadBigEndianUInt16(this Span<byte> buffer)
+        public static ushort ReadUInt16BigEndian(this Span<byte> buffer)
         {
             ushort result = buffer.Read<ushort>();
             if (BitConverter.IsLittleEndian)
@@ -136,7 +136,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ReadBigEndianUInt32(this Span<byte> buffer)
+        public static uint ReadUInt32BigEndian(this Span<byte> buffer)
         {
             uint result = buffer.Read<uint>();
             if (BitConverter.IsLittleEndian)
@@ -147,7 +147,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ulong ReadBigEndianUInt64(this Span<byte> buffer)
+        public static ulong ReadUInt64BigEndian(this Span<byte> buffer)
         {
             ulong result = buffer.Read<ulong>();
             if (BitConverter.IsLittleEndian)
@@ -160,7 +160,7 @@ namespace System.Buffers
 
         #region TryReadBigEndianSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt16(this Span<byte> buffer, out short value)
+        public static bool TryReadInt16BigEndian(this Span<byte> buffer, out short value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -171,7 +171,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt32(this Span<byte> buffer, out int value)
+        public static bool TryReadInt32BigEndian(this Span<byte> buffer, out int value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -182,7 +182,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt64(this Span<byte> buffer, out long value)
+        public static bool TryReadInt64BigEndian(this Span<byte> buffer, out long value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -193,7 +193,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt16(this Span<byte> buffer, out ushort value)
+        public static bool TryReadUInt16BigEndian(this Span<byte> buffer, out ushort value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -204,7 +204,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt32(this Span<byte> buffer, out uint value)
+        public static bool TryReadUInt32BigEndian(this Span<byte> buffer, out uint value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -215,7 +215,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt64(this Span<byte> buffer, out ulong value)
+        public static bool TryReadUInt64BigEndian(this Span<byte> buffer, out ulong value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -228,7 +228,7 @@ namespace System.Buffers
 
         #region TryReadBigEndianROSpan
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt16(this ReadOnlySpan<byte> buffer, out short value)
+        public static bool TryReadInt16BigEndian(this ReadOnlySpan<byte> buffer, out short value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -239,7 +239,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt32(this ReadOnlySpan<byte> buffer, out int value)
+        public static bool TryReadInt32BigEndian(this ReadOnlySpan<byte> buffer, out int value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -250,7 +250,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianInt64(this ReadOnlySpan<byte> buffer, out long value)
+        public static bool TryReadInt64BigEndian(this ReadOnlySpan<byte> buffer, out long value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -261,7 +261,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt16(this ReadOnlySpan<byte> buffer, out ushort value)
+        public static bool TryReadUInt16BigEndian(this ReadOnlySpan<byte> buffer, out ushort value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -272,7 +272,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt32(this ReadOnlySpan<byte> buffer, out uint value)
+        public static bool TryReadUInt32BigEndian(this ReadOnlySpan<byte> buffer, out uint value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
@@ -283,7 +283,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadBigEndianUInt64(this ReadOnlySpan<byte> buffer, out ulong value)
+        public static bool TryReadUInt64BigEndian(this ReadOnlySpan<byte> buffer, out ulong value)
         {
             bool success = buffer.TryRead(out value);
             if (BitConverter.IsLittleEndian)
