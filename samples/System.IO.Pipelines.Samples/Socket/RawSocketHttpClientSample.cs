@@ -22,7 +22,9 @@ namespace System.IO.Pipelines.Samples
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(IPAddress.Loopback, 5000));
-            return Task.FromResult((IPipeConnection)new StreamPipeConnection(new PipeOptions(pool), new NetworkStream(s)));
+
+            var pipeConnection = new StreamPipeConnection(new PipeOptions(pool), new NetworkStream(s));
+            return Task.FromResult((IPipeConnection)pipeConnection);
         }
 
         protected override BufferPool GetBufferPool()
