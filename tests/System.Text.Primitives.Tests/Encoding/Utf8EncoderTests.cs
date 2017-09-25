@@ -113,7 +113,7 @@ namespace System.Text.Primitives.Tests.Encoding
             uint[] expectedCodePoints = new uint[maximumValidCodePoint + 1];
             for (uint i = 0; i <= maximumValidCodePoint; i++)
             {
-                if (!EncodingHelper.IsSupportedCodePoint(i))
+                if (!EncodingHelper.IsValidScalarValue(i))
                 {
                     expectedCodePoints[i] = 0; // skip unsupported code points.
                 }
@@ -160,7 +160,7 @@ namespace System.Text.Primitives.Tests.Encoding
             var plainText = new StringBuilder();
             for (int i = 0; i <= maximumValidCodePoint; i++)
             {
-                if (!EncodingHelper.IsSupportedCodePoint((uint)i))
+                if (!EncodingHelper.IsValidScalarValue((uint)i))
                 {
                     codePoints[i] = 0; // skip unsupported characters
                     plainText.Append((char)0);

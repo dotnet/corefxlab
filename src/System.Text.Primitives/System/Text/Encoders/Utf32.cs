@@ -57,7 +57,7 @@ namespace System.Buffers
                 for (int i = 0; i < utf32Length; i++)
                 {
                     uint codePoint = Unsafe.Add(ref utf32, i);
-                    if (!EncodingHelper.IsSupportedCodePoint(codePoint))
+                    if (!EncodingHelper.IsValidScalarValue(codePoint))
                         return OperationStatus.InvalidData;
 
                     bytesNeeded += EncodingHelper.GetUtf8EncodedBytes(codePoint);
@@ -97,7 +97,7 @@ namespace System.Buffers
                 while (srcLength - bytesConsumed >= sizeof(uint))
                 {
                     uint codePoint = Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, bytesConsumed));
-                    if (!EncodingHelper.IsSupportedCodePoint(codePoint))
+                    if (!EncodingHelper.IsValidScalarValue(codePoint))
                         return OperationStatus.InvalidData;
 
                     int bytesNeeded = EncodingHelper.GetUtf8EncodedBytes(codePoint);
@@ -191,7 +191,7 @@ namespace System.Buffers
                 {
                     ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, index));
 
-                    if (!EncodingHelper.IsSupportedCodePoint(codePoint))
+                    if (!EncodingHelper.IsValidScalarValue(codePoint))
                         return OperationStatus.InvalidData;
 
                     bytesNeeded += EncodingHelper.IsBmp(codePoint) ? 2 : 4;
@@ -229,7 +229,7 @@ namespace System.Buffers
                 {
                     ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, bytesConsumed));
 
-                    if (!EncodingHelper.IsSupportedCodePoint(codePoint))
+                    if (!EncodingHelper.IsValidScalarValue(codePoint))
                         return OperationStatus.InvalidData;
 
                     int written = EncodingHelper.IsBmp(codePoint) ? 2 : 4;

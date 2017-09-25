@@ -47,8 +47,6 @@ namespace System.Text.Primitives.Tests.Encoding
             for (int j = 0; j < length; j++)
             {
                 var val = rand.Next(minCodePoint, maxCodePoint + 1);
-                while (!IsSupportedChar((char)val))
-                    val = rand.Next(minCodePoint, maxCodePoint + 1);
 
                 if (ignoreSurrogates)
                 {
@@ -526,20 +524,6 @@ namespace System.Text.Primitives.Tests.Encoding
                 return false;
             if (codePoint >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                 return false;
-            if (codePoint >= 0xFDD0 && codePoint <= 0xFDEF)
-                return false;
-            if (codePoint == 0xFFFE || codePoint == 0xFFFF)
-                return false;
-
-            return true;
-        }
-
-        public static bool IsSupportedChar(char ch)
-        {
-            if (ch >= 0xFDD0 && ch <= 0xFDEF)
-                return false;
-            if (ch == 0xFFFE || ch == 0xFFFF)
-                return false;
 
             return true;
         }
@@ -549,8 +533,6 @@ namespace System.Text.Primitives.Tests.Encoding
             int range = rnd.Next(0, 2);
             if (range == 0)
                 return (uint)rnd.Next(0xD800, 0xE000); // Generate a random surrogate
-            else if (range == 1)
-                return (uint)rnd.Next(0xFDD0, 0xFDF0); // Generate in the FDDx, FDEx range
             else
                 return (uint)rnd.Next(0x110000, 0xFFFFFF); // Generate something above 0x110000
         }
