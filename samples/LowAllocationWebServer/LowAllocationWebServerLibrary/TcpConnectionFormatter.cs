@@ -6,7 +6,6 @@ using Microsoft.Net.Sockets;
 using System;
 using System.Buffers;
 using System.Buffers.Text;
-using System.Text;
 using System.Text.Formatting;
 using System.Text.Http;
 using System.Text.Utf8;

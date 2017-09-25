@@ -47,37 +47,37 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt16BigEndian(this Span<byte> buffer, short value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt32BigEndian(this Span<byte> buffer, int value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt64BigEndian(this Span<byte> buffer, long value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt16BigEndian(this Span<byte> buffer, ushort value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt32BigEndian(this Span<byte> buffer, uint value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt64BigEndian(this Span<byte> buffer, ulong value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            buffer.Write(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
         #endregion
 
@@ -85,37 +85,37 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt16LittleEndian(this Span<byte> buffer, short value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt32LittleEndian(this Span<byte> buffer, int value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteInt64LittleEndian(this Span<byte> buffer, long value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt16LittleEndian(this Span<byte> buffer, ushort value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt32LittleEndian(this Span<byte> buffer, uint value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteUInt64LittleEndian(this Span<byte> buffer, ulong value)
         {
-            buffer.Write(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            buffer.Write(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
         #endregion
 
@@ -123,37 +123,37 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt16BigEndian(this Span<byte> buffer, short value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt32BigEndian(this Span<byte> buffer, int value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt64BigEndian(this Span<byte> buffer, long value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt16BigEndian(this Span<byte> buffer, ushort value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt32BigEndian(this Span<byte> buffer, uint value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt64BigEndian(this Span<byte> buffer, ulong value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? UnsafeUtilities.ReverseEndianness(value) : value);
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value.Reverse() : value);
         }
         #endregion
 
@@ -161,37 +161,37 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt16LittleEndian(this Span<byte> buffer, short value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt32LittleEndian(this Span<byte> buffer, int value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt64LittleEndian(this Span<byte> buffer, long value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt16LittleEndian(this Span<byte> buffer, ushort value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt32LittleEndian(this Span<byte> buffer, uint value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUInt64LittleEndian(this Span<byte> buffer, ulong value)
         {
-            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : UnsafeUtilities.ReverseEndianness(value));
+            return buffer.TryWrite(BitConverter.IsLittleEndian ? value : value.Reverse());
         }
         #endregion
     }

@@ -4,8 +4,6 @@
 
 using System.Net.Libuv;
 using System.Text.Utf8;
-using System.Buffers.Text;
-using System.Buffers;
 
 namespace QotdService
 {
