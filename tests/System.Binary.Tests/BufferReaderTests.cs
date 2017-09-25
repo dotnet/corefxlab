@@ -488,7 +488,7 @@ namespace System.Buffers.Tests
         [Benchmark(InnerIterationCount = InnerCount)]
         private static void MeasureReverse()
         {
-            int[] myArray = new int[1000];
+            var myArray = new int[1000];
             
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -508,7 +508,7 @@ namespace System.Buffers.Tests
         [Benchmark(InnerIterationCount = InnerCount)]
         private static void MeasureReverseUsingNtoH()
         {
-            int[] myArray = new int[1000];
+            var myArray = new int[1000];
 
             foreach (var iteration in Benchmark.Iterations)
             {

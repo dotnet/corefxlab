@@ -75,54 +75,39 @@ namespace System.Buffers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Reverse(this short value)
         {
             return (short)((value & 0x00FF) << 8 | (value & 0xFF00) >> 8);
         }
 
-        public static int Reverse(this int value)
-        {
-            return (value & 0x000000FF) << 24 |
-                (value & 0x0000FF00) << 8 |
-                (value & 0x00FF0000) >> 8 |
-                (int)(((uint)value & 0xFF000000) >> 24);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Reverse(this int value) => (int)Reverse((uint)value);
 
-        public static long Reverse(this long value)
-        {
-            return (value & 0x00000000000000FFL) << 56 |
-                (value & 0x000000000000FF00L) << 40 |
-                (value & 0x0000000000FF0000L) << 24 |
-                (value & 0x00000000FF000000L) << 8 |
-                (value & 0x000000FF00000000L) >> 8 |
-                (value & 0x0000FF0000000000L) >> 24 |
-                (value & 0x00FF000000000000L) >> 40 |
-                (long)(((ulong)value & 0xFF00000000000000L) >> 56);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Reverse(this long value) => (long)Reverse((ulong)value);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Reverse(this ushort value)
         {
             return (ushort)((value & 0x00FFU) << 8 | (value & 0xFF00U) >> 8);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Reverse(this uint value)
         {
-            return (value & 0x000000FFU) << 24 |
-                (value & 0x0000FF00U) << 8 |
-                (value & 0x00FF0000U) >> 8 |
-                (value & 0xFF000000U) >> 24;
+            value = (value << 16) | (value >> 16);
+            value = (value & 0x00FF00FF) << 8 | (value & 0xFF00FF00) >> 8;
+            return value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Reverse(this ulong value)
         {
-            return (value & 0x00000000000000FFUL) << 56 |
-                (value & 0x000000000000FF00UL) << 40 |
-                (value & 0x0000000000FF0000UL) << 24 |
-                (value & 0x00000000FF000000UL) << 8 |
-                (value & 0x000000FF00000000UL) >> 8 |
-                (value & 0x0000FF0000000000UL) >> 24 |
-                (value & 0x00FF000000000000UL) >> 40 |
-                (value & 0xFF00000000000000UL) >> 56;
+            value = (value << 32) | (value >> 32);
+            value = (value & 0x0000FFFF0000FFFF) << 16 | (value & 0xFFFF0000FFFF0000) >> 16;
+            value = (value & 0x00FF00FF00FF00FF) << 8 | (value & 0xFF00FF00FF00FF00) >> 8;
+            return value;
         }
 
         /// <summary>
