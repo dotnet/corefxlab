@@ -13,13 +13,13 @@ The library is centered around the ```Channel<T>``` abstract base class, which r
 that can have instances of ```T``` written to it and read from it.  The class is actually the
 combination of a few classes that represent the reading and writing halves:
 ```C#
-public abstract class Channel<T> : Channel<TWrite, TRead> { }
+public abstract class Channel<T> : Channel<T, T> { }
 
 public abstract class Channel<TWrite, TRead>
 {
-	public abstract ReadableChannel<TRead> In { get; }
-	public abstract WritableChannel<TWrite> Out { get; }
-	...
+    public abstract ReadableChannel<TRead> In { get; }
+    public abstract WritableChannel<TWrite> Out { get; }
+    ...
 }
 
 public abstract class ReadableChannel<T>
@@ -29,7 +29,7 @@ public abstract class ReadableChannel<T>
     public abstract Task Completion { get; }
     public virtual ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     public virtual ValueAwaiter<T> GetAwaiter();
-	...
+    ...
 }
 
 public abstract class WritableChannel<in T>
@@ -38,8 +38,8 @@ public abstract class WritableChannel<in T>
     public abstract Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
     public abstract bool TryComplete(Exception error = null);
     public virtual Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
-	public virtual ValueAwaiter<bool> GetAwaiter();
-	...
+    public virtual ValueAwaiter<bool> GetAwaiter();
+    ...
 }
 ```
 The ```ReadableChannel<T>``` and ```WritableChannel<T>``` types represent the two halves of a channel,
@@ -48,14 +48,14 @@ and the latter allowing data to be written to it. The readable and writable type
 on each that are counterparts of those on the other:
 - ```TryRead```/```TryWrite```: Attempt to read or write an item synchronously, returning whether the read or write was successful.
 - ```ReadAsync```/```WriteAsync```: Read or write an item asynchronously.  These will complete synchronously if data/space is already available.
-- ```WaitToReadAsync```/```WaitToWriteAsync```: Return a ```Task<bool>``` that will complete when reading or writing can be attempted.  If 
-the task completes with a ```true``` result, at that moment the channel was available for reading or writing, though 
-because these channels may be used concurrently, it's possible the status changed the moment after the operation completed.
-If the task completes with a ```false``` result, the channel has been completed and will not be able to satisfy a read or write.
 - ```TryComplete```/```Completion```: Channels may be completed, such that no additional items may be written; such channels will "complete" when
 marked as completed *and* all existing data in the channel has been consumed.  Channels may also be marked as faulted by passing
 an optional ```Exception``` to Complete; this exception will emerge when awaiting on the Completion Task, as well as when trying
 to ```ReadAsync``` from an empty completed collection.
+- ```WaitToReadAsync```/```WaitToWriteAsync```: Return a ```Task<bool>``` that will complete when reading or writing can be attempted.  If 
+the task completes with a ```true``` result, at that moment the channel was available for reading or writing, though 
+because these channels may be used concurrently, it's possible the status changed the moment after the operation completed.
+If the task completes with a ```false``` result, the channel has been completed and will not be able to satisfy a read or write.
 
 ```ReadAsync``` is defined to return a ```ValueTask<T>```, a struct type that's a  discriminated 
 union of a ```T``` and a ```Task<T>```, making it allocation-free for ```ReadAsync<T>``` to synchronously return a ```T``` value it has 
@@ -92,7 +92,7 @@ public static class Channel
     public static Channel<T> CreateUnbounded<T>();
     public static Channel<T> CreateUnbuffered<T>();
     public static Channel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode);
-	...
+    ...
 }
 ```
 - ```CreateUnbounded<T>```: Used to create a buffered, unbounded channel.  The channel may be used concurrently
@@ -130,10 +130,10 @@ might look like this:
 private static async Task ProduceRange(WritableChannel<int> c, int count)
 {
     for (int i = 0; i < count; i++)
-	{
-	    await c.WriteAsync(i);
-	}
-	c.Complete();
+    {
+        await c.WriteAsync(i);
+    }
+    c.Complete();
 }
 ```
 That will wait for each write to complete successfully before moving on to the next write.  Alternatively, ```TryWrite``` could
@@ -142,11 +142,11 @@ be used if the developer wants to do something instead of writing if the item ca
 private static async Task ProduceRange(WritableChannel<int> c, int count)
 {
     for (int i = 0; i < count; i++)
-	{
-	    bool success = c.TryWrite(i);
-		if (!success) { ... }
-	}
-	c.Complete();
+    {
+        bool success = c.TryWrite(i);
+        if (!success) { ... }
+    }
+    c.Complete();
 }
 ```
 Or if the developer wants to simply wait for the channel to be ready to accept another write, a loop like the following
@@ -155,13 +155,13 @@ could be employed:
 private static async Task ProduceRange(WritableChannel<int> c, int count)
 {
     for (int i = 0; i < count; i++)
-	{
-	    while (await c.WaitForWriteAsync())
-		{
-			if (c.TryWrite(i)) break;
-		}
-	}
-	c.Complete();
+    {
+        while (await c.WaitForWriteAsync())
+        {
+            if (c.TryWrite(i)) break;
+        }
+    }
+    c.Complete();
 }
 ```
 And if it's expected that most writes will succeed synchronously and we may only need to wait every once in a while,
@@ -169,12 +169,12 @@ it may also be advantageous to loop on the ```TryWrite```, e.g.
 ```C#
 private static async Task ProduceRange(WritableChannel<int> c, int count)
 {
-	int i = 0;
-	while (i < count && await c.WaitForWriteAsync())
-	{
-	    while (i < count && c.TryWrite(i)) i++;
-	}
-	c.Complete();
+    int i = 0;
+    while (i < count && await c.WaitForWriteAsync())
+    {
+        while (i < count && c.TryWrite(i)) i++;
+    }
+    c.Complete();
 }
 ```
 Finally, if no asynchronous waiting was desired and instead the developer wanted to spin, a loop like the following
@@ -183,11 +183,11 @@ could be employed:
 private static async Task ProduceRange(WritableChannel<int> c, int count)
 {
     var sw = new SpinWait();
-	for (int i = 0; i < count; i++)
-	{
-		while (!c.TryWrite(i)) sw.SpinOnce();
-	}
-	c.Complete();
+    for (int i = 0; i < count; i++)
+    {
+        while (!c.TryWrite(i)) sw.SpinOnce();
+    }
+    c.Complete();
 }
 ```
 
@@ -198,14 +198,14 @@ being marked as completed, an exception will be thrown when no more reads are po
 private static async Task Consume(ReadableChannel<int> c)
 {
     try
-	{
-	     while (true)
-		 {
-		     int item = await c;
-			 ...
-		 }
-	}
-	catch (ChannelClosedException) {}
+    {
+         while (true)
+         {
+             int item = await c;
+             ...
+         }
+    }
+    catch (ChannelClosedException) {}
 }
 ```
 Alternatively, ReadAsync may be used instead of awaiting the channel (this behaves similarly to the above await, albeit
@@ -218,14 +218,14 @@ that takes advantage of the constraints associated with it):
 private static async Task Consume(ReadableChannel<int> c)
 {
     try
-	{
-	     while (true)
-		 {
-		     int item = await c.ReadAsync();
-			 ...
-		 }
-	}
-	catch (ChannelClosedException) {}
+    {
+         while (true)
+         {
+             int item = await c.ReadAsync();
+             ...
+         }
+    }
+    catch (ChannelClosedException) {}
 }
 ```
 ```WaitForReadAsync``` and ```TryRead``` may also be used.  This avoids the use of an exception to indicate if/when the channel
@@ -234,11 +234,11 @@ has been closed, e.g.
 private static async Task Consume(ReadableChannel<int> c)
 {
     while (await c.WaitForReadAsync())
-	{
-		if (c.TryRead(out int item))
-		{
-		    ...
-		}
+    {
+        if (c.TryRead(out int item))
+        {
+            ...
+        }
     }
 }
 ```
@@ -248,11 +248,11 @@ optimize for reads by looping over ```TryRead``` as well:
 private static async Task Consume(ReadableChannel<int> c)
 {
     while (await c.WaitForReadAsync())
-	{
-		while (c.TryRead(out int item))
-		{
-		    ...
-		}
+    {
+        while (c.TryRead(out int item))
+        {
+            ...
+        }
     }
 }
 ```
@@ -261,15 +261,15 @@ And for circumstances where spinning instead of waiting is desired, as with writ
 private static async Task Consume(ReadableChannel<int> c)
 {
     var sw = new SpinWait();
-	Task completion = c.Completion;
-	while (!completion.IsCompleted)
-	{
-	    while (c.TryRead(out int item))
-		{
-		    ...
-		}
-		sw.SpinOnce();
-	}
+    Task completion = c.Completion;
+    while (!completion.IsCompleted)
+    {
+        while (c.TryRead(out int item))
+        {
+            ...
+        }
+        sw.SpinOnce();
+    }
 }
 ```
 As noted earlier, a channel is not considered to be completed (meaning its ```Completion``` task won't transition
@@ -283,12 +283,13 @@ available, making the above polling/spinning loop safe from a concurrency perspe
 public abstract class ReadableChannel<T>
 {
     public virtual IObservable<T> AsObservable<T>();
-	...
+    ...
 }
+
 public abstract class WritableChannel<T>
-{}
+{
     public virtual IObserver<T> AsObserver<T>();
-	...
+    ...
 }
 ```
 This allows for subscribing a writable channel to an observable as an observer, and subscribing other observers 
