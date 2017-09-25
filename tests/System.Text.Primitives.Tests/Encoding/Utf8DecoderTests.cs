@@ -2,15 +2,37 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO;
-using System.Text.Primitives.System.Text.Encoders;
 using Xunit;
 
-namespace System.Text.Primitives.Tests.Encoding
+namespace System.Text.Encoders.Tests
 {
     public class Utf8DecoderTests
     {
+        private const int ReplacementChar = 0xFFFD;
+
         private static readonly UTF8Encoding _strictEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void DangerousReadNextUnicodeScalarValue_WithNonPositiveBufferLength_ReturnsDataTooShortError(int bytesAvailable)
+        {
+            // Arrange
+
+            var span = new Span<byte>(new byte[] { 10, 20, 30, 40, 50 }, 2, 2);
+
+            // Act
+
+            var status = Utf8Decoder.DangerousReadNextUnicodeScalarValue(ref span.DangerousGetPinnableReference(), bytesAvailable, out int scalarValue, out int bytesConsumed);
+
+            // Assert
+
+            Assert.Equal(OperationStatus.NeedMoreData, status);
+            Assert.Equal(ReplacementChar, scalarValue);
+            Assert.Equal(0, bytesConsumed);
+        }
 
         [Fact]
         public void IsWellFormedUtf8String_WithSequenceOfAllValidChars_ReturnsOk()
@@ -53,16 +75,17 @@ namespace System.Text.Primitives.Tests.Encoding
         [InlineData((byte)0b1000_0000)]
         [InlineData((byte)0b1111_1000)]
         [InlineData((byte)0b1111_1111)]
-        public void ReadUnicodeScalarValue_InputHasMalformedLeadingByte_ReturnsBadDataError(byte input)
+        public void ReadNextUnicodeScalarValue_InputHasMalformedLeadingByte_ReturnsBadDataError(byte input)
         {
             // Act
 
-            int retVal = Utf8Decoder.ReadUnicodeScalarValue(new byte[] { input }, out int numBytesConsumed);
+            var status = Utf8Decoder.ReadNextUnicodeScalarValue(new byte[] { input }, out int scalarValue, out int numBytesConsumed);
 
             // Assert
 
-            Assert.Equal(Utf8Decoder.ErrorStatus.BadCharacter, retVal);
-            Assert.Equal(0, numBytesConsumed);
+            Assert.Equal(OperationStatus.InvalidData, status);
+            Assert.Equal(ReplacementChar, scalarValue);
+            Assert.Equal(1, numBytesConsumed);
         }
 
         [Theory]
@@ -72,31 +95,32 @@ namespace System.Text.Primitives.Tests.Encoding
         [InlineData(new byte[] { 0b1111_0000, 0xFF, 0xFF, 0xFF }, 1)]
         [InlineData(new byte[] { 0b1111_0000, 0b1000_0000, 0xFF, 0xFF }, 2)]
         [InlineData(new byte[] { 0b1111_0000, 0b1000_0000, 0b1000_0000, 0xFF }, 3)]
-        public void ReadUnicodeScalarValue_InputHasMalformedTrailingByte_ReturnsBadDataError(byte[] data, int expectedNumBytesConsumed)
+        public void ReadNextUnicodeScalarValue_InputHasMalformedTrailingByte_ReturnsBadDataError(byte[] data, int expectedNumBytesConsumed)
         {
             // Act
 
-            int retVal = Utf8Decoder.ReadUnicodeScalarValue(data, out int actualNumBytesConsumed);
+            var status = Utf8Decoder.ReadNextUnicodeScalarValue(data, out int scalarValue, out int actualNumBytesConsumed);
 
             // Assert
 
-            Assert.Equal(Utf8Decoder.ErrorStatus.BadCharacter, retVal);
+            Assert.Equal(OperationStatus.InvalidData, status);
+            Assert.Equal(ReplacementChar, scalarValue);
             Assert.Equal(expectedNumBytesConsumed, actualNumBytesConsumed);
         }
 
         [Fact]
-        public void ReadUnicodeScalarValue_ReadsAllValidSequencesCorrectly()
+        public void ReadNextUnicodeScalarValue_ReadsAllValidSequencesCorrectly()
         {
             for (int i = 0; i <= 0x10FFFF; i++)
             {
                 if (!IsSurrogateCodePoint(i))
                 {
-                    ReadUnicodeScalarValue_ReadsAllValidSequencesCorrectly_Core(i);
+                    ReadNextUnicodeScalarValue_ReadsAllValidSequencesCorrectly_Core(i);
                 }
             }
         }
 
-        private static void ReadUnicodeScalarValue_ReadsAllValidSequencesCorrectly_Core(int codePoint)
+        private static void ReadNextUnicodeScalarValue_ReadsAllValidSequencesCorrectly_Core(int codePoint)
         {
             // Arrange
 
@@ -104,18 +128,20 @@ namespace System.Text.Primitives.Tests.Encoding
 
             // Act & assert 1 - buffer contains just this single code point
 
-            int retVal1 = Utf8Decoder.ReadUnicodeScalarValue(codePointAsUtf8, out int bytesConsumed1);
-            Assert.Equal(codePoint, retVal1);
+            var status1 = Utf8Decoder.ReadNextUnicodeScalarValue(codePointAsUtf8, out int scalarValue1, out int bytesConsumed1);
+            Assert.Equal(OperationStatus.Done, status1);
+            Assert.Equal(codePoint, scalarValue1);
             Assert.Equal(codePointAsUtf8.Length, bytesConsumed1);
 
             // Act & assert 2 - buffer contains extra unused chars
 
             byte[] codePointAsUtf8WithExtraChars = new byte[codePointAsUtf8.Length + 1];
             Buffer.BlockCopy(codePointAsUtf8, 0, codePointAsUtf8WithExtraChars, 0, codePointAsUtf8.Length);
-            codePointAsUtf8WithExtraChars[codePointAsUtf8WithExtraChars.Length - 1] = 0x80; // invalid byte
+            codePointAsUtf8WithExtraChars[codePointAsUtf8WithExtraChars.Length - 1] = 0x80; // invalid byte shouldn't be reached since not part of current sequence
 
-            int retVal2 = Utf8Decoder.ReadUnicodeScalarValue(codePointAsUtf8WithExtraChars, out int bytesConsumed2);
-            Assert.Equal(codePoint, retVal2);
+            var status2 = Utf8Decoder.ReadNextUnicodeScalarValue(codePointAsUtf8WithExtraChars, out int scalarValue2, out int bytesConsumed2);
+            Assert.Equal(OperationStatus.Done, status2);
+            Assert.Equal(codePoint, scalarValue2);
             Assert.Equal(codePointAsUtf8.Length, bytesConsumed2);
         }
 
@@ -123,27 +149,28 @@ namespace System.Text.Primitives.Tests.Encoding
         [InlineData(new byte[] { 0b1100_0001, 0b1011_1111 })] // U+007F should be encoded as [ 01111111 ]
         [InlineData(new byte[] { 0b1110_0000, 0b1001_1111, 0b1011_1111 })] // U+07FF should be encoded as [ 11011111 10111111 ]
         [InlineData(new byte[] { 0b1111_0000, 0b1000_1111, 0b1011_1111, 0b1011_1111 })] // U+FFFF should be encoded as [ 11101111 10111111 10111111 ]
-        public void ReadUnicodeScalarValue_InputIsNotInShortestForm_ReturnsBadDataError(byte[] input) => RunDecoder_ExpectBadDataError(input);
+        public void ReadNextUnicodeScalarValue_InputIsNotInShortestForm_ReturnsBadDataError(byte[] input) => RunDecoder_ExpectBadDataError_WithAllBytesConsumed(input);
 
         [Theory]
         [InlineData(new byte[] { 0b1110_1101, 0b1010_0000, 0b1000_0000 })] // U+D800, minimally encoded
         [InlineData(new byte[] { 0b1110_1101, 0b1011_1111, 0b1011_1111 })] // U+DFFF, minimally encoded
-        public void ReadUnicodeScalarValue_InputIsSurrogate_ReturnsBadDataError(byte[] input) => RunDecoder_ExpectBadDataError(input);
+        public void ReadNextUnicodeScalarValue_InputIsSurrogate_ReturnsBadDataError(byte[] input) => RunDecoder_ExpectBadDataError_WithAllBytesConsumed(input);
 
         [Theory]
         [InlineData(new byte[] { })] // zero-length buffer
         [InlineData(new byte[] { 0b1100_0000 })] // marker begins a two-byte sequence
         [InlineData(new byte[] { 0b1110_0000, 0b1000_0000 })] // marker begins a three-byte sequence
         [InlineData(new byte[] { 0b1111_0000, 0b1000_0000, 0b1000_0000 })] // marker begins a four-byte sequence
-        private static void ReadUnicodeScalarValue_WithTooShortBuffer_ReturnsInsufficientDataError(byte[] input)
+        private static void ReadNextUnicodeScalarValue_WithTooShortBuffer_ReturnsInsufficientDataError(byte[] input)
         {
             // Act
 
-            int retVal = Utf8Decoder.ReadUnicodeScalarValue(input, out int bytesConsumed);
+            var status = Utf8Decoder.ReadNextUnicodeScalarValue(input, out int scalarValue, out int bytesConsumed);
 
             // Assert
 
-            Assert.Equal(Utf8Decoder.ErrorStatus.InsufficientData, retVal);
+            Assert.Equal(OperationStatus.NeedMoreData, status);
+            Assert.Equal(ReplacementChar, scalarValue);
             Assert.Equal(0, bytesConsumed);
         }
 
@@ -152,15 +179,16 @@ namespace System.Text.Primitives.Tests.Encoding
             return (0xD800 <= i && i <= 0xDFFF);
         }
 
-        private static void RunDecoder_ExpectBadDataError(byte[] input)
+        private static void RunDecoder_ExpectBadDataError_WithAllBytesConsumed(byte[] input)
         {
             // Act
 
-            int retVal = Utf8Decoder.ReadUnicodeScalarValue(input, out int bytesConsumed);
+            var status = Utf8Decoder.ReadNextUnicodeScalarValue(input, out int scalarValue, out int bytesConsumed);
 
             // Assert
 
-            Assert.Equal(Utf8Decoder.ErrorStatus.BadCharacter, retVal);
+            Assert.Equal(OperationStatus.InvalidData, status);
+            Assert.Equal(ReplacementChar, scalarValue);
             Assert.Equal(input.Length, bytesConsumed);
         }
 
