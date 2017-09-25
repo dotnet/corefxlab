@@ -3,7 +3,6 @@
 
 using System.Buffers.Text;
 using System.Collections.Sequences;
-using System.Text;
 using System.Text.Http;
 
 namespace System.Diagnostics

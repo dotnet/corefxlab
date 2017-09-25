@@ -4,7 +4,6 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
