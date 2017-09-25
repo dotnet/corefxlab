@@ -2,49 +2,58 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Primitives.System.Text.Encoders
+namespace System.Text.Encoders
 {
     /// <summary>
     /// Contains facilities for validating and extracting Unicode scalar values from UTF8 byte sequences.
     /// </summary>
     internal static class Utf8Decoder
     {
-        // Assumption: bytesAvailable > 0
+        private const int ReplacementChar = 0xFFFD; // U+FFFD Unicode Replacement Character
+
         /// <summary>
-        /// Reads a Unicode scalar value from the provided UTF8 sequence.
+        /// Reads the next Unicode scalar value from the provided UTF8 sequence.
         /// </summary>
-        /// <param name="data">A reference to the first byte of the UTF8 sequence from which to read the scalar value.</param>
-        /// <param name="bytesAvailable">The number of elements available in the buffer referenced by <paramref name="data"/>.</param>
-        /// <param name="bytesConsumed">When this method returns, contains the number of bytes
-        /// from <paramref name="data"/> which were consumed while reading the scalar value.</param>
-        /// <returns>On success, a non-negative integer which represents a Unicode scalar value.
-        /// On failure, a negative integer which represents an <see cref="ErrorStatus"/> failure code.</returns>
+        /// <param name="data">The UTF8 sequence from which to read the scalar value.</param>
+        /// <param name="bytesAvailable">The number of bytes available in the buffer referenced by <paramref name="data"/>.</param>
+        /// <param name="scalarValue">
+        /// If this method returns <see cref="OperationStatus.Done"/>, contains the next Unicode scalar value that appears in <paramref name="data"/>.
+        /// Otherwise the value is undefined.
+        /// </param>
+        /// <param name="bytesConsumed">
+        /// If this method returns <see cref="OperationStatus.Done"/>, contains the number of bytes that were consumed from <paramref name="data"/> to read the scalar value.
+        /// If this method returns <see cref="OperationStatus.InvalidData"/>, contains the number of bytes in <paramref name="data"/> which form the invalid sequence.
+        /// Otherwise the value is undefined.
+        /// </param>
+        /// <returns><see cref="OperationStatus.Done"/> on success, or <see cref="OperationStatus.InvalidData"/> or <see cref="OperationStatus.NeedMoreData"/> on failure.</returns>
         /// <remarks>
         /// The caller must use extreme caution to avoid passing a value for <paramref name="bytesAvailable"/> that is
         /// larger than the actual buffer referenced by <paramref name="data"/>, else a buffer overrun could occur.
         /// See http://www.unicode.org/glossary/#unicode_scalar_value for the definition of Unicode scalar value.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int DangerousReadUnicodeScalarValue(ref byte data, int bytesAvailable, out int bytesConsumed)
+        public static OperationStatus DangerousReadNextUnicodeScalarValue(ref byte data, int bytesAvailable, out int scalarValue, out int bytesConsumed)
         {
-            if (bytesAvailable == 0)
+            if (bytesAvailable <= 0)
             {
                 // Quick check: no data to consume
                 bytesConsumed = 0;
-                return ErrorStatus.InsufficientData;
+                scalarValue = ReplacementChar;
+                return OperationStatus.NeedMoreData;
             }
             else
             {
-                return DangerousReadUnicodeScalarValueWithoutNullCheck(ref data, bytesAvailable, out bytesConsumed);
+                return DangerousReadNextUnicodeScalarValueWithoutNullCheck(ref data, bytesAvailable, out scalarValue, out bytesConsumed);
             }
         }
 
         // Assumption: bytesAvailable > 0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int DangerousReadUnicodeScalarValueWithoutNullCheck(ref byte data, int bytesAvailable, out int bytesConsumed)
+        private static OperationStatus DangerousReadNextUnicodeScalarValueWithoutNullCheck(ref byte data, int bytesAvailable, out int scalarValue, out int bytesConsumed)
         {
             Debug.Assert(bytesAvailable > 0);
 
@@ -52,13 +61,13 @@ namespace System.Text.Primitives.System.Text.Encoders
             {
                 // Fast case: ASCII character => the code point is the byte itself
                 bytesConsumed = 1;
-                return data;
+                scalarValue = data;
+                return OperationStatus.Done;
             }
             else
             {
                 // Slow case: multi-byte sequence
-                bytesConsumed = 0;
-                return ReadUnicodeScalarValueFromNonAscii(ref data, bytesAvailable, ref bytesConsumed);
+                return ReadNextUnicodeScalarValueFromNonAscii(ref data, bytesAvailable, out scalarValue, out bytesConsumed);
             }
         }
 
@@ -80,13 +89,17 @@ namespace System.Text.Primitives.System.Text.Encoders
 
             while (numValidBytesSoFar < data.Length)
             {
-                if (DangerousReadUnicodeScalarValueWithoutNullCheck(ref Unsafe.Add(ref data.DangerousGetPinnableReference(), numValidBytesSoFar), data.Length - numValidBytesSoFar, out int thisIterBytesConsumed) < 0)
+                if (DangerousReadNextUnicodeScalarValueWithoutNullCheck(
+                    ref Unsafe.Add(ref data.DangerousGetPinnableReference(), numValidBytesSoFar),
+                    data.Length - numValidBytesSoFar,
+                    out int scalarValue /* unused */,
+                    out int bytesConsumedThisIteration) != OperationStatus.Done)
                 {
                     return numValidBytesSoFar; // error (not enough data or malformed sequence seen)
                 }
                 else
                 {
-                    numValidBytesSoFar += thisIterBytesConsumed; // success (read a valid code point from the sequence)
+                    numValidBytesSoFar += bytesConsumedThisIteration; // success (read a valid code point from the sequence)
                 }
             }
 
@@ -98,6 +111,7 @@ namespace System.Text.Primitives.System.Text.Encoders
         /// bytes and the minimum allowed code point value which is encoded by this sequence. Returns
         /// 0 on invalid leading byte.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetNumberOfTrailingBytes(byte firstByte, out int minAllowedCodePointValue)
         {
             // Logic below is from http://www.unicode.org/versions/Unicode10.0.0/ch03.pdf, Tables 3.6 and 3.7.
@@ -156,38 +170,39 @@ namespace System.Text.Primitives.System.Text.Encoders
         /// </summary>
         /// <param name="data">The data to check for well-formedness.</param>
         /// <returns>True if the data is a well-formed UTF8 string; false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsWellFormedUtf8String(ReadOnlySpan<byte> data)
         {
             return (GetIndexOfFirstInvalidUtf8Byte(data) < 0);
         }
 
         /// <summary>
-        /// Reads a Unicode scalar value from the provided UTF8 sequence.
+        /// Reads the next Unicode scalar value from the provided UTF8 sequence.
         /// </summary>
         /// <param name="data">The UTF8 sequence from which to read the scalar value.</param>
-        /// <param name="bytesConsumed">When this method returns, contains the number of bytes
-        /// from <paramref name="data"/> which were consumed while reading the scalar value.</param>
-        /// <returns>On success, a non-negative integer which represents a Unicode scalar value.
-        /// On failure, a negative integer which represents an <see cref="ErrorStatus"/> failure code.</returns>
+        /// <param name="scalarValue">
+        /// If this method returns <see cref="OperationStatus.Done"/>, contains the next Unicode scalar value that appears in <paramref name="data"/>.
+        /// Otherwise the value is undefined.
+        /// </param>
+        /// <param name="bytesConsumed">
+        /// If this method returns <see cref="OperationStatus.Done"/>, contains the number of bytes that were consumed from <paramref name="data"/> to read the scalar value.
+        /// If this method returns <see cref="OperationStatus.InvalidData"/>, contains the number of bytes in <paramref name="data"/> which form the invalid sequence.
+        /// Otherwise the value is undefined.
+        /// </param>
+        /// <returns><see cref="OperationStatus.Done"/> on success, or <see cref="OperationStatus.InvalidData"/> or <see cref="OperationStatus.NeedMoreData"/> on failure.</returns>
         /// <remarks>See http://www.unicode.org/glossary/#unicode_scalar_value for the definition of Unicode scalar value.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ReadUnicodeScalarValue(ReadOnlySpan<byte> data, out int bytesConsumed)
+        public static OperationStatus ReadNextUnicodeScalarValue(ReadOnlySpan<byte> data, out int scalarValue, out int bytesConsumed)
         {
-            return DangerousReadUnicodeScalarValue(ref data.DangerousGetPinnableReference(), data.Length, out bytesConsumed);
+            return DangerousReadNextUnicodeScalarValue(ref data.DangerousGetPinnableReference(), data.Length, out scalarValue, out bytesConsumed);
         }
 
         // Assumption: bytesAvailable > 0
-        // Assumption: bytesConsumed = 0
-        private static int ReadUnicodeScalarValueFromNonAscii(ref byte data, int bytesAvailable, ref int bytesConsumed)
+        private static OperationStatus ReadNextUnicodeScalarValueFromNonAscii(ref byte data, int bytesAvailable, out int scalarValue, out int bytesConsumed)
         {
             Debug.Assert(bytesAvailable > 0);
-            Debug.Assert(bytesConsumed == 0);
 
-            // n.b. For most of this method bytesConsumed has a value of *one fewer* than the actual number of
-            // bytes consumed so far. This is required for error handling, where if we need to report back to
-            // our caller that there's a problem we don't want to mark the byte that caused the error as consumed.
-            // See http://www.unicode.org/versions/Unicode10.0.0/ch03.pdf, "Constraints on Conversion Process",
-            // and http://www.unicode.org/reports/tr36/, Sec. 3.6.1, for more info.
+            scalarValue = ReplacementChar;
 
             // First, determine how many bytes are required to read the entire code point.
 
@@ -196,12 +211,22 @@ namespace System.Text.Primitives.System.Text.Encoders
 
             if (numTrailingBytes == 0)
             {
-                return ErrorStatus.BadCharacter; // not a valid leading byte
+                bytesConsumed = 1;
+                return OperationStatus.InvalidData; // not a valid leading byte
             }
             else if (numTrailingBytes >= bytesAvailable)
             {
-                return ErrorStatus.InsufficientData; // not enough trailing bytes (n.b. bytesAvailable includes leading byte)
+                bytesConsumed = 0;
+                return OperationStatus.NeedMoreData; // not enough trailing bytes (n.b. bytesAvailable includes leading byte)
             }
+
+            // n.b. For most of this method bytesConsumed has a value of *one fewer* than the actual number of
+            // bytes consumed so far. This is required for error handling, where if we need to report back to
+            // our caller that there's a problem we don't want to mark the byte that caused the error as consumed.
+            // See http://www.unicode.org/versions/Unicode10.0.0/ch03.pdf, "Constraints on Conversion Process",
+            // and http://www.unicode.org/reports/tr36/, Sec. 3.6.1, for more info.
+
+            bytesConsumed = 0;
 
             // Next, fold the leading byte and all trailing bytes into the code point.
 
@@ -224,7 +249,7 @@ namespace System.Text.Primitives.System.Text.Encoders
                     // is the case we'll just report that to the caller on the next iteration. The Standard
                     // gives us considerable leeway to report multiple errors as part of a single invalid
                     // sequence.
-                    return ErrorStatus.BadCharacter;
+                    return OperationStatus.InvalidData;
                 }
             } while (--numTrailingBytes != 0);
 
@@ -238,27 +263,15 @@ namespace System.Text.Primitives.System.Text.Encoders
             bytesConsumed++;
             Debug.Assert(bytesConsumed <= bytesAvailable);
 
-            return ((constructedCodePoint < minAllowedCodePointValue) || IsSurrogate(constructedCodePoint))
-                ? ErrorStatus.BadCharacter : constructedCodePoint;
-        }
-
-        /// <summary>
-        /// Contains error codes that may be returned when attempting to read Unicode scalar values.
-        /// </summary>
-        /// <remarks>
-        /// All error codes are negative integers.
-        /// </remarks>
-        public static class ErrorStatus
-        {
-            /// <summary>
-            /// The subsequence was malformed or contained an illegal byte.
-            /// </summary>
-            public const int BadCharacter = -1;
-
-            /// <summary>
-            /// The end of the buffer was reached while trying to decode a subsequence.
-            /// </summary>
-            public const int InsufficientData = -2;
+            if ((constructedCodePoint < minAllowedCodePointValue) || IsSurrogate(constructedCodePoint))
+            {
+                return OperationStatus.InvalidData;
+            }
+            else
+            {
+                scalarValue = constructedCodePoint;
+                return OperationStatus.Done;
+            }
         }
     }
 }
