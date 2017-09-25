@@ -18,7 +18,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadableBufferFacts
+    public class ReadableBufferFacts: IDisposable
     {
         const int BlockSize = 4032;
 
@@ -144,6 +144,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(11, ms.Length);
             Assert.Equal(rb.ToArray(), ms.ToArray());
             Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
+            _pipe.Reader.Advance(rb.End);
         }
 
         [Fact]
@@ -169,44 +170,45 @@ namespace System.IO.Pipelines.Tests
             Assert.False(readBuffer.IsSingleSpan);
             Assert.Equal(totalBytes, readBuffer.Length);
             TestIndexOfWorksForAllLocations(ref readBuffer, 42);
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         [Fact]
         public async Task EqualsDetectsDeltaForAllLocations()
         {
+            // populate with dummy data
+            const int DataSize = 10000;
+            byte[] data = new byte[DataSize];
+            var rand = new Random(12345);
+            rand.NextBytes(data);
 
-                // populate with dummy data
-                const int DataSize = 10000;
-                byte[] data = new byte[DataSize];
-                var rand = new Random(12345);
-                rand.NextBytes(data);
+            var writeBuffer = _pipe.Writer.Alloc();
+            writeBuffer.Write(data);
+            await writeBuffer.FlushAsync();
 
-                var writeBuffer = _pipe.Writer.Alloc();
-                writeBuffer.Write(data);
-                await writeBuffer.FlushAsync();
+            // now read it back
+            var result = await _pipe.Reader.ReadAsync();
+            var readBuffer = result.Buffer;
+            Assert.False(readBuffer.IsSingleSpan);
+            Assert.Equal(data.Length, readBuffer.Length);
 
-                // now read it back
-                var result = await _pipe.Reader.ReadAsync();
-                var readBuffer = result.Buffer;
-                Assert.False(readBuffer.IsSingleSpan);
-                Assert.Equal(data.Length, readBuffer.Length);
+            // check the entire buffer
+            EqualsDetectsDeltaForAllLocations(readBuffer, data, 0, data.Length);
 
-                // check the entire buffer
-                EqualsDetectsDeltaForAllLocations(readBuffer, data, 0, data.Length);
+            // check the first 32 sub-lengths
+            for (int i = 0; i <= 32; i++)
+            {
+                var slice = readBuffer.Slice(0, i);
+                EqualsDetectsDeltaForAllLocations(slice, data, 0, i);
+            }
 
-                // check the first 32 sub-lengths
-                for (int i = 0; i <= 32; i++)
-                {
-                    var slice = readBuffer.Slice(0, i);
-                    EqualsDetectsDeltaForAllLocations(slice, data, 0, i);
-                }
-
-                // check the last 32 sub-lengths
-                for (int i = 0; i <= 32; i++)
-                {
-                    var slice = readBuffer.Slice(data.Length - i, i);
-                    EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
-                }
+            // check the last 32 sub-lengths
+            for (int i = 0; i <= 32; i++)
+            {
+                var slice = readBuffer.Slice(data.Length - i, i);
+                EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
+            }
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         private void EqualsDetectsDeltaForAllLocations(ReadableBuffer slice, byte[] expected, int offset, int length)
@@ -235,6 +237,8 @@ namespace System.IO.Pipelines.Tests
             var readBuffer = result.Buffer;
 
             ReadUInt64GivesExpectedValues(ref readBuffer);
+
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         [Theory]
@@ -256,6 +260,8 @@ namespace System.IO.Pipelines.Tests
             var outputBytes = trimmed.ToArray();
 
             Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
+
+            _pipe.Reader.Advance(buffer.End);
         }
 
         [Theory]
@@ -275,6 +281,7 @@ namespace System.IO.Pipelines.Tests
             var buffer = result.Buffer;
             var trimmed = buffer.TrimEnd();
             var outputBytes = trimmed.ToArray();
+            _pipe.Reader.Advance(buffer.End);
 
             Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
         }
@@ -299,6 +306,8 @@ namespace System.IO.Pipelines.Tests
             ReadCursor cursor;
             Assert.True(buffer.TrySliceTo(sliceToBytes, out slice, out cursor));
             Assert.Equal(expected, slice.GetUtf8String());
+
+            _pipe.Reader.Advance(buffer.End);
         }
 
         private unsafe void TestIndexOfWorksForAllLocations(ref ReadableBuffer readBuffer, byte emptyValue)
@@ -417,7 +426,7 @@ namespace System.IO.Pipelines.Tests
             var readable = BufferUtilities.CreateBuffer(input);
 
             // via struct API
-            var iter = readable.Split((byte) delimiter);
+            var iter = readable.Split((byte)delimiter);
             Assert.Equal(expected.Length, iter.Count());
             int i = 0;
             foreach (var item in iter)
@@ -505,7 +514,5 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
             }
         }
-
-
     }
 }

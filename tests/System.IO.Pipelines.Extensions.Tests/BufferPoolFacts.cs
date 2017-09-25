@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(24, segments[1].Offset);
             Assert.Equal(8, segments[3].Offset);
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 pool.Recycle(segments[i]);
             }
