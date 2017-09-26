@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -17,24 +18,24 @@ namespace System.IO.Pipelines.Samples.Http
     public class RioHttpServer : IServer
     {
         public IFeatureCollection Features { get; } = new FeatureCollection();
-        
+
         private RioTcpServer _rioTcpServer;
 
         public RioHttpServer()
         {
-            Features.Set<IServerAddressesFeature>(new ServerAddressesFeature()); 
+            Features.Set<IServerAddressesFeature>(new ServerAddressesFeature());
         }
 
         public void Start<TContext>(IHttpApplication<TContext> application)
         {
-            var feature = Features.Get<IServerAddressesFeature>(); 
+            var feature = Features.Get<IServerAddressesFeature>();
             var address = feature.Addresses.FirstOrDefault();
             IPAddress ip;
             int port;
             GetIp(address, out ip, out port);
             Task.Factory.StartNew(() => StartAccepting(application, ip, port), TaskCreationOptions.LongRunning);
         }
-        
+
 
         private void StartAccepting<TContext>(IHttpApplication<TContext> application, IPAddress ip, int port)
         {
@@ -68,7 +69,7 @@ namespace System.IO.Pipelines.Samples.Http
                 }
             }
         }
-        
+
 
         public void Dispose()
         {
@@ -104,11 +105,11 @@ namespace System.IO.Pipelines.Samples.Http
             }
         }
 
-        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, PipeFactory pipeFactory, Socket socket)
+        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, BufferPool memoryPool, Socket socket)
         {
             using (var ns = new NetworkStream(socket))
             {
-                using (var connection = pipeFactory.CreateConnection(ns))
+                using (var connection = new StreamPipeConnection(new PipeOptions(memoryPool), ns))
                 {
                     await ProcessClient(application, connection);
                 }

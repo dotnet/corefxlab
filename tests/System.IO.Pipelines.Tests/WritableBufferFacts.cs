@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc();
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
                 Assert.Equal("Can't advance without buffer allocated", exception.Message);
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.Alloc(1);
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
                 Assert.Equal("Can't advance past buffer size", exception.Message);
@@ -58,7 +58,7 @@ namespace System.IO.Pipelines.Tests
             new Random(length).NextBytes(data);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(memoryPool);
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer.Alloc();
                 output.Write(data);
@@ -84,9 +84,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureMoreThanPoolBlockSizeThrows()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
-                var pipe = factory.Create();
+                var pipe = new Pipe(new PipeOptions(pool));
                 var buffer = pipe.Writer.Alloc();
                 Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
             }
@@ -95,9 +95,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EmptyWriteDoesNotThrow()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
-                var pipe = factory.Create();
+                var pipe = new Pipe(new PipeOptions(pool));
                 var buffer = pipe.Writer.Alloc();
                 buffer.Write(new byte[0], 0, 0);
             }

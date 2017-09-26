@@ -63,14 +63,12 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="pool"></param>
         /// <param name="options"></param>
-        public Pipe(BufferPool pool, PipeOptions options = null)
+        public Pipe(PipeOptions options)
         {
-            if (pool == null)
+            if (options == null)
             {
-                throw new ArgumentNullException(nameof(pool));
+                throw new ArgumentNullException(nameof(options));
             }
-
-            options = options ?? new PipeOptions();
 
             if (options.MaximumSizeLow < 0)
             {
@@ -87,7 +85,7 @@ namespace System.IO.Pipelines
                 throw new ArgumentException(nameof(options.MaximumSizeHigh) + " should be greater or equal to " + nameof(options.MaximumSizeLow), nameof(options.MaximumSizeHigh));
             }
 
-            _pool = pool;
+            _pool = options.BufferPool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;

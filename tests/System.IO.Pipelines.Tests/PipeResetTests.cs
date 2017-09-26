@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -8,22 +9,22 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipeResetTests : IDisposable
     {
-        private PipeFactory _pipeFactory;
-
+        private MemoryPool _pool;
         private Pipe _pipe;
 
         public PipeResetTests()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = (Pipe) _pipeFactory.Create();
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory?.Dispose();
+            _pool?.Dispose();
         }
+
 
         [Fact]
         public async Task ReadsAndWritesAfterReset()

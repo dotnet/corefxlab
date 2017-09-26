@@ -18,9 +18,24 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadableBufferFacts
+    public class ReadableBufferFacts: IDisposable
     {
         const int BlockSize = 4032;
+
+        private IPipe _pipe;
+        private MemoryPool _pool;
+
+        public ReadableBufferFacts()
+        {
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
+        }
+        public void Dispose()
+        {
+            _pipe.Writer.Complete();
+            _pipe.Reader.Complete();
+            _pool?.Dispose();
+        }
 
         [Fact]
         public void ReadableBufferSequenceWorks()
@@ -117,93 +132,83 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsyncNativeMemory()
         {
-            using (var factory = new PipeFactory(NativeBufferPool.Shared))
-            {
-                var readerWriter = factory.Create();
-                var output = readerWriter.Writer.Alloc();
-                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
-                await output.FlushAsync();
-                var ms = new MemoryStream();
-                var result = await readerWriter.Reader.ReadAsync();
-                var rb = result.Buffer;
-                await rb.CopyToAsync(ms);
-                ms.Position = 0;
-                Assert.Equal(11, rb.Length);
-                Assert.Equal(11, ms.Length);
-                Assert.Equal(rb.ToArray(), ms.ToArray());
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
-            }
+            var output = _pipe.Writer.Alloc();
+            output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
+            await output.FlushAsync();
+            var ms = new MemoryStream();
+            var result = await _pipe.Reader.ReadAsync();
+            var rb = result.Buffer;
+            await rb.CopyToAsync(ms);
+            ms.Position = 0;
+            Assert.Equal(11, rb.Length);
+            Assert.Equal(11, ms.Length);
+            Assert.Equal(rb.ToArray(), ms.ToArray());
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
+            _pipe.Reader.Advance(rb.End);
         }
 
         [Fact]
         public async Task TestIndexOfWorksForAllLocations()
         {
-            using (var factory = new PipeFactory())
+            const int Size = 5 * BlockSize; // multiple blocks
+
+            // populate with a pile of dummy data
+            byte[] data = new byte[512];
+            for (int i = 0; i < data.Length; i++) data[i] = 42;
+            int totalBytes = 0;
+            var writeBuffer = _pipe.Writer.Alloc();
+            for (int i = 0; i < Size / data.Length; i++)
             {
-                var readerWriter = factory.Create();
-                const int Size = 5 * BlockSize; // multiple blocks
-
-                // populate with a pile of dummy data
-                byte[] data = new byte[512];
-                for (int i = 0; i < data.Length; i++) data[i] = 42;
-                int totalBytes = 0;
-                var writeBuffer = readerWriter.Writer.Alloc();
-                for (int i = 0; i < Size / data.Length; i++)
-                {
-                    writeBuffer.Write(data);
-                    totalBytes += data.Length;
-                }
-                await writeBuffer.FlushAsync();
-
-                // now read it back
-                var result = await readerWriter.Reader.ReadAsync();
-                var readBuffer = result.Buffer;
-                Assert.False(readBuffer.IsSingleSpan);
-                Assert.Equal(totalBytes, readBuffer.Length);
-                TestIndexOfWorksForAllLocations(ref readBuffer, 42);
+                writeBuffer.Write(data);
+                totalBytes += data.Length;
             }
+            await writeBuffer.FlushAsync();
+
+            // now read it back
+            var result = await _pipe.Reader.ReadAsync();
+            var readBuffer = result.Buffer;
+            Assert.False(readBuffer.IsSingleSpan);
+            Assert.Equal(totalBytes, readBuffer.Length);
+            TestIndexOfWorksForAllLocations(ref readBuffer, 42);
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         [Fact]
         public async Task EqualsDetectsDeltaForAllLocations()
         {
-            using (var factory = new PipeFactory())
+            // populate with dummy data
+            const int DataSize = 10000;
+            byte[] data = new byte[DataSize];
+            var rand = new Random(12345);
+            rand.NextBytes(data);
+
+            var writeBuffer = _pipe.Writer.Alloc();
+            writeBuffer.Write(data);
+            await writeBuffer.FlushAsync();
+
+            // now read it back
+            var result = await _pipe.Reader.ReadAsync();
+            var readBuffer = result.Buffer;
+            Assert.False(readBuffer.IsSingleSpan);
+            Assert.Equal(data.Length, readBuffer.Length);
+
+            // check the entire buffer
+            EqualsDetectsDeltaForAllLocations(readBuffer, data, 0, data.Length);
+
+            // check the first 32 sub-lengths
+            for (int i = 0; i <= 32; i++)
             {
-                var readerWriter = factory.Create();
-
-                // populate with dummy data
-                const int DataSize = 10000;
-                byte[] data = new byte[DataSize];
-                var rand = new Random(12345);
-                rand.NextBytes(data);
-
-                var writeBuffer = readerWriter.Writer.Alloc();
-                writeBuffer.Write(data);
-                await writeBuffer.FlushAsync();
-
-                // now read it back
-                var result = await readerWriter.Reader.ReadAsync();
-                var readBuffer = result.Buffer;
-                Assert.False(readBuffer.IsSingleSpan);
-                Assert.Equal(data.Length, readBuffer.Length);
-
-                // check the entire buffer
-                EqualsDetectsDeltaForAllLocations(readBuffer, data, 0, data.Length);
-
-                // check the first 32 sub-lengths
-                for (int i = 0; i <= 32; i++)
-                {
-                    var slice = readBuffer.Slice(0, i);
-                    EqualsDetectsDeltaForAllLocations(slice, data, 0, i);
-                }
-
-                // check the last 32 sub-lengths
-                for (int i = 0; i <= 32; i++)
-                {
-                    var slice = readBuffer.Slice(data.Length - i, i);
-                    EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
-                }
+                var slice = readBuffer.Slice(0, i);
+                EqualsDetectsDeltaForAllLocations(slice, data, 0, i);
             }
+
+            // check the last 32 sub-lengths
+            for (int i = 0; i <= 32; i++)
+            {
+                var slice = readBuffer.Slice(data.Length - i, i);
+                EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
+            }
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         private void EqualsDetectsDeltaForAllLocations(ReadableBuffer slice, byte[] expected, int offset, int length)
@@ -222,21 +227,18 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task GetUInt64GivesExpectedValues()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
+            var writeBuffer = _pipe.Writer.Alloc();
+            writeBuffer.Ensure(50);
+            writeBuffer.Advance(50); // not even going to pretend to write data here - we're going to cheat
+            await writeBuffer.FlushAsync(); // by overwriting the buffer in-situ
 
-                var writeBuffer = readerWriter.Writer.Alloc();
-                writeBuffer.Ensure(50);
-                writeBuffer.Advance(50); // not even going to pretend to write data here - we're going to cheat
-                await writeBuffer.FlushAsync(); // by overwriting the buffer in-situ
+            // now read it back
+            var result = await _pipe.Reader.ReadAsync();
+            var readBuffer = result.Buffer;
 
-                // now read it back
-                var result = await readerWriter.Reader.ReadAsync();
-                var readBuffer = result.Buffer;
+            ReadUInt64GivesExpectedValues(ref readBuffer);
 
-                ReadUInt64GivesExpectedValues(ref readBuffer);
-            }
+            _pipe.Reader.Advance(readBuffer.End);
         }
 
         [Theory]
@@ -247,22 +249,19 @@ namespace System.IO.Pipelines.Tests
         [InlineData("\thell o ", "hell o ")]
         public async Task TrimStartTrimsWhitespaceAtStart(string input, string expected)
         {
-            using (var readerWriter = new PipeFactory())
-            {
-                var connection = readerWriter.Create();
+            var writeBuffer = _pipe.Writer.Alloc();
+            var bytes = Encoding.ASCII.GetBytes(input);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var writeBuffer = connection.Writer.Alloc();
-                var bytes = Encoding.ASCII.GetBytes(input);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
+            var trimmed = buffer.TrimStart();
+            var outputBytes = trimmed.ToArray();
 
-                var result = await connection.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var trimmed = buffer.TrimStart();
-                var outputBytes = trimmed.ToArray();
+            Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
 
-                Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
-            }
+            _pipe.Reader.Advance(buffer.End);
         }
 
         [Theory]
@@ -273,22 +272,18 @@ namespace System.IO.Pipelines.Tests
         [InlineData(" hell o\t", " hell o")]
         public async Task TrimEndTrimsWhitespaceAtEnd(string input, string expected)
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
+            var writeBuffer = _pipe.Writer.Alloc();
+            var bytes = Encoding.ASCII.GetBytes(input);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var writeBuffer = readerWriter.Writer.Alloc();
-                var bytes = Encoding.ASCII.GetBytes(input);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
+            var trimmed = buffer.TrimEnd();
+            var outputBytes = trimmed.ToArray();
+            _pipe.Reader.Advance(buffer.End);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var trimmed = buffer.TrimEnd();
-                var outputBytes = trimmed.ToArray();
-
-                Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
-            }
+            Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
         }
 
         [Theory]
@@ -300,22 +295,19 @@ namespace System.IO.Pipelines.Tests
         {
             var sliceToBytes = Encoding.UTF8.GetBytes(sliceTo);
 
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
+            var writeBuffer = _pipe.Writer.Alloc();
+            var bytes = Encoding.UTF8.GetBytes(input);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var writeBuffer = readerWriter.Writer.Alloc();
-                var bytes = Encoding.UTF8.GetBytes(input);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
+            ReadableBuffer slice;
+            ReadCursor cursor;
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out slice, out cursor));
+            Assert.Equal(expected, slice.GetUtf8String());
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                ReadableBuffer slice;
-                ReadCursor cursor;
-                Assert.True(buffer.TrySliceTo(sliceToBytes, out slice, out cursor));
-                Assert.Equal(expected, slice.GetUtf8String());
-            }
+            _pipe.Reader.Advance(buffer.End);
         }
 
         private unsafe void TestIndexOfWorksForAllLocations(ref ReadableBuffer readBuffer, byte emptyValue)
@@ -428,37 +420,32 @@ namespace System.IO.Pipelines.Tests
         {
             // note: different expectation to string.Split; empty has 0 outputs
             var expected = input == "" ? new string[0] : input.Split(delimiter);
+            var output = _pipe.Writer.Alloc();
+            output.AsOutput().Append(input, SymbolTable.InvariantUtf8);
 
-            using (var factory = new PipeFactory())
+            var readable = BufferUtilities.CreateBuffer(input);
+
+            // via struct API
+            var iter = readable.Split((byte)delimiter);
+            Assert.Equal(expected.Length, iter.Count());
+            int i = 0;
+            foreach (var item in iter)
             {
-                var readerWriter = factory.Create();
-                var output = readerWriter.Writer.Alloc();
-                output.AsOutput().Append(input, SymbolTable.InvariantUtf8);
-
-                var readable = BufferUtilities.CreateBuffer(input);
-
-                // via struct API
-                var iter = readable.Split((byte)delimiter);
-                Assert.Equal(expected.Length, iter.Count());
-                int i = 0;
-                foreach (var item in iter)
-                {
-                    Assert.Equal(expected[i++], item.GetUtf8String());
-                }
-                Assert.Equal(expected.Length, i);
-
-                // via objects/LINQ etc
-                IEnumerable<ReadableBuffer> asObject = iter;
-                Assert.Equal(expected.Length, asObject.Count());
-                i = 0;
-                foreach (var item in asObject)
-                {
-                    Assert.Equal(expected[i++], item.GetUtf8String());
-                }
-                Assert.Equal(expected.Length, i);
-
-                await output.FlushAsync();
+                Assert.Equal(expected[i++], item.GetUtf8String());
             }
+            Assert.Equal(expected.Length, i);
+
+            // via objects/LINQ etc
+            IEnumerable<ReadableBuffer> asObject = iter;
+            Assert.Equal(expected.Length, asObject.Count());
+            i = 0;
+            foreach (var item in asObject)
+            {
+                Assert.Equal(expected[i++], item.GetUtf8String());
+            }
+            Assert.Equal(expected.Length, i);
+
+            await output.FlushAsync();
         }
 
         [Fact]
@@ -510,9 +497,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsync()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
-                var readerWriter = factory.Create();
+                var readerWriter = new Pipe(new PipeOptions(pool));
                 var output = readerWriter.Writer.Alloc();
                 output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
@@ -527,7 +514,5 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
             }
         }
-
-
     }
 }

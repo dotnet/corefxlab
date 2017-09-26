@@ -18,11 +18,5 @@ namespace System.IO.Pipelines.Tests
             BufferReferenceTests.TestOwnedBuffer(() => pool.Rent(1024), block => pool.Return((MemoryPoolBlock) block));
             pool.Dispose();
         }
-
-        [Fact]
-        public void UnownedBufferReferenceTests()
-        {
-            BufferReferenceTests.TestOwnedBuffer(() => new UnownedBuffer(new ArraySegment<byte>(new byte[1024])));
-        }
     }
 }

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,19 +15,18 @@ namespace System.IO.Pipelines.Tests
     public class PipelineReaderWriterFacts : IDisposable
     {
         private IPipe _pipe;
-        private PipeFactory _pipeFactory;
+        private MemoryPool _pool;
 
         public PipelineReaderWriterFacts()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create();
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
-
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory?.Dispose();
+            _pool?.Dispose();
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace System.IO.Pipelines.Tests
             // Write Hello to another pipeline and get the buffer
             var bytes = Encoding.ASCII.GetBytes("Hello");
 
-            var c2 = _pipeFactory.Create();
+            var c2 = new Pipe(new PipeOptions(_pool));
             await c2.Writer.WriteAsync(bytes);
             var result = await c2.Reader.ReadAsync();
             var c2Buffer = result.Buffer;

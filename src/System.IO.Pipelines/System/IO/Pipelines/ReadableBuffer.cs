@@ -56,21 +56,16 @@ namespace System.IO.Pipelines
             BufferLength = start.GetLength(end);
         }
 
-        private ReadableBuffer(ref ReadableBuffer buffer)
+        private ReadableBuffer Clone(ref ReadableBuffer buffer)
         {
-            var begin = buffer.BufferStart;
-            var end = buffer.BufferEnd;
+            var segmentHead = BufferSegment.Clone(buffer.BufferStart, buffer.BufferEnd, out var segmentTail);
 
-            BufferSegment segmentTail;
-            var segmentHead = BufferSegment.Clone(begin, end, out segmentTail);
-
-            begin = new ReadCursor(segmentHead);
-            end = new ReadCursor(segmentTail, segmentTail.End);
-
-            BufferStart = begin;
-            BufferEnd = end;
-
-            BufferLength = buffer.BufferLength;
+            return new ReadableBuffer
+            {
+                BufferStart = new ReadCursor(segmentHead),
+                BufferEnd = new ReadCursor(segmentTail, segmentTail.End),
+                BufferLength = buffer.BufferLength
+            };
         }
 
         /// <summary>
@@ -153,7 +148,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public PreservedBuffer Preserve()
         {
-            var buffer = new ReadableBuffer(ref this);
+            var buffer = Clone(ref this);
             return new PreservedBuffer(ref buffer);
         }
 

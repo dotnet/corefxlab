@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO.Compression;
 using System.IO.Pipelines.Compression;
 using System.IO.Pipelines.File;
@@ -13,7 +14,7 @@ namespace System.IO.Pipelines.Samples
     {
         public Task Run()
         {
-            using (var factory = new PipeFactory())
+            using (var bufferPool = new MemoryPool())
             {
                 var filePath = Path.GetFullPath("Program.cs");
 
@@ -25,13 +26,15 @@ namespace System.IO.Pipelines.Samples
                 //compressStream.Flush();
                 //compressed.Seek(0, SeekOrigin.Begin);
 
-                var input = factory.ReadFile(filePath)
-                              .DeflateCompress(factory, CompressionLevel.Optimal)
-                              .DeflateDecompress(factory);
+                var options = new PipeOptions(bufferPool);
+
+                var input = ReadableFilePipelineFactoryExtensions.ReadFile(options, filePath)
+                              .DeflateCompress(options, CompressionLevel.Optimal)
+                              .DeflateDecompress(options);
 
                 // Wrap the console in a pipeline writer
 
-                var outputPipe = factory.Create();
+                var outputPipe = new Pipe(options);
                 outputPipe.Reader.CopyToEndAsync(Console.OpenStandardOutput());
 
                 // Copy from the file reader to the console writer

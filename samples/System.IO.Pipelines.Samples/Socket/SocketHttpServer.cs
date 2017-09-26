@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket.Bind(new IPEndPoint(ip, port));
             _listenSocket.Listen(10);
 
-            using (var factory = new PipeFactory())
+            using (var memoryPool = new MemoryPool())
             {
                 while (true)
                 {
@@ -35,7 +36,7 @@ namespace System.IO.Pipelines.Samples.Http
                     {
                         var clientSocket = await _listenSocket.AcceptAsync();
                         clientSocket.NoDelay = true;
-                        var task = ProcessConnection(application, factory, clientSocket);
+                        var task = ProcessConnection(application, memoryPool, clientSocket);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -55,11 +56,11 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket = null;
         }
 
-        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, PipeFactory pipeFactory, Socket socket)
+        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, BufferPool memoryPool, Socket socket)
         {
             using (var ns = new NetworkStream(socket))
             {
-                using (var connection = pipeFactory.CreateConnection(ns))
+                using (var connection = new StreamPipeConnection(new PipeOptions(memoryPool), ns))
                 {
                     await ProcessClient(application, connection);
                 }
