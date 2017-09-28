@@ -2,13 +2,15 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Version="<default>",
-    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1'),
+    [string]$SkipTests="false"
 )
 
 Write-Host "Configuration=$Configuration."
 Write-Host "Restore=$Restore."
 Write-Host "Version=$Version."
 Write-Host "BuildVersion=$BuildVersion."
+Write-Host "SkipTests=$SkipTests."
 
 if (!(Test-Path "dotnet\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
@@ -55,14 +57,16 @@ if ($lastexitcode -ne 0) {
 
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
-foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    Write-Host "Building and running tests for project $testFile..."
-    Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
-
-    if ($lastexitcode -ne 0) {
-        Write-Error "Some tests failed in project $testFile"
-        $projectsFailed.Add($testFile)
-        $errorsEncountered++
+if ($SkipTests -ne "true") {
+    foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+        Write-Host "Building and running tests for project $testFile..."
+        Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
+    
+        if ($lastexitcode -ne 0) {
+            Write-Error "Some tests failed in project $testFile"
+            $projectsFailed.Add($testFile)
+            $errorsEncountered++
+        }
     }
 }
 

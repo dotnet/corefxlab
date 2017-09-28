@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text;
 using System.Text.Formatting;
 using System.Buffers.Text;
 
@@ -14,7 +14,9 @@ namespace System.IO.Pipelines.Samples
     {
         public async Task Run()
         {
-            var consoleOutput = GetPipeFactory().CreateWriter(Console.OpenStandardOutput());
+            var pipeOptions = new PipeOptions(GetBufferPool());
+
+            var consoleOutput = StreamPipeConnection.CreateWriter(pipeOptions, Console.OpenStandardOutput());
             var connection = await GetConnection();
 
             while (true)
@@ -33,7 +35,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        protected abstract PipeFactory GetPipeFactory();
+        protected abstract BufferPool GetBufferPool();
 
         protected abstract Task<IPipeConnection> GetConnection();
 

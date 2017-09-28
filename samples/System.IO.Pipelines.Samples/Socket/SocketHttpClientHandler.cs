@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -11,19 +12,19 @@ namespace System.IO.Pipelines.Samples
 {
     public class SocketHttpClientHandler : PipelineHttpClientHandler
     {
-        PipeFactory pipeFactory = new PipeFactory();
+        BufferPool bufferPool = new MemoryPool();
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            pipeFactory.Dispose();
+            bufferPool.Dispose();
         }
 
         protected override Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint)
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(ipEndpoint);
-            return Task.FromResult(pipeFactory.CreateConnection(new NetworkStream(s)));
+            return Task.FromResult((IPipeConnection)new StreamPipeConnection(new PipeOptions(bufferPool), new NetworkStream(s)));
         }
     }
 }

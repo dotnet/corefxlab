@@ -92,14 +92,10 @@ namespace System.Buffers
         /// Called to take a block from the pool.
         /// </summary>
         /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
-#if DEBUG
         private MemoryPoolBlock Lease()
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
-#else
-        private MemoryPoolBlock Lease()
-        {
-#endif
+
             MemoryPoolBlock block;
             if (_blocks.TryDequeue(out block))
             {

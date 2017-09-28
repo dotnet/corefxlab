@@ -11,7 +11,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
-using System.Text;
 using System.Text.Formatting;
 using System.Buffers.Text;
 

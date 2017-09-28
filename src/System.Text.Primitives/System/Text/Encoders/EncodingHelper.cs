@@ -56,18 +56,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsSupportedCodePoint(uint codePoint)
+        public static bool IsValidScalarValue(uint codePoint)
         {
-            if (codePoint >= FirstNotSupportedCodePoint)
-                return false;
-            if (codePoint >= HighSurrogateStart && codePoint <= LowSurrogateEnd)
-                return false;
-            if (codePoint >= 0xFDD0 && codePoint <= 0xFDEF)
-                return false;
-            if (codePoint == 0xFFFE || codePoint == 0xFFFF)
-                return false;
-
-            return true;
+            return (codePoint < FirstNotSupportedCodePoint) && !IsSurrogate(codePoint);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

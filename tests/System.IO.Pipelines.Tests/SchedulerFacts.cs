@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Threading;
@@ -15,14 +16,11 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReadAsyncCallbackRunsOnReaderScheduler()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = factory.Create(new PipeOptions
-                    {
-                        ReaderScheduler = scheduler
-                    });
+                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -53,16 +51,14 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task FlushCallbackRunsOnWriterScheduler()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = factory.Create(new PipeOptions
-                    {
-                        MaximumSizeLow = 32,
-                        MaximumSizeHigh = 64,
-                        WriterScheduler = scheduler
-                    });
+                    var pipe = new Pipe(new PipeOptions(pool,
+                        maximumSizeLow: 32,
+                        maximumSizeHigh: 64,
+                        writerScheduler: scheduler));
 
                     var writableBuffer = pipe.Writer.Alloc(64);
                     writableBuffer.Advance(64);
@@ -99,9 +95,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultReaderSchedulerRunsInline()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
-                var pipe = factory.Create();
+                var pipe = new Pipe(new PipeOptions(pool));
 
                 var id = 0;
 
@@ -133,13 +129,12 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultWriterSchedulerRunsInline()
         {
-            using (var factory = new PipeFactory())
+            using (var pool = new MemoryPool())
             {
-                var pipe = factory.Create(new PipeOptions
-                {
-                    MaximumSizeLow = 32,
-                    MaximumSizeHigh = 64
-                });
+                var pipe = new Pipe(new PipeOptions(pool,
+                    maximumSizeLow: 32,
+                    maximumSizeHigh: 64
+                ));
 
                 var writableBuffer = pipe.Writer.Alloc(64);
                 writableBuffer.Advance(64);

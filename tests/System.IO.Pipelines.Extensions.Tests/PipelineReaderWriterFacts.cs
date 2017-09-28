@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,21 +13,19 @@ namespace System.IO.Pipelines.Tests
     public class PipelineReaderWriterFacts : IDisposable
     {
         private IPipe _pipe;
-        private PipeFactory _pipeFactory;
+        private MemoryPool _pool;
 
         public PipelineReaderWriterFacts()
         {
-            _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create();
+            _pool = new MemoryPool();
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
-
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pipeFactory?.Dispose();
+            _pool?.Dispose();
         }
-
 
         [Fact]
         public async Task IndexOfNotFoundReturnsEnd()

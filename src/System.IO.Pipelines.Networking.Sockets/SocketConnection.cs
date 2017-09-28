@@ -35,8 +35,8 @@ namespace System.IO.Pipelines.Networking.Sockets
         private static readonly byte[] _zeroLengthBuffer = new byte[0];
 
 
-        private readonly bool _ownsFactory;
-        private PipeFactory _factory;
+        private readonly bool _ownsPool;
+        private MemoryPool _pool;
         private IPipe _input, _output;
         private Socket _socket;
         private Task _receiveTask;
@@ -72,30 +72,21 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        internal SocketConnection(Socket socket, PipeFactory factory)
+        internal SocketConnection(Socket socket, MemoryPool pool)
         {
             socket.NoDelay = true;
             _socket = socket;
-            if (factory == null)
+            if (pool == null)
             {
-                _ownsFactory = true;
-                factory = new PipeFactory();
+                _ownsPool = true;
+                pool = new MemoryPool();
             }
-            _factory = factory;
+            _pool = pool;
 
             // TODO: Make this configurable
             // Dispatch to avoid deadlocks
-            _input = PipeFactory.Create(new PipeOptions
-            {
-                ReaderScheduler = TaskRunScheduler.Default,
-                WriterScheduler = TaskRunScheduler.Default
-            });
-
-            _output = PipeFactory.Create(new PipeOptions
-            {
-                ReaderScheduler = TaskRunScheduler.Default,
-                WriterScheduler = TaskRunScheduler.Default
-            });
+            _input = new Pipe(new PipeOptions(pool, TaskRunScheduler.Default, TaskRunScheduler.Default));
+            _output = new Pipe(new PipeOptions(pool, TaskRunScheduler.Default, TaskRunScheduler.Default));
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -111,7 +102,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// </summary>
         public IPipeWriter Output => _output.Writer;
 
-        private PipeFactory PipeFactory => _factory;
+        private MemoryPool Pool => _pool;
 
         private Socket Socket => _socket;
 
@@ -119,13 +110,13 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// Begins an asynchronous connect operation to the designated endpoint
         /// </summary>
         /// <param name="endPoint">The endpoint to which to connect</param>
-        /// <param name="factory">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the connection</param>
-        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipeFactory factory = null)
+        /// <param name="pool">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the connection</param>
+        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, MemoryPool pool = null)
         {
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
             args.Completed += _asyncCompleted;
-            var tcs = new TaskCompletionSource<SocketConnection>(factory);
+            var tcs = new TaskCompletionSource<SocketConnection>(pool);
             args.UserToken = tcs;
             if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, args))
             {
@@ -194,8 +185,8 @@ namespace System.IO.Pipelines.Networking.Sockets
 
                 _socket?.Dispose();
                 _socket = null;
-                if (_ownsFactory) { _factory?.Dispose(); }
-                _factory = null;
+                if (_ownsPool) { _pool?.Dispose(); }
+                _pool = null;
             }
         }
 
@@ -238,7 +229,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (PipeFactory)tcs.Task.AsyncState));
+                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (MemoryPool)tcs.Task.AsyncState));
                 }
                 else
                 {
