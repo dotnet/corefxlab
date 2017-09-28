@@ -13,11 +13,11 @@ namespace System.Buffers.Tests
         public void SimpleTests()
         {            
             using(var owned = new OwnedNativeBuffer(1024)) {
-                var span = owned.AsSpan();
+                var span = owned.Span;
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.AsMemory;
+                var memory = owned.Memory;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
@@ -28,13 +28,13 @@ namespace System.Buffers.Tests
             }
 
             using (OwnedPinnedBuffer<byte> owned = new byte[1024]) {
-                var span = owned.AsSpan();
+                var span = owned.Span;
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
 
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.AsMemory;
+                var memory = owned.Memory;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
@@ -66,7 +66,7 @@ namespace System.Buffers.Tests
         {
             Memory<byte> copyStoredForLater;
             try {
-                Memory<byte> memory = owned.AsMemory;
+                Memory<byte> memory = owned.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Retain();
@@ -93,7 +93,7 @@ namespace System.Buffers.Tests
         {
             OwnedMemory<byte> owned = new AutoPooledBuffer(1000);
             owned.Retain();
-            var memory = owned.AsMemory;
+            var memory = owned.Memory;
             Assert.Equal(false, owned.IsDisposed);
             var reservation = memory.Retain();
             Assert.Equal(false, owned.IsDisposed);
@@ -107,7 +107,7 @@ namespace System.Buffers.Tests
         public void OnNoReferencesTest()
         {
             var owned = new CustomBuffer<byte>(255);
-            var memory = owned.AsMemory;
+            var memory = owned.Memory;
             Assert.Equal(0, owned.OnNoRefencesCalledCount);
             
             using (memory.Retain())
@@ -132,7 +132,7 @@ namespace System.Buffers.Tests
                 {
                     var array = new byte[1024];
                     owners[i] = new OwnedArray<byte>(array);
-                    memories[i] = owners[i].AsMemory;
+                    memories[i] = owners[i].Memory;
                 }
 
                 var dispose_task = Task.Run(() => {
@@ -195,10 +195,13 @@ namespace System.Buffers.Tests
 
         protected override bool IsRetained => _referenceCount > 0;
 
-        public override Span<T> AsSpan()
+        public override Span<T> Span
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
-            return new Span<T>(_array);
+            get
+            {
+                if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
+                return new Span<T>(_array);
+            }
         }
 
         public override MemoryHandle Pin()
@@ -252,10 +255,13 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan()
+        public override Span<T> Span
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-            return new Span<T>(_array);
+            get
+            {
+                if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
+                return new Span<T>(_array);
+            }
         }
 
         protected override void Dispose(bool disposing)

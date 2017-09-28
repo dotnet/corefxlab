@@ -20,10 +20,13 @@ namespace System.Buffers.Pools
 
             public override int Length => _length;
 
-            public override Span<byte> AsSpan()
+            public override Span<byte> Span
             {
-                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
-                return new Span<byte>(_pointer.ToPointer(), _length);
+                get
+                {
+                    if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
+                    return new Span<byte>(_pointer.ToPointer(), _length);
+                }
             }
 
             protected override void Dispose(bool disposing)

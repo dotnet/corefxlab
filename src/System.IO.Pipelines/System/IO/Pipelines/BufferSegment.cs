@@ -51,7 +51,7 @@ namespace System.IO.Pipelines
             End = 0;
 
             _owned.Retain();
-            _buffer = _owned.AsMemory;
+            _buffer = _owned.Memory;
         }
 
         public BufferSegment(OwnedMemory<byte> buffer, int start, int end): this(buffer)
@@ -91,7 +91,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            var data = _owned.AsMemory.Slice(Start, ReadableBytes).Span;
+            var data = _owned.Memory.Slice(Start, ReadableBytes).Span;
 
             for (int i = 0; i < ReadableBytes; i++)
             {

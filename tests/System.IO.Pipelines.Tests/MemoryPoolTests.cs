@@ -28,7 +28,7 @@ namespace System.IO.Pipelines.Tests
                     block2.Release();
                 }
 
-                Assert.True(block2.AsSpan().Length > 0);
+                Assert.True(block2.Span.Length > 0);
             }
         }
     }
