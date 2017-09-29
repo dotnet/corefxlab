@@ -54,10 +54,13 @@ namespace System.Buffers
 
         public override int Length => _length;
         
-        public unsafe override Span<byte> AsSpan()
+        public unsafe override Span<byte> Span
         {
-            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
-            return new Span<byte>(_pointer.ToPointer(), _length);
+            get
+            {
+                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
+                return new Span<byte>(_pointer.ToPointer(), _length);
+            }
         }
 
         int _length;

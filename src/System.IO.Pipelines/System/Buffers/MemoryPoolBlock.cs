@@ -43,10 +43,13 @@ namespace System.Buffers
 
         public override int Length => _length;
 
-        public override Span<byte> AsSpan()
+        public override Span<byte> Span
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            return new Span<byte>(Slab.Array, _offset, _length);
+            get
+            {
+                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+                return new Span<byte>(Slab.Array, _offset, _length);
+            }
         }
 
 #if BLOCK_LEASE_TRACKING
@@ -87,7 +90,7 @@ namespace System.Buffers
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanLiteralExtensions.AppendAsLiteral(AsMemory.Span, builder);
+            SpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
             return builder.ToString();
         }
 

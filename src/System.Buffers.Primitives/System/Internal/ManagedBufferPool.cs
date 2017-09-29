@@ -46,10 +46,13 @@ namespace System.Buffers.Internal
 
             protected override bool IsRetained => _referenceCount > 0;
 
-            public override Span<byte> AsSpan()
+            public override Span<byte> Span
             {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
-                return new Span<byte>(_array);
+                get
+                {
+                    if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
+                    return new Span<byte>(_array);
+                }
             }
 
             protected override void Dispose(bool disposing)
