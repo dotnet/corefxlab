@@ -2,9 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,10 +66,6 @@ namespace System.IO.Channels
             }
         }
 
-        /// <summary>Creates an observer for this channel.</summary>
-        /// <returns>An observer that forwards to this channel.</returns>
-        public virtual IObserver<T> AsObserver() => new ChannelObserver(this);
-
         /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
         /// <exception cref="InvalidOperationException">The channel has already been marked as complete.</exception>
@@ -82,24 +75,6 @@ namespace System.IO.Channels
             {
                 throw ChannelUtilities.CreateInvalidCompletionException();
             }
-        }
-
-        /// <summary>Provides an observer for a Writable channel.</summary>
-        private sealed class ChannelObserver : IObserver<T>
-        {
-            private readonly ChannelWriter<T> _channel;
-
-            internal ChannelObserver(ChannelWriter<T> channel)
-            {
-                Debug.Assert(channel != null);
-                _channel = channel;
-            }
-
-            public void OnCompleted() => _channel.Complete();
-
-            public void OnError(Exception error) => _channel.Complete(error);
-
-            public void OnNext(T value) => _channel.WriteAsync(value).GetAwaiter().GetResult();
         }
     }
 }
