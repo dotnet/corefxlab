@@ -14,6 +14,8 @@ namespace System.IO.Pipelines
     /// </summary>
     public class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
+        private const int SegmentPoolSize = 16;
+
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
         private static readonly Action<object> _invokeCompletionCallbacks = state => ((PipeCompletionCallbacks)state).Execute();
@@ -35,12 +37,15 @@ namespace System.IO.Pipelines
         private long _length;
         private long _currentWriteLength;
 
+        private byte _pooledSegmentCount;
+
         private PipeAwaitable _readerAwaitable;
         private PipeAwaitable _writerAwaitable;
 
         private PipeCompletion _writerCompletion;
         private PipeCompletion _readerCompletion;
 
+        private BufferSegment[] _bufferSegmentPool;
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
 
@@ -84,6 +89,8 @@ namespace System.IO.Pipelines
             {
                 throw new ArgumentException(nameof(options.MaximumSizeHigh) + " should be greater or equal to " + nameof(options.MaximumSizeLow), nameof(options.MaximumSizeHigh));
             }
+
+            _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
 
             _pool = options.BufferPool;
             _maximumSizeHigh = options.MaximumSizeHigh;
@@ -167,7 +174,8 @@ namespace System.IO.Pipelines
             if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < count || segment.ReadOnly)
             {
                 var nextBuffer = _pool.Rent(count);
-                var nextSegment = new BufferSegment(nextBuffer);
+                var nextSegment = CreateSegmentUnsynchronized();
+                nextSegment.SetMemory(nextBuffer);
 
                 segment.SetNext(nextSegment);
 
@@ -194,7 +202,8 @@ namespace System.IO.Pipelines
             if (segment == null)
             {
                 // No free tail space, allocate a new segment
-                segment = new BufferSegment(_pool.Rent(count));
+                segment = CreateSegmentUnsynchronized();
+                segment.SetMemory(_pool.Rent(count));
             }
 
             if (_commitHead == null)
@@ -213,6 +222,28 @@ namespace System.IO.Pipelines
             _writingHead = segment;
 
             return segment;
+        }
+
+        private BufferSegment CreateSegmentUnsynchronized()
+        {
+            if (_pooledSegmentCount > 0)
+            {
+                _pooledSegmentCount--;
+                return _bufferSegmentPool[_pooledSegmentCount];
+            }
+            else
+            {
+                return new BufferSegment();
+            }
+        }
+
+        private void ReturnSegmentUnsynchronized(BufferSegment segment)
+        {
+            if (_pooledSegmentCount < _bufferSegmentPool.Length)
+            {
+                _bufferSegmentPool[_pooledSegmentCount] = segment;
+                _pooledSegmentCount++;
+            }
         }
 
         internal void Append(ReadableBuffer buffer)
@@ -409,7 +440,7 @@ namespace System.IO.Pipelines
 
             if (readerCompleted)
             {
-                Dispose();
+                CompletePipe();
             }
         }
 
@@ -485,12 +516,13 @@ namespace System.IO.Pipelines
                 }
 
                 _readingState.End(ExceptionResource.NoReadToComplete);
-            }
 
-            while (returnStart != null && returnStart != returnEnd)
-            {
-                returnStart.Dispose();
-                returnStart = returnStart.Next;
+                while (returnStart != null && returnStart != returnEnd)
+                {
+                    returnStart.ResetMemory();
+                    ReturnSegmentUnsynchronized(returnStart);
+                    returnStart = returnStart.Next;
+                }
             }
 
             TrySchedule(_writerScheduler, continuation);
@@ -527,7 +559,7 @@ namespace System.IO.Pipelines
 
             if (writerCompleted)
             {
-                Dispose();
+                CompletePipe();
             }
         }
 
@@ -650,7 +682,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void Dispose()
+        private void CompletePipe()
         {
             lock (_sync)
             {
@@ -667,7 +699,7 @@ namespace System.IO.Pipelines
                     var returnSegment = segment;
                     segment = segment.Next;
 
-                    returnSegment.Dispose();
+                    returnSegment.ResetMemory();
                 }
 
                 _readHead = null;

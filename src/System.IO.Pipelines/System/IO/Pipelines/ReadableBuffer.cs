@@ -260,9 +260,9 @@ namespace System.IO.Pipelines
 
         private static ReadableBuffer CreateInternal(OwnedMemory<byte> data, int offset, int length)
         {
-            var segment = new BufferSegment(data);
-            segment.Start = offset;
-            segment.End = offset + length;
+            var segment = new BufferSegment();
+            segment.SetMemory(data, offset, offset + length);
+
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 

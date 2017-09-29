@@ -7,8 +7,7 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    // TODO: Pool segments
-    internal class BufferSegment : IDisposable
+    internal class BufferSegment
     {
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
@@ -44,21 +43,26 @@ namespace System.IO.Pipelines
 
         private Memory<byte> _buffer;
 
-        public BufferSegment(OwnedMemory<byte> buffer)
+        public void SetMemory(OwnedMemory<byte> buffer)
         {
-            _owned = buffer;
-            Start = 0;
-            End = 0;
-
-            _owned.Retain();
-            _buffer = _owned.Memory;
+            SetMemory(buffer, 0, 0);
         }
 
-        public BufferSegment(OwnedMemory<byte> buffer, int start, int end): this(buffer)
+        public void SetMemory(OwnedMemory<byte> buffer, int start, int end, bool readOnly = false)
         {
+            _owned = buffer;
+            _owned.Retain();
+            _buffer = _owned.Memory;
+
+            RunningLength = 0;
             Start = start;
             End = end;
-            ReadOnly = true;
+        }
+
+        public void ResetMemory()
+        {
+            _owned.Release();
+            _owned = null;
         }
 
         public Memory<byte> Buffer => _buffer;
@@ -79,17 +83,17 @@ namespace System.IO.Pipelines
         /// </summary>
         public int WritableBytes => _buffer.Length - End;
 
-        public void Dispose()
-        {
-            _owned.Release();
-        }
-
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
+            if (_owned == null)
+            {
+                return "<NO MEMORY ATTACHED>";
+            }
+
             var builder = new StringBuilder();
             var data = _owned.Memory.Slice(Start, ReadableBytes).Span;
 
@@ -107,24 +111,29 @@ namespace System.IO.Pipelines
 
             if (beginOrig == endOrig)
             {
-                lastSegment = new BufferSegment(beginOrig._owned, beginBuffer.Index, endBuffer.Index);
+                lastSegment = new BufferSegment();
+                lastSegment.SetMemory(beginOrig._owned, beginBuffer.Index, endBuffer.Index);
                 return lastSegment;
             }
 
-            var beginClone = new BufferSegment(beginOrig._owned, beginBuffer.Index, beginOrig.End);
+            var beginClone = new BufferSegment();
+            beginClone.SetMemory(beginOrig._owned, beginBuffer.Index, beginOrig.End);
             var endClone = beginClone;
 
             beginOrig = beginOrig.Next;
 
             while (beginOrig != endOrig)
             {
-                endClone.SetNext(new BufferSegment(beginOrig._owned, beginOrig.Start, beginOrig.End));
+                var next = new BufferSegment();
+                next.SetMemory(beginOrig._owned, beginOrig.Start, beginOrig.End);
+                endClone.SetNext(next);
 
                 endClone = endClone.Next;
                 beginOrig = beginOrig.Next;
             }
 
-            lastSegment = new BufferSegment(endOrig._owned, endOrig.Start, endBuffer.Index);
+            lastSegment = new BufferSegment();
+            lastSegment.SetMemory(endOrig._owned, endOrig.Start, endBuffer.Index);
             endClone.SetNext(lastSegment);
 
             return beginClone;
