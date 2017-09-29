@@ -23,12 +23,6 @@ namespace System.IO.Channels
         /// </summary>
         public virtual Task Completion => ChannelUtilities.s_neverCompletingTask;
 
-        /// <summary>
-        /// Gets a <see cref="CancellationToken"/> that is signaled when no more data will ever
-        /// be available to be read from this channel.
-        /// </summary>
-        public virtual CancellationToken CompletionCancellationToken => ChannelUtilities.GetCompletionToken(Completion);
-
         /// <summary>Attempts to read an item to the channel.</summary>
         /// <param name="item">The read item, or a default value if no item could be read.</param>
         /// <returns>true if an item was read; otherwise, false if no item was read.</returns>

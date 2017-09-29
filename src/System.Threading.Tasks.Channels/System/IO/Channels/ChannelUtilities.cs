@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,47 +20,6 @@ namespace System.IO.Channels
         internal static readonly Task<bool> s_falseTask = Task.FromResult(false);
         /// <summary>A cached task that never completes.</summary>
         internal static readonly Task s_neverCompletingTask = new TaskCompletionSource<bool>().Task;
-        /// <summary>Mapping of Tasks to CancellationTokenSources that are canceled when the associated task completes. Lazily initialized.</summary>
-        private static ConditionalWeakTable<Task, CancellationTokenSource> s_completionTokenTable;
-
-        /// <summary>Gets a <see cref="CancellationToken"/> that will have cancellation requested when the specified <see cref="Task"/> completes.</summary>
-        /// <param name="completionTask"></param>
-        /// <returns></returns>
-        internal static CancellationToken GetCompletionToken(Task completionTask)
-        {
-            // If the task is already completed, return a canceled task.
-            if (completionTask.IsCompleted)
-            {
-                return new CancellationToken(canceled: true);
-            }
-
-            // If someone has previously requested a token for this task, return it.
-            ConditionalWeakTable<Task, CancellationTokenSource> table = LazyInitializer.EnsureInitialized(ref s_completionTokenTable);
-            if (table.TryGetValue(completionTask, out CancellationTokenSource cts))
-            {
-                return cts.Token;
-            }
-
-            // We don't have an existing token for this task.  Create one and try to store it.
-            cts = new CancellationTokenSource();
-            try
-            {
-                table.Add(completionTask, cts);
-            }
-            catch (ArgumentException) // Currently no TryAdd. If that exists in the future, switch to it.
-            {
-                // We failed to add because we lost a race to another thread adding for the same task.
-                // Use whatever one is currently there.
-                bool gotSource = table.TryGetValue(completionTask, out cts);
-                Debug.Assert(gotSource, "There must be a source, as we just failed to add because there was one.");
-                return cts.Token;
-            }
-
-            // We successfully stored the Task->CTS mapping.  Configure the CTS to be canceled
-            // when the task completes.
-            completionTask.ConfigureAwait(false).GetAwaiter().OnCompleted(cts.Cancel); // delegate allocation, but this is faster than ContinueWith, which also allocates
-            return cts.Token;
-        }
 
         /// <summary>Completes the specified TaskCompletionSource.</summary>
         /// <param name="tcs">The source to complete.</param>
