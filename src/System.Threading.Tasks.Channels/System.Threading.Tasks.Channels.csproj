@@ -10,7 +10,4 @@
     <PackageReference Include="System.Threading.Tasks" Version="$(CoreFxVersion)" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxVersion)" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="System\Runtime\" />
-  </ItemGroup>
 </Project>

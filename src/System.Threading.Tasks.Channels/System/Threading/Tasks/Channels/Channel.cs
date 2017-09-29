@@ -33,7 +33,7 @@ namespace System.IO.Channels
             {
                 case BoundedChannelFullMode.DropNewest:
                 case BoundedChannelFullMode.DropOldest:
-                case BoundedChannelFullMode.Ignore:
+                case BoundedChannelFullMode.DropWrite:
                 case BoundedChannelFullMode.Wait:
                     break;
                 default:

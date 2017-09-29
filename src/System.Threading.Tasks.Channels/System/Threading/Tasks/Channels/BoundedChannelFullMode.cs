@@ -14,6 +14,6 @@ namespace System.IO.Channels
         /// <summary>Remove and ignore the oldest item in the channel in order to make room for the item being written.</summary>
         DropOldest,
         /// <summary>Drop the item being written.</summary>
-        Ignore
+        DropWrite
     }
 }

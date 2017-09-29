@@ -294,7 +294,7 @@ namespace System.IO.Channels
                         // Simply exit and let the caller know we didn't write the data.
                         return false;
                     }
-                    else if (parent._mode == BoundedChannelFullMode.Ignore)
+                    else if (parent._mode == BoundedChannelFullMode.DropWrite)
                     {
                         // The channel is full.  Just ignore the item being added
                         // but say we added it.
@@ -435,7 +435,7 @@ namespace System.IO.Channels
                         parent._blockedWriters.EnqueueTail(writer);
                         return writer.Task;
                     }
-                    else if (parent._mode == BoundedChannelFullMode.Ignore)
+                    else if (parent._mode == BoundedChannelFullMode.DropWrite)
                     {
                         // The channel is full and we're in ignore mode.
                         // Ignore the item but say we accepted it.
