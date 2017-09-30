@@ -16,83 +16,60 @@ namespace System.Buffers
     public static partial class Binary
     {
         /// <summary>
-        /// Reverses a primitive value - performs an endianness swap
+        /// This is a no-op and added only for consistency.
+        /// This allows the caller to read a struct of numeric primitives and reverse each field
+        /// rather than having to skip byte & sbyte fields.
         /// </summary> 
-        public static unsafe T Reverse<[Primitive]T>(T value) where T : struct
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Reverse(this sbyte value)
         {
-            // note: relying on JIT goodness here!
-            if (typeof(T) == typeof(byte) || typeof(T) == typeof(sbyte))
-            {
-                return value;
-            }
-            else if (typeof(T) == typeof(ushort) || typeof(T) == typeof(short))
-            {
-                ushort val = 0;
-                Unsafe.Write(&val, value);
-                val = (ushort)((val >> 8) | (val << 8));
-                return Unsafe.Read<T>(&val);
-            }
-            else if (typeof(T) == typeof(uint) || typeof(T) == typeof(int)
-                || typeof(T) == typeof(float))
-            {
-                uint val = 0;
-                Unsafe.Write(&val, value);
-                val = (val << 24)
-                    | ((val & 0xFF00) << 8)
-                    | ((val & 0xFF0000) >> 8)
-                    | (val >> 24);
-                return Unsafe.Read<T>(&val);
-            }
-            else if (typeof(T) == typeof(ulong) || typeof(T) == typeof(long)
-                || typeof(T) == typeof(double))
-            {
-                ulong val = 0;
-                Unsafe.Write(&val, value);
-                val = (val << 56)
-                    | ((val & 0xFF00) << 40)
-                    | ((val & 0xFF0000) << 24)
-                    | ((val & 0xFF000000) << 8)
-                    | ((val & 0xFF00000000) >> 8)
-                    | ((val & 0xFF0000000000) >> 24)
-                    | ((val & 0xFF000000000000) >> 40)
-                    | (val >> 56);
-                return Unsafe.Read<T>(&val);
-            }
-            else
-            {
-                // default implementation
-                int len = Unsafe.SizeOf<T>();
-                var val = stackalloc byte[len];
-                Unsafe.Write(val, value);
-                int to = len >> 1, dest = len - 1;
-                for (int i = 0; i < to; i++)
-                {
-                    var tmp = val[i];
-                    val[i] = val[dest];
-                    val[dest--] = tmp;
-                }
-                return Unsafe.Read<T>(val);
-            }
+            return value;
         }
 
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Reverse(this short value)
         {
             return (short)((value & 0x00FF) << 8 | (value & 0xFF00) >> 8);
         }
 
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Reverse(this int value) => (int)Reverse((uint)value);
 
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Reverse(this long value) => (long)Reverse((ulong)value);
 
+        /// <summary>
+        /// This is a no-op and added only for consistency.
+        /// This allows the caller to read a struct of numeric primitives and reverse each field
+        /// rather than having to skip byte & sbyte fields.
+        /// </summary> 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Reverse(this byte value)
+        {
+            return value;
+        }
+
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Reverse(this ushort value)
         {
             return (ushort)((value & 0x00FFU) << 8 | (value & 0xFF00U) >> 8);
         }
 
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Reverse(this uint value)
         {
@@ -101,6 +78,9 @@ namespace System.Buffers
             return value;
         }
 
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Reverse(this ulong value)
         {
@@ -117,7 +97,10 @@ namespace System.Buffers
         public static T Read<[Primitive]T>(this Span<byte> buffer)
             where T : struct
         {
-            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)buffer.Length);
+            if (Unsafe.SizeOf<T>() > buffer.Length)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
             return Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
         }
 
@@ -128,7 +111,10 @@ namespace System.Buffers
         public static T Read<[Primitive]T>(this ReadOnlySpan<byte> buffer)
             where T : struct
         {
-            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)buffer.Length);
+            if (Unsafe.SizeOf<T>() > buffer.Length)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
             return Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
         }
 
@@ -162,15 +148,6 @@ namespace System.Buffers
             }
             value = Unsafe.ReadUnaligned<T>(ref buffer.DangerousGetPinnableReference());
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void RequiresInInclusiveRange(int start, uint length)
-        {
-            if ((uint)start > length)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }
