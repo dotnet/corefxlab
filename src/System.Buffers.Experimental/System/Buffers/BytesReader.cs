@@ -248,7 +248,7 @@ namespace System.Buffers
             {
                 var tempLen = value.Length << 1;
                 var tempSpan = tempLen < 128 ?
-                                        (Span<byte>)stackalloc byte[tempLen] :
+                                        stackalloc byte[tempLen] :
                                         // TODO (pri 3): I think this could be imporved by chunking values
                                         new byte[tempLen];
 
