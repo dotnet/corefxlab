@@ -18,7 +18,7 @@ namespace System.Buffers
         /// <summary>
         /// This is a no-op and added only for consistency.
         /// This allows the caller to read a struct of numeric primitives and reverse each field
-        /// rather than having to skip byte & sbyte fields.
+        /// rather than having to skip sbyte fields.
         /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Reverse(this sbyte value)
@@ -50,7 +50,7 @@ namespace System.Buffers
         /// <summary>
         /// This is a no-op and added only for consistency.
         /// This allows the caller to read a struct of numeric primitives and reverse each field
-        /// rather than having to skip byte & sbyte fields.
+        /// rather than having to skip byte fields.
         /// </summary> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Reverse(this byte value)
