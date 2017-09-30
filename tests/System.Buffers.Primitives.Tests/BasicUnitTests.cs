@@ -364,7 +364,7 @@ namespace System.Buffers.Tests
         public void OwnedBufferDisposedAfterFinalizerGCKeepAliveTest()
         {
             OwnedMemory<byte> owned = new CustomMemoryForTest<byte>(new byte[1024]);
-            var buffer = owned.AsMemory;
+            var buffer = owned.Memory;
             var slice = buffer.Slice(1);
 
             var span = buffer.Span;

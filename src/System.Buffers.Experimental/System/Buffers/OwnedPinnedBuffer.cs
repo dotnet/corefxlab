@@ -35,10 +35,13 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan()
+        public override Span<T> Span
         {
+            get
+            {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
                 return new Span<T>(_array);
+            }
         }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();

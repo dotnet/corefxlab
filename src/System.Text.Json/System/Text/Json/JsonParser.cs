@@ -145,7 +145,7 @@ namespace System.Text.Json
             _pool = pool;
             if (_pool == null) _pool = BufferPool.Default;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchMemory = _scratchManager.AsMemory;
+            _scratchMemory = _scratchManager.Memory;
 
             int dbLength = _scratchMemory.Length / 2;
             _db = _scratchMemory.Slice(0, dbLength);
@@ -218,11 +218,11 @@ namespace System.Text.Json
             var newScratch = _pool.Rent(_scratchMemory.Length * 2);
             int dbLength = newScratch.Length / 2;
 
-            var newDb = newScratch.AsMemory.Slice(0, dbLength);
+            var newDb = newScratch.Memory.Slice(0, dbLength);
             _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);
             _db = newDb;
 
-            var newStackMemory = newScratch.AsMemory.Slice(dbLength);
+            var newStackMemory = newScratch.Memory.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;

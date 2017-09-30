@@ -27,10 +27,13 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> AsSpan()
+        public override Span<T> Span
         {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
-            return new Span<T>(_array);
+            get
+            {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+                return new Span<T>(_array);
+            }
         }
 
         public override MemoryHandle Pin()

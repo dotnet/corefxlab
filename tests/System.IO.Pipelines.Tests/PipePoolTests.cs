@@ -120,11 +120,14 @@ namespace System.IO.Pipelines.Tests
                 }
 
                 public override int Length => _array.Length;
-                public override Span<byte> AsSpan()
+                public override Span<byte> Span
                 {
-                    if (IsDisposed)
-                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    return _array;
+                    get
+                    {
+                        if (IsDisposed)
+                            PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        return _array;
+                    }
                 }
 
                 public override MemoryHandle Pin()

@@ -145,7 +145,7 @@ namespace System.Net.Libuv
             else
             {
                 using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
-                    OnReadCompleted(owned.AsMemory);
+                    OnReadCompleted(owned.Memory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }
             }
@@ -175,7 +175,7 @@ namespace System.Net.Libuv
             else
             {
                 using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
-                    OnReadCompleted(owned.AsMemory);
+                    OnReadCompleted(owned.Memory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }
             }

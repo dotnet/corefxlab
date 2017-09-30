@@ -61,7 +61,7 @@ namespace Microsoft.Net.Http
                 OwnedBuffer requestBuffer = rootBuffer;
                 int totalWritten = 0;
                 while (true) {
-                    Span<byte> requestSpan = requestBuffer.AsSpan();
+                    Span<byte> requestSpan = requestBuffer.Span;
 
                     int requestBytesRead = socket.Receive(requestSpan);
                     if (requestBytesRead == 0) {
