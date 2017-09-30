@@ -195,12 +195,9 @@ namespace System.IO.Pipelines.Text.Primitives
                 return null;
             }
 
-            // TODO: "ReadOnlySpan<byte> textSpan = stackalloc byte[0]" would fit better here, 
-            //       but it emits substandard IL, see https://github.com/dotnet/roslyn/issues/21952
-            //
             // Assign 'textSpan' to something formally stack-referring.
             // The default classification is "returnable, not referring to stack", we want the opposite in this case.
-            ReadOnlySpan<byte> textSpan = true? new ReadOnlySpan<byte>() : stackalloc byte[0];
+            ReadOnlySpan<byte> textSpan = stackalloc byte[0];
 
             if (buffer.IsSingleSpan)
             {
