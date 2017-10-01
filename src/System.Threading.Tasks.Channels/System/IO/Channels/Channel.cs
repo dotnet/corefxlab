@@ -8,46 +8,69 @@ namespace System.IO.Channels
     public static class Channel
     {
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
         /// <returns>The created channel.</returns>
-        public static Channel<T> CreateUnbounded<T>(ChannelOptimizations optimizations = null) =>
-            optimizations == null ? new UnboundedChannel<T>(runContinuationsAsynchronously: true) :
-            optimizations.SingleReader ? new SingleConsumerUnboundedChannel<T>(!optimizations.AllowSynchronousContinuations) :
-            (Channel<T>)new UnboundedChannel<T>(!optimizations.AllowSynchronousContinuations);
+        public static Channel<T> CreateUnbounded<T>() =>
+            new UnboundedChannel<T>(runContinuationsAsynchronously: true);
 
-        /// <summary>Creates a channel with the specified bounded size.</summary>
+        /// <summary>Creates an unbounded channel subject to the provided options.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="bufferedCapacity">The maximum number of elements the channel can store.</param>
-        /// <param name="mode">The behavior to use when writing to a full channel.</param>
-        /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
+        /// <param name="options">Options that guide the behavior of the channel.</param>
         /// <returns>The created channel.</returns>
-        public static Channel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait, ChannelOptimizations optimizations = null)
+        public static Channel<T> CreateUnbounded<T>(UnboundedChannelOptions options) =>
+            options == null ? throw new ArgumentOutOfRangeException(nameof(options)) :
+            options.SingleReader ? new SingleConsumerUnboundedChannel<T>(!options.AllowSynchronousContinuations) :
+            (Channel<T>)new UnboundedChannel<T>(!options.AllowSynchronousContinuations);
+
+        /// <summary>Creates a channel with the specified maximum capacity.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <param name="capacity">The maximum number of items the channel may store.</param>
+        /// <returns>The created channel.</returns>
+        /// <remarks>
+        /// Channels created with this method apply the <see cref="BoundedChannelFullMode.Wait"/>
+        /// behavior and prohibit continuations from running synchronously.
+        /// </remarks>
+        public static Channel<T> CreateBounded<T>(int capacity)
         {
-            if (bufferedCapacity < 1)
+            if (capacity < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
+                throw new ArgumentOutOfRangeException(nameof(capacity));
             }
 
-            switch (mode)
+            return new BoundedChannel<T>(capacity, BoundedChannelFullMode.Wait, runContinuationsAsynchronously: true);
+        }
+
+        /// <summary>Creates a channel with the specified maximum capacity.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <param name="options">Options that guide the behavior of the channel.</param>
+        /// <returns>The created channel.</returns>
+        public static Channel<T> CreateBounded<T>(BoundedChannelOptions options)
+        {
+            if (options == null)
             {
-                case BoundedChannelFullMode.DropNewest:
-                case BoundedChannelFullMode.DropOldest:
-                case BoundedChannelFullMode.DropWrite:
-                case BoundedChannelFullMode.Wait:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mode));
+                throw new ArgumentOutOfRangeException(nameof(options));
             }
 
-            bool runContinuationsAsynchronously = optimizations == null || !optimizations.AllowSynchronousContinuations;
-            return new BoundedChannel<T>(bufferedCapacity, mode, runContinuationsAsynchronously);
+            return new BoundedChannel<T>(options.Capacity, options.FullMode, !options.AllowSynchronousContinuations);
         }
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
         /// <returns>The created channel.</returns>
-        public static Channel<T> CreateUnbuffered<T>(ChannelOptimizations optimizations = null) => new UnbufferedChannel<T>();
+        public static Channel<T> CreateUnbuffered<T>() =>
+            new UnbufferedChannel<T>();
+
+        /// <summary>Creates a channel that doesn't buffer any items.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <param name="options">Options that guide the behavior of the channel.</param>
+        /// <returns>The created channel.</returns>
+        public static Channel<T> CreateUnbuffered<T>(UnbufferedChannelOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(options));
+            }
+
+            return new UnbufferedChannel<T>();
+        }
     }
 }
