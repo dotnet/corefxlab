@@ -16,7 +16,7 @@ namespace System.IO.Channels.Tests
         [Fact]
         public void ChannelOptimizations_Properties_Roundtrip()
         {
-            var co = new ChannelOptimizations();
+            var co = new UnboundedChannelOptions();
 
             Assert.False(co.SingleReader);
             Assert.False(co.SingleWriter);
@@ -48,41 +48,22 @@ namespace System.IO.Channels.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]
-        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity) =>
-            Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.CreateBounded<int>(bufferedCapacity));
+        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int capacity)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>("capacity", () => Channel.CreateBounded<int>(capacity));
+            Assert.Throws<ArgumentOutOfRangeException>("capacity", () => new BoundedChannelOptions(capacity));
+        }
 
         [Theory]
         [InlineData((BoundedChannelFullMode)(-1))]
         [InlineData((BoundedChannelFullMode)(4))]
-        public void CreateBounded_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode) =>
-            Assert.Throws<ArgumentOutOfRangeException>("mode", () => Channel.CreateBounded<int>(1, mode));
+        public void BoundedChannelOptions_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode) =>
+            Assert.Throws<ArgumentOutOfRangeException>("value", () => new BoundedChannelOptions(1) { FullMode = mode });
 
         [Theory]
         [InlineData(1)]
         public void CreateBounded_ValidBufferSizes_Success(int bufferedCapacity) =>
             Assert.NotNull(Channel.CreateBounded<int>(bufferedCapacity));
-
-        [Fact]
-        public void AsObservable_SameSource_Idempotent()
-        {
-            var c = Channel.CreateUnbounded<int>();
-            Assert.Same(c.Reader.AsObservable(), c.Reader.AsObservable());
-        }
-
-        [Fact]
-        public async Task DefaultReadAsync_UsesWaitToReadAsyncAndTryRead()
-        {
-            var c = new TestChannelReader<int>(Enumerable.Range(10, 10));
-            Assert.NotNull(c.Completion);
-            Assert.False(c.Completion.IsCompleted);
-            Assert.Equal(TaskStatus.Canceled, c.ReadAsync(new CancellationToken(true)).AsTask().Status);
-
-            for (int i = 10; i < 20; i++)
-            {
-                Assert.Equal(i, await c.ReadAsync());
-            }
-            await Assert.ThrowsAsync<ChannelClosedException>(async () => await c.ReadAsync());
-        }
 
         [Fact]
         public async Task DefaultWriteAsync_UsesWaitToWriteAsyncAndTryWrite()

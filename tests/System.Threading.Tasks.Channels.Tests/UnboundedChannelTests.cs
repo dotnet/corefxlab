@@ -13,7 +13,7 @@ namespace System.IO.Channels.Tests
     {
         protected abstract bool AllowSynchronousContinuations { get; }
         protected override Channel<int> CreateChannel() => Channel.CreateUnbounded<int>(
-            new ChannelOptimizations
+            new UnboundedChannelOptions
             {
                 SingleReader = RequiresSingleReader,
                 AllowSynchronousContinuations = AllowSynchronousContinuations
@@ -34,6 +34,7 @@ namespace System.IO.Channels.Tests
         [Fact]
         public void TryWrite_TryRead_Many()
         {
+            Console.WriteLine(GetType().FullName);
             Channel<int> c = CreateChannel();
 
             const int NumItems = 100000;
@@ -103,12 +104,12 @@ namespace System.IO.Channels.Tests
         }
 
         [Fact]
-        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting()
+        public void AllowSynchronousContinuations_WaitToReadAsync_ContinuationsInvokedAccordingToSetting()
         {
             Channel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.Reader.ReadAsync().AsTask().ContinueWith(_ =>
+            Task r = c.Reader.WaitToReadAsync().ContinueWith(_ =>
             {
                 Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);

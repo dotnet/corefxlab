@@ -17,29 +17,6 @@ namespace System.IO.Channels.Tests
             return c;
         }
 
-        [Fact]
-        public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
-        {
-            var c = Channel.CreateBounded<int>(1);
-            Assert.True(c.Writer.TryWrite(42));
-            c.Writer.Complete();
-            Assert.False(c.Reader.Completion.IsCompleted);
-            Assert.Equal(42, await c.Reader.ReadAsync());
-            await c.Reader.Completion;
-        }
-
-        [Fact]
-        public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
-        {
-            var c = Channel.CreateBounded<int>(1);
-            Assert.True(c.Writer.TryWrite(42));
-            Task write2 = c.Writer.WriteAsync(43);
-            c.Writer.Complete();
-            Assert.Equal(42, await c.Reader.ReadAsync());
-            await c.Reader.Completion;
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => write2);
-        }
-
         [Theory]
         [InlineData(1)]
         [InlineData(10)]
@@ -71,7 +48,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropOldest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -95,7 +72,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropOldest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -119,7 +96,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropNewest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -145,7 +122,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropNewest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -168,11 +145,12 @@ namespace System.IO.Channels.Tests
         [Fact]
         public async Task TryWrite_DropNewest_WrappedAroundInternalQueue()
         {
-            var c = Channel.CreateBounded<int>(3, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(3) { FullMode = BoundedChannelFullMode.DropNewest });
 
             // Move head of dequeue beyond the beginning
             Assert.True(c.Writer.TryWrite(1));
-            Assert.Equal(1, await c.Reader.ReadAsync());
+            Assert.True(c.Reader.TryRead(out int item));
+            Assert.Equal(1, item);
 
             // Add items to fill the capacity and put the tail at 0
             Assert.True(c.Writer.TryWrite(2));
@@ -194,7 +172,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_Ignore(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.Ignore);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropWrite });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -218,7 +196,7 @@ namespace System.IO.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_Ignore(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.Ignore);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropWrite });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
@@ -379,12 +357,12 @@ namespace System.IO.Channels.Tests
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
+        public void AllowSynchronousContinuations_WaitToReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(1) { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.Reader.ReadAsync().AsTask().ContinueWith(_ =>
+            Task r = c.Reader.WaitToReadAsync().ContinueWith(_ =>
             {
                 Assert.Equal(allowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
@@ -399,7 +377,7 @@ namespace System.IO.Channels.Tests
         [InlineData(true)]
         public void AllowSynchronousContinuations_CompletionTask_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(1) { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
             Task r = c.Reader.Completion.ContinueWith(_ =>

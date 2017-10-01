@@ -22,10 +22,10 @@ namespace System.IO.Channels
         /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
         private ReaderInteractor<bool> _waitingReaders;
 
-        private sealed class Readable : ChannelReader<T>
+        private sealed class UnbufferedChannelReader : ChannelReader<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
-            internal Readable(UnbufferedChannel<T> parent) => _parent = parent;
+            internal UnbufferedChannelReader(UnbufferedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
 
@@ -78,10 +78,10 @@ namespace System.IO.Channels
             }
         }
 
-        private sealed class Writable : ChannelWriter<T>
+        private sealed class UnbufferedChannelWriter : ChannelWriter<T>
         {
             internal readonly UnbufferedChannel<T> _parent;
-            internal Writable(UnbufferedChannel<T> parent) => _parent = parent;
+            internal UnbufferedChannelWriter(UnbufferedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {
@@ -98,7 +98,10 @@ namespace System.IO.Channels
                     ChannelUtilities.Complete(parent._completion, error);
 
                     // Fail any blocked writers, as there will be no readers to pair them with.
-                    ChannelUtilities.FailInteractors<WriterInteractor<T>, VoidResult>(parent._blockedWriters, ChannelUtilities.CreateInvalidCompletionException(error));
+                    if (parent._blockedWriters.Count > 0)
+                    {
+                        ChannelUtilities.FailInteractors<WriterInteractor<T>, VoidResult>(parent._blockedWriters, ChannelUtilities.CreateInvalidCompletionException(error));
+                    }
 
                     // Let any waiting readers know there won't be any more data.
                     ChannelUtilities.WakeUpWaiters(ref parent._waitingReaders, result: false, error: error);
@@ -167,8 +170,8 @@ namespace System.IO.Channels
         /// <summary>Initialize the channel.</summary>
         internal UnbufferedChannel()
         {
-            Reader = new Readable(this);
-            Writer = new Writable(this);
+            base.Reader = new UnbufferedChannelReader(this);
+            Writer = new UnbufferedChannelWriter(this);
         }
 
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>

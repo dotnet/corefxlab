@@ -46,14 +46,14 @@ namespace System.IO.Channels
             _mode = mode;
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
             _completion = new TaskCompletionSource<VoidResult>(runContinuationsAsynchronously ? TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None);
-            Reader = new Readable(this);
-            Writer = new Writable(this);
+            Reader = new BoundedChannelReader(this);
+            Writer = new BoundedChannelWriter(this);
         }
 
-        private sealed class Readable : ChannelReader<T>
+        private sealed class BoundedChannelReader : ChannelReader<T>
         {
             internal readonly BoundedChannel<T> _parent;
-            internal Readable(BoundedChannel<T> parent) => _parent = parent;
+            internal BoundedChannelReader(BoundedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
 
@@ -148,10 +148,10 @@ namespace System.IO.Channels
             }
         }
 
-        private sealed class Writable : ChannelWriter<T>
+        private sealed class BoundedChannelWriter : ChannelWriter<T>
         {
             internal readonly BoundedChannel<T> _parent;
-            internal Writable(BoundedChannel<T> parent) => _parent = parent;
+            internal BoundedChannelWriter(BoundedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {

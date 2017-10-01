@@ -8,7 +8,8 @@ namespace System.IO.Channels
     public class ChannelClosedException : InvalidOperationException
     {
         /// <summary>Initializes a new instance of the <see cref="ChannelClosedException"/> class.</summary>
-        public ChannelClosedException() : base(Properties.Resources.ClosedChannelException_DefaultMessage) { }
+        public ChannelClosedException() :
+            base(System.Threading.Tasks.Channels.Resources.ChannelClosedException_DefaultMessage) { }
 
         /// <summary>Initializes a new instance of the <see cref="ChannelClosedException"/> class.</summary>
         /// <param name="message">The message that describes the error.</param>
@@ -16,7 +17,8 @@ namespace System.IO.Channels
 
         /// <summary>Initializes a new instance of the <see cref="ChannelClosedException"/> class.</summary>
         /// <param name="innerException">The exception that is the cause of this exception.</param>
-        public ChannelClosedException(Exception innerException) : base(Properties.Resources.ClosedChannelException_DefaultMessage, innerException) { }
+        public ChannelClosedException(Exception innerException) :
+            base(System.Threading.Tasks.Channels.Resources.ChannelClosedException_DefaultMessage, innerException) { }
 
         /// <summary>Initializes a new instance of the <see cref="ChannelClosedException"/> class.</summary>
         /// <param name="message">The message that describes the error.</param>

@@ -36,17 +36,6 @@ namespace System.IO.Channels.Tests
         }
 
         [Fact]
-        public void ReadAsync_TryWrite_Success()
-        {
-            Channel<int> c = CreateChannel();
-            ValueTask<int> r = c.Reader.ReadAsync();
-            Assert.False(r.IsCompletedSuccessfully);
-            Assert.False(r.AsTask().IsCompleted);
-            Assert.True(c.Writer.TryWrite(42));
-            Assert.Equal(42, r.Result);
-        }
-
-        [Fact]
         public void TryRead_WriteAsync_Success()
         {
             Channel<int> c = CreateChannel();
@@ -54,25 +43,6 @@ namespace System.IO.Channels.Tests
             Assert.False(w.IsCompleted);
             Assert.True(c.Reader.TryRead(out int result));
             Assert.Equal(42, result);
-        }
-
-        [Fact]
-        public async Task Cancel_ReadAsync_UnpartneredWrite_ThrowsCancellationException()
-        {
-            Channel<int> c = CreateChannel();
-            var cts = new CancellationTokenSource();
-
-            Task w = c.Writer.WriteAsync(42, cts.Token);
-            Assert.False(w.IsCompleted);
-
-            cts.Cancel();
-            await AssertCanceled(w, cts.Token);
-
-            ValueTask<int> r = c.Reader.ReadAsync();
-            Assert.False(r.IsCompleted);
-
-            Assert.True(c.Writer.TryWrite(42));
-            Assert.Equal(42, await r);
         }
 
         [Theory]
@@ -106,25 +76,6 @@ namespace System.IO.Channels.Tests
         }
 
         [Fact]
-        public async Task Cancel_UnpartneredRead_ThrowsCancellationException()
-        {
-            Channel<int> c = CreateChannel();
-            var cts = new CancellationTokenSource();
-
-            Task r = c.Reader.ReadAsync(cts.Token).AsTask();
-            Assert.False(r.IsCompleted);
-
-            cts.Cancel();
-            await AssertCanceled(r, cts.Token);
-
-            Task w = c.Writer.WriteAsync(42);
-            Assert.False(w.IsCompleted);
-
-            Assert.Equal(42, await c.Reader.ReadAsync());
-            await w;
-        }
-
-        [Fact]
         public async Task Cancel_PartneredWrite_Success()
         {
             Channel<int> c = CreateChannel();
@@ -139,23 +90,6 @@ namespace System.IO.Channels.Tests
             cts.Cancel();
             await w; // no throw
         }
-
-        [Fact]
-        public async Task Cancel_PartneredReadAsync_Success()
-        {
-            Channel<int> c = CreateChannel();
-            var cts = new CancellationTokenSource();
-
-            ValueTask<int> r = c.Reader.ReadAsync(cts.Token);
-            Assert.False(r.IsCompletedSuccessfully);
-
-            Task w = c.Writer.WriteAsync(42);
-            Assert.True(w.IsCompleted);
-
-            cts.Cancel();
-            Assert.Equal(42, await r);
-        }
-
 
     }
 }
