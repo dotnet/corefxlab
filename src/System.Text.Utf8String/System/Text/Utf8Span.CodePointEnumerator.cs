@@ -4,17 +4,16 @@
 
 namespace System.Text.Utf8
 {
-    partial class Utf8String
+    partial struct Utf8Span
     {
-        // TODO: Name TBD
-        public ref struct CodePointReverseEnumerator
+        public ref struct CodePointEnumerator
         {
-            private byte[] _buffer;
+            private ReadOnlySpan<byte> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointReverseEnumerator(byte[] buffer) : this()
+            public unsafe CodePointEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -49,10 +48,8 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    // New allocation ?
-                    ReadOnlySpan<byte> buffer = new ReadOnlySpan<byte>(_buffer, 0, _index);
-                    uint ret;
-                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
+                    uint codePoint;
+                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out codePoint, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
@@ -60,7 +57,7 @@ namespace System.Text.Utf8
                         throw new Exception("Invalid code point!");
                     }
 
-                    return ret;
+                    return codePoint;
                 }
             }
 
@@ -85,7 +82,7 @@ namespace System.Text.Utf8
                     }
                 }
 
-                _index -= _currentLenCache;
+                _index += _currentLenCache;
                 _currentLenCache = 0;
 
                 return HasValue();
@@ -94,7 +91,7 @@ namespace System.Text.Utf8
             // This is different than Reset, it goes to the first element not before first
             private void MoveToFirstPosition()
             {
-                _index = _buffer.Length;
+                _index = 0;
             }
 
             private bool IsOnResetPosition()
@@ -109,7 +106,7 @@ namespace System.Text.Utf8
                     return true;
                 }
 
-                return _index > 0;
+                return _index < _buffer.Length;
             }
 
             // This is different than MoveToFirstPosition, this actually goes before anything

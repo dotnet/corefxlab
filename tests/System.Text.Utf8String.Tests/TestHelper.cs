@@ -16,5 +16,14 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal(str1[i], str2[i]);
             }
         }
+
+        public static void Validate(Utf8Span str1, Utf8Span str2)
+        {
+            Assert.Equal(str1.Length, str2.Length);
+            for (int i = 0; i < str1.Length; i++)
+            {
+                Assert.Equal(str1[i], str2[i]);
+            }
+        }
     }
 }
