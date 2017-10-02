@@ -12,6 +12,91 @@ namespace System.Numerics
 
     public static partial class Tensor
     {
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Tensor<T> CreateIdentity<T>(int size)
+        {
+            return CreateIdentity(size, false, TensorArithmetic<T>.Instance.One);
+        }
+
+        public static Tensor<T> CreateIdentity<T>(int size, bool columMajor)
+        {
+            return CreateIdentity(size, columMajor, TensorArithmetic<T>.Instance.One);
+        }
+
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="oneValue"></param>
+        /// <returns></returns>
+        public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
+        {
+            var result = new DenseTensor<T>(new[] { size, size }, columMajor);
+
+            for (int i = 0; i < size; i++)
+            {
+                result.Buffer[i * size + i] = oneValue;
+            }
+
+            return result;
+        }
+
+        public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal)
+        {
+            return CreateFromDiagonal(diagonal, 0);
+        }
+
+        public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal, int offset)
+        {
+            if (diagonal.Rank < 1)
+            {
+                throw new ArgumentException($"Tensor {nameof(diagonal)} must have at least one dimension.", nameof(diagonal));
+            }
+
+            int diagonalLength = diagonal.dimensions[0];
+
+            // TODO: allow specification of axis1 and axis2?
+            var dimensions = new int[diagonal.dimensions.Length + 1];
+
+            // assume square
+            var axisLength = diagonalLength + Math.Abs(offset);
+            dimensions[0] = dimensions[1] = axisLength;
+
+            for (int i = 1; i < diagonal.dimensions.Length; i++)
+            {
+                dimensions[i + 1] = diagonal.dimensions[i];
+            }
+
+            var result = new DenseTensor<T>(dimensions: dimensions);
+
+            // each element in the diagonal's 0 dimension is strides[0] appart
+            var sizePerDiagonal = diagonal.strides[0];
+
+            var diagIndices = new Span<int>(new int[diagonal.Rank]);
+
+            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
+            {
+                var destIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
+                var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
+
+                var destBuffIndex = destIndex0 * result.strides[0] + destIndex1 * result.strides[1];
+                diagIndices[0] = diagIndex;
+
+                for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
+                {
+                    // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
+                    ArrayUtilities.GetIndices(diagonal.strides, diagonal.IsReversedStride, diagProjectionOffset, diagIndices, 1);
+                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal[diagIndices];
+                }
+            }
+
+            return result;
+        }
+
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right)
         {
             if (left.Rank != right.Rank || left.Length != right.Length)
@@ -329,91 +414,6 @@ namespace System.Numerics
         }
 
         public abstract Tensor<TResult> CloneEmpty<TResult>(int[] dimensions);
-
-        /// <summary>
-        /// Creates an identity tensor
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public static Tensor<T> CreateIdentity(int size)
-        {
-            return CreateIdentity(size, false, arithmetic.One);
-        }
-
-        public static Tensor<T> CreateIdentity(int size, bool columMajor)
-        {
-            return CreateIdentity(size, columMajor, arithmetic.One);
-        }
-
-        /// <summary>
-        /// Creates an identity tensor
-        /// </summary>
-        /// <param name="size"></param>
-        /// <param name="oneValue"></param>
-        /// <returns></returns>
-        public static Tensor<T> CreateIdentity(int size, bool columMajor, T oneValue)
-        {
-            var result = new DenseTensor<T>(new[] { size, size }, columMajor);
-
-            for(int i = 0; i < size; i++)
-            {
-                result.Buffer[i * size + i] = oneValue;
-            }
-
-            return result;
-        }
-
-        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal)
-        {
-            return CreateFromDiagonal(diagonal, 0);
-        }
-
-        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal, int offset)
-        {
-            if (diagonal.Rank < 1)
-            {
-                throw new ArgumentException($"Tensor {nameof(diagonal)} must have at least one dimension.", nameof(diagonal));
-            }
-
-            int diagonalLength = diagonal.dimensions[0];
-
-            // TODO: allow specification of axis1 and axis2?
-            var dimensions = new int[diagonal.dimensions.Length + 1];
-
-            // assume square
-            var axisLength = diagonalLength + Math.Abs(offset);
-            dimensions[0] = dimensions[1] = axisLength;
-            
-            for(int i = 1; i < diagonal.dimensions.Length; i++)
-            {
-                dimensions[i + 1] = diagonal.dimensions[i];
-            }
-
-            var result = new DenseTensor<T>(dimensions:dimensions);
-
-            // each element in the diagonal's 0 dimension is strides[0] appart
-            var sizePerDiagonal = diagonal.strides[0];
-
-            var diagIndices = new Span<int>(new int[diagonal.Rank]);
-
-            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
-            {
-                var destIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
-                var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
-
-                var destBuffIndex = destIndex0 * result.strides[0] + destIndex1 * result.strides[1];
-                diagIndices[0] = diagIndex;
-
-                for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
-                {
-                    // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
-                    ArrayUtilities.GetIndices(diagonal.strides, diagonal.IsReversedStride, diagProjectionOffset, diagIndices, 1);
-                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal[diagIndices];
-                }
-            }
-
-            return result;
-        }
 
         public Tensor<T> GetDiagonal()
         {
@@ -1097,6 +1097,47 @@ namespace System.Numerics
             return hashCode;
         }
         #endregion
+
+        #region Translations
+
+        public virtual DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                denseTensor[indices] = this[indices];
+            }
+            return denseTensor;
+        }
+
+        public virtual SparseTensor<T> ToSparseTensor()
+        {
+            var sparseTensor = new SparseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                sparseTensor[indices] = this[indices];
+            }
+            return sparseTensor;
+        }
+
+        public virtual CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, IsReversedStride);
+            Span<int> indices = new Span<int>(new int[Rank]);
+            for (int i = 0; i < Length; i++)
+            {
+                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                compressedSparseTensor[indices] = this[indices];
+            }
+            return compressedSparseTensor;
+        }
+
+        #endregion
+
         public string GetArrayString(bool includeWhitespace = true)
         {
             var builder = new StringBuilder();

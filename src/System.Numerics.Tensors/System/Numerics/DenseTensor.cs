@@ -1,10 +1,13 @@
-﻿namespace System.Numerics
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace System.Numerics
 {
     public class DenseTensor<T> : Tensor<T>
     {
         private readonly T[] backingArray;
 
-        public DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
             // copy initial array
             backingArray = new T[fromArray.Length];

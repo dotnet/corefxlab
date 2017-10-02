@@ -30,11 +30,11 @@ namespace tests
                 switch (TensorType)
                 {
                     case TensorType.Dense:
-                        return new DenseTensor<T>(array, IsReversedStride);
+                        return array.ToTensor<T>(IsReversedStride);
                     case TensorType.Sparse:
-                        return new SparseTensor<T>(array, IsReversedStride);
+                        return array.ToSparseTensor<T>(IsReversedStride);
                     case TensorType.CompressedSparse:
-                        return new CompressedSparseTensor<T>(array, IsReversedStride);
+                        return array.ToCompressedSparseTensor<T>(IsReversedStride);
                 }
 
                 throw new ArgumentException(nameof(TensorType));
@@ -116,6 +116,32 @@ namespace tests
                                 }
                             };
                         }
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> GetTensorAndResultConstructor()
+        {
+            foreach (TensorType leftTensorType in s_tensorTypes)
+            {
+                foreach (TensorType rightTensorType in s_tensorTypes)
+                {
+                    foreach (bool isReversedStride in s_reverseStrideValues)
+                    {
+                        yield return new[]
+                        {
+                            new TensorConstructor()
+                            {
+                                TensorType = leftTensorType,
+                                IsReversedStride = isReversedStride
+                            },
+                            new TensorConstructor()
+                            {
+                                TensorType = rightTensorType,
+                                IsReversedStride = isReversedStride
+                            }
+                        };
                     }
                 }
             }
@@ -248,7 +274,7 @@ namespace tests
             {
                 var compressedSparseTensor = (CompressedSparseTensor<int>)tensor;
 
-                Assert.Equal(4, compressedSparseTensor.ValueCount);
+                Assert.Equal(4, compressedSparseTensor.NonZeroCount);
 
                 int[] expectedValues, expectedCompressedCounts, expectedIndices;
 
@@ -266,9 +292,9 @@ namespace tests
                     expectedCompressedCounts = new[] { 0, 0, 2, 3, 4 };
                     expectedIndices = new[] { 0, 1, 2, 1 };
                 }
-                Assert.Equal(expectedValues, compressedSparseTensor.Values.Take(compressedSparseTensor.ValueCount));
+                Assert.Equal(expectedValues, compressedSparseTensor.Values.Take(compressedSparseTensor.NonZeroCount));
                 Assert.Equal(expectedCompressedCounts, compressedSparseTensor.CompressedCounts);
-                Assert.Equal(expectedIndices, compressedSparseTensor.Indices.Take(compressedSparseTensor.ValueCount));
+                Assert.Equal(expectedIndices, compressedSparseTensor.Indices.Take(compressedSparseTensor.NonZeroCount));
             }
         }
 
@@ -982,7 +1008,7 @@ namespace tests
         [Fact]
         public void Identity()
         {
-            var actual = Tensor<double>.CreateIdentity(3);
+            var actual = Tensor.CreateIdentity<double>(3);
 
             var expected = new[,]
             {
@@ -999,7 +1025,7 @@ namespace tests
         public void CreateWithDiagonal(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4, 5 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal);
+            var actual = Tensor.CreateFromDiagonal(diagonal);
 
             var expected = new[,]
             {
@@ -1018,7 +1044,7 @@ namespace tests
         public void CreateWithDiagonalAndOffset(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal, 1);
+            var actual = Tensor.CreateFromDiagonal(diagonal, 1);
 
             var expected = new[,]
             {
@@ -1032,7 +1058,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -1);
+            actual = Tensor.CreateFromDiagonal(diagonal, -1);
 
             expected = new[,]
             {
@@ -1046,7 +1072,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -4);
+            actual = Tensor.CreateFromDiagonal(diagonal, -4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 0 },
@@ -1058,7 +1084,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, 4);
+            actual = Tensor.CreateFromDiagonal(diagonal, 4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 1 },
@@ -1723,12 +1749,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {true, true, false },
                     {false, false, true}
-                });
+                }.ToTensor();
 
             var actual = Tensor.Equals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1752,12 +1777,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {false, false, true},
                     {true, true, false}
-                });
+                }.ToTensor();
 
             var actual = Tensor.NotEquals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1993,5 +2017,75 @@ namespace tests
             var expectedNoSpace = expected.Replace(Environment.NewLine, "").Replace(" ", "");
             Assert.Equal(expectedNoSpace, tensor.GetArrayString(false));
         }
+
+        [Theory]
+        [MemberData(nameof(GetTensorAndResultConstructor))]
+        public void ToOtherTensor(TensorConstructor sourceConstructor, TensorConstructor resultConstructor)
+        {
+            var array = new[, ,]
+            {
+                {
+                    {0, 1, 0, 0 },
+                    {0, 0, 0, 9 },
+                    {2, 0, 5, 0 }
+                },
+                {
+                    {3, 0, 0, 6 },
+                    {0, 0, 0, 0 },
+                    {0, 0, 4, 0 }
+                },
+                {
+                    {0, 2, 0, 0 },
+                    {8, 0, 0, 0 },
+                    {0, 0, 12, 0 }
+                },
+                {
+                    {5, 5, 5, 0 },
+                    {0, 0, 0, 15 },
+                    {0, 0, 42, 0 }
+                },
+                {
+                    {1, 0, 0, 4 },
+                    {0, 2, 0, 0 },
+                    {0, 0, 3, 0 }
+                }
+            };
+
+            var source = sourceConstructor.CreateFromArray<int>(array);
+
+            Tensor<int> expected = resultConstructor.CreateFromArray<int>(array);
+
+            Tensor<int> actual;
+
+            switch (resultConstructor.TensorType)
+            {
+                case TensorType.Dense:
+                    actual = source.ToDenseTensor();
+                    break;
+                case TensorType.Sparse:
+                    var actualSparse = source.ToSparseTensor();
+                    actual = actualSparse;
+                    var expectedSparse = expected as SparseTensor<int>;
+                    Assert.Equal(expectedSparse.NonZeroCount, actualSparse.NonZeroCount);
+                    break;
+                case TensorType.CompressedSparse:
+                    var actualCompressedSparse = source.ToCompressedSparseTensor();
+                    actual = actualCompressedSparse;
+                    var expectedCompressedSparse = expected as CompressedSparseTensor<int>;
+                    Assert.Equal(expectedCompressedSparse.NonZeroCount, actualCompressedSparse.NonZeroCount);
+                    if (sourceConstructor.TensorType != TensorType.Dense)
+                    {
+                        // expect packed values when going from sparse -> sparse
+                        Assert.Equal(actualCompressedSparse.NonZeroCount, actualCompressedSparse.Values.Length);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException(nameof(resultConstructor.TensorType));
+            }
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, source));
+        }
+
     }
 }
