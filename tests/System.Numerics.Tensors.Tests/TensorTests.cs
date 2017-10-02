@@ -1041,6 +1041,39 @@ namespace tests
 
         [Theory]
         [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CreateWithDiagonal3D(TensorConstructor tensorConstructor)
+        {
+            var diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3, 4, 5 },
+                { 1, 2, 3, 4, 5 },
+                { 1, 2, 3, 4, 5 }
+            });
+            var actual = Tensor.CreateFromDiagonal(diagonal);
+            var expected = new[,,]
+            {
+                {
+                    {1, 2, 3, 4, 5 },
+                    {0, 0, 0, 0, 0 },
+                    {0, 0, 0, 0, 0 }
+                },
+                {
+                    {0, 0, 0, 0, 0 },
+                    {1, 2, 3, 4, 5 },
+                    {0, 0, 0, 0, 0 }
+                },
+                {
+                    {0, 0, 0, 0, 0 },
+                    {0, 0, 0, 0, 0 },
+                    {1, 2, 3, 4, 5 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
         public void CreateWithDiagonalAndOffset(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
@@ -1093,6 +1126,159 @@ namespace tests
                 {0, 0, 0, 0, 0 },
                 {0, 0, 0, 0, 0 }
             };
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CreateWithDiagonalAndOffset3D(TensorConstructor tensorConstructor)
+        {
+            var diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 },
+                { 1, 2, 3 },
+                { 1, 2, 3 }
+            });
+            var actual = Tensor.CreateFromDiagonal(diagonal, 1);
+
+            var expected = new[,,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 },
+                { 1, 2, 3 },
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, -1);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, 3);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, -3);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
@@ -2087,5 +2273,35 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, source));
         }
 
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CopyToArray(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };            
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+
+            var expected = constructor.IsReversedStride ?
+                new[] { 1, 4, 2, 5, 3, 6 } :
+                new[] { 1, 2, 3, 4, 5, 6 };
+
+            var actual = Array.CreateInstance(typeof(int), tensor.Length);
+            ((ICollection)tensor).CopyTo(actual, 0);
+
+            Assert.Equal(expected, actual);
+
+            expected = constructor.IsReversedStride ?
+                new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
+                new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
+
+            actual = Array.CreateInstance(typeof(int), tensor.Length + 2);
+            ((ICollection)tensor).CopyTo(actual, 2);
+
+            Assert.Equal(expected, actual);
+        }
     }
 }

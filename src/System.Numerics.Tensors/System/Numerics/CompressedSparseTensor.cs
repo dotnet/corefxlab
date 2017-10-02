@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.Linq;
 
 namespace System.Numerics
 {
@@ -127,6 +128,36 @@ namespace System.Numerics
 
                 SetAt(value, compressedIndex, nonCompressedIndex);
             }
+        }
+
+        public override T GetValue(int index)
+        {
+            var compressedDimensionStride = strides[compressedDimension];
+            Debug.Assert(compressedDimensionStride == strides.Max());
+
+            var compressedIndex = index / compressedDimensionStride;
+            var nonCompressedIndex = index % compressedDimensionStride;
+
+            var valueIndex = 0;
+
+            if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
+            {
+                return values[valueIndex];
+            }
+
+            return arithmetic.Zero;
+        }
+
+        public override void SetValue(int index, T value)
+        {
+            var compressedDimensionStride = strides[compressedDimension];
+            Debug.Assert(compressedDimensionStride == strides.Max());
+
+            var compressedIndex = index / compressedDimensionStride;
+            var nonCompressedIndex = index % compressedDimensionStride;
+
+            SetAt(value, compressedIndex, nonCompressedIndex);
+
         }
 
         public int Capacity => values.Length;
@@ -368,7 +399,7 @@ namespace System.Numerics
 
                 var index = indices[valueIndex] + compressedIndex * strides[compressedDimension];
 
-                denseTensor.Buffer[index] = values[valueIndex];
+                denseTensor.SetValue(index, values[valueIndex]);
             }
 
             return denseTensor;
@@ -400,9 +431,8 @@ namespace System.Numerics
                 }
 
                 var index = indices[valueIndex] + compressedIndex * strides[compressedDimension];
-
-                // interals access :( remove if we expose layout-based indexing
-                sparseTensor.values[index] = values[valueIndex];
+                
+                sparseTensor.SetValue(index, values[valueIndex]);
             }
 
             return sparseTensor;
