@@ -173,9 +173,13 @@ namespace System.IO.Pipelines
             // If inadequate bytes left or if the segment is readonly
             if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < count || segment.ReadOnly)
             {
-                var nextBuffer = _pool.Rent(count);
-                var nextSegment = CreateSegmentUnsynchronized();
-                nextSegment.SetMemory(nextBuffer);
+                BufferSegment nextSegment;
+                lock (_sync)
+                {
+                    nextSegment = CreateSegmentUnsynchronized();
+                }
+
+                nextSegment.SetMemory(_pool.Rent(count));
 
                 segment.SetNext(nextSegment);
 
@@ -231,10 +235,8 @@ namespace System.IO.Pipelines
                 _pooledSegmentCount--;
                 return _bufferSegmentPool[_pooledSegmentCount];
             }
-            else
-            {
-                return new BufferSegment();
-            }
+
+            return new BufferSegment();
         }
 
         private void ReturnSegmentUnsynchronized(BufferSegment segment)
