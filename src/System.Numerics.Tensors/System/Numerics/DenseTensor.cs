@@ -66,17 +66,15 @@ namespace System.Numerics
         /// Returns a single dimensional view of this Tensor, in C-style ordering
         /// </summary>
         public T[] Buffer => backingArray;
-        
-        public override T this[Span<int> indices]
+
+        public override T GetValue(int index)
         {
-            get
-            {
-                return Buffer[ArrayUtilities.GetIndex(strides, indices)];
-            }
-            set
-            {
-                Buffer[ArrayUtilities.GetIndex(strides, indices)] = value;
-            }
+            return Buffer[index];
+        }
+
+        public override void SetValue(int index, T value)
+        {
+            Buffer[index] = value;
         }
 
         public override Tensor<T> Clone()

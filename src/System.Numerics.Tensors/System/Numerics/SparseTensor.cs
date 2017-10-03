@@ -8,7 +8,7 @@ namespace System.Numerics
 {
     public class SparseTensor<T> : Tensor<T>
     {
-        internal readonly Dictionary<int, T> values;
+        private readonly Dictionary<int, T> values;
 
         public SparseTensor(int[] dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
         {
@@ -55,34 +55,27 @@ namespace System.Numerics
             }
         }
 
-        public override T this[Span<int> indices]
+        public override T GetValue(int index)
         {
-            get
+            T value;
+
+            if (!values.TryGetValue(index, out value))
             {
-                var index = ArrayUtilities.GetIndex(strides, indices);
-
-                T value;
-
-                if (!values.TryGetValue(index, out value))
-                {
-                    value = arithmetic.Zero;
-                }
-
-                return value;
+                value = arithmetic.Zero;
             }
 
-            set
-            {
-                var index = ArrayUtilities.GetIndex(strides, indices);
+            return value;
+        }
 
-                if (value.Equals(arithmetic.Zero))
-                {
-                    values.Remove(index);
-                }
-                else
-                {
-                    values[index] = value;
-                }
+        public override void SetValue(int index, T value)
+        {
+            if (value.Equals(arithmetic.Zero))
+            {
+                values.Remove(index);
+            }
+            else
+            {
+                values[index] = value;
             }
         }
 
@@ -127,8 +120,7 @@ namespace System.Numerics
             // only set non-zero values
             foreach (var pair in values)
             {
-                Debug.Assert(pair.Key < denseTensor.Buffer.Length);
-                denseTensor.Buffer[pair.Key] = pair.Value;
+                denseTensor.SetValue(pair.Key, pair.Value);
             }
 
             return denseTensor;
@@ -147,8 +139,7 @@ namespace System.Numerics
             Span<int> indices = new Span<int>(new int[Rank]);
             foreach (var pair in values)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, pair.Key, indices);
-                compressedSparseTensor[indices] = pair.Value;
+                compressedSparseTensor.SetValue(pair.Key, pair.Value);
             }
             return compressedSparseTensor;
         }
