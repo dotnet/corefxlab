@@ -36,34 +36,6 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
-        public void ParseLiveAspNetTwoTasks()
-        {
-            var writing = Task.Run(async () =>
-            {
-                for (int i = 0; i < InnerLoopCount; i++)
-                {
-                    var writableBuffer = _pipe.Writer.Alloc(WriteLength);
-                    writableBuffer.Advance(WriteLength);
-                    await writableBuffer.FlushAsync();
-                }
-            });
-
-            var reading = Task.Run(async () =>
-            {
-                long remaining = InnerLoopCount * WriteLength;
-                while (remaining != 0)
-                {
-                    var result = await _pipe.Reader.ReadAsync();
-                    var buffer = result.Buffer;
-                    remaining -= buffer.Length;
-                    _pipe.Reader.Advance(buffer.End, buffer.End);
-                }
-            });
-
-            Task.WaitAll(writing, reading);
-        }
-
-        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void ParseLiveAspNetInline()
         {
             for (int i = 0; i < InnerLoopCount; i++)
@@ -71,6 +43,29 @@ namespace System.IO.Pipelines.Performance.Tests
                 var writableBuffer = _pipe.Writer.Alloc(WriteLength);
                 writableBuffer.Advance(WriteLength);
                 writableBuffer.FlushAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
+                var buffer = result.Buffer;
+                _pipe.Reader.Advance(buffer.End, buffer.End);
+            }
+        }
+
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void LongWriteInline()
+        {
+            for (int i = 0; i < InnerLoopCount; i++)
+            {
+                for (int j = 0; j < 15; j++)
+                {
+                    var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                    writableBuffer.Advance(WriteLength);
+                    writableBuffer.Commit();
+                    if (j == 14)
+                    {
+                        writableBuffer.FlushAsync().GetResult();
+                    }
+                }
+
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.Advance(buffer.End, buffer.End);
