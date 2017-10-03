@@ -400,12 +400,55 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReadAsync_ThrowsIfWriterCompletedWithException()
         {
-            _pipe.Writer.Complete(new InvalidOperationException("Writer exception"));
+            void ThrowTestException()
+            {
+                try
+                {
+                    throw new InvalidOperationException("Writer exception");
+                }
+                catch (Exception e)
+                {
+                    _pipe.Writer.Complete(e);
+                }
+            }
+
+            ThrowTestException();
 
             var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Reader.ReadAsync());
+
             Assert.Equal("Writer exception", invalidOperationException.Message);
+            Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
+
             invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Reader.ReadAsync());
             Assert.Equal("Writer exception", invalidOperationException.Message);
+            Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
+        }
+
+        [Fact]
+        public async Task FlushAsync_ThrowsIfWriterReaderWithException()
+        {
+            void ThrowTestException()
+            {
+                try
+                {
+                    throw new InvalidOperationException("Reader exception");
+                }
+                catch (Exception e)
+                {
+                    _pipe.Reader.Complete(e);
+                }
+            }
+
+            ThrowTestException();
+
+            var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.Alloc().FlushAsync());
+
+            Assert.Equal("Reader exception", invalidOperationException.Message);
+            Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
+
+            invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.Alloc().FlushAsync());
+            Assert.Equal("Reader exception", invalidOperationException.Message);
+            Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
         }
 
         [Fact]
