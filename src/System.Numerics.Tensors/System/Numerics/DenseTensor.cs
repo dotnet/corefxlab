@@ -5,12 +5,12 @@ namespace System.Numerics
 {
     public class DenseTensor<T> : Tensor<T>
     {
-        private readonly T[] backingArray;
+        private readonly Memory<T> memory;
 
         internal DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
         {
             // copy initial array
-            backingArray = new T[fromArray.Length];
+            var backingArray = new T[fromArray.Length];
 
             int index = 0;
             if (reverseStride)
@@ -31,6 +31,7 @@ namespace System.Numerics
                     backingArray[index++] = (T)item;
                 }
             }
+            memory = backingArray;
         }
 
         /// <summary>
@@ -39,50 +40,50 @@ namespace System.Numerics
         /// <param name="size">Size of the tensor</param>
         public DenseTensor(int size, bool reverseStride = false) : base(new [] { size }, reverseStride)
         {
-            backingArray = new T[size];
+            memory = new T[size];
         }
 
         /// <summary>
         /// Initializes a rank-n Tensor using the dimensions specified in <paramref name="dimensions"/>.
         /// </summary>
         /// <param name="dimensions"></param>
-        public DenseTensor(int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        public DenseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
-            backingArray = new T[Length];
+            memory = new T[Length];
         }
 
-        public DenseTensor(T[] fromBackingArray, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        public DenseTensor(Memory<T> memory, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             // keep a reference to the backing array
-            backingArray = fromBackingArray ?? throw new ArgumentNullException(nameof(fromBackingArray));
+            this.memory = memory;
 
-            if (Length != fromBackingArray.Length)
+            if (Length != memory.Length)
             {
-                throw new ArgumentException($"Length of {nameof(fromBackingArray)} ({fromBackingArray.Length}) must match product of {nameof(dimensions)} ({Length}).");
+                throw new ArgumentException($"Length of {nameof(memory)} ({memory.Length}) must match product of {nameof(dimensions)} ({Length}).");
             }
         }
 
         /// <summary>
         /// Returns a single dimensional view of this Tensor, in C-style ordering
         /// </summary>
-        public T[] Buffer => backingArray;
+        public Memory<T> Buffer => memory;
 
         public override T GetValue(int index)
         {
-            return Buffer[index];
+            return Buffer.Span[index];
         }
 
         public override void SetValue(int index, T value)
         {
-            Buffer[index] = value;
+            Buffer.Span[index] = value;
         }
 
         public override Tensor<T> Clone()
         {
-            return new DenseTensor<T>((T[])backingArray.Clone(), dimensions, IsReversedStride);
+            return new DenseTensor<T>(Buffer.ToArray(), dimensions, IsReversedStride);
         }
 
-        public override Tensor<TResult> CloneEmpty<TResult>(int[] dimensions)
+        public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new DenseTensor<TResult>(dimensions, IsReversedStride);
         }
@@ -103,13 +104,8 @@ namespace System.Numerics
             return dimensions;
         }
 
-        public override Tensor<T> Reshape(params int[] dimensions)
+        public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
-
             if (dimensions.Length == 0)
             {
                 throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));

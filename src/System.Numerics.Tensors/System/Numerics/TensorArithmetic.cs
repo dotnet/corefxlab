@@ -292,11 +292,14 @@ namespace System.Numerics
         public void And(DenseTensor<bool> left, DenseTensor<bool> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (bool)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -319,7 +322,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (bool)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -327,11 +330,13 @@ namespace System.Numerics
         public void And(DenseTensor<bool> tensor, bool scalar, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (bool)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -350,7 +355,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (bool)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -374,11 +379,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<bool> left, DenseTensor<bool> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -401,7 +409,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -449,11 +457,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<bool> left, DenseTensor<bool> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -476,7 +487,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -484,11 +495,14 @@ namespace System.Numerics
         public void Or(DenseTensor<bool> left, DenseTensor<bool> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (bool)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -511,7 +525,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (bool)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -519,11 +533,13 @@ namespace System.Numerics
         public void Or(DenseTensor<bool> tensor, bool scalar, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (bool)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -542,7 +558,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (bool)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -570,11 +586,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<bool> left, DenseTensor<bool> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (bool)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -597,7 +616,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (bool)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -605,11 +624,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<bool> tensor, bool scalar, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (bool)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (bool)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -628,7 +649,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (bool)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (bool)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -1012,11 +1033,14 @@ namespace System.Numerics
         public void Add(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -1039,7 +1063,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -1047,11 +1071,13 @@ namespace System.Numerics
         public void Add(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -1070,7 +1096,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -1078,11 +1104,14 @@ namespace System.Numerics
         public void And(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -1105,7 +1134,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -1113,11 +1142,13 @@ namespace System.Numerics
         public void And(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -1136,7 +1167,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -1170,6 +1201,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -1186,28 +1221,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (byte)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (byte)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<byte> tensor, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -1230,7 +1270,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -1238,11 +1278,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -1261,7 +1303,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -1269,11 +1311,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -1296,7 +1341,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -1304,11 +1349,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -1331,7 +1379,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -1339,11 +1387,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -1366,7 +1417,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -1374,19 +1425,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<byte> tensor, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<byte> tensor, int value, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (byte)(tensorSpan[i] << value);
                 }
             }
             else
@@ -1405,7 +1460,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -1413,11 +1468,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -1440,7 +1498,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -1448,11 +1506,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -1475,7 +1536,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -1483,11 +1544,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -1510,7 +1574,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -1518,11 +1582,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -1541,7 +1607,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -1549,11 +1615,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -1576,7 +1645,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -1584,11 +1653,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -1607,7 +1678,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -1615,11 +1686,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -1642,7 +1716,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -1650,11 +1724,14 @@ namespace System.Numerics
         public void Or(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -1677,7 +1754,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -1685,11 +1762,13 @@ namespace System.Numerics
         public void Or(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -1708,7 +1787,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -1716,11 +1795,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<byte> tensor, int value, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (byte)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -1739,7 +1820,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -1747,11 +1828,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -1774,7 +1858,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -1782,11 +1866,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -1805,7 +1891,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -1813,11 +1899,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<byte> tensor, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)-tensor.Buffer[i];
+                    resultSpan[i] = (byte)-tensorSpan[i];
                 }
             }
             else
@@ -1836,7 +1924,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (byte)-tensorSpan[op1Index];
 
                 }
             }
@@ -1844,11 +1932,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<byte> tensor, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)+tensor.Buffer[i];
+                    resultSpan[i] = (byte)+tensorSpan[i];
                 }
             }
             else
@@ -1867,7 +1957,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (byte)+tensorSpan[op1Index];
 
                 }
             }
@@ -1875,11 +1965,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<byte> left, DenseTensor<byte> right, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (byte)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -1902,7 +1995,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (byte)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -1910,11 +2003,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<byte> tensor, byte scalar, DenseTensor<byte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (byte)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (byte)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -1933,7 +2028,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (byte)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (byte)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -2317,11 +2412,14 @@ namespace System.Numerics
         public void Add(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -2344,7 +2442,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -2352,11 +2450,13 @@ namespace System.Numerics
         public void Add(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -2375,7 +2475,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -2383,11 +2483,14 @@ namespace System.Numerics
         public void And(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -2410,7 +2513,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -2418,11 +2521,13 @@ namespace System.Numerics
         public void And(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -2441,7 +2546,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -2475,6 +2580,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -2491,28 +2600,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (char)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (char)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<char> tensor, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -2535,7 +2649,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -2543,11 +2657,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -2566,7 +2682,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -2574,11 +2690,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -2601,7 +2720,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -2609,11 +2728,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -2636,7 +2758,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -2644,11 +2766,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -2671,7 +2796,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -2679,19 +2804,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<char> tensor, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<char> tensor, int value, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (char)(tensorSpan[i] << value);
                 }
             }
             else
@@ -2710,7 +2839,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -2718,11 +2847,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -2745,7 +2877,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -2753,11 +2885,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -2780,7 +2915,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -2788,11 +2923,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -2815,7 +2953,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -2823,11 +2961,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -2846,7 +2986,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -2854,11 +2994,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -2881,7 +3024,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -2889,11 +3032,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -2912,7 +3057,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -2920,11 +3065,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -2947,7 +3095,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -2955,11 +3103,14 @@ namespace System.Numerics
         public void Or(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -2982,7 +3133,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -2990,11 +3141,13 @@ namespace System.Numerics
         public void Or(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -3013,7 +3166,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -3021,11 +3174,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<char> tensor, int value, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (char)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -3044,7 +3199,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -3052,11 +3207,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -3079,7 +3237,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -3087,11 +3245,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -3110,7 +3270,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -3118,11 +3278,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<char> tensor, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)-tensor.Buffer[i];
+                    resultSpan[i] = (char)-tensorSpan[i];
                 }
             }
             else
@@ -3141,7 +3303,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (char)-tensorSpan[op1Index];
 
                 }
             }
@@ -3149,11 +3311,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<char> tensor, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)+tensor.Buffer[i];
+                    resultSpan[i] = (char)+tensorSpan[i];
                 }
             }
             else
@@ -3172,7 +3336,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (char)+tensorSpan[op1Index];
 
                 }
             }
@@ -3180,11 +3344,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<char> left, DenseTensor<char> right, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (char)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -3207,7 +3374,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (char)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -3215,11 +3382,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<char> tensor, char scalar, DenseTensor<char> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (char)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (char)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -3238,7 +3407,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (char)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (char)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -3566,11 +3735,14 @@ namespace System.Numerics
         public void Add(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (decimal)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -3593,7 +3765,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (decimal)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -3601,11 +3773,13 @@ namespace System.Numerics
         public void Add(DenseTensor<decimal> tensor, decimal scalar, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (decimal)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -3624,7 +3798,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (decimal)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -3666,6 +3840,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -3682,28 +3860,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (decimal)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (decimal)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<decimal> tensor, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (decimal)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -3726,7 +3909,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (decimal)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -3734,11 +3917,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<decimal> tensor, decimal scalar, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (decimal)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -3757,7 +3942,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (decimal)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -3765,11 +3950,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -3792,7 +3980,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -3800,11 +3988,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -3827,7 +4018,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -3835,11 +4026,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -3862,7 +4056,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -3870,9 +4064,11 @@ namespace System.Numerics
         public void Increment(DenseTensor<decimal> tensor, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<decimal> tensor, int value, DenseTensor<decimal> result)
@@ -3882,11 +4078,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -3909,7 +4108,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -3917,11 +4116,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -3944,7 +4146,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -3952,11 +4154,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (decimal)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -3979,7 +4184,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (decimal)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -3987,11 +4192,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<decimal> tensor, decimal scalar, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (decimal)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -4010,7 +4217,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (decimal)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -4018,11 +4225,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (decimal)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -4045,7 +4255,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (decimal)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -4053,11 +4263,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<decimal> tensor, decimal scalar, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (decimal)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -4076,7 +4288,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (decimal)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -4084,11 +4296,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -4111,7 +4326,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -4131,11 +4346,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<decimal> left, DenseTensor<decimal> right, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (decimal)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -4158,7 +4376,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (decimal)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -4166,11 +4384,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<decimal> tensor, decimal scalar, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (decimal)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -4189,7 +4409,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (decimal)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -4197,11 +4417,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<decimal> tensor, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)-tensor.Buffer[i];
+                    resultSpan[i] = (decimal)-tensorSpan[i];
                 }
             }
             else
@@ -4220,7 +4442,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (decimal)-tensorSpan[op1Index];
 
                 }
             }
@@ -4228,11 +4450,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<decimal> tensor, DenseTensor<decimal> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (decimal)+tensor.Buffer[i];
+                    resultSpan[i] = (decimal)+tensorSpan[i];
                 }
             }
             else
@@ -4251,7 +4475,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (decimal)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (decimal)+tensorSpan[op1Index];
 
                 }
             }
@@ -4587,11 +4811,14 @@ namespace System.Numerics
         public void Add(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (double)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -4614,7 +4841,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (double)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -4622,11 +4849,13 @@ namespace System.Numerics
         public void Add(DenseTensor<double> tensor, double scalar, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (double)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -4645,7 +4874,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (double)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -4687,6 +4916,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -4703,28 +4936,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (double)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (double)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<double> tensor, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (double)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -4747,7 +4985,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (double)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -4755,11 +4993,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<double> tensor, double scalar, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (double)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -4778,7 +5018,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (double)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -4786,11 +5026,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -4813,7 +5056,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -4821,11 +5064,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -4848,7 +5094,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -4856,11 +5102,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -4883,7 +5132,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -4891,9 +5140,11 @@ namespace System.Numerics
         public void Increment(DenseTensor<double> tensor, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<double> tensor, int value, DenseTensor<double> result)
@@ -4903,11 +5154,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -4930,7 +5184,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -4938,11 +5192,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -4965,7 +5222,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -4973,11 +5230,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (double)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -5000,7 +5260,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (double)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -5008,11 +5268,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<double> tensor, double scalar, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (double)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -5031,7 +5293,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (double)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -5039,11 +5301,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (double)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -5066,7 +5331,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (double)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -5074,11 +5339,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<double> tensor, double scalar, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (double)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -5097,7 +5364,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (double)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -5105,11 +5372,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -5132,7 +5402,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -5152,11 +5422,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<double> left, DenseTensor<double> right, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (double)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -5179,7 +5452,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (double)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -5187,11 +5460,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<double> tensor, double scalar, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (double)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -5210,7 +5485,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (double)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -5218,11 +5493,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<double> tensor, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)-tensor.Buffer[i];
+                    resultSpan[i] = (double)-tensorSpan[i];
                 }
             }
             else
@@ -5241,7 +5518,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (double)-tensorSpan[op1Index];
 
                 }
             }
@@ -5249,11 +5526,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<double> tensor, DenseTensor<double> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (double)+tensor.Buffer[i];
+                    resultSpan[i] = (double)+tensorSpan[i];
                 }
             }
             else
@@ -5272,7 +5551,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (double)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (double)+tensorSpan[op1Index];
 
                 }
             }
@@ -5608,11 +5887,14 @@ namespace System.Numerics
         public void Add(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (float)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -5635,7 +5917,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (float)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -5643,11 +5925,13 @@ namespace System.Numerics
         public void Add(DenseTensor<float> tensor, float scalar, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (float)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -5666,7 +5950,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (float)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -5708,6 +5992,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -5724,28 +6012,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (float)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (float)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<float> tensor, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (float)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -5768,7 +6061,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (float)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -5776,11 +6069,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<float> tensor, float scalar, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (float)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -5799,7 +6094,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (float)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -5807,11 +6102,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -5834,7 +6132,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -5842,11 +6140,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -5869,7 +6170,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -5877,11 +6178,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -5904,7 +6208,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -5912,9 +6216,11 @@ namespace System.Numerics
         public void Increment(DenseTensor<float> tensor, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<float> tensor, int value, DenseTensor<float> result)
@@ -5924,11 +6230,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -5951,7 +6260,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -5959,11 +6268,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -5986,7 +6298,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -5994,11 +6306,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (float)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -6021,7 +6336,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (float)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -6029,11 +6344,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<float> tensor, float scalar, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (float)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -6052,7 +6369,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (float)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -6060,11 +6377,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (float)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -6087,7 +6407,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (float)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -6095,11 +6415,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<float> tensor, float scalar, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (float)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -6118,7 +6440,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (float)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -6126,11 +6448,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -6153,7 +6478,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -6173,11 +6498,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<float> left, DenseTensor<float> right, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (float)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -6200,7 +6528,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (float)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -6208,11 +6536,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<float> tensor, float scalar, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (float)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -6231,7 +6561,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (float)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -6239,11 +6569,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<float> tensor, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)-tensor.Buffer[i];
+                    resultSpan[i] = (float)-tensorSpan[i];
                 }
             }
             else
@@ -6262,7 +6594,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (float)-tensorSpan[op1Index];
 
                 }
             }
@@ -6270,11 +6602,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<float> tensor, DenseTensor<float> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (float)+tensor.Buffer[i];
+                    resultSpan[i] = (float)+tensorSpan[i];
                 }
             }
             else
@@ -6293,7 +6627,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (float)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (float)+tensorSpan[op1Index];
 
                 }
             }
@@ -6685,11 +7019,14 @@ namespace System.Numerics
         public void Add(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -6712,7 +7049,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -6720,11 +7057,13 @@ namespace System.Numerics
         public void Add(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -6743,7 +7082,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -6751,11 +7090,14 @@ namespace System.Numerics
         public void And(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -6778,7 +7120,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -6786,11 +7128,13 @@ namespace System.Numerics
         public void And(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -6809,7 +7153,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -6843,6 +7187,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -6859,28 +7207,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (int)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (int)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<int> tensor, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -6903,7 +7256,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -6911,11 +7264,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -6934,7 +7289,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -6942,11 +7297,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -6969,7 +7327,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -6977,11 +7335,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -7004,7 +7365,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -7012,11 +7373,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -7039,7 +7403,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -7047,19 +7411,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<int> tensor, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<int> tensor, int value, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (int)(tensorSpan[i] << value);
                 }
             }
             else
@@ -7078,7 +7446,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -7086,11 +7454,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -7113,7 +7484,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -7121,11 +7492,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -7148,7 +7522,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -7156,11 +7530,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -7183,7 +7560,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -7191,11 +7568,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -7214,7 +7593,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -7222,11 +7601,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -7249,7 +7631,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -7257,11 +7639,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -7280,7 +7664,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -7288,11 +7672,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -7315,7 +7702,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -7323,11 +7710,14 @@ namespace System.Numerics
         public void Or(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -7350,7 +7740,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -7358,11 +7748,13 @@ namespace System.Numerics
         public void Or(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -7381,7 +7773,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -7389,11 +7781,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<int> tensor, int value, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (int)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -7412,7 +7806,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -7420,11 +7814,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -7447,7 +7844,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -7455,11 +7852,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -7478,7 +7877,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -7486,11 +7885,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<int> tensor, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)-tensor.Buffer[i];
+                    resultSpan[i] = (int)-tensorSpan[i];
                 }
             }
             else
@@ -7509,7 +7910,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (int)-tensorSpan[op1Index];
 
                 }
             }
@@ -7517,11 +7918,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<int> tensor, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)+tensor.Buffer[i];
+                    resultSpan[i] = (int)+tensorSpan[i];
                 }
             }
             else
@@ -7540,7 +7943,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (int)+tensorSpan[op1Index];
 
                 }
             }
@@ -7548,11 +7951,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<int> left, DenseTensor<int> right, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (int)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -7575,7 +7981,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (int)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -7583,11 +7989,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<int> tensor, int scalar, DenseTensor<int> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (int)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (int)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -7606,7 +8014,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (int)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (int)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -7990,11 +8398,14 @@ namespace System.Numerics
         public void Add(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -8017,7 +8428,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -8025,11 +8436,13 @@ namespace System.Numerics
         public void Add(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -8048,7 +8461,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -8056,11 +8469,14 @@ namespace System.Numerics
         public void And(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -8083,7 +8499,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -8091,11 +8507,13 @@ namespace System.Numerics
         public void And(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -8114,7 +8532,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -8148,6 +8566,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -8164,28 +8586,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (long)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (long)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<long> tensor, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -8208,7 +8635,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -8216,11 +8643,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -8239,7 +8668,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -8247,11 +8676,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -8274,7 +8706,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -8282,11 +8714,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -8309,7 +8744,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -8317,11 +8752,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -8344,7 +8782,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -8352,19 +8790,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<long> tensor, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<long> tensor, int value, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (long)(tensorSpan[i] << value);
                 }
             }
             else
@@ -8383,7 +8825,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -8391,11 +8833,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -8418,7 +8863,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -8426,11 +8871,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -8453,7 +8901,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -8461,11 +8909,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -8488,7 +8939,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -8496,11 +8947,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -8519,7 +8972,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -8527,11 +8980,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -8554,7 +9010,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -8562,11 +9018,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -8585,7 +9043,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -8593,11 +9051,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -8620,7 +9081,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -8628,11 +9089,14 @@ namespace System.Numerics
         public void Or(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -8655,7 +9119,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -8663,11 +9127,13 @@ namespace System.Numerics
         public void Or(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -8686,7 +9152,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -8694,11 +9160,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<long> tensor, int value, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (long)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -8717,7 +9185,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -8725,11 +9193,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -8752,7 +9223,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -8760,11 +9231,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -8783,7 +9256,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -8791,11 +9264,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<long> tensor, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)-tensor.Buffer[i];
+                    resultSpan[i] = (long)-tensorSpan[i];
                 }
             }
             else
@@ -8814,7 +9289,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (long)-tensorSpan[op1Index];
 
                 }
             }
@@ -8822,11 +9297,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<long> tensor, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)+tensor.Buffer[i];
+                    resultSpan[i] = (long)+tensorSpan[i];
                 }
             }
             else
@@ -8845,7 +9322,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (long)+tensorSpan[op1Index];
 
                 }
             }
@@ -8853,11 +9330,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<long> left, DenseTensor<long> right, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (long)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -8880,7 +9360,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (long)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -8888,11 +9368,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<long> tensor, long scalar, DenseTensor<long> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (long)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (long)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -8911,7 +9393,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (long)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (long)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -9295,11 +9777,14 @@ namespace System.Numerics
         public void Add(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -9322,7 +9807,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -9330,11 +9815,13 @@ namespace System.Numerics
         public void Add(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -9353,7 +9840,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -9361,11 +9848,14 @@ namespace System.Numerics
         public void And(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -9388,7 +9878,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -9396,11 +9886,13 @@ namespace System.Numerics
         public void And(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -9419,7 +9911,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -9453,6 +9945,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -9469,28 +9965,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (sbyte)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (sbyte)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<sbyte> tensor, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -9513,7 +10014,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -9521,11 +10022,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -9544,7 +10047,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -9552,11 +10055,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -9579,7 +10085,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -9587,11 +10093,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -9614,7 +10123,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -9622,11 +10131,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -9649,7 +10161,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -9657,19 +10169,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<sbyte> tensor, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<sbyte> tensor, int value, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] << value);
                 }
             }
             else
@@ -9688,7 +10204,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -9696,11 +10212,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -9723,7 +10242,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -9731,11 +10250,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -9758,7 +10280,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -9766,11 +10288,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -9793,7 +10318,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -9801,11 +10326,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -9824,7 +10351,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -9832,11 +10359,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -9859,7 +10389,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -9867,11 +10397,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -9890,7 +10422,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -9898,11 +10430,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -9925,7 +10460,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -9933,11 +10468,14 @@ namespace System.Numerics
         public void Or(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -9960,7 +10498,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -9968,11 +10506,13 @@ namespace System.Numerics
         public void Or(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -9991,7 +10531,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -9999,11 +10539,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<sbyte> tensor, int value, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -10022,7 +10564,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -10030,11 +10572,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -10057,7 +10602,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -10065,11 +10610,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -10088,7 +10635,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -10096,11 +10643,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<sbyte> tensor, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)-tensor.Buffer[i];
+                    resultSpan[i] = (sbyte)-tensorSpan[i];
                 }
             }
             else
@@ -10119,7 +10668,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (sbyte)-tensorSpan[op1Index];
 
                 }
             }
@@ -10127,11 +10676,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<sbyte> tensor, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)+tensor.Buffer[i];
+                    resultSpan[i] = (sbyte)+tensorSpan[i];
                 }
             }
             else
@@ -10150,7 +10701,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (sbyte)+tensorSpan[op1Index];
 
                 }
             }
@@ -10158,11 +10709,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<sbyte> left, DenseTensor<sbyte> right, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (sbyte)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -10185,7 +10739,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (sbyte)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -10193,11 +10747,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<sbyte> tensor, sbyte scalar, DenseTensor<sbyte> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (sbyte)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (sbyte)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -10216,7 +10772,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (sbyte)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (sbyte)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -10600,11 +11156,14 @@ namespace System.Numerics
         public void Add(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -10627,7 +11186,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -10635,11 +11194,13 @@ namespace System.Numerics
         public void Add(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -10658,7 +11219,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -10666,11 +11227,14 @@ namespace System.Numerics
         public void And(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -10693,7 +11257,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -10701,11 +11265,13 @@ namespace System.Numerics
         public void And(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -10724,7 +11290,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -10758,6 +11324,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -10774,28 +11344,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (short)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (short)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<short> tensor, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -10818,7 +11393,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -10826,11 +11401,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -10849,7 +11426,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -10857,11 +11434,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -10884,7 +11464,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -10892,11 +11472,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -10919,7 +11502,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -10927,11 +11510,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -10954,7 +11540,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -10962,19 +11548,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<short> tensor, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<short> tensor, int value, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (short)(tensorSpan[i] << value);
                 }
             }
             else
@@ -10993,7 +11583,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -11001,11 +11591,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -11028,7 +11621,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -11036,11 +11629,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -11063,7 +11659,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -11071,11 +11667,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -11098,7 +11697,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -11106,11 +11705,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -11129,7 +11730,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -11137,11 +11738,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -11164,7 +11768,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -11172,11 +11776,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -11195,7 +11801,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -11203,11 +11809,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -11230,7 +11839,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -11238,11 +11847,14 @@ namespace System.Numerics
         public void Or(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -11265,7 +11877,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -11273,11 +11885,13 @@ namespace System.Numerics
         public void Or(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -11296,7 +11910,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -11304,11 +11918,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<short> tensor, int value, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (short)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -11327,7 +11943,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -11335,11 +11951,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -11362,7 +11981,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -11370,11 +11989,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -11393,7 +12014,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -11401,11 +12022,13 @@ namespace System.Numerics
         public void UnaryMinus(DenseTensor<short> tensor, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)-tensor.Buffer[i];
+                    resultSpan[i] = (short)-tensorSpan[i];
                 }
             }
             else
@@ -11424,7 +12047,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)-tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (short)-tensorSpan[op1Index];
 
                 }
             }
@@ -11432,11 +12055,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<short> tensor, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)+tensor.Buffer[i];
+                    resultSpan[i] = (short)+tensorSpan[i];
                 }
             }
             else
@@ -11455,7 +12080,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (short)+tensorSpan[op1Index];
 
                 }
             }
@@ -11463,11 +12088,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<short> left, DenseTensor<short> right, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (short)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -11490,7 +12118,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (short)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -11498,11 +12126,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<short> tensor, short scalar, DenseTensor<short> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (short)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (short)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -11521,7 +12151,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (short)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (short)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -11898,11 +12528,14 @@ namespace System.Numerics
         public void Add(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -11925,7 +12558,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -11933,11 +12566,13 @@ namespace System.Numerics
         public void Add(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -11956,7 +12591,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -11964,11 +12599,14 @@ namespace System.Numerics
         public void And(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -11991,7 +12629,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -11999,11 +12637,13 @@ namespace System.Numerics
         public void And(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -12022,7 +12662,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -12056,6 +12696,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -12072,28 +12716,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (uint)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (uint)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<uint> tensor, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -12116,7 +12765,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -12124,11 +12773,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -12147,7 +12798,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -12155,11 +12806,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -12182,7 +12836,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -12190,11 +12844,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -12217,7 +12874,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -12225,11 +12882,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -12252,7 +12912,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -12260,19 +12920,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<uint> tensor, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<uint> tensor, int value, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (uint)(tensorSpan[i] << value);
                 }
             }
             else
@@ -12291,7 +12955,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -12299,11 +12963,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -12326,7 +12993,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -12334,11 +13001,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -12361,7 +13031,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -12369,11 +13039,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -12396,7 +13069,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -12404,11 +13077,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -12427,7 +13102,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -12435,11 +13110,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -12462,7 +13140,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -12470,11 +13148,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -12493,7 +13173,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -12501,11 +13181,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -12528,7 +13211,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -12536,11 +13219,14 @@ namespace System.Numerics
         public void Or(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -12563,7 +13249,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -12571,11 +13257,13 @@ namespace System.Numerics
         public void Or(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -12594,7 +13282,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -12602,11 +13290,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<uint> tensor, int value, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (uint)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -12625,7 +13315,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -12633,11 +13323,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -12660,7 +13353,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -12668,11 +13361,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -12691,7 +13386,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -12703,11 +13398,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<uint> tensor, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)+tensor.Buffer[i];
+                    resultSpan[i] = (uint)+tensorSpan[i];
                 }
             }
             else
@@ -12726,7 +13423,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (uint)+tensorSpan[op1Index];
 
                 }
             }
@@ -12734,11 +13431,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<uint> left, DenseTensor<uint> right, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (uint)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -12761,7 +13461,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (uint)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -12769,11 +13469,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<uint> tensor, uint scalar, DenseTensor<uint> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (uint)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (uint)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -12792,7 +13494,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (uint)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (uint)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -13169,11 +13871,14 @@ namespace System.Numerics
         public void Add(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -13196,7 +13901,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -13204,11 +13909,13 @@ namespace System.Numerics
         public void Add(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -13227,7 +13934,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -13235,11 +13942,14 @@ namespace System.Numerics
         public void And(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -13262,7 +13972,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -13270,11 +13980,13 @@ namespace System.Numerics
         public void And(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -13293,7 +14005,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -13327,6 +14039,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -13343,28 +14059,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (ulong)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (ulong)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<ulong> tensor, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -13387,7 +14108,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -13395,11 +14116,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -13418,7 +14141,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -13426,11 +14149,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -13453,7 +14179,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -13461,11 +14187,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -13488,7 +14217,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -13496,11 +14225,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -13523,7 +14255,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -13531,19 +14263,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<ulong> tensor, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<ulong> tensor, int value, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (ulong)(tensorSpan[i] << value);
                 }
             }
             else
@@ -13562,7 +14298,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -13570,11 +14306,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -13597,7 +14336,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -13605,11 +14344,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -13632,7 +14374,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -13640,11 +14382,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -13667,7 +14412,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -13675,11 +14420,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -13698,7 +14445,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -13706,11 +14453,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -13733,7 +14483,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -13741,11 +14491,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -13764,7 +14516,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -13772,11 +14524,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -13799,7 +14554,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -13807,11 +14562,14 @@ namespace System.Numerics
         public void Or(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -13834,7 +14592,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -13842,11 +14600,13 @@ namespace System.Numerics
         public void Or(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -13865,7 +14625,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -13873,11 +14633,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<ulong> tensor, int value, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (ulong)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -13896,7 +14658,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -13904,11 +14666,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -13931,7 +14696,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -13939,11 +14704,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -13962,7 +14729,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -13974,11 +14741,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<ulong> tensor, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)+tensor.Buffer[i];
+                    resultSpan[i] = (ulong)+tensorSpan[i];
                 }
             }
             else
@@ -13997,7 +14766,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (ulong)+tensorSpan[op1Index];
 
                 }
             }
@@ -14005,11 +14774,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<ulong> left, DenseTensor<ulong> right, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (ulong)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -14032,7 +14804,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ulong)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -14040,11 +14812,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<ulong> tensor, ulong scalar, DenseTensor<ulong> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ulong)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (ulong)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -14063,7 +14837,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ulong)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (ulong)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }
@@ -14440,11 +15214,14 @@ namespace System.Numerics
         public void Add(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] + right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] + rightSpan[i]);
                 }
             }
             else
@@ -14467,7 +15244,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] + right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] + rightSpan[op2Index]);
 
                 }
             }
@@ -14475,11 +15252,13 @@ namespace System.Numerics
         public void Add(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] + scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] + scalar);
                 }
             }
             else
@@ -14498,7 +15277,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] + scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] + scalar);
 
                 }
             }
@@ -14506,11 +15285,14 @@ namespace System.Numerics
         public void And(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] & right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] & rightSpan[i]);
                 }
             }
             else
@@ -14533,7 +15315,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] & right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] & rightSpan[op2Index]);
 
                 }
             }
@@ -14541,11 +15323,13 @@ namespace System.Numerics
         public void And(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] & scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] & scalar);
                 }
             }
             else
@@ -14564,7 +15348,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] & scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] & scalar);
 
                 }
             }
@@ -14598,6 +15382,10 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
             for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
             {
@@ -14614,28 +15402,33 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (ushort)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (ushort)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
         }
         public void Decrement(DenseTensor<ushort> tensor, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]--;
+                resultSpan[i]--;
             }
         }
         public void Divide(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] / right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] / rightSpan[i]);
                 }
             }
             else
@@ -14658,7 +15451,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] / right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] / rightSpan[op2Index]);
 
                 }
             }
@@ -14666,11 +15459,13 @@ namespace System.Numerics
         public void Divide(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] / scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] / scalar);
                 }
             }
             else
@@ -14689,7 +15484,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] / scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] / scalar);
 
                 }
             }
@@ -14697,11 +15492,14 @@ namespace System.Numerics
         public void Equals(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] == right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] == rightSpan[i];
                 }
             }
             else
@@ -14724,7 +15522,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] == right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] == rightSpan[op2Index];
 
                 }
             }
@@ -14732,11 +15530,14 @@ namespace System.Numerics
         public void GreaterThan(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] > right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] > rightSpan[i];
                 }
             }
             else
@@ -14759,7 +15560,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] > right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] > rightSpan[op2Index];
 
                 }
             }
@@ -14767,11 +15568,14 @@ namespace System.Numerics
         public void GreaterThanOrEqual(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] >= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] >= rightSpan[i];
                 }
             }
             else
@@ -14794,7 +15598,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] >= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] >= rightSpan[op2Index];
 
                 }
             }
@@ -14802,19 +15606,23 @@ namespace System.Numerics
         public void Increment(DenseTensor<ushort> tensor, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             for(int i = 0; i < result.Length; i++)
             {
-                result.Buffer[i]++;
+                resultSpan[i]++;
             }
         }
         public void LeftShift(DenseTensor<ushort> tensor, int value, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] << value);
+                    resultSpan[i] = (ushort)(tensorSpan[i] << value);
                 }
             }
             else
@@ -14833,7 +15641,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] << value);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] << value);
 
                 }
             }
@@ -14841,11 +15649,14 @@ namespace System.Numerics
         public void LessThan(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] < right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] < rightSpan[i];
                 }
             }
             else
@@ -14868,7 +15679,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] < right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] < rightSpan[op2Index];
 
                 }
             }
@@ -14876,11 +15687,14 @@ namespace System.Numerics
         public void LessThanOrEqual(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] <= right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] <= rightSpan[i];
                 }
             }
             else
@@ -14903,7 +15717,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] <= right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] <= rightSpan[op2Index];
 
                 }
             }
@@ -14911,11 +15725,14 @@ namespace System.Numerics
         public void Modulo(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] % right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] % rightSpan[i]);
                 }
             }
             else
@@ -14938,7 +15755,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] % right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] % rightSpan[op2Index]);
 
                 }
             }
@@ -14946,11 +15763,13 @@ namespace System.Numerics
         public void Modulo(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] % scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] % scalar);
                 }
             }
             else
@@ -14969,7 +15788,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] % scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] % scalar);
 
                 }
             }
@@ -14977,11 +15796,14 @@ namespace System.Numerics
         public void Multiply(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] * right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] * rightSpan[i]);
                 }
             }
             else
@@ -15004,7 +15826,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] * right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] * rightSpan[op2Index]);
 
                 }
             }
@@ -15012,11 +15834,13 @@ namespace System.Numerics
         public void Multiply(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] * scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] * scalar);
                 }
             }
             else
@@ -15035,7 +15859,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] * scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] * scalar);
 
                 }
             }
@@ -15043,11 +15867,14 @@ namespace System.Numerics
         public void NotEquals(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<bool> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = left.Buffer[i] != right.Buffer[i];
+                    resultSpan[i] = leftSpan[i] != rightSpan[i];
                 }
             }
             else
@@ -15070,7 +15897,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = left.Buffer[op1Index] != right.Buffer[op2Index];
+                    resultSpan[resultIndex] = leftSpan[op1Index] != rightSpan[op2Index];
 
                 }
             }
@@ -15078,11 +15905,14 @@ namespace System.Numerics
         public void Or(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] | right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] | rightSpan[i]);
                 }
             }
             else
@@ -15105,7 +15935,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] | right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] | rightSpan[op2Index]);
 
                 }
             }
@@ -15113,11 +15943,13 @@ namespace System.Numerics
         public void Or(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] | scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] | scalar);
                 }
             }
             else
@@ -15136,7 +15968,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] | scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] | scalar);
 
                 }
             }
@@ -15144,11 +15976,13 @@ namespace System.Numerics
         public void RightShift(DenseTensor<ushort> tensor, int value, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] >> value);
+                    resultSpan[i] = (ushort)(tensorSpan[i] >> value);
                 }
             }
             else
@@ -15167,7 +16001,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] >> value);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] >> value);
 
                 }
             }
@@ -15175,11 +16009,14 @@ namespace System.Numerics
         public void Subtract(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] - right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] - rightSpan[i]);
                 }
             }
             else
@@ -15202,7 +16039,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] - right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] - rightSpan[op2Index]);
 
                 }
             }
@@ -15210,11 +16047,13 @@ namespace System.Numerics
         public void Subtract(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] - scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] - scalar);
                 }
             }
             else
@@ -15233,7 +16072,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] - scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] - scalar);
 
                 }
             }
@@ -15245,11 +16084,13 @@ namespace System.Numerics
         public void UnaryPlus(DenseTensor<ushort> tensor, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)+tensor.Buffer[i];
+                    resultSpan[i] = (ushort)+tensorSpan[i];
                 }
             }
             else
@@ -15268,7 +16109,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)+tensor.Buffer[op1Index];
+                    resultSpan[resultIndex] = (ushort)+tensorSpan[op1Index];
 
                 }
             }
@@ -15276,11 +16117,14 @@ namespace System.Numerics
         public void Xor(DenseTensor<ushort> left, DenseTensor<ushort> right, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
             if  ((result.IsReversedStride == left.IsReversedStride) && (result.IsReversedStride == right.IsReversedStride))
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(left.Buffer[i] ^ right.Buffer[i]);
+                    resultSpan[i] = (ushort)(leftSpan[i] ^ rightSpan[i]);
                 }
             }
             else
@@ -15303,7 +16147,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(left.Buffer[op1Index] ^ right.Buffer[op2Index]);
+                    resultSpan[resultIndex] = (ushort)(leftSpan[op1Index] ^ rightSpan[op2Index]);
 
                 }
             }
@@ -15311,11 +16155,13 @@ namespace System.Numerics
         public void Xor(DenseTensor<ushort> tensor, ushort scalar, DenseTensor<ushort> result)
         {
 
+            var resultSpan = result.Buffer.Span;
+            var tensorSpan = tensor.Buffer.Span;
             if  (result.IsReversedStride == tensor.IsReversedStride)
             {
                 for(int i = 0; i < result.Length; i++)
                 {
-                    result.Buffer[i] = (ushort)(tensor.Buffer[i] ^ scalar);
+                    resultSpan[i] = (ushort)(tensorSpan[i] ^ scalar);
                 }
             }
             else
@@ -15334,7 +16180,7 @@ namespace System.Numerics
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    result.Buffer[resultIndex] = (ushort)(tensor.Buffer[op1Index] ^ scalar);
+                    resultSpan[resultIndex] = (ushort)(tensorSpan[op1Index] ^ scalar);
 
                 }
             }

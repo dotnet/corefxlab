@@ -17,7 +17,7 @@ namespace System.Numerics
             return EmptyArray<T>.Value;
         }
 
-        public static long GetProduct(int[] dimensions, int startIndex = 0)
+        public static long GetProduct(ReadOnlySpan<int> dimensions, int startIndex = 0)
         {
             if (dimensions.Length == 0)
             {
@@ -25,7 +25,7 @@ namespace System.Numerics
             }
 
             long product = 1;
-            for (int i = startIndex; i < dimensions?.Length; i++)
+            for (int i = startIndex; i < dimensions.Length; i++)
             {
                 if (dimensions[i] < 0)
                 {
@@ -69,12 +69,17 @@ namespace System.Numerics
             return true;
         }
 
+        public static int[] GetStrides(int[] dimensions, bool reverseStride = false)
+        {
+            return GetStrides(dimensions.AsReadOnlySpan(), reverseStride);
+        }
+
         /// <summary>
         /// Gets the set of strides that can be used to calculate the offset of n-dimensions in a 1-dimensional layout
         /// </summary>
         /// <param name="dimensions"></param>
         /// <returns></returns>
-        public static int[] GetStrides(int[] dimensions, bool reverseStride = false)
+        public static int[] GetStrides(ReadOnlySpan<int> dimensions, bool reverseStride = false)
         {
             int[] strides = new int[dimensions.Length];
 
@@ -99,7 +104,7 @@ namespace System.Numerics
             return strides;
         }
 
-        public static int[] GetStrides(Array array)
+        public static int[] GetStridesFromArray(Array array)
         {
             int[] strides = new int[array.Rank];
 
@@ -164,7 +169,7 @@ namespace System.Numerics
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
         /// <returns></returns>
-        public static int GetIndex(int[] strides, Span<int> indices, int startFromDimension = 0)
+        public static int GetIndex(int[] strides, ReadOnlySpan<int> indices, int startFromDimension = 0)
         {
             Debug.Assert(strides.Length == indices.Length);
 
