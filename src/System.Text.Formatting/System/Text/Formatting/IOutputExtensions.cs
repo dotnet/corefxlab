@@ -88,14 +88,14 @@ namespace System.Text.Formatting
             }
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, SymbolTable encoder) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8Span value, SymbolTable encoder) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoder)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, SymbolTable symbolTable) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8Span value, SymbolTable symbolTable) where TFormatter : IOutput
         {
             int bytesWritten;
             int consumed;

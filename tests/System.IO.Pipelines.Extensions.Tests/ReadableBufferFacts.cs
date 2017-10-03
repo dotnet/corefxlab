@@ -305,7 +305,7 @@ namespace System.IO.Pipelines.Tests
             ReadableBuffer slice;
             ReadCursor cursor;
             Assert.True(buffer.TrySliceTo(sliceToBytes, out slice, out cursor));
-            Assert.Equal(expected, slice.GetUtf8String());
+            Assert.Equal(expected, slice.GetUtf8Span());
 
             _pipe.Reader.Advance(buffer.End);
         }
@@ -431,7 +431,7 @@ namespace System.IO.Pipelines.Tests
             int i = 0;
             foreach (var item in iter)
             {
-                Assert.Equal(expected[i++], item.GetUtf8String());
+                Assert.Equal(expected[i++], item.GetUtf8Span());
             }
             Assert.Equal(expected.Length, i);
 
@@ -441,7 +441,7 @@ namespace System.IO.Pipelines.Tests
             i = 0;
             foreach (var item in asObject)
             {
-                Assert.Equal(expected[i++], item.GetUtf8String());
+                Assert.Equal(expected[i++], item.GetUtf8Span());
             }
             Assert.Equal(expected.Length, i);
 

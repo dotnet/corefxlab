@@ -322,15 +322,15 @@ namespace System.Text.Formatting.Tests
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
 
-            Assert.Equal("ffFF", new Utf8String(sb.Formatted.AsSpan()).ToString());
+            Assert.Equal("ffFF", new Utf8Span(sb.Formatted.AsSpan()).ToString());
 
             sb.Clear();
             sb.Append((int)-1, X);
-            Assert.Equal("FFFFFFFF", new Utf8String(sb.Formatted.AsSpan()).ToString());
+            Assert.Equal("FFFFFFFF", new Utf8Span(sb.Formatted.AsSpan()).ToString());
 
             sb.Clear();
             sb.Append((int)-2, X);
-            Assert.Equal("FFFFFFFE", new Utf8String(sb.Formatted.AsSpan()).ToString());
+            Assert.Equal("FFFFFFFE", new Utf8Span(sb.Formatted.AsSpan()).ToString());
         }
 
         [Fact]
@@ -382,7 +382,7 @@ namespace System.Text.Formatting.Tests
                 utf8Writer.Append("World!");
                 utf8Writer.Append("\u0391"); // greek alpha
                 utf8Writer.Append("\uD950\uDF21");
-                utf8Writer.Append(new Utf8String("Hello"));
+                utf8Writer.Append(new Utf8Span("Hello"));
                 AssertUtf8Equal(buffer.AsSpan().Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21Hello");
             }
 

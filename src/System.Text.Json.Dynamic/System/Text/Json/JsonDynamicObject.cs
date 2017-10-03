@@ -33,7 +33,7 @@ namespace System.Text.Json
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        var name = new Utf8String(reader.Value);
+                        var name = new Utf8Span(reader.Value);
                         reader.Read(); // Move to the value token
                         var type = reader.ValueType;
                         var current = stack.Peek();
@@ -41,7 +41,7 @@ namespace System.Text.Json
                             switch (type)
                             {
                             case JsonValueType.String:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value));
+                                current._properties[property] = new JsonValue(new Utf8Span(reader.Value));
                                 break;
                             case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 var newObj = new JsonDynamicObject(properties);
@@ -58,7 +58,7 @@ namespace System.Text.Json
                                     current._properties[property] = new JsonValue(type);
                                     break;
                             case JsonValueType.Number:
-                                current._properties[property] = new JsonValue(new Utf8String(reader.Value), type);
+                                current._properties[property] = new JsonValue(new Utf8Span(reader.Value), type);
                                     break;
                             case JsonValueType.Array:
                                 throw new NotImplementedException("array support not implemented yet.");
@@ -84,7 +84,7 @@ namespace System.Text.Json
             return stack.Peek();
         }
 
-        public bool TryGetUInt32(Utf8String property, out uint value)
+        public bool TryGetUInt32(Utf8Span property, out uint value)
         {
             var jsonProperty= new JsonProperty(this, property);
             JsonValue jsonValue;
@@ -101,7 +101,7 @@ namespace System.Text.Json
             return Parsers.Utf8.TryParseUInt32(jsonValue.Value.Bytes, out value);
         }
 
-        public bool TryGetString(Utf8String property, out Utf8String value)
+        public bool TryGetString(Utf8Span property, out Utf8Span value)
         {
             var jsonProperty = new JsonProperty(this, property);
             JsonValue jsonValue;
@@ -135,7 +135,7 @@ namespace System.Text.Json
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            var name = new Utf8String(binder.Name);
+            var name = new Utf8Span(binder.Name);
             var property = new JsonProperty(this, name);
             JsonValue value;
             if(!_properties.TryGetValue(property, out value))
@@ -150,7 +150,7 @@ namespace System.Text.Json
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            var name = new Utf8String(binder.Name);
+            var name = new Utf8Span(binder.Name);
             var property = new JsonProperty(this, name);
             if(value == null)
             {
@@ -159,7 +159,7 @@ namespace System.Text.Json
             }
             if(value is string)
             {
-                _properties[property] = new JsonValue(new Utf8String((string)value));
+                _properties[property] = new JsonValue(new Utf8Span((string)value));
                 return true;
             }
             return false;
@@ -230,10 +230,10 @@ namespace System.Text.Json
 
             JsonDynamicObject _object;
             //TODO: no spans on the heap
-            Utf8String _value => default;
+            Utf8Span _value => default;
             JsonValueType _type;
 
-            public JsonValue(Utf8String value, JsonValueType type = JsonValueType.String)
+            public JsonValue(Utf8Span value, JsonValueType type = JsonValueType.String)
             {
                 //TODO: no spans on the heap
                 //_value = value;
@@ -243,7 +243,7 @@ namespace System.Text.Json
             public JsonValue(JsonDynamicObject obj)
             {
                 //TODO: no spans on the heap
-                //_value = default(Utf8String);
+                //_value = default(Utf8Span);
                 _object = obj;
                 _type = JsonValueType.Object;
             }
@@ -252,12 +252,12 @@ namespace System.Text.Json
             {
                 _type = type;
                 //TODO: no spans on the heap
-                //_value = default(Utf8String);
+                //_value = default(Utf8Span);
                 _object = null;
             }
 
             public JsonDynamicObject Object { get { return _object; } }
-            public Utf8String Value { get { return _value; } }
+            public Utf8Span Value { get { return _value; } }
             public JsonValueType Type { get { return _type; } }
 
             public object ToObject()
@@ -306,7 +306,7 @@ namespace System.Text.Json
         {
             JsonDynamicObject _object;
             //TODO: no spans on the heap
-            Utf8String _name => default;
+            Utf8Span _name => default;
 
             public JsonDynamicObject Object
             {
@@ -316,7 +316,7 @@ namespace System.Text.Json
                 }
             }
 
-            public JsonProperty(JsonDynamicObject obj, Utf8String name)
+            public JsonProperty(JsonDynamicObject obj, Utf8Span name)
             {
                 _object = obj;
                 //TODO: no spans on the heap
@@ -346,11 +346,11 @@ namespace System.Text.Json
         }
     }
 
-    static class Utf8StringExtensions
+    static class Utf8SpanExtensions
     {
         // TODO: this should be properly implemented
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+        public static bool TryFormat(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -367,7 +367,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+        public static bool TryFormatQuotedString(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;

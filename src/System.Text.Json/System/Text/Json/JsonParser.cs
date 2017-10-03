@@ -136,9 +136,9 @@ namespace System.Text.Json
             Value = 6
         };
 
-        private static readonly byte[] s_false = new Utf8String("false").Bytes.ToArray();
-        private static readonly byte[] s_true = new Utf8String("true").Bytes.ToArray();
-        private static readonly byte[] s_null = new Utf8String("null").Bytes.ToArray();
+        private static readonly byte[] s_false = new Utf8Span("false").Bytes.ToArray();
+        private static readonly byte[] s_true = new Utf8Span("true").Bytes.ToArray();
+        private static readonly byte[] s_null = new Utf8Span("null").Bytes.ToArray();
 
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {
@@ -421,7 +421,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
-            while (Utf8String.IsWhiteSpace(_values[_valuesIndex])) {
+            while (Utf8Span.IsWhiteSpace(_values[_valuesIndex])) {
                 _valuesIndex++;
             }
         }

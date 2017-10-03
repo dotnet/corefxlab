@@ -14,7 +14,7 @@ namespace Microsoft.Net.Http
 {
     public class TcpConnectionFormatter : ITextOutput, IDisposable
     {
-        static byte[] s_terminator = new Utf8String("0\r\n\r\n").Bytes.ToArray();
+        static byte[] s_terminator = new Utf8Span("0\r\n\r\n").Bytes.ToArray();
         const int ChunkPrefixSize = 10;
 
         TcpConnection _connection;
@@ -74,7 +74,7 @@ namespace Microsoft.Net.Http
             }
 
             var array = toSend.ToArray();
-            Console.WriteLine(new Utf8String(toSend).ToString());
+            Console.WriteLine(new Utf8Span(toSend).ToString());
             _connection.Send(toSend);
         }
 

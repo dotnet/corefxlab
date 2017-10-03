@@ -49,13 +49,13 @@ namespace System.Text.Formatting
             if (status != System.Buffers.OperationStatus.Done)
                 throw new Exception("bad locale id");
 
-            var id = new Utf8String(idBytes.AsSpan().Slice(0, idByteCount));
+            var id = new Utf8Span(idBytes.AsSpan().Slice(0, idByteCount));
 
             int recordStart = -1;
             for (int record = 0; record < numberOfIDs; record++)
             {
                 var indexId = index.AsSpan().Slice(record * recordSize, idByteCount);
-                if (id.Equals(new Utf8String(indexId))) // found record
+                if (id.Equals(new Utf8Span(indexId))) // found record
                 {
                     var indexData = index.AsSpan().Slice(record * recordSize + maxIdLength);
                     recordStart = 0;

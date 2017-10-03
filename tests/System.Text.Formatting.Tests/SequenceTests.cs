@@ -50,7 +50,7 @@ namespace System.Text.Parsing.Tests
         {
             var buffers = new ArrayList<ReadOnlyMemory<byte>>();
             foreach (var segment in segments) {
-                buffers.Add(new Utf8String(segment).Bytes.ToArray());
+                buffers.Add(new Utf8Span(segment).Bytes.ToArray());
             }
             return buffers;
         }

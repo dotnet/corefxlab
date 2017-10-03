@@ -79,9 +79,9 @@ namespace System.Text.Http.Tests
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        public void It_parsers_Utf8String_as_well()
+        public void It_parsers_Utf8Span_as_well()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeadersString)));
 
             httpHeader.Count.Should().Be(8);
         }
@@ -89,7 +89,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_column_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
 
             try
             {
@@ -105,7 +105,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_carriage_return_and_line_feed_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
 
             try
             {
@@ -121,7 +121,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void CanParseBodylessRequest()
         {
-            var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
+            var request = new Utf8Span("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
             var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);

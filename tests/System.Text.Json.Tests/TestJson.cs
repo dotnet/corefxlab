@@ -141,20 +141,20 @@ namespace System.Text.Json.Tests
 
         public List<Value> GetValueFromPropertyName(string str)
         {
-            return GetValueFromPropertyName(new Utf8String(str), Object);
+            return GetValueFromPropertyName(new Utf8Span(str), Object);
         }
 
-        public List<Value> GetValueFromPropertyName(Utf8String str)
+        public List<Value> GetValueFromPropertyName(Utf8Span str)
         {
             return GetValueFromPropertyName(str, Object);
         }
 
         public List<Value> GetValueFromPropertyName(string str, Object obj)
         {
-            return GetValueFromPropertyName(new Utf8String(str), obj);
+            return GetValueFromPropertyName(new Utf8Span(str), obj);
         }
 
-        public List<Value> GetValueFromPropertyName(Utf8String str, Object obj)
+        public List<Value> GetValueFromPropertyName(Utf8Span str, Object obj)
         {
             var values = new List<Value>();
 
@@ -182,7 +182,7 @@ namespace System.Text.Json.Tests
                     }
                 }
 
-                if (new Utf8String(pair.Name) == str)
+                if (new Utf8Span(pair.Name) == str)
                 {
                     values.Add(pair.Value);
                 }

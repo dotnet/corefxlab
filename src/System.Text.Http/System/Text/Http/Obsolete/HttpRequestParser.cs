@@ -68,13 +68,13 @@ namespace System.Text.Http.SingleSegment
 
     public ref struct HttpRequestReader
     {
-        static readonly byte[] b_Http1_0 = new Utf8String("HTTP/1.0").CopyBytes();
-        static readonly byte[] b_Http1_1 = new Utf8String("HTTP/1.1").CopyBytes();
-        static readonly byte[] b_Http2_0 = new Utf8String("HTTP/2.0").CopyBytes();
+        static readonly byte[] b_Http1_0 = new Utf8Span("HTTP/1.0").CopyBytes();
+        static readonly byte[] b_Http1_1 = new Utf8Span("HTTP/1.1").CopyBytes();
+        static readonly byte[] b_Http2_0 = new Utf8Span("HTTP/2.0").CopyBytes();
 
-        static Utf8String s_Http1_0 => new Utf8String(b_Http1_0);
-        static Utf8String s_Http1_1 => new Utf8String(b_Http1_1);
-        static Utf8String s_Http2_0 => new Utf8String(b_Http2_0);
+        static Utf8Span s_Http1_0 => new Utf8Span(b_Http1_0);
+        static Utf8Span s_Http1_1 => new Utf8Span(b_Http1_1);
+        static Utf8Span s_Http2_0 => new Utf8Span(b_Http2_0);
 
         internal static readonly byte[] Eol = new byte[] { s_CR, s_LF };
         internal static readonly byte[] Eoh = new byte[] { s_CR, s_LF, s_CR, s_LF }; // End of Headers
@@ -111,25 +111,25 @@ namespace System.Text.Http.SingleSegment
             return method;
         }
 
-        internal Utf8String ReadRequestUri()
+        internal Utf8Span ReadRequestUri()
         {
-            Utf8String requestUri;
+            Utf8Span requestUri;
             int parsedBytes = HttpRequestParser.TryParseRequestUri(Buffer, out requestUri);
             if (parsedBytes == 0)
             {
-                return Utf8String.Empty;
+                return Utf8Span.Empty;
             }
             Buffer = Buffer.Slice(parsedBytes);
             return requestUri;
         }
 
-        Utf8String ReadHttpVersionAsUtf8String()
+        Utf8Span ReadHttpVersionAsUtf8Span()
         {
-            Utf8String httpVersion;
+            Utf8Span httpVersion;
             int parsedBytes = HttpRequestParser.TryParseHttpVersion(Buffer, out httpVersion);
             if (parsedBytes == 0)
             {
-                return Utf8String.Empty;
+                return Utf8Span.Empty;
             }
             Buffer = Buffer.Slice(parsedBytes + Eol.Length);
             return httpVersion;
@@ -138,7 +138,7 @@ namespace System.Text.Http.SingleSegment
         internal HttpVersion ReadHttpVersion()
         {
             ReadOnlySpan<byte> oldBuffer = Buffer;
-            Utf8String version = ReadHttpVersionAsUtf8String();
+            Utf8Span version = ReadHttpVersionAsUtf8Span();
 
             if (version.Equals(s_Http1_1))
             {
@@ -159,7 +159,7 @@ namespace System.Text.Http.SingleSegment
             }
         }
 
-        public Utf8String ReadHeader()
+        public Utf8Span ReadHeader()
         {
             int parsedBytes = Buffer.SliceTo(s_CR, s_LF, out var header);
             if (parsedBytes > Buffer.Length)
@@ -170,22 +170,22 @@ namespace System.Text.Http.SingleSegment
             {
                 Buffer = new Span<byte>();
             }
-            return new Utf8String(header);
+            return new Utf8Span(header);
         }        
     }
 
     static class HttpRequestParser
     {
         // TODO: these copies should be eliminated
-        static readonly byte[] b_Get = new Utf8String("GET ").CopyBytes();
-        static readonly byte[] b_Post = new Utf8String("POST ").CopyBytes();
-        static readonly byte[] b_Put = new Utf8String("PUT ").CopyBytes();
-        static readonly byte[] b_Delete = new Utf8String("DELETE ").CopyBytes();
+        static readonly byte[] b_Get = new Utf8Span("GET ").CopyBytes();
+        static readonly byte[] b_Post = new Utf8Span("POST ").CopyBytes();
+        static readonly byte[] b_Put = new Utf8Span("PUT ").CopyBytes();
+        static readonly byte[] b_Delete = new Utf8Span("DELETE ").CopyBytes();
 
-        static Utf8String s_Get => new Utf8String(b_Get);
-        static Utf8String s_Post => new Utf8String(b_Post);
-        static Utf8String s_Put => new Utf8String(b_Put);
-        static Utf8String s_Delete => new Utf8String(b_Delete);
+        static Utf8Span s_Get => new Utf8Span(b_Get);
+        static Utf8Span s_Post => new Utf8Span(b_Post);
+        static Utf8Span s_Put => new Utf8Span(b_Put);
+        static Utf8Span s_Delete => new Utf8Span(b_Delete);
 
 
         internal static int TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine)
@@ -210,7 +210,7 @@ namespace System.Text.Http.SingleSegment
 
         internal static bool TryParseMethod(ReadOnlySpan<byte> buffer, out HttpMethod method, out int parsedBytes)
         {
-            var bufferString = new Utf8String(buffer);
+            var bufferString = new Utf8Span(buffer);
             if(bufferString.StartsWith(s_Get))
             {
                 method = HttpMethod.Get;
@@ -244,17 +244,17 @@ namespace System.Text.Http.SingleSegment
             return false;
         }
 
-        internal static int TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri)
+        internal static int TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8Span requestUri)
         {
             var parsedBytes = buffer.SliceTo(HttpRequestReader.s_SP, out var uriSpan);
-            requestUri = new Utf8String(uriSpan);
+            requestUri = new Utf8Span(uriSpan);
             return parsedBytes;
         }
 
-        internal static int TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion)
+        internal static int TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8Span httpVersion)
         {
             var parsedBytes = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out var versionSpan);
-            httpVersion = new Utf8String(versionSpan);
+            httpVersion = new Utf8Span(versionSpan);
             return parsedBytes;
         }
 
