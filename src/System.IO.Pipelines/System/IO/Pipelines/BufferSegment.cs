@@ -57,6 +57,7 @@ namespace System.IO.Pipelines
             RunningLength = 0;
             Start = start;
             End = end;
+            Next = null;
         }
 
         public void ResetMemory()
@@ -147,6 +148,7 @@ namespace System.IO.Pipelines
             Next = segment;
 
             segment = this;
+
             while (segment.Next != null)
             {
                 segment.Next.RunningLength = segment.RunningLength + segment.ReadableBytes;
