@@ -7,7 +7,7 @@ namespace System.Numerics
     {
         private readonly Memory<T> memory;
 
-        internal DenseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal DenseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
             // copy initial array
             var backingArray = new T[fromArray.Length];
@@ -38,7 +38,7 @@ namespace System.Numerics
         /// Initializes a rank-1 Tensor using the specified <paramref name="size"/>.
         /// </summary>
         /// <param name="size">Size of the tensor</param>
-        public DenseTensor(int size, bool reverseStride = false) : base(new [] { size }, reverseStride)
+        public DenseTensor(int size) : base(size)
         {
             memory = new T[size];
         }
@@ -85,22 +85,6 @@ namespace System.Numerics
         public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new DenseTensor<TResult>(dimensions, IsReversedStride);
-        }
-
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
         }
 
         public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)

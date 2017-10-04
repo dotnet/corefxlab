@@ -12,6 +12,8 @@ namespace System.Numerics
 
     internal static class ArrayUtilities
     {
+        public  const int StackallocMax = 16;
+
         public static T[] Empty<T>()
         {
             return EmptyArray<T>.Value;

@@ -58,7 +58,7 @@ namespace System.Numerics
             this.nonZeroCount = nonZeroCount;
         }
 
-        internal CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
             nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;
@@ -333,21 +333,6 @@ namespace System.Numerics
             return false;
         }
 
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
-        }
 
         public override Tensor<T> Clone()
         {

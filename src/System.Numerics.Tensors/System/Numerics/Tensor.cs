@@ -35,7 +35,9 @@ namespace System.Numerics
         /// <returns></returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
         {
-            var dimensions = new ReadOnlySpan<int>(new [] { size, size });
+            Span<int> dimensions = stackalloc int[2];
+            dimensions[0] = dimensions[1] = size;
+
             var result = new DenseTensor<T>(dimensions, columMajor);
 
             for (int i = 0; i < size; i++)
@@ -61,7 +63,8 @@ namespace System.Numerics
             int diagonalLength = diagonal.dimensions[0];
 
             // TODO: allow specification of axis1 and axis2?
-            var dimensions = new int[diagonal.dimensions.Length + 1];
+            var rank = diagonal.dimensions.Length + 1;
+            Span<int> dimensions = rank < ArrayUtilities.StackallocMax ? stackalloc int[rank] : new Span<int>(new int[rank]);
 
             // assume square
             var axisLength = diagonalLength + Math.Abs(offset);
@@ -317,6 +320,14 @@ namespace System.Numerics
 
         private readonly long length;
 
+        protected Tensor(int length)
+        {
+            dimensions = new[] { length };
+            strides = new[] { 1 };
+            isReversedStride = false;
+            this.length = length;
+        }
+
         protected Tensor(ReadOnlySpan<int> dimensions, bool reverseStride)
         {
             if (dimensions.Length == 0)
@@ -333,6 +344,37 @@ namespace System.Numerics
                     throw new ArgumentOutOfRangeException(nameof(dimensions), "Dimensions must be positive and non-zero");
                 }
                 this.dimensions[i] = dimensions[i];
+                size *= dimensions[i];
+            }
+
+            strides = ArrayUtilities.GetStrides(dimensions, reverseStride);
+            isReversedStride = reverseStride;
+
+            length = size;
+        }
+
+        /// <summary>
+        /// Initializes tensor with same dimensions as array, content of array is ignored
+        /// </summary>
+        /// <param name="fromArray"></param>
+        /// <param name="reverseStride"></param>
+        protected Tensor(Array fromArray, bool reverseStride)
+        {
+            if (fromArray == null)
+            {
+                throw new ArgumentNullException(nameof(fromArray));
+            }
+
+            if (fromArray.Rank == 0)
+            {
+                throw new ArgumentException("Array must contain elements.", nameof(fromArray));
+            }
+
+            dimensions = new int[fromArray.Rank];
+            long size = 1;
+            for (int i = 0; i < dimensions.Length; i++)
+            {
+                dimensions[i] = fromArray.GetLength(i);
                 size *= dimensions[i];
             }
 
@@ -464,7 +506,8 @@ namespace System.Numerics
                 throw new ArgumentException($"Cannot compute diagonal with offset {offset}", nameof(offset));
             }
 
-            var newTensorDimensions = new int[dimensions.Length - 1];
+            var newTensorRank = Rank - 1;
+            var newTensorDimensions = newTensorRank < ArrayUtilities.StackallocMax ? stackalloc int[newTensorRank] : new Span<int>(new int[newTensorRank]);
             newTensorDimensions[0] = diagonalLength;
 
             for(int i = 2; i < dimensions.Length; i++)
@@ -938,7 +981,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = new int[Rank];
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1037,7 +1080,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = new int[Rank];
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1068,7 +1111,7 @@ namespace System.Numerics
                 }
             }
             
-            var indices = new int[Rank];  // consider stackalloc
+            var indices = new int[Rank];
             for (int i = 0; i < Length; i++)
             {
                 ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);

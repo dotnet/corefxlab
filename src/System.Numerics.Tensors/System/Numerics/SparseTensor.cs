@@ -20,7 +20,7 @@ namespace System.Numerics
             this.values = values;
         }
 
-        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
             values = new Dictionary<int, T>(fromArray.Length);
 
@@ -81,22 +81,6 @@ namespace System.Numerics
 
         public int NonZeroCount => values.Count;
 
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
-        }
-
         public override Tensor<T> Clone()
         {
             var valueCopy = new Dictionary<int, T>(values);
@@ -136,7 +120,6 @@ namespace System.Numerics
         {
             var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
 
-            Span<int> indices = new Span<int>(new int[Rank]);
             foreach (var pair in values)
             {
                 compressedSparseTensor.SetValue(pair.Key, pair.Value);
