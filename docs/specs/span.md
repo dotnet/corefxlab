@@ -316,7 +316,7 @@ Separately from this document, we are exploring language features to better supp
 4. Safe `Span<T>` stackalloc 
     ```c#
     void SafeMethod() {
-        var buffer = stackalloc Span<byte>(128);
+        Span<byte> buffer = stackalloc byte[128];
         PrimitiveFormatter.TryFormat(buffer, DateTime.Now, ...);
     }
     ```
