@@ -69,11 +69,6 @@ namespace System.Numerics
             return true;
         }
 
-        public static int[] GetStrides(int[] dimensions, bool reverseStride = false)
-        {
-            return GetStrides(dimensions.AsReadOnlySpan(), reverseStride);
-        }
-
         /// <summary>
         /// Gets the set of strides that can be used to calculate the offset of n-dimensions in a 1-dimensional layout
         /// </summary>
@@ -99,20 +94,6 @@ namespace System.Numerics
                     strides[i] = stride;
                     stride *= dimensions[i];
                 }
-            }
-
-            return strides;
-        }
-
-        public static int[] GetStridesFromArray(Array array)
-        {
-            int[] strides = new int[array.Rank];
-
-            int stride = 1;
-            for (int i = strides.Length - 1; i >= 0; i--)
-            {
-                strides[i] = stride;
-                stride *= array.GetLength(i);
             }
 
             return strides;
