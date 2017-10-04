@@ -307,10 +307,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -344,8 +344,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -394,10 +394,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -472,10 +472,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -510,10 +510,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -547,8 +547,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -601,10 +601,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -638,8 +638,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1048,10 +1048,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1085,8 +1085,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1119,10 +1119,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1156,8 +1156,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1255,10 +1255,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1292,8 +1292,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1326,10 +1326,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1364,10 +1364,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1402,10 +1402,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1449,8 +1449,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1483,10 +1483,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1521,10 +1521,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1559,10 +1559,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1596,8 +1596,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1630,10 +1630,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1667,8 +1667,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1701,10 +1701,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1739,10 +1739,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1776,8 +1776,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1809,8 +1809,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1843,10 +1843,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -1880,8 +1880,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1913,8 +1913,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1946,8 +1946,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -1980,10 +1980,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2017,8 +2017,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -2427,10 +2427,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2464,8 +2464,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -2498,10 +2498,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2535,8 +2535,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -2634,10 +2634,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2671,8 +2671,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -2705,10 +2705,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2743,10 +2743,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2781,10 +2781,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2828,8 +2828,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -2862,10 +2862,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2900,10 +2900,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2938,10 +2938,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -2975,8 +2975,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3009,10 +3009,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3046,8 +3046,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3080,10 +3080,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3118,10 +3118,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3155,8 +3155,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3188,8 +3188,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3222,10 +3222,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3259,8 +3259,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3292,8 +3292,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3325,8 +3325,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3359,10 +3359,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3396,8 +3396,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3750,10 +3750,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3787,8 +3787,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3894,10 +3894,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -3931,8 +3931,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -3965,10 +3965,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4003,10 +4003,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4041,10 +4041,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4093,10 +4093,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4131,10 +4131,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4169,10 +4169,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4206,8 +4206,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4240,10 +4240,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4277,8 +4277,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4311,10 +4311,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4361,10 +4361,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4398,8 +4398,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4431,8 +4431,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4464,8 +4464,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4826,10 +4826,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -4863,8 +4863,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -4970,10 +4970,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5007,8 +5007,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5041,10 +5041,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5079,10 +5079,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5117,10 +5117,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5169,10 +5169,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5207,10 +5207,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5245,10 +5245,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5282,8 +5282,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5316,10 +5316,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5353,8 +5353,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5387,10 +5387,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5437,10 +5437,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5474,8 +5474,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5507,8 +5507,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5540,8 +5540,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -5902,10 +5902,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -5939,8 +5939,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6046,10 +6046,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6083,8 +6083,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6117,10 +6117,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6155,10 +6155,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6193,10 +6193,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6245,10 +6245,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6283,10 +6283,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6321,10 +6321,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6358,8 +6358,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6392,10 +6392,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6429,8 +6429,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6463,10 +6463,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6513,10 +6513,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -6550,8 +6550,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6583,8 +6583,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -6616,8 +6616,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7034,10 +7034,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7071,8 +7071,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7105,10 +7105,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7142,8 +7142,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7241,10 +7241,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7278,8 +7278,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7312,10 +7312,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7350,10 +7350,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7388,10 +7388,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7435,8 +7435,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7469,10 +7469,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7507,10 +7507,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7545,10 +7545,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7582,8 +7582,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7616,10 +7616,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7653,8 +7653,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7687,10 +7687,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7725,10 +7725,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7762,8 +7762,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7795,8 +7795,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7829,10 +7829,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -7866,8 +7866,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7899,8 +7899,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7932,8 +7932,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -7966,10 +7966,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8003,8 +8003,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8413,10 +8413,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8450,8 +8450,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8484,10 +8484,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8521,8 +8521,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8620,10 +8620,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8657,8 +8657,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8691,10 +8691,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8729,10 +8729,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8767,10 +8767,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8814,8 +8814,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8848,10 +8848,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8886,10 +8886,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8924,10 +8924,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -8961,8 +8961,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -8995,10 +8995,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9032,8 +9032,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9066,10 +9066,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9104,10 +9104,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9141,8 +9141,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9174,8 +9174,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9208,10 +9208,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9245,8 +9245,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9278,8 +9278,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9311,8 +9311,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9345,10 +9345,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9382,8 +9382,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9792,10 +9792,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9829,8 +9829,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9863,10 +9863,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -9900,8 +9900,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -9999,10 +9999,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10036,8 +10036,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10070,10 +10070,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10108,10 +10108,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10146,10 +10146,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10193,8 +10193,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10227,10 +10227,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10265,10 +10265,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10303,10 +10303,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10340,8 +10340,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10374,10 +10374,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10411,8 +10411,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10445,10 +10445,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10483,10 +10483,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10520,8 +10520,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10553,8 +10553,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10587,10 +10587,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10624,8 +10624,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10657,8 +10657,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10690,8 +10690,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -10724,10 +10724,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -10761,8 +10761,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11171,10 +11171,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11208,8 +11208,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11242,10 +11242,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11279,8 +11279,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11378,10 +11378,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11415,8 +11415,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11449,10 +11449,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11487,10 +11487,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11525,10 +11525,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11572,8 +11572,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11606,10 +11606,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11644,10 +11644,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11682,10 +11682,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11719,8 +11719,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11753,10 +11753,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11790,8 +11790,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11824,10 +11824,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11862,10 +11862,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -11899,8 +11899,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11932,8 +11932,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -11966,10 +11966,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12003,8 +12003,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12036,8 +12036,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12069,8 +12069,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12103,10 +12103,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12140,8 +12140,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12543,10 +12543,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12580,8 +12580,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12614,10 +12614,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12651,8 +12651,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12750,10 +12750,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12787,8 +12787,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12821,10 +12821,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12859,10 +12859,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12897,10 +12897,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -12944,8 +12944,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -12978,10 +12978,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13016,10 +13016,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13054,10 +13054,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13091,8 +13091,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13125,10 +13125,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13162,8 +13162,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13196,10 +13196,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13234,10 +13234,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13271,8 +13271,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13304,8 +13304,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13338,10 +13338,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13375,8 +13375,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13412,8 +13412,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13446,10 +13446,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13483,8 +13483,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13886,10 +13886,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13923,8 +13923,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -13957,10 +13957,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -13994,8 +13994,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14093,10 +14093,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14130,8 +14130,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14164,10 +14164,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14202,10 +14202,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14240,10 +14240,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14287,8 +14287,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14321,10 +14321,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14359,10 +14359,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14397,10 +14397,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14434,8 +14434,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14468,10 +14468,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14505,8 +14505,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14539,10 +14539,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14577,10 +14577,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14614,8 +14614,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14647,8 +14647,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14681,10 +14681,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14718,8 +14718,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14755,8 +14755,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -14789,10 +14789,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -14826,8 +14826,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15229,10 +15229,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15266,8 +15266,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15300,10 +15300,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15337,8 +15337,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15436,10 +15436,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15473,8 +15473,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15507,10 +15507,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15545,10 +15545,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15583,10 +15583,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15630,8 +15630,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15664,10 +15664,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15702,10 +15702,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15740,10 +15740,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15777,8 +15777,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15811,10 +15811,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15848,8 +15848,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15882,10 +15882,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15920,10 +15920,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -15957,8 +15957,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -15990,8 +15990,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -16024,10 +16024,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -16061,8 +16061,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -16098,8 +16098,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;
@@ -16132,10 +16132,10 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(left.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref left.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
-                ref int op2Index = ref RefUtilities.Ternary(right.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref right.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       !left.IsReversedStride ? left.strides : 
@@ -16169,8 +16169,8 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(result.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(tensor.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref result.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref tensor.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
                 var rowMajorStrides = !result.IsReversedStride ? result.strides :
                                       tensor.strides;

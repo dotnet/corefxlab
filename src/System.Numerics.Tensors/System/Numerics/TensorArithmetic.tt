@@ -149,11 +149,11 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(<#= method.ResultName #>.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(<#= method.Op1Name #>.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref <#= method.ResultName #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref <#= method.Op1Name #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
 <# if ((method.MethodType == MethodType.Binary) || (method.MethodType == MethodType.Comparison)) {#>
-                ref int op2Index = ref RefUtilities.Ternary(<#= method.Op2Name #>.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref <#= method.Op2Name #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !<#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                       !<#= method.Op1Name #>.IsReversedStride ? <#= method.Op1Name #>.strides : 
