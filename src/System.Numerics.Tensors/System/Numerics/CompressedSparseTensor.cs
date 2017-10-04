@@ -251,9 +251,10 @@ namespace System.Numerics
             values.Span[valueIndex] = value;
             indices.Span[valueIndex] = nonCompressedIndex;
 
-            for (int i = compressedIndex + 1; i < compressedCounts.Length; i++)
+            var compressedCountsSpan = compressedCounts.Span.Slice(compressedIndex + 1);
+            for (int i = 0; i < compressedCountsSpan.Length; i++)
             {
-                compressedCounts.Span[i]++;
+                compressedCountsSpan[i]++;
             }
             nonZeroCount++;
         }
@@ -267,8 +268,8 @@ namespace System.Numerics
             values.Span.Slice(valueIndex + 1, nonZeroCount - valueIndex - 1).CopyTo(values.Span.Slice(valueIndex));
             indices.Span.Slice(valueIndex + 1, nonZeroCount - valueIndex - 1).CopyTo(indices.Span.Slice(valueIndex));
 
-            var compressedCountsSpan = compressedCounts.Span;
-            for (int i = compressedIndex + 1; i < compressedCounts.Length; i++)
+            var compressedCountsSpan = compressedCounts.Span.Slice(compressedIndex + 1);
+            for (int i = 0; i < compressedCountsSpan.Length; i++)
             {
                 compressedCountsSpan[i]--;
             }
@@ -367,7 +368,6 @@ namespace System.Numerics
             var newCompressedDimensionLength = dimensions[newCompressedDimension];
             var newCompressedDimensionStride = (int)(Length / newCompressedDimensionLength);
             
-
             var newValues = (T[])values.ToArray();
             var newCompressedCounts = new int[newCompressedDimensionLength + 1];
             var newIndices = new int[indices.Length];
@@ -375,8 +375,8 @@ namespace System.Numerics
             var compressedIndex = 0;
 
             var compressedCountsSpan = compressedCounts.Span;
-            var indicesSpan = indices.Span;
-            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < indicesSpan.Length; valueIndex++)
             {
                 while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
                 {
@@ -402,9 +402,9 @@ namespace System.Numerics
             var compressedIndex = 0;
 
             var compressedCountsSpan = compressedCounts.Span;
-            var indicesSpan = indices.Span;
-            var valuesSpan = values.Span;
-            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            var valuesSpan = values.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < valuesSpan.Length; valueIndex++)
             {
                 while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
                 {
@@ -422,8 +422,9 @@ namespace System.Numerics
 
         public override CompressedSparseTensor<T> ToCompressedSparseTensor()
         {
-            var newValues = values.Span.Slice(0, nonZeroCount).ToArray();
-            var newIndicies = indices.Span.Slice(0, nonZeroCount).ToArray();
+            // Create a copy of the backing storage, eliminating any unused space.
+            var newValues = values.Slice(0, nonZeroCount).ToArray();
+            var newIndicies = indices.Slice(0, nonZeroCount).ToArray();
 
             return new CompressedSparseTensor<T>(newValues, compressedCounts.ToArray(), newIndicies, nonZeroCount, dimensions, IsReversedStride);
         }
@@ -435,9 +436,9 @@ namespace System.Numerics
             var compressedIndex = 0;
 
             var compressedCountsSpan = compressedCounts.Span;
-            var indicesSpan = indices.Span;
-            var valuesSpan = values.Span;
-            for (int valueIndex = 0; valueIndex < nonZeroCount; valueIndex++)
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            var valuesSpan = values.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < valuesSpan.Length; valueIndex++)
             {
                 while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
                 {

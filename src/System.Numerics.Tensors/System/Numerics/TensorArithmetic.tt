@@ -127,7 +127,7 @@ namespace System.Numerics
 <# if (method.MethodType == MethodType.UnaryInPlace) { #>
             var <#=method.ResultName #>Span = <#=method.ResultName #>.Buffer.Span;
             var <#=method.Op1Name #>Span = <#=method.Op1Name #>.Buffer.Span;
-            for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+            for(int i = 0; i < <#=method.ResultName #>Span.Length; i++)
             {
                 <#=method.GetElementOperation(type.TypeName, "Span[i]")#>;
             }
@@ -139,7 +139,7 @@ namespace System.Numerics
 <# } #>
             if  <#= method.GetLinearOperationCheck() #>
             {
-                for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+                for(int i = 0; i < <#= method.ResultName #>Span.Length; i++)
                 {
                     <#=method.GetElementOperation(type.TypeName, "Span[i]")#>;
                 }
@@ -167,7 +167,7 @@ namespace System.Numerics
                 var columnMajorStrides = <#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                          <#= method.Op1Name #>.strides;
 <# } #>
-                for(;rowMajorIndex < <#= method.ResultName #>.Length; rowMajorIndex++)
+                for(;rowMajorIndex < <#= method.ResultName #>Span.Length; rowMajorIndex++)
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
@@ -209,7 +209,7 @@ namespace System.Numerics
             var leftSpan = left.Buffer.Span;
             var rightSpan = right.Buffer.Span;
 
-            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            for (int resultIndex = 0; resultIndex < resultSpan.Length; resultIndex++)
             {
                 <#=type.TypeName#> sum = (<#=type.TypeName#>)0;
 

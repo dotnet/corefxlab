@@ -35,7 +35,7 @@ namespace System.Numerics
         /// <returns></returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
         {
-            var dimensions = new[] { size, size }.AsReadOnlySpan();
+            var dimensions = new ReadOnlySpan<int>(new [] { size, size });
             var result = new DenseTensor<T>(dimensions, columMajor);
 
             for (int i = 0; i < size; i++)

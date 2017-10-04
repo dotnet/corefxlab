@@ -54,7 +54,6 @@ namespace System.Numerics
 
         public DenseTensor(Memory<T> memory, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
-            // keep a reference to the backing array
             this.memory = memory;
 
             if (Length != memory.Length)
@@ -64,7 +63,7 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Returns a single dimensional view of this Tensor, in C-style ordering
+        /// Returns a single dimensional view of this Tensor
         /// </summary>
         public Memory<T> Buffer => memory;
 
