@@ -27,7 +27,7 @@ namespace System.Text.Primitives.Tests
             decimal actualValue;
             int actualConsumed;
 
-            result = Parsers.Custom.TryParseDecimal(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
+            result = CustomParser.TryParseDecimal(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -47,19 +47,19 @@ namespace System.Text.Primitives.Tests
             //    Assert.Equal(expectedConsumed, actualConsumed);
             //}
 
-            result = Parsers.Utf8.TryParseDecimal(byteSpan, out actualValue);
+            result = Utf8Parser.TryParseDecimal(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = Parsers.Utf8.TryParseDecimal(byteSpan, out actualValue, out actualConsumed);
+            result = Utf8Parser.TryParseDecimal(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
-            result = Parsers.Custom.TryParseDecimal(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
+            result = CustomParser.TryParseDecimal(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
@@ -78,12 +78,12 @@ namespace System.Text.Primitives.Tests
             //    Assert.Equal(expectedConsumed, actualConsumed);
             //}
 
-            result = Parsers.Utf16.TryParseDecimal(charSpan, out actualValue);
+            result = Utf16Parser.TryParseDecimal(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = Parsers.Utf16.TryParseDecimal(charSpan, out actualValue, out actualConsumed);
+            result = Utf16Parser.TryParseDecimal(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);

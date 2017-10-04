@@ -6,32 +6,29 @@ using System.Buffers.Text;
 
 namespace System.Buffers
 {
-    public static partial class Parsers
+    public static partial class CustomParser
     {
-        public static partial class Custom
+        public static bool TryParseDecimal(ReadOnlySpan<byte> text, out decimal value, out int bytesConsumed, SymbolTable symbolTable = null)
         {
-            public static bool TryParseDecimal(ReadOnlySpan<byte> text, out decimal value, out int bytesConsumed, SymbolTable symbolTable = null)
+            symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
+
+            bytesConsumed = 0;
+            value = default;
+
+            if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
-
-                bytesConsumed = 0;
-                value = default;
-
-                if (symbolTable == SymbolTable.InvariantUtf8)
-                {
-                    return Utf8.TryParseDecimal(text, out value, out bytesConsumed);
-                }
-                else if (symbolTable == SymbolTable.InvariantUtf16)
-                {
-                    ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
-                    int charactersConsumed;
-                    bool result = Utf16.TryParseDecimal(textChars, out value, out charactersConsumed);
-                    bytesConsumed = charactersConsumed * sizeof(char);
-                    return result;
-                }
-
-                return false;
+                return Utf8Parser.TryParseDecimal(text, out value, out bytesConsumed);
             }
+            else if (symbolTable == SymbolTable.InvariantUtf16)
+            {
+                ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
+                int charactersConsumed;
+                bool result = Utf16Parser.TryParseDecimal(textChars, out value, out charactersConsumed);
+                bytesConsumed = charactersConsumed * sizeof(char);
+                return result;
+            }
+
+            return false;
         }
-    }
+    } 
 }

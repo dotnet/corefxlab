@@ -160,42 +160,42 @@ namespace System.Text.Primitives.Tests
             if (typeof(T) == typeof(ulong))
             {
                 expected = value.ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat(value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat(value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(uint))
             {
                 expected = ((uint)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((uint)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((uint)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(ushort))
             {
                 expected = ((ushort)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((ushort)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((ushort)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(byte))
             {
                 expected = ((byte)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((byte)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((byte)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(long))
             {
                 expected = ((long)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((long)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((long)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(int))
             {
                 expected = ((int)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((int)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((int)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(short))
             {
                 expected = ((short)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((short)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((short)value, span, out written, format, symbolTable));
             }
             else if (typeof(T) == typeof(sbyte))
             {
                 expected = ((sbyte)value).ToString(formatString, CultureInfo.InvariantCulture);
-                Assert.True(Formatters.Custom.TryFormat((sbyte)value, span, out written, format, symbolTable));
+                Assert.True(CustomFormatter.TryFormat((sbyte)value, span, out written, format, symbolTable));
             }
             else
                 throw new NotSupportedException();

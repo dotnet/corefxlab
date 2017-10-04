@@ -43,7 +43,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < TestHelper.LoadIterations; i++)
                     {
-                        Parsers.Utf8.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
+                        Utf8Parser.TryParseBoolean(utf8ByteSpan, out value, out bytesConsumed);
                     }
                 }
             }

@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Text.Primitives
         public static ulong GetUInt64(this ReadableBuffer buffer)
         {
             ulong value;
-            if (Parsers.Utf8.TryParseUInt64(buffer.First.Span, out value))
+            if (Utf8Parser.TryParseUInt64(buffer.First.Span, out value))
             {
                 return value;
             }
@@ -115,7 +115,7 @@ namespace System.IO.Pipelines.Text.Primitives
             Span<byte> toParseBuffer = stackalloc byte[toParseLength];
             buffer.CopyTo(toParseBuffer);
 
-            if (Parsers.Utf8.TryParseUInt64(toParseBuffer, out value))
+            if (Utf8Parser.TryParseUInt64(toParseBuffer, out value))
             {
                 return value;
             }
