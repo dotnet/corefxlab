@@ -4,7 +4,7 @@
 
 using System.Buffers.Text;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class CustomParser
     {

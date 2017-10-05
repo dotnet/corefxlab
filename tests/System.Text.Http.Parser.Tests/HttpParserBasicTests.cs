@@ -5,6 +5,7 @@ using Xunit;
 using System.IO.Pipelines;
 using System.Collections.Generic;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Text.Http.Parser.Tests
 {

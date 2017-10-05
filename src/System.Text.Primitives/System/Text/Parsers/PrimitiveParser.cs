@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     static partial class Parsers
     {
