@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Text.Http.Parser.Internal
 {

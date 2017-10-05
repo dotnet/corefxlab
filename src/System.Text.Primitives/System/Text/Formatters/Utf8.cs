@@ -4,7 +4,7 @@
 using System.Buffers.Text;
 using System.Text;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class Utf8Formatter
     {

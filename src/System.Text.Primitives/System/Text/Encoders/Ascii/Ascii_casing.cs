@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class Encodings
     {

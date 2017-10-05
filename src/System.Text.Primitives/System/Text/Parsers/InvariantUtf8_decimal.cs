@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class Utf8Parser
     {

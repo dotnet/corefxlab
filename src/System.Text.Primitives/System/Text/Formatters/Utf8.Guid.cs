@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class Utf8Formatter
     {

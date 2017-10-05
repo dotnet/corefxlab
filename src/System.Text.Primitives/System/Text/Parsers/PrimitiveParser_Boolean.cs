@@ -3,7 +3,7 @@
 
 using System.Buffers.Text;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public static partial class CustomParser {
         public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed, SymbolTable symbolTable = null)
