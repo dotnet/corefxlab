@@ -1291,7 +1291,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(0, consumed);
         }
 
-        [Theory]
+        //[Theory] - This test is far too slow (turns a 0.5-second test run into a 2.33 minute test run!) and tests a very unlikely scenario. Save for outerloop.
         [InlineData("0", true, 0, int.MaxValue)]
         [InlineData("2", true, 2, int.MaxValue)]
         [InlineData("21", true, 21, int.MaxValue)]
