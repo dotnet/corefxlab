@@ -52,7 +52,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for(int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Parsers.Utf8.TryParseInt32(utf8ByteSpan, out int value);
+                        Utf8Parser.TryParseInt32(utf8ByteSpan, out int value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -76,7 +76,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        Parsers.Utf8.TryParseInt32(utf8ByteSpan, out int value);
+                        Utf8Parser.TryParseInt32(utf8ByteSpan, out int value);
                         TestHelper.DoNotIgnore(value, 0);
                     }
                 }
@@ -156,7 +156,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Parsers.Utf8.TryParseInt32(utf8ByteSpan, out int value, out int bytesConsumed);
+                        Utf8Parser.TryParseInt32(utf8ByteSpan, out int value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -180,7 +180,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        Parsers.Utf8.TryParseInt32(utf8ByteSpan, out int value, out int bytesConsumed);
+                        Utf8Parser.TryParseInt32(utf8ByteSpan, out int value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -361,7 +361,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Parsers.Custom.TryParseInt32(utf8Span, out int value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
+                        CustomParser.TryParseInt32(utf8Span, out int value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }

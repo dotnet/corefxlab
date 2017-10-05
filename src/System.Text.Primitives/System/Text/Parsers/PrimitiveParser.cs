@@ -5,27 +5,27 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public static partial class Parsers
+    static partial class Parsers
     {
-        const int ByteOverflowLength = 3;
-        const int ByteOverflowLengthHex = 2;
-        const int UInt16OverflowLength = 5;
-        const int UInt16OverflowLengthHex = 4;
-        const int UInt32OverflowLength = 10;
-        const int UInt32OverflowLengthHex = 8;
-        const int UInt64OverflowLength = 20;
-        const int UInt64OverflowLengthHex = 16;
-        
-        const int SByteOverflowLength = 3;
-        const int SByteOverflowLengthHex = 2;
-        const int Int16OverflowLength = 5;
-        const int Int16OverflowLengthHex = 4;
-        const int Int32OverflowLength = 10;
-        const int Int32OverflowLengthHex = 8;
-        const int Int64OverflowLength = 19;
-        const int Int64OverflowLengthHex = 16;
+        public const int ByteOverflowLength = 3;
+        public const int ByteOverflowLengthHex = 2;
+        public const int UInt16OverflowLength = 5;
+        public const int UInt16OverflowLengthHex = 4;
+        public const int UInt32OverflowLength = 10;
+        public const int UInt32OverflowLengthHex = 8;
+        public const int UInt64OverflowLength = 20;
+        public const int UInt64OverflowLengthHex = 16;
 
-        static readonly byte[] s_HexLookup =
+        public const int SByteOverflowLength = 3;
+        public const int SByteOverflowLengthHex = 2;
+        public const int Int16OverflowLength = 5;
+        public const int Int16OverflowLengthHex = 4;
+        public const int Int32OverflowLength = 10;
+        public const int Int32OverflowLengthHex = 8;
+        public const int Int64OverflowLength = 19;
+        public const int Int64OverflowLengthHex = 16;
+
+        public static readonly byte[] HexLookup =
         {
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 15
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 31
@@ -46,7 +46,7 @@ namespace System.Buffers
         };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsHexFormat(ParsedFormat format)
+        public static bool IsHexFormat(ParsedFormat format)
         {
             return format.Symbol == 'X' || format.Symbol == 'x';
         }

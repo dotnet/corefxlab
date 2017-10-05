@@ -43,7 +43,7 @@ namespace System
             {
                 var span = format.Slice(1);
 
-                if (!Parsers.Utf16.TryParseByte(span, out precision))
+                if (!Utf16Parser.TryParseByte(span, out precision))
                     throw new FormatException("format");
 
                 if (precision > MaxPrecision)

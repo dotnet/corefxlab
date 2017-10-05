@@ -7,12 +7,12 @@ namespace System.Buffers.Text
     public static partial class Extensions
     {
         public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
-            => Formatters.Custom.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
+            => CustomFormatter.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
 
         public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
-            => Formatters.Custom.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
+            => CustomFormatter.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
 
         public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
-            => Formatters.Custom.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
+            => CustomFormatter.TryFormat(value, buffer, out bytesWritten, format, symbolTable);
     }
 }

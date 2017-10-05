@@ -303,7 +303,7 @@ namespace System.Text.Json.Tests
                     value.StringValue = ReadString(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    Parsers.Custom.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
+                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:

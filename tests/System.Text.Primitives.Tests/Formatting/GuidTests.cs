@@ -60,7 +60,7 @@ namespace System.Text.Primitives.Tests
             var expected = guid.ToString(format.ToString());
 
             var span = new Span<byte>(new byte[128]);
-            Assert.True(Formatters.Custom.TryFormat(guid, span, out int written, format, symbolTable));
+            Assert.True(CustomFormatter.TryFormat(guid, span, out int written, format, symbolTable));
 
             var actual = TestHelper.SpanToString(span.Slice(0, written), symbolTable);
             Assert.Equal(expected, actual);
