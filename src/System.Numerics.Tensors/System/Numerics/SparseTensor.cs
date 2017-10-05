@@ -10,17 +10,17 @@ namespace System.Numerics
     {
         private readonly Dictionary<int, T> values;
 
-        public SparseTensor(int[] dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
+        public SparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
         {
             values = new Dictionary<int, T>(capacity);
         }
 
-        internal SparseTensor(Dictionary<int, T> values, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        internal SparseTensor(Dictionary<int, T> values, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             this.values = values;
         }
 
-        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
             values = new Dictionary<int, T>(fromArray.Length);
 
@@ -81,41 +81,25 @@ namespace System.Numerics
 
         public int NonZeroCount => values.Count;
 
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
-        }
-
         public override Tensor<T> Clone()
         {
             var valueCopy = new Dictionary<int, T>(values);
             return new SparseTensor<T>(valueCopy, dimensions, IsReversedStride);
         }
 
-        public override Tensor<TResult> CloneEmpty<TResult>(int[] dimensions)
+        public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<TResult>(dimensions, IsReversedStride);
         }
 
-        public override Tensor<T> Reshape(params int[] dimensions)
+        public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<T>(values, dimensions, IsReversedStride);
         }
 
         public override DenseTensor<T> ToDenseTensor()
         {
-            var denseTensor = new DenseTensor<T>(dimensions, reverseStride: IsReversedStride);
+            var denseTensor = new DenseTensor<T>(Dimensions, reverseStride: IsReversedStride);
             
             // only set non-zero values
             foreach (var pair in values)
@@ -136,7 +120,6 @@ namespace System.Numerics
         {
             var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
 
-            Span<int> indices = new Span<int>(new int[Rank]);
             foreach (var pair in values)
             {
                 compressedSparseTensor.SetValue(pair.Key, pair.Value);

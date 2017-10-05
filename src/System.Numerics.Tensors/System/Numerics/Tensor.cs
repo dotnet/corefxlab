@@ -35,7 +35,10 @@ namespace System.Numerics
         /// <returns></returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
         {
-            var result = new DenseTensor<T>(new[] { size, size }, columMajor);
+            Span<int> dimensions = stackalloc int[2];
+            dimensions[0] = dimensions[1] = size;
+
+            var result = new DenseTensor<T>(dimensions, columMajor);
 
             for (int i = 0; i < size; i++)
             {
@@ -60,7 +63,8 @@ namespace System.Numerics
             int diagonalLength = diagonal.dimensions[0];
 
             // TODO: allow specification of axis1 and axis2?
-            var dimensions = new int[diagonal.dimensions.Length + 1];
+            var rank = diagonal.dimensions.Length + 1;
+            Span<int> dimensions = rank < ArrayUtilities.StackallocMax ? stackalloc int[rank] : new Span<int>(new int[rank]);
 
             // assume square
             var axisLength = diagonalLength + Math.Abs(offset);
@@ -315,15 +319,17 @@ namespace System.Numerics
         private readonly bool isReversedStride;
 
         private readonly long length;
-        private IReadOnlyList<int> readOnlyDimensions;
 
-        protected Tensor(int[] dimensions, bool reverseStride)
+        protected Tensor(int length)
         {
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
+            dimensions = new[] { length };
+            strides = new[] { 1 };
+            isReversedStride = false;
+            this.length = length;
+        }
 
+        protected Tensor(ReadOnlySpan<int> dimensions, bool reverseStride)
+        {
             if (dimensions.Length == 0)
             {
                 throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
@@ -345,7 +351,37 @@ namespace System.Numerics
             isReversedStride = reverseStride;
 
             length = size;
-            readOnlyDimensions = null;
+        }
+
+        /// <summary>
+        /// Initializes tensor with same dimensions as array, content of array is ignored
+        /// </summary>
+        /// <param name="fromArray"></param>
+        /// <param name="reverseStride"></param>
+        protected Tensor(Array fromArray, bool reverseStride)
+        {
+            if (fromArray == null)
+            {
+                throw new ArgumentNullException(nameof(fromArray));
+            }
+
+            if (fromArray.Rank == 0)
+            {
+                throw new ArgumentException("Array must contain elements.", nameof(fromArray));
+            }
+
+            dimensions = new int[fromArray.Rank];
+            long size = 1;
+            for (int i = 0; i < dimensions.Length; i++)
+            {
+                dimensions[i] = fromArray.GetLength(i);
+                size *= dimensions[i];
+            }
+
+            strides = ArrayUtilities.GetStrides(dimensions, reverseStride);
+            isReversedStride = reverseStride;
+
+            length = size;
         }
 
         /// <summary>
@@ -358,18 +394,20 @@ namespace System.Numerics
         /// </summary>
         public int Rank => dimensions.Length;
 
+        /// <summary>
+        /// True if strides are reversed (AKA Column-major)
+        /// </summary>
         public bool IsReversedStride => isReversedStride;
 
         /// <summary>
-        /// Returns a copy of the dimensions array.
+        /// Returns a readonly view of the dimensions of this tensor.
         /// </summary>
-        public IReadOnlyList<int> Dimensions
-        {
-            get
-            {
-                return readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
-            }
-        }
+        public ReadOnlySpan<int> Dimensions => dimensions;
+
+        /// <summary>
+        /// Returns a readonly view of the strides of this tensor.
+        /// </summary>
+        public ReadOnlySpan<int> Strides => strides;
 
         /// <summary>
         /// Sets all elements in Tensor to <paramref name="value"/>.
@@ -386,7 +424,7 @@ namespace System.Numerics
         public abstract Tensor<T> Clone();
 
         /// <summary>
-        /// Creates a new Tensor with the same size as this tensor with elements initialized to their default value.
+        /// Creates a new Tensor with the same layout and size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
         public virtual Tensor<T> CloneEmpty()
@@ -394,13 +432,18 @@ namespace System.Numerics
             return CloneEmpty<T>(dimensions);
         }
 
-
-        public virtual Tensor<T> CloneEmpty(int[] dimensions)
+        /// <summary>
+        /// Creates a new Tensor with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <param name="dimensions"></param>
+        /// <returns></returns>
+        public virtual Tensor<T> CloneEmpty(ReadOnlySpan<int> dimensions)
         {
             return CloneEmpty<T>(dimensions);
         }
+
         /// <summary>
-        /// Creates a new Tensor of a different type with the same size as this tensor with elements initialized to their default value.
+        /// Creates a new Tensor of a different type with the same layout and size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
         public virtual Tensor<TResult> CloneEmpty<TResult>()
@@ -408,7 +451,11 @@ namespace System.Numerics
             return CloneEmpty<TResult>(dimensions);
         }
 
-        public abstract Tensor<TResult> CloneEmpty<TResult>(int[] dimensions);
+        /// <summary>
+        /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions);
 
         public Tensor<T> GetDiagonal()
         {
@@ -459,7 +506,8 @@ namespace System.Numerics
                 throw new ArgumentException($"Cannot compute diagonal with offset {offset}", nameof(offset));
             }
 
-            var newTensorDimensions = new int[dimensions.Length - 1];
+            var newTensorRank = Rank - 1;
+            var newTensorDimensions = newTensorRank < ArrayUtilities.StackallocMax ? stackalloc int[newTensorRank] : new Span<int>(new int[newTensorRank]);
             newTensorDimensions[0] = diagonalLength;
 
             for(int i = 2; i < dimensions.Length; i++)
@@ -490,7 +538,6 @@ namespace System.Numerics
 
             return diagonalTensor;
         }
-
 
         public Tensor<T> GetTriangle()
         {
@@ -615,7 +662,7 @@ namespace System.Numerics
             return Tensor.Contract(this, right, s_oneArray, s_zeroArray);
         }
 
-        public abstract Tensor<T> Reshape(params int[] dimensions);
+        public abstract Tensor<T> Reshape(ReadOnlySpan<int> dimensions);
         
         public virtual T this[params int[] indices]
         {
@@ -632,7 +679,7 @@ namespace System.Numerics
             }
         }
 
-        public virtual T this[Span<int> indices]
+        public virtual T this[ReadOnlySpan<int> indices]
         {
             get
             {
@@ -934,7 +981,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = new Span<int>(new int[Rank]);
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1033,7 +1080,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = new Span<int>(new int[Rank]);
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1064,7 +1111,7 @@ namespace System.Numerics
                 }
             }
             
-            var indices = new int[Rank];  // consider stackalloc
+            var indices = new int[Rank];
             for (int i = 0; i < Length; i++)
             {
                 ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1095,7 +1142,7 @@ namespace System.Numerics
 
         public virtual DenseTensor<T> ToDenseTensor()
         {
-            var denseTensor = new DenseTensor<T>(dimensions, IsReversedStride);
+            var denseTensor = new DenseTensor<T>(Dimensions, IsReversedStride);
             for (int i = 0; i < Length; i++)
             {
                 denseTensor.SetValue(i, GetValue(i));
@@ -1105,7 +1152,7 @@ namespace System.Numerics
 
         public virtual SparseTensor<T> ToSparseTensor()
         {
-            var sparseTensor = new SparseTensor<T>(dimensions, IsReversedStride);
+            var sparseTensor = new SparseTensor<T>(Dimensions, IsReversedStride);
             for (int i = 0; i < Length; i++)
             {
                 sparseTensor.SetValue(i, GetValue(i));
@@ -1115,7 +1162,7 @@ namespace System.Numerics
 
         public virtual CompressedSparseTensor<T> ToCompressedSparseTensor()
         {
-            var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, IsReversedStride);
+            var compressedSparseTensor = new CompressedSparseTensor<T>(Dimensions, IsReversedStride);
             for (int i = 0; i < Length; i++)
             {
                 compressedSparseTensor.SetValue(i, GetValue(i));
