@@ -37,7 +37,7 @@ namespace System.IO.Pipelines
         private long _length;
         private long _currentWriteLength;
 
-        private byte _pooledSegmentCount;
+        private int _pooledSegmentCount;
 
         private PipeAwaitable _readerAwaitable;
         private PipeAwaitable _writerAwaitable;
