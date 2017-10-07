@@ -5,7 +5,7 @@
 )
 
 $repoRoot = "$PSScriptRoot\.."
-$dotnetExePath="$repoRoot\dotnet\dotnet.exe"
+$dotnetExePath="$repoRoot\dotnetcli\dotnet.exe"
 $nugetPath = "$repoRoot\nuget\nuget.exe"
 $packagesPath = "$repoRoot\packages"
 
