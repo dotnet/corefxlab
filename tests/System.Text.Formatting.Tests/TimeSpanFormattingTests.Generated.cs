@@ -5,6 +5,7 @@
 
 using System.Globalization;
 using System.Text;
+using System.Buffers.Text;
 using Xunit;
 
 namespace System.Text.Formatting.Tests

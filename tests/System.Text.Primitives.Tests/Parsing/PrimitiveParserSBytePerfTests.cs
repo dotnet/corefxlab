@@ -5,6 +5,7 @@
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
 {
@@ -72,7 +73,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Parsers.Utf8.TryParseSByte(utf8ByteSpan, out sbyte value, out int bytesConsumed);
+                        Utf8Parser.TryParseSByte(utf8ByteSpan, out sbyte value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -96,7 +97,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i<Benchmark.InnerIterationCount; i++) 
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        Parsers.Utf8.TryParseSByte(utf8ByteSpan, out sbyte value, out int bytesConsumed);
+                        Utf8Parser.TryParseSByte(utf8ByteSpan, out sbyte value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     } 
                 } 
@@ -201,7 +202,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Parsers.Custom.TryParseSByte(utf8Span, out sbyte value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
+                        CustomParser.TryParseSByte(utf8Span, out sbyte value, out int bytesConsumed, 'G', TestHelper.ThaiTable);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }

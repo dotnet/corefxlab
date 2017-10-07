@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Diagnostics;
+using System.Linq;
 
 namespace System.Numerics
 {
@@ -16,11 +20,11 @@ namespace System.Numerics
     /// <typeparam name="T"></typeparam>
     public class CompressedSparseTensor<T> : Tensor<T>
     {
-        private T[] values;
-        private int[] compressedCounts;
-        private int[] indices;
+        private Memory<T> values;
+        private Memory<int> compressedCounts;
+        private Memory<int> indices;
 
-        private int valueCount;
+        private int nonZeroCount;
 
         private readonly int[] nonCompressedStrides;
         private readonly int compressedDimension;
@@ -28,21 +32,22 @@ namespace System.Numerics
         private const int defaultCapacity = 64;
 
 
-        public CompressedSparseTensor(int[] dimensions, bool reverseStride = false) : this(dimensions, defaultCapacity, reverseStride)
+        public CompressedSparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false) : this(dimensions, defaultCapacity, reverseStride)
         { }
 
-        public CompressedSparseTensor(int[] dimensions, int capacity, bool reverseStride = false) : base(dimensions, reverseStride)
+        public CompressedSparseTensor(ReadOnlySpan<int> dimensions, int capacity, bool reverseStride = false) : base(dimensions, reverseStride)
         {
-            valueCount = 0;
+            nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
             nonCompressedStrides[compressedDimension] = 0;
             var compressedDimensionLength = dimensions[compressedDimension];
             compressedCounts = new int[compressedDimensionLength + 1];
-            EnsureCapacity(capacity);
+            values = new T[capacity];
+            indices = new int[capacity];
         }
 
-        public CompressedSparseTensor(T[] values, int[] compressedCounts, int[] indices, int valueCount, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        public CompressedSparseTensor(Memory<T> values, Memory<int> compressedCounts, Memory<int> indices, int nonZeroCount, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
@@ -50,12 +55,12 @@ namespace System.Numerics
             this.values = values;
             this.compressedCounts = compressedCounts;
             this.indices = indices;
-            this.valueCount = valueCount;
+            this.nonZeroCount = nonZeroCount;
         }
 
-        public CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal CompressedSparseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
-            valueCount = 0;
+            nonZeroCount = 0;
             compressedDimension = reverseStride ? Rank - 1 : 0;
             nonCompressedStrides = (int[])strides.Clone();
             nonCompressedStrides[compressedDimension] = 0;
@@ -99,7 +104,7 @@ namespace System.Numerics
             }
         }
 
-        public override T this[Span<int> indices]
+        public override T this[ReadOnlySpan<int> indices]
         {
             get
             {
@@ -110,7 +115,7 @@ namespace System.Numerics
 
                 if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
                 {
-                    return values[valueIndex];
+                    return values.Span[valueIndex];
                 }
 
                 return arithmetic.Zero;
@@ -125,17 +130,49 @@ namespace System.Numerics
             }
         }
 
+        public override T GetValue(int index)
+        {
+            var compressedDimensionStride = strides[compressedDimension];
+            Debug.Assert(compressedDimensionStride == strides.Max());
+
+            var compressedIndex = index / compressedDimensionStride;
+            var nonCompressedIndex = index % compressedDimensionStride;
+
+            var valueIndex = 0;
+
+            if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
+            {
+                return values.Span[valueIndex];
+            }
+
+            return arithmetic.Zero;
+        }
+
+        public override void SetValue(int index, T value)
+        {
+            var compressedDimensionStride = strides[compressedDimension];
+            Debug.Assert(compressedDimensionStride == strides.Max());
+
+            var compressedIndex = index / compressedDimensionStride;
+            var nonCompressedIndex = index % compressedDimensionStride;
+
+            SetAt(value, compressedIndex, nonCompressedIndex);
+
+        }
+
+        public int Capacity => values.Length;
+        public int NonZeroCount => nonZeroCount;
+
         // unsafe accessors
-        public T[] Values => values;
-        public int ValueCount => valueCount;
-        public int[] CompressedCounts => compressedCounts;
-        public int[] Indices => indices;
+        public Memory<T> Values => values;
+        public Memory<int> CompressedCounts => compressedCounts;
+        public Memory<int> Indices => indices;
 
         private void EnsureCapacity(int min, int allocateIndex = -1)
         {
-            if (values == null || values.Length < min)
+            if (values.Length < min)
             {
-                var newCapacity = (values == null || values.Length == 0) ? defaultCapacity : values.Length * 2;
+                var newCapacity = values.Length == 0 ? defaultCapacity : values.Length * 2;
 
                 if (newCapacity > Length)
                 {
@@ -147,32 +184,44 @@ namespace System.Numerics
                     newCapacity = min;
                 }
 
-                T[] newValues = new T[newCapacity];
-                int[] newIndices = new int[newCapacity];
+                Memory<T> newValues = new T[newCapacity];
+                Memory<int> newIndices = new int[newCapacity];
 
-                if (valueCount > 0)
+                if (nonZeroCount > 0)
                 {
                     if (allocateIndex == -1)
                     {
-                        Array.Copy(values, newValues, valueCount);
-                        Array.Copy(indices, newIndices, valueCount);
+                        var valuesSpan = values.Span.Slice(0, nonZeroCount);
+                        var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+
+                        valuesSpan.CopyTo(newValues.Span);
+                        indicesSpan.CopyTo(newIndices.Span);
                     }
                     else
                     {
-                        Debug.Assert(allocateIndex <= valueCount);
+                        Debug.Assert(allocateIndex <= nonZeroCount);
                         // leave a gap at allocateIndex
 
                         // copy range before allocateIndex
                         if (allocateIndex > 0)
                         {
-                            Array.Copy(values, newValues, allocateIndex);
-                            Array.Copy(indices, newIndices, allocateIndex);
+                            var valuesSpan = values.Span.Slice(0, allocateIndex);
+                            var indicesSpan = indices.Span.Slice(0, allocateIndex);
+
+                            valuesSpan.CopyTo(newValues.Span);
+                            indicesSpan.CopyTo(newIndices.Span);
                         }
 
-                        if (allocateIndex < valueCount)
+                        if (allocateIndex < nonZeroCount)
                         {
-                            Array.Copy(values, allocateIndex, newValues, allocateIndex + 1, valueCount - allocateIndex);
-                            Array.Copy(indices, allocateIndex, newIndices, allocateIndex + 1, valueCount - allocateIndex);
+                            var valuesSpan = values.Span.Slice(allocateIndex, nonZeroCount - allocateIndex);
+                            var indicesSpan = indices.Span.Slice(allocateIndex, nonZeroCount - allocateIndex);
+
+                            var newValuesSpan = newValues.Span.Slice(allocateIndex + 1, nonZeroCount - allocateIndex);
+                            var newIndicesSpan = newIndices.Span.Slice(allocateIndex + 1, nonZeroCount - allocateIndex);
+
+                            valuesSpan.CopyTo(newValuesSpan);
+                            indicesSpan.CopyTo(newIndicesSpan);
                         }
                     }
                 }
@@ -184,49 +233,47 @@ namespace System.Numerics
 
         private void InsertAt(int valueIndex, T value, int compressedIndex, int nonCompressedIndex)
         {
-            Debug.Assert(valueIndex <= valueCount);
+            Debug.Assert(valueIndex <= nonZeroCount);
             Debug.Assert(compressedIndex < compressedCounts.Length - 1);
 
-            if (values == null || values.Length <= valueIndex)
+            if (values.Length <= valueIndex)
             {
                 // allocate a new array, leaving a gap
                 EnsureCapacity(valueIndex + 1, valueIndex);
-
-                // insert into the gap
-                values[valueIndex] = value;
-                indices[valueIndex] = nonCompressedIndex;
             }
-            else if (valueCount != valueIndex)
+            else if (nonZeroCount != valueIndex)
             {
                 // shift values to make a gap
-                Array.Copy(values, valueIndex, values, valueIndex + 1, valueCount - valueIndex);
-                Array.Copy(indices, valueIndex, indices, valueIndex + 1, valueCount - valueIndex);
+                values.Span.Slice(valueIndex, nonZeroCount - valueIndex).CopyTo(values.Span.Slice(valueIndex + 1));
+                indices.Span.Slice(valueIndex, nonZeroCount - valueIndex).CopyTo(indices.Span.Slice(valueIndex + 1));
             }
 
-            values[valueIndex] = value;
-            indices[valueIndex] = nonCompressedIndex;
+            values.Span[valueIndex] = value;
+            indices.Span[valueIndex] = nonCompressedIndex;
 
-            for (int i = compressedIndex + 1; i < compressedCounts.Length; i++)
+            var compressedCountsSpan = compressedCounts.Span.Slice(compressedIndex + 1);
+            for (int i = 0; i < compressedCountsSpan.Length; i++)
             {
-                compressedCounts[i]++;
+                compressedCountsSpan[i]++;
             }
-            valueCount++;
+            nonZeroCount++;
         }
 
         private void RemoveAt(int valueIndex, int compressedIndex)
         {
-            Debug.Assert(valueIndex < valueCount);
+            Debug.Assert(valueIndex < nonZeroCount);
             Debug.Assert(compressedIndex < compressedCounts.Length - 1);
 
             // shift values to close the gap
-            Array.Copy(values, valueIndex + 1, values, valueIndex, valueCount - valueIndex - 1);
-            Array.Copy(indices, valueIndex + 1, indices, valueIndex, valueCount - valueIndex - 1);
+            values.Span.Slice(valueIndex + 1, nonZeroCount - valueIndex - 1).CopyTo(values.Span.Slice(valueIndex));
+            indices.Span.Slice(valueIndex + 1, nonZeroCount - valueIndex - 1).CopyTo(indices.Span.Slice(valueIndex));
 
-            for (int i = compressedIndex + 1; i < compressedCounts.Length; i++)
+            var compressedCountsSpan = compressedCounts.Span.Slice(compressedIndex + 1);
+            for (int i = 0; i < compressedCountsSpan.Length; i++)
             {
-                compressedCounts[i]--;
+                compressedCountsSpan[i]--;
             }
-            valueCount--;
+            nonZeroCount--;
         }
 
         private void SetAt(T value, int compressedIndex, int nonCompressedIndex)
@@ -242,8 +289,8 @@ namespace System.Numerics
                 }
                 else
                 {
-                    values[valueIndex] = value;
-                    indices[valueIndex] = nonCompressedIndex;
+                    values.Span[valueIndex] = value;
+                    indices.Span[valueIndex] = nonCompressedIndex;
                 }
             }
             else if (!isZero)
@@ -261,7 +308,7 @@ namespace System.Numerics
         /// <returns>True if element is found at specific index, false if no specific index is found and insertion point is returned</returns>
         private bool TryFindIndex(int compressedIndex, int nonCompressedIndex, out int valueIndex)
         {
-            if (valueCount == 0)
+            if (nonZeroCount == 0)
             {
                 valueIndex = 0;
                 return false;
@@ -269,14 +316,15 @@ namespace System.Numerics
 
             Debug.Assert(compressedIndex < compressedCounts.Length - 1);
 
-            var lowerValueIndex = compressedCounts[compressedIndex];
-            var upperValueIndex = compressedCounts[compressedIndex + 1];
+            var compressedCountsSpan = compressedCounts.Span;
+            var lowerValueIndex = compressedCountsSpan[compressedIndex];
+            var upperValueIndex = compressedCountsSpan[compressedIndex + 1];
+            var indicesSpan = indices.Span;
 
             // could be a faster search
-
             for (valueIndex = lowerValueIndex; valueIndex < upperValueIndex; valueIndex++)
             {
-                if (indices[valueIndex] == nonCompressedIndex)
+                if (indicesSpan[valueIndex] == nonCompressedIndex)
                 {
                     return true;
                 }
@@ -285,33 +333,18 @@ namespace System.Numerics
             return false;
         }
 
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
-        }
 
         public override Tensor<T> Clone()
         {
-            return new CompressedSparseTensor<T>((T[])values.Clone(), (int[])compressedCounts.Clone(), (int[])indices.Clone(), valueCount, dimensions, IsReversedStride);
+            return new CompressedSparseTensor<T>(values.ToArray(), compressedCounts.ToArray(), indices.ToArray(), nonZeroCount, dimensions, IsReversedStride);
         }
 
-        public override Tensor<TResult> CloneEmpty<TResult>(int[] dimensions)
+        public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new CompressedSparseTensor<TResult>(dimensions, IsReversedStride);
         }
 
-        public override Tensor<T> Reshape(params int[] dimensions)
+        public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             // reshape currently has shallow semantics which are not compatible with the backing storage for CompressedSparseTensor
             // which bakes in information about dimensions (compressedCounts and indices)
@@ -320,21 +353,23 @@ namespace System.Numerics
             var newCompressedDimensionLength = dimensions[newCompressedDimension];
             var newCompressedDimensionStride = (int)(Length / newCompressedDimensionLength);
             
-
-            var newValues = (T[])values.Clone();
+            var newValues = (T[])values.ToArray();
             var newCompressedCounts = new int[newCompressedDimensionLength + 1];
             var newIndices = new int[indices.Length];
 
             var compressedIndex = 0;
 
-            for (int valueIndex = 0; valueIndex < valueCount; valueIndex++)
+            var compressedCountsSpan = compressedCounts.Span;
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < indicesSpan.Length; valueIndex++)
             {
-                while (valueIndex >= compressedCounts[compressedIndex + 1])
+                while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
                 {
                     compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
                 }
 
-                var currentIndex = indices[valueIndex] + compressedIndex * strides[compressedDimension];
+                var currentIndex = indicesSpan[valueIndex] + compressedIndex * strides[compressedDimension];
 
                 newIndices[valueIndex] = currentIndex % newCompressedDimensionStride;
 
@@ -342,7 +377,66 @@ namespace System.Numerics
                 newCompressedCounts[newCompressedIndex + 1] = valueIndex + 1;
             }
 
-            return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, valueCount, dimensions, IsReversedStride);
+            return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, nonZeroCount, dimensions, IsReversedStride);
+        }
+
+        public override DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(Dimensions, reverseStride: IsReversedStride);
+
+            var compressedIndex = 0;
+
+            var compressedCountsSpan = compressedCounts.Span;
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            var valuesSpan = values.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < valuesSpan.Length; valueIndex++)
+            {
+                while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
+                {
+                    compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
+                }
+
+                var index = indicesSpan[valueIndex] + compressedIndex * strides[compressedDimension];
+
+                denseTensor.SetValue(index, valuesSpan[valueIndex]);
+            }
+
+            return denseTensor;
+        }
+
+        public override CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            // Create a copy of the backing storage, eliminating any unused space.
+            var newValues = values.Slice(0, nonZeroCount).ToArray();
+            var newIndicies = indices.Slice(0, nonZeroCount).ToArray();
+
+            return new CompressedSparseTensor<T>(newValues, compressedCounts.ToArray(), newIndicies, nonZeroCount, dimensions, IsReversedStride);
+        }
+
+        public override SparseTensor<T> ToSparseTensor()
+        {
+            var sparseTensor = new SparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
+
+            var compressedIndex = 0;
+
+            var compressedCountsSpan = compressedCounts.Span;
+            var indicesSpan = indices.Span.Slice(0, nonZeroCount);
+            var valuesSpan = values.Span.Slice(0, nonZeroCount);
+            for (int valueIndex = 0; valueIndex < valuesSpan.Length; valueIndex++)
+            {
+                while (valueIndex >= compressedCountsSpan[compressedIndex + 1])
+                {
+                    compressedIndex++;
+                    Debug.Assert(compressedIndex < compressedCounts.Length);
+                }
+
+                var index = indicesSpan[valueIndex] + compressedIndex * strides[compressedDimension];
+                
+                sparseTensor.SetValue(index, valuesSpan[valueIndex]);
+            }
+
+            return sparseTensor;
         }
     }
 }

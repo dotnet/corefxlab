@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
-
-namespace System
+namespace System.Buffers.Text
 {
     public struct ParsedFormat
     {
@@ -43,7 +41,7 @@ namespace System
             {
                 var span = format.Slice(1);
 
-                if (!Parsers.Utf16.TryParseByte(span, out precision))
+                if (!Utf16Parser.TryParseByte(span, out precision))
                     throw new FormatException("format");
 
                 if (precision > MaxPrecision)

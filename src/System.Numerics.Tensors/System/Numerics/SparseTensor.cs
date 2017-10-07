@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.Numerics
 {
@@ -6,20 +10,19 @@ namespace System.Numerics
     {
         private readonly Dictionary<int, T> values;
 
-        public SparseTensor(int[] dimensions, bool reverseStride= false) : base(dimensions, reverseStride)
+        public SparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
         {
-            values = new Dictionary<int, T>();
+            values = new Dictionary<int, T>(capacity);
         }
 
-        internal SparseTensor(Dictionary<int, T> values, int[] dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
+        internal SparseTensor(Dictionary<int, T> values, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             this.values = values;
         }
 
-
-        public SparseTensor(Array fromArray, bool reverseStride = false) : base(GetDimensionsFromArray(fromArray), reverseStride)
+        internal SparseTensor(Array fromArray, bool reverseStride = false) : base(fromArray, reverseStride)
         {
-            values = new Dictionary<int, T>();
+            values = new Dictionary<int, T>(fromArray.Length);
 
             int index = 0;
             if (reverseStride)
@@ -52,52 +55,31 @@ namespace System.Numerics
             }
         }
 
-        public override T this[Span<int> indices]
+        public override T GetValue(int index)
         {
-            get
+            T value;
+
+            if (!values.TryGetValue(index, out value))
             {
-                var index = ArrayUtilities.GetIndex(strides, indices);
-
-                T value;
-
-                if (!values.TryGetValue(index, out value))
-                {
-                    value = arithmetic.Zero;
-                }
-
-                return value;
+                value = arithmetic.Zero;
             }
 
-            set
-            {
-                var index = ArrayUtilities.GetIndex(strides, indices);
+            return value;
+        }
 
-                if (value.Equals(arithmetic.Zero))
-                {
-                    values.Remove(index);
-                }
-                else
-                {
-                    values[index] = value;
-                }
+        public override void SetValue(int index, T value)
+        {
+            if (value.Equals(arithmetic.Zero))
+            {
+                values.Remove(index);
+            }
+            else
+            {
+                values[index] = value;
             }
         }
 
-        private static int[] GetDimensionsFromArray(Array fromArray)
-        {
-            if (fromArray == null)
-            {
-                throw new ArgumentNullException(nameof(fromArray));
-            }
-
-            var dimensions = new int[fromArray.Rank];
-            for (int i = 0; i < dimensions.Length; i++)
-            {
-                dimensions[i] = fromArray.GetLength(i);
-            }
-
-            return dimensions;
-        }
+        public int NonZeroCount => values.Count;
 
         public override Tensor<T> Clone()
         {
@@ -105,14 +87,44 @@ namespace System.Numerics
             return new SparseTensor<T>(valueCopy, dimensions, IsReversedStride);
         }
 
-        public override Tensor<TResult> CloneEmpty<TResult>(int[] dimensions)
+        public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<TResult>(dimensions, IsReversedStride);
         }
 
-        public override Tensor<T> Reshape(params int[] dimensions)
+        public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<T>(values, dimensions, IsReversedStride);
+        }
+
+        public override DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(Dimensions, reverseStride: IsReversedStride);
+            
+            // only set non-zero values
+            foreach (var pair in values)
+            {
+                denseTensor.SetValue(pair.Key, pair.Value);
+            }
+
+            return denseTensor;
+        }
+
+        public override SparseTensor<T> ToSparseTensor()
+        {
+            var valueCopy = new Dictionary<int, T>(values);
+            return new SparseTensor<T>(valueCopy, dimensions, IsReversedStride);
+        }
+
+        public override CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
+
+            foreach (var pair in values)
+            {
+                compressedSparseTensor.SetValue(pair.Key, pair.Value);
+            }
+            return compressedSparseTensor;
         }
     }
 }

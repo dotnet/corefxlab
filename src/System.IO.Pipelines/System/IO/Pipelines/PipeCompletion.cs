@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 
 namespace System.IO.Pipelines
 {
@@ -124,7 +125,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void ThrowFailed()
         {
-            throw _exception;
+            ExceptionDispatchInfo.Capture(_exception).Throw();
         }
 
         public override string ToString()

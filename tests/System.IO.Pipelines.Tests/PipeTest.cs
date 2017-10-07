@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Tests
         protected IPipe Pipe;
         private readonly MemoryPool _pool;
 
-        public PipeTest()
+        protected PipeTest()
         {
             _pool = new MemoryPool();
             Pipe = new Pipe(new PipeOptions(_pool,

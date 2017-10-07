@@ -16,12 +16,9 @@ namespace System.Buffers
         {
             int afterMergeSlice = 0;
 
-            // TODO: "ReadOnlySpan<byte> remainder = stackalloc byte[0]" would fit better here, 
-            //       but it emits substandard IL, see https://github.com/dotnet/roslyn/issues/21952
-            //
             // Assign 'remainder' to something formally stack-referring.
             // The default classification is "returnable, not referring to stack", we want the opposite in this case.
-            ReadOnlySpan<byte> remainder = true ? new ReadOnlySpan<byte>() : stackalloc byte[0];
+            ReadOnlySpan<byte> remainder = stackalloc byte[0];
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
             var poisition = Position.First;
@@ -328,7 +325,7 @@ namespace System.Buffers
                 var combined = combinedBufferLength < 128 ?
                                         stackalloc byte[combinedBufferLength] :
                                         // TODO (pri 3): I think this could be eliminated by chunking values
-                                        (Span<byte>)new byte[combinedBufferLength];
+                                        new byte[combinedBufferLength];
 
                 bytesToSearchAgain.CopyTo(combined);
                 int combinedLength = bytesToSearchAgain.Length + rest.CopyTo(combined.Slice(bytesToSearchAgain.Length));

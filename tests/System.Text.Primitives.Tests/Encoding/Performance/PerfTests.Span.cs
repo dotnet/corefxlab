@@ -6,6 +6,7 @@ using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Text.Primitives.Tests.Encoding;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
 {

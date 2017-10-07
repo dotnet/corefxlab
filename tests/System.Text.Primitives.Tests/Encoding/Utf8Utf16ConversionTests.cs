@@ -4,6 +4,7 @@
 
 using Xunit;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
 {

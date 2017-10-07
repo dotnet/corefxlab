@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Globalization;
 using Xunit;
 
@@ -30,7 +31,7 @@ namespace System.Text.Primitives.Tests
                 var expectedString = expected.ToString(format, CultureInfo.InvariantCulture);
                 var utf8Bytes = Text.Encoding.UTF8.GetBytes(expectedString);
 
-                Assert.True(Parsers.Utf8.TryParseGuid(utf8Bytes, out Guid parsed, out int bytesConsumed, parsedFormat));
+                Assert.True(Utf8Parser.TryParseGuid(utf8Bytes, out Guid parsed, out int bytesConsumed, parsedFormat));
                 Assert.Equal(expected, parsed);
                 Assert.Equal(expectedString.Length, bytesConsumed);
 
@@ -56,7 +57,7 @@ namespace System.Text.Primitives.Tests
             {
                 string expectedString = expected.ToString(format, CultureInfo.InvariantCulture);
 
-                Assert.True(Parsers.Utf16.TryParseGuid(expectedString.ToCharArray(), out Guid parsed, out int charactersConsumed, parsedFormat));
+                Assert.True(Utf16Parser.TryParseGuid(expectedString.ToCharArray(), out Guid parsed, out int charactersConsumed, parsedFormat));
                 Assert.Equal(expected, parsed);
                 Assert.Equal(expectedString.Length, charactersConsumed);
 

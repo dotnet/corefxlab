@@ -3,6 +3,7 @@
 
 using System.Binary.Base64;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Azure.Authentication
 {
@@ -10,7 +11,7 @@ namespace System.Azure.Authentication
         public static byte[] ComputeKeyBytes(string key)
         {
             int size = key.Length * 2;
-            var buffer = size < 128 ? stackalloc byte[size] : (Span<byte>)new byte[size];
+            var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
             int written, consumed;
             if (Encodings.Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)

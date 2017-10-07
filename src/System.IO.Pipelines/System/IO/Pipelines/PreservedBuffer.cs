@@ -33,7 +33,7 @@ namespace System.IO.Pipelines
             {
                 var returnSegment = returnStart;
                 returnStart = returnStart?.Next;
-                returnSegment?.Dispose();
+                returnSegment?.ResetMemory();
 
                 if (returnSegment == returnEnd)
                 {

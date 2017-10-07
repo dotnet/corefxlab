@@ -29,7 +29,7 @@ namespace System.Text.Primitives.Tests
             bool actualValue;
             int actualConsumed;
 
-            result = Parsers.Custom.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
+            result = CustomParser.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -49,19 +49,19 @@ namespace System.Text.Primitives.Tests
             //    Assert.Equal(expectedConsumed, actualConsumed);
             //}
 
-            result = Parsers.Utf8.TryParseBoolean(byteSpan, out actualValue);
+            result = Utf8Parser.TryParseBoolean(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = Parsers.Utf8.TryParseBoolean(byteSpan, out actualValue, out actualConsumed);
+            result = Utf8Parser.TryParseBoolean(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
-            result = Parsers.Custom.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
+            result = CustomParser.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
@@ -80,12 +80,12 @@ namespace System.Text.Primitives.Tests
             //    Assert.Equal(expectedConsumed, actualConsumed);
             //}
 
-            result = Parsers.Utf16.TryParseBoolean(charSpan, out actualValue);
+            result = Utf16Parser.TryParseBoolean(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = Parsers.Utf16.TryParseBoolean(charSpan, out actualValue, out actualConsumed);
+            result = Utf16Parser.TryParseBoolean(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
