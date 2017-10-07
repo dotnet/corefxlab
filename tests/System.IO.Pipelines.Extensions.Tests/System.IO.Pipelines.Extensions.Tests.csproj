@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -40,6 +40,9 @@
     <ProjectReference Include="..\..\src\System.Binary\System.Binary.csproj" />
     <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
     <ProjectReference Include="..\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Libuv" Version="$(LibuvVersion)" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

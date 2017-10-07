@@ -51,16 +51,15 @@ if ($Restore -eq "true") {
     }
 }
 
-$errorsEncountered = 0
-
 Write-Host "Building solution $file..."
 Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
 if ($lastexitcode -ne 0) {
     Write-Error "Failed to build solution $file"
-    $errorsEncountered++
+    exit -1
 }
 
+$errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 if ($SkipTests -ne "true") {

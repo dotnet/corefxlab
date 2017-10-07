@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -23,12 +23,9 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
-    <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
-    <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
-    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Testing\System.IO.Pipelines.Testing.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
     <ProjectReference Include="..\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->

@@ -1,14 +1,12 @@
 <Project>
   <PropertyGroup>
-    <CoreFxVersion>4.3.0</CoreFxVersion>
+    <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
     <RoslynVersion>2.6.0-beta1-62126-01</RoslynVersion>
     <SystemMemoryVersion>4.5.0-preview1-25807-01</SystemMemoryVersion>
     <SystemCompilerServicesUnsafeVersion>4.5.0-preview1-25807-01</SystemCompilerServicesUnsafeVersion>
-    <SystemNumericsVectorsVersion>4.5.0-preview1-25807-01</SystemNumericsVectorsVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
     <XunitPerformanceVersion>1.0.0-beta-build0003</XunitPerformanceVersion>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
 </Project>

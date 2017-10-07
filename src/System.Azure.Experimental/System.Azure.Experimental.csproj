@@ -27,12 +27,7 @@
     <Compile Include="System\Azure\Sha256.Windows.cs" />   
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="$(CoreFxVersion)" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\System.Binary.Base64\System.Binary.Base64.csproj" />
-    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
-    <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
   </ItemGroup>
 </Project>

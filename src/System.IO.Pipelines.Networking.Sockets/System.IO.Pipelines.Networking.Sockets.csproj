@@ -9,6 +9,6 @@
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.ThreadPool" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.ThreadPool" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

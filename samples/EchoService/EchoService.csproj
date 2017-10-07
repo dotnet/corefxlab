@@ -6,8 +6,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Net.Libuv\System.Net.Libuv.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
-    <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
-    <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
   </ItemGroup>
 </Project>
