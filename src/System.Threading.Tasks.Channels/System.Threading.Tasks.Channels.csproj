@@ -6,6 +6,6 @@
     <PackageTags>tasks channels threading asynchrony async corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion4_4)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

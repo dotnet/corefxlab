@@ -10,6 +10,6 @@
     <ProjectReference Include="..\System.Text.Json\System.Text.Json.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion4_3)" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

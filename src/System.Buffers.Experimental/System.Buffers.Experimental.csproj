@@ -11,6 +11,6 @@
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion4_4)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

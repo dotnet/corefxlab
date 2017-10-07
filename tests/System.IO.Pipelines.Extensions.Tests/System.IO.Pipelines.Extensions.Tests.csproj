@@ -41,6 +41,9 @@
     <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
     <ProjectReference Include="..\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Libuv" Version="$(LibuvVersion)" />
+  </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

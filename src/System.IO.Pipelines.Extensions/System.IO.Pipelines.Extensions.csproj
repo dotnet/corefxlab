@@ -11,7 +11,7 @@
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion4_4)" />
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion4_4)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

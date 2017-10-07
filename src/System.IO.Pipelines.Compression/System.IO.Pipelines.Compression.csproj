@@ -9,6 +9,6 @@
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion4_3)" />
+    <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>
