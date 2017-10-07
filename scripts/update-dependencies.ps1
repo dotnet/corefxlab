@@ -21,7 +21,7 @@ if($Help)
 
 $ProjectPath = "$PSScriptRoot\update-dependencies\update-dependencies.csproj"
 $ProjectArgs = ""
-$DotNetExePath = "$PSScriptRoot\..\dotnet\dotnet.exe"
+$DotNetExePath = "$PSScriptRoot\..\dotnetcli\dotnet.exe"
 
 if ($Update)
 {
@@ -31,15 +31,15 @@ if ($Update)
 $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
 
 # Ensure dotnet is installed
-if (!(Test-Path "dotnet\dotnet.exe")) {
+if (!(Test-Path "dotnetcli\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install dotnet.exe, exit code [$lastexitcode], aborting build."
         exit -1
     }
 
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 2.0.0 -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 2.0.0 -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install framework version 2.0.0, exit code [$lastexitcode], aborting build."
         exit -1
