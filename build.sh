@@ -57,7 +57,7 @@ if [ ! -d "dotnetcli" ]; then
   fi
 fi
 
-dotnetExePath="dotnet/dotnetcli"
+dotnetExePath="dotnetcli/dotnet"
 
 myFile="corefxlab.sln"
 
