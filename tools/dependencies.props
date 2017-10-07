@@ -9,6 +9,5 @@
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
     <XunitPerformanceVersion>1.0.0-beta-build0003</XunitPerformanceVersion>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
 </Project>
