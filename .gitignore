@@ -246,7 +246,7 @@ tools/
 *.ncrunchsolution
 
 #dotnet cli
-[Dd]otnet/
+[Dd]otnetcli/
 
 # Nuget.exe
 nuget.exe

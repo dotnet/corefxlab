@@ -2,7 +2,7 @@
 
 # adding dotnet to the path. it is needed to run toolset csc.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-dotnet_path=$parent_path/dotnet
+dotnet_path=$parent_path/dotnetcli
 export PATH=$PATH:$dotnet_path
 
 usage()
@@ -30,19 +30,19 @@ echo "Restore=$Restore."
 echo "Version=$Version."
 echo "BuildVersion=$BuildVersion."
 
-if [ ! -d "dotnet" ]; then
+if [ ! -d "dotnetcli" ]; then
   echo "dotnet.exe not installed, downloading and installing."
   if [ "$Version" = "<default>" ]; then
     Version=$(head -n 1 "DotnetCLIVersion.txt")
   fi
-  ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnet"
+  ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
   ret=$?
   if [ $ret -ne 0 ]; then
     echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
     exit -1
   fi
 
-  ./scripts/install-dotnet.sh -Version 1.0.0 -InstallDir "dotnet"
+  ./scripts/install-dotnet.sh -Version 1.0.0 -InstallDir "dotnetcli"
   ret=$?
   if [ $ret -ne 0 ]; then
     echo "Failed to install framework version 1.0.0, exit code $ret, aborting build."
@@ -50,7 +50,7 @@ if [ ! -d "dotnet" ]; then
   fi
 fi
 
-dotnetExePath="dotnet/dotnet"
+dotnetExePath="dotnetcli/dotnet"
 
 myFile="corefxlab.sln"
 

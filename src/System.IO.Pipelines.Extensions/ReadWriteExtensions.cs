@@ -13,7 +13,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
         /// </summary> 
-        public static unsafe T Reverse<[Primitive]T>(T value) where T : struct
+        private static unsafe T Reverse<[Primitive]T>(T value) where T : struct
         {
             // note: relying on JIT goodness here!
             if (typeof(T) == typeof(byte) || typeof(T) == typeof(sbyte))
