@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Text.Utf8;
 
@@ -224,7 +225,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             bool result;
-            if(!Parsers.Utf8.TryParseBoolean(slice, out result)){
+            if(!Utf8Parser.TryParseBoolean(slice, out result)){
                 throw new InvalidCastException();
             }
             return result;
@@ -240,7 +241,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             int result;
-            if (!Parsers.Utf8.TryParseInt32(slice, out result)) {
+            if (!Utf8Parser.TryParseInt32(slice, out result)) {
                 throw new InvalidCastException();
             }
             return result;

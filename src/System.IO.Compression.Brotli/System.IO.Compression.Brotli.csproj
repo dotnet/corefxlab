@@ -31,11 +31,6 @@
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BrotliNative" Version="0.0.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
-    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Resources\BrotliEx.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

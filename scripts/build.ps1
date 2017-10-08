@@ -12,24 +12,24 @@ Write-Host "Version=$Version."
 Write-Host "BuildVersion=$BuildVersion."
 Write-Host "SkipTests=$SkipTests."
 
-if (!(Test-Path "dotnet\dotnet.exe")) {
+if (!(Test-Path "dotnetcli\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
     if ($Version -eq "<default>") {
         $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
     }
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
         exit -1
     }
 
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 1.0.0 -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 1.0.0 -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install framework version 1.0.0, exit code [$lastexitcode], aborting build."
         exit -1
     }
 
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 2.0.0 -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 2.0.0 -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install framework version 2.0.0, exit code [$lastexitcode], aborting build."
         exit -1
@@ -38,7 +38,7 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
 
-$dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
+$dotnetExePath="$PSScriptRoot\..\dotnetcli\dotnet.exe"
 
 $file = "corefxlab.sln"
 
@@ -51,16 +51,15 @@ if ($Restore -eq "true") {
     }
 }
 
-$errorsEncountered = 0
-
 Write-Host "Building solution $file..."
 Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
 if ($lastexitcode -ne 0) {
     Write-Error "Failed to build solution $file"
-    $errorsEncountered++
+    exit -1
 }
 
+$errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 if ($SkipTests -ne "true") {

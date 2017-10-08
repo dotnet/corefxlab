@@ -125,16 +125,23 @@ namespace System.Numerics
 <# } else if (method.Operator != null) { #>
 
 <# if (method.MethodType == MethodType.UnaryInPlace) { #>
-            for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+            var <#=method.ResultName #>Span = <#=method.ResultName #>.Buffer.Span;
+            var <#=method.Op1Name #>Span = <#=method.Op1Name #>.Buffer.Span;
+            for(int i = 0; i < <#=method.ResultName #>Span.Length; i++)
             {
-                <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
+                <#=method.GetElementOperation(type.TypeName, "Span[i]")#>;
             }
 <# } else {#>
+            var <#=method.ResultName #>Span = <#=method.ResultName #>.Buffer.Span;
+            var <#=method.Op1Name #>Span = <#=method.Op1Name #>.Buffer.Span;
+<# if ((method.MethodType == MethodType.Binary) || (method.MethodType == MethodType.Comparison)) {#>
+            var <#=method.Op2Name #>Span = <#=method.Op2Name #>.Buffer.Span;
+<# } #>
             if  <#= method.GetLinearOperationCheck() #>
             {
-                for(int i = 0; i < <#= method.ResultName #>.Length; i++)
+                for(int i = 0; i < <#= method.ResultName #>Span.Length; i++)
                 {
-                    <#=method.GetElementOperation(type.TypeName, ".Buffer[i]")#>;
+                    <#=method.GetElementOperation(type.TypeName, "Span[i]")#>;
                 }
             }
             else
@@ -142,11 +149,11 @@ namespace System.Numerics
                 int rowMajorIndex = 0;
                 int colMajorIndex = 0;
                 
-                ref int resultIndex = ref RefUtilities.Ternary(<#= method.ResultName #>.IsReversedStride, ref colMajorIndex,  ref rowMajorIndex);
-                ref int op1Index = ref RefUtilities.Ternary(<#= method.Op1Name #>.IsReversedStride , ref colMajorIndex, ref rowMajorIndex);
+                ref int resultIndex = ref <#= method.ResultName #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
+                ref int op1Index = ref <#= method.Op1Name #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
                 
 <# if ((method.MethodType == MethodType.Binary) || (method.MethodType == MethodType.Comparison)) {#>
-                ref int op2Index = ref RefUtilities.Ternary(<#= method.Op2Name #>.IsReversedStride, ref colMajorIndex, ref rowMajorIndex );
+                ref int op2Index = ref <#= method.Op2Name #>.IsReversedStride ? ref colMajorIndex : ref rowMajorIndex;
 
                 var rowMajorStrides = !<#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                       !<#= method.Op1Name #>.IsReversedStride ? <#= method.Op1Name #>.strides : 
@@ -160,11 +167,11 @@ namespace System.Numerics
                 var columnMajorStrides = <#= method.ResultName #>.IsReversedStride ? <#= method.ResultName #>.strides :
                                          <#= method.Op1Name #>.strides;
 <# } #>
-                for(;rowMajorIndex < <#= method.ResultName #>.Length; rowMajorIndex++)
+                for(;rowMajorIndex < <#= method.ResultName #>Span.Length; rowMajorIndex++)
                 {
                     colMajorIndex = ArrayUtilities.TransformIndexByStrides(rowMajorIndex, rowMajorStrides, false, columnMajorStrides);
                     
-                    <#=method.GetElementOperation(type.TypeName, ".Buffer[resultIndex]", ".Buffer[op1Index]", ".Buffer[op2Index]")#>;
+                    <#=method.GetElementOperation(type.TypeName, "Span[resultIndex]", "Span[op1Index]", "Span[op2Index]")#>;
 
                 }
             }
@@ -197,8 +204,12 @@ namespace System.Numerics
             // translates from summing index to right summing dimensions' index portion
             int[] rightSummingStrides = new int[rightAxes.Length];
             ArrayUtilities.SplitStrides(right.strides, rightAxes, rightNonSummingStrides, rightNonSummingStridesOffset, rightSummingStrides, 0);
+            
+            var resultSpan = result.Buffer.Span;
+            var leftSpan = left.Buffer.Span;
+            var rightSpan = right.Buffer.Span;
 
-            for (int resultIndex = 0; resultIndex < result.Length; resultIndex++)
+            for (int resultIndex = 0; resultIndex < resultSpan.Length; resultIndex++)
             {
                 <#=type.TypeName#> sum = (<#=type.TypeName#>)0;
 
@@ -213,10 +224,10 @@ namespace System.Numerics
                     int leftIndex = leftIndexNonSumming + leftIndexSumming;
                     int rightIndex = rightIndexNonSumming + rightIndexSumming;
 
-                    sum += (<#=type.TypeName#>)(left.Buffer[leftIndex] * right.Buffer[rightIndex]);
+                    sum += (<#=type.TypeName#>)(leftSpan[leftIndex] * rightSpan[rightIndex]);
                 }
 
-                result.Buffer[resultIndex] = sum;
+                resultSpan[resultIndex] = sum;
             }
 <# } #>
         }

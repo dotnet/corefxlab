@@ -3,6 +3,7 @@
 
 using System.Binary.Base64;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Azure.Authentication
 {

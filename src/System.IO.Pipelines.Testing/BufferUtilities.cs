@@ -35,7 +35,8 @@ namespace System.IO.Pipelines.Testing
 
                 // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
                 var ownedBuffer = new OwnedArray<byte>(chars);
-                var current = new BufferSegment(ownedBuffer, length, length * 2);
+                var current = new BufferSegment();
+                current.SetMemory(ownedBuffer, length, length * 2);
                 if (first == null)
                 {
                     first = current;

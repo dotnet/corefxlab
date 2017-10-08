@@ -9,6 +9,6 @@
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Overlapped" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.Overlapped" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

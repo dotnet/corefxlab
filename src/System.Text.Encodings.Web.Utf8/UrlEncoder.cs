@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Text.Encodings.Web.Internal;
 
 namespace System.Text.Encodings.Web.Utf8
@@ -35,7 +36,7 @@ namespace System.Text.Encodings.Web.Utf8
                 else
                 {
                     output[written++] = (byte)'%';
-                    if(!Formatters.Utf8.TryFormat(next, output.Slice(written), out int formatted, 'X'))
+                    if(!Utf8Formatter.TryFormat(next, output.Slice(written), out int formatted, 'X'))
                     {
                         written = 0;
                         return false;

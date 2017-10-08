@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.IO;
 using System.Text;
+using System.Buffers.Text;
 using System.Threading.Tasks;
 
 namespace System.Buffers.Adapters {

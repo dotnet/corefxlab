@@ -6,9 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Xunit;
 
-namespace tests
+namespace System.Numerics.Tensors.Tests
 {
     public class TensorTests
     {
@@ -30,16 +31,16 @@ namespace tests
                 switch (TensorType)
                 {
                     case TensorType.Dense:
-                        return new DenseTensor<T>(array, IsReversedStride);
+                        return array.ToTensor<T>(IsReversedStride);
                     case TensorType.Sparse:
-                        return new SparseTensor<T>(array, IsReversedStride);
+                        return array.ToSparseTensor<T>(IsReversedStride);
                     case TensorType.CompressedSparse:
-                        return new CompressedSparseTensor<T>(array, IsReversedStride);
+                        return array.ToCompressedSparseTensor<T>(IsReversedStride);
                 }
 
                 throw new ArgumentException(nameof(TensorType));
             }
-            public Tensor<T> CreateFromDimensions<T>(int[] dimensions)
+            public Tensor<T> CreateFromDimensions<T>(ReadOnlySpan<int> dimensions)
             {
                 switch (TensorType)
                 {
@@ -91,7 +92,6 @@ namespace tests
             }
         }
 
-
         public static IEnumerable<object[]> GetDualTensorConstructors()
         {
             foreach (TensorType leftTensorType in s_tensorTypes)
@@ -119,6 +119,53 @@ namespace tests
                     }
                 }
             }
+        }
+
+        public static IEnumerable<object[]> GetTensorAndResultConstructor()
+        {
+            foreach (TensorType leftTensorType in s_tensorTypes)
+            {
+                foreach (TensorType rightTensorType in s_tensorTypes)
+                {
+                    foreach (bool isReversedStride in s_reverseStrideValues)
+                    {
+                        yield return new[]
+                        {
+                            new TensorConstructor()
+                            {
+                                TensorType = leftTensorType,
+                                IsReversedStride = isReversedStride
+                            },
+                            new TensorConstructor()
+                            {
+                                TensorType = rightTensorType,
+                                IsReversedStride = isReversedStride
+                            }
+                        };
+                    }
+                }
+            }
+        }
+
+        public static NativeMemory<T> NativeMemoryFromArray<T>(T[] array)
+        {
+            return NativeMemoryFromArray<T>((Array)array);
+        }
+
+        public static NativeMemory<T> NativeMemoryFromArray<T>(Array array)
+        {
+            // this silly method takes a managed array and copies it over to unmanaged memory,
+            // **only for test purposes**
+
+            var memory = NativeMemory<T>.Allocate(array.Length);
+            var span = memory.Span;
+            int index = 0;
+            foreach(T item in array)
+            {
+                span[index++] = item;
+            }
+
+            return memory;
         }
 
         [Theory()]
@@ -206,6 +253,45 @@ namespace tests
             Assert.Equal(22, tensor[3, 1, 1]);
             Assert.Equal(23, tensor[3, 1, 2]);
         }
+
+        [Fact]
+        public void ConstructDenseTensorFromPointer()
+        {
+            using (var nativeMemory = NativeMemoryFromArray(Enumerable.Range(0, 24).ToArray()))
+            {
+                var dimensions = new[] { 4, 2, 3 };
+                var tensor = new DenseTensor<int>(nativeMemory.Memory, dimensions, false);
+
+                Assert.Equal(0, tensor[0, 0, 0]);
+                Assert.Equal(1, tensor[0, 0, 1]);
+                Assert.Equal(2, tensor[0, 0, 2]);
+                Assert.Equal(3, tensor[0, 1, 0]);
+                Assert.Equal(4, tensor[0, 1, 1]);
+                Assert.Equal(5, tensor[0, 1, 2]);
+
+                Assert.Equal(6, tensor[1, 0, 0]);
+                Assert.Equal(7, tensor[1, 0, 1]);
+                Assert.Equal(8, tensor[1, 0, 2]);
+                Assert.Equal(9, tensor[1, 1, 0]);
+                Assert.Equal(10, tensor[1, 1, 1]);
+                Assert.Equal(11, tensor[1, 1, 2]);
+
+                Assert.Equal(12, tensor[2, 0, 0]);
+                Assert.Equal(13, tensor[2, 0, 1]);
+                Assert.Equal(14, tensor[2, 0, 2]);
+                Assert.Equal(15, tensor[2, 1, 0]);
+                Assert.Equal(16, tensor[2, 1, 1]);
+                Assert.Equal(17, tensor[2, 1, 2]);
+
+                Assert.Equal(18, tensor[3, 0, 0]);
+                Assert.Equal(19, tensor[3, 0, 1]);
+                Assert.Equal(20, tensor[3, 0, 2]);
+                Assert.Equal(21, tensor[3, 1, 0]);
+                Assert.Equal(22, tensor[3, 1, 1]);
+                Assert.Equal(23, tensor[3, 1, 2]);
+            }
+        }
+
         [Theory()]
         [MemberData(nameof(GetSingleTensorConstructors))]
         public void ConstructSparseTensor(TensorConstructor tensorConstructor)
@@ -248,7 +334,7 @@ namespace tests
             {
                 var compressedSparseTensor = (CompressedSparseTensor<int>)tensor;
 
-                Assert.Equal(4, compressedSparseTensor.ValueCount);
+                Assert.Equal(4, compressedSparseTensor.NonZeroCount);
 
                 int[] expectedValues, expectedCompressedCounts, expectedIndices;
 
@@ -266,9 +352,67 @@ namespace tests
                     expectedCompressedCounts = new[] { 0, 0, 2, 3, 4 };
                     expectedIndices = new[] { 0, 1, 2, 1 };
                 }
-                Assert.Equal(expectedValues, compressedSparseTensor.Values.Take(compressedSparseTensor.ValueCount));
-                Assert.Equal(expectedCompressedCounts, compressedSparseTensor.CompressedCounts);
-                Assert.Equal(expectedIndices, compressedSparseTensor.Indices.Take(compressedSparseTensor.ValueCount));
+                Assert.Equal<int>(expectedValues, compressedSparseTensor.Values.Slice(0, compressedSparseTensor.NonZeroCount).ToArray());
+                Assert.Equal<int>(expectedCompressedCounts, compressedSparseTensor.CompressedCounts.ToArray());
+                Assert.Equal<int>(expectedIndices, compressedSparseTensor.Indices.Slice(0, compressedSparseTensor.NonZeroCount).ToArray());
+            }
+        }
+
+        [Theory()]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ConstructCompressedSparseTensorFromPointers(bool isReversedStride)
+        {
+            int[] values, compressedCounts, indices;
+            if (isReversedStride)
+            {
+                // csc
+                values = new[] { 5, 8, 6, 3 };
+                compressedCounts = new[] { 0, 1, 3, 4, 4 };
+                indices = new[] { 1, 1, 3, 2 };
+            }
+            else
+            {
+                // csr
+                values = new[] { 5, 8, 3, 6 };
+                compressedCounts = new[] { 0, 0, 2, 3, 4 };
+                indices = new[] { 0, 1, 2, 1 };
+            }
+            int[] dimensions = new[] { 4, 4 };
+
+            using (var valuesMemory = NativeMemoryFromArray(values))
+            using (var compressedCountsMemory = NativeMemoryFromArray(compressedCounts))
+            using (var indicesMemory = NativeMemoryFromArray(indices))
+            {
+                var tensor = new CompressedSparseTensor<int>(valuesMemory.Memory, 
+                                                             compressedCountsMemory.Memory, 
+                                                             indicesMemory.Memory, 
+                                                             values.Length, 
+                                                             dimensions, 
+                                                             isReversedStride);
+
+                Assert.Equal(0, tensor[0, 0]);
+                Assert.Equal(0, tensor[0, 1]);
+                Assert.Equal(0, tensor[0, 2]);
+                Assert.Equal(0, tensor[0, 3]);
+
+
+                Assert.Equal(5, tensor[1, 0]);
+                Assert.Equal(8, tensor[1, 1]);
+                Assert.Equal(0, tensor[1, 2]);
+                Assert.Equal(0, tensor[1, 3]);
+
+
+                Assert.Equal(0, tensor[2, 0]);
+                Assert.Equal(0, tensor[2, 1]);
+                Assert.Equal(3, tensor[2, 2]);
+                Assert.Equal(0, tensor[2, 3]);
+
+
+                Assert.Equal(0, tensor[3, 0]);
+                Assert.Equal(6, tensor[3, 1]);
+                Assert.Equal(0, tensor[3, 2]);
+                Assert.Equal(0, tensor[3, 3]);
             }
         }
 
@@ -278,14 +422,14 @@ namespace tests
         {
             var tensor = tensorConstructor.CreateFromDimensions<int>(new[] { 2, 3, 4 });
             Assert.Equal(3, tensor.Rank);
-            Assert.Equal(3, tensor.Dimensions.Count);
+            Assert.Equal(3, tensor.Dimensions.Length);
             Assert.Equal(2, tensor.Dimensions[0]);
             Assert.Equal(3, tensor.Dimensions[1]);
             Assert.Equal(4, tensor.Dimensions[2]);
             Assert.Equal(24, tensor.Length);
             Assert.Equal(tensorConstructor.IsReversedStride, tensor.IsReversedStride);
 
-            Assert.Throws<ArgumentNullException>("dimensions", () => tensorConstructor.CreateFromDimensions<int>(dimensions: null));
+            //Assert.Throws<ArgumentNullException>("dimensions", () => tensorConstructor.CreateFromDimensions<int>(dimensions: null));
             Assert.Throws<ArgumentException>("dimensions", () => tensorConstructor.CreateFromDimensions<int>(dimensions: new int[0]));
 
             Assert.Throws<ArgumentOutOfRangeException>("dimensions", () => tensorConstructor.CreateFromDimensions<int>(dimensions: new[] { 1, 0 }));
@@ -960,7 +1104,7 @@ namespace tests
             };
 
             var tensor = tensorConstructor.CreateFromArray<int>(arr);
-            var actual = tensor.Reshape(3, 2);
+            var actual = tensor.Reshape(new[] { 3, 2 });
 
             var expected = tensorConstructor.IsReversedStride ?
                 new[,]
@@ -982,7 +1126,7 @@ namespace tests
         [Fact]
         public void Identity()
         {
-            var actual = Tensor<double>.CreateIdentity(3);
+            var actual = Tensor.CreateIdentity<double>(3);
 
             var expected = new[,]
             {
@@ -999,7 +1143,7 @@ namespace tests
         public void CreateWithDiagonal(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4, 5 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal);
+            var actual = Tensor.CreateFromDiagonal(diagonal);
 
             var expected = new[,]
             {
@@ -1015,10 +1159,43 @@ namespace tests
 
         [Theory]
         [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CreateWithDiagonal3D(TensorConstructor tensorConstructor)
+        {
+            var diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3, 4, 5 },
+                { 1, 2, 3, 4, 5 },
+                { 1, 2, 3, 4, 5 }
+            });
+            var actual = Tensor.CreateFromDiagonal(diagonal);
+            var expected = new[,,]
+            {
+                {
+                    {1, 2, 3, 4, 5 },
+                    {0, 0, 0, 0, 0 },
+                    {0, 0, 0, 0, 0 }
+                },
+                {
+                    {0, 0, 0, 0, 0 },
+                    {1, 2, 3, 4, 5 },
+                    {0, 0, 0, 0, 0 }
+                },
+                {
+                    {0, 0, 0, 0, 0 },
+                    {0, 0, 0, 0, 0 },
+                    {1, 2, 3, 4, 5 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
         public void CreateWithDiagonalAndOffset(TensorConstructor tensorConstructor)
         {
             var diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            var actual = Tensor<int>.CreateFromDiagonal(diagonal, 1);
+            var actual = Tensor.CreateFromDiagonal(diagonal, 1);
 
             var expected = new[,]
             {
@@ -1032,7 +1209,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1, 2, 3, 4 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -1);
+            actual = Tensor.CreateFromDiagonal(diagonal, -1);
 
             expected = new[,]
             {
@@ -1046,7 +1223,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, -4);
+            actual = Tensor.CreateFromDiagonal(diagonal, -4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 0 },
@@ -1058,7 +1235,7 @@ namespace tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
 
             diagonal = tensorConstructor.CreateFromArray<int>(new[] { 1 });
-            actual = Tensor<int>.CreateFromDiagonal(diagonal, 4);
+            actual = Tensor.CreateFromDiagonal(diagonal, 4);
             expected = new[,]
             {
                 {0, 0, 0, 0, 1 },
@@ -1067,6 +1244,159 @@ namespace tests
                 {0, 0, 0, 0, 0 },
                 {0, 0, 0, 0, 0 }
             };
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CreateWithDiagonalAndOffset3D(TensorConstructor tensorConstructor)
+        {
+            var diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 },
+                { 1, 2, 3 },
+                { 1, 2, 3 }
+            });
+            var actual = Tensor.CreateFromDiagonal(diagonal, 1);
+
+            var expected = new[,,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 },
+                { 1, 2, 3 },
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, -1);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, 3);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 1, 2, 3 },
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+
+            diagonal = tensorConstructor.CreateFromArray<int>(new[,]
+            {
+                { 1, 2, 3 }
+            });
+            actual = Tensor.CreateFromDiagonal(diagonal, -3);
+
+            expected = new[, ,]
+            {
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                },
+                {
+                    { 1, 2, 3 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 },
+                    { 0, 0, 0 }
+                }
+            };
+
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
@@ -1723,12 +2053,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {true, true, false },
                     {false, false, true}
-                });
+                }.ToTensor();
 
             var actual = Tensor.Equals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1752,12 +2081,11 @@ namespace tests
                     {2, 3, 5}
                 });
 
-            var expected = new DenseTensor<bool>(
-                new[,]
+            var expected = new[,]
                 {
                     {false, false, true},
                     {true, true, false}
-                });
+                }.ToTensor();
 
             var actual = Tensor.NotEquals(left, right);
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1929,7 +2257,7 @@ namespace tests
             Assert.Throws<ArgumentException>(() => Tensor.Contract(left, right, new int[] { }, new[] { 1 }));
 
             // reshape to include dimension of length 1.
-            var leftReshaped = left.Reshape(1, (int)left.Length);
+            var leftReshaped = left.Reshape(new[] { 1, (int)left.Length });
 
             var actual = Tensor.Contract(leftReshaped, right, new[] { 0 }, new[] { 1 });
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
@@ -1992,6 +2320,106 @@ namespace tests
 
             var expectedNoSpace = expected.Replace(Environment.NewLine, "").Replace(" ", "");
             Assert.Equal(expectedNoSpace, tensor.GetArrayString(false));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTensorAndResultConstructor))]
+        public void ToOtherTensor(TensorConstructor sourceConstructor, TensorConstructor resultConstructor)
+        {
+            var array = new[, ,]
+            {
+                {
+                    {0, 1, 0, 0 },
+                    {0, 0, 0, 9 },
+                    {2, 0, 5, 0 }
+                },
+                {
+                    {3, 0, 0, 6 },
+                    {0, 0, 0, 0 },
+                    {0, 0, 4, 0 }
+                },
+                {
+                    {0, 2, 0, 0 },
+                    {8, 0, 0, 0 },
+                    {0, 0, 12, 0 }
+                },
+                {
+                    {5, 5, 5, 0 },
+                    {0, 0, 0, 15 },
+                    {0, 0, 42, 0 }
+                },
+                {
+                    {1, 0, 0, 4 },
+                    {0, 2, 0, 0 },
+                    {0, 0, 3, 0 }
+                }
+            };
+
+            var source = sourceConstructor.CreateFromArray<int>(array);
+
+            Tensor<int> expected = resultConstructor.CreateFromArray<int>(array);
+
+            Tensor<int> actual;
+
+            switch (resultConstructor.TensorType)
+            {
+                case TensorType.Dense:
+                    actual = source.ToDenseTensor();
+                    break;
+                case TensorType.Sparse:
+                    var actualSparse = source.ToSparseTensor();
+                    actual = actualSparse;
+                    var expectedSparse = expected as SparseTensor<int>;
+                    Assert.Equal(expectedSparse.NonZeroCount, actualSparse.NonZeroCount);
+                    break;
+                case TensorType.CompressedSparse:
+                    var actualCompressedSparse = source.ToCompressedSparseTensor();
+                    actual = actualCompressedSparse;
+                    var expectedCompressedSparse = expected as CompressedSparseTensor<int>;
+                    Assert.Equal(expectedCompressedSparse.NonZeroCount, actualCompressedSparse.NonZeroCount);
+                    if (sourceConstructor.TensorType != TensorType.Dense)
+                    {
+                        // expect packed values when going from sparse -> sparse
+                        Assert.Equal(actualCompressedSparse.NonZeroCount, actualCompressedSparse.Values.Length);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException(nameof(resultConstructor.TensorType));
+            }
+
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, source));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void CopyToArray(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };            
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+
+            var expected = constructor.IsReversedStride ?
+                new[] { 1, 4, 2, 5, 3, 6 } :
+                new[] { 1, 2, 3, 4, 5, 6 };
+
+            var actual = Array.CreateInstance(typeof(int), tensor.Length);
+            ((ICollection)tensor).CopyTo(actual, 0);
+
+            Assert.Equal(expected, actual);
+
+            expected = constructor.IsReversedStride ?
+                new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
+                new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
+
+            actual = Array.CreateInstance(typeof(int), tensor.Length + 2);
+            ((ICollection)tensor).CopyTo(actual, 2);
+
+            Assert.Equal(expected, actual);
         }
     }
 }

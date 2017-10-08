@@ -8,6 +8,7 @@ using System;
 using System.Text;
 using System.Text.Utf8;
 using System.Buffers;
+using System.Buffers.Text;
 
 public class AsciiDecodingBench
 {

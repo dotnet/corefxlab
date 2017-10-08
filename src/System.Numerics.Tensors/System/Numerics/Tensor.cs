@@ -12,6 +12,94 @@ namespace System.Numerics
 
     public static partial class Tensor
     {
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Tensor<T> CreateIdentity<T>(int size)
+        {
+            return CreateIdentity(size, false, TensorArithmetic<T>.Instance.One);
+        }
+
+        public static Tensor<T> CreateIdentity<T>(int size, bool columMajor)
+        {
+            return CreateIdentity(size, columMajor, TensorArithmetic<T>.Instance.One);
+        }
+
+        /// <summary>
+        /// Creates an identity tensor
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="oneValue"></param>
+        /// <returns></returns>
+        public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
+        {
+            Span<int> dimensions = stackalloc int[2];
+            dimensions[0] = dimensions[1] = size;
+
+            var result = new DenseTensor<T>(dimensions, columMajor);
+
+            for (int i = 0; i < size; i++)
+            {
+                result.SetValue(i * size + i, oneValue);
+            }
+
+            return result;
+        }
+
+        public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal)
+        {
+            return CreateFromDiagonal(diagonal, 0);
+        }
+
+        public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal, int offset)
+        {
+            if (diagonal.Rank < 1)
+            {
+                throw new ArgumentException($"Tensor {nameof(diagonal)} must have at least one dimension.", nameof(diagonal));
+            }
+
+            int diagonalLength = diagonal.dimensions[0];
+
+            // TODO: allow specification of axis1 and axis2?
+            var rank = diagonal.dimensions.Length + 1;
+            Span<int> dimensions = rank < ArrayUtilities.StackallocMax ? stackalloc int[rank] : new Span<int>(new int[rank]);
+
+            // assume square
+            var axisLength = diagonalLength + Math.Abs(offset);
+            dimensions[0] = dimensions[1] = axisLength;
+
+            for (int i = 1; i < diagonal.dimensions.Length; i++)
+            {
+                dimensions[i + 1] = diagonal.dimensions[i];
+            }
+
+            var result = diagonal.CloneEmpty(dimensions);
+            
+            var sizePerDiagonal = diagonal.Length / diagonalLength;
+
+            var diagProjectionStride = diagonal.IsReversedStride && diagonal.Rank > 1 ? diagonal.strides[1] : 1;
+            var resultProjectionStride = result.IsReversedStride && result.Rank > 2 ? result.strides[2] : 1;
+
+            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
+            {
+                var resultIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
+                var resultIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
+
+                var resultBase = resultIndex0 * result.strides[0] + resultIndex1 * result.strides[1];
+                var diagBase = diagIndex * diagonal.strides[0];
+
+                for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
+                {
+                    result.SetValue(resultBase + diagProjectionOffset * resultProjectionStride,
+                        diagonal.GetValue(diagBase + diagProjectionOffset * diagProjectionStride));
+                }
+            }
+
+            return result;
+        }
+
         internal static void ValidateBinaryArgs<T>(Tensor<T> left, Tensor<T> right)
         {
             if (left.Rank != right.Rank || left.Length != right.Length)
@@ -231,15 +319,17 @@ namespace System.Numerics
         private readonly bool isReversedStride;
 
         private readonly long length;
-        private IReadOnlyList<int> readOnlyDimensions;
 
-        protected Tensor(int[] dimensions, bool reverseStride)
+        protected Tensor(int length)
         {
-            if (dimensions == null)
-            {
-                throw new ArgumentNullException(nameof(dimensions));
-            }
+            dimensions = new[] { length };
+            strides = new[] { 1 };
+            isReversedStride = false;
+            this.length = length;
+        }
 
+        protected Tensor(ReadOnlySpan<int> dimensions, bool reverseStride)
+        {
             if (dimensions.Length == 0)
             {
                 throw new ArgumentException("Dimensions must contain elements.", nameof(dimensions));
@@ -261,7 +351,37 @@ namespace System.Numerics
             isReversedStride = reverseStride;
 
             length = size;
-            readOnlyDimensions = null;
+        }
+
+        /// <summary>
+        /// Initializes tensor with same dimensions as array, content of array is ignored
+        /// </summary>
+        /// <param name="fromArray"></param>
+        /// <param name="reverseStride"></param>
+        protected Tensor(Array fromArray, bool reverseStride)
+        {
+            if (fromArray == null)
+            {
+                throw new ArgumentNullException(nameof(fromArray));
+            }
+
+            if (fromArray.Rank == 0)
+            {
+                throw new ArgumentException("Array must contain elements.", nameof(fromArray));
+            }
+
+            dimensions = new int[fromArray.Rank];
+            long size = 1;
+            for (int i = 0; i < dimensions.Length; i++)
+            {
+                dimensions[i] = fromArray.GetLength(i);
+                size *= dimensions[i];
+            }
+
+            strides = ArrayUtilities.GetStrides(dimensions, reverseStride);
+            isReversedStride = reverseStride;
+
+            length = size;
         }
 
         /// <summary>
@@ -274,18 +394,20 @@ namespace System.Numerics
         /// </summary>
         public int Rank => dimensions.Length;
 
+        /// <summary>
+        /// True if strides are reversed (AKA Column-major)
+        /// </summary>
         public bool IsReversedStride => isReversedStride;
 
         /// <summary>
-        /// Returns a copy of the dimensions array.
+        /// Returns a readonly view of the dimensions of this tensor.
         /// </summary>
-        public IReadOnlyList<int> Dimensions
-        {
-            get
-            {
-                return readOnlyDimensions ?? (readOnlyDimensions = new ReadOnlyCollection<int>(dimensions));
-            }
-        }
+        public ReadOnlySpan<int> Dimensions => dimensions;
+
+        /// <summary>
+        /// Returns a readonly view of the strides of this tensor.
+        /// </summary>
+        public ReadOnlySpan<int> Strides => strides;
 
         /// <summary>
         /// Sets all elements in Tensor to <paramref name="value"/>.
@@ -293,20 +415,16 @@ namespace System.Numerics
         /// <param name="value">Value to fill</param>
         public virtual void Fill(T value)
         {
-            Span<int> indices = new Span<int>(new int[Rank]);
-            
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-
-                this[indices] = value;
+                SetValue(i, value);
             }
         }
 
         public abstract Tensor<T> Clone();
 
         /// <summary>
-        /// Creates a new Tensor with the same size as this tensor with elements initialized to their default value.
+        /// Creates a new Tensor with the same layout and size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
         public virtual Tensor<T> CloneEmpty()
@@ -314,13 +432,18 @@ namespace System.Numerics
             return CloneEmpty<T>(dimensions);
         }
 
-
-        public virtual Tensor<T> CloneEmpty(int[] dimensions)
+        /// <summary>
+        /// Creates a new Tensor with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <param name="dimensions"></param>
+        /// <returns></returns>
+        public virtual Tensor<T> CloneEmpty(ReadOnlySpan<int> dimensions)
         {
             return CloneEmpty<T>(dimensions);
         }
+
         /// <summary>
-        /// Creates a new Tensor of a different type with the same size as this tensor with elements initialized to their default value.
+        /// Creates a new Tensor of a different type with the same layout and size as this tensor with elements initialized to their default value.
         /// </summary>
         /// <returns></returns>
         public virtual Tensor<TResult> CloneEmpty<TResult>()
@@ -328,92 +451,11 @@ namespace System.Numerics
             return CloneEmpty<TResult>(dimensions);
         }
 
-        public abstract Tensor<TResult> CloneEmpty<TResult>(int[] dimensions);
-
         /// <summary>
-        /// Creates an identity tensor
+        /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <param name="size"></param>
         /// <returns></returns>
-        public static Tensor<T> CreateIdentity(int size)
-        {
-            return CreateIdentity(size, false, arithmetic.One);
-        }
-
-        public static Tensor<T> CreateIdentity(int size, bool columMajor)
-        {
-            return CreateIdentity(size, columMajor, arithmetic.One);
-        }
-
-        /// <summary>
-        /// Creates an identity tensor
-        /// </summary>
-        /// <param name="size"></param>
-        /// <param name="oneValue"></param>
-        /// <returns></returns>
-        public static Tensor<T> CreateIdentity(int size, bool columMajor, T oneValue)
-        {
-            var result = new DenseTensor<T>(new[] { size, size }, columMajor);
-
-            for(int i = 0; i < size; i++)
-            {
-                result.Buffer[i * size + i] = oneValue;
-            }
-
-            return result;
-        }
-
-        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal)
-        {
-            return CreateFromDiagonal(diagonal, 0);
-        }
-
-        public static Tensor<T> CreateFromDiagonal(Tensor<T> diagonal, int offset)
-        {
-            if (diagonal.Rank < 1)
-            {
-                throw new ArgumentException($"Tensor {nameof(diagonal)} must have at least one dimension.", nameof(diagonal));
-            }
-
-            int diagonalLength = diagonal.dimensions[0];
-
-            // TODO: allow specification of axis1 and axis2?
-            var dimensions = new int[diagonal.dimensions.Length + 1];
-
-            // assume square
-            var axisLength = diagonalLength + Math.Abs(offset);
-            dimensions[0] = dimensions[1] = axisLength;
-            
-            for(int i = 1; i < diagonal.dimensions.Length; i++)
-            {
-                dimensions[i + 1] = diagonal.dimensions[i];
-            }
-
-            var result = new DenseTensor<T>(dimensions:dimensions);
-
-            // each element in the diagonal's 0 dimension is strides[0] appart
-            var sizePerDiagonal = diagonal.strides[0];
-
-            var diagIndices = new Span<int>(new int[diagonal.Rank]);
-
-            for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
-            {
-                var destIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
-                var destIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
-
-                var destBuffIndex = destIndex0 * result.strides[0] + destIndex1 * result.strides[1];
-                diagIndices[0] = diagIndex;
-
-                for (int diagProjectionOffset = 0; diagProjectionOffset < sizePerDiagonal; diagProjectionOffset++)
-                {
-                    // since result and diagonal have the same strides for remaining dimensions we can directly sum the offset
-                    ArrayUtilities.GetIndices(diagonal.strides, diagonal.IsReversedStride, diagProjectionOffset, diagIndices, 1);
-                    result.Buffer[destBuffIndex + diagProjectionOffset] = diagonal[diagIndices];
-                }
-            }
-
-            return result;
-        }
+        public abstract Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions);
 
         public Tensor<T> GetDiagonal()
         {
@@ -464,7 +506,8 @@ namespace System.Numerics
                 throw new ArgumentException($"Cannot compute diagonal with offset {offset}", nameof(offset));
             }
 
-            var newTensorDimensions = new int[dimensions.Length - 1];
+            var newTensorRank = Rank - 1;
+            var newTensorDimensions = newTensorRank < ArrayUtilities.StackallocMax ? stackalloc int[newTensorRank] : new Span<int>(new int[newTensorRank]);
             newTensorDimensions[0] = diagonalLength;
 
             for(int i = 2; i < dimensions.Length; i++)
@@ -475,36 +518,26 @@ namespace System.Numerics
             var diagonalTensor = CloneEmpty(newTensorDimensions);
             var sizePerDiagonal = diagonalTensor.Length / diagonalTensor.Dimensions[0];
 
-            // diagonal projection will be iterated in row-major order.
-            var diagProjectionSourceStrides = ArrayUtilities.GetStrides(dimensions);
-            var diagProjectionDiagStrides = ArrayUtilities.GetStrides(newTensorDimensions);
-
-            //var sourceIndices = new Span<int>(new int[Rank]);
-            //var diagIndices = new Span<int>(new int[diagonalTensor.Rank]);
-
-            var sourceIndices = new int[Rank];
-            var diagIndices = new int[diagonalTensor.Rank];
+            var diagProjectionStride = diagonalTensor.IsReversedStride && diagonalTensor.Rank > 1 ? diagonalTensor.strides[1] : 1;
+            var sourceProjectionStride = IsReversedStride && Rank > 2 ? strides[2] : 1;
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
-                sourceIndices[0] = offset < 0 ? diagIndex - offset : diagIndex;
-                sourceIndices[1] = offset > 0 ? diagIndex + offset : diagIndex;
+                var sourceIndex0 = offset < 0 ? diagIndex - offset : diagIndex;
+                var sourceIndex1 = offset > 0 ? diagIndex + offset : diagIndex;
 
-                diagIndices[0] = diagIndex;
+                var sourceBase = sourceIndex0 * strides[0] + sourceIndex1 * strides[1];
+                var diagBase = diagIndex * diagonalTensor.strides[0];
 
-                for(int diagProjectionIndex = 0; diagProjectionIndex < sizePerDiagonal; diagProjectionIndex++)
+                for (int diagProjectionIndex = 0; diagProjectionIndex < sizePerDiagonal; diagProjectionIndex++)
                 {
-                    ArrayUtilities.GetIndices(diagProjectionSourceStrides, false, diagProjectionIndex, sourceIndices, 2);
-                    ArrayUtilities.GetIndices(diagProjectionDiagStrides, false, diagProjectionIndex, diagIndices, 1);
-
-
-                    diagonalTensor[diagIndices] = this[sourceIndices];
+                    diagonalTensor.SetValue(diagBase + diagProjectionIndex * diagProjectionStride,
+                        GetValue(sourceBase + diagProjectionIndex * sourceProjectionStride));
                 }
             }
 
             return diagonalTensor;
         }
-
 
         public Tensor<T> GetTriangle()
         {
@@ -543,11 +576,7 @@ namespace System.Numerics
             var result = CloneEmpty();
 
             var projectionSize = Length / (axisLength0 * axisLength1);
-
-            // diagonal projection will be iterated in row-major order.
-            var projectionStrides = ArrayUtilities.GetStrides(dimensions);
-
-            var indices = new Span<int>(new int[Rank]);
+            var projectionStride = IsReversedStride && Rank > 2 ? strides[2] : 1;
 
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
@@ -588,14 +617,13 @@ namespace System.Numerics
 
                 while ((triIndex1 < axisLength1) && (triIndex0 < axisLength0))
                 {
-                    indices[0] = triIndex0;
-                    indices[1] = triIndex1;
+                    var baseIndex = triIndex0 * strides[0] + triIndex1 * result.strides[1];
 
                     for (int projectionIndex = 0; projectionIndex < projectionSize; projectionIndex++)
                     {
-                        ArrayUtilities.GetIndices(projectionStrides, false, projectionIndex, indices, 2);
+                        var index = baseIndex + projectionIndex * projectionStride;
 
-                        result[indices] = this[indices];
+                        result.SetValue(index, GetValue(index));
                     }
 
                     if (upper)
@@ -634,7 +662,7 @@ namespace System.Numerics
             return Tensor.Contract(this, right, s_oneArray, s_zeroArray);
         }
 
-        public abstract Tensor<T> Reshape(params int[] dimensions);
+        public abstract Tensor<T> Reshape(ReadOnlySpan<int> dimensions);
         
         public virtual T this[params int[] indices]
         {
@@ -651,7 +679,21 @@ namespace System.Numerics
             }
         }
 
-        public abstract T this[Span<int> indices] { get; set; }
+        public virtual T this[ReadOnlySpan<int> indices]
+        {
+            get
+            {
+                return GetValue(ArrayUtilities.GetIndex(strides, indices));
+            }
+
+            set
+            {
+                SetValue(ArrayUtilities.GetIndex(strides, indices), value);
+            }
+        }
+
+        public abstract T GetValue(int index);
+        public abstract void SetValue(int index, T value);
 
 
         #region statics
@@ -786,11 +828,9 @@ namespace System.Numerics
 
         private IEnumerable<T> Enumerate()
         {
-            var indices = new int[Rank];
             for(int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-                yield return this[indices];
+                yield return GetValue(i);
             }
 
         }
@@ -803,22 +843,12 @@ namespace System.Numerics
 
         object ICollection.SyncRoot => this; // backingArray.this?
 
-        public void CopyTo(Array array, int index)
+        void ICollection.CopyTo(Array array, int index)
         {
-            // todo: fastpath
-            int[] destIndices = new int[array.Rank];
-            var destStrides = ArrayUtilities.GetStrides(array);
-
-            var sourceIndices = new Span<int>(new int[Rank]);
-
-            for(int i = index; i < length; i++)
+            for(int i = 0; i < length; i++)
             {
-                ArrayUtilities.GetIndices(destStrides, false, index, destIndices);
-                ArrayUtilities.GetIndices(strides, IsReversedStride, index, sourceIndices);
-
-                array.SetValue(this[sourceIndices], destIndices);
+                array.SetValue(GetValue(i), index + i);
             }
-
         }
         #endregion
 
@@ -827,17 +857,13 @@ namespace System.Numerics
         {
             get
             {
-                var indices = new Span<int>(new int[Rank]);
-                ArrayUtilities.GetIndices(strides, IsReversedStride, index, indices);
-                return this[indices];
+                return GetValue(index);
             }
             set
             {
                 try
                 {
-                    var indices = new Span<int>(new int[Rank]);
-                    ArrayUtilities.GetIndices(strides, IsReversedStride, index, indices);
-                    this[indices] = (T)value;
+                    SetValue(index, (T)value);
                 }
                 catch (InvalidCastException)
                 {
@@ -862,13 +888,9 @@ namespace System.Numerics
 
         bool IList.Contains(object value)
         {
-            Span<int> indices = new Span<int>(new int[Rank]);
-
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-
-                if (this[indices].Equals(value))
+                if (GetValue(i).Equals(value))
                 {
                     return true;
                 }
@@ -879,13 +901,9 @@ namespace System.Numerics
 
         int IList.IndexOf(object value)
         {
-            Span<int> indices = new Span<int>(new int[Rank]);
-
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-
-                if (this[indices].Equals(value))
+                if (GetValue(i).Equals(value))
                 {
                     return i;
                 }
@@ -949,17 +967,29 @@ namespace System.Numerics
             }
 
             int result = 0;
-            var indices = new Span<int>(new int[Rank]);
 
-            for (int i = 0; i < Length; i++)
+            if (IsReversedStride == other.IsReversedStride)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-
-                result = comparer.Compare(this[indices], other[indices]);
-
-                if (result != 0)
+                for (int i = 0; i < Length; i++)
                 {
-                    break;
+                    result = comparer.Compare(GetValue(i), other.GetValue(i));
+                    if (result != 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+                for (int i = 0; i < Length; i++)
+                {
+                    ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+                    result = comparer.Compare(this[indices], other[indices]);
+                    if (result != 0)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -988,7 +1018,7 @@ namespace System.Numerics
             {
                 ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
-                result = comparer.Compare(this[indices], other.GetValue(indices));
+                result = comparer.Compare(GetValue(i), other.GetValue(indices));
 
                 if (result != 0)
                 {
@@ -1038,15 +1068,27 @@ namespace System.Numerics
                 }
             }
 
-            var indices = new Span<int>(new int[Rank]);
-
-            for (int i = 0; i < Length; i++)
+            if (IsReversedStride == other.IsReversedStride)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-
-                if (!comparer.Equals(this[indices], other[indices]))
+                for (int i = 0; i < Length; i++)
                 {
-                    return false;
+                    if (!comparer.Equals(GetValue(i), other.GetValue(i)))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+                for (int i = 0; i < Length; i++)
+                {
+                    ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
+
+                    if (!comparer.Equals(this[indices], other[indices]))
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -1069,12 +1111,12 @@ namespace System.Numerics
                 }
             }
             
-            var indices = new int[Rank];  // consider stackalloc
+            var indices = new int[Rank];
             for (int i = 0; i < Length; i++)
             {
                 ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
 
-                if (!comparer.Equals(this[indices], other.GetValue(indices)))
+                if (!comparer.Equals(GetValue(i), other.GetValue(indices)))
                 {
                     return false;
                 }
@@ -1087,16 +1129,49 @@ namespace System.Numerics
             int hashCode = 0;
             // this ignores shape, which is fine  it just means we'll have hash collisions for things 
             // with the same content and different shape.
-            Span<int> indices = new Span<int>(new int[Rank]);
             for (int i = 0; i < Length; i++)
             {
-                ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
-                hashCode ^= comparer.GetHashCode(this[indices]);
+                hashCode ^= comparer.GetHashCode(GetValue(i));
             }
 
             return hashCode;
         }
         #endregion
+
+        #region Translations
+
+        public virtual DenseTensor<T> ToDenseTensor()
+        {
+            var denseTensor = new DenseTensor<T>(Dimensions, IsReversedStride);
+            for (int i = 0; i < Length; i++)
+            {
+                denseTensor.SetValue(i, GetValue(i));
+            }
+            return denseTensor;
+        }
+
+        public virtual SparseTensor<T> ToSparseTensor()
+        {
+            var sparseTensor = new SparseTensor<T>(Dimensions, IsReversedStride);
+            for (int i = 0; i < Length; i++)
+            {
+                sparseTensor.SetValue(i, GetValue(i));
+            }
+            return sparseTensor;
+        }
+
+        public virtual CompressedSparseTensor<T> ToCompressedSparseTensor()
+        {
+            var compressedSparseTensor = new CompressedSparseTensor<T>(Dimensions, IsReversedStride);
+            for (int i = 0; i < Length; i++)
+            {
+                compressedSparseTensor.SetValue(i, GetValue(i));
+            }
+            return compressedSparseTensor;
+        }
+
+        #endregion
+
         public string GetArrayString(bool includeWhitespace = true)
         {
             var builder = new StringBuilder();

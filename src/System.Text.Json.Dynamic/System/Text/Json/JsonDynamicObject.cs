@@ -98,7 +98,7 @@ namespace System.Text.Json
             {
                 throw new InvalidOperationException();
             }
-            return Parsers.Utf8.TryParseUInt32(jsonValue.Value.Bytes, out value);
+            return Utf8Parser.TryParseUInt32(jsonValue.Value.Bytes, out value);
         }
 
         public bool TryGetString(Utf8Span property, out Utf8Span value)

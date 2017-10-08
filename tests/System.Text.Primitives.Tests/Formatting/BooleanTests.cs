@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -19,7 +20,7 @@ namespace System.Text.Primitives.Tests
         {
             ParsedFormat f = format == ' ' ? default(ParsedFormat) : new ParsedFormat(format);
             byte[] buffer = new byte[256];
-            Assert.True(Formatters.Utf8.TryFormat(value, buffer, out int bytesWritten, f));
+            Assert.True(Utf8Formatter.TryFormat(value, buffer, out int bytesWritten, f));
             var actual = Text.Encoding.UTF8.GetString(buffer, 0, bytesWritten);
             Assert.Equal(expected, actual);
         }
@@ -35,7 +36,7 @@ namespace System.Text.Primitives.Tests
         {
             ParsedFormat f = format == ' ' ? default(ParsedFormat) : new ParsedFormat(format);
             byte[] buffer = new byte[256];
-            Assert.True(Formatters.Utf16.TryFormat(value, buffer, out int bytesWritten, f));
+            Assert.True(Utf16Formatter.TryFormat(value, buffer, out int bytesWritten, f));
             var actual = Text.Encoding.Unicode.GetString(buffer, 0, bytesWritten);
             Assert.Equal(expected, actual);
         }
