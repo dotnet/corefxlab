@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.Threading.Tasks.Channels.Properties {
+namespace System.Threading.Tasks.Channels {
     using System;
     using System.Reflection;
     
@@ -20,7 +20,7 @@ namespace System.Threading.Tasks.Channels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +40,7 @@ namespace System.Threading.Tasks.Channels.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.Threading.Tasks.Channels.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.Threading.Tasks.Channels.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -64,9 +64,9 @@ namespace System.Threading.Tasks.Channels.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The channel has been closed..
         /// </summary>
-        internal static string ClosedChannelException_DefaultMessage {
+        internal static string ChannelClosedException_DefaultMessage {
             get {
-                return ResourceManager.GetString("ClosedChannelException_DefaultMessage", resourceCulture);
+                return ResourceManager.GetString("ChannelClosedException_DefaultMessage", resourceCulture);
             }
         }
     }

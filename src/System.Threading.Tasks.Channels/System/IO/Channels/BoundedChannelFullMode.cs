@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>Specifies the behavior to use when writing to a bounded channel that is already full.</summary>
     public enum BoundedChannelFullMode
@@ -14,6 +14,6 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Remove and ignore the oldest item in the channel in order to make room for the item being written.</summary>
         DropOldest,
         /// <summary>Drop the item being written.</summary>
-        Ignore
+        DropWrite
     }
 }

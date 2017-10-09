@@ -5,9 +5,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>
     /// Provides a buffered channel of unbounded capacity for use by any number
@@ -31,10 +32,6 @@ namespace System.Threading.Tasks.Channels
         /// <summary>non-null if the channel has been marked as complete for writing.</summary>
         private volatile Exception _doneWriting;
 
-        /// <summary>A cached awaiter used when awaiting this channel.</summary>
-        private AutoResetAwaiter<T> _awaiter;
-        /// <summary>A <see cref="ReaderInteractor{T}"/> or <see cref="AutoResetAwaiter{TResult}"/> if there's a blocked reader.</summary>
-        private object _blockedReader;
         /// <summary>A waiting reader (e.g. WaitForReadAsync) if there is one.</summary>
         private ReaderInteractor<bool> _waitingReader;
 
@@ -45,92 +42,16 @@ namespace System.Threading.Tasks.Channels
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
             _completion = new TaskCompletionSource<VoidResult>(runContinuationsAsynchronously ? TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None);
 
-            In = new Readable(this);
-            Out = new Writable(this);
+            Reader = new UnboundedChannelReader(this);
+            Writer = new UnboundedChannelWriter(this);
         }
 
-        private sealed class Readable : ReadableChannel<T>
+        private sealed class UnboundedChannelReader : ChannelReader<T>
         {
             internal readonly SingleConsumerUnboundedChannel<T> _parent;
-            internal Readable(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
+            internal UnboundedChannelReader(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
 
             public override Task Completion => _parent._completion.Task;
-
-            public override ValueAwaiter<T> GetAwaiter()
-            {
-                {
-                    return TryRead(out T item) ?
-                        new ValueAwaiter<T>(item) :
-                        GetAwaiterCore();
-                }
-
-                ValueAwaiter<T> GetAwaiterCore()
-                {
-                    SingleConsumerUnboundedChannel<T> parent = _parent;
-                    lock (parent.SyncObj)
-                    {
-                        // Now that we hold the lock, try reading again.
-                        if (TryRead(out T item))
-                        {
-                            return new ValueAwaiter<T>(item);
-                        }
-
-                        // If no more items will be written, fail the read.
-                        if (parent._doneWriting != null)
-                        {
-                            return new ValueAwaiter<T>(ChannelUtilities.GetInvalidCompletionValueTask<T>(parent._doneWriting));
-                        }
-
-                        Debug.Assert(parent._blockedReader == null || ((parent._blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
-                            "Incorrect usage; multiple outstanding reads were issued against this single-consumer channel");
-
-                        // Store the reader to be completed by a writer.
-                        parent._blockedReader = parent._awaiter ?? (parent._awaiter = new AutoResetAwaiter<T>(parent._runContinuationsAsynchronously));
-                        return new ValueAwaiter<T>(parent._awaiter);
-                    }
-                }
-            }
-
-            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken)
-            {
-                {
-                    return TryRead(out T item) ?
-                        new ValueTask<T>(item) :
-                        ReadAsyncCore(cancellationToken);
-                }
-
-                ValueTask<T> ReadAsyncCore(CancellationToken ct)
-                {
-                    SingleConsumerUnboundedChannel<T> parent = _parent;
-                    if (ct.IsCancellationRequested)
-                    {
-                        return new ValueTask<T>(Task.FromCanceled<T>(ct));
-                    }
-
-                    lock (parent.SyncObj)
-                    {
-                        // Now that we hold the lock, try reading again.
-                        if (TryRead(out T item))
-                        {
-                            return new ValueTask<T>(item);
-                        }
-
-                        // If no more items will be written, fail the read.
-                        if (parent._doneWriting != null)
-                        {
-                            return ChannelUtilities.GetInvalidCompletionValueTask<T>(parent._doneWriting);
-                        }
-
-                        Debug.Assert(parent._blockedReader == null || ((parent._blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
-                            "Incorrect usage; multiple outstanding reads were issued against this single-consumer channel");
-
-                        // Store the reader to be completed by a writer.
-                        var reader = ReaderInteractor<T>.Create(parent._runContinuationsAsynchronously, ct);
-                        parent._blockedReader = reader;
-                        return new ValueTask<T>(reader.Task);
-                    }
-                }
-            }
 
             public override bool TryRead(out T item)
             {
@@ -192,14 +113,13 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private sealed class Writable : WritableChannel<T>
+        private sealed class UnboundedChannelWriter : ChannelWriter<T>
         {
             internal readonly SingleConsumerUnboundedChannel<T> _parent;
-            internal Writable(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
+            internal UnboundedChannelWriter(SingleConsumerUnboundedChannel<T> parent) => _parent = parent;
 
             public override bool TryComplete(Exception error)
             {
-                object blockedReader = null;
                 ReaderInteractor<bool> waitingReader = null;
                 bool completeTask = false;
 
@@ -222,12 +142,6 @@ namespace System.Threading.Tasks.Channels
                     {
                         completeTask = true;
 
-                        if (parent._blockedReader != null)
-                        {
-                            blockedReader = parent._blockedReader;
-                            parent._blockedReader = null;
-                        }
-
                         if (parent._waitingReader != null)
                         {
                             waitingReader = parent._waitingReader;
@@ -242,25 +156,7 @@ namespace System.Threading.Tasks.Channels
                     ChannelUtilities.Complete(parent._completion, error);
                 }
 
-                Debug.Assert(blockedReader == null || waitingReader == null, "There should only ever be at most one reader.");
-
-                // Complete a blocked reader if necessary
-                if (blockedReader != null)
-                {
-                    error = ChannelUtilities.CreateInvalidCompletionException(error);
-
-                    if (blockedReader is ReaderInteractor<T> interactor)
-                    {
-                        interactor.Fail(error);
-                    }
-                    else
-                    {
-                        ((AutoResetAwaiter<T>)blockedReader).SetException(error);
-                    }
-                }
-
-                // Complete a waiting reader if necessary.  (We really shouldn't have both a blockedReader
-                // and a waitingReader, but it's more expensive to prevent it than to just tolerate it.)
+                // Complete a waiting reader if necessary.
                 if (waitingReader != null)
                 {
                     if (error != null)
@@ -282,7 +178,6 @@ namespace System.Threading.Tasks.Channels
                 SingleConsumerUnboundedChannel<T> parent = _parent;
                 while (true) // in case a reader was canceled and we need to try again
                 {
-                    object blockedReader = null;
                     ReaderInteractor<bool> waitingReader = null;
 
                     lock (parent.SyncObj)
@@ -293,64 +188,24 @@ namespace System.Threading.Tasks.Channels
                             return false;
                         }
 
-                        // If there's a blocked reader, store it into a local for completion outside of the lock.
-                        // If there isn't a blocked reader, queue the item being written; then if there's a waiting
+                        // Queue the item being written; then if there's a waiting
                         // reader, store it for notification outside of the lock.
-                        blockedReader = parent._blockedReader;
-                        if (blockedReader != null)
-                        {
-                            parent._blockedReader = null;
-                        }
-                        else
-                        {
-                            parent._items.Enqueue(item);
+                        parent._items.Enqueue(item);
 
-                            waitingReader = parent._waitingReader;
-                            if (waitingReader == null)
-                            {
-                                return true;
-                            }
-                            parent._waitingReader = null;
-                        }
-                    }
-
-                    // If we get here, we grabbed a blocked or a waiting reader.
-                    Debug.Assert((blockedReader != null) ^ (waitingReader != null), "Expected either a blocked or waiting reader, but not both");
-
-                    // If we have a waiting reader, notify it that an item was written and exit.
-                    if (waitingReader != null)
-                    {
-                        waitingReader.Success(true);
-                        return true;
-                    }
-
-                    // Otherwise we have a blocked reader: complete it with the item being written.
-                    // In the case of a ReadAsync(CancellationToken), it's possible the reader could
-                    // have been completed due to cancellation by the time we get here.  In that case,
-                    // we'll loop around to try again so as not to lose the item being written.
-                    Debug.Assert(blockedReader != null);
-                    if (blockedReader is ReaderInteractor<T> interactor)
-                    {
-                        if (interactor.Success(item))
+                        waitingReader = parent._waitingReader;
+                        if (waitingReader == null)
                         {
                             return true;
                         }
+                        parent._waitingReader = null;
                     }
-                    else
-                    {
-                        ((AutoResetAwaiter<T>)blockedReader).SetResult(item);
-                        return true;
-                    }
-                }
-            }
 
-            public override ValueAwaiter<bool> GetAwaiter()
-            {
-                Exception doneWriting = _parent._doneWriting;
-                return
-                    doneWriting == null ? new ValueAwaiter<bool>(true) :
-                    doneWriting != ChannelUtilities.s_doneWritingSentinel ? new ValueAwaiter<bool>(Task.FromException<bool>(doneWriting)) :
-                    new ValueAwaiter<bool>(false);
+                    // If we get here, we grabbed a waiting reader.
+                    // Notify it that an item was written and exit.
+                    Debug.Assert(waitingReader != null, "Expected a waiting reader");
+                    waitingReader.Success(true);
+                    return true;
+                }
             }
 
             public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)

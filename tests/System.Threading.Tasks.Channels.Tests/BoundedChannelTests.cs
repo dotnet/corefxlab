@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Threading.Tasks.Channels.Tests
+namespace System.IO.Channels.Tests
 {
     public class BoundedChannelTests : ChannelTestBase
     {
@@ -11,31 +13,8 @@ namespace System.Threading.Tasks.Channels.Tests
         protected override Channel<int> CreateFullChannel()
         {
             var c = Channel.CreateBounded<int>(1);
-            c.Out.WriteAsync(42).Wait();
+            c.Writer.WriteAsync(42).Wait();
             return c;
-        }
-
-        [Fact]
-        public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
-        {
-            var c = Channel.CreateBounded<int>(1);
-            Assert.True(c.Out.TryWrite(42));
-            c.Out.Complete();
-            Assert.False(c.In.Completion.IsCompleted);
-            Assert.Equal(42, await c.In.ReadAsync());
-            await c.In.Completion;
-        }
-
-        [Fact]
-        public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
-        {
-            var c = Channel.CreateBounded<int>(1);
-            Assert.True(c.Out.TryWrite(42));
-            Task write2 = c.Out.WriteAsync(43);
-            c.Out.Complete();
-            Assert.Equal(42, await c.In.ReadAsync());
-            await c.In.Completion;
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => write2);
         }
 
         [Theory]
@@ -48,18 +27,18 @@ namespace System.Threading.Tasks.Channels.Tests
 
             for (int i = 0; i < bufferedCapacity; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
-            Assert.False(c.Out.TryWrite(bufferedCapacity));
+            Assert.False(c.Writer.TryWrite(bufferedCapacity));
 
             int result;
             for (int i = 0; i < bufferedCapacity; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -69,21 +48,21 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropOldest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
 
             int result;
             for (int i = bufferedCapacity; i < bufferedCapacity * 2; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -93,21 +72,21 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropOldest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropOldest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                AssertSynchronousSuccess(c.Out.WriteAsync(i));
+                AssertSynchronousSuccess(c.Writer.WriteAsync(i));
             }
 
             int result;
             for (int i = bufferedCapacity; i < bufferedCapacity * 2; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -117,23 +96,23 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropNewest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
 
             int result;
             for (int i = 0; i < bufferedCapacity - 1; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
-            Assert.True(c.In.TryRead(out result));
+            Assert.True(c.Reader.TryRead(out result));
             Assert.Equal(bufferedCapacity * 2 - 1, result);
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -143,47 +122,48 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_DropNewest(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropNewest });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                AssertSynchronousSuccess(c.Out.WriteAsync(i));
+                AssertSynchronousSuccess(c.Writer.WriteAsync(i));
             }
 
             int result;
             for (int i = 0; i < bufferedCapacity - 1; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
-            Assert.True(c.In.TryRead(out result));
+            Assert.True(c.Reader.TryRead(out result));
             Assert.Equal(bufferedCapacity * 2 - 1, result);
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
         [Fact]
         public async Task TryWrite_DropNewest_WrappedAroundInternalQueue()
         {
-            var c = Channel.CreateBounded<int>(3, BoundedChannelFullMode.DropNewest);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(3) { FullMode = BoundedChannelFullMode.DropNewest });
 
             // Move head of dequeue beyond the beginning
-            Assert.True(c.Out.TryWrite(1));
-            Assert.Equal(1, await c.In.ReadAsync());
+            Assert.True(c.Writer.TryWrite(1));
+            Assert.True(c.Reader.TryRead(out int item));
+            Assert.Equal(1, item);
 
             // Add items to fill the capacity and put the tail at 0
-            Assert.True(c.Out.TryWrite(2));
-            Assert.True(c.Out.TryWrite(3));
-            Assert.True(c.Out.TryWrite(4));
+            Assert.True(c.Writer.TryWrite(2));
+            Assert.True(c.Writer.TryWrite(3));
+            Assert.True(c.Writer.TryWrite(4));
 
             // Add an item to overwrite the newest
-            Assert.True(c.Out.TryWrite(5));
+            Assert.True(c.Writer.TryWrite(5));
 
             // Verify current contents
-            Assert.Equal(2, await c.In.ReadAsync());
-            Assert.Equal(3, await c.In.ReadAsync());
-            Assert.Equal(5, await c.In.ReadAsync());
+            Assert.Equal(2, await c.Reader.ReadAsync());
+            Assert.Equal(3, await c.Reader.ReadAsync());
+            Assert.Equal(5, await c.Reader.ReadAsync());
         }
 
         [Theory]
@@ -192,21 +172,21 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void TryWrite_TryRead_Many_Ignore(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.Ignore);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropWrite });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
 
             int result;
             for (int i = 0; i < bufferedCapacity; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -216,21 +196,21 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(10000)]
         public void WriteAsync_TryRead_Many_Ignore(int bufferedCapacity)
         {
-            var c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.Ignore);
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(bufferedCapacity) { FullMode = BoundedChannelFullMode.DropWrite });
 
             for (int i = 0; i < bufferedCapacity * 2; i++)
             {
-                AssertSynchronousSuccess(c.Out.WriteAsync(i));
+                AssertSynchronousSuccess(c.Writer.WriteAsync(i));
             }
 
             int result;
             for (int i = 0; i < bufferedCapacity; i++)
             {
-                Assert.True(c.In.TryRead(out result));
+                Assert.True(c.Reader.TryRead(out result));
                 Assert.Equal(i, result);
             }
 
-            Assert.False(c.In.TryRead(out result));
+            Assert.False(c.Reader.TryRead(out result));
             Assert.Equal(0, result);
         }
 
@@ -238,19 +218,19 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task CancelPendingWrite_Reading_DataTransferredFromCorrectWriter()
         {
             var c = Channel.CreateBounded<int>(1);
-            Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
+            Assert.Equal(TaskStatus.RanToCompletion, c.Writer.WriteAsync(42).Status);
 
             var cts = new CancellationTokenSource();
 
-            Task write1 = c.Out.WriteAsync(43, cts.Token);
+            Task write1 = c.Writer.WriteAsync(43, cts.Token);
             Assert.Equal(TaskStatus.WaitingForActivation, write1.Status);
 
             cts.Cancel();
 
-            Task write2 = c.Out.WriteAsync(44);
+            Task write2 = c.Writer.WriteAsync(44);
 
-            Assert.Equal(42, await c.In);
-            Assert.Equal(44, await c.In);
+            Assert.Equal(42, await c.Reader.ReadAsync());
+            Assert.Equal(44, await c.Reader.ReadAsync());
 
             await AssertCanceled(write1, cts.Token);
             await write2;
@@ -267,8 +247,8 @@ namespace System.Threading.Tasks.Channels.Tests
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
-                Assert.True(c.In.TryRead(out int result));
+                Assert.True(c.Writer.TryWrite(i));
+                Assert.True(c.Reader.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -287,14 +267,14 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        await c.Out.WriteAsync(i);
+                        await c.Writer.WriteAsync(i);
                     }
                 }),
                 Task.Run(async () =>
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.Equal(i, await c.In.ReadAsync());
+                        Assert.Equal(i, await c.Reader.ReadAsync());
                     }
                 }));
         }
@@ -325,10 +305,10 @@ namespace System.Threading.Tasks.Channels.Tests
                     {
                         while (true)
                         {
-                            Interlocked.Add(ref readTotal, await c.In.ReadAsync());
+                            Interlocked.Add(ref readTotal, await c.Reader.ReadAsync());
                         }
                     }
-                    catch (ClosedChannelException) { }
+                    catch (ChannelClosedException) { }
                 });
             }
 
@@ -343,11 +323,11 @@ namespace System.Threading.Tasks.Channels.Tests
                         {
                             break;
                         }
-                        await c.Out.WriteAsync(value + 1);
+                        await c.Writer.WriteAsync(value + 1);
                     }
                     if (Interlocked.Decrement(ref remainingWriters) == 0)
                     {
-                        c.Out.Complete();
+                        c.Writer.Complete();
                     }
                 });
             }
@@ -360,15 +340,15 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task WaitToWriteAsync_AfterFullThenRead_ReturnsTrue()
         {
             var c = Channel.CreateBounded<int>(1);
-            Assert.True(c.Out.TryWrite(1));
+            Assert.True(c.Writer.TryWrite(1));
 
-            Task<bool> write1 = c.Out.WaitToWriteAsync();
+            Task<bool> write1 = c.Writer.WaitToWriteAsync();
             Assert.False(write1.IsCompleted);
 
-            Task<bool> write2 = c.Out.WaitToWriteAsync();
+            Task<bool> write2 = c.Writer.WaitToWriteAsync();
             Assert.False(write2.IsCompleted);
 
-            Assert.Equal(1, await c.In.ReadAsync());
+            Assert.Equal(1, await c.Reader.ReadAsync());
 
             Assert.True(await write1);
             Assert.True(await write2);
@@ -377,17 +357,17 @@ namespace System.Threading.Tasks.Channels.Tests
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
+        public void AllowSynchronousContinuations_WaitToReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(1) { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.In.ReadAsync().AsTask().ContinueWith(_ =>
+            Task r = c.Reader.WaitToReadAsync().ContinueWith(_ =>
             {
                 Assert.Equal(allowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
+            Assert.Equal(TaskStatus.RanToCompletion, c.Writer.WriteAsync(42).Status);
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }
@@ -397,15 +377,15 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(true)]
         public void AllowSynchronousContinuations_CompletionTask_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
         {
-            var c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+            var c = Channel.CreateBounded<int>(new BoundedChannelOptions(1) { AllowSynchronousContinuations = allowSynchronousContinuations });
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.In.Completion.ContinueWith(_ =>
+            Task r = c.Reader.Completion.ContinueWith(_ =>
             {
                 Assert.Equal(allowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            Assert.True(c.Out.TryComplete());
+            Assert.True(c.Writer.TryComplete());
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }
@@ -415,8 +395,8 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             Channel<int> c = CreateChannel();
 
-            Task<bool> r = c.In.WaitToReadAsync();
-            Assert.True(c.Out.TryWrite(42));
+            Task<bool> r = c.Reader.WaitToReadAsync();
+            Assert.True(c.Writer.TryWrite(42));
             AssertSynchronousTrue(r);
         }
     }

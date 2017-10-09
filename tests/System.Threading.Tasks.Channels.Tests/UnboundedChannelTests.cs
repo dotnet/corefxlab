@@ -3,15 +3,17 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Threading.Tasks.Channels.Tests
+namespace System.IO.Channels.Tests
 {
     public abstract class UnboundedChannelTests : ChannelTestBase
     {
         protected abstract bool AllowSynchronousContinuations { get; }
         protected override Channel<int> CreateChannel() => Channel.CreateUnbounded<int>(
-            new ChannelOptimizations
+            new UnboundedChannelOptions
             {
                 SingleReader = RequiresSingleReader,
                 AllowSynchronousContinuations = AllowSynchronousContinuations
@@ -22,26 +24,27 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.Out.TryWrite(42));
-            c.Out.Complete();
-            Assert.False(c.In.Completion.IsCompleted);
-            Assert.Equal(42, await c.In.ReadAsync());
-            await c.In.Completion;
+            Assert.True(c.Writer.TryWrite(42));
+            c.Writer.Complete();
+            Assert.False(c.Reader.Completion.IsCompleted);
+            Assert.Equal(42, await c.Reader.ReadAsync());
+            await c.Reader.Completion;
         }
 
         [Fact]
         public void TryWrite_TryRead_Many()
         {
+            Console.WriteLine(GetType().FullName);
             Channel<int> c = CreateChannel();
 
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
             for (int i = 0; i < NumItems; i++)
             {
-                Assert.True(c.In.TryRead(out int result));
+                Assert.True(c.Reader.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -53,8 +56,8 @@ namespace System.Threading.Tasks.Channels.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
-                Assert.True(c.In.TryRead(out int result));
+                Assert.True(c.Writer.TryWrite(i));
+                Assert.True(c.Reader.TryRead(out int result));
                 Assert.Equal(i, result);
             }
         }
@@ -63,8 +66,8 @@ namespace System.Threading.Tasks.Channels.Tests
         public void WaitForReadAsync_DataAvailable_CompletesSynchronously()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.Out.TryWrite(42));
-            AssertSynchronousTrue(c.In.WaitToReadAsync());
+            Assert.True(c.Writer.TryWrite(42));
+            AssertSynchronousTrue(c.Reader.WaitToReadAsync());
         }
 
         [Theory]
@@ -75,43 +78,43 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
             for (int i = 0; i < 10; i++)
             {
-                Assert.True(c.Out.TryWrite(i));
+                Assert.True(c.Writer.TryWrite(i));
             }
 
-            c.Out.Complete();
-            Assert.False(c.In.Completion.IsCompleted);
+            c.Writer.Complete();
+            Assert.False(c.Reader.Completion.IsCompleted);
 
             for (int i = 0; i < 10; i++)
             {
-                Assert.False(c.In.Completion.IsCompleted);
+                Assert.False(c.Reader.Completion.IsCompleted);
                 switch (readMode)
                 {
                     case 0:
                         int result;
-                        Assert.True(c.In.TryRead(out result));
+                        Assert.True(c.Reader.TryRead(out result));
                         Assert.Equal(i, result);
                         break;
                     case 1:
-                        Assert.Equal(i, await c.In.ReadAsync());
+                        Assert.Equal(i, await c.Reader.ReadAsync());
                         break;
                 }
             }
 
-            await c.In.Completion;
+            await c.Reader.Completion;
         }
 
         [Fact]
-        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting()
+        public void AllowSynchronousContinuations_WaitToReadAsync_ContinuationsInvokedAccordingToSetting()
         {
             Channel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.In.ReadAsync().AsTask().ContinueWith(_ =>
+            Task r = c.Reader.WaitToReadAsync().ContinueWith(_ =>
             {
                 Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
+            Assert.Equal(TaskStatus.RanToCompletion, c.Writer.WriteAsync(42).Status);
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }
@@ -122,12 +125,12 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.In.Completion.ContinueWith(_ =>
+            Task r = c.Reader.Completion.ContinueWith(_ =>
             {
                 Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            Assert.True(c.Out.TryComplete());
+            Assert.True(c.Writer.TryComplete());
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }
@@ -141,8 +144,8 @@ namespace System.Threading.Tasks.Channels.Tests
         public void ValidateInternalDebuggerAttributes()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.Out.TryWrite(1));
-            Assert.True(c.Out.TryWrite(2));
+            Assert.True(c.Writer.TryWrite(1));
+            Assert.True(c.Writer.TryWrite(2));
 
             object queue = DebuggerAttributes.GetFieldValue(c, "_items");
             DebuggerAttributes.ValidateDebuggerDisplayReferences(queue);
@@ -153,10 +156,10 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task MultipleWaiters_CancelsPreviousWaiter()
         {
             Channel<int> c = CreateChannel();
-            Task<bool> t1 = c.In.WaitToReadAsync();
-            Task<bool> t2 = c.In.WaitToReadAsync();
+            Task<bool> t1 = c.Reader.WaitToReadAsync();
+            Task<bool> t2 = c.Reader.WaitToReadAsync();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => t1);
-            Assert.True(c.Out.TryWrite(42));
+            Assert.True(c.Writer.TryWrite(42));
             Assert.True(await t2);
         }
 
@@ -170,9 +173,9 @@ namespace System.Threading.Tasks.Channels.Tests
                 Task.Run(async () =>
                 {
                     int received = 0;
-                    while (await c.In.WaitToReadAsync())
+                    while (await c.Reader.WaitToReadAsync())
                     {
-                        while (c.In.TryRead(out int i))
+                        while (c.Reader.TryRead(out int i))
                         {
                             Assert.Equal(received, i);
                             received++;
@@ -183,9 +186,9 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.True(c.Out.TryWrite(i));
+                        Assert.True(c.Writer.TryWrite(i));
                     }
-                    c.Out.Complete();
+                    c.Writer.Complete();
                 }));
         }
     }

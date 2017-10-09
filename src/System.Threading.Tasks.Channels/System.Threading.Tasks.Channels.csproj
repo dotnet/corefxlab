@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Provides synchronization data structures for passing data between producers and consumers.</Description>
@@ -7,5 +7,16 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

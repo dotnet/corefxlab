@@ -2,17 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>
-    /// Provides a base class for channels that support writing elements.
+    /// Provides a base class for writing to a channel.
     /// </summary>
     /// <typeparam name="T">Specifies the type of data that may be written to the channel.</typeparam>
-    public abstract class WritableChannel<T>
+    public abstract class ChannelWriter<T>
     {
         /// <summary>Attempts to mark the channel as being completed, meaning no more data will be written to it.</summary>
         /// <param name="error">An <see cref="Exception"/> indicating the failure causing no more data to be written, or null for success.</param>
@@ -67,14 +66,6 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>Gets an awaiter used to wait for space to be available in the channel.</summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ValueAwaiter<bool> GetAwaiter() => new ValueAwaiter<bool>(WaitToWriteAsync());
-
-        /// <summary>Creates an observer for this channel.</summary>
-        /// <returns>An observer that forwards to this channel.</returns>
-        public virtual IObserver<T> AsObserver() => new ChannelObserver(this);
-
         /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
         /// <exception cref="InvalidOperationException">The channel has already been marked as complete.</exception>
@@ -84,24 +75,6 @@ namespace System.Threading.Tasks.Channels
             {
                 throw ChannelUtilities.CreateInvalidCompletionException();
             }
-        }
-
-        /// <summary>Provides an observer for a Writable channel.</summary>
-        private sealed class ChannelObserver : IObserver<T>
-        {
-            private readonly WritableChannel<T> _channel;
-
-            internal ChannelObserver(WritableChannel<T> channel)
-            {
-                Debug.Assert(channel != null);
-                _channel = channel;
-            }
-
-            public void OnCompleted() => _channel.Complete();
-
-            public void OnError(Exception error) => _channel.Complete(error);
-
-            public void OnNext(T value) => _channel.WriteAsync(value).GetAwaiter().GetResult();
         }
     }
 }

@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 
-namespace System.Threading.Tasks.Channels
+namespace System.IO.Channels
 {
     /// <summary>
     /// Provides a base class for channels that support reading elements of type <typeparamref name="TRead"/>
@@ -14,17 +14,17 @@ namespace System.Threading.Tasks.Channels
     public abstract class Channel<TWrite, TRead>
     {
         /// <summary>Gets the readable half of this channel.</summary>
-        public ReadableChannel<TRead> In { get; protected set; }
+        public ChannelReader<TRead> Reader { get; protected set; }
 
         /// <summary>Gets the writable half of this channel.</summary>
-        public WritableChannel<TWrite> Out { get; protected set; }
+        public ChannelWriter<TWrite> Writer { get; protected set; }
 
         /// <summary>Implicit cast from a channel to its readable half.</summary>
         /// <param name="channel">The channel being cast.</param>
-        public static implicit operator ReadableChannel<TRead>(Channel<TWrite, TRead> channel) => channel.In;
+        public static implicit operator ChannelReader<TRead>(Channel<TWrite, TRead> channel) => channel.Reader;
 
         /// <summary>Implicit cast from a channel to its writable half.</summary>
         /// <param name="channel">The channel being cast.</param>
-        public static implicit operator WritableChannel<TWrite>(Channel<TWrite, TRead> channel) => channel.Out;
+        public static implicit operator ChannelWriter<TWrite>(Channel<TWrite, TRead> channel) => channel.Writer;
     }
 }
