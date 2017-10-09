@@ -19,6 +19,11 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+    <PackageReference Include="System.IO.FileSystem" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Runtime.Extensions" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Runtime.Handles" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
