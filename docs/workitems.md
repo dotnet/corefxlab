@@ -1,127 +1,111 @@
-# High-Performance Data Pipelines
+# Work Items
 
-Our goal is to optimize .NET much more for scenarios in which inefficiencies are
-directly tied to your monthly billing. With ASP.NET Core, we've already
-[improved significantly][TechEmpower13] and are now in the top 10 for the plain
-text benchmark. But we believe there is still a lot more potential that we could
-tap into.
+## Span
 
-![](./img/techempower.png)
+* [done] Remove Span<T> and ReadOnlySpan<T> from corefxlab
+* (pri 0) Find APIs that we added in `Span<T>` in CoreFxLab we haven't reviewed and/or
+  scrutinized.
+* (pri 0) Create adaptive package for System.Memory (i.e. fast and slow span)
+* (pri 0) support bulk copy
+* (pri 1) copyto should work for overlapping ranges
+* (pri 1) review SpanExtensions and move some to System.Memory
 
-## Roadmap
+## Parsing
 
-For the next six to twelve months our primary area of focus for CoreFxLab will be
-to improve performance for data pipeline oriented apps. This is pretty much any
-cloud app as the request-response pattern is fundamentally a data pipeline.
+* (pri 0) performance tests and improvement
+* (pri 0) support fast lower case and upper case hexadecimal parsing
+* (pri 1) remove old APIs
+* (pri 1) remove `EncodingData(byte[][] symbols, TextEncoding encoding,
+  Tuple<byte, int>[] parsingTrie)`
+* (pri 1) add all primitive parser to PrimitiveParser (e.g. GUID, URI, date
+  time, etc.)
+* (pri 1) add support for multi-span parsing
+* (pri 2) support ASCII
+* (pri 2) clean up code
+* (pri 2) full test coverage
+* (pri 2) support all formats
+* (pri 2) provide EncodingData.InvariantUtf16BE
+* (pri 2) write custom EncodingData generation tool
 
-Consider an example for a typical web request:
+## Formatting
 
-![](./img/pipeline.png)
+* (pri 0) fast path formatting APIs for default and hex formats and for UTF8
+* (pri 0) rearrange TryFormat parameters to match TryParse order
+* (pri 0) performance tests and improvement
+* (pri 2) support ASCII
+* (pri 2) do API cleanup (e.g. rename formattingData to encodingData)
+* (pri 2) clean up code
+* (pri 2) full test coverage
 
-Most cloud apps are parallelized by running multiple requests at the same time
-while each request is often executed as a single chain. This results in the
-picture above where all components are daisy-chained. That means slowing down
-one component will slow down the entire request.
+## UTF8
 
-An important metric for a cloud app is how many requests per second (RPS) it can
-handle. That's important because the load is (usually) outside the control of
-the app author. So the fewer requests your app can handle, the more instances of
-your app you need in order to satisfy the demand, which basically means the more
-machines you need to pay for.
+* (pri 0) design proper encoding APIs
+* (pri 0) performance tests and improvement
+* [done] (pri 1) move encoding APIs from System.Text.Utf8 to System.Text.Primitives
+* (pri 2) full test coverage
 
-Also, consider the role of the framework. For the most part, your app code is
-represented by the green box above, while the blue and red parts are usually
-components provided by the framework. While you can optimize your app code, your
-ability to reduce the overhead in the framework provided pieces is limited.
+## Binary Reader/Writer
 
-That's why many people rely on benchmarks to assess the potential of a given web
-framework. It's important to keep in mind that benchmarks are by definition
-gross simplifications of real-world workloads; but they are often considered to
-be good at providing an indicator for the theoretical best a given framework can
-do for you if you remove virtually all overhead that is specific to your app.
+* (pri 0) performance tests and improvement
+* (pri 1) design binary reader/writer
 
-A widely referred to benchmark is [TechEmpower]. Here is how they
-[describe][TechEmpower-Quote] why performance considerations for frameworks are
-important:
+## JSON
 
-> Application performance can be directly mapped to hosting dollars, and for
-> companies both large and small, hosting costs can be a pain point.
->
-> What if building an application on one framework meant that at the very best
-> your hardware is suitable for one tenth as much load as it would be had you
-> chosen a different framework?
->
-> --- [TechEmpower][TechEmpower-Quote]
+* (pri 0) design reader/writer API operating on multi-spans
+* (pri 0) performance tests and improvement
+* (pri 1) cleanup DOM API
+* (pri 1) design and implement UTF8 JSON serializer
+* (pri 2) full test coverage
 
-## What does high-performance mean?
+## HTTP Reader/Writer
 
-It might not be the best term, but for the context of cloud apps the property
-we're seeking to improve is scalability:
+* (pri 0) design reader/writer API operating on multi-spans
+* (pri 0) performance tests and improvement
+* (pri 2) full test coverage
 
-> Scalability is the capability of a system, network, or process to handle a
-> growing amount of work.
->
-> --- [Wikipedia](https://en.wikipedia.org/wiki/Scalability)
+## Memory
 
-Many areas affect scale, but an efficient request/response pipeline is key as
-it's the backbone for all cloud solutions.
+* (pri 0) Finish design and prototype of `Memory<T>`
+* (pri 0) Unify buffer pooling abstractions
 
-Other investments (faster GC, better JIT, AOT) aren't a replacement, but will
-provide additional benefits.
+## Infrastructure
 
-## Current areas of concerns
+* [done] (pri 0) Enable performance test runs
+* (pri 0) Remove IL rewriting from corefxlab
+* (pri 1) Enable allocation tests and gates
+* (pri 1) Enable C#7
 
-If we look at the .NET Stack, in particular the BCL, there are a few areas where
-we could do much better:
+## Architecture/Design/Other
 
-1. Many primitive operations require allocations, causing GC pressure
-2. `String` is UTF16 but networking is UTF8, forcing translations
-3. Buffers are often defensively copied, slowing down operations and increasing
-   allocations
-4. Buffers are often not pooled, causing fragmentation and GC pressure
-5. Interop with native code often creates additional buffers to avoid passing
-   around raw pointers
-6. Async streaming forces pre-allocation of buffers, causing excessive memory
-   usage
-7. ...
+* Remove `System.IO.Pipeline.Text.Primitives`
+* Prototype `TextReader`-like APIs
+* Refactor `System.IO.Pipeline.File` into low level and pipleline-specific APIs
+* Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific
+ APIs
+* Design proper Web.Encoding APIs
+* Drive language integration for spans
+* Write programming guides/docs
+* Write solid set of benchmarks
+* Explore consumedBytes to be passed by-ref
+* Can we return `Span<T>` from `IOutput` (and other APIs)
+* Make sure `EncodingData` supports currency and date time formatting
+* Decide what to do with Sequences
+* How does memory relate to MSR project
+* UTF8 string representation
+* UTF8 literals
 
-Our goal is to reduce the number of allocations for the basic operations, such
-as parsing and encoding, having a more efficient buffer management that can
-handle managed and native memory uniformly, and providing a programming model
-that makes the result easy to use while not losing efficiency.
+## Other to think about
 
-Other components of the .NET stack (such as MVC and Serialization) will rewire
-their implementation in order to take advantage of the efficiency gains provided
-by these new APIs.
+* Refactor networking channels
+* Productize Base64 encoding
+* SLL
+* Non-allocating compression
+* Built-in cultures
+* UtcDateTime
+* SSL
 
-![](./img/areas.png)
+## Later
 
-## New APIs
-
-Not all components of this stack are fully designed yet. The key components we
-have spiked so far are:
-
-* **Primitives**
-  - [Span\<T>][span-speclet]
-      + Represents contiguous regions of arbitrary memory (managed & native)
-      + Performance on par with `T[]`, understood by runtime and code gen
-      + Can only live on the stack
-  - [Memory\<T>][memory-speclet]
-      + Provides longer lifetime semantics to a `Span<T>`
-      + Allows storing a reference to a `Span<T>` on the heap
-* **Low-Alloc Transforms**
-  - [Parsing][parsing-speclet]
-  - [Formatting][formatting-speclet]
-* **[Pipelines][pipelines-speclet]**
-  - Leverages the primitives (`Span<T>` and `Memory<T>`) and low-allocation APIs
-  - Provides an efficient programming model while freeing the developers from
-    having to manage buffers
-
-[TechEmpower]: https://www.techempower.com/benchmarks
-[TechEmpower-Quote]: https://www.techempower.com/benchmarks/#section=motivation
-[TechEmpower13]: https://www.techempower.com/blog/2016/11/16/framework-benchmarks-round-13/
-[span-speclet]: ./specs/span.md
-[memory-speclet]: ./specs/memory.md
-[pipelines-speclet]: ./specs/pipelines.md
-[parsing-speclet]: ./specs/parsing.md
-[formatting-speclet]: ./specs/formatting.md
+* XML
+* OData
+* HTML
