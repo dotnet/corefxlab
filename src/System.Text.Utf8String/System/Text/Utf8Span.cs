@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -36,21 +37,26 @@ namespace System.Text.Utf8
             _buffer = new ReadOnlySpan<byte>(utf8bytes, index, length);
         }
 
-        public Utf8Span(string s)
+        public Utf8Span(string utf16String)
         {
-            if (s == null)
+            if (utf16String == null)
             {
-                throw new ArgumentNullException("s", "String cannot be null");
+                throw new ArgumentNullException(nameof(utf16String), "String cannot be null");
             }
 
-            if (s == string.Empty)
+            if (utf16String == string.Empty)
             {
                 _buffer = ReadOnlySpan<byte>.Empty;
             }
             else
             {
-                _buffer = new ReadOnlySpan<byte>(GetUtf8BytesFromString(s));
+                _buffer = new ReadOnlySpan<byte>(GetUtf8BytesFromString(utf16String));
             }
+        }
+
+        public Utf8Span(Utf8String utf8String)
+        {
+            _buffer = utf8String.CopyBytes();
         }
 
         /// <summary>
@@ -78,13 +84,7 @@ namespace System.Text.Utf8
         /// <summary>
         /// Returns length of the string in UTF-8 code units (bytes)
         /// </summary>
-        public int Length
-        {
-            get
-            {
-                return _buffer.Length;
-            }
-        }
+        public int Length => _buffer.Length;
 
         public Enumerator GetEnumerator()
         {
@@ -99,14 +99,14 @@ namespace System.Text.Utf8
             }
         }
 
-        public byte this[int i]
+        private byte this[int i]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                // there is no need to check the boundaries -> Span is going to do this on it's own
-                return (byte)_buffer[i];
-            }
+                        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+             get
+                       {
+                               // there is no need to check the boundaries -> Span is going to do this on it's own 
+                                return (byte)_buffer[i];
+                           }
         }
 
         public static implicit operator ReadOnlySpan<byte>(Utf8Span utf8)
@@ -250,12 +250,7 @@ namespace System.Text.Utf8
                 return Empty;
             }
 
-            if (length == Length)
-            {
-                return this;
-            }
-
-            if (index + length > Length)
+            if (index > Length - length)
             {
                 // TODO: Should this be index or length?
                 throw new ArgumentOutOfRangeException("index");
@@ -270,8 +265,6 @@ namespace System.Text.Utf8
         {
             if (value.Length == 0)
             {
-                // TODO: Is this the right answer?
-                // TODO: Does this even make sense?
                 return 0;
             }
 
@@ -290,22 +283,6 @@ namespace System.Text.Utf8
                 }
                 i += pos;
                 if (IsSubstringAt(i, value))
-                {
-                    return i;
-                }
-            }
-
-            return StringNotFound;
-        }
-
-        // TODO: Should this be public?
-        public int IndexOf(byte codeUnit)
-        {
-            // TODO: _buffer.IndexOf(codeUnit.Value); when Span has it
-
-            for (int i = 0; i < Length; i++)
-            {
-                if (codeUnit == this[i])
                 {
                     return i;
                 }
@@ -763,18 +740,12 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
             return _buffer.ToArray();
         }
 
-        public byte[] CopyCodeUnits()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static bool IsWhiteSpace(byte codePoint)
+        private static bool IsWhiteSpace(byte codePoint)
         {
             return codePoint == ' ' || codePoint == '\n' || codePoint == '\r' || codePoint == '\t';
         }

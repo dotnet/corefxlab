@@ -52,7 +52,7 @@ namespace Json.Net.Tests
             _end = lengthOfJson;
 
             var nextByte = _buffer[_index];
-            while (Utf8Span.IsWhiteSpace(nextByte) || nextByte == 0)
+            while (Utf8Helper.IsWhitespace(nextByte) || nextByte == 0)
             {
                 _index++;
                 nextByte = _buffer[_index];
@@ -224,7 +224,7 @@ namespace Json.Net.Tests
         {
             var nextByte = _buffer[_index];
 
-            while (Utf8Span.IsWhiteSpace(nextByte))
+            while (Utf8Helper.IsWhitespace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];
@@ -463,7 +463,7 @@ namespace Json.Net.Tests
         {
             var nextByte = _buffer[_index];
 
-            while (Utf8Span.IsWhiteSpace(nextByte))
+            while (Utf8Helper.IsWhitespace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];
@@ -473,7 +473,7 @@ namespace Json.Net.Tests
         private void MoveToNextTokenType()
         {
             var nextByte = _buffer[_index];
-            while (Utf8Span.IsWhiteSpace(nextByte))
+            while (Utf8Helper.IsWhitespace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];

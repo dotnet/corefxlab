@@ -12,8 +12,8 @@ namespace System.Text.Utf8
 
             public CodePointEnumerable(byte[] bytes, int index, int length)
             {
-                _buffer = new byte[length];
-                for(int i = index; i < length; i++)
+                _buffer = new byte[length - index];
+                for(int i = index; i < _buffer.Length; i++)
                 {
                     _buffer[i] = bytes[index + i];
                 }

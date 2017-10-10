@@ -421,7 +421,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
-            while (Utf8Span.IsWhiteSpace(_values[_valuesIndex])) {
+            while (Utf8Helper.IsWhitespace(_values[_valuesIndex])) {
                 _valuesIndex++;
             }
         }

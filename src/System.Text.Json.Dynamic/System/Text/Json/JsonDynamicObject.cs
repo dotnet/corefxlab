@@ -333,9 +333,9 @@ namespace System.Text.Json
             public override int GetHashCode()
             {
                 int result = Object.GetHashCode();
-                result = result * 19 + (byte)_name[0];
-                result = result * 19 + (byte)_name[_name.Length - 1];
-                result = result * 19 + (byte)_name[_name.Length>>2];
+                result = result * 19 + (byte)_name.Bytes[0];
+                result = result * 19 + (byte)_name.Bytes[_name.Length - 1];
+                result = result * 19 + (byte)_name.Bytes[_name.Length>>2];
                 return result;
             }
 

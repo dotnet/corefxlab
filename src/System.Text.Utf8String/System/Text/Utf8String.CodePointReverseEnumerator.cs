@@ -49,10 +49,8 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    // New allocation ?
-                    ReadOnlySpan<byte> buffer = new ReadOnlySpan<byte>(_buffer, 0, _index);
-                    uint ret;
-                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
+                    ReadOnlySpan<byte> buffer = new ReadOnlySpan<byte>(_buffer, 0, _index).ToArray();
+                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out uint ret, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {

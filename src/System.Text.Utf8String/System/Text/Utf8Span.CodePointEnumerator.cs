@@ -34,7 +34,7 @@ namespace System.Text.Utf8
                 }
             }
 
-            public unsafe uint Current
+            public uint Current
             {
                 get
                 {
@@ -48,8 +48,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    uint codePoint;
-                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out codePoint, out _currentLenCache);
+                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out uint codePoint, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
@@ -89,10 +88,7 @@ namespace System.Text.Utf8
             }
 
             // This is different than Reset, it goes to the first element not before first
-            private void MoveToFirstPosition()
-            {
-                _index = 0;
-            }
+            private void MoveToFirstPosition() => _index = 0;
 
             private bool IsOnResetPosition()
             {

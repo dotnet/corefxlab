@@ -41,7 +41,6 @@ namespace System.Text.Utf8
 
             if (length < 0)
             {
-                // TODO: Should we support that?
                 throw new ArgumentOutOfRangeException("length");
             }
 
@@ -51,9 +50,7 @@ namespace System.Text.Utf8
             }
 
             // Length checking
-            _buffer = new byte[length];
-            for (int i = 0; i < length; i++)
-                _buffer[i] = utf8bytes[i + index];
+            _buffer = new Span<byte>(utf8bytes, index, length).ToArray();
         }
 
         public Utf8String(string s)
@@ -65,13 +62,17 @@ namespace System.Text.Utf8
 
             if (s == string.Empty)
             {
-                // Might not be the correct approach
-                _buffer = new byte[0];
+                _buffer = ReadOnlySpan<byte>.Empty.ToArray();
             }
             else
             {
                 _buffer = GetUtf8BytesFromString(s);
             }
+        }
+
+        public Utf8String(Utf8Span utf8Span)
+        {
+            _buffer = utf8Span.Bytes.ToArray();
         }
         
         /// <summary>
@@ -99,13 +100,7 @@ namespace System.Text.Utf8
         /// <summary>
         /// Returns length of the string in UTF-8 code units (bytes)
         /// </summary>
-        public int Length
-        {
-            get
-            {
-                return _buffer.Length;
-            }
-        }
+        public int Length => _buffer.Length;
 
         public Enumerator GetEnumerator()
         {
@@ -125,14 +120,18 @@ namespace System.Text.Utf8
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                // there is no need to check the boundaries -> Span is going to do this on it's own
-                return (byte)_buffer[i];
+                // Check bounds
+                if( i < 0 || i > _buffer.Length)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                return _buffer[i];
             }
         }
 
         public static implicit operator ReadOnlySpan<byte>(Utf8String utf8)
         {
-            return utf8.Bytes.AsReadOnlySpan();
+            return utf8.Bytes;
         }
 
         public static explicit operator Utf8String(string s)
@@ -145,7 +144,7 @@ namespace System.Text.Utf8
             return s.ToString();
         }
 
-        public byte[] Bytes => _buffer;
+        public ReadOnlySpan<byte> Bytes => _buffer;
 
         public override string ToString()
         {
@@ -170,25 +169,7 @@ namespace System.Text.Utf8
 
         public bool Equals(Utf8String other)
         {
-            if(other is null)
-            {
-                return false;
-            }
-
-            if(other.Length != Length)
-            {
-                return false;
-            }
-
-            // Avoid using Arrays.Equals()?
-            for(int i = 0; i < Length; i++)
-            {
-                if(_buffer[i] != other._buffer[i])
-                {
-                    return false;
-                }
-            }
-            return true;
+            return Bytes.SequenceEqual(other.Bytes);
         }
 
         public bool Equals(string other)
@@ -288,13 +269,8 @@ namespace System.Text.Utf8
             {
                 return Empty;
             }
-
-            if (length == Length)
-            {
-                return this;
-            }
-
-            if (index + length > Length)
+            
+            if (index > Length - length)
             {
                 // TODO: Should this be index or length?
                 throw new ArgumentOutOfRangeException("index");
@@ -805,17 +781,13 @@ namespace System.Text.Utf8
         // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
-            return _buffer;
+            return Bytes.ToArray();
         }
 
         public byte[] CopyCodeUnits()
         {
             throw new NotImplementedException();
         }
-
-        public static bool IsWhiteSpace(byte codePoint)
-        {
-            return codePoint == ' ' || codePoint == '\n' || codePoint == '\r' || codePoint == '\t';
-        }
+        
     }
 }

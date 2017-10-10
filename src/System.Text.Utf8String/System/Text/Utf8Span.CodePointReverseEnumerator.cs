@@ -50,8 +50,7 @@ namespace System.Text.Utf8
                     }
 
                     ReadOnlySpan<byte> buffer = _buffer.Slice(0, _index);
-                    uint ret;
-                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
+                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out uint ret, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
