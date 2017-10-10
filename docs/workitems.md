@@ -15,7 +15,8 @@
 * (pri 0) performance tests and improvement
 * (pri 0) support fast lower case and upper case hexadecimal parsing
 * (pri 1) remove old APIs
-* (pri 1) remove `EncodingData(byte[][] symbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)`
+* (pri 1) remove `EncodingData(byte[][] symbols, TextEncoding encoding,
+  Tuple<byte, int>[] parsingTrie)`
 * (pri 1) add all primitive parser to PrimitiveParser (e.g. GUID, URI, date
   time, etc.)
 * (pri 1) add support for multi-span parsing
@@ -79,14 +80,15 @@
 * Remove `System.IO.Pipeline.Text.Primitives`
 * Prototype `TextReader`-like APIs
 * Refactor `System.IO.Pipeline.File` into low level and pipleline-specific APIs
-* Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific APIs
+* Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific
+ APIs
 * Design proper Web.Encoding APIs
 * Drive language integration for spans
 * Write programming guides/docs
 * Write solid set of benchmarks
 * Explore consumedBytes to be passed by-ref
 * Can we return `Span<T>` from `IOutput` (and other APIs)
-* Make sure `EndocingData` supports currency and date time formatting
+* Make sure `EncodingData` supports currency and date time formatting
 * Decide what to do with Sequences
 * How does memory relate to MSR project
 * UTF8 string representation
