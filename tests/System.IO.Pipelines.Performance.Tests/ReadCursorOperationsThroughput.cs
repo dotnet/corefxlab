@@ -29,7 +29,7 @@ namespace System.IO.Pipelines.Performance.Tests
         private ReadableBuffer _liveAspNetBuffer;
         private ReadableBuffer _liveAspNetMultiBuffer;
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);

@@ -107,10 +107,10 @@ namespace System.Binary.Base64
         sealed class ToBase64Utf8 : BufferEncoder
         {
             public override OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Base64.Encode(source, destination, out bytesConsumed, out bytesWritten);
+                => BytesToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public override OperationStatus EncodeInPlace(Span<byte> buffer, int inputLength, out int written)
-                => Base64.EncodeInPlace(buffer, inputLength, out written) ? OperationStatus.Done : OperationStatus.DestinationTooSmall;
+                => BytesToUtf8InPlace(buffer, inputLength, out written);
 
             public override bool IsEncodeInPlaceSupported => true;
         }
@@ -196,31 +196,5 @@ namespace System.Binary.Base64
         };
 
         const byte s_encodingPad = (byte)'='; // '=', for padding
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [Obsolete("Use Base64.BytesToUtf8Length")]
-        public static int ComputeEncodedUtf8Length(int sourceLength) => BytesToUtf8Length(sourceLength);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <returns>Number of bytes written to the destination.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("Use Base64.BytesToUtf8InPlace")]
-        public static OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-            => BytesToUtf8(source, destination, out bytesConsumed, out bytesWritten);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
-        /// <param name="sourceLength">Number of bytes to encode.</param>
-        /// <returns>Number of bytes written to the buffer.</returns>
-        [Obsolete("Use Base64.BytesToUtf8InPlace")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool EncodeInPlace(Span<byte> buffer, int sourceLength, out int bytesWritten)
-            => BytesToUtf8InPlace(buffer, sourceLength, out bytesWritten) == OperationStatus.Done;
     }
 }
