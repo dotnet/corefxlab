@@ -101,7 +101,7 @@ namespace System.Text.Utf8
 
         private byte this[int i]
         {
-                        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
              get
                        {
                                // there is no need to check the boundaries -> Span is going to do this on it's own 

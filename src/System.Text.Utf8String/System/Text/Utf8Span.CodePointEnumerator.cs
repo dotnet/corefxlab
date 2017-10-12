@@ -21,18 +21,7 @@ namespace System.Text.Utf8
             }
 
             // TODO: Name TBD
-            public int PositionInCodeUnits
-            {
-                get
-                {
-                    if (IsOnResetPosition())
-                    {
-                        return -1;
-                    }
-
-                    return _index;
-                }
-            }
+            public int PositionInCodeUnits => IsOnResetPosition() ? -1 : _index;
 
             public uint Current
             {
