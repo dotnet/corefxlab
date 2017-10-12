@@ -121,7 +121,7 @@ namespace System.Text.Utf8
             get
             {
                 // Check bounds
-                if( i < 0 || i > _buffer.Length)
+                if( i < 0 || i >= _buffer.Length)
                 {
                     throw new ArgumentOutOfRangeException("index");
                 }

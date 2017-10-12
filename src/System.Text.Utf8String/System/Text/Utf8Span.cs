@@ -102,11 +102,11 @@ namespace System.Text.Utf8
         private byte this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-             get
-                       {
-                               // there is no need to check the boundaries -> Span is going to do this on it's own 
-                                return (byte)_buffer[i];
-                           }
+            get
+            {
+                // there is no need to check the boundaries -> Span is going to do this on it's own 
+                return (byte)_buffer[i];
+            }
         }
 
         public static implicit operator ReadOnlySpan<byte>(Utf8Span utf8)
@@ -550,7 +550,7 @@ namespace System.Text.Utf8
 
         public bool StartsWith(Utf8Span value)
         {
-            if(value.Length > this.Length)
+            if (value.Length > this.Length)
             {
                 return false;
             }
@@ -641,7 +641,7 @@ namespace System.Text.Utf8
 
             CodePointEnumerator it = GetCodePointEnumerator();
             CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
-            
+
             while (it.MoveNext())
             {
                 bool found = false;

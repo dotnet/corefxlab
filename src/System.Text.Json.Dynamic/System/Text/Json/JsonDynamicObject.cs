@@ -334,9 +334,9 @@ namespace System.Text.Json
             {
                 int result = Object.GetHashCode();
                 ReadOnlySpan<byte> nameBytes = _name.Bytes;
-                result = result * 19 + (byte)nameBytes[0];
-                result = result * 19 + (byte)nameBytes[_name.Length - 1];
-                result = result * 19 + (byte)nameBytes[_name.Length>>2];
+                result = result * 19 + nameBytes[0];
+                result = result * 19 + nameBytes[_name.Length - 1];
+                result = result * 19 + nameBytes[_name.Length>>2];
                 return result;
             }
 
