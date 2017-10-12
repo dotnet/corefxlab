@@ -9,9 +9,9 @@ using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
 {
-    public partial class PrimitiveParserSBytePerfTests
+    public partial class PrimitiveParserPerfTests
     {
-        private const int InnerCount = 100000;
+        private const int LargerInnerCount = InnerCount * 10;
 
         private static readonly string[] s_SByteTextArray = new string[17]
         {
@@ -34,7 +34,7 @@ namespace System.Text.Primitives.Tests
             "-127"
         };
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = LargerInnerCount)]
         [InlineData("107")] // standard parse
         [InlineData("127")] // max value
         [InlineData("0")]
@@ -80,7 +80,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = LargerInnerCount)]
         private static void PrimitiveParserByteSpanToSByte_BytesConsumed_VariableLength()
         { 
             int textLength = s_SByteTextArray.Length; 
@@ -104,7 +104,7 @@ namespace System.Text.Primitives.Tests
             } 
         } 
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = LargerInnerCount)]
         [InlineData("107")] // standard parse
         [InlineData("127")] // max value
         [InlineData("0")]
@@ -140,9 +140,9 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = LargerInnerCount)]
 
-        private static void PrimitiveParserByteSpanToInt32_BytesConsumed_VariableLength_Baseline()
+        private static void PrimitiveParserByteSpanToSByte_BytesConsumed_VariableLength_Baseline()
         {
             int textLength = s_SByteTextArray.Length;
             byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
@@ -163,7 +163,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = LargerInnerCount)]
         [InlineData("๑๑๑")]
         [InlineData("๑๒๔")]
         [InlineData("௧௨")]
