@@ -11,7 +11,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
         private ReadableBuffer _readableBuffer;
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             _readableBuffer = BufferUtilities.CreateBuffer(Enumerable.Range(100, 200).ToArray());
