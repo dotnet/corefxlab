@@ -37,6 +37,7 @@ namespace System.Binary.Base64
                 sourceIndex += 3;
             }
 
+            // TODO: Implement logic for when isFinalBlock is false
             if (isFinalBlock != true) throw new NotImplementedException();
 
             if (sourceIndex == srcLength - 1)
@@ -115,62 +116,6 @@ namespace System.Binary.Base64
             }
         }
 
-        public static OperationStatus BytesToUtf8Alternate(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format)
-        {
-            if (format.IsDefault) return BytesToUtf8(bytes, utf8, out consumed, out written);
-
-            format = ValidateFormat(format);
-
-            int inputLength = bytes.Length;
-            int lineLength = format.Precision;
-            int bytesInOneLine = (format.Precision >> 2) * 3;
-            consumed = 0;
-            written = 0;
-            OperationStatus status = OperationStatus.Done;
-            
-            int numLineBreaks = utf8.Length / (lineLength + 2);
-            if ((utf8.Length % (lineLength + 2)) == (lineLength + 1))
-            {
-                numLineBreaks++;
-            }
-
-            for (int i = 0; i < numLineBreaks; i++)
-            {
-                status = BytesToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
-                utf8[lineLength] = (byte)'\r';
-                utf8[lineLength + 1] = (byte)'\n';
-                bytesWrittenLoop += 2;
-                bytes = bytes.Slice(bytesConsumedLoop);
-                utf8 = utf8.Slice(bytesWrittenLoop);
-                consumed += bytesConsumedLoop;
-                written += bytesWrittenLoop;
-            }
-            status = BytesToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
-            consumed += leftOverbytesConsumed;
-            written += leftOverbytesWritten;
-            return status;
-        }
-
-        public static OperationStatus BytesToUtf8Alt2(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format)
-        {
-            if (format.IsDefault) return BytesToUtf8(bytes, utf8, out consumed, out written);
-
-            format = ValidateFormat(format);
-
-            int lineLength = format.Precision;
-            int numLineBreaks = utf8.Length / (lineLength + 2);
-            if ((utf8.Length % (lineLength + 2)) == (lineLength + 1))
-            {
-                numLineBreaks++;
-            }
-
-            OperationStatus status = BytesToUtf8(bytes, utf8.Slice(0, utf8.Length - numLineBreaks * 2), out consumed, out written);
-
-            AddLineBreaks(utf8, lineLength, numLineBreaks);
-            written += numLineBreaks * 2;
-            return status;
-        }
-
         public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
         {
             if (format.IsDefault) return BytesToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
@@ -211,34 +156,6 @@ namespace System.Binary.Base64
             }
 
             return (bytes.Length > bytesInOneLine) ? OperationStatus.DestinationTooSmall : OperationStatus.NeedMoreData;
-        }
-
-
-        private static void AddLineBreaks(Span<byte> utf8, int lineLength, int numLineBreaks)
-        {
-            //VerifyZero(utf8, numLineBreaks * 2);
-            int previousInsert = utf8.Length;
-            for (int i = 0; i < numLineBreaks; i++)
-            {
-                int startOfSlice = lineLength * (numLineBreaks - i);
-                int shiftNum = 2 * (numLineBreaks - i);
-                ShiftByN(utf8.Slice(startOfSlice, previousInsert - startOfSlice), shiftNum);
-
-                int indextoInsert = startOfSlice + shiftNum;
-                utf8[indextoInsert - 2] = (byte)'\r';
-                utf8[indextoInsert - 1] = (byte)'\n';
-                previousInsert = indextoInsert - 2;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void VerifyZero(Span<byte> utf8, int numZeroes)
-        {
-            int end = utf8.Length - 1;
-            for (int i = 0; i < numZeroes; i++)
-            {
-                if (utf8[end - i] != 0) throw new Exception();
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

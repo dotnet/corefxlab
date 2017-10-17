@@ -64,56 +64,6 @@ namespace System.Binary.Base64.Tests
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
-        private static void Base64EncodeWithLineBreaksAlternate(int numberOfBytes)
-        {
-            Span<byte> source = new byte[numberOfBytes];
-            Base64TestHelper.InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.BytesToUtf8Length(numberOfBytes, format)];
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.BytesToUtf8Alternate(source, destination, out int consumed, out int written, format);
-                }
-            }
-
-            string encodedText = Text.Encoding.ASCII.GetString(destination.ToArray());
-            string expectedText = Convert.ToBase64String(source.ToArray(), Base64FormattingOptions.InsertLineBreaks);
-            Assert.Equal(expectedText, encodedText);
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData(10)]
-        [InlineData(100)]
-        [InlineData(1000)]
-        [InlineData(1000 * 1000)]
-        private static void Base64EncodeWithLineBreaksAlternate2(int numberOfBytes)
-        {
-            Span<byte> source = new byte[numberOfBytes];
-            Base64TestHelper.InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.BytesToUtf8Length(numberOfBytes, format)];
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.BytesToUtf8Alt2(source, destination, out int consumed, out int written, format);
-                }
-            }
-
-            string encodedText = Text.Encoding.ASCII.GetString(destination.ToArray());
-            string expectedText = Convert.ToBase64String(source.ToArray(), Base64FormattingOptions.InsertLineBreaks);
-            Assert.Equal(expectedText, encodedText);
-        }
-
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData(10)]
-        [InlineData(100)]
-        [InlineData(1000)]
-        [InlineData(1000 * 1000)]
         private static void Base64EncodeWithLineBreaksBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
