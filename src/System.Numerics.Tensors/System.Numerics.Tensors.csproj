@@ -48,7 +48,7 @@
     <None Update="System\Numerics\TensorTemplate.ttinclude" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
   </ItemGroup>
   <ItemGroup>
     <!-- enable the TextTemplating extension -->

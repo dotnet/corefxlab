@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Tensors", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Numerics.Tensors.Tests", "..\..\tests\System.Numerics.Tensors.Tests\System.Numerics.Tensors.Tests.csproj", "{4CCDEC28-E32C-4D90-A140-87E45254CDC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Buffers.Primitives", "..\System.Buffers.Primitives\System.Buffers.Primitives.csproj", "{0A345006-D361-4BDF-934C-4293DBC5A111}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{4CCDEC28-E32C-4D90-A140-87E45254CDC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CCDEC28-E32C-4D90-A140-87E45254CDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CCDEC28-E32C-4D90-A140-87E45254CDC0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A345006-D361-4BDF-934C-4293DBC5A111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A345006-D361-4BDF-934C-4293DBC5A111}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A345006-D361-4BDF-934C-4293DBC5A111}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A345006-D361-4BDF-934C-4293DBC5A111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
