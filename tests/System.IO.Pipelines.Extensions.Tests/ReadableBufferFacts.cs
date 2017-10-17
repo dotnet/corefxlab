@@ -16,6 +16,8 @@ using System.Text.Formatting;
 using System.Threading.Tasks;
 using Xunit;
 
+using static System.Buffers.Binary.BinaryPrimitives;
+
 namespace System.IO.Pipelines.Tests
 {
     public class ReadableBufferFacts: IDisposable
@@ -454,16 +456,16 @@ namespace System.IO.Pipelines.Tests
             var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
             var span = readable.First.Span;
             Assert.True(readable.IsSingleSpan);
-            Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
-            Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
-            Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
-            Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
-            Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
-            Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
-            Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
-            Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
-            Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
-            Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
+            Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
+            Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
+            Assert.Equal(ReadMachineEndian<ushort>(span), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(ReadMachineEndian<int>(span), readable.ReadLittleEndian<int>());
+            Assert.Equal(ReadMachineEndian<uint>(span), readable.ReadLittleEndian<uint>());
+            Assert.Equal(ReadMachineEndian<long>(span), readable.ReadLittleEndian<long>());
+            Assert.Equal(ReadMachineEndian<ulong>(span), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(ReadMachineEndian<float > (span), readable.ReadLittleEndian<float>());
+            Assert.Equal(ReadMachineEndian<double>(span), readable.ReadLittleEndian<double>());
         }
 
         [Fact]
@@ -482,16 +484,16 @@ namespace System.IO.Pipelines.Tests
             Assert.False(readable.IsSingleSpan);
             Span<byte> span = readable.ToArray();
 
-            Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
-            Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
-            Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
-            Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
-            Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
-            Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
-            Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
-            Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
-            Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
-            Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
+            Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
+            Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
+            Assert.Equal(ReadMachineEndian<ushort>(span), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(ReadMachineEndian<int>(span), readable.ReadLittleEndian<int>());
+            Assert.Equal(ReadMachineEndian<uint>(span), readable.ReadLittleEndian<uint>());
+            Assert.Equal(ReadMachineEndian<long>(span), readable.ReadLittleEndian<long>());
+            Assert.Equal(ReadMachineEndian<ulong>(span), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(ReadMachineEndian<float>(span), readable.ReadLittleEndian<float>());
+            Assert.Equal(ReadMachineEndian<double>(span), readable.ReadLittleEndian<double>());
         }
 
         [Fact]

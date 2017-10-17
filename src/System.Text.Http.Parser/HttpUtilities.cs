@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Buffers;
 using System.Buffers.Text;
 
+using static System.Buffers.Binary.BinaryPrimitives;
+
 namespace System.Text.Http.Parser.Internal
 {
     internal static class HttpUtilities
@@ -74,7 +76,7 @@ namespace System.Text.Http.Parser.Internal
 
             Span<byte> span = stackalloc byte[8];
             Encodings.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
-            return span.Read<ulong>();
+            return ReadMachineEndian<ulong>(span);
         }
 
         private static uint GetAsciiStringAsInt(string str)
@@ -83,7 +85,7 @@ namespace System.Text.Http.Parser.Internal
 
             Span<byte> span = stackalloc byte[4];
             Encodings.Utf16.ToUtf8(str.AsReadOnlySpan().AsBytes(), span, out int consumed, out int written);
-            return span.Read<uint>();
+            return ReadMachineEndian<uint>(span);
         }
 
         private unsafe static ulong GetMaskAsLong(byte[] bytes)
