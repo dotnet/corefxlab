@@ -287,10 +287,10 @@ namespace System.IO.Pipelines
 
         internal bool GreaterOrEqual(ReadCursor other)
         {
-            // This is other.Segment.RunningLength + other.Index <= Segment.RunningLength + Index
+            // other.Segment.RunningLength + other.Index  - other.Segment.Start <= Segment.RunningLength + Index- Segment.Start
             // fliped to avoid overflows
 
-            return other.Segment.RunningLength - Index <= Segment.RunningLength - other.Index;
+            return other.Segment.RunningLength - Index - other.Segment.Start <= Segment.RunningLength - other.Index - Segment.Start;
         }
     }
 }
