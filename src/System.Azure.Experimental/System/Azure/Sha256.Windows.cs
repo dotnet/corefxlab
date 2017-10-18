@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Text;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers.Cryptography
 {
-    public struct Sha256
+    public struct Sha256 : IWritable
     {
         IntPtr _algorithm;
         IntPtr _hash;
@@ -36,13 +38,21 @@ namespace System.Buffers.Cryptography
             }
         }
 
-        public unsafe void GetHash(Span<byte> output)
+        public bool TryWrite(Span<byte> buffer, out int written, ParsedFormat format = default)
         {
-            fixed (byte* pOutput = &output.DangerousGetPinnableReference())
+            if (!format.IsDefault) throw new ArgumentOutOfRangeException(nameof(format));
+            if (buffer.Length < OutputSize) { written = 0; return false; }
+
+            unsafe
             {
-                var result = BCryptFinishHash(_hash, pOutput, output.Length, 0);
-                if (result != 0) throw new Exception();
+                fixed (byte* pOutput = &buffer.DangerousGetPinnableReference())
+                {
+                    var result = BCryptFinishHash(_hash, pOutput, OutputSize, 0);
+                    if (result != 0) throw new Exception();
+                }
             }
+            written = OutputSize;
+            return true;
         }
 
         public void Dispose()
