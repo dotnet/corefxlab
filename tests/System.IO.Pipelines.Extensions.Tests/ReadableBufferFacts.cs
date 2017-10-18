@@ -464,7 +464,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(ReadMachineEndian<uint>(span), readable.ReadLittleEndian<uint>());
             Assert.Equal(ReadMachineEndian<long>(span), readable.ReadLittleEndian<long>());
             Assert.Equal(ReadMachineEndian<ulong>(span), readable.ReadLittleEndian<ulong>());
-            Assert.Equal(ReadMachineEndian<float > (span), readable.ReadLittleEndian<float>());
+            Assert.Equal(ReadMachineEndian<float>(span), readable.ReadLittleEndian<float>());
             Assert.Equal(ReadMachineEndian<double>(span), readable.ReadLittleEndian<double>());
         }
 
