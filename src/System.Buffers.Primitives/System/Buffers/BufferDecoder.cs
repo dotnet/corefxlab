@@ -10,7 +10,7 @@ namespace System.Buffers
     {
         public abstract OperationStatus Decode(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written);
 
-        public virtual OperationStatus DecodeInPlace(Span<byte> buffer, int inputLength, out int written)
+        public virtual OperationStatus Transform(Span<byte> buffer, int inputLength, out int written)
         {
             throw new NotSupportedException();
         }

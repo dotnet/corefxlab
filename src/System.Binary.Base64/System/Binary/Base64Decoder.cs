@@ -228,13 +228,13 @@ namespace System.Binary.Base64
             }
         }
 
-        sealed class FromBase64Utf8 : BufferDecoder
+        sealed class FromBase64Utf8 : BufferDecoder, IBufferTransformation
         {
             public override OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => Utf8ToBytes(source, destination, out bytesConsumed, out bytesWritten);
 
-            public override OperationStatus DecodeInPlace(Span<byte> buffer, int inputLength, out int written)
-                => Utf8ToBytesInPlace(buffer.Slice(0, inputLength), out var consumed, out written);
+            public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
+                => Utf8ToBytesInPlace(buffer.Slice(0, dataLength), out var consumed, out written);
 
             public override bool IsDecodeInPlaceSupported => true;
         }
