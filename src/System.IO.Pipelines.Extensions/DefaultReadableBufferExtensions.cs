@@ -2,6 +2,8 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
+using static System.Buffers.Binary.BinaryPrimitives;
+
 namespace System.IO.Pipelines
 {
     public static class DefaultReadableBufferExtensions
@@ -95,7 +97,7 @@ namespace System.IO.Pipelines
                 {
                     while (currentSpan.Length >= VectorWidth)
                     {
-                        var data = currentSpan.Read<Vector<byte>>();
+                        var data = ReadMachineEndian<Vector<byte>>(currentSpan);
                         var byte0Equals = Vector.Equals(data, byte0Vector);
 
                         if (byte0Equals.Equals(Vector<byte>.Zero))
