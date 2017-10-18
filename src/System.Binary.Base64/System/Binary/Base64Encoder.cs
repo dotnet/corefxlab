@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,9 @@ namespace System.Binary.Base64
     {
         public static readonly BufferEncoder BytesToUtf8Encoder = new ToBase64Utf8();
 
-        public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written)
+        private const int MaxLineLength = 76;
+
+        public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, bool isFinalBlock = true)
         {
             ref byte srcBytes = ref bytes.DangerousGetPinnableReference();
             ref byte destBytes = ref utf8.DangerousGetPinnableReference();
@@ -33,6 +36,9 @@ namespace System.Binary.Base64
                 destIndex += 4;
                 sourceIndex += 3;
             }
+
+            // TODO: Implement logic for when isFinalBlock is false
+            if (isFinalBlock != true) throw new NotImplementedException();
 
             if (sourceIndex == srcLength - 1)
             {
@@ -61,10 +67,101 @@ namespace System.Binary.Base64
             return OperationStatus.DestinationTooSmall;
         }
 
+        private static ParsedFormat ValidateFormat(ParsedFormat format)
+        {
+            char symbol = format.Symbol;
+
+            if (symbol == 'M')  // M (for MIME) == N76
+            {
+                symbol = 'N';
+                return new ParsedFormat(symbol, MaxLineLength);
+            }
+
+            if (symbol == 'N')
+            {
+                if (format.Precision > MaxLineLength || format.Precision % 4 != 0 || format.Precision == 0)
+                {
+                    throw new FormatException($"Format {format.Symbol}:{format.Precision} not supported for Base64 Encoding.");
+                }
+                return format;
+            }
+
+            throw new FormatException($"Format {format.Symbol}:{format.Precision} not supported for Base64 Encoding.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int BytesToUtf8Length(int bytesLength)
         {
             Debug.Assert(bytesLength >= 0);
-            return ((bytesLength + 2) / 3) << 2;
+            checked
+            {
+                return (((bytesLength + 2) / 3) * 4);
+            }
+        }
+
+        public static int BytesToUtf8Length(int bytesLength, ParsedFormat format)
+        {
+            Debug.Assert(bytesLength >= 0);
+
+            int length = BytesToUtf8Length(bytesLength);
+            if (format.IsDefault) return length;
+
+            format = ValidateFormat(format);
+
+            int bytesInOneLine = (format.Precision >> 2) * 3;
+            int extra = ((bytesLength - 1) / bytesInOneLine) * 2;
+            checked
+            {
+                return length + extra;
+            }
+        }
+
+        public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
+        {
+            if (format.IsDefault) return BytesToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
+
+            format = ValidateFormat(format);
+
+            int inputLength = bytes.Length;
+            int lineLength = format.Precision;
+            int bytesInOneLine = (format.Precision >> 2) * 3;
+            consumed = 0;
+            written = 0;
+            OperationStatus status = OperationStatus.Done;
+
+            int numLineBreaks = utf8.Length / (lineLength + 2);
+            if ((utf8.Length % (lineLength + 2)) == (lineLength + 1))
+            {
+                numLineBreaks++;
+            }
+
+            for (int i = 0; i < numLineBreaks; i++)
+            {
+                status = BytesToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
+                utf8[lineLength] = (byte)'\r';
+                utf8[lineLength + 1] = (byte)'\n';
+                bytesWrittenLoop += 2;
+                bytes = bytes.Slice(bytesConsumedLoop);
+                utf8 = utf8.Slice(bytesWrittenLoop);
+                consumed += bytesConsumedLoop;
+                written += bytesWrittenLoop;
+            }
+
+            if (isFinalBlock)
+            {
+                status = BytesToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
+                consumed += leftOverbytesConsumed;
+                written += leftOverbytesWritten;
+                return status;
+            }
+
+            return (bytes.Length > bytesInOneLine) ? OperationStatus.DestinationTooSmall : OperationStatus.NeedMoreData;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ShiftByN(Span<byte> utf8, int num)
+        {
+            utf8.Slice(0, utf8.Length - num).CopyTo(utf8.Slice(num));
         }
 
         public static OperationStatus BytesToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
