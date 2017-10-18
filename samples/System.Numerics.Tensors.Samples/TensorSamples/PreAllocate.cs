@@ -48,9 +48,7 @@ namespace TensorSamples
                 return GetRowSum(dataPtr, tensor.Dimensions.ToArray(), tensor.Rank, row);
             }
         }
-
-
-        delegate IntPtr AllocatorDelegate(int size);
+        
         [DllImport("TensorSamples.native.dll")]
         extern private static unsafe void GetMultTablePreAllocated(int number, double* result, int resultSize);
 

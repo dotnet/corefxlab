@@ -33,6 +33,12 @@ namespace TensorSamples
                 Dispose(false);
             }
 
+            public static NativeMemory<T> Allocate(int length)
+            {
+                IntPtr memory = AllocateBuffer(Marshal.SizeOf(typeof(T)) * length);
+                return new NativeMemory<T>(memory, length);
+            }
+
             public override bool IsDisposed => disposed;
 
             public override int Length => length;
@@ -95,5 +101,8 @@ namespace TensorSamples
 
         [DllImport("TensorSamples.native.dll")]
         extern private static unsafe double FreeBuffer(IntPtr buffer);
+
+        [DllImport("TensorSamples.native.dll")]
+        extern private static unsafe IntPtr AllocateBuffer(int sizeInBytes);
     }
 }

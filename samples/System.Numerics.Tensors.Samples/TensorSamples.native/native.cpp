@@ -90,6 +90,11 @@ extern "C"  __declspec(dllexport) double* __stdcall GetMultTableAllocateNative(i
     return result;
 }
 
+extern "C"  __declspec(dllexport) void* __stdcall AllocateBuffer(int sizeInBytes)
+{
+    return malloc(sizeInBytes);
+}
+
 extern "C"  __declspec(dllexport) void __stdcall FreeBuffer(void* buffer)
 {
     printf("Freeing %p\n", buffer);
