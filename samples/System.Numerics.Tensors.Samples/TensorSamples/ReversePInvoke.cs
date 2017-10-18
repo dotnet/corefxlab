@@ -22,7 +22,7 @@ namespace TensorSamples
             }
         }
         
-        // The following represent what .NET bindings would look like for an native library that wishes
+        // The following represent what .NET bindings would look like for a native library that wishes
         // to deal in tensors and allocate them on the managed heap.
         
         public static DenseTensor<double> GetMultiplicationTable(int maxNumber)

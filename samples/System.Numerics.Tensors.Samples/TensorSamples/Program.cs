@@ -9,11 +9,15 @@ namespace TensorSamples
     {
         static void Main(string[] args)
         {
+            PreAllocate.RunSample();
+
             ReversePInvoke.RunSample();
 
             MutateSparse.RunSample();
 
             WrapNativeMemory.RunSample();
+
+            Access.RunSample();
         }
     }
 }

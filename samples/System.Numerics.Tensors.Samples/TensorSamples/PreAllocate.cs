@@ -5,11 +5,11 @@ using System.Text;
 
 namespace TensorSamples
 {
-    partial class WrapNativeMemory
+    partial class PreAllocate
     {
         public static void RunSample()
         {
-            Console.WriteLine($"*** {nameof(WrapNativeMemory)} ***");
+            Console.WriteLine($"*** {nameof(PreAllocate)} ***");
             var multTable = GetMultiplicationTable(5);
 
             Console.WriteLine("Multiplication table:");
@@ -20,25 +20,25 @@ namespace TensorSamples
             {
                 Console.WriteLine(GetRowSum(multTable, row));
             }
-
-            Console.WriteLine("Forcing GC.");
-            GC.Collect();
-            Console.WriteLine("Remove GC root.");
-            multTable = null;
-            Console.WriteLine("Forcing GC.");
-            GC.Collect();
         }
         
         // The following represent what .NET bindings would look like for a native library that wishes
-        // to deal in tensors and allocate them from native code on the managed heap.
+        // to deal in tensors where the size of the tensor is known before calling the API and can be allocated
+        // by the caller.
         
-        public static DenseTensor<double> GetMultiplicationTable(int maxNumber)
+        public static unsafe DenseTensor<double> GetMultiplicationTable(int maxNumber)
         {
             Span<int> dimensions = stackalloc int[2];
             dimensions[0] = dimensions[1] = maxNumber;
-            var nativeMemory = new NativeMemory<double>(GetMultTableAllocateNative(maxNumber), maxNumber * maxNumber);
-            return new DenseTensor<double>(nativeMemory.Memory, dimensions);
+
+            var result = new DenseTensor<double>(dimensions);
             
+            fixed (double* dataPtr = &result.Buffer.Span.DangerousGetPinnableReference())
+            {
+                GetMultTablePreAllocated(maxNumber, dataPtr, result.Buffer.Length);
+            }
+
+            return result;
         }
 
         public static unsafe double GetRowSum(DenseTensor<double> tensor, int row)
@@ -52,7 +52,7 @@ namespace TensorSamples
 
         delegate IntPtr AllocatorDelegate(int size);
         [DllImport("TensorSamples.native.dll")]
-        extern private static IntPtr GetMultTableAllocateNative(int number);
+        extern private static unsafe void GetMultTablePreAllocated(int number, double* result, int resultSize);
 
         [DllImport("TensorSamples.native.dll")]
         extern private static unsafe double GetRowSum(double* data, int[] dimensions, int rank, int row);
