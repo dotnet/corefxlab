@@ -1,0 +1,157 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ assembly Name="System.Core.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#@ include file="RangeConfig.ttinclude" #><# GenerateCopyrightHeader(); #>
+
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+namespace System
+{
+    public static class RangeExtensions
+    {
+        #region IsEmpty Methods
+
+        public static bool IsEmpty<T>(this Range<T> range)
+        {
+            return EqualityComparer<T>.Default.Equals(range.From, range.To);
+        }
+<# 
+    foreach (var type in SupportedTypes)
+    {
+#>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsEmpty(this Range<<#= type.Name #>> range)
+        {
+            return range.From == range.To;
+        }
+<# 
+    }
+#>
+
+        #endregion
+
+        #region Length Methods
+<# 
+    foreach (var type in SupportedTypes.Where(t => HasLengthType(t)))
+    {
+        var lengthType = GetLengthType(type);
+#>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static <#=lengthType.Name#> Length(this Range<<#= type.Name #>> range)
+        {
+            return (<#= lengthType.Name #>)(range.To - range.From);
+        }
+<# 
+    }
+#>
+        #endregion
+
+        #region Normalization Methods
+
+        public static bool IsNormalized<T>(this Range<T> range)
+        {
+            return Comparer<T>.Default.Compare(range.To, range.From) >= 0;
+        }
+
+        public static Range<T> Normalize<T>(this Range<T> range)
+        {
+            return (Comparer<T>.Default.Compare(range.To, range.From) >= 0) ? range : new Range<T>(range.To, range.From);
+        }
+<# 
+    foreach (var type in SupportedTypes)
+    {
+#>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNormalized(this Range<<#= type.Name #>> range)
+        {
+            return range.To >= range.From;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range<<#= type.Name #>> Normalize(this Range<<#= type.Name #>> range)
+        {
+            return (range.To >= range.From) ? range : new Range<<#= type.Name #>>(range.To, range.From);
+        }
+<# 
+    }
+#>
+
+        #endregion
+
+        #region Contains Methods
+
+        public static bool Contains<T>(this Range<T> range, T value)
+        {
+            var comparer = Comparer<T>.Default;
+            return comparer.Compare(range.From, value) <= 0 && comparer.Compare(range.To, value) > 0;
+        }
+<# 
+    foreach (var type in SupportedTypes)
+    {
+#>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this Range<<#= type.Name #>> range, <#= type.Name #> value)
+        {
+            return range.From <= value && range.To > value;
+        }
+<# 
+    }
+#>
+
+        #endregion
+
+        #region Intersection Methods
+
+        public static bool Intersects<T>(this Range<T> range, Range<T> other)
+        {
+            var comparer = Comparer<T>.Default;
+            return (comparer.Compare(range.From, other.From) <= 0)
+                ? comparer.Compare(other.From, other.To) != 0 && comparer.Compare(range.To, other.From) > 0
+                : comparer.Compare(range.From, range.To) != 0 && comparer.Compare(range.From, other.To) < 0;
+        }
+
+        public static Range<T> Intersect<T>(this Range<T> range, Range<T> other)
+        {
+            var comparer = Comparer<T>.Default;
+            if (comparer.Compare(range.From, other.To) >= 0 || comparer.Compare(range.To, other.From) <= 0)
+                return new Range<T>();
+
+            return new Range<T>(
+                (comparer.Compare(range.From, other.From) > 0) ? range.From : other.From,
+                (comparer.Compare(range.To, other.To) < 0) ? range.To : other.To);
+        }
+<# 
+    foreach (var type in SupportedTypes)
+    {
+#>
+
+        public static bool Intersects(this Range<<#= type.Name #>> range, Range<<#= type.Name #>> other)
+        {
+            return (range.From <= other.From)
+                ? other.From != other.To && range.To > other.From
+                : range.From != range.To && range.From < other.To;
+        }
+
+        public static Range<<#= type.Name #>> Intersect(this Range<<#= type.Name #>> range, Range<<#= type.Name #>> other)
+        {
+            if (range.From >= other.To || range.To <= other.From)
+                return new Range<<#= type.Name #>>();
+
+            return new Range<<#= type.Name #>>(
+                (range.From > other.From) ? range.From : other.From,
+                (range.To < other.To) ? range.To : other.To);
+        }
+<# 
+    }
+#>
+
+        #endregion
+    }
+}

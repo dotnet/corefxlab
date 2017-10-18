@@ -27,9 +27,9 @@ namespace System.Text.Http
         internal static readonly byte[] Cr2 = new byte[] { (byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n' };
 
         internal ReadOnlyBytes Bytes;
-        internal Range _verb;
-        internal Range _path;
-        internal Range _version;
+        internal Range<int> _verb;
+        internal Range<int> _path;
+        internal Range<int> _version;
         internal HttpHeaders _headers;
         internal int _bodyIndex;
 
@@ -47,22 +47,22 @@ namespace System.Text.Http
             request.Bytes = bytes;
 
             var reader = new BytesReader(bytes);
-            Range? verb = reader.ReadRangeUntil((byte)' ');
+            Range<int>? verb = reader.ReadRangeUntil((byte)' ');
             request._verb = verb.Value;
             reader.Advance(1);
 
-            Range? path = reader.ReadRangeUntil((byte)' ');
+            Range<int>? path = reader.ReadRangeUntil((byte)' ');
             request._path = path.Value;
             reader.Advance(1);
 
-            Range? version = reader.ReadRangeUntil(Cr);
+            Range<int>? version = reader.ReadRangeUntil(Cr);
             request._version = version.Value;
             reader.Advance(2);
 
             var headers = reader.ReadRangeUntil(Cr2).Value;
-            request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.Index, headers.Length + 2) };
+            request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.From, headers.Length() + 2) };
 
-            request._bodyIndex = headers.Index + headers.Length + 4;
+            request._bodyIndex = headers.From + headers.Length() + 4;
             return request;
         }
     }

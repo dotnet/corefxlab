@@ -1,0 +1,61 @@
+﻿<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Globalization" #>
+<#@ include file="..\..\src\System.Collections.Sequences\System\RangeConfig.ttinclude" #>
+<#+
+    /*    This file includes static data used as compilation configuration for the rest of the code generation. 
+        It is shared here to ensure that all generated code compiles with the same constants and configurations.    */
+
+    public class TestCase
+    {
+        public readonly Type Type;
+        public readonly object Value1;
+        public readonly object Value2;
+        public readonly object Value3;
+        public readonly object Value4;
+        public readonly object Length;
+
+        public TestCase(Type type, object value1, object value2, object value3, object value4, object length = null)
+        {
+            Type = type;
+            Value1 = value1;
+            Value2 = value2;
+            Value3 = value3;
+            Value4 = value4;
+            Length = length;
+        }
+    }
+
+    public static TestCase[] TestCases = new[]
+    {
+        new TestCase(typeof(SByte), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Int16), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Int32), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Int64), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Byte), 0, 1, 2, 3, 1),
+        new TestCase(typeof(UInt16), 0, 1, 2, 3, 1),
+        new TestCase(typeof(UInt32), 0, 1, 2, 3, 1),
+        new TestCase(typeof(UInt64), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Single), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Double), 0, 1, 2, 3, 1),
+        new TestCase(typeof(Decimal), 0, 1, 2, 3, 1),
+        new TestCase(typeof(DateTime), new DateTime(1, 1, 1), new DateTime(1, 1, 2), new DateTime(1, 1, 3), new DateTime(1, 1, 4), new TimeSpan(1, 0, 0, 0)),
+        new TestCase(typeof(String), "aa", "ab", "ac", "ad")
+    };
+
+    public static string GetValueInitializer(object value)
+    {
+        string result = (value is IFormattable formattable)
+            ? formattable.ToString(null, CultureInfo.InvariantCulture)
+            : value.ToString();
+
+        var type = value.GetType();
+        if (type.IsPrimitive)
+            return result;
+
+        if (type == typeof(string))
+            return "\"" + result + "\"";
+
+        return type.Name + ".Parse(\"" + result + "\")";
+    }
+#>
