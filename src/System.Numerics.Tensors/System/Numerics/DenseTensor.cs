@@ -3,6 +3,10 @@
 
 namespace System.Numerics
 {
+    /// <summary>
+    /// Represents a multi-dimensional collection of objects of type T that can be accessed by indices.  DenseTensor stores values in a contiguous sequential block of memory where all values are represented.
+    /// </summary>
+    /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
     public class DenseTensor<T> : Tensor<T>
     {
         private readonly Memory<T> memory;
@@ -52,6 +56,12 @@ namespace System.Numerics
             memory = new T[Length];
         }
 
+        /// <summary>
+        /// Constructs a new DenseTensor of the specifed dimensions, wrapping existing backing memory for the contents.
+        /// </summary>
+        /// <param name="memory"></param>
+        /// <param name="dimensions"></param>
+        /// <param name="reverseStride"></param>
         public DenseTensor(Memory<T> memory, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             this.memory = memory;
@@ -63,30 +73,55 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Returns a single dimensional view of this Tensor
+        /// Memory storing backing values of this tensor.
         /// </summary>
         public Memory<T> Buffer => memory;
 
+        /// <summary>
+        /// Gets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public override T GetValue(int index)
         {
             return Buffer.Span[index];
         }
 
+        /// <summary>
+        /// Sets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public override void SetValue(int index, T value)
         {
             Buffer.Span[index] = value;
         }
 
+        /// <summary>
+        /// Creates a copy of this tensor, with new backing storage.
+        /// </summary>
+        /// <returns></returns>
         public override Tensor<T> Clone()
         {
             return new DenseTensor<T>(Buffer.ToArray(), dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="dimensions"></param>
+        /// <returns></returns>
         public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new DenseTensor<TResult>(dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Reshapes the current tensor to new dimensions, using the same backing storage.
+        /// </summary>
+        /// <param name="dimensions"></param>
+        /// <returns></returns>
         public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             if (dimensions.Length == 0)
