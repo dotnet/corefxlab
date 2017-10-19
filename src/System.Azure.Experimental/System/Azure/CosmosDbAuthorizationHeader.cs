@@ -135,7 +135,7 @@ namespace System.Azure.Authentication
             if(!hash.TryWrite(buffer.Slice(front.Length), out written)){
                 throw new NotImplementedException("need to resize buffer");
             }
-            if (Base64.BytesToUtf8InPlace(buffer.Slice(front.Length), written, out written) != OperationStatus.Done)
+            if (!Base64.EncodeToUtf8InPlace(buffer.Slice(front.Length), written, out written))
             {
                 throw new NotImplementedException("need to resize buffer");
             }
