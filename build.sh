@@ -57,6 +57,9 @@ if [ ! -d "dotnetcli" ]; then
   fi
 fi
 
+export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+export DOTNET_MULTILEVEL_LOOKUP=0
+
 dotnetExePath="dotnetcli/dotnet"
 
 myFile="corefxlab.sln"
