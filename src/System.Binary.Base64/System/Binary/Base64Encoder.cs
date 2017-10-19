@@ -181,7 +181,6 @@ namespace System.Binary.Base64
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
                 var result = EncodeToUtf8(sourceSlice, desitnationSlice, out _, out int tempWritten);
-                if (result == OperationStatus.InvalidData) goto FalseExit;
                 Debug.Assert(result == OperationStatus.Done);
             }
 
@@ -191,8 +190,6 @@ namespace System.Binary.Base64
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
                 var result = EncodeToUtf8(sourceSlice, desitnationSlice, out _, out int tempWritten);
-                // Most likley, the data in the input buffer that the user provided has now been trampled on.
-                if (result == OperationStatus.InvalidData) goto FalseExit;
                 Debug.Assert(result == OperationStatus.Done);
             }
 
@@ -210,15 +207,7 @@ namespace System.Binary.Base64
                 => EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
-            {
-                int requiredLength = GetMaxEncodedToUtf8Length(dataLength);
-                written = 0;
-                if (requiredLength < buffer.Length)
-                    return OperationStatus.DestinationTooSmall;
-                if (EncodeToUtf8InPlace(buffer, dataLength, out written))
-                    return OperationStatus.Done;
-                return OperationStatus.InvalidData;
-            }
+                => EncodeToUtf8InPlace(buffer, dataLength, out written) ? OperationStatus.Done : OperationStatus.DestinationTooSmall;
 
             public override bool IsEncodeInPlaceSupported => true;
         }
