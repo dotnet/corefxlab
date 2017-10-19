@@ -33,7 +33,7 @@ namespace System.Numerics.Tensors.Tests
 
         public static NativeMemory<T> Allocate(int length)
         {
-            // typically this would call into an native method appropriate for the platform
+            // typically this would call into a native method appropriate for the platform
             // or the constructors above would be used to wrap the native pointer
             IntPtr memory = Marshal.AllocHGlobal(Marshal.SizeOf<T>() * length);
             return new NativeMemory<T>(memory, length);
@@ -85,7 +85,7 @@ namespace System.Numerics.Tensors.Tests
                 return;
             }
 
-            // typically this would call into an native method appropriate for the platform
+            // typically this would call into a native method appropriate for the platform
             Marshal.FreeHGlobal(memory);
             memory = IntPtr.Zero;
 
