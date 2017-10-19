@@ -29,7 +29,7 @@ namespace TensorSamples
         }
         
         // The following represent what .NET bindings would look like for a native library that wishes
-        // to deal take a sparse tensor and mutate its values        
+        // to deal take a sparse tensor and mutate its values     
 
         public static unsafe double ScalarPowerSparse(CompressedSparseTensor<double> tensor, int exponent)
         {

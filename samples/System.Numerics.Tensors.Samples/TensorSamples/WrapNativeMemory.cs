@@ -49,7 +49,8 @@ namespace TensorSamples
         }
 
         // The following represent what .NET bindings would look like for a native library that wishes
-        // to deal in tensors and allocate them from native code on the managed heap.
+        // to deal in tensors and allocate them from native code using native memory (for instance 
+        // in memory accessible to the graphics card, or in its own buffer pool).
 
         public static DenseTensor<double> GetMultiplicationTable(int maxNumber)
         {
