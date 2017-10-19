@@ -30,7 +30,7 @@ namespace System.Text.Encodings.Web.Internal
             return OperationStatus.Done;
         }
 
-        public override OperationStatus DecodeInPlace(Span<byte> buffer, int length, out int written)
+        public override OperationStatus Transform(Span<byte> buffer, int length, out int written)
         {
             written = Utf8.UrlEncoder.DecodeInPlace(buffer.Slice(0, length));
             return OperationStatus.Done;

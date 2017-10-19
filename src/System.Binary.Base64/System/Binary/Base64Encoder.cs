@@ -201,13 +201,13 @@ namespace System.Binary.Base64
             return OperationStatus.DestinationTooSmall;
         }
 
-        sealed class ToBase64Utf8 : BufferEncoder
+        sealed class ToBase64Utf8 : BufferEncoder, IBufferTransformation
         {
             public override OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => BytesToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
-            public override OperationStatus EncodeInPlace(Span<byte> buffer, int inputLength, out int written)
-                => BytesToUtf8InPlace(buffer, inputLength, out written);
+            public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
+                => BytesToUtf8InPlace(buffer, dataLength, out written);
 
             public override bool IsEncodeInPlaceSupported => true;
         }
