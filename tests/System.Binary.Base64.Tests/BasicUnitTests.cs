@@ -416,7 +416,7 @@ namespace System.Binary.Base64.Tests
                 var copy = testBytes.Clone();
                 var expectedText = Convert.ToBase64String(testBytes, 0, numberOfBytesToTest);
 
-                Assert.True(Base64.EncodeToUtf8InPlace(testBytes, numberOfBytesToTest, out int bytesWritten));
+                Assert.Equal(OperationStatus.Done, Base64.EncodeToUtf8InPlace(testBytes, numberOfBytesToTest, out int bytesWritten));
                 Assert.Equal(Base64.GetMaxEncodedToUtf8Length(numberOfBytesToTest), bytesWritten);
 
                 var encodedText = Text.Encoding.ASCII.GetString(testBytes, 0, bytesWritten);

@@ -193,17 +193,17 @@ namespace System.Binary.Base64
             DoneExit:
             consumed = sourceIndex;
             written = destIndex;
-            return OperationStatus.Done;    // if we change this method to return bool, return true here
+            return OperationStatus.Done;
 
             NeedMoreExit:
             consumed = sourceIndex;
             written = destIndex;
-            return OperationStatus.NeedMoreData;    // we need this state for partial processing. if we return bool, what will we do here?
+            return OperationStatus.NeedMoreData;
 
             InvalidExit:
             consumed = sourceIndex;
             written = destIndex;
-            return OperationStatus.InvalidData; // if we change this method to return bool, return false here
+            return OperationStatus.InvalidData;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -242,7 +242,7 @@ namespace System.Binary.Base64
                 => DecodeFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
-                => DecodeFromUtf8InPlace(buffer.Slice(0, dataLength), out var consumed, out written);
+                => DecodeFromUtf8InPlace(buffer.Slice(0, dataLength), out _, out written);
 
             public override bool IsDecodeInPlaceSupported => true;
         }

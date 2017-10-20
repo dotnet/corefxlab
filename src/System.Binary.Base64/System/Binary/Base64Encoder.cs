@@ -164,7 +164,7 @@ namespace System.Binary.Base64
             utf8.Slice(0, utf8.Length - num).CopyTo(utf8.Slice(num));
         }
 
-        public static bool EncodeToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
+        public static OperationStatus EncodeToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
         {
             var encodedLength = GetMaxEncodedToUtf8Length(bytesLength);
             if (buffer.Length < encodedLength) goto FalseExit;
@@ -194,11 +194,11 @@ namespace System.Binary.Base64
             }
 
             written = encodedLength;
-            return true;
+            return OperationStatus.Done;
 
             FalseExit:
             written = 0;
-            return false;
+            return OperationStatus.DestinationTooSmall;
         }
 
         sealed class ToBase64Utf8 : BufferEncoder, IBufferTransformation
@@ -207,7 +207,7 @@ namespace System.Binary.Base64
                 => EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
-                => EncodeToUtf8InPlace(buffer, dataLength, out written) ? OperationStatus.Done : OperationStatus.DestinationTooSmall;
+                => EncodeToUtf8InPlace(buffer, dataLength, out written);
 
             public override bool IsEncodeInPlaceSupported => true;
         }
