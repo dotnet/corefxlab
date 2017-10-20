@@ -14,11 +14,11 @@ namespace System.Numerics
     {
         private readonly Dictionary<int, T> values;
         /// <summary>
-        /// Constructs a new CompressedSparseTensor of the specifed dimensions, initial capacity, and stride ordering.
+        /// Constructs a new SparseTensor of the specifed dimensions, initial capacity, and stride ordering.
         /// </summary>
-        /// <param name="dimensions"></param>
-        /// <param name="reverseStride"></param>
-        /// <param name="capacity"></param>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the SparseTensor to create.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="capacity">The number of non-zero values this tensor can store without resizing.</param>
         public SparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
         {
             values = new Dictionary<int, T>(capacity);
@@ -67,8 +67,8 @@ namespace System.Numerics
         /// <summary>
         /// Gets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public override T GetValue(int index)
         {
             T value;
@@ -84,8 +84,8 @@ namespace System.Numerics
         /// <summary>
         /// Sets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <param name="value">The new value to set at the specified position in this Tensor.</param>
         public override void SetValue(int index, T value)
         {
             if (value.Equals(arithmetic.Zero))
@@ -104,9 +104,9 @@ namespace System.Numerics
         public int NonZeroCount => values.Count;
 
         /// <summary>
-        /// Creates a copy of this tensor, with new backing storage.
+        /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A shallow copy of this tensor.</returns>
         public override Tensor<T> Clone()
         {
             var valueCopy = new Dictionary<int, T>(values);
@@ -116,9 +116,9 @@ namespace System.Numerics
         /// <summary>
         /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="dimensions"></param>
-        /// <returns></returns>
+        /// <typeparam name="TResult">Type contained in the returned Tensor.</typeparam>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the SparseTensor to create.</param>
+        /// <returns>A new tensor with the same layout as this tensor but different type and dimensions.</returns>
         public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<TResult>(dimensions, IsReversedStride);
@@ -127,17 +127,17 @@ namespace System.Numerics
         /// <summary>
         /// Reshapes the current tensor to new dimensions, using the same backing storage.
         /// </summary>
-        /// <param name="dimensions"></param>
-        /// <returns></returns>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the SparseTensor to create.</param>
+        /// <returns>A new tensor that reinterprets backing storage of this tensor with different dimensions.</returns>
         public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             return new SparseTensor<T>(values, dimensions, IsReversedStride);
         }
 
         /// <summary>
-        /// Creates a copy of this tensor as a DenseTensor<T>.  
+        /// Creates a copy of this tensor as a DenseTensor&lt;T&gt;.  
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A copy of this tensor as a DenseTensor&lt;T&gt;</returns>
         public override DenseTensor<T> ToDenseTensor()
         {
             var denseTensor = new DenseTensor<T>(Dimensions, reverseStride: IsReversedStride);
@@ -152,9 +152,9 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Creates a copy of this tensor as a new SparseTensor<T> eliminating any unused space in the backing storage.
+        /// Creates a copy of this tensor as a new SparseTensor&lt;T&gt; eliminating any unused space in the backing storage.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A copy of this tensor as a SparseTensor&lt;T&gt eliminated any usused space in the backing storage.</returns>
         public override SparseTensor<T> ToSparseTensor()
         {
             var valueCopy = new Dictionary<int, T>(values);
@@ -162,9 +162,9 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Creates a copy of this tensor as a CompressedSparseTensor<T>.
+        /// Creates a copy of this tensor as a CompressedSparseTensor&lt;T&gt;.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A copy of this tensor as a CompressedSparseTensor&lt;T&gt;.</returns>
         public override CompressedSparseTensor<T> ToCompressedSparseTensor()
         {
             var compressedSparseTensor = new CompressedSparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);
