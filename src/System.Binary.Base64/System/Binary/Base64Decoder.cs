@@ -3,14 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
     public static partial class Base64
     {
-        public static readonly BufferDecoder Utf8ToBytesDecoder = new FromBase64Utf8();
+        public static readonly Utf8Decoder Utf8ToBytesDecoder = new Utf8Decoder();
 
         public static OperationStatus Utf8ToBytes(ReadOnlySpan<byte> utf8, Span<byte> bytes, out int consumed, out int written)
         {
@@ -228,15 +227,19 @@ namespace System.Binary.Base64
             }
         }
 
-        sealed class FromBase64Utf8 : BufferDecoder, IBufferTransformation
+        public sealed class Utf8Decoder : IBufferOperation, IBufferTransformation
         {
-            public override OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => Utf8ToBytes(source, destination, out bytesConsumed, out bytesWritten);
 
-            public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
+            public OperationStatus DecodeInPlace(Span<byte> buffer, int dataLength, out int written)
                 => Utf8ToBytesInPlace(buffer.Slice(0, dataLength), out var consumed, out written);
 
-            public override bool IsDecodeInPlaceSupported => true;
+            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+                => Decode(input, output, out consumed, out written);
+
+            OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
+                => DecodeInPlace(buffer, dataLength, out written);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
