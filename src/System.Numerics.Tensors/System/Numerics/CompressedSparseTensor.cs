@@ -35,7 +35,7 @@ namespace System.Numerics
         /// Constructs a new CompressedSparseTensor of the specifed dimensions and stride ordering.
         /// </summary>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false) : this(dimensions, defaultCapacity, reverseStride)
         { }
 
@@ -44,7 +44,7 @@ namespace System.Numerics
         /// </summary>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
         /// <param name="capacity">The number of non-zero values this tensor can store without resizing.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(ReadOnlySpan<int> dimensions, int capacity, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             nonZeroCount = 0;
@@ -66,7 +66,7 @@ namespace System.Numerics
         /// <param name="indices">Memory storing the linearized index (excluding the compressed dimension) of non-zero elements.</param>
         /// <param name="nonZeroCount">The number of valid entries (eg: non-zero values) in <paramref name="values"/> and <paramref name="indices"/>.</param>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(Memory<T> values, Memory<int> compressedCounts, Memory<int> indices, int nonZeroCount, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             compressedDimension = reverseStride ? Rank - 1 : 0;

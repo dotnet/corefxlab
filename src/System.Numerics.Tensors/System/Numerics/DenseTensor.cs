@@ -51,7 +51,7 @@ namespace System.Numerics
         /// Initializes a rank-n Tensor using the dimensions specified in <paramref name="dimensions"/>.
         /// </summary>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the DenseTensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public DenseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             memory = new T[Length];
@@ -62,7 +62,7 @@ namespace System.Numerics
         /// </summary>
         /// <param name="memory"></param>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the DenseTensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public DenseTensor(Memory<T> memory, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             this.memory = memory;

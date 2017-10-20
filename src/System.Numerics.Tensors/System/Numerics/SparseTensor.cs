@@ -17,7 +17,7 @@ namespace System.Numerics
         /// Constructs a new SparseTensor of the specifed dimensions, initial capacity, and stride ordering.
         /// </summary>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the SparseTensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         /// <param name="capacity">The number of non-zero values this tensor can store without resizing.</param>
         public SparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false, int capacity = 0) : base(dimensions, reverseStride)
         {

@@ -30,7 +30,7 @@ namespace System.Numerics
         /// </summary>
         /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
         /// <param name="size">Width and height of the identity tensor to create.</param>
-        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (furthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (furthest apart): column-major.</param>
+        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (farthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (farthest apart): column-major.</param>
         /// <returns>a <paramref name="size"/> by <paramref name="size"/> with 1s along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor)
         {
@@ -42,7 +42,7 @@ namespace System.Numerics
         /// </summary>
         /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
         /// <param name="size">Width and height of the identity tensor to create.</param>
-        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (furthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (furthest apart): column-major.</param>
+        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (farthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (farthest apart): column-major.</param>
         /// <param name="oneValue">Value of <typeparamref name="T"/> that is used along the diagonal.</param>
         /// <returns>a <paramref name="size"/> by <paramref name="size"/> with 1s along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
@@ -365,7 +365,7 @@ namespace System.Numerics
         /// Initialize an n-dimensional tensor with the specified dimensions and layout.  ReverseStride=true gives a stride of 1-element witdth to the first dimension (0).  ReverseStride=false gives a stride of 1-element width to the last dimension (n-1).
         /// </summary>
         /// <param name="dimensions">An span of integers that represent the size of each dimension of the Tensor to create.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (furthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (furtheset apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         protected Tensor(ReadOnlySpan<int> dimensions, bool reverseStride)
         {
             if (dimensions.Length == 0)
@@ -395,7 +395,7 @@ namespace System.Numerics
         /// Initializes tensor with same dimensions as array, content of array is ignored.  ReverseStride=true gives a stride of 1-element witdth to the first dimension (0).  ReverseStride=false gives a stride of 1-element width to the last dimension (n-1).
         /// </summary>
         /// <param name="fromArray">Array from which to derive dimensions.</param>
-        /// <param name="reverseStride">False (default) to indicate that the first dimension is most minor (closest) and the last dimension is most major (furthest): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (furthest apart): akin to column-major in a rank-2 tensor.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         protected Tensor(Array fromArray, bool reverseStride)
         {
             if (fromArray == null)
