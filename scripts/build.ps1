@@ -37,6 +37,7 @@ if (!(Test-Path "dotnetcli\dotnet.exe")) {
 }
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
+$env:DOTNET_MULTILEVEL_LOOKUP = 0
 
 $dotnetExePath="$PSScriptRoot\..\dotnetcli\dotnet.exe"
 
