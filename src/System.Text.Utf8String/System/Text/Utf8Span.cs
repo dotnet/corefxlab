@@ -12,7 +12,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public partial ref struct Utf8Span
+    public  ref partial struct Utf8Span
     {
         private readonly ReadOnlySpan<byte> _buffer;
 
@@ -50,7 +50,7 @@ namespace System.Text.Utf8
             }
             else
             {
-                _buffer = new ReadOnlySpan<byte>(GetUtf8BytesFromString(utf16String));
+                _buffer = new ReadOnlySpan<byte>(Encoding.UTF8.GetBytes(utf16String));
             }
         }
 
@@ -72,7 +72,7 @@ namespace System.Text.Utf8
             return new Utf8Span(utf8Bytes);
         }
 
-        static byte[] CreateArrayFromFieldHandle(RuntimeFieldHandle utf8Data, int length)
+        private static byte[] CreateArrayFromFieldHandle(RuntimeFieldHandle utf8Data, int length)
         {
             var array = new byte[length];
             RuntimeHelpers.InitializeArray(array, utf8Data);
@@ -91,13 +91,7 @@ namespace System.Text.Utf8
             return new Enumerator(_buffer);
         }
 
-        public CodePointEnumerable CodePoints
-        {
-            get
-            {
-                return new CodePointEnumerable(_buffer);
-            }
-        }
+        public CodePointEnumerable CodePoints => new CodePointEnumerable(_buffer);
 
         private byte this[int i]
         {
@@ -510,15 +504,12 @@ namespace System.Text.Utf8
 
         public override bool Equals(object obj)
         {
-            if (obj is Utf8Span)
-            {
-                return Equals((Utf8Span)obj);
-            }
             if (obj is string)
             {
                 return Equals((string)obj);
             }
 
+            // obj cannot be Utf8Span since it cannot be boxed 
             return false;
         }
 

@@ -19,13 +19,7 @@ namespace System.Text.Utf8
                 _index = -1;
             }
 
-            public byte Current
-            {
-                get
-                {
-                    return _buffer[_index];
-                }
-            }
+            public byte Current => _buffer[_index];
 
             public bool MoveNext()
             {

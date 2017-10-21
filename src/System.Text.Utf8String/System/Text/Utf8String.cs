@@ -34,19 +34,19 @@ namespace System.Text.Utf8
 
         public Utf8String(byte[] utf8bytes, int index, int length)
         {
-            if (index < 0)
+            if(utf8bytes == null)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentNullException(nameof(utf8bytes));
             }
 
             if (length < 0)
             {
-                throw new ArgumentOutOfRangeException("length");
+                throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            if (index + length > utf8bytes.Length)
+            if (length > utf8bytes.Length - index || index < 0 || index > utf8bytes.Length)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             // Length checking
@@ -66,7 +66,7 @@ namespace System.Text.Utf8
             }
             else
             {
-                _buffer = GetUtf8BytesFromString(s);
+                _buffer = Encoding.UTF8.GetBytes(s);
             }
         }
 
@@ -74,7 +74,7 @@ namespace System.Text.Utf8
         {
             _buffer = utf8Span.Bytes.ToArray();
         }
-        
+
         /// <summary>
         /// This constructor is for use by the compiler.
         /// </summary>
@@ -121,7 +121,7 @@ namespace System.Text.Utf8
             get
             {
                 // Check bounds
-                if( i < 0 || i >= _buffer.Length)
+                if (i < 0 || i >= _buffer.Length)
                 {
                     throw new ArgumentOutOfRangeException("index");
                 }
@@ -269,7 +269,7 @@ namespace System.Text.Utf8
             {
                 return Empty;
             }
-            
+
             if (index > Length - length)
             {
                 // TODO: Should this be index or length?
@@ -585,7 +585,7 @@ namespace System.Text.Utf8
 
         public bool StartsWith(Utf8String value)
         {
-            if(value.Length > this.Length)
+            if (value.Length > this.Length)
             {
                 return false;
             }
@@ -676,7 +676,7 @@ namespace System.Text.Utf8
 
             CodePointEnumerator it = GetCodePointEnumerator();
             CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
-            
+
             while (it.MoveNext())
             {
                 bool found = false;
@@ -785,6 +785,6 @@ namespace System.Text.Utf8
         {
             throw new NotImplementedException();
         }
-        
+
     }
 }

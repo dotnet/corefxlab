@@ -14,7 +14,7 @@ namespace System.Text.Utf8
             private int _currentLenCache;
             private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointReverseEnumerator(ReadOnlySpan<byte> buffer) : this()
+            public CodePointReverseEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -35,7 +35,7 @@ namespace System.Text.Utf8
                 }
             }
 
-            public unsafe uint Current
+            public uint Current
             {
                 get
                 {
