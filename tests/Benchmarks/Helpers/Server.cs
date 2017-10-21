@@ -47,7 +47,7 @@ namespace System.IO.Pipelines.Samples
                     }
                     catch (Exception e)
                     {
-                        var istr = new Utf8String(input.First.Span).ToString();
+                        var istr = new Utf8Span(input.First.Span).ToString();
                         Debug.WriteLine(e.Message);
                     }
                     finally
@@ -116,7 +116,7 @@ namespace System.IO.Pipelines.Samples
                     }
                     catch (Exception e)
                     {
-                        var istr = new Utf8String(input.First.Span).ToString();
+                        var istr = new Utf8Span(input.First.Span).ToString();
                         Debug.WriteLine(e.Message);
                     }
                     finally

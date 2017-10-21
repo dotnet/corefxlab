@@ -1,7 +1,7 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -12,12 +12,13 @@ using Xunit.Abstractions;
 
 namespace System.Text.Utf8.Tests
 {
-    public class Utf8StringTests
+
+    public class Utf8SpanTests
     {
         #region Helpers - useful only when debugging or generating test cases
         ITestOutputHelper output;
 
-        public Utf8StringTests(ITestOutputHelper output)
+        public Utf8SpanTests(ITestOutputHelper output)
         {
             this.output = output;
         }
@@ -72,7 +73,7 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("LengthTestCases")]
         public void Length(int expectedLength, string str)
         {
-            Utf8String s = new Utf8String(str);
+            Utf8Span s = new Utf8Span(str);
             Assert.Equal(expectedLength, s.Length);
         }
 
@@ -88,7 +89,7 @@ namespace System.Text.Utf8.Tests
         //[Theory(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program."), MemberData("LengthInCodePointsTestCases")]
         public void LengthInCodePoints(int expectedLength, string str)
         {
-            Utf8String s = new Utf8String(str);
+            Utf8Span s = new Utf8Span(str);
             Assert.Equal(expectedLength, s.CodePoints.Count());
         }
 
@@ -104,7 +105,7 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("ToStringTestCases")]
         public void ToString(string expected, string str)
         {
-            Utf8String s = new Utf8String(str);
+            Utf8Span s = new Utf8Span(str);
             Assert.Equal(expected, s.ToString());
         }
 
@@ -143,8 +144,8 @@ namespace System.Text.Utf8.Tests
         [MemberData("StringEqualsTestCases_SimpleStrings")]
         public unsafe void StringEqualsWithThreeArgs(bool expected, string str1, string str2)
         {   // TODO: investigate why the tests fail if we have two methods with the same name StringEquals
-            Utf8String s1 = new Utf8String(str1);
-            Utf8String s2 = new Utf8String(str2);
+            Utf8Span s1 = new Utf8Span(str1);
+            Utf8Span s2 = new Utf8Span(str2);
             Assert.Equal(expected, s1.Equals(s2));
             Assert.Equal(expected, s2.Equals(s1));
         }
@@ -154,8 +155,8 @@ namespace System.Text.Utf8.Tests
         [MemberData("StringEqualsTestCases_SimpleStrings")]
         public unsafe void StringEqualsConvertedToUtf16String(bool expected, string str1, string str2)
         {
-            Utf8String s1 = new Utf8String(str1);
-            Utf8String s2 = new Utf8String(str2);
+            Utf8Span s1 = new Utf8Span(str1);
+            Utf8Span s2 = new Utf8Span(str2);
             Assert.Equal(expected, s1.Equals(s2.ToString()));
             Assert.Equal(expected, s2.Equals(s1.ToString()));
         }
@@ -176,7 +177,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("1a", 'a')]
         public void StartsWithCodeUnit(string s, char c)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte codeUnit = (byte)c;
             Assert.Equal(s.StartsWith(c.ToString()), u8s.StartsWith(codeUnit));
         }
@@ -189,7 +190,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("a1", 'a')]
         public void EndsWithCodeUnit(string s, char c)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte codeUnit = (byte)c;
             Assert.Equal(s.EndsWith(c.ToString()), u8s.EndsWith(codeUnit));
         }
@@ -203,10 +204,10 @@ namespace System.Text.Utf8.Tests
         [InlineData("abc", "abc")]
         [InlineData("abcd", "abc")]
         [InlineData("abc", "abcd")]
-        public void StartsWithUtf8String(string s, string pattern)
+        public void StartsWithUtf8Span(string s, string pattern)
         {
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8pattern = new Utf8String(pattern);
+            Utf8Span u8s = new Utf8Span(s);
+            Utf8Span u8pattern = new Utf8Span(pattern);
 
             Assert.Equal(s.StartsWith(pattern), u8s.StartsWith(u8pattern));
         }
@@ -220,10 +221,10 @@ namespace System.Text.Utf8.Tests
         [InlineData("abc", "abc")]
         [InlineData("abcd", "bcd")]
         [InlineData("abc", "abcd")]
-        public void EndsWithUtf8String(string s, string pattern)
+        public void EndsWithUtf8Span(string s, string pattern)
         {
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8pattern = new Utf8String(pattern);
+            Utf8Span u8s = new Utf8Span(s);
+            Utf8Span u8pattern = new Utf8Span(pattern);
 
             Assert.Equal(s.EndsWith(pattern), u8s.EndsWith(u8pattern));
         }
@@ -236,9 +237,9 @@ namespace System.Text.Utf8.Tests
         [InlineData("abc", 'd')]
         public void SubstringFromCodeUnit(string s, char c)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte codeUnit = (byte)(c);
-            Utf8String u8result;
+            Utf8Span u8result;
 
             int idx = s.IndexOf(c);
             bool expectedToFind = idx != -1;
@@ -247,7 +248,7 @@ namespace System.Text.Utf8.Tests
             if (expectedToFind)
             {
                 string expected = s.Substring(idx);
-                TestHelper.Validate(new Utf8String(expected), u8result);
+                TestHelper.Validate(new Utf8Span(expected), u8result);
                 Assert.Equal(expected, u8result.ToString());
             }
         }
@@ -260,9 +261,9 @@ namespace System.Text.Utf8.Tests
         [InlineData("abc", 'd')]
         public void SubstringToCodeUnit(string s, char c)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte codeUnit = (byte)(c);
-            Utf8String u8result;
+            Utf8Span u8result;
 
             int idx = s.IndexOf(c);
             bool expectedToFind = idx != -1;
@@ -271,7 +272,7 @@ namespace System.Text.Utf8.Tests
             if (expectedToFind)
             {
                 string expected = s.Substring(0, idx);
-                TestHelper.Validate(new Utf8String(expected), u8result);
+                TestHelper.Validate(new Utf8Span(expected), u8result);
                 Assert.Equal(expected, u8result.ToString());
             }
         }
@@ -293,7 +294,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("a\uABEE\uABCDa")]
         public void CodePointEnumeratorsTests(string s)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             TestCodePointForwardEnumerator(s, u8s);
             TestCodePointReverseEnumerator(s, u8s);
 
@@ -302,7 +303,7 @@ namespace System.Text.Utf8.Tests
             {
                 fixed (byte* pinnedBytes = bytes)
                 {
-                    Utf8String u8sFromBytePointer = new Utf8String(new Span<byte>(pinnedBytes, u8s.Length));
+                    Utf8Span u8sFromBytePointer = new Utf8Span(new Span<byte>(pinnedBytes, u8s.Length));
                     TestCodePointForwardEnumerator(s, u8sFromBytePointer);
                     TestCodePointReverseEnumerator(s, u8sFromBytePointer);
                 }
@@ -310,10 +311,10 @@ namespace System.Text.Utf8.Tests
         }
 
         // Implementations are intentionally split to avoid boxing
-        private void TestCodePointForwardEnumerator(string s, Utf8String u8s)
+        private void TestCodePointForwardEnumerator(string s, Utf8Span u8s)
         {
             List<uint> codePoints = new List<uint>();
-            Utf8String.CodePointEnumerator it = u8s.CodePoints.GetEnumerator();
+            Utf8Span.CodePointEnumerator it = u8s.CodePoints.GetEnumerator();
             while (it.MoveNext())
             {
                 codePoints.Add(it.Current);
@@ -322,15 +323,15 @@ namespace System.Text.Utf8.Tests
             Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
             Assert.Equal(utf16CodePoints, codePoints);
 
-            Utf8String u8s2 = new Utf8String(GetUtf8BytesFromCodePoints(codePoints));
+            Utf8Span u8s2 = new Utf8Span(GetUtf8BytesFromCodePoints(codePoints));
             TestHelper.Validate(u8s, u8s2);
             Assert.Equal(s, u8s2.ToString());
         }
 
-        private void TestCodePointReverseEnumerator(string s, Utf8String u8s)
+        private void TestCodePointReverseEnumerator(string s, Utf8Span u8s)
         {
             List<uint> codePoints = new List<uint>();
-            Utf8String.CodePointReverseEnumerator it = u8s.CodePoints.GetReverseEnumerator();
+            Utf8Span.CodePointReverseEnumerator it = u8s.CodePoints.GetReverseEnumerator();
             while (it.MoveNext())
             {
                 codePoints.Add(it.Current);
@@ -341,7 +342,7 @@ namespace System.Text.Utf8.Tests
             Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
             Assert.Equal(utf16CodePoints, codePoints);
 
-            Utf8String u8s2 = new Utf8String(GetUtf8BytesFromCodePoints(codePoints));
+            Utf8Span u8s2 = new Utf8Span(GetUtf8BytesFromCodePoints(codePoints));
             TestHelper.Validate(u8s, u8s2);
             Assert.Equal(s, u8s2.ToString());
         }
@@ -413,7 +414,7 @@ namespace System.Text.Utf8.Tests
         [InlineData(" ", "")]
         [InlineData("", "a")]
         [InlineData("", "")]
-        [InlineData("a","")]
+        [InlineData("a", "")]
         [InlineData("ab", "b")]
         [InlineData("aba", "ab")]
         [InlineData("abcdefghijklmnopqrstuvwxyz   ", "abcd")]
@@ -427,13 +428,13 @@ namespace System.Text.Utf8.Tests
         [InlineData("         a a a           ", " ")]
         public void TrimStartCharacterTest(string s, string trimCharacters)
         {
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8TrimCharacters = new Utf8String(trimCharacters);
+            Utf8Span u8s = new Utf8Span(s);
+            Utf8Span u8TrimCharacters = new Utf8Span(trimCharacters);
 
             string expected = s.TrimStart(trimCharacters.ToCharArray());
-            Utf8String u8expected = new Utf8String(expected);
+            Utf8Span u8expected = new Utf8Span(expected);
 
-            Utf8String u8trimmed = u8s.TrimStart(u8TrimCharacters);
+            Utf8Span u8trimmed = u8s.TrimStart(u8TrimCharacters);
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();
@@ -442,12 +443,12 @@ namespace System.Text.Utf8.Tests
 
         public void TrimStartTest(string s)
         {
-            Utf8String u8s = new Utf8String(s);
-
+            Utf8Span u8s = new Utf8Span(s);
             string expected = s.TrimStart();
-            Utf8String u8expected = new Utf8String(expected);
+            Utf8Span u8expected = new Utf8Span(expected);
 
-            Utf8String u8trimmed = u8s.TrimStart();
+            Utf8Span u8trimmed = u8s.TrimStart();
+
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();
@@ -456,12 +457,12 @@ namespace System.Text.Utf8.Tests
 
         public void TrimEndTest(string s)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
 
             string expected = s.TrimEnd();
-            Utf8String u8expected = new Utf8String(expected);
+            Utf8Span u8expected = new Utf8Span(expected);
 
-            Utf8String u8trimmed = u8s.TrimEnd();
+            Utf8Span u8trimmed = u8s.TrimEnd();
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();
@@ -487,13 +488,13 @@ namespace System.Text.Utf8.Tests
         [InlineData("         a a a           ", " ")]
         public void TrimEndCharacterTest(string s, string trimCharacters)
         {
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8TrimCharacters = new Utf8String(trimCharacters);
+            Utf8Span u8s = new Utf8Span(s);
+            Utf8Span u8TrimCharacters = new Utf8Span(trimCharacters);
 
             string expected = s.TrimEnd(trimCharacters.ToCharArray());
-            Utf8String u8expected = new Utf8String(expected);
+            Utf8Span u8expected = new Utf8Span(expected);
 
-            Utf8String u8trimmed = u8s.TrimEnd(u8TrimCharacters);
+            Utf8Span u8trimmed = u8s.TrimEnd(u8TrimCharacters);
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();
@@ -503,12 +504,12 @@ namespace System.Text.Utf8.Tests
 
         public void TrimTest(string s)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
 
             string expected = s.Trim();
-            Utf8String u8expected = new Utf8String(expected);
+            Utf8Span u8expected = new Utf8Span(expected);
 
-            Utf8String u8trimmed = u8s.Trim();
+            Utf8Span u8trimmed = u8s.Trim();
             TestHelper.Validate(u8expected, u8trimmed);
 
             string trimmed = u8trimmed.ToString();
@@ -527,8 +528,8 @@ namespace System.Text.Utf8.Tests
             fixed (byte* pBuffer = buffer)
             {
                 Span<byte> byteSpan = new Span<byte>(pBuffer, buffer.Length);
-                Utf8String strFromArray = new Utf8String(textArray);
-                Utf8String strFromPointer = new Utf8String(new Span<byte>(p, textArray.Length));
+                Utf8Span strFromArray = new Utf8Span(textArray);
+                Utf8Span strFromPointer = new Utf8Span(new Span<byte>(p, textArray.Length));
                 TestHelper.Validate(strFromArray, strFromPointer);
 
                 Array.Clear(buffer, 0, buffer.Length);
@@ -564,17 +565,17 @@ namespace System.Text.Utf8.Tests
                 bytes[i + len] = bytes[i];
             }
 
-            Utf8String sFromBytes = new Utf8String(bytes);
-            Utf8String s1FromBytes = sFromBytes.Substring(0, len);
-            Utf8String s2FromBytes = sFromBytes.Substring(len, len);
+            Utf8Span sFromBytes = new Utf8Span(bytes);
+            Utf8Span s1FromBytes = sFromBytes.Substring(0, len);
+            Utf8Span s2FromBytes = sFromBytes.Substring(len, len);
 
             unsafe
             {
                 fixed (byte* pinnedBytes = bytes)
                 {
-                    Utf8String sFromSpan = new Utf8String(new Span<byte>(pinnedBytes, len * 2));
-                    Utf8String s1FromSpan = sFromSpan.Substring(0, len);
-                    Utf8String s2FromSpan = sFromSpan.Substring(len, len);
+                    Utf8Span sFromSpan = new Utf8Span(new Span<byte>(pinnedBytes, len * 2));
+                    Utf8Span s1FromSpan = sFromSpan.Substring(0, len);
+                    Utf8Span s2FromSpan = sFromSpan.Substring(len, len);
                     TestHashesSameForEquivalentString(s1FromBytes, s2FromBytes);
                     TestHashesSameForEquivalentString(s1FromSpan, s2FromSpan);
                     TestHashesSameForEquivalentString(s1FromSpan, s2FromBytes);
@@ -582,7 +583,7 @@ namespace System.Text.Utf8.Tests
             }
         }
 
-        private void TestHashesSameForEquivalentString(Utf8String a, Utf8String b)
+        private void TestHashesSameForEquivalentString(Utf8Span a, Utf8Span b)
         {
             // for sanity
             Assert.Equal(a.Length, b.Length);
@@ -590,15 +591,15 @@ namespace System.Text.Utf8.Tests
 
             for (int i = 0; i < a.Length; i++)
             {
-                Utf8String prefixOfA = a.Substring(i, a.Length - i);
-                Utf8String prefixOfB = b.Substring(i, b.Length - i);
+                Utf8Span prefixOfA = a.Substring(i, a.Length - i);
+                Utf8Span prefixOfB = b.Substring(i, b.Length - i);
                 // sanity
                 TestHelper.Validate(prefixOfA, prefixOfB);
                 Assert.Equal(prefixOfA.GetHashCode(), prefixOfB.GetHashCode());
 
                 // for all suffixes
-                Utf8String suffixOfA = a.Substring(a.Length - i, i);
-                Utf8String suffixOfB = b.Substring(b.Length - i, i);
+                Utf8Span suffixOfA = a.Substring(a.Length - i, i);
+                Utf8Span suffixOfB = b.Substring(b.Length - i, i);
                 TestHelper.Validate(suffixOfA, suffixOfB);
             }
         }
@@ -627,8 +628,8 @@ namespace System.Text.Utf8.Tests
         [InlineData(7, "baabaaabaaaa", "baaaa")]
         public void IndexOfTests(int expected, string s, string substring)
         {
-            Utf8String utf8s = new Utf8String(s);
-            Utf8String utf8substring = new Utf8String(substring);
+            Utf8Span utf8s = new Utf8Span(s);
+            Utf8Span utf8substring = new Utf8Span(substring);
             Assert.Equal(expected, utf8s.IndexOf(utf8substring));
         }
 
@@ -658,8 +659,8 @@ namespace System.Text.Utf8.Tests
         [InlineData(3, "\uABC0\uABC1\uABC2", "\uABC1\uABC2")]
         public void LastIndexOfTests(int expected, string s, string substring)
         {
-            Utf8String utf8s = new Utf8String(s);
-            Utf8String utf8substring = new Utf8String(substring);
+            Utf8Span utf8s = new Utf8Span(s);
+            Utf8Span utf8substring = new Utf8Span(substring);
             Assert.Equal(expected, utf8s.LastIndexOf(utf8substring));
         }
 
@@ -687,14 +688,14 @@ namespace System.Text.Utf8.Tests
         [InlineData("baaaa", "baabaaabaaaa", "baaaa")]
         public void SubstringFromTests(string expected, string s, string substring)
         {
-            Utf8String utf8s = new Utf8String(s);
-            Utf8String utf8substring = new Utf8String(substring);
-            Utf8String result;
+            Utf8Span utf8s = new Utf8Span(s);
+            Utf8Span utf8substring = new Utf8Span(substring);
+            Utf8Span result;
             Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out result));
 
             if (expected != null)
             {
-                Utf8String utf8expected = new Utf8String(expected);
+                Utf8Span utf8expected = new Utf8Span(expected);
                 Assert.Equal(expected, result.ToString());
                 TestHelper.Validate(utf8expected, result);
             }
@@ -724,14 +725,14 @@ namespace System.Text.Utf8.Tests
         [InlineData("baabaaa", "baabaaabaaaa", "baaaa")]
         public void SubstringToTests(string expected, string s, string substring)
         {
-            Utf8String utf8s = new Utf8String(s);
-            Utf8String utf8substring = new Utf8String(substring);
-            Utf8String result;
+            Utf8Span utf8s = new Utf8Span(s);
+            Utf8Span utf8substring = new Utf8Span(substring);
+            Utf8Span result;
             Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out result));
 
             if (expected != null)
             {
-                Utf8String utf8expected = new Utf8String(expected);
+                Utf8Span utf8expected = new Utf8Span(expected);
                 Assert.Equal(expected, result.ToString());
                 TestHelper.Validate(utf8expected, result);
             }
@@ -753,7 +754,7 @@ namespace System.Text.Utf8.Tests
         {
             int expected = s.IndexOf(character);
 
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte u8codeUnit = (byte)(character);
 
             Assert.Equal(expected, u8s.IndexOf(u8codeUnit));
@@ -775,7 +776,7 @@ namespace System.Text.Utf8.Tests
         {
             int expected = s.LastIndexOf(character);
 
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             byte u8codeUnit = (byte)(character);
 
             Assert.Equal(expected, u8s.LastIndexOf(u8codeUnit));
@@ -800,8 +801,8 @@ namespace System.Text.Utf8.Tests
         [InlineData(false, 1, "abc", "c")]
         public void IsSubstringAtTest(bool expected, int position, string s, string substring)
         {
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8substring = new Utf8String(substring);
+            Utf8Span u8s = new Utf8Span(s);
+            Utf8Span u8substring = new Utf8Span(substring);
             Assert.Equal(expected, u8s.IsSubstringAt(position, u8substring));
         }
 
@@ -825,7 +826,7 @@ namespace System.Text.Utf8.Tests
         [InlineData(-1, "\uABC0\uABC1\uABC2", (uint)'d')]
         public void IndexOfUnicodeCodePoint(int expected, string s, uint codePointValue)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             Assert.Equal(expected, u8s.IndexOf(codePointValue));
         }
 
@@ -850,17 +851,17 @@ namespace System.Text.Utf8.Tests
         [InlineData(-1, "\uABC0\uABC1\uABC2", (uint)'d')]
         public void LastIndexOfUnicodeCodePoint(int expected, string s, uint codePointValue)
         {
-            Utf8String u8s = new Utf8String(s);
+            Utf8Span u8s = new Utf8Span(s);
             Assert.Equal(expected, u8s.LastIndexOf(codePointValue));
         }
 
         [Fact]
         public void ReferenceEquals()
         {
-            Utf8String s1 = new Utf8String("asd");
+            Utf8Span s1 = new Utf8Span("asd");
             Assert.True(s1.ReferenceEquals(s1));
 
-            Utf8String s2 = new Utf8String("asd");
+            Utf8Span s2 = new Utf8Span("asd");
             Assert.True(s2.ReferenceEquals(s2));
 
             Assert.False(s1.ReferenceEquals(s2));
@@ -870,14 +871,14 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void ConstructingFromUtf16StringWithNullValueThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>(() => { Utf8String utf8String = new Utf8String((string)null); });
+            Assert.Throws<ArgumentNullException>(() => { Utf8Span Utf8Span = new Utf8Span((string)null); });
         }
 
         [Fact]
         public void ConstructingFromUtf16StringWithEmptyStringDoesNotAllocate()
         {
-            Assert.True((new Utf8String("")).ReferenceEquals(Utf8String.Empty));
-            Assert.True((new Utf8String(string.Empty)).ReferenceEquals(Utf8String.Empty));
+            Assert.True((new Utf8Span("")).ReferenceEquals(Utf8Span.Empty));
+            Assert.True((new Utf8Span(string.Empty)).ReferenceEquals(Utf8Span.Empty));
         }
 
         public static IEnumerable<object[]> TryComputeEncodedBytesShouldMatchEncoding_Strings()
@@ -936,9 +937,9 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
         public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, string str)
         {
-            var utf8String = new Utf8String(str);
-            Assert.Equal(expectedBytes.Length, utf8String.Length);
-            Utf8String.Enumerator e = utf8String.GetEnumerator();
+            var Utf8Span = new Utf8Span(str);
+            Assert.Equal(expectedBytes.Length, Utf8Span.Length);
+            Utf8Span.Enumerator e = Utf8Span.GetEnumerator();
 
             int i = 0;
             while (e.MoveNext())
@@ -953,13 +954,14 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
         public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)
         {
-            var utf8String = new Utf8String(str);
-            Assert.Equal(expectedBytes.Length, utf8String.Length);
+            var Utf8Span = new Utf8Span(str);
+            Assert.Equal(expectedBytes.Length, Utf8Span.Length);
 
-            for (int i = 0; i < utf8String.Length; i++)
+            for (int i = 0; i < Utf8Span.Length; i++)
             {
-                Assert.Equal(expectedBytes[i], (byte)utf8String[i]);
+                Assert.Equal(expectedBytes[i], (byte)Utf8Span.Bytes[i]);
             }
         }
     }
+
 }

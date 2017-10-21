@@ -76,5 +76,65 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
             }
         }
+
+        [Theory]
+        [InlineData("abcdefghijklmnopqrstuvwxyz")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(" ,.\r\n[]<>()")]
+        [InlineData("")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("a\uABEE")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        public void Utf16StringToUtf8SpanToUtf16StringRoundTrip(string utf16String)
+        {
+            Utf8Span Utf8Span = new Utf8Span(utf16String);
+            Assert.Equal(utf16String, Utf8Span.ToString());
+        }
+
+        [Theory]
+        [InlineData("abcdefghijklmnopqrstuvwxyz")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(" ,.\r\n[]<>()")]
+        [InlineData("")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("a\uABEE")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        public void Utf8SpanToUtf16StringToUtf8SpanRoundTrip(string str)
+        {
+            Utf8Span Utf8Span = new Utf8Span(str);
+            string utf16String = Utf8Span.ToString();
+            TestHelper.Validate(Utf8Span, new Utf8Span(utf16String));
+        }
+        
+
+        [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
+        public void EnumerateAndEnsureCodePointsOfTheSameUtf8SpanAndUtf16StringsAreTheSame(string utf16String, string str)
+        {
+            var Utf8Span = new Utf8Span(str);
+            var utf16StringCodePoints = new Utf16LittleEndianCodePointEnumerable(utf16String);
+
+            var utf16CodePointEnumerator = utf16StringCodePoints.GetEnumerator();
+            var utf8CodePointEnumerator = Utf8Span.CodePoints.GetEnumerator();
+
+            bool moveNext;
+            while (true)
+            {
+                moveNext = utf16CodePointEnumerator.MoveNext();
+                Assert.Equal(moveNext, utf8CodePointEnumerator.MoveNext());
+                if (!moveNext)
+                {
+                    break;
+                }
+                Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
+            }
+        }
     }
 }

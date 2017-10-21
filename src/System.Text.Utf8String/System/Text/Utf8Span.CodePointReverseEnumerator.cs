@@ -4,17 +4,17 @@
 
 namespace System.Text.Utf8
 {
-    partial class Utf8String
+    partial struct Utf8Span
     {
         // TODO: Name TBD
         public ref struct CodePointReverseEnumerator
         {
-            private byte[] _buffer;
+            private ReadOnlySpan<byte> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointReverseEnumerator(byte[] buffer) : this()
+            public CodePointReverseEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -35,7 +35,7 @@ namespace System.Text.Utf8
                 }
             }
 
-            public unsafe uint Current
+            public uint Current
             {
                 get
                 {
@@ -49,7 +49,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    ReadOnlySpan<byte> buffer = new ReadOnlySpan<byte>(_buffer, 0, _index).ToArray();
+                    ReadOnlySpan<byte> buffer = _buffer.Slice(0, _index);
                     bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out uint ret, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)

@@ -4,28 +4,22 @@
 
 namespace System.Text.Utf8
 {
-    partial class Utf8String
+    partial struct Utf8Span
     {
         public ref struct Enumerator
         {
-            private readonly byte[] _buffer;
+            private readonly ReadOnlySpan<byte> _buffer;
             private readonly int _length;
             private int _index;
 
-            internal Enumerator(byte[] buffer)
+            internal Enumerator(ReadOnlySpan<byte> buffer)
             {
                 _buffer = buffer;
                 _length = buffer.Length;
                 _index = -1;
             }
 
-            public byte Current
-            {
-                get
-                {
-                    return _buffer[_index];
-                }
-            }
+            public byte Current => _buffer[_index];
 
             public bool MoveNext()
             {

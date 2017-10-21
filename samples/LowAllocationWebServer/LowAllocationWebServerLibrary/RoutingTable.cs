@@ -28,11 +28,11 @@ namespace Microsoft.Net.Http
         public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)
         {
             // TODO: this should not allocate new string
-            Utf8String requestUtf8 = request.Path.ToUtf8String(SymbolTable.InvariantUtf8);
+            Utf8Span requestUtf8 = request.Path.ToUtf8Span(SymbolTable.InvariantUtf8);
             for (int i = 0; i < _count; i++)
             {
                 // TODO: this should check the verb too
-                if (requestUtf8.Equals(new Utf8String(_uris[i])))
+                if (requestUtf8.Equals(new Utf8Span(_uris[i])))
                 {
                     _handlers[i](request, response);
                     return true;
@@ -44,7 +44,7 @@ namespace Microsoft.Net.Http
         public void Add(HttpMethod method, string requestUri, TRequestId requestId, Action<HttpRequest, TcpConnectionFormatter> handler = null)
         {
             if (_count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
-            _uris[_count] = new Utf8String(requestUri).Bytes.ToArray();
+            _uris[_count] = new Utf8Span(requestUri).Bytes.ToArray();
             _requestIds[_count] = requestId;
             _verbs[_count] = method;
             _handlers[_count] = handler;

@@ -39,7 +39,7 @@ namespace System.Text.Json
             _dbMemory = dbMemory;
         }
 
-        public bool TryGetValue(Utf8String propertyName, out JsonObject value)
+        public bool TryGetValue(Utf8Span propertyName, out JsonObject value)
         {
             var record = Record;
 
@@ -58,7 +58,7 @@ namespace System.Text.Json
                     continue;
                 }
 
-                if (new Utf8String(_values.Slice(record.Location, record.Length)) == propertyName) {
+                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName) {
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
@@ -102,7 +102,7 @@ namespace System.Text.Json
                     continue;
                 }
 
-                if (new Utf8String(_values.Slice(record.Location, record.Length)) == propertyName) {
+                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName) {
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
@@ -126,7 +126,7 @@ namespace System.Text.Json
             return false;
         }
 
-        public JsonObject this[Utf8String name]
+        public JsonObject this[Utf8Span name]
         {
             get {
                 JsonObject value;
@@ -199,18 +199,18 @@ namespace System.Text.Json
 
         public static explicit operator string(JsonObject json)
         {
-            var utf8 = (Utf8String)json;
+            var utf8 = (Utf8Span)json;
             return utf8.ToString();
         }
 
-        public static explicit operator Utf8String(JsonObject json)
+        public static explicit operator Utf8Span(JsonObject json)
         {
             var record = json.Record;
             if (!record.IsSimpleValue) {
                 throw new InvalidCastException();
             }
 
-            return new Utf8String(json._values.Slice(record.Location, record.Length));
+            return new Utf8Span(json._values.Slice(record.Location, record.Length));
         }
 
         public static explicit operator bool(JsonObject json)

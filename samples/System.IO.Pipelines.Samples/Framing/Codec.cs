@@ -121,7 +121,7 @@ namespace System.IO.Pipelines.Samples.Framing
             ReadCursor cursor;
             if (input.TrySliceTo((byte)'\r', (byte)'\n', out slice, out cursor))
             {
-                frame = new Line { Data = slice.GetUtf8String() };
+                frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);
                 return true;
             }

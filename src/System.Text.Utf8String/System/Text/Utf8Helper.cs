@@ -5,7 +5,8 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    static class Utf8Helper
+    // TODO Should this be public?
+    public static class Utf8Helper
     {
         #region Constants
 

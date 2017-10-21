@@ -12,7 +12,7 @@ namespace QotdService
         public static void Main(string[] args)
         {
             var buffer = new byte[1024];
-            var quoteBytes = new Utf8String("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein").CopyBytes();
+            var quoteBytes = new Utf8Span("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein").CopyBytes();
 
             var loop = new UVLoop();
 

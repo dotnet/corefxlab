@@ -4,17 +4,16 @@
 
 namespace System.Text.Utf8
 {
-    partial class Utf8String
+    partial struct Utf8Span
     {
-        // TODO: Name TBD
-        public ref struct CodePointReverseEnumerator
+        public ref struct CodePointEnumerator
         {
-            private byte[] _buffer;
+            private ReadOnlySpan<byte> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointReverseEnumerator(byte[] buffer) : this()
+            public unsafe CodePointEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -22,20 +21,9 @@ namespace System.Text.Utf8
             }
 
             // TODO: Name TBD
-            public int PositionInCodeUnits
-            {
-                get
-                {
-                    if (IsOnResetPosition())
-                    {
-                        return -1;
-                    }
+            public int PositionInCodeUnits => IsOnResetPosition() ? -1 : _index;
 
-                    return _index;
-                }
-            }
-
-            public unsafe uint Current
+            public uint Current
             {
                 get
                 {
@@ -49,8 +37,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    ReadOnlySpan<byte> buffer = new ReadOnlySpan<byte>(_buffer, 0, _index).ToArray();
-                    bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out uint ret, out _currentLenCache);
+                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out uint codePoint, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
@@ -58,7 +45,7 @@ namespace System.Text.Utf8
                         throw new Exception("Invalid code point!");
                     }
 
-                    return ret;
+                    return codePoint;
                 }
             }
 
@@ -83,17 +70,14 @@ namespace System.Text.Utf8
                     }
                 }
 
-                _index -= _currentLenCache;
+                _index += _currentLenCache;
                 _currentLenCache = 0;
 
                 return HasValue();
             }
 
             // This is different than Reset, it goes to the first element not before first
-            private void MoveToFirstPosition()
-            {
-                _index = _buffer.Length;
-            }
+            private void MoveToFirstPosition() => _index = 0;
 
             private bool IsOnResetPosition()
             {
@@ -107,7 +91,7 @@ namespace System.Text.Utf8
                     return true;
                 }
 
-                return _index > 0;
+                return _index < _buffer.Length;
             }
 
             // This is different than MoveToFirstPosition, this actually goes before anything

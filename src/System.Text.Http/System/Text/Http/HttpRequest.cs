@@ -78,10 +78,10 @@ namespace System.Text.Http
             value = Value.ToString(SymbolTable.InvariantUtf8);
         }
 
-        public void Deconstruct(out Utf8String name, out Utf8String value)
+        public void Deconstruct(out Utf8Span name, out Utf8Span value)
         {
-            name = Name.ToUtf8String(SymbolTable.InvariantUtf8);
-            value = Value.ToUtf8String(SymbolTable.InvariantUtf8);
+            name = Name.ToUtf8Span(SymbolTable.InvariantUtf8);
+            value = Value.ToUtf8Span(SymbolTable.InvariantUtf8);
         }
     }
 
@@ -155,7 +155,7 @@ namespace System.Text.Http
         {
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                return new Utf8String(bytes.Span).ToString();
+                return new Utf8Span(bytes.Span).ToString();
             }
             else
             {
@@ -172,7 +172,7 @@ namespace System.Text.Http
                 ReadOnlyMemory<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
-                    sb.Append(new Utf8String(segment.Span).ToString());
+                    sb.Append(new Utf8Span(segment.Span).ToString());
                 }
             }
             else
@@ -182,13 +182,13 @@ namespace System.Text.Http
             return sb.ToString();
         }
 
-        public static Utf8String ToUtf8String(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
+        public static Utf8Span ToUtf8Span(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
         {
-            if (bytes == null) return Utf8String.Empty;
-            return ToUtf8String(bytes.Value, symbolTable);
+            if (bytes == null) return Utf8Span.Empty;
+            return ToUtf8Span(bytes.Value, symbolTable);
         }
 
-        public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, SymbolTable symbolTable)
+        public static Utf8Span ToUtf8Span(this ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
             var sb = new ArrayFormatter(bytes.ComputeLength(), SymbolTable.InvariantUtf8);
             if (symbolTable == SymbolTable.InvariantUtf8)
@@ -197,14 +197,14 @@ namespace System.Text.Http
                 ReadOnlyMemory<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
-                    sb.Append(new Utf8String(segment.Span));
+                    sb.Append(new Utf8Span(segment.Span));
                 }
             }
             else
             {
                 throw new NotImplementedException();
             }
-            return new Utf8String(sb.Formatted.AsSpan());
+            return new Utf8Span(sb.Formatted.AsSpan());
         }
     }
 }

@@ -163,15 +163,15 @@ namespace Json.Net.Tests
 
         public static explicit operator string (JsonParseObject json)
         {
-            return GetUtf8String(json).ToString();
+            return GetUtf8Span(json).ToString();
         }
 
-        public static explicit operator Utf8String(JsonParseObject json)
+        public static explicit operator Utf8Span(JsonParseObject json)
         {
-            return GetUtf8String(json);
+            return GetUtf8Span(json);
         }
 
-        private static Utf8String GetUtf8String(JsonParseObject json)
+        private static Utf8Span GetUtf8Span(JsonParseObject json)
         {
             var typeCode = json._buffer[json._start + 8];
 
@@ -182,7 +182,7 @@ namespace Json.Net.Tests
 
             int location = BitConverter.ToInt32(json._buffer, json._start);
             int length = BitConverter.ToInt32(json._buffer, json._start + 4);
-            return new Utf8String(json._buffer, location, length);
+            return new Utf8Span(json._buffer, location, length);
         }
 
         public static explicit operator bool (JsonParseObject json)

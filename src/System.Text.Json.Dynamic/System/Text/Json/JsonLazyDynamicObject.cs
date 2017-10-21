@@ -24,7 +24,7 @@ namespace System.Text.Json
             return result;
         }
 
-        public bool TryGetUInt32(Utf8String propertyName, out uint value)
+        public bool TryGetUInt32(Utf8Span propertyName, out uint value)
         {
             JsonObject jsonObject;
             if (!_dom.TryGetValue(propertyName, out jsonObject))
@@ -40,7 +40,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public bool TryGetString(Utf8String propertyName, out Utf8String value)
+        public bool TryGetString(Utf8Span propertyName, out Utf8Span value)
         {
             JsonObject jsonObject;
             if (!_dom.TryGetValue(propertyName, out jsonObject)) {
@@ -50,7 +50,7 @@ namespace System.Text.Json
             if (jsonObject.Type != JsonObject.JsonValueType.String) {
                 throw new InvalidOperationException();
             }
-            value = (Utf8String)jsonObject;
+            value = (Utf8Span)jsonObject;
             return true;
         }
 
