@@ -43,7 +43,7 @@ namespace System.Text.Encodings.Web.Utf8.Tests
         protected override void TestCore(string encoded, string decoded)
         {
             var input = GetBytes(encoded).ToArray();
-            Assert.Equal(OperationStatus.Done, UrlDecoder.Utf8.DecodeInPlace(input, input.Length, out int written));
+            Assert.Equal(OperationStatus.Done, UrlDecoder.Utf8.Transform(input, input.Length, out int written));
             Assert.True(written <= input.Length);
 
             var decodedString = Encoding.UTF8.GetString(input, 0, written);

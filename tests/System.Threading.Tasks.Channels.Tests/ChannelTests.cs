@@ -5,16 +5,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Threading.Tasks.Channels.Tests
+namespace System.IO.Channels.Tests
 {
     public class ChannelTests
     {
         [Fact]
         public void ChannelOptimizations_Properties_Roundtrip()
         {
-            var co = new ChannelOptimizations();
+            var co = new UnboundedChannelOptions();
 
             Assert.False(co.SingleReader);
             Assert.False(co.SingleWriter);
@@ -46,14 +48,17 @@ namespace System.Threading.Tasks.Channels.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]
-        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity) =>
-            Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.CreateBounded<int>(bufferedCapacity));
+        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int capacity)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>("capacity", () => Channel.CreateBounded<int>(capacity));
+            Assert.Throws<ArgumentOutOfRangeException>("capacity", () => new BoundedChannelOptions(capacity));
+        }
 
         [Theory]
         [InlineData((BoundedChannelFullMode)(-1))]
         [InlineData((BoundedChannelFullMode)(4))]
-        public void CreateBounded_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode) =>
-            Assert.Throws<ArgumentOutOfRangeException>("mode", () => Channel.CreateBounded<int>(1, mode));
+        public void BoundedChannelOptions_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode) =>
+            Assert.Throws<ArgumentOutOfRangeException>("value", () => new BoundedChannelOptions(1) { FullMode = mode });
 
         [Theory]
         [InlineData(1)]
@@ -61,31 +66,9 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.NotNull(Channel.CreateBounded<int>(bufferedCapacity));
 
         [Fact]
-        public void AsObservable_SameSource_Idempotent()
-        {
-            var c = Channel.CreateUnbounded<int>();
-            Assert.Same(c.In.AsObservable(), c.In.AsObservable());
-        }
-
-        [Fact]
-        public async Task DefaultReadAsync_UsesWaitToReadAsyncAndTryRead()
-        {
-            var c = new TestReadableChannel<int>(Enumerable.Range(10, 10));
-            Assert.NotNull(c.Completion);
-            Assert.False(c.Completion.IsCompleted);
-            Assert.Equal(TaskStatus.Canceled, c.ReadAsync(new CancellationToken(true)).AsTask().Status);
-
-            for (int i = 10; i < 20; i++)
-            {
-                Assert.Equal(i, await c.ReadAsync());
-            }
-            await Assert.ThrowsAsync<ClosedChannelException>(async () => await c.ReadAsync());
-        }
-
-        [Fact]
         public async Task DefaultWriteAsync_UsesWaitToWriteAsyncAndTryWrite()
         {
-            var c = new TestWritableChannel<int>(10);
+            var c = new TestChannelWriter<int>(10);
             Assert.False(c.TryComplete());
             Assert.Equal(TaskStatus.Canceled, c.WriteAsync(42, new CancellationToken(true)).Status);
 
@@ -97,17 +80,17 @@ namespace System.Threading.Tasks.Channels.Tests
                     await c.WriteAsync(count++);
                 }
             }
-            catch (ClosedChannelException) { }
+            catch (ChannelClosedException) { }
             Assert.Equal(11, count);
         }
 
-        private sealed class TestWritableChannel<T> : WritableChannel<T>
+        private sealed class TestChannelWriter<T> : ChannelWriter<T>
         {
             private readonly Random _rand = new Random(42);
             private readonly int _max;
             private int _count;
 
-            public TestWritableChannel(int max) => _max = max;
+            public TestChannelWriter(int max) => _max = max;
 
             public override bool TryWrite(T item) => _rand.Next(0, 2) == 0 && _count++ < _max; // succeed if we're under our limit, and add random failures
 
@@ -117,14 +100,14 @@ namespace System.Threading.Tasks.Channels.Tests
                 Task.FromResult(true);
         }
 
-        private sealed class TestReadableChannel<T> : ReadableChannel<T>
+        private sealed class TestChannelReader<T> : ChannelReader<T>
         {
             private Random _rand = new Random(42);
             private IEnumerator<T> _enumerator;
             private int _count;
             private bool _closed;
 
-            public TestReadableChannel(IEnumerable<T> enumerable) => _enumerator = enumerable.GetEnumerator();
+            public TestChannelReader(IEnumerable<T> enumerable) => _enumerator = enumerable.GetEnumerator();
 
             public override bool TryRead(out T item)
             {

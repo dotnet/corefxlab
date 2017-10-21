@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Buffers.Text;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace System.Buffers.Cryptography
 {
-    public struct Sha256
+    public struct Sha256 : IWritable
     {
         IncrementalHash _hash;
         public static Sha256 Create(byte[] seed)
@@ -22,11 +23,17 @@ namespace System.Buffers.Cryptography
             _hash.AppendData(input.ToArray());
         }
 
-        public unsafe void GetHash(Span<byte> output)
+        public bool TryWrite(Span<byte> buffer, out int written, ParsedFormat format = default)
         {
+            if (!format.IsDefault) throw new ArgumentOutOfRangeException(nameof(format));
+            if (buffer.Length < OutputSize) { written = 0; return false; }
+            
             var hash = _hash.GetHashAndReset();
-            if (hash.Length > output.Length) throw new ArgumentException();
-            hash.AsSpan().CopyTo(output);
+            Debug.Assert(hash.Length == OutputSize);
+            hash.AsSpan().CopyTo(buffer);
+
+            written = OutputSize;
+            return true;
         }
 
         public void Dispose()

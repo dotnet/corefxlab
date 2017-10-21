@@ -128,7 +128,7 @@ To build the projects in this repo, you have a few options:
 * (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
 * (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
 Using VS Code, see https://aka.ms/vscclrdogfood.
-* If using Visual Studio, install the following VSIX to have IDE support for C#7.2 features that this project uses. - https://dotnet.myget.org/F/roslyn/vsix/0b48e25b-9903-4d8b-ad39-d4cca196e3c7-2.6.0.6211106.vsix
+* If using Visual Studio, install the following VSIX to have IDE support for C#7.2 features that this project uses. - https://dotnet.myget.org/F/roslyn/vsix/0b48e25b-9903-4d8b-ad39-d4cca196e3c7-2.6.0.6221102.vsix
 
 ## Measuring Performance
 

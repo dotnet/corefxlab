@@ -6,6 +6,8 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Text.Utf8;
 
+using static System.Buffers.Binary.BinaryPrimitives;
+
 namespace System.Text.Json
 {
     public ref struct JsonObject
@@ -49,7 +51,7 @@ namespace System.Text.Json
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                record = _db.Slice(i).Read<DbRow>();
+                record = ReadMachineEndian<DbRow>(_db.Slice(i));
 
                 if (!record.IsSimpleValue) {
                     i += record.Length * DbRow.Size;
@@ -60,7 +62,7 @@ namespace System.Text.Json
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = _db.Slice(newStart).Read<DbRow>();
+                    record = ReadMachineEndian<DbRow>(_db.Slice(newStart));
 
                     if (!record.IsSimpleValue) {
                         newEnd = newEnd + DbRow.Size * record.Length;
@@ -70,7 +72,7 @@ namespace System.Text.Json
                     return true;
                 }
 
-                var valueType = _db.Slice(i + DbRow.Size + 8).Read<JsonValueType>();
+                var valueType = ReadMachineEndian<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
                     i += DbRow.Size;
                 }
@@ -93,7 +95,7 @@ namespace System.Text.Json
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                record = _db.Slice(i).Read<DbRow>();
+                record = ReadMachineEndian<DbRow>(_db.Slice(i));
 
                 if (!record.IsSimpleValue) {
                     i += record.Length * DbRow.Size;
@@ -104,7 +106,7 @@ namespace System.Text.Json
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = _db.Slice(newStart).Read<DbRow>();
+                    record = ReadMachineEndian<DbRow>(_db.Slice(newStart));
 
                     if (!record.IsSimpleValue) {
                         newEnd = newEnd + DbRow.Size * record.Length;
@@ -114,7 +116,7 @@ namespace System.Text.Json
                     return true;
                 }
 
-                var valueType = _db.Slice(i + DbRow.Size + 8).Read<JsonValueType>();
+                var valueType = ReadMachineEndian<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
                     i += DbRow.Size;
                 }
@@ -159,7 +161,7 @@ namespace System.Text.Json
 
                 int counter = 0;
                 for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                    record = _db.Slice(i).Read<DbRow>();
+                    record = ReadMachineEndian<DbRow>(_db.Slice(i));
 
                     if (index == counter) {
                         int newStart = i;
@@ -323,8 +325,8 @@ namespace System.Text.Json
 
         }
 
-        internal DbRow Record => _db.Read<DbRow>();
-        public JsonValueType Type => _db.Slice(8).Read<JsonValueType>();
+        internal DbRow Record => ReadMachineEndian<DbRow>(_db);
+        public JsonValueType Type => ReadMachineEndian<JsonValueType>(_db.Slice(8));
 
         public enum JsonValueType : byte
         {

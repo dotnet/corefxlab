@@ -6,12 +6,10 @@ using Microsoft.Xunit.Performance;
 using System.Buffers;
 using System.Buffers.Text;
 
-namespace System.Text.Primitives.Tests.Parsing
+namespace System.Text.Primitives.Tests
 {
-    public partial class PrimitiveParserInt16PerfTests
+    public partial class PrimitiveParserPerfTests
     {
-        private const int InnerCount = 10000;
-
         private static readonly string[] s_Int16TextArray = new string[13]
         {
             "21474",
@@ -30,10 +28,54 @@ namespace System.Text.Primitives.Tests.Parsing
         };
 
         [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData("10732")] // standard parse
+        [InlineData("10737")] // standard parse
         [InlineData("32767")] // max value
         [InlineData("0")]
         [InlineData("-32768")] // min value
+        [InlineData("2147")]
+        [InlineData("2")]
+        [InlineData("-21474")]
+        [InlineData("21474")]
+        [InlineData("-21")]
+        [InlineData("-2")]
+        [InlineData("214")]
+        [InlineData("2147")]
+        [InlineData("-2147")]
+        [InlineData("-48")]
+        [InlineData("48")]
+        [InlineData("483")]
+        [InlineData("21")]
+        [InlineData("-214")]
+        [InlineData("+21474")]
+        [InlineData("+21")]
+        [InlineData("+2")]
+        [InlineData("+214")]
+        [InlineData("+2147")]
+        [InlineData("+21475")]
+        [InlineData("+48")]
+        [InlineData("+483")]
+        [InlineData("+21437")]
+        [InlineData("000000000000000000001235abcdfg")]
+        [InlineData("2147abcdefghijklmnop")]
+        [InlineData("2abcdefghijklmnop")]
+        [InlineData("214abcdefghijklmnop")]
+        [InlineData("-2147abcdefghijklmnop")]
+        [InlineData("21474abcdefghijklmnop")]
+        [InlineData("-21abcdefghijklmnop")]
+        [InlineData("-2abcdefghijklmnop")]
+        [InlineData("487abcdefghijklmnop")]
+        [InlineData("-483abcdefghijklmnop")]
+        [InlineData("-4836abcdefghijklmnop")]
+        [InlineData("21abcdefghijklmnop")]
+        [InlineData("+000000000000000000001235abcdfg")]
+        [InlineData("+2147abcdefghijklmnop")]
+        [InlineData("+214abcdefghijklmnop")]
+        [InlineData("+21474abcdefghijklmnop")]
+        [InlineData("+2abcdefghijklmnop")]
+        [InlineData("+487abcdefghijklmnop")]
+        [InlineData("+483abcdefghijklmnop")]
+        [InlineData("+4836abcdefghijklmnop")]
+        [InlineData("+21abcdefghijklmnop")]
         private static void PrimitiveParserByteSpanToInt16(string text)
         {
             byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);

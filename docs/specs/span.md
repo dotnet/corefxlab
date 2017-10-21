@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Span<T>` is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with performance characteristics on par with `T[]`. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack. 
+`Span<T>` is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with performance characteristics on par with `T[]`. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack.
 
 ```c#
 // managed memory
@@ -31,7 +31,7 @@ As such, `Span<T>` is an abstraction over all types of memory available to .NET 
 
 ```c#
 // this method does not care what kind of memory it works on
-static ulong SafeSum(Span<byte> bytes) { 
+static ulong SafeSum(Span<byte> bytes) {
     ulong sum = 0;
     for(int i=0; i < bytes.Length; i++) {
         sum += bytes[i];
@@ -42,7 +42,7 @@ static ulong SafeSum(Span<byte> bytes) {
 When wrapping an array, `Span<T>` is not limited to pointing to the first element of the array. It can point to any sub-range. In other words, it supports slicing.
 ```c#
 var array = new byte[] { 1, 2, 3 };
-var slice = new Span<byte>(array, start:1, length:2); 
+var slice = new Span<byte>(array, start:1, length:2);
 Console.WriteLine(slice[0]); // prints 2
 ```
 ## API Surface
@@ -76,12 +76,12 @@ In addition, we will provide a read-only version of `Span<T>`. The `ReadOnlySpan
 
 The .NET Framework design philosophy has focused almost solely on productivity for developers writing application software. In addition, many of the Framework’s design decisions were made assuming Windows client-server applications circa 1999. This design philosophy is a big part of .NET’s success as .NET is universally viewed as a very high productivity platform.
 
-But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of the art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago. 
+But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of the art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago.
 
 When we analyze the gaps we have today and the requirements of today’s high scale servers, we realize that we need to provide modern no-copy, low-allocation, and UTF8 data transformation APIs that are efficient, reliable, and easy to use. Prototypes of such APIs are available in [corefxlab repository]( https://github.com/dotnet/corefxlab), and `Span<T>` is one of the main fundamental building blocks for these APIs.
 
 ### Data Pipelines
-Modern servers are often designed as, often reactive, pipelines of components doing transformations on byte buffers. For example, such pipeline in a web server might consist of the following transformations: socket fills in a buffer -> HTTP parsing -> decompression -> Base 64 decoding -> routing -> HTML writing -> HTML escaping -> HTTP writing -> compression -> socket writing. 
+Modern servers are often designed as, often reactive, pipelines of components doing transformations on byte buffers. For example, such pipeline in a web server might consist of the following transformations: socket fills in a buffer -> HTTP parsing -> decompression -> Base 64 decoding -> routing -> HTML writing -> HTML escaping -> HTTP writing -> compression -> socket writing.
 
 `Span<byte>` is very useful for implementing transformation routines of such data pipelines. First, `Span<T>` allows the server to freely switch between managed and native buffers depending on situation/settings. For example, Windows RIO sockets work best with native buffers, and libuv Kestrel works best with pinned managed arrays. Secondly, it allows complicated transformation algorithms to be implemented in safe code without the need to resort to using raw pointers. Lastly, the fact that `Span<T>` is slicable allows the pipeline to abstract away the physical chunks of buffers, treating them as uniform logical chunks relevant to that particular section of the pipeline.
 
@@ -114,11 +114,11 @@ public unsafe static uint GetUInt32(this ReadableBuffer buffer) {
         throw new InvalidOperationException();
     }
     return value;
-} 
+}
 ```
 
 ### Non-Allocating Substring
-Modern server protocols are more often than not text-based, and so it's not surprising that such servers often create and manipulate lots of strings. 
+Modern server protocols are more often than not text-based, and so it's not surprising that such servers often create and manipulate lots of strings.
 
 One of the most common basic string operations is string slicing. Currently, `System.String.Substring` is the main .NET API for creating slices of a string, but the API is inefficient as it creates a new string to represent the slice and copies the characters from the original string to the new string slice. Because of this inefficiency, high performance servers shy away from using this API, where they can (in their internals), and pay the cost in the publicly facing APIs.
 
@@ -180,12 +180,12 @@ public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWri
 ### Buffer Pooling
 `Span<T>` can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
 
-Separatelly, the stack-only nature of `Span<T>` makes lifetime management of pooled memory more relaible; it helps in avoiding use-after-free errors with pooled memory. Without `Span<T>`, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With `Span<T>`, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
+Separately, the stack-only nature of `Span<T>` makes lifetime management of pooled memory more reliable; it helps in avoiding use-after-free errors with pooled memory. Without `Span<T>`, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With `Span<T>`, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
 
 ### Native code interop
 Today, unmanaged buffers passed over unmanaged to managed boundary are frequently copied to `byte[]` to allow safe access from managed code. `Span<T>` can eliminate the need to copy in many such scenarios.
 
-Secondly, a number of performance critical APIs in the Framework take unsafe pointers as input. Examples include `Encoding.GetChars` or `Buffer.MemoryCopy`. Over time, we should provide more safe APIs that use `Span<T>`, which will allow more code to compile as safe but still preserve its performance characteristics. 
+Secondly, a number of performance critical APIs in the Framework take unsafe pointers as input. Examples include `Encoding.GetChars` or `Buffer.MemoryCopy`. Over time, we should provide more safe APIs that use `Span<T>`, which will allow more code to compile as safe but still preserve its performance characteristics.
 
 # Requirements
 To support the scenarios described above, `Span<T>` must meet the following requirements:
@@ -195,9 +195,9 @@ To support the scenarios described above, `Span<T>` must meet the following requ
 3.	Be memory-safe
 
 # Design/Representation
-We will provide two different implementations of `Span<T>`: 
+We will provide two different implementations of `Span<T>`:
 - Fast `Span<T>` (available on runtimes with special support for spans)
-- Slow `Span<T>` (available on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+- Slow `Span<T>` (available on all current .NET runtimes, even existing ones, e.g. .NET 4.5)
 
 The fast implementation, will rely on "ref field" support and will look as follows:
 
@@ -234,12 +234,12 @@ internal class Buffer {
     public byte this[int index] => _memory[index]; // this might see partial update
 }
 ```
-For most structs, tearing is at most a correctness bug and can be dealt with by making the fields (typed as the tearable struct type) non-public and synchronizing access to them. But since Span needs to be as fast as the array, access to the field cannot be synchronized. Also, because of the fact that Span accesses (and writes to) memory directly, having the `_pointer` and the `_length` be out of sync could result in memory safety being compromised. 
+For most structs, tearing is at most a correctness bug and can be dealt with by making the fields (typed as the tearable struct type) non-public and synchronizing access to them. But since Span needs to be as fast as the array, access to the field cannot be synchronized. Also, because of the fact that Span accesses (and writes to) memory directly, having the `_pointer` and the `_length` be out of sync could result in memory safety being compromised.
 
-The only other way (besides synchronizing access, which would be not practical) to avoid this issue is to make Span a stack-only type, i.e. its instances can reside only on the stack (which is accessed by one thread). 
+The only other way (besides synchronizing access, which would be not practical) to avoid this issue is to make Span a stack-only type, i.e. its instances can reside only on the stack (which is accessed by one thread).
 
 ## Span\<T\> will be stack-only
-`Span<T>` will be a stack-only type; more precisely, it will be a by-ref type (just like its field in the fast implementation). This means that Spans cannot be boxed, cannot appear as a field of a non-stack-only type, and cannot be used as a generic argument. However, `Span<T>` can be used as a type of method arguments or return values. 
+`Span<T>` will be a stack-only type; more precisely, it will be a by-ref type (just like its field in the fast implementation). This means that Spans cannot be boxed, cannot appear as a field of a non-stack-only type, and cannot be used as a generic argument. However, `Span<T>` can be used as a type of method arguments or return values.
 
 We chose to make `Span<T>` stack-only as it solves several problems:
 - Efficient representation and access: `Span<T>` can be just managed pointer and length.
@@ -253,22 +253,22 @@ The fast representation makes the type instances automatically stack-only, i.e. 
 ## Memory\<T\>
 As alluded to above, in the upcoming months, many data transformation components in .NET (e.g. Base64Encoding, compressions, formatting, parsing) will provide APIs operating on memory buffers. We will do this work to develop no-copy/low-allocation end-to-end data pipelines, like the ASP.NET Channels. These APIs will use a collection of types, including, but not limited to, `Span<T>`, to represent various data pipeline primitives and exchange types.
 
-This new collection of types must be usable by two distinct sets of customers: 
+This new collection of types must be usable by two distinct sets of customers:
 - Productivity developers (99% case): these are the developers who use LINQ, async, lambdas, etc., and often for good reasons care more about productivity than squeezing the last cycles out of some low level transformation routines.  
-- Low level developers (1% case): our library and framework authors for whom performance is a critical aspect of their work. 
+- Low level developers (1% case): our library and framework authors for whom performance is a critical aspect of their work.
 
-Even though the goals of each group are different, they rely on each other to be successful. One is a necessary consumer of the other. 
+Even though the goals of each group are different, they rely on each other to be successful. One is a necessary consumer of the other.
 
 A stack-only type with the associated trade-offs is great for low level developers writing data transformation routines. Productivity developers, writing apps, may not be so thrilled when they realize that when using stack-only types, they lose many of the language features they rely on to get their jobs done (e.g. async await). And so, a stack-only type simply can’t be the primary exchange type we recommend for high level developers/scenarios/APIs.
 
-For the whole platform to be successful, we must add an exchange type, currently called `Memory<T>`, that can be used with the full power of the language, i.e. it’s not stack-only. `Memory<T>` can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When `Memory<T>` is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
+For the whole platform to be successful, we must add an exchange type, currently called `Memory<T>`, that can be used with the full power of the language, i.e. it’s not stack-only. `Memory<T>` can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When `Memory<T>` is finally ready to be manipulated by a data transformation routine, it will be temporarily converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
 
 See a prototype of `Memory<T>` [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs). Note that the prototype is currently not tearing safe. We will make it safe in the upcoming weeks.
 
 # Other Random Thoughts
 
 ## Optimizations
-We need to enable the existing array bounds check optimizations for `Span<T>` – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
+We need to enable the existing array bounds check optimizations for `Span<T>` – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans.
 
 ## Conversions
 `Span<T>` will support reinterpret cast conversions to `Span<byte>`. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
@@ -281,7 +281,7 @@ if(char.IsLower(characters[0]) { ... }
 ```
 
 ## Platform Support Plans
-We want to ship `Span<T>` as a NuGet fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast ref-field `Span<T>`. Other runtimes will get the slower three-field `Span<T>`. 
+We want to ship `Span<T>` as a NuGet fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast ref-field `Span<T>`. Other runtimes will get the slower three-field `Span<T>`.
 
 ## Relationship to Array Slicing
 Since `Span<T>` will be a stack-only type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. `ArraySegment<T>`). We will design array slicing separately from `Span<T>`.
@@ -292,7 +292,7 @@ Unlike `T[]`, `Span<T>` will not support covariant casts, i.e. cast `Span<Subtyp
 ## Language Support
 Separately from this document, we are exploring language features to better support `Span<T>`:
 
-1. Enforcement of Stack-Only Type Restrictions 
+1. Enforcement of Stack-Only Type Restrictions
 
     `Span<T>` and `ReadOnlySpan<T>` will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitively considered a stack-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.).
 
@@ -307,13 +307,13 @@ Separately from this document, we are exploring language features to better supp
 
 3. Slicing syntax
 
-    C# compiler will add slicing syntax, and `Memory<T>`, `Span<T>`, and `ReadOnlySpan<T>` will support it. The details are TBD, but imagine that a[1..5] calls a.Slice(1, 5) or a.Slice(new Range(1, 5)). 
+    C# compiler will add slicing syntax, and `Memory<T>`, `Span<T>`, and `ReadOnlySpan<T>` will support it. The details are TBD, but imagine that a[1..5] calls a.Slice(1, 5) or a.Slice(new Range(1, 5)).
     ```c#
     Span<T> span = ...
     var slice = span[1..5];
     ```
 
-4. Safe `Span<T>` stackalloc 
+4. Safe `Span<T>` stackalloc
     ```c#
     void SafeMethod() {
         Span<byte> buffer = stackalloc byte[128];
@@ -323,14 +323,14 @@ Separately from this document, we are exploring language features to better supp
 
 5. Primitive constraint
 
-    Some `Span<T>` operations are valid only for so called primitive type arguments. For example, the [reinterpret cast operation](https://github.com/dotnet/corefxlab/blob/7f7a0a4fa491c94fdc7cf0ebd01e9af44991c487/src/System.Slices/System/SpanExtensions.cs#L151). 
+    Some `Span<T>` operations are valid only for so called primitive type arguments. For example, the [reinterpret cast operation](https://github.com/dotnet/corefxlab/blob/7f7a0a4fa491c94fdc7cf0ebd01e9af44991c487/src/System.Slices/System/SpanExtensions.cs#L151).
 
     We are exploring adding the ability to constrain type parameters to primitive types, i.e. types that are bit blittable. The cast operation would constrain its type parameters as follows:
     ```c#
     public static Span<U> Cast<T, U>(this Span<T> slice) where T:primitive where U:primitive
     { ... }
     ```
-    
+
 # Open Issues
 
 1. Detailed design of `Memory<T>`
@@ -339,5 +339,5 @@ Separately from this document, we are exploring language features to better supp
     - Lifetime/Pinning
 4. `Span<T>` API design details
     - Type of the Length property
-    - Namespace and type name 
+    - Namespace and type name
 5. Details of runtime optimizations

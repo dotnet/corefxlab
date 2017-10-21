@@ -1,6 +1,6 @@
 # High-Performance Data Pipelines
 
-Our goal is to optimize .NET much more for scenarios in which inefficiences are
+Our goal is to optimize .NET much more for scenarios in which inefficiencies are
 directly tied to your monthly billing. With ASP.NET Core, we've already
 [improved significantly][TechEmpower13] and are now in the top 10 for the plain
 text benchmark. But we believe there is still a lot more potential that we could
@@ -18,8 +18,8 @@ Consider an example for a typical web request:
 
 ![](./img/pipeline.png)
 
-Most cloud apps are parellelized by running multiple requests at the same time
-while each requests is often executed as a single chain. This results in the
+Most cloud apps are parallelized by running multiple requests at the same time
+while each request is often executed as a single chain. This results in the
 picture above where all components are daisy-chained. That means slowing down
 one component will slow down the entire request.
 
@@ -63,10 +63,10 @@ we're seeking to improve is scalability:
 >
 > --- [Wikipedia](https://en.wikipedia.org/wiki/Scalability)
 
-Many areas affect scale but an efficient request/response pipeline is key as
+Many areas affect scale, but an efficient request/response pipeline is key as
 it's the backbone for all cloud solutions.
 
-Other investments (faster GC, better JIT, AOT) aren't a replacement but will
+Other investments (faster GC, better JIT, AOT) aren't a replacement, but will
 provide additional benefits.
 
 ## Current areas of concerns

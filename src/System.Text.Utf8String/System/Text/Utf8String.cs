@@ -548,15 +548,12 @@ namespace System.Text.Utf8
 
         public override bool Equals(object obj)
         {
-            if (obj is Utf8String)
-            {
-                return Equals((Utf8String)obj);
-            }
             if (obj is string)
             {
                 return Equals((string)obj);
             }
 
+            // obj cannot be Utf8String since it cannot be boxed
             return false;
         }
 

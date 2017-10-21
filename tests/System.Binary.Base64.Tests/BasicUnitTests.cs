@@ -3,6 +3,7 @@
 using Xunit;
 using System.Collections.Generic;
 using System.Buffers;
+using System.Buffers.Text;
 
 namespace System.Binary.Base64.Tests
 {
@@ -59,6 +60,52 @@ namespace System.Binary.Base64.Tests
         }
 
         [Fact]
+        public void BasicEncodingWithLineBreaksMime()
+        {
+            var format = new ParsedFormat('M');
+            for (int numBytes = 58; numBytes < 1000; numBytes++)
+            {
+                Span<byte> source = new byte[numBytes];
+                Base64TestHelper.InitalizeBytes(source, numBytes);
+
+                char[] charArray = new char[numBytes * 10];
+                Span<byte> encodedBytes = new byte[Base64.BytesToUtf8Length(source.Length)];
+                Span<byte> encodedBytesWithLineBreaks = new byte[Base64.BytesToUtf8Length(source.Length, format)];
+                Assert.Equal(OperationStatus.Done, Base64.BytesToUtf8(source, encodedBytes, out int consumed, out int encodedBytesCount));
+                Assert.Equal(encodedBytes.Length, encodedBytesCount);
+                Assert.True(OperationStatus.Done == Base64.BytesToUtf8(source, encodedBytesWithLineBreaks, out consumed, out encodedBytesCount, format), "At index: " + numBytes);
+                Assert.Equal(encodedBytesWithLineBreaks.Length, encodedBytesCount);
+
+                string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+                string encodedTextWithLineBreaks = Text.Encoding.ASCII.GetString(encodedBytesWithLineBreaks.ToArray());
+                string expectedText = Convert.ToBase64String(source.ToArray());
+                string expectedTextWithLineBreaks = Convert.ToBase64String(source.ToArray(), Base64FormattingOptions.InsertLineBreaks);
+                Assert.Equal(expectedText, encodedText);
+                Assert.Equal(expectedTextWithLineBreaks, encodedTextWithLineBreaks);
+            }
+        }
+
+        [Fact]
+        public void BasicEncodingWithLineBreaks()
+        {
+            var format = new ParsedFormat('N', 64);
+            for (int numBytes = 0; numBytes < 1000; numBytes++)
+            {
+                Span<byte> source = new byte[numBytes];
+                Base64TestHelper.InitalizeBytes(source, numBytes);
+
+                char[] charArray = new char[numBytes * 10];
+                Span<byte> encodedBytes = new byte[Base64.BytesToUtf8Length(source.Length)];
+                Span<byte> encodedBytesWithLineBreaks = new byte[Base64.BytesToUtf8Length(source.Length, format)];
+                Assert.True(OperationStatus.Done == Base64.BytesToUtf8(source, encodedBytesWithLineBreaks, out int consumed, out int encodedBytesCount, format), "At index: " + numBytes);
+                Assert.Equal(encodedBytesWithLineBreaks.Length, encodedBytesCount);
+
+                string encodedTextWithLineBreaks = Text.Encoding.ASCII.GetString(encodedBytesWithLineBreaks.ToArray());
+                Assert.Equal(encodedTextWithLineBreaks, encodedTextWithLineBreaks);
+            }
+        }
+
+        [Fact]
         public void EncodingOutputTooSmall()
         {
             Span<byte> source = new byte[750];
@@ -80,6 +127,35 @@ namespace System.Binary.Base64.Tests
 
             string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
             string expectedText = Convert.ToBase64String(source.ToArray()).Substring(outputSize);
+            Assert.Equal(expectedText, encodedText);
+        }
+
+        [Fact]
+        public void EncodingWithLineBreaksOutputTooSmall()
+        {
+            Span<byte> source = new byte[750];
+            Base64TestHelper.InitalizeBytes(source);
+
+            int outputSize = 316;
+            int expectedWritten = 312;
+
+            ParsedFormat format = new ParsedFormat('N', 76);
+            int requiredSize = Base64.BytesToUtf8Length(source.Length, format);
+
+            Span<byte> encodedBytes = new byte[outputSize];
+            Assert.Equal(OperationStatus.DestinationTooSmall,
+                Base64.BytesToUtf8(source, encodedBytes, out int consumed, out int written, format, false));
+            Assert.Equal(expectedWritten, written);
+
+            string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+
+            encodedBytes = new byte[requiredSize - written];
+            Assert.Equal(OperationStatus.Done,
+                Base64.BytesToUtf8(source.Slice(consumed), encodedBytes, out consumed, out written, format));
+            Assert.Equal(encodedBytes.Length, written);
+
+            encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+            string expectedText = Convert.ToBase64String(source.ToArray(), Base64FormattingOptions.InsertLineBreaks).Substring(expectedWritten);
             Assert.Equal(expectedText, encodedText);
         }
 
@@ -195,7 +271,9 @@ namespace System.Binary.Base64.Tests
                 Assert.Equal(expected[i], Base64.BytesToUtf8Length(input[i]));
             }
 
-            Assert.True(Base64.BytesToUtf8Length(1610612734) < 0);   // integer overflow
+            // integer overflow
+            Assert.Throws<OverflowException>(() => Base64.BytesToUtf8Length(1610612734));
+            Assert.Throws<OverflowException>(() => Base64.BytesToUtf8Length(int.MaxValue));
         }
 
         [Fact]

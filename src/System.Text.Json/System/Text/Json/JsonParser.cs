@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
+using static System.Buffers.Binary.BinaryPrimitives;
+
 namespace System.Text.Json
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -66,7 +68,7 @@ namespace System.Text.Json
         public bool TryPushObject(int value)
         {
             if (!IsFull) {
-                _memory.Slice(topOfStackObj - 8).Span.Write<int>(value);
+                WriteMachineEndian(_memory.Slice(topOfStackObj - 8).Span, ref value);
                 topOfStackObj -= 8;
                 objectStackCount++;
                 return true;
@@ -77,7 +79,7 @@ namespace System.Text.Json
         public bool TryPushArray(int value)
         {
             if (!IsFull) {
-                _memory.Slice(topOfStackArr - 4).Span.Write<int>(value);
+                WriteMachineEndian(_memory.Slice(topOfStackArr - 4).Span, ref value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
                 return true;
@@ -88,7 +90,7 @@ namespace System.Text.Json
         public int PopObject()
         {
             objectStackCount--;
-            var value = _memory.Slice(topOfStackObj).Span.Read<int>();
+            var value = ReadMachineEndian<int>(_memory.Slice(topOfStackObj).Span);
             topOfStackObj += 8;
             return value;
         }
@@ -96,7 +98,7 @@ namespace System.Text.Json
         public int PopArray()
         {
             arrayStackCount--;
-            var value = _memory.Slice(topOfStackArr + 4).Span.Read<int>();
+            var value = ReadMachineEndian<int>(_memory.Slice(topOfStackArr + 4).Span);
             topOfStackArr += 8;
             return value;
         }
@@ -177,7 +179,7 @@ namespace System.Text.Json
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        _db.Span.Slice(FindLocation(_stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
+                        WriteMachineEndian(_db.Span.Slice(FindLocation(_stack.ObjectStackCount - 1, true)), ref numberOfRowsForMembers);
                         numberOfRowsForMembers += _stack.PopObject();
                         break;
                     case JsonTokenType.ArrayStart:
@@ -188,7 +190,7 @@ namespace System.Text.Json
                         arrayItemsCount = 0;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        _db.Span.Slice(FindLocation(_stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
+                        WriteMachineEndian(_db.Span.Slice(FindLocation(_stack.ArrayStackCount - 1, false)), ref arrayItemsCount);
                         arrayItemsCount = _stack.PopArray();
                         break;
                     case JsonTokenType.Property:
@@ -235,7 +237,7 @@ namespace System.Text.Json
 
             while (true) {
                 int rowStartOffset = rowNumber * DbRow.Size;
-                var row = _db.Slice(rowStartOffset).Span.Read<DbRow>();
+                var row = ReadMachineEndian<DbRow>(_db.Slice(rowStartOffset).Span);
 
                 int lengthOffset = rowStartOffset + 4;
                 
@@ -413,7 +415,7 @@ namespace System.Text.Json
             }
 
             var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
-            _db.Span.Slice(_dbIndex).Write(dbRow);
+            WriteMachineEndian(_db.Span.Slice(_dbIndex), ref dbRow);
             _dbIndex = newIndex;
             return true;
         }

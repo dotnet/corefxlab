@@ -11,22 +11,28 @@ We want to be able to support all of the following configurations:
 1. User data *is separate* from the priority (two physical instances).
 2. User data *contains* the priority (as one or more properties).
 3. User data *is* the priority (implements `IComparable<T>`).
-4. Rare case: priority is obtainable via some other logic (resides in an object different from the user data).
+4. Rare case: priority is obtainable via some other logic (resides in an object
+different from the user data).
 
-In this entire document, I will refer to the cases above with **(1)**, **(2)**, **(3)**, and **(4)**.
+In this entire document, I will refer to the cases above with **(1)**, **(2)**,
+**(3)**, and **(4)**.
 
 ### Ideal solution
 
 Obviously, our solution should be flexible enough to (respectively):
 
-1. Simply accept two separate instances. The user should not be forced to create a wrapper class for the two types only because of our API limitations.
-2. Accept an element that already has the priority in it, without duplication (no copying).
+1. Simply accept two separate instances. The user should not be forced to create
+a wrapper class for the two types only because of our API limitations.
+2. Accept an element that already has the priority in it, without duplication
+(no copying).
 3. Be able to use `IComparable<T>` and don't expect an additional priority.
-4. Be able to execute some additional logic that retrieves the priority for a given element.
+4. Be able to execute some additional logic that retrieves the priority for a
+given element.
 
 ### Our approach
 
-In order to be able to consume all of that, we need two types of priority queues:
+In order to be able to consume all of that, we need two types of priority
+queues:
 
 * `PriorityQueue<T>`,
 * `PriorityQueue<TElement, TPriority>`.
@@ -59,7 +65,7 @@ public class PriorityQueue<T> : IQueue<T>
 
     public IEnumerator<T> GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator();
-  
+
     public struct Enumerator : IEnumerator<T>
     {
         public T Current { get; }
@@ -120,7 +126,9 @@ var queue = new PriorityQueue<MyClass>();
 
 #### (4)
 
-Priority for `MyClass` is obtainable from some other objects, for example a dictionary. It is done analogically to **(2)**, simply by some custom logic in the comparer.
+Priority for `MyClass` is obtainable from some other objects, for example a
+dictionary. It is done analogically to **(2)**, simply by some custom logic in
+the comparer.
 
 ## `PriorityQueue<TElement, TPriority>`
 
@@ -161,7 +169,7 @@ public class PriorityQueue<TElement, TPriority> :
 
     public IEnumerable<TElement> Elements { get; }
     public IEnumerable<TPriority> Priorities { get; }
-      
+
     public struct Enumerator : IEnumerator<(TElement element, TPriority priority)>
     {
         public (TElement element, TPriority priority) Current { get; }
@@ -202,7 +210,8 @@ To both priority queues:
 
 ## `IQueue<T>`
 
-With the design above, we can address some voices regarding the introduction of `IQueue<T>`:
+With the design above, we can address some voices regarding the introduction of
+`IQueue<T>`:
 
 ```csharp
 public interface IQueue<T> :
@@ -234,8 +243,13 @@ public interface IQueue<T> :
 ## Open questions
 
 1. Do we really need `IQueue<T>`?
-2. In priority queues, we have `Peek`, and `TryPeek`. There is `Dequeue` and `TryDequeue`. Should there also be `Remove` and `TryRemove` following the same pattern or only `bool Remove(T)` (as it is now)?
-3. Do we want to be able to remove and update priorities of elements in O(log n) instead of O(n)? Also, to be able to do conduct such operations on unique nodes (instead of *whichever is found first*)? This would require us to use some sort of a handle:
+2. In priority queues, we have `Peek`, and `TryPeek`. There is `Dequeue` and
+`TryDequeue`. Should there also be `Remove` and `TryRemove` following the same
+pattern or only `bool Remove(T)` (as it is now)?
+3. Do we want to be able to remove and update priorities of elements in O(log n)
+instead of O(n)? Also, to be able to do conduct such operations on unique nodes
+(instead of *whichever is found first*)? This would require us to use some sort
+of a handle:
 
 ```csharp
 void Enqueue(TElement element, TPriority priority, out object handle);
@@ -245,8 +259,23 @@ void Update(object handle, TPriority priority);
 void Remove(object handle);
 ```
 
-4. Do we want to provide an interface for priority queues in the future? If we release two `PriorityQueue` classes, it may be hard to create an interface for them.
-5. If we don't want to add the concept of handles in our priority queues, we are basically locking our solution on less efficient and less correct support for updating / removing arbitrary elements from the collection (problem in Java). It is additionally more problematic if we don't add a proper interface. A solution could be to add a proper support for the heaps family (`IHeap` + possibility of various implementations) in `System.Collections.Specialized`.
-   * Developers could write their third-party solutions based on a single, standardized interface. Their code can depend on an interface rather than an implementation (`PriorityQueue<T>` or `PriorityQueue<T, U>` — which to choose as an argument?).
-   * If such a functionality is added to `CoreFXExtensions`, there would be no common ground for third-party libraries.
-   * Decision where this would eventually land (`CoreFX` or not) directly impacts whether missing features in our support for priority queues are an issue or not. If we add heaps to `System.Collections.Specialized`, priority queues can be lacking more power and enhanceability. If we don't, there is an issue.
+4. Do we want to provide an interface for priority queues in the future? If we
+release two `PriorityQueue` classes, it may be hard to create an interface for
+them.
+5. If we don't want to add the concept of handles in our priority queues, we are
+basically locking our solution on less efficient and less correct support for
+updating / removing arbitrary elements from the collection (problem in Java).
+It is additionally more problematic if we don't add a proper interface. A
+solution could be to add a proper support for the heaps family (`IHeap` +
+possibility of various implementations) in `System.Collections.Specialized`.
+   * Developers could write their third-party solutions based on a single,
+   standardized interface. Their code can depend on an interface rather than an
+   implementation (`PriorityQueue<T>` or `PriorityQueue<T, U>` — which to choose
+   as an argument?).
+   * If such a functionality is added to `CoreFXExtensions`, there would be no
+   common ground for third-party libraries.
+   * Decision where this would eventually land (`CoreFX` or not) directly
+   impacts whether missing features in our support for priority queues are an
+   issue or not. If we add heaps to `System.Collections.Specialized`, priority
+   queues can be lacking more power and enhanceability. If we don't, there is an
+   issue.
