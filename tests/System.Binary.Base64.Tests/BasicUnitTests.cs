@@ -31,10 +31,10 @@ namespace System.Binary.Base64.Tests
 
                 if (encodedBytes.Length % 4 == 0)
                 {
-                    Span<byte> decodedBytes = new byte[Base64.Utf8ToBytesLength(encodedBytes)];
+                    Span<byte> decodedBytes = new byte[Base64.GetMaxDecodedFromUtf8Length(encodedBytes.Length)];
                     Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(encodedBytes, decodedBytes, out consumed, out int decodedByteCount));
                     Assert.Equal(sourceBytes.Length, decodedByteCount);
-                    Assert.True(sourceBytes.SequenceEqual(decodedBytes));
+                    Assert.True(sourceBytes.SequenceEqual(decodedBytes.Slice(0, decodedByteCount)));
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace System.Binary.Base64.Tests
                 Span<byte> source = new byte[numBytes];
                 Base64TestHelper.InitalizeDecodableBytes(source, numBytes);
 
-                Span<byte> decodedBytes = new byte[Base64.Utf8ToBytesLength(source)];
+                Span<byte> decodedBytes = new byte[Base64.GetMaxDecodedFromUtf8Length(source.Length)];
                 Assert.Equal(OperationStatus.Done, 
                     Base64.DecodeFromUtf8(source, decodedBytes, out int consumed, out int decodedByteCount));
                 Assert.Equal(decodedBytes.Length, decodedByteCount);
@@ -192,7 +192,7 @@ namespace System.Binary.Base64.Tests
             for (int j = 0; j < 8; j++)
             {
                 Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
-                Span<byte> decodedBytes = new byte[Base64.Utf8ToBytesLength(source)];
+                Span<byte> decodedBytes = new byte[Base64.GetMaxDecodedFromUtf8Length(source.Length)];
 
                 for (int i = 0; i < invalidBytes.Length; i++)
                 {
@@ -214,7 +214,7 @@ namespace System.Binary.Base64.Tests
             for (int j = 0; j < 7; j++)
             {
                 Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
-                Span<byte> decodedBytes = new byte[Base64.Utf8ToBytesLength(source)];
+                Span<byte> decodedBytes = new byte[Base64.GetMaxDecodedFromUtf8Length(source.Length)];
                 source[j] = Base64TestHelper.s_encodingPad;
                 Assert.Equal(OperationStatus.InvalidData,
                     Base64.DecodeFromUtf8(source, decodedBytes, out int consumed, out int decodedByteCount));
@@ -222,7 +222,7 @@ namespace System.Binary.Base64.Tests
 
             {
                 Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
-                Span<byte> decodedBytes = new byte[Base64.Utf8ToBytesLength(source)];
+                Span<byte> decodedBytes = new byte[Base64.GetMaxDecodedFromUtf8Length(source.Length)];
                 source[6] = Base64TestHelper.s_encodingPad;
                 source[7] = Base64TestHelper.s_encodingPad;
                 Assert.Equal(OperationStatus.Done,
@@ -242,7 +242,7 @@ namespace System.Binary.Base64.Tests
             Base64TestHelper.InitalizeDecodableBytes(source);
 
             int outputSize = 240;
-            int requiredSize = Base64.Utf8ToBytesLength(source);
+            int requiredSize = Base64.GetMaxDecodedFromUtf8Length(source.Length);
 
             Span<byte> decodedBytes = new byte[outputSize];
             Assert.Equal(OperationStatus.DestinationTooSmall, 
@@ -280,7 +280,7 @@ namespace System.Binary.Base64.Tests
         public void ComputeDecodedLength()
         {
             Span<byte> sourceEmpty = Span<byte>.Empty;
-            Assert.Equal(0, Base64.Utf8ToBytesLength(sourceEmpty));
+            Assert.Equal(0, Base64.GetMaxDecodedFromUtf8Length(0));
 
             int[] input = { 4, 8, 12, 16, 20 };
             int[] expected = { 3, 6, 9, 12, 15 };
@@ -288,12 +288,7 @@ namespace System.Binary.Base64.Tests
             for (int i = 0; i < input.Length; i++)
             {
                 int sourceLength = input[i];
-                Span<byte> source = new byte[sourceLength];
-                Assert.Equal(expected[i], Base64.Utf8ToBytesLength(source));
-                source[sourceLength - 1] = Base64TestHelper.s_encodingPad;                          // single character padding
-                Assert.Equal(expected[i] - 1, Base64.Utf8ToBytesLength(source));
-                source[sourceLength - 2] = Base64TestHelper.s_encodingPad;                          // two characters padding
-                Assert.Equal(expected[i] - 2, Base64.Utf8ToBytesLength(source));
+                Assert.Equal(expected[i], Base64.GetMaxDecodedFromUtf8Length(sourceLength));
             }
 
             // int.MaxValue - (int.MaxValue % 4) => 2147483644, largest multiple of 4 less than int.MaxValue
@@ -302,12 +297,7 @@ namespace System.Binary.Base64.Tests
             {
                 int sourceLength = 2000000000;
                 int expectedLength = 1500000000;
-                Span<byte> source = new byte[sourceLength];
-                Assert.Equal(expectedLength, Base64.Utf8ToBytesLength(source));
-                source[sourceLength - 1] = Base64TestHelper.s_encodingPad;                          // single character padding
-                Assert.Equal(expectedLength - 1, Base64.Utf8ToBytesLength(source));
-                source[sourceLength - 2] = Base64TestHelper.s_encodingPad;                          // two characters padding
-                Assert.Equal(expectedLength - 2, Base64.Utf8ToBytesLength(source));
+                Assert.Equal(expectedLength, Base64.GetMaxDecodedFromUtf8Length(sourceLength));
             }
             catch (OutOfMemoryException)
             {
@@ -321,14 +311,7 @@ namespace System.Binary.Base64.Tests
             {
                 int sourceLength = lengthsNotMultipleOfFour[i];
                 Span<byte> source = new byte[sourceLength];
-                Assert.Equal(expectedOutput[i], Base64.Utf8ToBytesLength(source));
-                source[sourceLength - 1] = Base64TestHelper.s_encodingPad;
-                Assert.Equal(expectedOutput[i], Base64.Utf8ToBytesLength(source));
-                if (sourceLength > 1)
-                {
-                    source[sourceLength - 2] = Base64TestHelper.s_encodingPad;
-                    Assert.Equal(expectedOutput[i], Base64.Utf8ToBytesLength(source));
-                }
+                Assert.Equal(expectedOutput[i], Base64.GetMaxDecodedFromUtf8Length(sourceLength));
             }
         }
 
@@ -370,7 +353,7 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> inputSpan = new byte[1000];
             Base64TestHelper.InitalizeDecodableBytes(inputSpan);
-            int requiredLength = Base64.Utf8ToBytesLength(inputSpan);
+            int requiredLength = Base64.GetMaxDecodedFromUtf8Length(inputSpan.Length);
             Span<byte> expected = new byte[requiredLength];
             Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(inputSpan, expected, out int bytesConsumed, out int bytesWritten));
 

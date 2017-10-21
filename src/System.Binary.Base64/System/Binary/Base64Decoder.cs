@@ -213,29 +213,6 @@ namespace System.Binary.Base64
             return (length >> 2) * 3;
         }
 
-        public static int Utf8ToBytesLength(ReadOnlySpan<byte> utf8)
-        {
-            int srcLength = utf8.Length;
-
-            int baseLength = (srcLength >> 2) * 3;
-
-            if ((srcLength & 0x3) != 0) return baseLength;   // Length of source is not a multiple of 4, assume more bytes will follow
-
-            // Only check for padding if source is multiple of 4 and we know we are at the end of the input.
-            if (srcLength > 1 && utf8[srcLength - 2] == s_encodingPad)
-            {
-                return baseLength - 2;
-            }
-            else if (srcLength > 0 && utf8[srcLength - 1] == s_encodingPad)
-            {
-                return baseLength - 1;
-            }
-            else
-            {
-                return baseLength;
-            }
-        }
-
         sealed class FromBase64Utf8 : BufferDecoder, IBufferTransformation
         {
             public override OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
