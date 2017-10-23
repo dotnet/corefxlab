@@ -29,7 +29,6 @@ namespace System.Buffers
 
         public void WriteBytes<T>(T value, IBufferTransformation transformation = null) where T : IWritable
         {
-            var start = Index;
             int written;
             while (!value.TryWrite(Free, out written, default(ParsedFormat)))
             {
@@ -38,7 +37,7 @@ namespace System.Buffers
 
             if (transformation != null)
             {
-                var status = transformation.Transform(Buffer.Slice(start), written, out written);
+                var status = transformation.Transform(Buffer.Slice(Index), written, out written);
                 if (status == OperationStatus.Done)
                 {
                     _written += written;
@@ -54,7 +53,6 @@ namespace System.Buffers
 
         public void WriteText<T>(T value, IBufferTransformation transformation = null) where T : IBufferFormattable
         {
-            var start = Index;
             int written;
             while (!value.TryFormat(Free, out written, default(ParsedFormat), _symbols))
             {
@@ -63,7 +61,7 @@ namespace System.Buffers
 
             if (transformation != null)
             {
-                var status = transformation.Transform(Buffer.Slice(start), written, out written);
+                var status = transformation.Transform(Buffer.Slice(Index), written, out written);
                 if (status == OperationStatus.Done)
                 {
                     _written += written;
@@ -111,7 +109,6 @@ namespace System.Buffers
 
         public void Write(string text, IBufferTransformation transformation = null)
         {
-            int start = Index;
             int encoded;
             while (true)
             {
@@ -124,10 +121,10 @@ namespace System.Buffers
 
             if (transformation != null)
             {
-                var status = transformation.Transform(Buffer.Slice(start), encoded, out int transformed);
+                var status = transformation.Transform(Buffer.Slice(Index), encoded, out int transformed);
                 if (status == OperationStatus.Done)
                 {
-                    _written += transformed - encoded; // as this was an in-place transform;
+                    _written += transformed;
                     return;
                 }
 
@@ -135,7 +132,7 @@ namespace System.Buffers
 
                 // if OperationStatus.DestinationTooSmall
                 Resize();
-                WriteLine(text, transformation);
+                Write(text, transformation);
             }
         }
 
@@ -163,18 +160,14 @@ namespace System.Buffers
 
         public void WriteBytes(ReadOnlySpan<byte> value)
         {
-            if (value.Length == 0) return;
-            while (Free.Length < value.Length) Resize();
-            value.CopyTo(Free);
-            _written += value.Length;
+            while (!value.TryCopyTo(Free)) Resize();
+            _written += value.Length; 
         }
 
         public void WriteBytes(ReadOnlyMemory<byte> value)
         {
-            if (value.Length == 0) return;
-            while (Free.Length < value.Length) Resize();
-            value.Span.CopyTo(Free);
-            _written += value.Length;
+            while (!value.Span.TryCopyTo(Free)) Resize();
+            _written += value.Length; 
         }
 
         public Span<byte> Free => _buffer.Slice(_written);
