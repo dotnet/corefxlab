@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\tools\common.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp2.0;net45</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TensorSamples.native\TensorSamples.native.vcxproj">
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\System.Numerics.Tensors\System.Numerics.Tensors.csproj" />
+  </ItemGroup>
+
+  <Target Name="IncludeNativeInReferences" BeforeTargets="GenerateBuildDependencyFile">
+    <!-- Workaround to make GenerateBuildDependencyFile happy with the project reference to native vcxproj -->
+    <ItemGroup>
+      <ReferencePath Include="@(Content)" Condition="'%(FileName)' == 'TensorSamples.native'" />
+    </ItemGroup>
+  </Target>
+  
+</Project>

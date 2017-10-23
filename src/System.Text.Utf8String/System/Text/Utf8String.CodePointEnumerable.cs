@@ -4,18 +4,37 @@
 
 namespace System.Text.Utf8
 {
-    partial struct Utf8String
+    partial class Utf8String
     {
-        public ref struct CodePointEnumerable 
+        public ref struct CodePointEnumerable
         {
-            private ReadOnlySpan<byte> _buffer;
+            private byte[] _buffer;
 
             public CodePointEnumerable(byte[] bytes, int index, int length)
             {
-                _buffer = new ReadOnlySpan<byte>(bytes, index, length);
+                if(bytes == null)
+                {
+                    throw new ArgumentNullException(nameof(bytes));
+                }
+
+                if (index < 0 || index > length || index > bytes.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                if (length > bytes.Length - index)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(length));
+                }
+
+                _buffer = new byte[length - index];
+                for (int i = index; i < _buffer.Length; i++)
+                {
+                    _buffer[i] = bytes[index + i];
+                }
             }
 
-            public unsafe CodePointEnumerable(ReadOnlySpan<byte> buffer)
+            public unsafe CodePointEnumerable(byte[] buffer)
             {
                 _buffer = buffer;
             }

@@ -12,29 +12,45 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public ref partial struct Utf8String
+    public partial class Utf8String
     {
-        private readonly ReadOnlySpan<byte> _buffer;
+        private readonly byte[] _buffer;
 
         private const int StringNotFound = -1;
 
-        static Utf8String s_empty => default;
+        static Utf8String s_empty = new Utf8String(string.Empty);
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
         public Utf8String(ReadOnlySpan<byte> buffer)
         {
-            _buffer = buffer;
+            _buffer = buffer.ToArray();
         }
 
         public Utf8String(byte[] utf8bytes)
         {
-            _buffer = new ReadOnlySpan<byte>(utf8bytes);
+            _buffer = utf8bytes;
         }
 
         public Utf8String(byte[] utf8bytes, int index, int length)
         {
-            _buffer = new ReadOnlySpan<byte>(utf8bytes, index, length);
+            if(utf8bytes == null)
+            {
+                throw new ArgumentNullException(nameof(utf8bytes));
+            }
+
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (length > utf8bytes.Length - index || index < 0 || index > utf8bytes.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            // Length checking
+            _buffer = new Span<byte>(utf8bytes, index, length).ToArray();
         }
 
         public Utf8String(string s)
@@ -46,12 +62,17 @@ namespace System.Text.Utf8
 
             if (s == string.Empty)
             {
-                _buffer = ReadOnlySpan<byte>.Empty;
+                _buffer = ReadOnlySpan<byte>.Empty.ToArray();
             }
             else
             {
-                _buffer = new ReadOnlySpan<byte>(GetUtf8BytesFromString(s));
+                _buffer = Encoding.UTF8.GetBytes(s);
             }
+        }
+
+        public Utf8String(Utf8Span utf8Span)
+        {
+            _buffer = utf8Span.Bytes.ToArray();
         }
 
         /// <summary>
@@ -79,13 +100,7 @@ namespace System.Text.Utf8
         /// <summary>
         /// Returns length of the string in UTF-8 code units (bytes)
         /// </summary>
-        public int Length
-        {
-            get
-            {
-                return _buffer.Length;
-            }
-        }
+        public int Length => _buffer.Length;
 
         public Enumerator GetEnumerator()
         {
@@ -105,8 +120,12 @@ namespace System.Text.Utf8
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                // there is no need to check the boundaries -> Span is going to do this on it's own
-                return (byte)_buffer[i];
+                // Check bounds
+                if (i < 0 || i >= _buffer.Length)
+                {
+                    throw new ArgumentOutOfRangeException("index");
+                }
+                return _buffer[i];
             }
         }
 
@@ -150,7 +169,7 @@ namespace System.Text.Utf8
 
         public bool Equals(Utf8String other)
         {
-            return _buffer.SequenceEqual(other._buffer);
+            return Bytes.SequenceEqual(other.Bytes);
         }
 
         public bool Equals(string other)
@@ -251,18 +270,13 @@ namespace System.Text.Utf8
                 return Empty;
             }
 
-            if (length == Length)
-            {
-                return this;
-            }
-
-            if (index + length > Length)
+            if (index > Length - length)
             {
                 // TODO: Should this be index or length?
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            return new Utf8String(_buffer.Slice(index, length));
+            return new Utf8String(_buffer, index, length);
         }
 
         // TODO: Naive algorithm, reimplement faster
@@ -571,7 +585,7 @@ namespace System.Text.Utf8
 
         public bool StartsWith(Utf8String value)
         {
-            if(value.Length > this.Length)
+            if (value.Length > this.Length)
             {
                 return false;
             }
@@ -662,7 +676,7 @@ namespace System.Text.Utf8
 
             CodePointEnumerator it = GetCodePointEnumerator();
             CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
-            
+
             while (it.MoveNext())
             {
                 bool found = false;
@@ -764,7 +778,7 @@ namespace System.Text.Utf8
         // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
-            return _buffer.ToArray();
+            return Bytes.ToArray();
         }
 
         public byte[] CopyCodeUnits()
@@ -772,9 +786,5 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public static bool IsWhiteSpace(byte codePoint)
-        {
-            return codePoint == ' ' || codePoint == '\n' || codePoint == '\r' || codePoint == '\t';
-        }
     }
 }

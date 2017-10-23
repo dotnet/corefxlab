@@ -8,7 +8,7 @@ namespace System.Numerics
 {
     /// <summary>
     /// Represents a tensor using compressed sparse format
-    /// For a two dimensional tensor this is referred to as compressed sparse row (CSR), compressed sparse column (CSR)
+    /// For a two dimensional tensor this is referred to as compressed sparse row (CSR, CRS, Yale), compressed sparse column (CSC, CCS)
     /// 
     /// In this format, data that is in the same value for the compressed dimension has locality
     /// 
@@ -31,10 +31,20 @@ namespace System.Numerics
 
         private const int defaultCapacity = 64;
 
-
+        /// <summary>
+        /// Constructs a new CompressedSparseTensor of the specifed dimensions and stride ordering.
+        /// </summary>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(ReadOnlySpan<int> dimensions, bool reverseStride = false) : this(dimensions, defaultCapacity, reverseStride)
         { }
 
+        /// <summary>
+        /// Constructs a new CompressedSparseTensor of the specifed dimensions, initial capacity, and stride ordering.
+        /// </summary>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
+        /// <param name="capacity">The number of non-zero values this tensor can store without resizing.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(ReadOnlySpan<int> dimensions, int capacity, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             nonZeroCount = 0;
@@ -47,6 +57,16 @@ namespace System.Numerics
             indices = new int[capacity];
         }
 
+        /// <summary>
+        /// Constructs a new CompressedSparseTensor of the specifed dimensions, wrapping existing backing memory for the contents.
+        /// Growing this CompressedSparseTensor will re-allocate the backing memory.
+        /// </summary>
+        /// <param name="values">Memory storing non-zero values to construct this tensor with.</param>
+        /// <param name="compressedCounts">Memory storing the counts of non-zero elements at each index of the compressed dimension.</param>
+        /// <param name="indices">Memory storing the linearized index (excluding the compressed dimension) of non-zero elements.</param>
+        /// <param name="nonZeroCount">The number of valid entries (eg: non-zero values) in <paramref name="values"/> and <paramref name="indices"/>.</param>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         public CompressedSparseTensor(Memory<T> values, Memory<int> compressedCounts, Memory<int> indices, int nonZeroCount, ReadOnlySpan<int> dimensions, bool reverseStride = false) : base(dimensions, reverseStride)
         {
             compressedDimension = reverseStride ? Rank - 1 : 0;
@@ -104,6 +124,11 @@ namespace System.Numerics
             }
         }
 
+        /// <summary>
+        /// Obtains the value at the specified indices
+        /// </summary>
+        /// <param name="indices">A span of integers that represent the indices specifying the position of the element to get.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public override T this[ReadOnlySpan<int> indices]
         {
             get
@@ -130,6 +155,11 @@ namespace System.Numerics
             }
         }
 
+        /// <summary>
+        /// Gets the value at the specied index, where index is lineraized as a dot product between indices and strides.
+        /// </summary>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public override T GetValue(int index)
         {
             var compressedDimensionStride = strides[compressedDimension];
@@ -148,6 +178,11 @@ namespace System.Numerics
             return arithmetic.Zero;
         }
 
+        /// <summary>
+        /// Sets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
+        /// </summary>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <param name="value">The new value to set at the specified position in this Tensor.</param>
         public override void SetValue(int index, T value)
         {
             var compressedDimensionStride = strides[compressedDimension];
@@ -160,12 +195,29 @@ namespace System.Numerics
 
         }
 
+        /// <summary>
+        /// Gets the number of non-zero values this tensor can store without resizing.
+        /// </summary>
         public int Capacity => values.Length;
+
+        /// <summary>
+        /// Get's the number on non-zero values currently being stored in this tensor.
+        /// </summary>
         public int NonZeroCount => nonZeroCount;
 
-        // unsafe accessors
+        /// <summary>
+        /// Memory storing non-zero values.
+        /// </summary>
         public Memory<T> Values => values;
+
+        /// <summary>
+        /// Memory storing the counts of non-zero elements at each index of the compressed dimension.
+        /// </summary>
         public Memory<int> CompressedCounts => compressedCounts;
+
+        /// <summary>
+        /// Memory storing the linearized index (excluding the compressed dimension) of non-zero elements.
+        /// </summary>
         public Memory<int> Indices => indices;
 
         private void EnsureCapacity(int min, int allocateIndex = -1)
@@ -333,17 +385,31 @@ namespace System.Numerics
             return false;
         }
 
-
+        /// <summary>
+        /// Creates a shallow copy of this tensor, with new backing storage.
+        /// </summary>
+        /// <returns>A shallow copy of this tensor.</returns>
         public override Tensor<T> Clone()
         {
             return new CompressedSparseTensor<T>(values.ToArray(), compressedCounts.ToArray(), indices.ToArray(), nonZeroCount, dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
+        /// </summary>
+        /// <typeparam name="TResult">Type contained in the returned Tensor.</typeparam>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
+        /// <returns>A new tensor with the same layout as this tensor but different type and dimensions.</returns>
         public override Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions)
         {
             return new CompressedSparseTensor<TResult>(dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Reshapes the current tensor to new dimensions.  Unlike other Tensor implementations, CompressedSparseTensor<T> must allocate new backing storage to represent a reshaped Tensor.
+        /// </summary>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the CompressedSparseTensor to create.</param>
+        /// <returns>A new tensor that reinterprets the content of this tensor to new dimensions (assuming the same linear index for each element).</returns>
         public override Tensor<T> Reshape(ReadOnlySpan<int> dimensions)
         {
             // reshape currently has shallow semantics which are not compatible with the backing storage for CompressedSparseTensor
@@ -380,6 +446,10 @@ namespace System.Numerics
             return new CompressedSparseTensor<T>(newValues, newCompressedCounts, newIndices, nonZeroCount, dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Creates a copy of this tensor as a DenseTensor&lt;T&gt;.
+        /// </summary>
+        /// <returns>A copy of this tensor as a DenseTensor&lt;T&gt;</returns>
         public override DenseTensor<T> ToDenseTensor()
         {
             var denseTensor = new DenseTensor<T>(Dimensions, reverseStride: IsReversedStride);
@@ -405,6 +475,10 @@ namespace System.Numerics
             return denseTensor;
         }
 
+        /// <summary>
+        /// Creates a copy of this tensor as a new CompressedSparseTensor<T> eliminating any unused space in the backing storage.
+        /// </summary>
+        /// <returns>A copy of this tensor as a CompressedSparseTensor&lt;T&gt;.</returns>
         public override CompressedSparseTensor<T> ToCompressedSparseTensor()
         {
             // Create a copy of the backing storage, eliminating any unused space.
@@ -414,6 +488,10 @@ namespace System.Numerics
             return new CompressedSparseTensor<T>(newValues, compressedCounts.ToArray(), newIndicies, nonZeroCount, dimensions, IsReversedStride);
         }
 
+        /// <summary>
+        /// Creates a copy of this tensor as a SparseTensor<T>. 
+        /// </summary>
+        /// <returns>A copy of this tensor as a SparseTensor&lt;T&gt;.</returns>
         public override SparseTensor<T> ToSparseTensor()
         {
             var sparseTensor = new SparseTensor<T>(dimensions, capacity: NonZeroCount, reverseStride: IsReversedStride);

@@ -232,11 +232,11 @@ Frequency=3328121 Hz, Resolution=300.4698 ns, Timer=TSC
 
 
 ```
-         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
---------------- |----------- |---------- |------- |-------------- |------- |---------- |
-      DotNet461 | 53.0820 ns | 0.1801 ns |   0.65 |          0.00 |      - |       0 B |
- DotNet461_Utf8 | 81.3866 ns | 0.2131 ns |   1.00 |          0.00 | 0.0015 |      20 B |
-     Corefxlabs |  7.2585 ns | 0.1338 ns |   0.09 |          0.00 |      - |       0 B |
+|         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
+|--------------- |----------- |---------- |------- |-------------- |------- |---------- |
+|      DotNet461 | 53.0820 ns | 0.1801 ns |   0.65 |          0.00 |      - |       0 B |
+| DotNet461_Utf8 | 81.3866 ns | 0.2131 ns |   1.00 |          0.00 | 0.0015 |      20 B |
+|     Corefxlabs |  7.2585 ns | 0.1338 ns |   0.09 |          0.00 |      - |       0 B |
 
 64-bit
 ``` ini
@@ -249,11 +249,11 @@ Frequency=3328121 Hz, Resolution=300.4698 ns, Timer=TSC
 
 
 ```
-         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
---------------- |----------- |---------- |------- |-------------- |------- |---------- |
-      DotNet461 | 48.3371 ns | 0.2238 ns |   0.60 |          0.00 |      - |       0 B |
- DotNet461_Utf8 | 81.1080 ns | 0.4500 ns |   1.00 |          0.00 | 0.0043 |      32 B |
-     Corefxlabs | 17.9962 ns | 0.0451 ns |   0.22 |          0.00 |      - |       0 B |
+|         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
+|--------------- |----------- |---------- |------- |-------------- |------- |---------- |
+|      DotNet461 | 48.3371 ns | 0.2238 ns |   0.60 |          0.00 |      - |       0 B |
+| DotNet461_Utf8 | 81.1080 ns | 0.4500 ns |   1.00 |          0.00 | 0.0043 |      32 B |
+|     Corefxlabs | 17.9962 ns | 0.0451 ns |   0.22 |          0.00 |      - |       0 B |
 
 And these should get much better once we start using the [fast span](span.md#designrepresentation).
 

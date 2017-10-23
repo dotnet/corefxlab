@@ -4,7 +4,6 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +11,7 @@ namespace System.Binary.Base64
 {
     public static partial class Base64
     {
-        public static readonly BufferEncoder BytesToUtf8Encoder = new ToBase64Utf8();
+        public static readonly Utf8Encoder BytesToUtf8Encoder = new Utf8Encoder();
 
         private const int MaxLineLength = 76;
 
@@ -201,15 +200,19 @@ namespace System.Binary.Base64
             return OperationStatus.DestinationTooSmall;
         }
 
-        sealed class ToBase64Utf8 : BufferEncoder, IBufferTransformation
+        public sealed class Utf8Encoder : IBufferOperation, IBufferTransformation
         {
-            public override OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
-            public override OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
+            public OperationStatus EncodeInPlace(Span<byte> buffer, int dataLength, out int written)
                 => EncodeToUtf8InPlace(buffer, dataLength, out written);
 
-            public override bool IsEncodeInPlaceSupported => true;
+            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+                => Encode(input, output, out consumed, out written);
+
+            OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
+                => EncodeInPlace(buffer, dataLength, out written);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

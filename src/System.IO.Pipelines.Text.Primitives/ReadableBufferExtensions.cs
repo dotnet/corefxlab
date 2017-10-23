@@ -189,7 +189,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// Decodes the utf8 encoded bytes in the <see cref="ReadableBuffer"/> into a <see cref="string"/>
         /// </summary>
         /// <param name="buffer">The buffer to decode</param>
-        public static string GetUtf8String(this ReadableBuffer buffer)
+        public static string GetUtf8Span(this ReadableBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -218,7 +218,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 textSpan = new ReadOnlySpan<byte>(buffer.ToArray());
             }
 
-            return new Utf8String(textSpan).ToString();
+            return new Utf8Span(textSpan).ToString();
         }
 
         /// <summary>

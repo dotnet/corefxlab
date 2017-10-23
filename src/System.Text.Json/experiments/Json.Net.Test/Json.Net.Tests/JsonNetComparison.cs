@@ -108,7 +108,7 @@ namespace Json.Net.Tests
 
         private static void ReaderTestSystemTextJson(string str, bool output)
         {
-            var utf8Str = new Utf8String(str);
+            var utf8Str = new Utf8Span(str);
 
             Timer.Restart();
             for (var i = 0; i < NumberOfIterations; i++)
@@ -118,7 +118,7 @@ namespace Json.Net.Tests
             if (output) Console.WriteLine(Timer.ElapsedTicks);
         }
 
-        private static void JsonReaderHelper(Utf8String str, bool output)
+        private static void JsonReaderHelper(Utf8Span str, bool output)
         {
             var reader = new JsonReader(str);
             while (reader.Read())
@@ -207,44 +207,44 @@ namespace Json.Net.Tests
             for (int i = 0; i < numElements; i++)
             {
                 var xElement = parseObject[i];
-                var id = (Utf8String)xElement["_id"];
+                var id = (Utf8Span)xElement["_id"];
                 var index = (int)xElement["index"];
-                var guid = (Utf8String)xElement["guid"];
+                var guid = (Utf8Span)xElement["guid"];
                 var isActive = (bool)xElement["isActive"];
-                var balance = (Utf8String)xElement["balance"];
-                var picture = (Utf8String)xElement["picture"];
+                var balance = (Utf8Span)xElement["balance"];
+                var picture = (Utf8Span)xElement["picture"];
                 var age = (int)xElement["age"];
-                var eyeColor = (Utf8String)xElement["eyeColor"];
-                var name = (Utf8String)xElement["name"];
-                var gender = (Utf8String)xElement["gender"];
-                var company = (Utf8String)xElement["company"];
-                var email = (Utf8String)xElement["email"];
-                var phone = (Utf8String)xElement["phone"];
-                var address = (Utf8String)xElement["address"];
-                var about = (Utf8String)xElement["about"];
-                var registered = (Utf8String)xElement["registered"];
+                var eyeColor = (Utf8Span)xElement["eyeColor"];
+                var name = (Utf8Span)xElement["name"];
+                var gender = (Utf8Span)xElement["gender"];
+                var company = (Utf8Span)xElement["company"];
+                var email = (Utf8Span)xElement["email"];
+                var phone = (Utf8Span)xElement["phone"];
+                var address = (Utf8Span)xElement["address"];
+                var about = (Utf8Span)xElement["about"];
+                var registered = (Utf8Span)xElement["registered"];
                 var latitude = (double)xElement["latitude"];
                 var longitude = (double)xElement["longitude"];
                 var tags = xElement["tags"];
-                var tags1 = (Utf8String)tags[0];
-                var tags2 = (Utf8String)tags[1];
-                var tags3 = (Utf8String)tags[2];
-                var tags4 = (Utf8String)tags[3];
-                var tags5 = (Utf8String)tags[4];
-                var tags6 = (Utf8String)tags[5];
-                var tags7 = (Utf8String)tags[6];
+                var tags1 = (Utf8Span)tags[0];
+                var tags2 = (Utf8Span)tags[1];
+                var tags3 = (Utf8Span)tags[2];
+                var tags4 = (Utf8Span)tags[3];
+                var tags5 = (Utf8Span)tags[4];
+                var tags6 = (Utf8Span)tags[5];
+                var tags7 = (Utf8Span)tags[6];
                 var friends = xElement["friends"];
                 var friend1 = friends[0];
                 var friend2 = friends[1];
                 var friend3 = friends[2];
                 var id1 = (int)friend1["id"];
-                var friendName1 = (Utf8String)friend1["name"];
+                var friendName1 = (Utf8Span)friend1["name"];
                 var id2 = (int)friend2["id"];
-                var friendName2 = (Utf8String)friend2["name"];
+                var friendName2 = (Utf8Span)friend2["name"];
                 var id3 = (int)friend3["id"];
-                var friendName3 = (Utf8String)friend3["name"];
-                var greeting = (Utf8String)xElement["greeting"];
-                var favoriteFruit = (Utf8String)xElement["favoriteFruit"];
+                var friendName3 = (Utf8Span)friend3["name"];
+                var greeting = (Utf8Span)xElement["greeting"];
+                var favoriteFruit = (Utf8Span)xElement["favoriteFruit"];
             }
             if (timeResults) Console.WriteLine("Access: " + Timer.ElapsedTicks);
         }
@@ -335,11 +335,11 @@ namespace Json.Net.Tests
             if (timeResults) Console.WriteLine(Timer.ElapsedTicks);
             if (timeResults) Timer.Restart();
 
-            var emailString = (Utf8String)email;
+            var emailString = (Utf8Span)email;
             if (timeResults) Timer.Restart();
             for (int i = 0; i < iter; i++)
             {
-                emailString = (Utf8String)email;
+                emailString = (Utf8Span)email;
             }
             if (timeResults) Console.WriteLine(Timer.ElapsedTicks);
             if (timeResults) Timer.Restart();
@@ -353,11 +353,11 @@ namespace Json.Net.Tests
             if (timeResults) Console.WriteLine(Timer.ElapsedTicks);
             if (timeResults) Timer.Restart();
 
-            var aboutString = (Utf8String)about;
+            var aboutString = (Utf8Span)about;
             if (timeResults) Timer.Restart();
             for (int i = 0; i < iter; i++)
             {
-                aboutString = (Utf8String)about;
+                aboutString = (Utf8Span)about;
             }
             if (timeResults) Console.WriteLine(Timer.ElapsedTicks);
             if (timeResults) Timer.Restart();

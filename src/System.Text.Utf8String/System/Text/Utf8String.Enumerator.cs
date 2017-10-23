@@ -4,15 +4,15 @@
 
 namespace System.Text.Utf8
 {
-    partial struct Utf8String
+    partial class Utf8String
     {
         public ref struct Enumerator
         {
-            private readonly ReadOnlySpan<byte> _buffer;
+            private readonly byte[] _buffer;
             private readonly int _length;
             private int _index;
 
-            internal Enumerator(ReadOnlySpan<byte> buffer)
+            internal Enumerator(byte[] buffer)
             {
                 _buffer = buffer;
                 _length = buffer.Length;

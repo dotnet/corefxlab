@@ -4,18 +4,19 @@
 
 namespace System.Text.Utf8
 {
-    partial struct Utf8String
+    partial class Utf8String
     {
         public ref struct CodePointEnumerator
         {
-            private ReadOnlySpan<byte> _buffer;
+            private byte[] _buffer;
             private int _index;
             private int _currentLenCache;
+            // ResetIndex comes before the start of a span's first character
             private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointEnumerator(ReadOnlySpan<byte> buffer) : this()
+            public unsafe CodePointEnumerator(byte[] buffer) : this()
             {
-                _buffer = buffer;
+                _buffer = new ReadOnlySpan<byte>(buffer).ToArray();
 
                 Reset();
             }
@@ -48,8 +49,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    uint codePoint;
-                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out codePoint, out _currentLenCache);
+                    bool succeeded = Utf8Helper.TryDecodeCodePoint(_buffer, _index, out uint codePoint, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {

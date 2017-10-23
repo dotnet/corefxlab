@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Tests
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
-                    string s = ReadableBufferExtensions.GetUtf8String(input);
+                    string s = ReadableBufferExtensions.GetUtf8Span(input);
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
                     offset += input.Length;
@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Tests
                 var result = await pipe.Reader.ReadAsync();
                 var inputBuffer = result.Buffer;
 
-                Assert.Equal(valueAsString, inputBuffer.GetUtf8String());
+                Assert.Equal(valueAsString, inputBuffer.GetUtf8Span());
             }
         }
 

@@ -75,7 +75,7 @@ namespace System.IO.Pipelines.Tests
                             // wait for the end of the data before processing anything
                             if (result.IsCompleted)
                             {
-                                reply = input.GetUtf8String();
+                                reply = input.GetUtf8Span();
                                 client.Input.Advance(input.End);
                                 break;
                             }

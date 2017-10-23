@@ -8,7 +8,7 @@ namespace System.Buffers
     {
         OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written);
     }
-    public interface IBufferTransformation
+    public interface IBufferTransformation : IBufferOperation
     {
         OperationStatus Transform(Span<byte> buffer, int dataLength, out int written);
     }

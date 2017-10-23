@@ -197,14 +197,14 @@ namespace System.Text.Formatting
             return formatter.TryAppend(value, formatter.SymbolTable);
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value) where TFormatter : ITextOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8Span value) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value) where TFormatter : ITextOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8Span value) where TFormatter : ITextOutput
         {
             int bytesWritten;
             int consumed;
