@@ -17,8 +17,9 @@ namespace System.Numerics
         /// <summary>
         /// Creates an identity tensor of the specified size.  An identity tensor is a two dimensional tensor with 1s in the diagonal.
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="size">Width and height of the identity tensor to create.</param>
+        /// <returns>a <paramref name="size"/> by <paramref name="size"/> with 1s along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateIdentity<T>(int size)
         {
             return CreateIdentity(size, false, TensorArithmetic<T>.Instance.One);
@@ -27,10 +28,10 @@ namespace System.Numerics
         /// <summary>
         /// Creates an identity tensor of the specified size and layout (row vs column major).  An identity tensor is a two dimensional tensor with 1s in the diagonal.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="size"></param>
-        /// <param name="columMajor"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="size">Width and height of the identity tensor to create.</param>
+        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (farthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (farthest apart): column-major.</param>
+        /// <returns>a <paramref name="size"/> by <paramref name="size"/> with 1s along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor)
         {
             return CreateIdentity(size, columMajor, TensorArithmetic<T>.Instance.One);
@@ -39,9 +40,11 @@ namespace System.Numerics
         /// <summary>
         /// Creates an identity tensor of the specified size and layout (row vs column major) using the specified one value.  An identity tensor is a two dimensional tensor with 1s in the diagonal.  This may be used in case T is a type that doesn't have a known 1 value.
         /// </summary>
-        /// <param name="size"></param>
-        /// <param name="oneValue"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="size">Width and height of the identity tensor to create.</param>
+        /// <param name="columMajor">>False to indicate that the first dimension is most minor (closest) and the last dimension is most major (farthest): row-major.  True to indicate that the last dimension is most minor (closest together) and the first dimension is most major (farthest apart): column-major.</param>
+        /// <param name="oneValue">Value of <typeparamref name="T"/> that is used along the diagonal.</param>
+        /// <returns>a <paramref name="size"/> by <paramref name="size"/> with 1s along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateIdentity<T>(int size, bool columMajor, T oneValue)
         {
             Span<int> dimensions = stackalloc int[2];
@@ -58,11 +61,11 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Creates a n+1-dimension tensor using the specified n-dimension diagonal.  Values not on the diagonal will be filled with zeros.
+        /// Creates a n+1-rank tensor using the specified n-rank diagonal.  Values not on the diagonal will be filled with zeros.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="diagonal"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="diagonal">Tensor representing the diagonal to build the new tensor from.</param>
+        /// <returns>A new tensor of the same layout and order as <paramref name="diagonal"/> of one higher rank, with the values of <paramref name="diagonal"/> along the diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal)
         {
             return CreateFromDiagonal(diagonal, 0);
@@ -71,10 +74,10 @@ namespace System.Numerics
         /// <summary>
         /// Creates a n+1-dimension tensor using the specified n-dimension diagonal at the specified offset from the center.  Values not on the diagonal will be filled with zeros.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="diagonal"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="diagonal">Tensor representing the diagonal to build the new tensor from.</param>
+        /// <param name="offset">Offset of diagonal to set in returned tensor.  0 for the main diagonal, less than zero for diagonals below, greater than zero from diagonals above.</param>
+        /// <returns>A new tensor of the same layout and order as <paramref name="diagonal"/> of one higher rank, with the values of <paramref name="diagonal"/> along the specified diagonal and zeros elsewhere.</returns>
         public static Tensor<T> CreateFromDiagonal<T>(Tensor<T> diagonal, int offset)
         {
             if (diagonal.Rank < 1)
@@ -349,7 +352,7 @@ namespace System.Numerics
         /// <summary>
         /// Initialize a 1-dimensional tensor of the specified length
         /// </summary>
-        /// <param name="length"></param>
+        /// <param name="length">Size of the 1-dimensional tensor</param>
         protected Tensor(int length)
         {
             dimensions = new[] { length };
@@ -361,8 +364,8 @@ namespace System.Numerics
         /// <summary>
         /// Initialize an n-dimensional tensor with the specified dimensions and layout.  ReverseStride=true gives a stride of 1-element witdth to the first dimension (0).  ReverseStride=false gives a stride of 1-element width to the last dimension (n-1).
         /// </summary>
-        /// <param name="dimensions"></param>
-        /// <param name="reverseStride"></param>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the Tensor to create.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         protected Tensor(ReadOnlySpan<int> dimensions, bool reverseStride)
         {
             if (dimensions.Length == 0)
@@ -391,8 +394,8 @@ namespace System.Numerics
         /// <summary>
         /// Initializes tensor with same dimensions as array, content of array is ignored.  ReverseStride=true gives a stride of 1-element witdth to the first dimension (0).  ReverseStride=false gives a stride of 1-element width to the last dimension (n-1).
         /// </summary>
-        /// <param name="fromArray"></param>
-        /// <param name="reverseStride"></param>
+        /// <param name="fromArray">Array from which to derive dimensions.</param>
+        /// <param name="reverseStride">False (default) to indicate that the first dimension is most major (farthest apart) and the last dimension is most minor (closest together): akin to row-major in a rank-2 tensor.  True to indicate that the last dimension is most major (farthest apart) and the first dimension is most minor (closest together): akin to column-major in a rank-2 tensor.</param>
         protected Tensor(Array fromArray, bool reverseStride)
         {
             if (fromArray == null)
@@ -457,15 +460,15 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Creates a copy of this tensor, with new backing storage.
+        /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A shallow copy of this tensor.</returns>
         public abstract Tensor<T> Clone();
 
         /// <summary>
-        /// Creates a new Tensor with the same layout and size as this tensor with elements initialized to their default value.
+        /// Creates a new Tensor with the same layout and dimensions as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A new Tensor with the same layout and dimensions as this tensor with elements initialized to their default value.</returns>
         public virtual Tensor<T> CloneEmpty()
         {
             return CloneEmpty<T>(dimensions);
@@ -474,8 +477,8 @@ namespace System.Numerics
         /// <summary>
         /// Creates a new Tensor with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <param name="dimensions"></param>
-        /// <returns></returns>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the DenseTensor to create.</param>
+        /// <returns>A new Tensor with the same layout as this tensor and specified <paramref name="dimensions"/> with elements initialized to their default value.</returns>
         public virtual Tensor<T> CloneEmpty(ReadOnlySpan<int> dimensions)
         {
             return CloneEmpty<T>(dimensions);
@@ -484,7 +487,8 @@ namespace System.Numerics
         /// <summary>
         /// Creates a new Tensor of a different type with the same layout and size as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <returns></returns>
+        /// <typeparam name="TResult">Type contained within the new Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <returns>A new Tensor with the same layout and dimensions as this tensor with elements of <typeparamref name="TResult"/> type initialized to their default value.</returns>
         public virtual Tensor<TResult> CloneEmpty<TResult>()
         {
             return CloneEmpty<TResult>(dimensions);
@@ -493,13 +497,15 @@ namespace System.Numerics
         /// <summary>
         /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
         /// </summary>
-        /// <returns></returns>
+        /// <typeparam name="TResult">Type contained within the new Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the DenseTensor to create.</param>
+        /// <returns>A new Tensor with the same layout as this tensor of specified <paramref name="dimensions"/> with elements of <typeparamref name="TResult"/> type initialized to their default value.</returns>
         public abstract Tensor<TResult> CloneEmpty<TResult>(ReadOnlySpan<int> dimensions);
 
         /// <summary>
         /// Gets the n-1 dimension diagonal from the n dimension tensor.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An n-1 dimension tensor with the values from the main diagonal of this tensor.</returns>
         public Tensor<T> GetDiagonal()
         {
             return GetDiagonal(0);
@@ -508,8 +514,8 @@ namespace System.Numerics
         /// <summary>
         /// Gets the n-1 dimension diagonal from the n dimension tensor at the specified offset from center.
         /// </summary>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <param name="offset">Offset of diagonal to set in returned tensor.  0 for the main diagonal, less than zero for diagonals below, greater than zero from diagonals above.</param>
+        /// <returns>An n-1 dimension tensor with the values from the specified diagonal of this tensor.</returns>
         public Tensor<T> GetDiagonal(int offset)
         {
             // Get diagonal of first two dimensions for all remaining dimensions
@@ -590,7 +596,7 @@ namespace System.Numerics
         /// <summary>
         /// Gets a tensor representing the elements below and including the diagonal, with the rest of the elements zero-ed.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A tensor with the values from this tensor at and below the main diagonal and zeros elsewhere.</returns>
         public Tensor<T> GetTriangle()
         {
             return GetTriangle(0, upper: false);
@@ -599,8 +605,8 @@ namespace System.Numerics
         /// <summary>
         /// Gets a tensor representing the elements below and including the specified diagonal, with the rest of the elements zero-ed.
         /// </summary>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <param name="offset">Offset of diagonal to set in returned tensor.  0 for the main diagonal, less than zero for diagonals below, greater than zero from diagonals above.</param>
+        /// <returns>A tensor with the values from this tensor at and below the specified diagonal and zeros elsewhere.</returns>
         public Tensor<T> GetTriangle(int offset)
         {
             return GetTriangle(offset, upper: false);
@@ -609,7 +615,7 @@ namespace System.Numerics
         /// <summary>
         /// Gets a tensor representing the elements above and including the diagonal, with the rest of the elements zero-ed.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A tensor with the values from this tensor at and above the main diagonal and zeros elsewhere.</returns>
         public Tensor<T> GetUpperTriangle()
         {
             return GetTriangle(0, upper: true);
@@ -618,8 +624,8 @@ namespace System.Numerics
         /// <summary>
         /// Gets a tensor representing the elements above and including the specified diagonal, with the rest of the elements zero-ed.
         /// </summary>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <param name="offset">Offset of diagonal to set in returned tensor.  0 for the main diagonal, less than zero for diagonals below, greater than zero from diagonals above.</param>
+        /// <returns>A tensor with the values from this tensor at and above the specified diagonal and zeros elsewhere.</returns>
         public Tensor<T> GetUpperTriangle(int offset)
         {
             return GetTriangle(offset, upper: true);
@@ -732,15 +738,15 @@ namespace System.Numerics
         /// <summary>
         /// Reshapes the current tensor to new dimensions, using the same backing storage if possible.
         /// </summary>
-        /// <param name="dimensions">new dimensions</param>
-        /// <returns></returns>
+        /// <param name="dimensions">An span of integers that represent the size of each dimension of the Tensor to create.</param>
+        /// <returns>A new tensor that reinterprets this tensor with different dimensions.</returns>
         public abstract Tensor<T> Reshape(ReadOnlySpan<int> dimensions);
-        
+
         /// <summary>
         /// Obtains the value at the specified indices
         /// </summary>
-        /// <param name="indices"></param>
-        /// <returns></returns>
+        /// <param name="indices">A one-dimensional array of integers that represent the indices specifying the position of the element to get.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public virtual T this[params int[] indices]
         {
             get
@@ -759,8 +765,8 @@ namespace System.Numerics
         /// <summary>
         /// Obtains the value at the specified indices
         /// </summary>
-        /// <param name="indices"></param>
-        /// <returns></returns>
+        /// <param name="indices">A span integers that represent the indices specifying the position of the element to get.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public virtual T this[ReadOnlySpan<int> indices]
         {
             get
@@ -777,15 +783,15 @@ namespace System.Numerics
         /// <summary>
         /// Gets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <returns>The value at the specified position in this Tensor.</returns>
         public abstract T GetValue(int index);
 
         /// <summary>
         /// Sets the value at the specied index, where index is a linearized version of n-dimension indices using strides.
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
+        /// <param name="index">An integer index computed as a dot-product of indices.</param>
+        /// <param name="value">The new value to set at the specified position in this Tensor.</param>
         public abstract void SetValue(int index, T value);
 
 
