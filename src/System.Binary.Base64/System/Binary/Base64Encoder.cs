@@ -15,7 +15,7 @@ namespace System.Binary.Base64
 
         private const int MaxLineLength = 76;
 
-        public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, bool isFinalBlock = true)
+        public static OperationStatus EncodeToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, bool isFinalBlock = true)
         {
             ref byte srcBytes = ref bytes.DangerousGetPinnableReference();
             ref byte destBytes = ref utf8.DangerousGetPinnableReference();
@@ -89,35 +89,35 @@ namespace System.Binary.Base64
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int BytesToUtf8Length(int bytesLength)
+        public static int GetMaxEncodedToUtf8Length(int length)
         {
-            Debug.Assert(bytesLength >= 0);
+            Debug.Assert(length >= 0);
             checked
             {
-                return (((bytesLength + 2) / 3) * 4);
+                return (((length + 2) / 3) * 4);
             }
         }
 
-        public static int BytesToUtf8Length(int bytesLength, ParsedFormat format)
+        public static int GetMaxEncodedToUtf8Length(int length, ParsedFormat format)
         {
-            Debug.Assert(bytesLength >= 0);
+            Debug.Assert(length >= 0);
 
-            int length = BytesToUtf8Length(bytesLength);
-            if (format.IsDefault) return length;
+            int defaultLength = GetMaxEncodedToUtf8Length(length);
+            if (format.IsDefault) return defaultLength;
 
             format = ValidateFormat(format);
 
             int bytesInOneLine = (format.Precision >> 2) * 3;
-            int extra = ((bytesLength - 1) / bytesInOneLine) * 2;
+            int extra = ((length - 1) / bytesInOneLine) * 2;
             checked
             {
-                return length + extra;
+                return defaultLength + extra;
             }
         }
 
-        public static OperationStatus BytesToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
+        public static OperationStatus EncodeToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
         {
-            if (format.IsDefault) return BytesToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
+            if (format.IsDefault) return EncodeToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
 
             format = ValidateFormat(format);
 
@@ -136,7 +136,7 @@ namespace System.Binary.Base64
 
             for (int i = 0; i < numLineBreaks; i++)
             {
-                status = BytesToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
+                status = EncodeToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
                 utf8[lineLength] = (byte)'\r';
                 utf8[lineLength + 1] = (byte)'\n';
                 bytesWrittenLoop += 2;
@@ -148,7 +148,7 @@ namespace System.Binary.Base64
 
             if (isFinalBlock)
             {
-                status = BytesToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
+                status = EncodeToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
                 consumed += leftOverbytesConsumed;
                 written += leftOverbytesWritten;
                 return status;
@@ -163,9 +163,9 @@ namespace System.Binary.Base64
             utf8.Slice(0, utf8.Length - num).CopyTo(utf8.Slice(num));
         }
 
-        public static OperationStatus BytesToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
+        public static OperationStatus EncodeToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
         {
-            var encodedLength = BytesToUtf8Length(bytesLength);
+            var encodedLength = GetMaxEncodedToUtf8Length(bytesLength);
             if (buffer.Length < encodedLength) goto FalseExit;
 
             var leftover = bytesLength - bytesLength / 3 * 3; // how many bytes after packs of 3
@@ -179,7 +179,7 @@ namespace System.Binary.Base64
                 var sourceSlice = buffer.Slice(sourceIndex, leftover);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                var result = BytesToUtf8(sourceSlice, desitnationSlice, out int consumed, out int tempWritten);
+                var result = EncodeToUtf8(sourceSlice, desitnationSlice, out _, out int tempWritten);
                 Debug.Assert(result == OperationStatus.Done);
             }
 
@@ -188,7 +188,7 @@ namespace System.Binary.Base64
                 var sourceSlice = buffer.Slice(index, 3);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                var result = BytesToUtf8(sourceSlice, desitnationSlice, out int consumed, out int tempWritten);
+                var result = EncodeToUtf8(sourceSlice, desitnationSlice, out _, out int tempWritten);
                 Debug.Assert(result == OperationStatus.Done);
             }
 
@@ -203,10 +203,10 @@ namespace System.Binary.Base64
         public sealed class Utf8Encoder : IBufferOperation, IBufferTransformation
         {
             public OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => BytesToUtf8(source, destination, out bytesConsumed, out bytesWritten);
+                => EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus EncodeInPlace(Span<byte> buffer, int dataLength, out int written)
-                => BytesToUtf8InPlace(buffer, dataLength, out written);
+                => EncodeToUtf8InPlace(buffer, dataLength, out written);
 
             OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 => Encode(input, output, out consumed, out written);

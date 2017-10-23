@@ -66,7 +66,7 @@ namespace System.Azure.Authentication
                 throw new NotImplementedException("need to resize buffer");
             }
 
-            if (Base64.BytesToUtf8InPlace(output, written, out written) != OperationStatus.Done)
+            if (Base64.EncodeToUtf8InPlace(output, written, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;

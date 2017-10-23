@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
@@ -11,7 +12,7 @@ namespace System.Binary.Base64
     {
         public static readonly Utf8Decoder Utf8ToBytesDecoder = new Utf8Decoder();
 
-        public static OperationStatus Utf8ToBytes(ReadOnlySpan<byte> utf8, Span<byte> bytes, out int consumed, out int written)
+        public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> utf8, Span<byte> bytes, out int consumed, out int written)
         {
             ref byte srcBytes = ref utf8.DangerousGetPinnableReference();
             ref byte destBytes = ref bytes.DangerousGetPinnableReference();
@@ -113,7 +114,7 @@ namespace System.Binary.Base64
             return OperationStatus.InvalidData;
         }
 
-        public static OperationStatus Utf8ToBytesInPlace(Span<byte> buffer, out int consumed, out int written)
+        public static OperationStatus DecodeFromUtf8InPlace(Span<byte> buffer, out int consumed, out int written)
         {
             ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
@@ -204,36 +205,20 @@ namespace System.Binary.Base64
             return OperationStatus.InvalidData;
         }
 
-        public static int Utf8ToBytesLength(ReadOnlySpan<byte> utf8)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetMaxDecodedFromUtf8Length(int length)
         {
-            int srcLength = utf8.Length;
-
-            int baseLength = (srcLength >> 2) * 3;
-
-            if ((srcLength & 0x3) != 0) return baseLength;   // Length of source is not a multiple of 4, assume more bytes will follow
-
-            // Only check for padding if source is multiple of 4 and we know we are at the end of the input.
-            if (srcLength > 1 && utf8[srcLength - 2] == s_encodingPad)
-            {
-                return baseLength - 2;
-            }
-            else if (srcLength > 0 && utf8[srcLength - 1] == s_encodingPad)
-            {
-                return baseLength - 1;
-            }
-            else
-            {
-                return baseLength;
-            }
+            Debug.Assert(length >= 0);
+            return (length >> 2) * 3;
         }
 
         public sealed class Utf8Decoder : IBufferOperation, IBufferTransformation
         {
             public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Utf8ToBytes(source, destination, out bytesConsumed, out bytesWritten);
+                => DecodeFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus DecodeInPlace(Span<byte> buffer, int dataLength, out int written)
-                => Utf8ToBytesInPlace(buffer.Slice(0, dataLength), out var consumed, out written);
+                => DecodeFromUtf8InPlace(buffer.Slice(0, dataLength), out _, out written);
 
             OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 => Decode(input, output, out consumed, out written);

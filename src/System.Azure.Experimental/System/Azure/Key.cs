@@ -20,7 +20,7 @@ namespace System.Azure.Authentication
             }
 
             var keyBytes = new byte[64];
-            var result = Base64.Utf8ToBytes(buffer.Slice(0, written), keyBytes, out consumed, out written);
+            var result = Base64.DecodeFromUtf8(buffer.Slice(0, written), keyBytes, out consumed, out written);
             if (result != OperationStatus.Done || written != 64)
             {
                 throw new NotImplementedException("need to resize buffer");

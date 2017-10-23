@@ -104,9 +104,9 @@ namespace System.Binary.Base64.Tests
         {
             bytesConsumed = 0;
             bytesWritten = 0;
-            if (Base64.Utf8ToBytes(source1, destination, out int consumed1, out int written1) == OperationStatus.Done)
+            if (Base64.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) == OperationStatus.Done)
             {
-                Base64.Utf8ToBytes(source2, destination.Slice(written1), out int consumed2, out int written2);
+                Base64.DecodeFromUtf8(source2, destination.Slice(written1), out int consumed2, out int written2);
                 bytesConsumed = consumed2;
                 bytesWritten = written2;
             }
@@ -119,7 +119,7 @@ namespace System.Binary.Base64.Tests
             bytesConsumed = 0;
             bytesWritten = 0;
             int afterMergeSlice = 0;
-            if (Base64.Utf8ToBytes(source1, destination, out int consumed1, out int written1) != OperationStatus.Done)
+            if (Base64.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) != OperationStatus.Done)
             {
                 int leftOverBytes = source1.Length - consumed1;
                 if (leftOverBytes < 4)
@@ -131,7 +131,7 @@ namespace System.Binary.Base64.Tests
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
                     amountOfData += amountToCopy;
 
-                    Base64.Utf8ToBytes(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
+                    Base64.DecodeFromUtf8(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
                     bytesConsumed = consumed2;
                     bytesWritten = written2;
 
@@ -144,7 +144,7 @@ namespace System.Binary.Base64.Tests
             {
                 return;
             }
-            Base64.Utf8ToBytes(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
+            Base64.DecodeFromUtf8(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
             bytesConsumed += consumed3;
             bytesWritten += written3;
         }
