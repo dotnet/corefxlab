@@ -4,10 +4,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.IO.Channels
+namespace System.Threading.Channels
 {
     /// <summary>Provides internal helper methods for implementing channels.</summary>
     internal static class ChannelUtilities

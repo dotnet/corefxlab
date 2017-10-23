@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.IO.Channels.Tests
+namespace System.Threading.Channels.Tests
 {
     public class ChannelClosedExceptionTests
     {

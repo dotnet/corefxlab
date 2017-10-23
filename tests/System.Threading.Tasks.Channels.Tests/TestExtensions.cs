@@ -5,7 +5,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.IO.Channels.Tests
+namespace System.Threading.Channels.Tests
 {
     internal static class TestExtensions
     {

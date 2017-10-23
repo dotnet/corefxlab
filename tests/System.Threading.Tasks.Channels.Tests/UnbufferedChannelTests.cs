@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.IO.Channels.Tests
+namespace System.Threading.Channels.Tests
 {
     public class UnbufferedChannelTests : ChannelTestBase
     {
