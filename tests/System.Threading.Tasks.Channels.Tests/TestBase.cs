@@ -10,7 +10,7 @@ using Xunit;
 
 #pragma warning disable 0649 // unused fields there for future testing needs
 
-namespace System.IO.Channels.Tests
+namespace System.Threading.Channels.Tests
 {
     public abstract class TestBase
     {

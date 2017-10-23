@@ -2,8 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-
-namespace System.IO.Channels
+namespace System.Threading.Channels
 {
     /// <summary>
     /// Provides a base class for channels that support reading elements of type <typeparamref name="TRead"/>

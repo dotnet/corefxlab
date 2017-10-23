@@ -1,9 +1,9 @@
-# System.Threading.Tasks.Channels
+# System.Threading.Channels
 
-The System.Threading.Tasks.Channels library provides a set of synchronization data structures 
+The System.Threading.Channels library provides a set of synchronization data structures 
 for passing data between producers and consumers.  Whereas the existing System.Threading.Tasks.Dataflow 
 library is focused on pipelining and connecting together dataflow "blocks" which encapsulate both storage and 
-processing,  System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used
+processing,  System.Threading.Channels is focused purely on the storage aspect, with data structures used
 to provide the hand-offs between participants explicitly coded to use the storage. The library is designed to be 
 used with async/await in C#.
 
@@ -306,7 +306,7 @@ for that scenario, further expanding on the kinds of such buffers available and 
 consumption models.
 
 When these Channel abstract classes become part of corefx, System.Threading.Tasks.Dataflow may take a dependency on 
-System.Threading.Tasks.Channels as a lower-level set of abstractions, replacing internal implementation details with these channels.
+System.Threading.Channels as a lower-level set of abstractions, replacing internal implementation details with these channels.
 It's also possible that several of the blocks in System.Threading.Tasks.Dataflow could be modified to relate to channels in the public API,
 enabling direct integration between the libraries.  For example, ```BufferBlock<T>```  could derive from ```Channel<T>```,
 ```ActionBlock<T>``` could derive from ```WritableChannel<T>```, etc., and/or methods could be added to support linking dataflow blocks

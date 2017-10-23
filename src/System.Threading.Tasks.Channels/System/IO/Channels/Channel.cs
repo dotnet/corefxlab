@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.IO.Channels
+namespace System.Threading.Channels
 {
     /// <summary>Provides static methods for creating channels.</summary>
     public static class Channel
