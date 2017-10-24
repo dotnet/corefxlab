@@ -35,9 +35,8 @@ namespace System.Binary.Base64
                 destIndex += 4;
                 sourceIndex += 3;
             }
-
-            // TODO: Implement logic for when isFinalBlock is false
-            if (isFinalBlock != true) throw new NotImplementedException();
+            
+            if (isFinalBlock != true) goto NeedMoreDataExit;
 
             if (sourceIndex == srcLength - 1)
             {
@@ -59,6 +58,11 @@ namespace System.Binary.Base64
             consumed = sourceIndex;
             written = destIndex;
             return OperationStatus.Done;
+
+            NeedMoreDataExit:
+            consumed = sourceIndex;
+            written = destIndex;
+            return OperationStatus.NeedMoreData;
 
             DestinationSmallExit:
             consumed = sourceIndex;
@@ -163,15 +167,15 @@ namespace System.Binary.Base64
             utf8.Slice(0, utf8.Length - num).CopyTo(utf8.Slice(num));
         }
 
-        public static OperationStatus EncodeToUtf8InPlace(Span<byte> buffer, int bytesLength, out int written)
+        public static OperationStatus EncodeToUtf8InPlace(Span<byte> buffer, int dataLength, out int written)
         {
-            var encodedLength = GetMaxEncodedToUtf8Length(bytesLength);
+            var encodedLength = GetMaxEncodedToUtf8Length(dataLength);
             if (buffer.Length < encodedLength) goto FalseExit;
 
-            var leftover = bytesLength - bytesLength / 3 * 3; // how many bytes after packs of 3
+            var leftover = dataLength - dataLength / 3 * 3; // how many bytes after packs of 3
 
             var destinationIndex = encodedLength - 4;
-            var sourceIndex = bytesLength - leftover;
+            var sourceIndex = dataLength - leftover;
 
             // encode last pack to avoid conditional in the main loop
             if (leftover != 0)

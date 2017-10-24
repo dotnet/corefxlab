@@ -157,7 +157,7 @@ namespace System.Binary.Base64.Tests
                     {
                         Span<byte> encodedSpan = new byte[length];
                         Base64.EncodeToUtf8(source, encodedSpan, out int consumed, out int written);
-                        Base64.DecodeFromUtf8InPlace(encodedSpan, out int bytesConsumed, out int bytesWritten);
+                        Base64.DecodeFromUtf8InPlace(encodedSpan, encodedSpan.Length, out int bytesWritten);
                     }
                 }
             }
