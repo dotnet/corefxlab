@@ -74,7 +74,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             headerString.TrySubstringFrom((byte) ':', out headerString);
-            if (headerString.Length > 0)
+            if (!headerString.IsEmpty)
             {
                 headerString = headerString.Substring(1);
             }
@@ -85,7 +85,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             headerString.TrySubstringFrom((byte)'\n', out headerString);
-            if (headerString.Length > 0)
+            if (!headerString.IsEmpty)
             {
                 headerString = headerString.Substring(1);
             }            
@@ -110,7 +110,7 @@ namespace System.Text.Http.SingleSegment
 
             public bool MoveNext()
             {
-                if (_headerString.Length == 0)
+                if (_headerString.IsEmpty)
                 {
                     return false;
                 }
