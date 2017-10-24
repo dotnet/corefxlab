@@ -12,7 +12,7 @@ namespace System.Binary.Base64
     {
         public static readonly Utf8Decoder Utf8ToBytesDecoder = new Utf8Decoder();
 
-        public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> utf8, Span<byte> bytes, out int consumed, out int written)
+        public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> utf8, Span<byte> bytes, out int consumed, out int written, bool isFinalBlock = true)
         {
             ref byte srcBytes = ref utf8.DangerousGetPinnableReference();
             ref byte destBytes = ref bytes.DangerousGetPinnableReference();
@@ -27,7 +27,9 @@ namespace System.Binary.Base64
 
             ref sbyte decodingMap = ref s_decodingMap[0];
 
-            while (sourceIndex < srcLength - 4)
+            int skipLastChunk = isFinalBlock ? 4 : 0;
+
+            while (sourceIndex < srcLength - skipLastChunk)
             {
                 int result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
                 if (result < 0) goto InvalidExit;
@@ -37,7 +39,11 @@ namespace System.Binary.Base64
                 sourceIndex += 4;
             }
 
-            if (sourceIndex >= srcLength) goto NeedMoreExit;
+            if (sourceIndex >= srcLength)
+            {
+                if (isFinalBlock) goto InvalidExit;
+                goto NeedMoreExit;
+            }
 
             int i0 = Unsafe.Add(ref srcBytes, srcLength - 4);
             int i1 = Unsafe.Add(ref srcBytes, srcLength - 3);
@@ -91,7 +97,11 @@ namespace System.Binary.Base64
 
             sourceIndex += 4;
 
-            if (srcLength != utf8.Length) goto NeedMoreExit;
+            if (srcLength != utf8.Length)
+            {
+                if (isFinalBlock) goto InvalidExit;
+                goto NeedMoreExit;
+            }
 
             DoneExit:
             consumed = sourceIndex;
@@ -114,20 +124,22 @@ namespace System.Binary.Base64
             return OperationStatus.InvalidData;
         }
 
-        public static OperationStatus DecodeFromUtf8InPlace(Span<byte> buffer, out int consumed, out int written)
+        public static OperationStatus DecodeFromUtf8InPlace(Span<byte> buffer, int dataLength, out int written)
         {
-            ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
-
-            int bufferLength = buffer.Length & ~0x3;  // only decode input up to the closest multiple of 4.
+            buffer = buffer.Slice(0, dataLength);
 
             int sourceIndex = 0;
             int destIndex = 0;
 
+            // only decode input if it is a multiple of 4
+            if (buffer.Length % 4 != 0) goto InvalidExit;
             if (buffer.Length == 0) goto DoneExit;
+
+            ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
             ref sbyte decodingMap = ref s_decodingMap[0];
 
-            while (sourceIndex < bufferLength - 4)
+            while (sourceIndex < buffer.Length - 4)
             {
                 int result = Decode(ref Unsafe.Add(ref bufferBytes, sourceIndex), ref decodingMap);
                 if (result < 0) goto InvalidExit;
@@ -136,12 +148,10 @@ namespace System.Binary.Base64
                 sourceIndex += 4;
             }
 
-            if (sourceIndex >= bufferLength) goto NeedMoreExit;
-
-            int i0 = Unsafe.Add(ref bufferBytes, bufferLength - 4);
-            int i1 = Unsafe.Add(ref bufferBytes, bufferLength - 3);
-            int i2 = Unsafe.Add(ref bufferBytes, bufferLength - 2);
-            int i3 = Unsafe.Add(ref bufferBytes, bufferLength - 1);
+            int i0 = Unsafe.Add(ref bufferBytes, buffer.Length - 4);
+            int i1 = Unsafe.Add(ref bufferBytes, buffer.Length - 3);
+            int i2 = Unsafe.Add(ref bufferBytes, buffer.Length - 2);
+            int i3 = Unsafe.Add(ref bufferBytes, buffer.Length - 1);
 
             i0 = Unsafe.Add(ref decodingMap, i0);
             i1 = Unsafe.Add(ref decodingMap, i1);
@@ -185,23 +195,12 @@ namespace System.Binary.Base64
                 destIndex += 1;
             }
 
-            sourceIndex += 4;
-
-            if (bufferLength != buffer.Length) goto NeedMoreExit;
-
             DoneExit:
-            consumed = sourceIndex;
             written = destIndex;
             return OperationStatus.Done;
 
-            NeedMoreExit:
-            consumed = sourceIndex;
-            written = destIndex;
-            return OperationStatus.NeedMoreData;
-
             InvalidExit:
-            consumed = sourceIndex;
-            written = destIndex;
+            written = 0;
             return OperationStatus.InvalidData;
         }
 
@@ -214,13 +213,13 @@ namespace System.Binary.Base64
 
         public sealed class Utf8Decoder : IBufferOperation, IBufferTransformation
         {
-            public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+            public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten/*, bool isFinalBlock*/)
                 => DecodeFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus DecodeInPlace(Span<byte> buffer, int dataLength, out int written)
-                => DecodeFromUtf8InPlace(buffer.Slice(0, dataLength), out _, out written);
+                => DecodeFromUtf8InPlace(buffer, dataLength, out written);
 
-            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written/*, bool isFinalBlock*/)
                 => Decode(input, output, out consumed, out written);
 
             OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
