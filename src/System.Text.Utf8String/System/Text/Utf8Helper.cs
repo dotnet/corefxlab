@@ -5,28 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    public static class Utf8Helper
+    internal static class Utf8Helper
     {
         #region Constants
-
-        // TODO: Make this immutable and let them be strong typed
-        // http://unicode.org/cldr/utility/list-unicodeset.jsp?a=\p{whitespace}&g=&i=
-        private static readonly uint[] SortedWhitespaceCodePoints = new uint[]
-        {
-            0x0009, 0x000A, 0x000B, 0x000C, 0x000D,
-            0x0020,
-            0x0085,
-            0x00A0,
-            0x1680,
-            0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006,
-            0x2007,
-            0x2008, 0x2009, 0x200A,
-            0x2028, 0x2029,
-            0x202F,
-            0x205F,
-            0x3000
-        };
-
         // To get this to compile with dotnet cli, we need to temporarily un-binary the magic values
         private const byte b0000_0111U = 0x07; //7
         private const byte b0000_1111U = 0x0F; //15
@@ -221,12 +202,6 @@ namespace System.Text
             codePoint = unchecked((uint)char.ConvertToUtf32(s, index));
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsWhitespace(uint codePoint)
-        {
-            return Array.BinarySearch<uint>(SortedWhitespaceCodePoints, codePoint) >= 0;
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
@@ -423,7 +424,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
-            while (Utf8Helper.IsWhitespace(_values[_valuesIndex])) {
+            while (Unicode.IsWhitespace(_values[_valuesIndex])) {
                 _valuesIndex++;
             }
         }

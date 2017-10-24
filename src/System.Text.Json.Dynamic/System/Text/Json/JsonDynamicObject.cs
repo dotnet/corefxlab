@@ -330,15 +330,7 @@ namespace System.Text.Json
                 return false;
             }
 
-            public override int GetHashCode()
-            {
-                int result = Object.GetHashCode();
-                ReadOnlySpan<byte> nameBytes = _name.Bytes;
-                result = result * 19 + nameBytes[0];
-                result = result * 19 + nameBytes[_name.Length - 1];
-                result = result * 19 + nameBytes[_name.Length>>2];
-                return result;
-            }
+            public override int GetHashCode() => _name.GetHashCode();
 
             public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
             {

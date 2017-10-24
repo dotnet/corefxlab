@@ -36,7 +36,7 @@ namespace System.Text.Utf8.Tests
         public void Length(int expectedLength, string str)
         {
             Utf8String s = new Utf8String(str);
-            Assert.Equal(expectedLength, s.Length);
+            Assert.Equal(expectedLength, s.Bytes.Length);
         }
 
         public static object[][] LengthInCodePointsTestCases = {
@@ -132,32 +132,6 @@ namespace System.Text.Utf8.Tests
         };
 
         [Theory]
-        [InlineData("", 'a')]
-        [InlineData("abc", 'a')]
-        [InlineData("v", 'v')]
-        [InlineData("1", 'a')]
-        [InlineData("1a", 'a')]
-        public void StartsWithCodeUnit(string s, char c)
-        {
-            Utf8String u8s = new Utf8String(s);
-            byte codeUnit = (byte)c;
-            Assert.Equal(s.StartsWith(c.ToString()), u8s.StartsWith(codeUnit));
-        }
-
-        [Theory]
-        [InlineData("", 'a')]
-        [InlineData("cba", 'a')]
-        [InlineData("v", 'v')]
-        [InlineData("1", 'a')]
-        [InlineData("a1", 'a')]
-        public void EndsWithCodeUnit(string s, char c)
-        {
-            Utf8String u8s = new Utf8String(s);
-            byte codeUnit = (byte)c;
-            Assert.Equal(s.EndsWith(c.ToString()), u8s.EndsWith(codeUnit));
-        }
-
-        [Theory]
         [InlineData("", "a")]
         [InlineData("abc", "a")]
         [InlineData("v", "v")]
@@ -189,54 +163,6 @@ namespace System.Text.Utf8.Tests
             Utf8String u8pattern = new Utf8String(pattern);
 
             Assert.Equal(s.EndsWith(pattern), u8s.EndsWith(u8pattern));
-        }
-
-        [Theory]
-        [InlineData("", 'a')]
-        [InlineData("abc", 'a')]
-        [InlineData("abc", 'b')]
-        [InlineData("abc", 'c')]
-        [InlineData("abc", 'd')]
-        public void SubstringFromCodeUnit(string s, char c)
-        {
-            Utf8String u8s = new Utf8String(s);
-            byte codeUnit = (byte)(c);
-            Utf8String u8result;
-
-            int idx = s.IndexOf(c);
-            bool expectedToFind = idx != -1;
-
-            Assert.Equal(expectedToFind, u8s.TrySubstringFrom(codeUnit, out u8result));
-            if (expectedToFind)
-            {
-                string expected = s.Substring(idx);
-                TestHelper.Validate(new Utf8String(expected), u8result);
-                Assert.Equal(expected, u8result.ToString());
-            }
-        }
-
-        [Theory]
-        [InlineData("", 'a')]
-        [InlineData("abc", 'a')]
-        [InlineData("abc", 'b')]
-        [InlineData("abc", 'c')]
-        [InlineData("abc", 'd')]
-        public void SubstringToCodeUnit(string s, char c)
-        {
-            Utf8String u8s = new Utf8String(s);
-            byte codeUnit = (byte)(c);
-            Utf8String u8result;
-
-            int idx = s.IndexOf(c);
-            bool expectedToFind = idx != -1;
-
-            Assert.Equal(expectedToFind, u8s.TrySubstringTo(codeUnit, out u8result));
-            if (expectedToFind)
-            {
-                string expected = s.Substring(0, idx);
-                TestHelper.Validate(new Utf8String(expected), u8result);
-                Assert.Equal(expected, u8result.ToString());
-            }
         }
 
         private byte[] GetUtf8BytesFromCodePoints(List<uint> codePoints)
@@ -425,19 +351,19 @@ namespace System.Text.Utf8.Tests
                 TestHelper.Validate(strFromArray, strFromPointer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromArray.CopyTo(byteSpan);
+                strFromArray.Bytes.CopyTo(byteSpan);
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromPointer.CopyTo(byteSpan);
+                strFromPointer.Bytes.CopyTo(byteSpan);
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromArray.CopyTo(buffer);
+                strFromArray.Bytes.CopyTo(buffer);
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromPointer.CopyTo(buffer);
+                strFromPointer.Bytes.CopyTo(buffer);
                 Assert.Equal(textArray, buffer);
             }
         }
@@ -478,20 +404,20 @@ namespace System.Text.Utf8.Tests
         private void TestHashesSameForEquivalentString(Utf8String a, Utf8String b)
         {
             // for sanity
-            Assert.Equal(a.Length, b.Length);
+            Assert.Equal(a.Bytes.Length, b.Bytes.Length);
             TestHelper.Validate(a, b);
 
-            for (int i = 0; i < a.Length; i++)
+            for (int i = 0; i < a.Bytes.Length; i++)
             {
-                Utf8String prefixOfA = a.Substring(i, a.Length - i);
-                Utf8String prefixOfB = b.Substring(i, b.Length - i);
+                Utf8String prefixOfA = a.Substring(i, a.Bytes.Length - i);
+                Utf8String prefixOfB = b.Substring(i, b.Bytes.Length - i);
                 // sanity
                 TestHelper.Validate(prefixOfA, prefixOfB);
                 Assert.Equal(prefixOfA.GetHashCode(), prefixOfB.GetHashCode());
 
                 // for all suffixes
-                Utf8String suffixOfA = a.Substring(a.Length - i, i);
-                Utf8String suffixOfB = b.Substring(b.Length - i, i);
+                Utf8String suffixOfA = a.Substring(a.Bytes.Length - i, i);
+                Utf8String suffixOfB = b.Substring(b.Bytes.Length - i, i);
                 TestHelper.Validate(suffixOfA, suffixOfB);
             }
         }
@@ -824,9 +750,9 @@ namespace System.Text.Utf8.Tests
         public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)
         {
             var utf8String = new Utf8String(str);
-            Assert.Equal(expectedBytes.Length, utf8String.Length);
+            Assert.Equal(expectedBytes.Length, utf8String.Bytes.Length);
 
-            for (int i = 0; i < utf8String.Length; i++)
+            for (int i = 0; i < utf8String.Bytes.Length; i++)
             {
                 Assert.Equal(expectedBytes[i], utf8String.Bytes[i]);
             }

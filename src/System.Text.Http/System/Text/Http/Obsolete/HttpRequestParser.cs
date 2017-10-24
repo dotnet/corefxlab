@@ -68,9 +68,9 @@ namespace System.Text.Http.SingleSegment
 
     public ref struct HttpRequestReader
     {
-        static readonly byte[] b_Http1_0 = new Utf8Span("HTTP/1.0").CopyBytes();
-        static readonly byte[] b_Http1_1 = new Utf8Span("HTTP/1.1").CopyBytes();
-        static readonly byte[] b_Http2_0 = new Utf8Span("HTTP/2.0").CopyBytes();
+        static readonly byte[] b_Http1_0 = Encoding.UTF8.GetBytes("HTTP/1.0");
+        static readonly byte[] b_Http1_1 = Encoding.UTF8.GetBytes("HTTP/1.1");
+        static readonly byte[] b_Http2_0 = Encoding.UTF8.GetBytes("HTTP/2.0");
 
         static Utf8Span s_Http1_0 => new Utf8Span(b_Http1_0);
         static Utf8Span s_Http1_1 => new Utf8Span(b_Http1_1);
@@ -177,10 +177,10 @@ namespace System.Text.Http.SingleSegment
     static class HttpRequestParser
     {
         // TODO: these copies should be eliminated
-        static readonly byte[] b_Get = new Utf8Span("GET ").CopyBytes();
-        static readonly byte[] b_Post = new Utf8Span("POST ").CopyBytes();
-        static readonly byte[] b_Put = new Utf8Span("PUT ").CopyBytes();
-        static readonly byte[] b_Delete = new Utf8Span("DELETE ").CopyBytes();
+        static readonly byte[] b_Get = Encoding.UTF8.GetBytes("GET ");
+        static readonly byte[] b_Post = Encoding.UTF8.GetBytes("POST ");
+        static readonly byte[] b_Put = Encoding.UTF8.GetBytes("PUT ");
+        static readonly byte[] b_Delete = Encoding.UTF8.GetBytes("DELETE ");
 
         static Utf8Span s_Get => new Utf8Span(b_Get);
         static Utf8Span s_Post => new Utf8Span(b_Post);
@@ -214,28 +214,28 @@ namespace System.Text.Http.SingleSegment
             if(bufferString.StartsWith(s_Get))
             {
                 method = HttpMethod.Get;
-                parsedBytes = s_Get.Length;
+                parsedBytes = s_Get.Bytes.Length;
                 return true;
             }
 
             if (bufferString.StartsWith(s_Post))
             {
                 method = HttpMethod.Post;
-                parsedBytes = s_Post.Length;
+                parsedBytes = s_Post.Bytes.Length;
                 return true;
             }
 
             if (bufferString.StartsWith(s_Put))
             {
                 method = HttpMethod.Put;
-                parsedBytes = s_Put.Length;
+                parsedBytes = s_Put.Bytes.Length;
                 return true;
             }
 
             if (bufferString.StartsWith(s_Delete))
             {
                 method = HttpMethod.Delete;
-                parsedBytes = s_Delete.Length;
+                parsedBytes = s_Delete.Bytes.Length;
                 return true;
             }
 

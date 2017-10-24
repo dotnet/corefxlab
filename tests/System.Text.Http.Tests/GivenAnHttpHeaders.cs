@@ -43,7 +43,7 @@ namespace System.Text.Http.Tests
         public void It_returns_empty_string_when_header_is_not_present()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
-            httpHeader["Content-Length"].Length.Should().Be(0);
+            httpHeader["Content-Length"].IsEmpty.Should().Be(true);
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
@@ -121,13 +121,13 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void CanParseBodylessRequest()
         {
-            var request = new Utf8Span("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
+            var request = new Utf8Span("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").Bytes;
             var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);
             Assert.Equal("/", parsed.RequestLine.RequestUri.ToString(SymbolTable.InvariantUtf8));
             Assert.Equal(1, parsed.Headers.Count);
-            Assert.Equal(0, parsed.Body.Length);
+            Assert.True(parsed.Body.IsEmpty);
         }
     }
 }
