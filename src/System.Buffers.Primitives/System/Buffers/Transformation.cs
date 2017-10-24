@@ -6,7 +6,7 @@ namespace System.Buffers
 {
     public interface IBufferOperation
     {
-        OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written/*, bool isFinalBlock*/);
+        OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written);
     }
     public interface IBufferTransformation : IBufferOperation
     {

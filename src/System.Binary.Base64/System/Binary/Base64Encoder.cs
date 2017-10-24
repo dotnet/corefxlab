@@ -206,13 +206,13 @@ namespace System.Binary.Base64
 
         public sealed class Utf8Encoder : IBufferOperation, IBufferTransformation
         {
-            public OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten/*, bool isFinalBlock*/)
+            public OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus EncodeInPlace(Span<byte> buffer, int dataLength, out int written)
                 => EncodeToUtf8InPlace(buffer, dataLength, out written);
 
-            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written/*, bool isFinalBlock*/)
+            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 => Encode(input, output, out consumed, out written);
 
             OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)

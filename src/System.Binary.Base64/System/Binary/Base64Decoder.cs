@@ -213,13 +213,13 @@ namespace System.Binary.Base64
 
         public sealed class Utf8Decoder : IBufferOperation, IBufferTransformation
         {
-            public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten/*, bool isFinalBlock*/)
+            public OperationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
                 => DecodeFromUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus DecodeInPlace(Span<byte> buffer, int dataLength, out int written)
                 => DecodeFromUtf8InPlace(buffer, dataLength, out written);
 
-            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written/*, bool isFinalBlock*/)
+            OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 => Decode(input, output, out consumed, out written);
 
             OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
