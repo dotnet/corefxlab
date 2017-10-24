@@ -12,7 +12,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public  ref partial struct Utf8Span
+    public ref partial struct Utf8Span
     {
         private readonly ReadOnlySpan<byte> _buffer;
 
@@ -56,7 +56,7 @@ namespace System.Text.Utf8
 
         public Utf8Span(Utf8String utf8String)
         {
-            _buffer = utf8String.CopyBytes();
+            _buffer = utf8String.Bytes;
         }
 
         /// <summary>
@@ -86,21 +86,9 @@ namespace System.Text.Utf8
         /// </summary>
         public int Length => _buffer.Length;
 
-        public Enumerator GetEnumerator()
+        public Utf8CodePointEnumerator GetEnumerator()
         {
-            return new Enumerator(_buffer);
-        }
-
-        public CodePointEnumerable CodePoints => new CodePointEnumerable(_buffer);
-
-        private byte this[int i]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                // there is no need to check the boundaries -> Span is going to do this on it's own 
-                return (byte)_buffer[i];
-            }
+            return new Utf8CodePointEnumerator(_buffer);
         }
 
         public static implicit operator ReadOnlySpan<byte>(Utf8Span utf8)
@@ -148,7 +136,7 @@ namespace System.Text.Utf8
 
         public bool Equals(string other)
         {
-            CodePointEnumerator thisEnumerator = GetCodePointEnumerator();
+            Utf8CodePointEnumerator thisEnumerator = GetEnumerator();
             Utf16LittleEndianCodePointEnumerator otherEnumerator = new Utf16LittleEndianCodePointEnumerator(other);
 
             while (true)
@@ -270,7 +258,7 @@ namespace System.Text.Utf8
             Utf8Span restOfTheString = this;
             for (int i = 0; restOfTheString.Length <= Length; restOfTheString = Substring(++i))
             {
-                int pos = restOfTheString.IndexOf(value[0]);
+                int pos = restOfTheString.IndexOf(value.Bytes[0]);
                 if (pos == StringNotFound)
                 {
                     return StringNotFound;
@@ -288,7 +276,7 @@ namespace System.Text.Utf8
         // TODO: Should this be public?
         public int IndexOf(uint codePoint)
         {
-            CodePointEnumerator it = GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
             while (it.MoveNext())
             {
                 if (it.Current == codePoint)
@@ -319,7 +307,7 @@ namespace System.Text.Utf8
 
             for (int i = Length - 1; i >= value.Length - 1; restOfTheString = Substring(0, i--))
             {
-                int pos = restOfTheString.LastIndexOf(value[value.Length - 1]);
+                int pos = restOfTheString.LastIndexOf(value.Bytes[value.Bytes.Length - 1]);
                 if (pos == StringNotFound)
                 {
                     return StringNotFound;
@@ -341,7 +329,7 @@ namespace System.Text.Utf8
         {
             for (int i = Length - 1; i >= 0; i--)
             {
-                if (codeUnit == this[i])
+                if (codeUnit == Bytes[i])
                 {
                     return i;
                 }
@@ -352,7 +340,7 @@ namespace System.Text.Utf8
 
         public int LastIndexOf(uint codePoint)
         {
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            var it = new Utf8CodePointReverseEnumerator(Bytes);
             while (it.MoveNext())
             {
                 if (it.Current == codePoint)
@@ -483,20 +471,20 @@ namespace System.Text.Utf8
                     for (int i = 0; i < Length; i++)
                     {
                         hash <<= 8;
-                        hash ^= (byte)this[i];
+                        hash ^= (byte)Bytes[i];
                     }
                     return hash;
                 }
                 else
                 {
                     int hash = Length;
-                    hash ^= (byte)this[0];
+                    hash ^= (byte)Bytes[0];
                     hash <<= 8;
-                    hash ^= (byte)this[1];
+                    hash ^= (byte)Bytes[1];
                     hash <<= 8;
-                    hash ^= (byte)this[Length - 2];
+                    hash ^= (byte)Bytes[Length - 2];
                     hash <<= 8;
-                    hash ^= (byte)this[Length - 1];
+                    hash ^= (byte)Bytes[Length - 1];
                     return hash;
                 }
             }
@@ -513,14 +501,9 @@ namespace System.Text.Utf8
             return false;
         }
 
-        private CodePointEnumerator GetCodePointEnumerator()
-        {
-            return new CodePointEnumerator(_buffer);
-        }
-
         public bool StartsWith(uint codePoint)
         {
-            CodePointEnumerator e = GetCodePointEnumerator();
+            Utf8CodePointEnumerator e = GetEnumerator();
             if (!e.MoveNext())
             {
                 return false;
@@ -536,7 +519,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return this[0] == codeUnit;
+            return Bytes[0] == codeUnit;
         }
 
         public bool StartsWith(Utf8Span value)
@@ -556,7 +539,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return this[Length - 1] == codeUnit;
+            return Bytes[Length - 1] == codeUnit;
         }
 
         public bool EndsWith(Utf8Span value)
@@ -604,7 +587,7 @@ namespace System.Text.Utf8
 
         public Utf8Span TrimStart()
         {
-            CodePointEnumerator it = GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
             while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
@@ -630,8 +613,8 @@ namespace System.Text.Utf8
                 return TrimStart();
             }
 
-            CodePointEnumerator it = GetCodePointEnumerator();
-            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -661,7 +644,7 @@ namespace System.Text.Utf8
 
         public Utf8Span TrimEnd()
         {
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            var it = new Utf8CodePointReverseEnumerator(Bytes);
             while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
@@ -687,8 +670,8 @@ namespace System.Text.Utf8
                 return TrimEnd();
             }
 
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
-            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
+            Utf8CodePointReverseEnumerator it = new Utf8CodePointReverseEnumerator(Bytes);
+            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
 
             while (it.MoveNext())
             {

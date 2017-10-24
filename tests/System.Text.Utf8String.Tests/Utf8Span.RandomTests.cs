@@ -12,6 +12,15 @@ using Xunit.Abstractions;
 
 namespace System.Text.Utf8.Tests
 {
+    static class Utf8EnumeratorExtensions {
+        public static int Count(this Utf8CodePointEnumerator e) {
+            int i=0;
+            while(e.MoveNext()) {
+                i++;
+            }
+            return i;
+        }
+    }
 
     public class Utf8SpanTests
     {
@@ -23,42 +32,6 @@ namespace System.Text.Utf8.Tests
             this.output = output;
         }
 
-        private static string GetStringLiteral(string s)
-        {
-            if (s == null)
-            {
-                return "null";
-            }
-
-            Utf16LittleEndianCodePointEnumerable codePoints = new Utf16LittleEndianCodePointEnumerable(s);
-            StringBuilder sb = new StringBuilder();
-            sb.Append('"');
-            foreach (uint codePoint in codePoints)
-            {
-                if (codePoint >= 32 && codePoint < 127)
-                {
-                    sb.Append(char.ConvertFromUtf32(unchecked((int)codePoint)));
-                }
-                else if (codePoint == (uint)'\n')
-                {
-                    sb.Append("\\n");
-                }
-                else if (codePoint == (uint)'\r')
-                {
-                    sb.Append("\\r");
-                }
-                else if (codePoint == (uint)'\t')
-                {
-                    sb.Append("\\t");
-                }
-                else
-                {
-                    sb.Append(string.Format("\\u{0:X04}", codePoint));
-                }
-            }
-            sb.Append('"');
-            return sb.ToString();
-        }
         #endregion
 
         public static object[][] LengthTestCases = {
@@ -90,7 +63,7 @@ namespace System.Text.Utf8.Tests
         public void LengthInCodePoints(int expectedLength, string str)
         {
             Utf8Span s = new Utf8Span(str);
-            Assert.Equal(expectedLength, s.CodePoints.Count());
+            Assert.Equal(expectedLength, s.GetEnumerator().Count());
         }
 
         public static object[][] ToStringTestCases = {
@@ -275,76 +248,6 @@ namespace System.Text.Utf8.Tests
                 TestHelper.Validate(new Utf8Span(expected), u8result);
                 Assert.Equal(expected, u8result.ToString());
             }
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("a")]
-        [InlineData("ab")]
-        [InlineData("abcdefghijklmnopqrstuvwxyz")]
-        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
-        [InlineData("0123456789")]
-        [InlineData(" ,.\r\n[]<>()")]
-        [InlineData("1258")]
-        [InlineData("1258Hello")]
-        [InlineData("\uABCD")]
-        [InlineData("\uABEE")]
-        [InlineData("a\uABEE")]
-        [InlineData("a\uABEEa")]
-        [InlineData("a\uABEE\uABCDa")]
-        public void CodePointEnumeratorsTests(string s)
-        {
-            Utf8Span u8s = new Utf8Span(s);
-            TestCodePointForwardEnumerator(s, u8s);
-            TestCodePointReverseEnumerator(s, u8s);
-
-            byte[] bytes = u8s.CopyBytes();
-            unsafe
-            {
-                fixed (byte* pinnedBytes = bytes)
-                {
-                    Utf8Span u8sFromBytePointer = new Utf8Span(new Span<byte>(pinnedBytes, u8s.Length));
-                    TestCodePointForwardEnumerator(s, u8sFromBytePointer);
-                    TestCodePointReverseEnumerator(s, u8sFromBytePointer);
-                }
-            }
-        }
-
-        // Implementations are intentionally split to avoid boxing
-        private void TestCodePointForwardEnumerator(string s, Utf8Span u8s)
-        {
-            List<uint> codePoints = new List<uint>();
-            Utf8Span.CodePointEnumerator it = u8s.CodePoints.GetEnumerator();
-            while (it.MoveNext())
-            {
-                codePoints.Add(it.Current);
-            }
-
-            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
-            Assert.Equal(utf16CodePoints, codePoints);
-
-            Utf8Span u8s2 = new Utf8Span(GetUtf8BytesFromCodePoints(codePoints));
-            TestHelper.Validate(u8s, u8s2);
-            Assert.Equal(s, u8s2.ToString());
-        }
-
-        private void TestCodePointReverseEnumerator(string s, Utf8Span u8s)
-        {
-            List<uint> codePoints = new List<uint>();
-            Utf8Span.CodePointReverseEnumerator it = u8s.CodePoints.GetReverseEnumerator();
-            while (it.MoveNext())
-            {
-                codePoints.Add(it.Current);
-            }
-
-            codePoints.Reverse();
-
-            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
-            Assert.Equal(utf16CodePoints, codePoints);
-
-            Utf8Span u8s2 = new Utf8Span(GetUtf8BytesFromCodePoints(codePoints));
-            TestHelper.Validate(u8s, u8s2);
-            Assert.Equal(s, u8s2.ToString());
         }
 
         private byte[] GetUtf8BytesFromCodePoints(List<uint> codePoints)
@@ -934,22 +837,6 @@ namespace System.Text.Utf8.Tests
             new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"}
             // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
         };
-        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
-        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, string str)
-        {
-            var Utf8Span = new Utf8Span(str);
-            Assert.Equal(expectedBytes.Length, Utf8Span.Length);
-            Utf8Span.Enumerator e = Utf8Span.GetEnumerator();
-
-            int i = 0;
-            while (e.MoveNext())
-            {
-                Assert.True(i < expectedBytes.Length);
-                Assert.Equal(expectedBytes[i], (byte)e.Current);
-                i++;
-            }
-            Assert.Equal(expectedBytes.Length, i);
-        }
 
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
         public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)

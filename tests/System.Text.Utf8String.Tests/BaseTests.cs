@@ -55,28 +55,6 @@ namespace System.Text.Utf8.Tests
             new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"}
         };
 
-        [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
-        public void EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSame(string utf16String, string str)
-        {
-            var utf8String = new Utf8String(str);
-            var utf16StringCodePoints = new Utf16LittleEndianCodePointEnumerable(utf16String);
-
-            var utf16CodePointEnumerator = utf16StringCodePoints.GetEnumerator();
-            var utf8CodePointEnumerator = utf8String.CodePoints.GetEnumerator();
-
-            bool moveNext;
-            while (true)
-            {
-                moveNext = utf16CodePointEnumerator.MoveNext();
-                Assert.Equal(moveNext, utf8CodePointEnumerator.MoveNext());
-                if (!moveNext)
-                {
-                    break;
-                }
-                Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
-            }
-        }
-
         [Theory]
         [InlineData("abcdefghijklmnopqrstuvwxyz")]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
@@ -112,29 +90,6 @@ namespace System.Text.Utf8.Tests
             Utf8Span Utf8Span = new Utf8Span(str);
             string utf16String = Utf8Span.ToString();
             TestHelper.Validate(Utf8Span, new Utf8Span(utf16String));
-        }
-        
-
-        [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
-        public void EnumerateAndEnsureCodePointsOfTheSameUtf8SpanAndUtf16StringsAreTheSame(string utf16String, string str)
-        {
-            var Utf8Span = new Utf8Span(str);
-            var utf16StringCodePoints = new Utf16LittleEndianCodePointEnumerable(utf16String);
-
-            var utf16CodePointEnumerator = utf16StringCodePoints.GetEnumerator();
-            var utf8CodePointEnumerator = Utf8Span.CodePoints.GetEnumerator();
-
-            bool moveNext;
-            while (true)
-            {
-                moveNext = utf16CodePointEnumerator.MoveNext();
-                Assert.Equal(moveNext, utf8CodePointEnumerator.MoveNext());
-                if (!moveNext)
-                {
-                    break;
-                }
-                Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
-            }
         }
     }
 }

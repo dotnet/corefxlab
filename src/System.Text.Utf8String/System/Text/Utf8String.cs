@@ -20,80 +20,38 @@ namespace System.Text.Utf8
 
         static Utf8String s_empty = new Utf8String(string.Empty);
 
-        // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
-        // TODO: Should we be immutable/readonly?
-        public Utf8String(ReadOnlySpan<byte> buffer)
+        public Utf8String(ReadOnlySpan<byte> buffer) => _buffer = buffer.ToArray();
+        public Utf8String(Utf8Span utf8Span) => _buffer = utf8Span.Bytes.ToArray();
+        private Utf8String(byte[] dangerousBuffer) => _buffer = dangerousBuffer;
+
+        public Utf8String(string str)
         {
-            _buffer = buffer.ToArray();
-        }
-
-        public Utf8String(byte[] utf8bytes)
-        {
-            _buffer = utf8bytes;
-        }
-
-        public Utf8String(byte[] utf8bytes, int index, int length)
-        {
-            if(utf8bytes == null)
-            {
-                throw new ArgumentNullException(nameof(utf8bytes));
-            }
-
-            if (length < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(length));
-            }
-
-            if (length > utf8bytes.Length - index || index < 0 || index > utf8bytes.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            // Length checking
-            _buffer = new Span<byte>(utf8bytes, index, length).ToArray();
-        }
-
-        public Utf8String(string s)
-        {
-            if (s == null)
+            if (str == null)
             {
                 throw new ArgumentNullException("s", "String cannot be null");
             }
 
-            if (s == string.Empty)
+            if (str == string.Empty)
             {
                 _buffer = ReadOnlySpan<byte>.Empty.ToArray();
             }
             else
             {
-                _buffer = Encoding.UTF8.GetBytes(s);
+                _buffer = Encoding.UTF8.GetBytes(str);
             }
-        }
-
-        public Utf8String(Utf8Span utf8Span)
-        {
-            _buffer = utf8Span.Bytes.ToArray();
         }
 
         /// <summary>
         /// This constructor is for use by the compiler.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public Utf8String(RuntimeFieldHandle utf8Data, int length) : this(CreateArrayFromFieldHandle(utf8Data, length))
-        {
+        public Utf8String(RuntimeFieldHandle utf8Data, int length) {
+            _buffer = new byte[length];
+            RuntimeHelpers.InitializeArray(_buffer, utf8Data);
         }
 
         public static explicit operator Utf8String(ArraySegment<byte> utf8Bytes)
-        {
-            return new Utf8String(utf8Bytes);
-        }
-
-        static byte[] CreateArrayFromFieldHandle(RuntimeFieldHandle utf8Data, int length)
-        {
-            var array = new byte[length];
-            RuntimeHelpers.InitializeArray(array, utf8Data);
-            return array;
-        }
+            => new Utf8String(utf8Bytes);
 
         public static Utf8String Empty { get { return s_empty; } }
 
@@ -102,79 +60,40 @@ namespace System.Text.Utf8
         /// </summary>
         public int Length => _buffer.Length;
 
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator(_buffer);
-        }
-
-        public CodePointEnumerable CodePoints
-        {
-            get
-            {
-                return new CodePointEnumerable(_buffer);
-            }
-        }
-
-        public byte this[int i]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                // Check bounds
-                if (i < 0 || i >= _buffer.Length)
-                {
-                    throw new ArgumentOutOfRangeException("index");
-                }
-                return _buffer[i];
-            }
-        }
-
-        public static implicit operator ReadOnlySpan<byte>(Utf8String utf8)
-        {
-            return utf8.Bytes;
-        }
-
-        public static explicit operator Utf8String(string s)
-        {
-            return new Utf8String(s);
-        }
-
-        public static explicit operator string(Utf8String s)
-        {
-            return s.ToString();
-        }
+        public static implicit operator ReadOnlySpan<byte>(Utf8String utf8) => utf8.Bytes;
+        
+        public static explicit operator Utf8String(string s) => new Utf8String(s);
+        
+        public static explicit operator string(Utf8String s) => s.ToString();
 
         public ReadOnlySpan<byte> Bytes => _buffer;
 
         public override string ToString()
         {
-            var status = Encodings.Utf8.ToUtf16Length(this.Bytes, out int needed);
-            if (status != Buffers.OperationStatus.Done)
-                return string.Empty;
-
-            // UTF-16 is 2 bytes per char
-            var chars = new char[needed >> 1];
-            var utf16 = new Span<char>(chars).AsBytes();
-            status = Encodings.Utf8.ToUtf16(this.Bytes, utf16, out int consumed, out int written);
-            if (status != Buffers.OperationStatus.Done)
-                return string.Empty;
-
-            return new string(chars);
+            // TODO: why do we return status here?
+            var status = Encodings.Utf8.ToUtf16Length(this.Bytes, out int bytesNeeded);
+            var result = new String(' ', bytesNeeded >> 1);
+            unsafe {
+                fixed(char* pResult = result){
+                    var resultBytes = new Span<byte>((void*)pResult, bytesNeeded);
+                    if(Encodings.Utf8.ToUtf16(this.Bytes, resultBytes, out int consumed, out int written) == OperationStatus.Done){
+                        Debug.Assert(written == resultBytes.Length);
+                        return result;
+                    }
+                }
+            }
+            return String.Empty; // TODO: is this what we want to do if Bytes are invalid UTF8? Can Bytes be invalid UTF8?
         }
 
-        public bool ReferenceEquals(Utf8String other)
-        {
-            return _buffer == other._buffer;
-        }
+        public bool ReferenceEquals(Utf8String other) => Object.ReferenceEquals(this, other);
 
-        public bool Equals(Utf8String other)
-        {
-            return Bytes.SequenceEqual(other.Bytes);
-        }
+        public bool Equals(Utf8String other) => Bytes.SequenceEqual(other.Bytes);
 
+        // TODO: is this efficient enough?
         public bool Equals(string other)
         {
-            CodePointEnumerator thisEnumerator = GetCodePointEnumerator();
+            Utf8CodePointEnumerator thisEnumerator = GetEnumerator();
+            Debug.Assert(BitConverter.IsLittleEndian);
             Utf16LittleEndianCodePointEnumerator otherEnumerator = new Utf16LittleEndianCodePointEnumerator(other);
 
             while (true)
@@ -197,55 +116,26 @@ namespace System.Text.Utf8
             }
         }
 
-        public static bool operator ==(Utf8String left, Utf8String right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(Utf8String left, Utf8String right) => left.Equals(right);
+        public static bool operator !=(Utf8String left, Utf8String right) => !left.Equals(right);
 
-        public static bool operator !=(Utf8String left, Utf8String right)
-        {
-            return !left.Equals(right);
-        }
+        // TODO: do we like all these O(N) operators? 
+        public static bool operator ==(Utf8String left, string right) => left.Equals(right);
+        public static bool operator !=(Utf8String left, string right) => !left.Equals(right);
+        public static bool operator ==(string left, Utf8String right) => right.Equals(left);
+        public static bool operator !=(string left, Utf8String right) => !right.Equals(left);
 
-        public static bool operator ==(Utf8String left, string right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Utf8String left, string right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static bool operator ==(string left, Utf8String right)
-        {
-            return right.Equals(left);
-        }
-
-        public static bool operator !=(string left, Utf8String right)
-        {
-            return !right.Equals(left);
-        }
-
-        public int CompareTo(Utf8String other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CompareTo(string other)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO: implement Utf8String.CompareTo
+        public int CompareTo(Utf8String other) => throw new NotImplementedException();
+        public int CompareTo(string other) => throw new NotImplementedException();
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="index">Index in UTF-8 code units (bytes)</param>
         /// <returns>Length in UTF-8 code units (bytes)</returns>
-        public Utf8String Substring(int index)
-        {
-            return Substring(index, Length - index);
-        }
+        // TODO: should all Utf8String slicing operations return Utf8Span?
+        public Utf8String Substring(int index) => Substring(index, Length - index);
 
         /// <summary>
         ///
@@ -254,29 +144,12 @@ namespace System.Text.Utf8
         /// <returns>Length in UTF-8 code units (bytes)</returns>
         public Utf8String Substring(int index, int length)
         {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
-
-            if (length < 0)
-            {
-                // TODO: Should we support that?
-                throw new ArgumentOutOfRangeException("length");
-            }
-
             if (length == 0)
             {
                 return Empty;
             }
 
-            if (index > Length - length)
-            {
-                // TODO: Should this be index or length?
-                throw new ArgumentOutOfRangeException("index");
-            }
-
-            return new Utf8String(_buffer, index, length);
+            return new Utf8String(_buffer.AsSpan().Slice(index, length));
         }
 
         // TODO: Naive algorithm, reimplement faster
@@ -298,7 +171,7 @@ namespace System.Text.Utf8
             Utf8String restOfTheString = this;
             for (int i = 0; restOfTheString.Length <= Length; restOfTheString = Substring(++i))
             {
-                int pos = restOfTheString.IndexOf(value[0]);
+                int pos = restOfTheString.IndexOf(value.Bytes[0]);
                 if (pos == StringNotFound)
                 {
                     return StringNotFound;
@@ -314,25 +187,12 @@ namespace System.Text.Utf8
         }
 
         // TODO: Should this be public?
-        public int IndexOf(byte codeUnit)
-        {
-            // TODO: _buffer.IndexOf(codeUnit.Value); when Span has it
-
-            for (int i = 0; i < Length; i++)
-            {
-                if (codeUnit == this[i])
-                {
-                    return i;
-                }
-            }
-
-            return StringNotFound;
-        }
+        public int IndexOf(byte codeUnit) => _buffer.AsSpan().IndexOf(codeUnit);
 
         // TODO: Should this be public?
         public int IndexOf(uint codePoint)
         {
-            CodePointEnumerator it = GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
             while (it.MoveNext())
             {
                 if (it.Current == codePoint)
@@ -363,7 +223,7 @@ namespace System.Text.Utf8
 
             for (int i = Length - 1; i >= value.Length - 1; restOfTheString = Substring(0, i--))
             {
-                int pos = restOfTheString.LastIndexOf(value[value.Length - 1]);
+                int pos = restOfTheString.LastIndexOf(value.Bytes[value.Length - 1]);
                 if (pos == StringNotFound)
                 {
                     return StringNotFound;
@@ -385,7 +245,7 @@ namespace System.Text.Utf8
         {
             for (int i = Length - 1; i >= 0; i--)
             {
-                if (codeUnit == this[i])
+                if (codeUnit == Bytes[i])
                 {
                     return i;
                 }
@@ -396,7 +256,7 @@ namespace System.Text.Utf8
 
         public int LastIndexOf(uint codePoint)
         {
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            var it = new Utf8CodePointReverseEnumerator(Bytes);
             while (it.MoveNext())
             {
                 if (it.Current == codePoint)
@@ -505,15 +365,7 @@ namespace System.Text.Utf8
             return Substring(index, s.Length).Equals(s);
         }
 
-        public void CopyTo(Span<byte> buffer)
-        {
-            _buffer.CopyTo(buffer);
-        }
-
-        public void CopyTo(byte[] buffer)
-        {
-            _buffer.CopyTo(buffer);
-        }
+        public void CopyTo(Span<byte> buffer) => _buffer.CopyTo(buffer);
 
         // TODO: write better hashing function
         // TODO: span.GetHashCode() + some constant?
@@ -527,20 +379,20 @@ namespace System.Text.Utf8
                     for (int i = 0; i < Length; i++)
                     {
                         hash <<= 8;
-                        hash ^= (byte)this[i];
+                        hash ^= (byte)Bytes[i];
                     }
                     return hash;
                 }
                 else
                 {
                     int hash = Length;
-                    hash ^= (byte)this[0];
+                    hash ^= (byte)Bytes[0];
                     hash <<= 8;
-                    hash ^= (byte)this[1];
+                    hash ^= (byte)Bytes[1];
                     hash <<= 8;
-                    hash ^= (byte)this[Length - 2];
+                    hash ^= (byte)Bytes[Length - 2];
                     hash <<= 8;
-                    hash ^= (byte)this[Length - 1];
+                    hash ^= (byte)Bytes[Length - 1];
                     return hash;
                 }
             }
@@ -548,23 +400,26 @@ namespace System.Text.Utf8
 
         public override bool Equals(object obj)
         {
+            if (obj is Utf8String)
+            {
+                return Equals((Utf8String)obj);
+            }            
             if (obj is string)
             {
                 return Equals((string)obj);
             }
 
-            // obj cannot be Utf8String since it cannot be boxed
             return false;
         }
 
-        private CodePointEnumerator GetCodePointEnumerator()
+        public Utf8CodePointEnumerator GetEnumerator()
         {
-            return new CodePointEnumerator(_buffer);
+            return new Utf8CodePointEnumerator(_buffer);
         }
 
         public bool StartsWith(uint codePoint)
         {
-            CodePointEnumerator e = GetCodePointEnumerator();
+            Utf8CodePointEnumerator e = GetEnumerator();
             if (!e.MoveNext())
             {
                 return false;
@@ -580,7 +435,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return this[0] == codeUnit;
+            return Bytes[0] == codeUnit;
         }
 
         public bool StartsWith(Utf8String value)
@@ -600,7 +455,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return this[Length - 1] == codeUnit;
+            return Bytes[Length - 1] == codeUnit;
         }
 
         public bool EndsWith(Utf8String value)
@@ -616,17 +471,6 @@ namespace System.Text.Utf8
         public bool EndsWith(uint codePoint)
         {
             throw new NotImplementedException();
-        }
-
-        private static int GetUtf8LengthInBytes(IEnumerable<uint> codePoints)
-        {
-            int len = 0;
-            foreach (var codePoint in codePoints)
-            {
-                len += Utf8Helper.GetNumberOfEncodedBytes(codePoint);
-            }
-
-            return len;
         }
 
         // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
@@ -648,7 +492,7 @@ namespace System.Text.Utf8
 
         public Utf8String TrimStart()
         {
-            CodePointEnumerator it = GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
             while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
@@ -656,15 +500,9 @@ namespace System.Text.Utf8
             return Substring(it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimStart(uint[] trimCodePoints)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Utf8String TrimStart(byte[] trimCodeUnits)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO: implement Utf8String.TrimStart
+        public Utf8String TrimStart(uint[] trimCodePoints) => throw new NotImplementedException();
+        public Utf8String TrimStart(byte[] trimCodeUnits) => throw new NotImplementedException();
 
         public Utf8String TrimStart(Utf8String trimCharacters)
         {
@@ -674,8 +512,8 @@ namespace System.Text.Utf8
                 return TrimStart();
             }
 
-            CodePointEnumerator it = GetCodePointEnumerator();
-            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
+            Utf8CodePointEnumerator it = GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -705,7 +543,7 @@ namespace System.Text.Utf8
 
         public Utf8String TrimEnd()
         {
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            var it = new Utf8CodePointReverseEnumerator(Bytes);
             while (it.MoveNext() && Utf8Helper.IsWhitespace(it.Current))
             {
             }
@@ -713,15 +551,10 @@ namespace System.Text.Utf8
             return Substring(0, it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimEnd(uint[] trimCodePoints)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO: implement Utf8String.TrimEnd
+        public Utf8String TrimEnd(uint[] trimCodePoints) => throw new NotImplementedException();
 
-        public Utf8String TrimEnd(byte[] trimCodeUnits)
-        {
-            throw new NotImplementedException();
-        }
+        public Utf8String TrimEnd(byte[] trimCodeUnits) => throw new NotImplementedException();
 
         public Utf8String TrimEnd(Utf8String trimCharacters)
         {
@@ -731,8 +564,8 @@ namespace System.Text.Utf8
                 return TrimEnd();
             }
 
-            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
-            CodePointEnumerator itPrefix = trimCharacters.GetCodePointEnumerator();
+            var it = new Utf8CodePointReverseEnumerator(Bytes);
+            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -765,26 +598,9 @@ namespace System.Text.Utf8
             return TrimStart().TrimEnd();
         }
 
-        public Utf8String Trim(uint[] trimCodePoints)
-        {
-            throw new NotImplementedException();
-        }
+        // TODO: implement Utf8String.Trim
+        public Utf8String Trim(uint[] trimCodePoints) => throw new NotImplementedException();
 
-        public Utf8String Trim(byte[] trimCodeUnits)
-        {
-            throw new NotImplementedException();
-        }
-
-        // TODO: Name TBD, CopyArray? GetBytes?
-        public byte[] CopyBytes()
-        {
-            return Bytes.ToArray();
-        }
-
-        public byte[] CopyCodeUnits()
-        {
-            throw new NotImplementedException();
-        }
-
+        public Utf8String Trim(byte[] trimCodeUnits) => throw new NotImplementedException();
     }
 }
