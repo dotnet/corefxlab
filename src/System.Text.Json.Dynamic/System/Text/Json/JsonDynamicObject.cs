@@ -349,23 +349,9 @@ namespace System.Text.Json
 
     static class Utf8SpanExtensions
     {
-        // TODO: this should be properly implemented
-        // currently it handles formatting to UTF8 only.
         public static bool TryFormat(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
         {
-            written = 0;
-            if (buffer.Length < str.Length)
-            {
-                return false;
-            }
-
-            foreach (var cp in str)
-            {
-                var b = cp;
-                buffer[written++] = cp;
-            }
-
-            return true;
+            return symbolTable.TryEncode(str.Bytes, buffer, out var consumed, out written);
         }
 
         public static bool TryFormatQuotedString(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)

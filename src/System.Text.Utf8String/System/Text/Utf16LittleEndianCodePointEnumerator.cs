@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace System.Text.Utf16
 {
-    internal struct Utf16LittleEndianCodePointEnumerator : IEnumerator<uint>, IEnumerator
+    internal struct Utf16LittleEndianCodePointEnumerator
     {
         string _s;
         int _index;
@@ -54,14 +54,7 @@ namespace System.Text.Utf16
                 return _codePoint;
             }
         }
-
-        public void Reset()
-        {
-            _index = -1;
-            _encodedChars = 0;
-            _codePoint = default;
-        }
-
+        
         public bool MoveNext()
         {
             if (_index == -1)
@@ -78,9 +71,5 @@ namespace System.Text.Utf16
 
             return _index < _s.Length;
         }
-
-        object IEnumerator.Current { get { return Current; } }
-
-        void IDisposable.Dispose() { }
     }
 }
