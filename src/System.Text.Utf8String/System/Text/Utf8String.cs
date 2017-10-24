@@ -64,6 +64,7 @@ namespace System.Text.Utf8
         public static explicit operator string(Utf8String utf8String) => utf8String.ToString();
 
         public ReadOnlySpan<byte> Bytes => _buffer;
+        public ReadOnlyMemory<byte> Memory => _buffer;
 
         internal Utf8Span Span => new Utf8Span(Bytes);
 
