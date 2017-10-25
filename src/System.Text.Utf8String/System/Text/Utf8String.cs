@@ -12,7 +12,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public partial class Utf8String
+    public class Utf8String
     {
         private readonly byte[] _buffer;
 
@@ -191,8 +191,18 @@ namespace System.Text.Utf8
             return Substring(it.PositionInCodeUnits);
         }
 
-        // TODO: implement Utf8String.Trim* methods
-        public Utf8String TrimStart(uint[] trimCodePoints) => throw new NotImplementedException();
+        public Utf8String TrimStart(uint[] trimCodePoints) {
+            if (trimCodePoints == null || trimCodePoints.Length == 0) return TrimStart(); // Trim Whitespace
+
+            Utf8CodePointEnumerator it = GetEnumerator();       
+            while (it.MoveNext()) {
+                if(Array.IndexOf(trimCodePoints, it.Current) == -1){
+                    break;
+                }
+            }
+
+            return Substring(it.PositionInCodeUnits);
+        }
 
         public Utf8String TrimStart(Utf8String trimCharacters)
         {
@@ -285,7 +295,7 @@ namespace System.Text.Utf8
 
         // TODO: should we even have index based operations?
         #region Index-based operations
-        public Utf8String Substring(int index) => Substring(index, Bytes.Length - index);
+        public Utf8String Substring(int index) => index==0?this:Substring(index, Bytes.Length - index);
 
         public Utf8String Substring(int index, int length)
         {
@@ -293,6 +303,7 @@ namespace System.Text.Utf8
             {
                 return Empty;
             }
+            if(index == 0 && length == Bytes.Length) return this;
 
             return new Utf8String(_buffer.AsSpan().Slice(index, length));
         }

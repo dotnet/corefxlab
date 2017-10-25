@@ -177,6 +177,26 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
+        [InlineData("", "a")]
+        [InlineData("cba", "a")]
+        [InlineData("v", "v")]
+        [InlineData("1", "a")]
+        [InlineData("a1", "a")]
+        [InlineData("abc", "c")]
+        [InlineData("a\uABEE\uABCD", "\uABCD")]
+        [InlineData("a\uABEE", "\uABCD")]
+        public void EndsWithCodePoint(string str, string codePointString)
+        {
+            Utf8Span u8 = new Utf8Span(str);
+            var codePointEnumerator = new Utf8Span(codePointString).GetEnumerator();
+            Assert.True(codePointEnumerator.MoveNext());
+            var codePoint = codePointEnumerator.Current;
+            Assert.False(codePointEnumerator.MoveNext());
+
+            Assert.Equal(str.EndsWith(codePointString), u8.EndsWith(codePoint));
+        }
+
+        [Theory]
         [InlineData("", 'a')]
         [InlineData("abc", 'a')]
         [InlineData("abc", 'b')]
@@ -290,6 +310,37 @@ namespace System.Text.Utf8.Tests
             Utf8Span u8trimmed = u8s.TrimStart(u8TrimCharacters);
             TestHelper.Validate(u8expected, u8trimmed);
 
+            string trimmed = u8trimmed.ToString();
+            Assert.Equal(expected, trimmed);
+        }
+
+        [Theory]
+        [InlineData(" ", "")]
+        [InlineData("", "a")]
+        [InlineData("", "")]
+        [InlineData("a", "")]
+        [InlineData("ab", "b")]
+        [InlineData("aba", "ab")]
+        [InlineData("abcdefghijklmnopqrstuvwxyz   ", "abcd")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABD")]
+        [InlineData("0123456789", "234")]
+        [InlineData("1258", "1258")]
+        [InlineData("1258Hello", "Hello")]
+        [InlineData("\uABCD", "\uABCD")]
+        [InlineData("    1258He        llo", "1258Hello")]
+        [InlineData(" a a a ", " a")]
+        [InlineData("         a a a           ", " ")]
+        public void TrimStartCodePointsTest(string str, string trimCharacters)
+        {
+            Utf8Span u8 = new Utf8Span(str);
+            string expected = str.TrimStart(trimCharacters.ToCharArray());
+
+            var codePointList = new List<uint>();
+            var codePointEnumerator = new Utf8Span(trimCharacters).GetEnumerator();
+            while(codePointEnumerator.MoveNext()) codePointList.Add(codePointEnumerator.Current);
+            var codePoints = codePointList.ToArray();
+
+            Utf8Span u8trimmed = u8.TrimStart(codePoints);
             string trimmed = u8trimmed.ToString();
             Assert.Equal(expected, trimmed);
         }

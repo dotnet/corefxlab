@@ -11,8 +11,10 @@ using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
+    // TODO: should we validate that the bytes are valid UTF8 in constructors
+    // TODO: Should we copy the array in Utf8Span ctors?
     [DebuggerDisplay("{ToString()}u8")]
-    public ref partial struct Utf8Span
+    public ref struct Utf8Span
     {
         private readonly ReadOnlySpan<byte> _buffer;
 
@@ -20,8 +22,6 @@ namespace System.Text.Utf8
 
         static Utf8Span s_empty => default;
 
-        // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
-        // TODO: Should we be immutable/readonly?
         public Utf8Span(ReadOnlySpan<byte> utf8Bytes) => _buffer = utf8Bytes;
 
         public Utf8Span(string utf16String)
@@ -162,12 +162,30 @@ namespace System.Text.Utf8
 
         public static bool operator !=(string left, Utf8Span right) => !right.Equals(left);
 
-        // TODO: implement Utf8Span.CompareTo
-        public int CompareTo(Utf8Span other) => throw new NotImplementedException();
+        public int CompareTo(Utf8Span other) => Compare(this.Bytes, other.Bytes);
 
         public int CompareTo(Utf8String other) => CompareTo(other.Span);
 
-        public int CompareTo(string other) => throw new NotImplementedException();
+        public int CompareTo(string other) {
+            Utf8CodePointEnumerator thisEnumerator = GetEnumerator();
+            Debug.Assert(BitConverter.IsLittleEndian);
+            Utf16LittleEndianCodePointEnumerator otherEnumerator = new Utf16LittleEndianCodePointEnumerator(other);
+
+            while (true)
+            {
+                var thisHasNext = thisEnumerator.MoveNext();
+                var otherHasNext = otherEnumerator.MoveNext();
+                if(!thisHasNext && !otherHasNext) return 0;
+                if(!thisHasNext) return -1;
+                if(!otherHasNext) return 1;
+
+                var thisCurrent = thisEnumerator.Current;
+                var otherCurrent = otherEnumerator.Current;
+
+                if(thisCurrent == otherCurrent) continue;
+                return thisCurrent.CompareTo(otherCurrent);
+            }
+        }
 
         public bool StartsWith(uint codePoint)
         {
@@ -194,7 +212,9 @@ namespace System.Text.Utf8
 
         public bool EndsWith(uint codePoint)
         {
-            throw new NotImplementedException();
+            var e = new Utf8CodePointReverseEnumerator(Bytes);
+            if(!e.MoveNext()) return false;
+            return e.Current == codePoint;
         }
 
         #region Slicing
@@ -267,13 +287,17 @@ namespace System.Text.Utf8
 
         public Utf8Span TrimStart(uint[] trimCodePoints)
         {
-            throw new NotImplementedException();
-        }
+            if (trimCodePoints == null || trimCodePoints.Length == 0) return TrimStart(); // Trim Whitespace
 
-        public Utf8Span TrimStart(byte[] trimCodeUnits)
-        {
-            throw new NotImplementedException();
-        }
+            Utf8CodePointEnumerator it = GetEnumerator();       
+            while (it.MoveNext()) {
+                if(Array.IndexOf(trimCodePoints, it.Current) == -1){
+                    break;
+                }
+            }
+
+            return Substring(it.PositionInCodeUnits);
+        }       
 
         public Utf8Span TrimStart(Utf8Span trimCharacters)
         {
@@ -377,31 +401,12 @@ namespace System.Text.Utf8
 
         // TODO: should we even have index based operations?
         #region Index-based operations
-        public Utf8Span Substring(int index) => Substring(index, Bytes.Length - index);
+        public Utf8Span Substring(int index) => index==0?this:Substring(index, Bytes.Length - index);
 
         public Utf8Span Substring(int index, int length)
         {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
-
-            if (length < 0)
-            {
-                // TODO: Should we support that?
-                throw new ArgumentOutOfRangeException("length");
-            }
-
-            if (length == 0)
-            {
-                return Empty;
-            }
-
-            if (index > Bytes.Length - length)
-            {
-                // TODO: Should this be index or length?
-                throw new ArgumentOutOfRangeException("index");
-            }
+            if (length == 0) return Empty;
+            if (index == 0 && length == Bytes.Length) return this;
 
             return new Utf8Span(_buffer.Slice(index, length));
         }
@@ -507,6 +512,17 @@ namespace System.Text.Utf8
                 if (buffer[i] == value) return i;
             }
             return -1;
+        }
+
+        private int Compare(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
+        {
+            var minLength = left.Length;
+            if(minLength > right.Length) minLength = right.Length;
+            for(int i=0; i<minLength; i++) {
+                var result = left[i].CompareTo(right[i]);
+                if(result != 0) return result;
+            }
+            return left.Length.CompareTo(right.Length);
         }
         #endregion
     }
