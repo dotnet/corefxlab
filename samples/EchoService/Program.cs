@@ -4,28 +4,26 @@
 
 using System.Net.Libuv;
 
-namespace EchoService
+public class EchoService
 {
-    public class Program
+    static void Main()
     {
-        static void Main(string[] args)
+        var loop = new UVLoop();
+
+        var listener = new TcpListener("0.0.0.0", 7, loop);
+
+        listener.ConnectionAccepted += (Tcp connection) =>
         {
-            var loop = new UVLoop();
-
-            var listener = new TcpListener("0.0.0.0", 7, loop);
-
-            listener.ConnectionAccepted += (Tcp connection) =>
+            connection.ReadCompleted += (data) =>
             {
-                connection.ReadCompleted += (data) =>
-                {
-                    connection.TryWrite(data);
-                };
-
-                connection.ReadStart();
+                connection.TryWrite(data);
             };
 
-            listener.Listen();
-            loop.Run();
-        }
+            connection.ReadStart();
+        };
+
+        listener.Listen();
+        loop.Run();
     }
 }
+

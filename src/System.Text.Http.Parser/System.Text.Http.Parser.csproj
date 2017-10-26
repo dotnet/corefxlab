@@ -10,6 +10,5 @@
   <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
-    <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
   </ItemGroup>
 </Project>

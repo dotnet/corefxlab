@@ -5,8 +5,8 @@ using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;
-using System.Text;
 using System.Text.Encodings.Web.Utf8;
+using System.Text.Utf8;
 using static System.Buffers.Text.Encodings;
 
 namespace System.Azure.Authentication
@@ -20,7 +20,7 @@ namespace System.Azure.Authentication
         public string Version;
         public DateTime Time;
 
-        public static bool TryWrite2(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
+        public static bool TryWrite(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
         {
             Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
             var writer = new SpanWriter(buffer);
@@ -52,7 +52,39 @@ namespace System.Azure.Authentication
             return true;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default(ParsedFormat), SymbolTable symbolTable = null)
+        public static bool TryWrite(Span<byte> output, Sha256 hash, Utf8Span keyType, Utf8Span verb, Utf8Span resourceId, Utf8Span resourceType, Utf8Span tokenVersion, DateTime utc, out int bytesWritten)
+        {
+            Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
+            var writer = new SpanWriter(buffer);
+            writer.Enlarge = (minumumSize) => { return new byte[minumumSize * 2]; };
+
+            // compute signature hash
+            writer.WriteLine(verb, Ascii.ToLowercase);
+            writer.WriteLine(resourceType, Ascii.ToLowercase);
+            writer.WriteLine(resourceId, Ascii.ToLowercase);
+            writer.WriteLine(utc, 'l');
+            writer.Write('\n');
+            hash.Append(writer.Written);
+
+            // combine token
+            writer.Index = 0; // reuse writer and buffer
+            writer.Write(s_typeLiteral);
+            writer.Write(keyType);
+            writer.Write(s_verLiteral);
+            writer.Write(tokenVersion);
+            writer.Write(s_sigLiteral);
+
+            writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+
+            if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            return true;
+        }
+
+        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default, SymbolTable symbolTable = null)
         {
             if (TryWrite(buffer, Hash, KeyType, Method, ResourceId, ResourceType, Version, Time, out written))
             {
@@ -63,133 +95,11 @@ namespace System.Azure.Authentication
             return false;
         }
 
-        public static bool TryWrite(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
-        {
-            int written, consumed, totalWritten = 0;
-            bytesWritten = 0;
-
-            Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
-
-            s_type.CopyTo(buffer);
-            totalWritten += s_type.Length;
-            var bufferSlice = buffer.Slice(totalWritten);
-
-            if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            totalWritten += written;
-            bufferSlice = buffer.Slice(totalWritten);
-
-            s_ver.CopyTo(bufferSlice);
-            totalWritten += s_ver.Length;
-
-            bufferSlice = buffer.Slice(totalWritten);
-
-            if (Encodings.Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            totalWritten += written;
-            bufferSlice = buffer.Slice(totalWritten);
-
-            s_sig.CopyTo(bufferSlice);
-            totalWritten += s_sig.Length;
-
-            var front = buffer.Slice(0, totalWritten);
-
-            var payload = buffer.Slice(totalWritten);
-            totalWritten = 0;
-
-            if (verb.Equals("GET", StringComparison.Ordinal) || verb.Equals("get", StringComparison.Ordinal))
-            {
-                s_get.CopyTo(payload);
-                totalWritten += s_get.Length;
-            }
-            else if (verb.Equals("POST", StringComparison.Ordinal) || verb.Equals("post", StringComparison.Ordinal))
-            {
-                s_post.CopyTo(payload);
-                totalWritten += s_post.Length;
-            }
-            else if (verb.Equals("DELETE", StringComparison.Ordinal) || verb.Equals("delete", StringComparison.Ordinal))
-            {
-                s_delete.CopyTo(payload);
-                totalWritten += s_delete.Length;
-            }
-            else
-            {
-                if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
-                {
-                    throw new NotImplementedException("need to resize buffer");
-                }
-                if (Encodings.Ascii.ToLowerInPlace(payload.Slice(0, written), out written) != OperationStatus.Done)
-                {
-                    throw new NotImplementedException("need to resize buffer");
-                }
-
-                payload[written] = (byte)'\n';
-                totalWritten += written + 1;
-            }
-
-            bufferSlice = payload.Slice(totalWritten);
-
-            if (Encodings.Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            if (Encodings.Ascii.ToLowerInPlace(bufferSlice.Slice(0, written), out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            bufferSlice[written] = (byte)'\n';
-            totalWritten += written + 1;
-            bufferSlice = payload.Slice(totalWritten);
-
-            if (Encodings.Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            bufferSlice[written] = (byte)'\n';
-            totalWritten += written + 1;
-            bufferSlice = payload.Slice(totalWritten);
-
-            if (!Utf8Formatter.TryFormat(utc, bufferSlice, out written, 'l'))
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            bufferSlice[written] = (byte)'\n';
-            totalWritten += written + 1;
-            bufferSlice = payload.Slice(totalWritten);
-
-            bufferSlice[0] = (byte)'\n';
-            totalWritten += 1;
-
-            hash.Append(buffer.Slice(front.Length, totalWritten));
-            if(!hash.TryWrite(buffer.Slice(front.Length), out written)){
-                throw new NotImplementedException("need to resize buffer");
-            }
-            if (Base64.EncodeToUtf8InPlace(buffer.Slice(front.Length), written, out written) != OperationStatus.Done)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-
-            var len = front.Length + written;
-            if (UrlEncoder.Utf8.Encode(buffer.Slice(0, len), output, out consumed, out bytesWritten) != OperationStatus.Done)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            return true;
-        }
-
-        static readonly byte[] s_type = Encoding.UTF8.GetBytes("type=");
-        static readonly byte[] s_ver = Encoding.UTF8.GetBytes("&ver=");
-        static readonly byte[] s_sig = Encoding.UTF8.GetBytes("&sig=");
-
-        static readonly byte[] s_get = Encoding.UTF8.GetBytes("get\n");
-        static readonly byte[] s_post = Encoding.UTF8.GetBytes("post\n");
-        static readonly byte[] s_delete = Encoding.UTF8.GetBytes("delete\n");
-
         const int AuthenticationHeaderBufferSize = 256;
+
+        // These will go away once we have UTF8 literals in the language
+        static readonly Utf8String s_typeLiteral = (Utf8String)"type=";
+        static readonly Utf8String s_verLiteral = (Utf8String)"&ver=";
+        static readonly Utf8String s_sigLiteral = (Utf8String)"&sig=";
     }
 }

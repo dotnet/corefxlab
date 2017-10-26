@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
+namespace System.Text.Primitives
 {
     internal static class Utf8Helper
     {

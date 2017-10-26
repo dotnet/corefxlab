@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
@@ -703,6 +704,26 @@ namespace System.Buffers.Text
                     bytesWritten = EncodingHelper.PtrDiff((byte*)pDst, pUtf16);
                     return OperationStatus.InvalidData;
                 }
+            }
+
+            public static string ToString(ReadOnlySpan<byte> utf8Bytes)
+            {
+                // TODO: why do we return status here?
+                var status = ToUtf16Length(utf8Bytes, out int bytesNeeded);
+                var result = new String(' ', bytesNeeded >> 1);
+                unsafe
+                {
+                    fixed (char* pResult = result)
+                    {
+                        var resultBytes = new Span<byte>((void*)pResult, bytesNeeded);
+                        if (ToUtf16(utf8Bytes, resultBytes, out int consumed, out int written) == OperationStatus.Done)
+                        {
+                            Debug.Assert(written == resultBytes.Length);
+                            return result;
+                        }
+                    }
+                }
+                return String.Empty; // TODO: is this what we want to do if Bytes are invalid UTF8? Can Bytes be invalid UTF8?
             }
 
             #endregion UTF-16 Conversions

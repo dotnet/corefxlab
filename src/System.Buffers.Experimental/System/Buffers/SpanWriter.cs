@@ -4,6 +4,7 @@
 using System.Buffers.Text;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Utf8;
 
 namespace System.Buffers
 {
@@ -18,7 +19,7 @@ namespace System.Buffers
 
         static ReadOnlyMemory<byte> s_defaultNewline = new byte[] { (byte)'\n' };
 
-        public SpanWriter(Span<byte> buffer, SymbolTable symbols = default(SymbolTable))
+        public SpanWriter(Span<byte> buffer, SymbolTable symbols = default)
         {
             _buffer = buffer;
             _written = 0;
@@ -30,25 +31,28 @@ namespace System.Buffers
         public void WriteBytes<T>(T value, IBufferTransformation transformation = null) where T : IWritable
         {
             int written;
-            while (!value.TryWrite(Free, out written, default(ParsedFormat)))
+            while (!value.TryWrite(Free, out written, default))
             {
                 Resize();
             }
 
-            if (transformation != null)
+            if (transformation == null)
             {
-                var status = transformation.Transform(Buffer.Slice(Index), written, out written);
-                if (status == OperationStatus.Done)
-                {
-                    _written += written;
-                    return;
-                }
-
-                if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
-                // if OperationStatus.DestinationTooSmall
-                Resize();
-                WriteBytes(value, transformation);
+                _written += written;
+                return;
             }
+
+            var status = transformation.Transform(Free, written, out written);
+            if (status == OperationStatus.Done)
+            {
+                _written += written;
+                return;
+            }
+
+            if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
+            // if OperationStatus.DestinationTooSmall
+            Resize();
+            WriteBytes(value, transformation);  
         }
 
         public void WriteText<T>(T value, IBufferTransformation transformation = null) where T : IBufferFormattable
@@ -59,49 +63,54 @@ namespace System.Buffers
                 Resize();
             }
 
-            if (transformation != null)
+            if (transformation == null)
             {
-                var status = transformation.Transform(Buffer.Slice(Index), written, out written);
-                if (status == OperationStatus.Done)
-                {
-                    _written += written;
-                    return;
-                }
-
-                if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
-                // if OperationStatus.DestinationTooSmall
-                Resize();
-                WriteText(value, transformation);
+                _written += written;
+                return;
             }
+
+            var status = transformation.Transform(Free, written, out written);
+            if (status == OperationStatus.Done)
+            {
+                _written += written;
+                return;
+            }
+
+            if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
+            // if OperationStatus.DestinationTooSmall
+            Resize();
+            WriteText(value, transformation);
+            
         }
 
         public void WriteLine(string text, IBufferTransformation transformation = null)
         {
-            int start = Index;
             int encoded;
-            while (true)
+            if (_symbols == SymbolTable.InvariantUtf8)
             {
-                var status = Buffers.Text.Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out var consumed, out encoded);
-                if (status == OperationStatus.Done) { _written += encoded; break; }
-                if (status == OperationStatus.DestinationTooSmall) { Resize(); continue; }
-                if (status == OperationStatus.InvalidData) throw new ArgumentOutOfRangeException(nameof(text));
-                Debug.Assert(false, "this (NeedMoreData) should never happen");
-            }
-            WriteBytes(Newline);
-
-            if (transformation != null)
-            {
-                encoded = Index - start;
-                var status = transformation.Transform(Buffer.Slice(start), encoded, out int transformed);
-                if (status == OperationStatus.Done)
+                while (true)
                 {
-                    _written += transformed - encoded; // as this was an in-place transform;
-                    return;
+                    var status = Buffers.Text.Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out var consumed, out encoded);
+                    if (status == OperationStatus.Done) { break; }
+                    if (status == OperationStatus.DestinationTooSmall) { Resize(); continue; }
+                    if (status == OperationStatus.InvalidData) throw new ArgumentOutOfRangeException(nameof(text));
+                    Debug.Assert(false, "this (NeedMoreData) should never happen");
                 }
+            }
+            else
+            {
+                while (!_symbols.TryEncode(text.AsReadOnlySpan(), Free, out var consumed, out encoded)) Resize();
+            }
 
-                if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
+            encoded += CopyBytesAt(encoded, Newline);
+        
+            if(transformation == null)
+            {
+                _written += encoded;
+                return;
+            }
 
-                // if OperationStatus.DestinationTooSmall
+            if (!TryApplyTransformation(Index, encoded, transformation)) {
                 Resize();
                 WriteLine(text, transformation);
             }
@@ -110,30 +119,86 @@ namespace System.Buffers
         public void Write(string text, IBufferTransformation transformation = null)
         {
             int encoded;
-            while (true)
+
+            if (_symbols == SymbolTable.InvariantUtf8)
             {
-                var status = Buffers.Text.Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out var consumed, out encoded);
-                if (status == OperationStatus.Done) { _written += encoded; break; }
-                if (status == OperationStatus.DestinationTooSmall) { Resize(); continue; }
-                if (status == OperationStatus.InvalidData) throw new ArgumentOutOfRangeException(nameof(text));
-                Debug.Assert(false, "this (NeedMoreData) should never happen");
+                while (true)
+                {
+                    var status = Buffers.Text.Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out var consumed, out encoded);
+                    if (status == OperationStatus.Done) { break; }
+                    if (status == OperationStatus.DestinationTooSmall) { Resize(); continue; }
+                    if (status == OperationStatus.InvalidData) throw new ArgumentOutOfRangeException(nameof(text));
+                    Debug.Assert(false, "this (NeedMoreData) should never happen");
+                }
+            }
+            else
+            {
+                while (!_symbols.TryEncode(text.AsReadOnlySpan(), Free, out var consumed, out encoded)) Resize();
             }
 
-            if (transformation != null)
+            if (transformation == null)
             {
-                var status = transformation.Transform(Buffer.Slice(Index), encoded, out int transformed);
-                if (status == OperationStatus.Done)
-                {
-                    _written += transformed;
-                    return;
-                }
+                _written += encoded;
+                return;
+            }
 
-                if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
-
-                // if OperationStatus.DestinationTooSmall
+            if (!TryApplyTransformation(Index, encoded, transformation)) {
                 Resize();
                 Write(text, transformation);
             }
+        }
+
+        public void Write(Utf8Span text, IBufferTransformation transformation = null)
+        {
+            int encoded = text.Bytes.Length;
+            if (_symbols == SymbolTable.InvariantUtf8)
+                while (!text.Bytes.TryCopyTo(Free)) Resize();     
+            else
+                while (!_symbols.TryEncode(text.Bytes, Free, out var consumed, out encoded)) Resize();
+
+            if (transformation == null)
+            {
+                _written += encoded;
+                return;
+            }
+
+            if (!TryApplyTransformation(Index, encoded, transformation)) {
+                Resize();
+                Write(text, transformation);
+            }
+        }
+
+        public void WriteLine(Utf8Span text, IBufferTransformation transformation = null)
+        {
+            int encoded = text.Bytes.Length;
+            if (_symbols == SymbolTable.InvariantUtf8)
+                while (!text.Bytes.TryCopyTo(Free)) Resize();
+            else
+                while (!_symbols.TryEncode(text.Bytes, Free, out var consumed, out encoded)) Resize();
+
+            encoded += CopyBytesAt(encoded, Newline);
+
+            if (transformation == null)
+            {
+                _written += encoded;
+                return;
+            }
+
+            if (!TryApplyTransformation(Index, encoded, transformation))
+            {
+                Resize();
+                Write(text, transformation);
+            }
+        }
+
+        public void Write(Utf8String text, IBufferTransformation transformation = null)
+        {
+            Write((Utf8Span)text, transformation);
+        }
+
+        public void WriteLine(Utf8String text, IBufferTransformation transformation = null)
+        {
+            WriteLine((Utf8Span)text, transformation);
         }
 
         public void Write(char character)
@@ -190,6 +255,42 @@ namespace System.Buffers
             if (newBuffer.Length <= _buffer.Length) throw new Exception("Enlarge delegate created too small buffer");
             _buffer.CopyTo(newBuffer.Span);
             _buffer = newBuffer.Span;
+        }
+
+        private bool TryApplyTransformation(int index, int length, IBufferTransformation transformation)
+        {
+            Debug.Assert(transformation != null);
+            var status = transformation.Transform(Buffer.Slice(index), length, out int transformed);
+            if (status == OperationStatus.Done)
+            {
+                _written += transformed;
+                return true;
+            }
+
+            if (status == OperationStatus.InvalidData || status == OperationStatus.NeedMoreData) throw new Exception("invalid value or transformation");
+            
+            return true;
+        }
+
+        private bool TryApplyTransformations(int index, int length, ReadOnlySpan<IBufferTransformation> transformations)
+        {
+            var buffer = Buffer.Slice(index);
+            for (int i = 0; i < transformations.Length; i++)
+            {
+                var status = transformations[i].Transform(buffer, length, out length);
+                if (status == OperationStatus.Done) continue;
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                throw new Exception("invalid value or transformation");
+            }
+
+            _written += length;
+            return true;
+        }
+
+        private int CopyBytesAt(int offset, ReadOnlyMemory<byte> value)
+        {
+            while (!value.Span.TryCopyTo(Free.Slice(offset))) Resize();
+            return value.Length;
         }
 
         public override string ToString()

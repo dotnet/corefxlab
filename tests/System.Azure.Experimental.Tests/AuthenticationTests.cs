@@ -6,6 +6,7 @@ using System.Buffers.Cryptography;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Utf8;
 using Xunit;
 
 namespace System.Azure.Tests
@@ -38,14 +39,14 @@ namespace System.Azure.Tests
         }
 
         [Fact]
-        public void CosmosDbAuthenticationHeaderTryWrite2()
+        public void CosmosDbAuthenticationHeaderTryWriteUtf8()
         {
             var keyBytes = Key.ComputeKeyBytes(fakeKey);
             var sha = Sha256.Create(keyBytes);
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            Assert.True(CosmosDbAuthorizationHeader.TryWrite2(buffer, sha, keyType, "get", resourceId, resourceType, version, utc, out int bytesWritten));
+            Assert.True(CosmosDbAuthorizationHeader.TryWrite(buffer, sha, (Utf8Span)keyType, (Utf8Span)"get", (Utf8Span)resourceId, (Utf8Span)resourceType, (Utf8Span)version, utc, out int bytesWritten));
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)

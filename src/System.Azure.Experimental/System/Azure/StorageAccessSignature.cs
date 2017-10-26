@@ -1,4 +1,5 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+﻿
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Binary.Base64;
@@ -11,6 +12,75 @@ namespace System.Azure.Authentication
 {
     public static class StorageAccessSignature
     {
+        public static bool TryWrite2(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
+        {
+            var writer = new SpanWriter(output);
+            writer.Enlarge = (minumumSize) => { return new byte[minumumSize * 2]; };
+
+            int written, consumed;
+            bytesWritten = 0;
+
+            if (verb.Equals("GET", StringComparison.Ordinal))
+            {
+                if (output.Length < 3)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+                s_GET.CopyTo(output);
+                bytesWritten += s_GET.Length;
+            }
+            else
+            {
+                if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                output[written] = (byte)'\n';
+                bytesWritten += written + 1;
+            }
+
+            var free = output.Slice(bytesWritten);
+            s_emptyHeaders.CopyTo(free);
+            bytesWritten += s_emptyHeaders.Length;
+
+            free = output.Slice(bytesWritten);
+            if (!Utf8Formatter.TryFormat(utc, free, out written, 'R'))
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            free[written] = (byte)'\n';
+            bytesWritten += written + 1;
+            free = output.Slice(bytesWritten);
+
+            if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            bytesWritten += written;
+
+            var formatted = output.Slice(0, bytesWritten);
+
+            hash.Append(formatted);
+            if (!hash.TryWrite(output, out written))
+            {
+                throw new NotImplementedException("need to resize buffer");
+            }
+
+            if (Base64.EncodeToUtf8InPlace(output, written, out written) != OperationStatus.Done)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            bytesWritten = written;
+            return true;
+        }
+
         public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
             int written, consumed;
