@@ -12,7 +12,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public class Utf8String
+    public sealed class Utf8String
     {
         private readonly byte[] _buffer;
 
@@ -20,14 +20,14 @@ namespace System.Text.Utf8
 
         static Utf8String s_empty = new Utf8String(string.Empty);
 
-        public Utf8String(ReadOnlySpan<byte> utf8Bytes) => _buffer = utf8Bytes.ToArray();
-        public Utf8String(Utf8Span utf8Span) => _buffer = utf8Span.Bytes.ToArray();
+        public Utf8String(ReadOnlySpan<byte> utf8Bytes) : this(noCopyUtf8Bytes: utf8Bytes.ToArray()) { }
+        public Utf8String(Utf8Span utf8Span) : this(noCopyUtf8Bytes: utf8Span.Bytes.ToArray()) {}
 
         public Utf8String(string utf16String)
         {
             if (utf16String == null)
             {
-                throw new ArgumentNullException("s", "String cannot be null");
+                throw new ArgumentNullException(nameof(utf16String));
             }
 
             if (utf16String == string.Empty)
@@ -58,7 +58,9 @@ namespace System.Text.Utf8
         public Utf8CodePointEnumerator GetEnumerator() => new Utf8CodePointEnumerator(_buffer);
 
         public static implicit operator ReadOnlySpan<byte>(Utf8String utf8String) => utf8String.Bytes;
-        
+
+        public static implicit operator Utf8Span(Utf8String utf8String) => utf8String.Span;
+
         public static explicit operator Utf8String(string utf16String) => new Utf8String(utf16String);
         
         public static explicit operator string(Utf8String utf8String) => utf8String.ToString();
@@ -122,7 +124,9 @@ namespace System.Text.Utf8
         public bool EndsWith(uint codePoint) => Span.EndsWith(codePoint);
 
         #region Slicing
-        // TODO: Re-evaluate all Substring family methods and check their parameters name
+        // TODO: should Utf8String slicing operations return Utf8Span? 
+        // TODO: should we add slicing overloads that take char delimiters?
+        // TODO: why do we even have Try versions? If the delimiter is not found, the result should be the original.
         public bool TrySubstringFrom(Utf8String value, out Utf8String result)
         {
             int idx = IndexOf(value);
@@ -179,24 +183,25 @@ namespace System.Text.Utf8
             return true;
         }
 
+        // TODO: unless we change the type of Trim to Utf8Span, this double allocates.
         public Utf8String Trim() => TrimStart().TrimEnd();
+
+        // TODO: implement Utf8String.Trim(uint[])
+        public Utf8String Trim(uint[] codePoints) => throw new NotImplementedException();
 
         public Utf8String TrimStart()
         {
             Utf8CodePointEnumerator it = GetEnumerator();
-            while (it.MoveNext() && Unicode.IsWhitespace(it.Current))
-            {
-            }
-
+            while (it.MoveNext() && Unicode.IsWhitespace(it.Current)) { }
             return Substring(it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimStart(uint[] trimCodePoints) {
-            if (trimCodePoints == null || trimCodePoints.Length == 0) return TrimStart(); // Trim Whitespace
+        public Utf8String TrimStart(uint[] codePoints) {
+            if (codePoints == null || codePoints.Length == 0) return TrimStart(); // Trim Whitespace
 
             Utf8CodePointEnumerator it = GetEnumerator();       
             while (it.MoveNext()) {
-                if(Array.IndexOf(trimCodePoints, it.Current) == -1){
+                if(Array.IndexOf(codePoints, it.Current) == -1){
                     break;
                 }
             }
@@ -204,16 +209,17 @@ namespace System.Text.Utf8
             return Substring(it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimStart(Utf8String trimCharacters)
+        // TODO: do we even want this overload? System.String does not have an overload that takes string
+        public Utf8String TrimStart(Utf8String characters)
         {
-            if (trimCharacters == Empty)
+            if (characters == Empty)
             {
                 // Trim Whitespace
                 return TrimStart();
             }
 
             Utf8CodePointEnumerator it = GetEnumerator();
-            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = characters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -251,18 +257,20 @@ namespace System.Text.Utf8
             return Substring(0, it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimEnd(uint[] trimCodePoints) => throw new NotImplementedException();
+        // TODO: implement Utf8String.TrimEnd(uint[])
+        public Utf8String TrimEnd(uint[] codePoints) => throw new NotImplementedException();
 
-        public Utf8String TrimEnd(Utf8String trimCharacters)
+        // TODO: do we even want this overload? System.String does not have an overload that takes string
+        public Utf8String TrimEnd(Utf8String characters)
         {
-            if (trimCharacters == Empty)
+            if (characters == Empty)
             {
                 // Trim Whitespace
                 return TrimEnd();
             }
 
             var it = new Utf8CodePointReverseEnumerator(Bytes);
-            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = characters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -289,13 +297,12 @@ namespace System.Text.Utf8
 
             return Substring(0, it.PositionInCodeUnits);
         }
-
-        public Utf8String Trim(uint[] trimCodePoints) => throw new NotImplementedException();
         #endregion
 
         // TODO: should we even have index based operations?
+        // TODO: should we have search (e.g. IndexOf) overlaods that take char?
         #region Index-based operations
-        public Utf8String Substring(int index) => index==0?this:Substring(index, Bytes.Length - index);
+        public Utf8String Substring(int index) => index == 0 ? this : Substring(index, Bytes.Length - index);
 
         public Utf8String Substring(int index, int length)
         {
@@ -315,8 +322,6 @@ namespace System.Text.Utf8
         public int LastIndexOf(Utf8String value) => Span.LastIndexOf(value.Span);
 
         public int LastIndexOf(uint codePoint) => Span.LastIndexOf(codePoint);
-
-        public bool IsSubstringAt(int index, Utf8String utf8String) => Span.IsSubstringAt(index, utf8String.Span);
         #endregion
     }
 }
