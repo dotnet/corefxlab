@@ -296,7 +296,7 @@ namespace System.Buffers
 
         public override string ToString()
         {
-            return Encoding.UTF8.GetString(_buffer.Slice(0, _written).ToArray(), 0, _written);
+            return Encodings.Utf8.ToString(_buffer.Slice(0, _written));
         }
     }
 }

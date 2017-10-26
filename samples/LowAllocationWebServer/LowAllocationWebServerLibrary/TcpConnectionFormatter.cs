@@ -32,7 +32,7 @@ namespace Microsoft.Net.Http
 
         public Span<byte> Buffer {
             get {
-                var buffer = _buffer.Slice(ChunkPrefixSize + _written);
+                var buffer = _buffer.AsSpan().Slice(ChunkPrefixSize + _written);
                 if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
                 return Span<byte>.Empty;
             }
@@ -57,19 +57,19 @@ namespace Microsoft.Net.Http
             // if send headers
             if (!_headerSent)
             {
-                toSend = _buffer.Slice(ChunkPrefixSize, _written);
+                toSend = _buffer.AsSpan().Slice(ChunkPrefixSize, _written);
                 _written = 0;
                 _headerSent = true;
             }
             else
             {
-                var chunkPrefixBuffer = _buffer.Slice(0, ChunkPrefixSize);
+                var chunkPrefixBuffer = _buffer.AsSpan().Slice(0, ChunkPrefixSize);
                 var prefixLength = WriteChunkPrefix(chunkPrefixBuffer, _written);
 
                 _buffer[ChunkPrefixSize + _written++] = 13;
                 _buffer[ChunkPrefixSize + _written++] = 10;
 
-                toSend = _buffer.Slice(ChunkPrefixSize - prefixLength, _written + prefixLength);
+                toSend = _buffer.AsSpan().Slice(ChunkPrefixSize - prefixLength, _written + prefixLength);
                 _written = 0;
             }
 

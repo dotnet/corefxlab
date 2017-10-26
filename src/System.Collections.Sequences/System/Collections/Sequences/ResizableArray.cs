@@ -118,6 +118,8 @@ namespace System.Collections.Sequences
             return false;
         }
 
+        public Span<T> Span => new Span<T>(_array, 0, _count);
+
         public ArraySegment<T> Full => new ArraySegment<T>(_array, 0, _count);
         public ArraySegment<T> Free => new ArraySegment<T>(_array, _count, _array.Length - _count);
     }

@@ -122,28 +122,23 @@ public class AzureBench
 
         s_type.CopyTo(buffer);
         totalWritten += s_type.Length;
-        var bufferSlice = buffer.Slice(totalWritten);
 
-        if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
         totalWritten += written;
-        bufferSlice = buffer.Slice(totalWritten);
 
-        s_ver.CopyTo(bufferSlice);
+        s_ver.CopyTo(buffer.Slice(totalWritten));
         totalWritten += s_ver.Length;
 
-        bufferSlice = buffer.Slice(totalWritten);
-
-        if (Encodings.Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
         totalWritten += written;
-        bufferSlice = buffer.Slice(totalWritten);
 
-        s_sig.CopyTo(bufferSlice);
+        s_sig.CopyTo(buffer.Slice(totalWritten));
         totalWritten += s_sig.Length;
 
         var front = buffer.Slice(0, totalWritten);
@@ -181,7 +176,7 @@ public class AzureBench
             totalWritten += written + 1;
         }
 
-        bufferSlice = payload.Slice(totalWritten);
+        var bufferSlice = payload.Slice(totalWritten);
 
         if (Encodings.Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
         {

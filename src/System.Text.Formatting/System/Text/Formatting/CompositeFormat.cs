@@ -138,7 +138,7 @@ namespace System.Text.Formatting
 
             // this should be optimized using fixed pointer to substring, but I will wait with this till we design proper substring
 
-            var characters = whole.Slice(index, count);
+            var characters = whole.AsReadOnlySpan().Slice(index, count);
             if (!formatter.TryAppend(characters, formatter.SymbolTable))
             {
                 Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
