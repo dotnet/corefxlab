@@ -687,30 +687,6 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
-        [InlineData(true, 0, "a", "a")]
-        [InlineData(true, 0, "abc", "a")]
-        [InlineData(true, 0, "abc", "ab")]
-        [InlineData(true, 0, "abc", "abc")]
-        [InlineData(true, 1, "abc", "b")]
-        [InlineData(true, 1, "abc", "bc")]
-        [InlineData(true, 2, "abc", "c")]
-        [InlineData(false, -1, "a", "a")]
-        [InlineData(false, 1, "a", "a")]
-        [InlineData(false, 1, "abc", "a")]
-        [InlineData(false, 1, "abc", "ab")]
-        [InlineData(false, 1, "abc", "abc")]
-        [InlineData(false, 0, "abc", "b")]
-        [InlineData(false, 2, "abc", "b")]
-        [InlineData(false, 0, "abc", "bc")]
-        [InlineData(false, 1, "abc", "c")]
-        public void IsSubstringAtTest(bool expected, int position, string s, string substring)
-        {
-            Utf8Span u8s = new Utf8Span(s);
-            Utf8Span u8substring = new Utf8Span(substring);
-            Assert.Equal(expected, u8s.IsSubstringAt(position, u8substring));
-        }
-
-        [Theory]
         [InlineData(-1, "", 0)]
         [InlineData(0, "a", (uint)'a')]
         [InlineData(-1, "a", (uint)'b')]

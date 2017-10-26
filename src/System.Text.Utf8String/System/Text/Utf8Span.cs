@@ -12,7 +12,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     // TODO: should we validate that the bytes are valid UTF8 in constructors
-    // TODO: Should we copy the array in Utf8Span ctors?
+    // TODO: Should we copy the array in Utf8Span ctors? This type is not-immutable. Utf8String is. 
     [DebuggerDisplay("{ToString()}u8")]
     public ref struct Utf8Span
     {
@@ -24,6 +24,7 @@ namespace System.Text.Utf8
 
         public Utf8Span(ReadOnlySpan<byte> utf8Bytes) => _buffer = utf8Bytes;
 
+        // TODO: this is expensive. Do we want this ctor?
         public Utf8Span(string utf16String)
         {
             if (utf16String == null)
@@ -66,7 +67,7 @@ namespace System.Text.Utf8
 
         public static explicit operator Utf8Span(string utf16String) => new Utf8Span(utf16String);
 
-        public static explicit operator string(Utf8Span utf8String) => utf8String.ToString();
+        public static explicit operator string(Utf8Span utf8Span) => utf8Span.ToString();
 
         public ReadOnlySpan<byte> Bytes => _buffer;
 
@@ -218,7 +219,6 @@ namespace System.Text.Utf8
         }
 
         #region Slicing
-        // TODO: Re-evaluate all Substring family methods and check their parameters name
         public bool TrySubstringFrom(Utf8Span value, out Utf8Span result)
         {
             int idx = IndexOf(value);
@@ -285,13 +285,13 @@ namespace System.Text.Utf8
             return Substring(it.PositionInCodeUnits);
         }
 
-        public Utf8Span TrimStart(uint[] trimCodePoints)
+        public Utf8Span TrimStart(uint[] codePoints)
         {
-            if (trimCodePoints == null || trimCodePoints.Length == 0) return TrimStart(); // Trim Whitespace
+            if (codePoints == null || codePoints.Length == 0) return TrimStart(); // Trim Whitespace
 
             Utf8CodePointEnumerator it = GetEnumerator();       
             while (it.MoveNext()) {
-                if(Array.IndexOf(trimCodePoints, it.Current) == -1){
+                if(Array.IndexOf(codePoints, it.Current) == -1){
                     break;
                 }
             }
@@ -299,16 +299,16 @@ namespace System.Text.Utf8
             return Substring(it.PositionInCodeUnits);
         }       
 
-        public Utf8Span TrimStart(Utf8Span trimCharacters)
+        public Utf8Span TrimStart(Utf8Span characters)
         {
-            if (trimCharacters == Empty)
+            if (characters == Empty)
             {
                 // Trim Whitespace
                 return TrimStart();
             }
 
             Utf8CodePointEnumerator it = GetEnumerator();
-            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = characters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -346,21 +346,21 @@ namespace System.Text.Utf8
             return Substring(0, it.PositionInCodeUnits);
         }
 
-        public Utf8Span TrimEnd(uint[] trimCodePoints)
+        public Utf8Span TrimEnd(uint[] codePoints)
         {
             throw new NotImplementedException();
         }
 
-        public Utf8Span TrimEnd(Utf8Span trimCharacters)
+        public Utf8Span TrimEnd(Utf8Span characters)
         {
-            if (trimCharacters == Empty)
+            if (characters == Empty)
             {
                 // Trim Whitespace
                 return TrimEnd();
             }
 
             Utf8CodePointReverseEnumerator it = new Utf8CodePointReverseEnumerator(Bytes);
-            Utf8CodePointEnumerator itPrefix = trimCharacters.GetEnumerator();
+            Utf8CodePointEnumerator itPrefix = characters.GetEnumerator();
 
             while (it.MoveNext())
             {
@@ -393,7 +393,7 @@ namespace System.Text.Utf8
             return TrimStart().TrimEnd();
         }
 
-        public Utf8Span Trim(uint[] trimCodePoints)
+        public Utf8Span Trim(uint[] codePoints)
         {
             throw new NotImplementedException();
         }
@@ -401,7 +401,7 @@ namespace System.Text.Utf8
 
         // TODO: should we even have index based operations?
         #region Index-based operations
-        public Utf8Span Substring(int index) => index==0?this:Substring(index, Bytes.Length - index);
+        public Utf8Span Substring(int index) => index==0 ? this : Substring(index, Bytes.Length - index);
 
         public Utf8Span Substring(int index, int length)
         {
@@ -455,19 +455,9 @@ namespace System.Text.Utf8
 
             return StringNotFound;
         }
-
-        public bool IsSubstringAt(int index, Utf8Span s)
-        {
-            if (index < 0 || index + s.Bytes.Length > Bytes.Length)
-            {
-                return false;
-            }
-
-            return Substring(index, s.Bytes.Length).Equals(s);
-        }
         #endregion
 
-        #region should be moved to other assemblies, e.g. SystemBuffers.Text
+        #region should be moved to other assemblies, e.g. System.Buffers.Text
         private static string Utf8ToUtf16(ReadOnlySpan<byte> utf8Bytes)
         {
             // TODO: why do we return status here?
@@ -518,7 +508,7 @@ namespace System.Text.Utf8
         {
             var minLength = left.Length;
             if(minLength > right.Length) minLength = right.Length;
-            for(int i=0; i<minLength; i++) {
+            for(int i=0; i < minLength; i++) {
                 var result = left[i].CompareTo(right[i]);
                 if(result != 0) return result;
             }
