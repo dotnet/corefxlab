@@ -2390,7 +2390,7 @@ namespace System.Numerics.Tensors.Tests
 
         [Theory]
         [MemberData(nameof(GetSingleTensorConstructors))]
-        public void CopyToArray(TensorConstructor constructor)
+        public void TestICollectionMembers(TensorConstructor constructor)
         {
             var arr = new[,]
             {
@@ -2399,24 +2399,148 @@ namespace System.Numerics.Tensors.Tests
             };
 
             var tensor = constructor.CreateFromArray<int>(arr);
+            ICollection tensorCollection = tensor;
 
+            Assert.Equal(6, tensorCollection.Count);
+
+            Assert.False(tensorCollection.IsSynchronized);
+
+            Assert.True(ReferenceEquals(tensorCollection, tensorCollection.SyncRoot));
+
+            var actual = Array.CreateInstance(typeof(int), tensor.Length);
+            tensorCollection.CopyTo(actual, 0);
             var expected = constructor.IsReversedStride ?
                 new[] { 1, 4, 2, 5, 3, 6 } :
                 new[] { 1, 2, 3, 4, 5, 6 };
-
-            var actual = Array.CreateInstance(typeof(int), tensor.Length);
-            ((ICollection)tensor).CopyTo(actual, 0);
-
             Assert.Equal(expected, actual);
 
+            actual = Array.CreateInstance(typeof(int), tensor.Length + 2);
+            tensorCollection.CopyTo(actual, 2);
             expected = constructor.IsReversedStride ?
                 new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
                 new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
-
-            actual = Array.CreateInstance(typeof(int), tensor.Length + 2);
-            ((ICollection)tensor).CopyTo(actual, 2);
-
             Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void TestIListMembers(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+            IList tensorList = tensor;
+
+            int expectedIndexValue = constructor.IsReversedStride ? 4 : 2;
+            Assert.Equal(expectedIndexValue, tensorList[1]);
+
+            tensorList[1] = 7;
+            Assert.Equal(7, tensorList[1]);
+            var expected = constructor.IsReversedStride ?
+                new[] { 1, 7, 2, 5, 3, 6 } :
+                new[] { 1, 7, 3, 4, 5, 6 };
+            Assert.Equal(expected, tensor);
+
+            Assert.True(tensorList.IsFixedSize);
+            Assert.False(tensorList.IsReadOnly);
+
+            Assert.Throws<InvalidOperationException>(() => (tensorList).Add(8));
+
+            Assert.True(tensorList.Contains(5));
+            Assert.True(tensorList.Contains(6));
+            Assert.False(tensorList.Contains(0));
+            Assert.False(tensorList.Contains(42));
+            Assert.False(tensorList.Contains("foo"));
+
+            Assert.Equal(constructor.IsReversedStride ? 3 : 4, tensorList.IndexOf(5));
+            Assert.Equal(5, tensorList.IndexOf(6));
+            Assert.Equal(-1, tensorList.IndexOf(0));
+            Assert.Equal(-1, tensorList.IndexOf(42));
+
+            Assert.Throws<InvalidOperationException>(() => (tensorList).Insert(2, 5));
+            Assert.Throws<InvalidOperationException>(() => (tensorList).Remove(1));
+            Assert.Throws<InvalidOperationException>(() => (tensorList).RemoveAt(0));
+
+            tensorList.Clear();
+            Assert.Equal(new[] { 0, 0, 0, 0, 0, 0 }, tensor);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void TestICollectionTMembers(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+            ICollection<int> tensorCollection = tensor;
+
+            Assert.Equal(6, tensorCollection.Count);
+            Assert.False(tensorCollection.IsReadOnly);
+
+            Assert.Throws<InvalidOperationException>(() => tensorCollection.Add(8));
+            Assert.Throws<InvalidOperationException>(() => tensorCollection.Remove(1));
+
+            Assert.True(tensorCollection.Contains(5));
+            Assert.True(tensorCollection.Contains(6));
+            Assert.False(tensorCollection.Contains(0));
+            Assert.False(tensorCollection.Contains(42));
+
+            var actual = new int[tensor.Length];
+            tensorCollection.CopyTo(actual, 0);
+            var expected = constructor.IsReversedStride ?
+                new[] { 1, 4, 2, 5, 3, 6 } :
+                new[] { 1, 2, 3, 4, 5, 6 };
+            Assert.Equal(expected, actual);
+
+            actual = new int[tensor.Length + 2];
+            tensorCollection.CopyTo(actual, 2);
+            expected = constructor.IsReversedStride ?
+                new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
+                new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
+            Assert.Equal(expected, actual);
+
+            tensorCollection.Clear();
+            Assert.Equal(new[] { 0, 0, 0, 0, 0, 0 }, tensor);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void TestIListTMembers(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+            IList<int> tensorList = tensor;
+
+            int expectedIndexValue = constructor.IsReversedStride ? 4 : 2;
+            Assert.Equal(expectedIndexValue, tensorList[1]);
+
+            tensorList[1] = 7;
+            Assert.Equal(7, tensorList[1]);
+            var expected = constructor.IsReversedStride ?
+                new[] { 1, 7, 2, 5, 3, 6 } :
+                new[] { 1, 7, 3, 4, 5, 6 };
+            Assert.Equal(expected, tensor);
+
+            Assert.Equal(constructor.IsReversedStride ? 3 : 4, tensorList.IndexOf(5));
+            Assert.Equal(5, tensorList.IndexOf(6));
+            Assert.Equal(-1, tensorList.IndexOf(0));
+            Assert.Equal(-1, tensorList.IndexOf(42));
+
+            Assert.Throws<InvalidOperationException>(() => (tensorList).Insert(2, 5));
+            Assert.Throws<InvalidOperationException>(() => (tensorList).RemoveAt(0));
         }
     }
 }
