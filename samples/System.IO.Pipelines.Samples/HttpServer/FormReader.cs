@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Samples.Http
                 }
 
                 // TODO: Combine multi value keys
-                _data[key.GetUtf8String()] = value.GetUtf8String();
+                _data[key.GetUtf8Span()] = value.GetUtf8Span();
                 _contentLength -= (buffer.Length - next.Length);
                 buffer = next;
             }

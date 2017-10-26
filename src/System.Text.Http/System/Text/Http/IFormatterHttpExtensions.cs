@@ -23,7 +23,7 @@ namespace System.Text.Http
         private static readonly byte[] s_PutUtf8 = Encoding.UTF8.GetBytes("PUT ");
         private static readonly byte[] s_DeleteUtf8 = Encoding.UTF8.GetBytes("DELETE ");
 
-        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8String reasonCode) where TFormatter : ITextOutput
+        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextOutput
         {
             switch (version) {
                 case HttpVersion.V1_0: formatter.Append(Http10); break;

@@ -9,7 +9,7 @@ namespace Json.Net.Tests
 {
     public struct JsonReader : IDisposable
     {
-        private Utf8String _str;
+        private Utf8Span _str;
         private int _index;
         private int _insideObject;
         private int _insideArray;
@@ -38,7 +38,7 @@ namespace Json.Net.Tests
             Null
         }
 
-        public JsonReader(Utf8String str)
+        public JsonReader(Utf8Span str)
         {
             _str = str.Trim();
             _index = 0;
@@ -50,7 +50,7 @@ namespace Json.Net.Tests
 
         public JsonReader(string str)
         {
-            _str = new Utf8String(str).Trim();
+            _str = new Utf8Span(str).Trim();
             _index = 0;
             _insideObject = 0;
             _insideArray = 0;
@@ -69,7 +69,7 @@ namespace Json.Net.Tests
             return canRead;
         }
 
-        public Utf8String GetName()
+        public Utf8Span GetName()
         {
             SkipEmpty();
             var str = ReadStringValue();
@@ -81,7 +81,7 @@ namespace Json.Net.Tests
         {
             var nextByte = (byte)_str[_index];
 
-            while (Utf8String.IsWhiteSpace(nextByte))
+            while (Utf8Span.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
@@ -125,7 +125,7 @@ namespace Json.Net.Tests
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
         }
 
-        public Utf8String GetValue()
+        public Utf8Span GetValue()
         {
             var type = GetJsonDb.JsonValueType();
             SkipEmpty();
@@ -143,13 +143,13 @@ namespace Json.Net.Tests
                     return ReadNullValue();
                 case JsonDb.JsonValueType.Object:
                 case JsonDb.JsonValueType.Array:
-                    return Utf8String.Empty;
+                    return Utf8Span.Empty;
                 default:
                     throw new ArgumentException("Invalid json value type '" + type + "'.");
             }
         }
 
-        private Utf8String ReadStringValue()
+        private Utf8Span ReadStringValue()
         {
             _index++;
             var count = _index;
@@ -186,7 +186,7 @@ namespace Json.Net.Tests
             return numOfBackSlashes % 2 != 0;
         }
 
-        private Utf8String ReadNumberValue()
+        private Utf8Span ReadNumberValue()
         {
             var count = _index;
 
@@ -238,7 +238,7 @@ namespace Json.Net.Tests
             return resultStr;
         }
 
-        private Utf8String ReadTrueValue()
+        private Utf8Span ReadTrueValue()
         {
             var trueString = _str.Substring(_index, 4);
             if ((byte)trueString[1] != 'r' || (byte)trueString[2] != 'u' || (byte)trueString[3] != 'e')
@@ -252,7 +252,7 @@ namespace Json.Net.Tests
             return trueString;
         }
 
-        private Utf8String ReadFalseValue()
+        private Utf8Span ReadFalseValue()
         {
             var falseString = _str.Substring(_index, 5);
             if ((byte)falseString[1] != 'a' || (byte)falseString[2] != 'l' || (byte)falseString[3] != 's' || (byte)falseString[4] != 'e')
@@ -266,7 +266,7 @@ namespace Json.Net.Tests
             return falseString;
         }
 
-        private Utf8String ReadNullValue()
+        private Utf8Span ReadNullValue()
         {
             var nullString = _str.Substring(_index, 4);
             if ((byte)nullString[1] != 'u' || (byte)nullString[2] != 'l' || (byte)nullString[3] != 'l')
@@ -284,7 +284,7 @@ namespace Json.Net.Tests
         {
             var nextByte = (byte)_str[_index];
 
-            while (Utf8String.IsWhiteSpace(nextByte))
+            while (Utf8Span.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
@@ -294,7 +294,7 @@ namespace Json.Net.Tests
         private void MoveToNextTokenType()
         {
             var nextByte = (byte)_str[_index];
-            while (Utf8String.IsWhiteSpace(nextByte))
+            while (Utf8Span.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];

@@ -4,11 +4,11 @@
 
 using System.Buffers;
 
-namespace System.Text.Encodings.Web.Internal
+namespace System.Text.Encodings.Web
 {
-    internal class Utf8UriEncoder : BufferEncoder
+    public class Utf8UriEncoder : IBufferOperation
     {
-        public override OperationStatus Encode(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+        public OperationStatus Encode(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
         {
             if (Utf8.UrlEncoder.TryEncode(input, output, out written))
             {
@@ -19,21 +19,30 @@ namespace System.Text.Encodings.Web.Internal
             // TODO: this needs to be implemented properly
             throw new NotImplementedException();
         }
+
+        OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+            => Encode(input, output, out consumed, out written);
     }
 
-    internal class Utf8UriDecoder : BufferDecoder
+    public class Utf8UriDecoder : IBufferTransformation
     {
-        public override OperationStatus Decode(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+        public OperationStatus Decode(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
         {
             written = Utf8.UrlEncoder.Decode(input, output);
             consumed = input.Length;
             return OperationStatus.Done;
         }
 
-        public override OperationStatus DecodeInPlace(Span<byte> buffer, int length, out int written)
+        public OperationStatus DecodeInPlace(Span<byte> buffer, int length, out int written)
         {
             written = Utf8.UrlEncoder.DecodeInPlace(buffer.Slice(0, length));
             return OperationStatus.Done;
         }
+
+        OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+            => Decode(input, output, out consumed, out written);
+
+        OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
+            => DecodeInPlace(buffer, dataLength, out written);
     }
 }

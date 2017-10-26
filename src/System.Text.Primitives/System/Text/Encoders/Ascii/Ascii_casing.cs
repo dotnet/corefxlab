@@ -12,6 +12,8 @@ namespace System.Buffers.Text
             static readonly byte[] s_toLower = new byte[128];
             static readonly byte[] s_toUpper = new byte[128];
 
+            public static readonly IBufferTransformation ToLowercase = new ToLowerTransformation();
+
             static Ascii()
             {
                 for (int i = 0; i < s_toLower.Length; i++)
@@ -68,6 +70,21 @@ namespace System.Buffers.Text
                     output[processedBytes] = s_toUpper[next];
                 }
                 return OperationStatus.Done;
+            }
+
+            internal class ToLowerTransformation : IBufferTransformation
+            {
+                OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+                {
+                    var result = Ascii.ToLower(input, output, out written);
+                    consumed = written;
+                    return result;
+                }
+
+                OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
+                {
+                    return Ascii.ToLowerInPlace(buffer.Slice(0, dataLength), out written);
+                }
             }
         }
     }

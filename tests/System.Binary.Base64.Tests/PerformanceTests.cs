@@ -23,12 +23,12 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.BytesToUtf8Length(numberOfBytes)];
+            Span<byte> destination = new byte[Base64.GetMaxEncodedToUtf8Length(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.BytesToUtf8(source, destination, out int consumed, out int written);
+                        Base64.EncodeToUtf8(source, destination, out int consumed, out int written);
                 }
             }
         }
@@ -43,14 +43,14 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.BytesToUtf8Length(numberOfBytes, format)];
+            Span<byte> destination = new byte[Base64.GetMaxEncodedToUtf8Length(numberOfBytes, format)];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.BytesToUtf8(source, destination, out int consumed, out int written, format);
+                        Base64.EncodeToUtf8(source, destination, out int consumed, out int written, format);
                 }
             }
 
@@ -68,7 +68,7 @@ namespace System.Binary.Base64.Tests
         {
             var source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source.AsSpan());
-            var destination = new char[Base64.BytesToUtf8Length(numberOfBytes, format)];
+            var destination = new char[Base64.GetMaxEncodedToUtf8Length(numberOfBytes, format)];
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -89,7 +89,7 @@ namespace System.Binary.Base64.Tests
         {
             var source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source.AsSpan());
-            var destination = new char[Base64.BytesToUtf8Length(numberOfBytes)];
+            var destination = new char[Base64.GetMaxEncodedToUtf8Length(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -108,13 +108,13 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            Span<byte> encoded = new byte[Base64.BytesToUtf8Length(numberOfBytes)];
-            Base64.BytesToUtf8(source, encoded, out int consumed, out int written);
+            Span<byte> encoded = new byte[Base64.GetMaxEncodedToUtf8Length(numberOfBytes)];
+            Base64.EncodeToUtf8(source, encoded, out int consumed, out int written);
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.Utf8ToBytes(encoded, source, out int bytesConsumed, out int bytesWritten);
+                        Base64.DecodeFromUtf8(encoded, source, out int bytesConsumed, out int bytesWritten);
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            int length = Base64.BytesToUtf8Length(numberOfBytes);
+            int length = Base64.GetMaxEncodedToUtf8Length(numberOfBytes);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -156,8 +156,8 @@ namespace System.Binary.Base64.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         Span<byte> encodedSpan = new byte[length];
-                        Base64.BytesToUtf8(source, encodedSpan, out int consumed, out int written);
-                        Base64.Utf8ToBytesInPlace(encodedSpan, out int bytesConsumed, out int bytesWritten);
+                        Base64.EncodeToUtf8(source, encodedSpan, out int consumed, out int written);
+                        Base64.DecodeFromUtf8InPlace(encodedSpan, encodedSpan.Length, out int bytesWritten);
                     }
                 }
             }
@@ -174,7 +174,7 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[inputBufferSize];
             Base64TestHelper.InitalizeDecodableBytes(source);
             Span<byte> expected = new byte[inputBufferSize];
-            Base64.Utf8ToBytes(source, expected, out int expectedConsumed, out int expectedWritten);
+            Base64.DecodeFromUtf8(source, expected, out int expectedConsumed, out int expectedWritten);
 
             Base64TestHelper.SplitSourceIntoSpans(source, false, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 
@@ -239,7 +239,7 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[inputBufferSize];
             Base64TestHelper.InitalizeDecodableBytes(source);
             Span<byte> expected = new byte[inputBufferSize];
-            Base64.Utf8ToBytes(source, expected, out int expectedConsumed, out int expectedWritten);
+            Base64.DecodeFromUtf8(source, expected, out int expectedConsumed, out int expectedWritten);
 
             Base64TestHelper.SplitSourceIntoSpans(source, true, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 

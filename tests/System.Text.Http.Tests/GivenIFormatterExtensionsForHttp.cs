@@ -35,7 +35,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void It_has_an_extension_method_to_write_status_line()
         {
-            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
+            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8Span("OK"));
 
             var result = _formatter.Formatted;
 
@@ -46,8 +46,8 @@ namespace System.Text.Http.Tests
         [Fact]
         public void The_http_extension_methods_can_be_composed_to_generate_the_http_message()
         {
-            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
-            _formatter.Append(new Utf8String("Connection : open"));
+            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8Span("OK"));
+            _formatter.Append(new Utf8Span("Connection : open"));
             _formatter.AppendHttpNewLine();
             _formatter.AppendHttpNewLine();
             _formatter.Append(HttpBody);

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
@@ -138,9 +139,9 @@ namespace System.Text.Json
             Value = 6
         };
 
-        private static readonly byte[] s_false = new Utf8String("false").Bytes.ToArray();
-        private static readonly byte[] s_true = new Utf8String("true").Bytes.ToArray();
-        private static readonly byte[] s_null = new Utf8String("null").Bytes.ToArray();
+        private static readonly byte[] s_false = new Utf8Span("false").Bytes.ToArray();
+        private static readonly byte[] s_true = new Utf8Span("true").Bytes.ToArray();
+        private static readonly byte[] s_null = new Utf8Span("null").Bytes.ToArray();
 
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {
@@ -423,7 +424,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
-            while (Utf8String.IsWhiteSpace(_values[_valuesIndex])) {
+            while (Unicode.IsWhitespace(_values[_valuesIndex])) {
                 _valuesIndex++;
             }
         }

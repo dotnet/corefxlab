@@ -7,22 +7,22 @@ namespace System.Text.Http.SingleSegment
 {
     public ref struct HttpHeadersSingleSegment
     {
-        private readonly Utf8String _headerString;
+        private readonly Utf8Span _headerString;
         private int _count;
         
         public HttpHeadersSingleSegment(ReadOnlySpan<byte> bytes)
         {
-            _headerString = new Utf8String(bytes);
+            _headerString = new Utf8Span(bytes);
             _count = -1;
         }
 
-        public HttpHeadersSingleSegment(Utf8String headerString)
+        public HttpHeadersSingleSegment(Utf8Span headerString)
         {
             _headerString = headerString;
             _count = -1;
         }
 
-        public Utf8String this[string headerName]
+        public Utf8Span this[string headerName]
         {
             get
             {
@@ -34,7 +34,7 @@ namespace System.Text.Http.SingleSegment
                     }
                 }
 
-                return Utf8String.Empty;
+                return Utf8Span.Empty;
             }
         }
 
@@ -62,10 +62,10 @@ namespace System.Text.Http.SingleSegment
             return new Enumerator(_headerString);
         }        
 
-        private static Utf8String ParseHeaderLine(Utf8String headerString, out Utf8StringPair header)
+        private static Utf8Span ParseHeaderLine(Utf8Span headerString, out Utf8SpanPair header)
         {
-            Utf8String headerName;
-            Utf8String headerValue;
+            Utf8Span headerName;
+            Utf8Span headerValue;
 
             //TODO: this will be simplified once we have TrySubstringTo/From accepting strings            
             if (!headerString.TrySubstringTo((byte) ':', out headerName))
@@ -74,7 +74,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             headerString.TrySubstringFrom((byte) ':', out headerString);
-            if (headerString.Length > 0)
+            if (!headerString.IsEmpty)
             {
                 headerString = headerString.Substring(1);
             }
@@ -85,32 +85,32 @@ namespace System.Text.Http.SingleSegment
             }
 
             headerString.TrySubstringFrom((byte)'\n', out headerString);
-            if (headerString.Length > 0)
+            if (!headerString.IsEmpty)
             {
                 headerString = headerString.Substring(1);
             }            
             
-            header = new Utf8StringPair(headerName, headerValue);
+            header = new Utf8SpanPair(headerName, headerValue);
 
             return headerString;
         }
 
         public ref struct Enumerator 
         {
-            private readonly Utf8String _originalHeaderString;
-            private Utf8String _headerString;
-            private Utf8StringPair _current;
+            private readonly Utf8Span _originalHeaderString;
+            private Utf8Span _headerString;
+            private Utf8SpanPair _current;
 
-            internal Enumerator(Utf8String originalHeaderString)
+            internal Enumerator(Utf8Span originalHeaderString)
             {
                 _originalHeaderString = originalHeaderString;
                 _headerString = _originalHeaderString;
-                _current = new Utf8StringPair();
+                _current = new Utf8SpanPair();
             }
 
             public bool MoveNext()
             {
-                if (_headerString.Length == 0)
+                if (_headerString.IsEmpty)
                 {
                     return false;
                 }
@@ -120,15 +120,15 @@ namespace System.Text.Http.SingleSegment
                 return true;
             }
 
-            public Utf8StringPair Current => _current;
+            public Utf8SpanPair Current => _current;
         }
 
-        public ref struct Utf8StringPair
+        public ref struct Utf8SpanPair
         {
-            public readonly Utf8String Key;
-            public readonly Utf8String Value;
+            public readonly Utf8Span Key;
+            public readonly Utf8Span Value;
 
-            public Utf8StringPair(Utf8String first, Utf8String second)
+            public Utf8SpanPair(Utf8Span first, Utf8Span second)
             {
                 this.Key = first;
                 this.Value = second;

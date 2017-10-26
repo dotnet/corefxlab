@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Text;
-using System.Text.Encodings.Web.Internal;
 
 namespace System.Text.Encodings.Web.Utf8
 {
@@ -448,6 +446,6 @@ namespace System.Text.Encodings.Web.Utf8
             IsAllowed['~'] = true;
         }
 
-        public static BufferEncoder Utf8 { get; } = new Utf8UriEncoder();
+        public static Utf8UriEncoder Utf8 { get; } = new Utf8UriEncoder();
     }
 }

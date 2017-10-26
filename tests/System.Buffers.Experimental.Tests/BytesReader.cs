@@ -176,7 +176,7 @@ namespace System.Buffers.Tests
                 var position = Position.First;
                 while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
-                    sb.Append(new Utf8String(segment.Span).ToString());
+                    sb.Append(new Utf8Span(segment.Span).ToString());
                 }
             }
             else

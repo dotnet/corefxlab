@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -65,6 +66,29 @@ namespace System.IO.Pipelines.Tests
             var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
             var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
             buffer.Start.Seek(2, buffer2.End, false);
+        }
+
+        [Fact]
+        public void SegmentStartIsConsideredInBoundsCheck()
+        {
+            // 0               50           100    0             50             100
+            // [                ##############] -> [##############                ]
+            //                         ^c1            ^c2
+            var bufferSegment1 = new BufferSegment();
+            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 50, 99);
+
+            var bufferSegment2 = new BufferSegment();
+            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
+            bufferSegment1.SetNext(bufferSegment2);
+
+            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 50), new ReadCursor(bufferSegment2, 50));
+
+            var c1 = readableBuffer.Move(readableBuffer.Start, 25); // segment 1 index 75
+            var c2 = readableBuffer.Move(readableBuffer.Start, 55); // segment 2 index 5
+
+            var sliced = readableBuffer.Slice(c1, c2);
+
+            Assert.Equal(30, sliced.Length);
         }
 
         public static TheoryData<ReadableBuffer> Size100ReadableBuffers => new TheoryData<ReadableBuffer>

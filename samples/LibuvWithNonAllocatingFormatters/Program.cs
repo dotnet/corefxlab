@@ -78,7 +78,7 @@ namespace LibuvWithNonAllocatingFormatters
                     {
                         unsafe
                         {
-                            var requestString = new Utf8String(data.Span);
+                            var requestString = new Utf8Span(data.Span);
                             Console.WriteLine("*REQUEST:\n {0}", requestString.ToString());
                         }
                     }

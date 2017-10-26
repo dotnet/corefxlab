@@ -43,7 +43,7 @@ namespace System.Text.Http.Tests
         public void It_returns_empty_string_when_header_is_not_present()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
-            httpHeader["Content-Length"].Length.Should().Be(0);
+            httpHeader["Content-Length"].IsEmpty.Should().Be(true);
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
@@ -79,9 +79,9 @@ namespace System.Text.Http.Tests
         }
 
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        public void It_parsers_Utf8String_as_well()
+        public void It_parsers_Utf8Span_as_well()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeadersString)));
 
             httpHeader.Count.Should().Be(8);
         }
@@ -89,7 +89,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_column_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
 
             try
             {
@@ -105,7 +105,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_carriage_return_and_line_feed_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8Span(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
 
             try
             {
@@ -121,13 +121,13 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void CanParseBodylessRequest()
         {
-            var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
+            var request = new Utf8Span("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").Bytes;
             var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);
             Assert.Equal("/", parsed.RequestLine.RequestUri.ToString(SymbolTable.InvariantUtf8));
             Assert.Equal(1, parsed.Headers.Count);
-            Assert.Equal(0, parsed.Body.Length);
+            Assert.True(parsed.Body.IsEmpty);
         }
     }
 }

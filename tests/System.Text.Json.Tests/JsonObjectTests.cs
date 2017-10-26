@@ -152,7 +152,7 @@ namespace System.Text.Json.Tests
 
         private static ArraySegment<byte> StringToUtf8BufferWithEmptySpace(string testString, int emptySpaceSize = 2048)
         {
-            var utf8Bytes = new Utf8String(testString).Bytes;
+            var utf8Bytes = new Utf8Span(testString).Bytes;
             var buffer = new byte[utf8Bytes.Length + emptySpaceSize];
             utf8Bytes.CopyTo(buffer);
             return new ArraySegment<byte>(buffer, 0, utf8Bytes.Length);

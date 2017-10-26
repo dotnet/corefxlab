@@ -10,11 +10,14 @@ namespace System.Text.Utf8.Tests
     {
         public static void Validate(Utf8String str1, Utf8String str2)
         {
-            Assert.Equal(str1.Length, str2.Length);
-            for (int i = 0; i < str1.Length; i++)
-            {
-                Assert.Equal(str1[i], str2[i]);
-            }
+            Assert.Equal(str1.Bytes.Length, str2.Bytes.Length);
+            Assert.True(str1.Bytes.SequenceEqual(str2.Bytes));
+        }
+
+        public static void Validate(Utf8Span str1, Utf8Span str2)
+        {
+            Assert.Equal(str1.Bytes.Length, str2.Bytes.Length);
+            Assert.True(str1.Bytes.SequenceEqual(str2.Bytes));
         }
     }
 }

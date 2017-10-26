@@ -7,6 +7,7 @@ using System.Buffers.Cryptography;
 using System.Buffers.Text;
 using System.Text;
 using System.Text.Encodings.Web.Utf8;
+using static System.Buffers.Text.Encodings;
 
 namespace System.Azure.Authentication
 {   
@@ -18,6 +19,38 @@ namespace System.Azure.Authentication
         public string ResourceType;
         public string Version;
         public DateTime Time;
+
+        public static bool TryWrite2(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
+        {
+            Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
+            var writer = new SpanWriter(buffer);
+            writer.Enlarge = (minumumSize) => { return new byte[minumumSize * 2]; };
+
+            // compute signature hash
+            writer.WriteLine(verb, Ascii.ToLowercase);
+            writer.WriteLine(resourceType, Ascii.ToLowercase);
+            writer.WriteLine(resourceId, Ascii.ToLowercase);
+            writer.WriteLine(utc, 'l');
+            writer.Write('\n');
+            hash.Append(writer.Written);
+
+            // combine token
+            writer.Index = 0; // reuse writer and buffer
+            writer.Write("type=");
+            writer.Write(keyType);
+            writer.Write("&ver=");
+            writer.Write(tokenVersion);
+            writer.Write("&sig=");
+
+            writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+
+            if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+            return true;
+        }
 
         public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default(ParsedFormat), SymbolTable symbolTable = null)
         {
@@ -135,7 +168,7 @@ namespace System.Azure.Authentication
             if(!hash.TryWrite(buffer.Slice(front.Length), out written)){
                 throw new NotImplementedException("need to resize buffer");
             }
-            if (Base64.BytesToUtf8InPlace(buffer.Slice(front.Length), written, out written) != OperationStatus.Done)
+            if (Base64.EncodeToUtf8InPlace(buffer.Slice(front.Length), written, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
