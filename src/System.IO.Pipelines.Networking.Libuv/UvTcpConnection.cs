@@ -239,7 +239,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             var pinnedHandle = inputBuffer.Buffer.Retain(pin: true);
             _inputBufferPin = pinnedHandle;
 
-            return handle.Libuv.buf_init((IntPtr)pinnedHandle.PinnedPointer, inputBuffer.Buffer.Length);
+            return handle.Libuv.buf_init((IntPtr)pinnedHandle.Pointer, inputBuffer.Buffer.Length);
         }
     }
 }

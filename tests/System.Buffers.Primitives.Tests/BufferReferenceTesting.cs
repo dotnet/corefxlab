@@ -109,7 +109,7 @@ namespace System.Buffers.Tests
             var handle = memory.Retain(pin: true);
             unsafe
             {
-                Assert.NotEqual(0L, new IntPtr(handle.PinnedPointer).ToInt64());
+                Assert.NotEqual(0L, new IntPtr(handle.Pointer).ToInt64());
             }
             handle.Dispose();
         }
@@ -245,7 +245,7 @@ namespace System.Buffers.Tests
             {
                 unsafe
                 {
-                    var p = (byte*)pinned.PinnedPointer;
+                    var p = (byte*)pinned.Pointer;
                     Assert.True(null != p);
                     for (int i = 0; i < buffer.Length; i++)
                     {
@@ -285,7 +285,7 @@ namespace System.Buffers.Tests
             {
                 unsafe
                 {
-                    var p = (byte*)pinned.PinnedPointer;
+                    var p = (byte*)pinned.Pointer;
                     Assert.True(null != p);
                     for (int i = 0; i < buffer.Length; i++)
                     {
