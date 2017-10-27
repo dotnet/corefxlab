@@ -4,7 +4,6 @@
 
 using System.Buffers.Text;
 using System.Diagnostics;
-using System.Text;
 using System.Text.Utf8;
 
 namespace System.Buffers
@@ -251,7 +250,7 @@ namespace System.Buffers
 
         private void Resize()
         {
-            if (Enlarge == null) throw new Exception("buffer too small");
+            if (Enlarge == null) throw new BufferTooSmallException();
             var newBuffer = Enlarge(_buffer.Length + 1);
             if (newBuffer.Length <= _buffer.Length) throw new Exception("Enlarge delegate created too small buffer");
             _buffer.CopyTo(newBuffer.Span);
@@ -297,6 +296,10 @@ namespace System.Buffers
         public override string ToString()
         {
             return Encodings.Utf8.ToString(_buffer.Slice(0, _written));
+        }
+
+        public class BufferTooSmallException : Exception {
+            public BufferTooSmallException() : base("Buffer is too small") { }
         }
     }
 }
