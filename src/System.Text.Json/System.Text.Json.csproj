@@ -13,6 +13,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
-    <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
   </ItemGroup>
 </Project>

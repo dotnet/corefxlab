@@ -67,7 +67,7 @@ namespace System.Buffers.Adapters {
         {
             var utf8Unread = _buffer.Span.Slice(_index);
             _index = _buffer.Length;
-            return Utf8ToString(utf8Unread);
+            return Encodings.Utf8.ToString(utf8Unread);
         }
 
         public override string ReadLine()
@@ -76,7 +76,7 @@ namespace System.Buffers.Adapters {
             var indexOfNewline = utf8Unread.IndexOf(s_newline);
             if (indexOfNewline < 0) return ReadToEnd();
             _index += indexOfNewline + s_newline.Length;
-            return Utf8ToString(utf8Unread.Slice(0, indexOfNewline));
+            return Encodings.Utf8.ToString(utf8Unread.Slice(0, indexOfNewline));
         }
 
         public override int ReadBlock(char[] buffer, int index, int count) => Read(buffer, index, count);
@@ -84,29 +84,6 @@ namespace System.Buffers.Adapters {
         public override Task<string> ReadToEndAsync() => Task.FromResult(ReadToEnd());
         public override Task<int> ReadBlockAsync(char[] buffer, int index, int count) => Task.FromResult(ReadBlock(buffer, index, count));
         public override Task<int> ReadAsync(char[] buffer, int index, int count) => Task.FromResult(Read(buffer, index, count));
-
-        // TODO: this should be moved to System.Text.Primitives. Probably to Utf8 class
-        static string Utf8ToString(ReadOnlySpan<byte> utf8)
-        {
-            var result = Encodings.Utf8.ToUtf16Length(utf8, out int bytesNeeded);
-            if (result == OperationStatus.InvalidData || result == OperationStatus.NeedMoreData)
-            {
-                throw new Exception("invalid UTF8 byte");
-            }
-            var str = new string(' ', bytesNeeded / sizeof(char));
-            unsafe
-            {
-                fixed (char* pStr = str)
-                {
-                    var strSpan = new Span<char>(pStr, str.Length);
-                    if (Encodings.Utf8.ToUtf16(utf8, strSpan.AsBytes(), out int consumed, out int written) != OperationStatus.Done)
-                    {
-                        throw new Exception();
-                    }
-                }
-            }
-            return str;
-        }
 
         static byte[] s_newline = Encoding.UTF8.GetBytes(Environment.NewLine);
 

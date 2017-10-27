@@ -1,18 +1,16 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text.Utf16;
+using System.Text.Primitives;
 
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public sealed class Utf8String
+    public sealed class Utf8String : IBufferFormattable
     {
         private readonly byte[] _buffer;
 
@@ -322,6 +320,18 @@ namespace System.Text.Utf8
         public int LastIndexOf(Utf8String value) => Span.LastIndexOf(value.Span);
 
         public int LastIndexOf(uint codePoint) => Span.LastIndexOf(codePoint);
+
+        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default, SymbolTable symbolTable = null)
+        {
+            if (!format.IsDefault) throw new ArgumentOutOfRangeException(nameof(format));
+            if(symbolTable == SymbolTable.InvariantUtf8)
+            {
+                written = Bytes.Length;
+                return Bytes.TryCopyTo(buffer);
+            }
+
+            return symbolTable.TryEncode(Bytes, buffer, out var consumed, out written);
+        }
         #endregion
     }
 }

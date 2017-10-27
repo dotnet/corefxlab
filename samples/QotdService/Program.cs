@@ -5,12 +5,12 @@
 using System.Net.Libuv;
 using System.Text.Utf8;
 
-class Program
+class QotdService
 {
-    public static void Main()
-    {
-        var quote = new Utf8String("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein");
+    static Utf8String quote = (Utf8String)"Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein";
 
+    static void Main()
+    {
         var loop = new UVLoop();
 
         var listener = new TcpListener("0.0.0.0", 17, loop);

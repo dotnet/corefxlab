@@ -5,7 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace System.Text.Utf16
+namespace System.Text.Primitives
 {
     internal struct Utf16LittleEndianCodePointEnumerator
     {

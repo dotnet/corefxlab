@@ -3,11 +3,10 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text.Utf16;
+using System.Text.Primitives;
 
 namespace System.Text.Utf8
 {
@@ -71,7 +70,7 @@ namespace System.Text.Utf8
 
         public ReadOnlySpan<byte> Bytes => _buffer;
 
-        public override string ToString() => Utf8ToUtf16(Bytes);
+        public override string ToString() => Encodings.Utf8.ToString(Bytes);
 
         public bool ReferenceEquals(Utf8Span other) => Bytes == other._buffer;
 
@@ -163,7 +162,7 @@ namespace System.Text.Utf8
 
         public static bool operator !=(string left, Utf8Span right) => !right.Equals(left);
 
-        public int CompareTo(Utf8Span other) => Compare(this.Bytes, other.Bytes);
+        public int CompareTo(Utf8Span other) => Bytes.SequenceCompareTo(other.Bytes);
 
         public int CompareTo(Utf8String other) => CompareTo(other.Span);
 
@@ -437,7 +436,7 @@ namespace System.Text.Utf8
                 return Bytes.Length == 0 ? 0 : Bytes.Length - 1;
             }
 
-            return LastIndexOf(Bytes, value.Bytes);
+            return Bytes.LastIndexOf(value.Bytes);
         }
 
         public int LastIndexOf(uint codePoint)
@@ -454,65 +453,6 @@ namespace System.Text.Utf8
             }
 
             return StringNotFound;
-        }
-        #endregion
-
-        #region should be moved to other assemblies, e.g. System.Buffers.Text
-        private static string Utf8ToUtf16(ReadOnlySpan<byte> utf8Bytes)
-        {
-            // TODO: why do we return status here?
-            var status = Encodings.Utf8.ToUtf16Length(utf8Bytes, out int bytesNeeded);
-            var result = new String(' ', bytesNeeded >> 1);
-            unsafe
-            {
-                fixed (char* pResult = result)
-                {
-                    var resultBytes = new Span<byte>((void*)pResult, bytesNeeded);
-                    if (Encodings.Utf8.ToUtf16(utf8Bytes, resultBytes, out int consumed, out int written) == OperationStatus.Done)
-                    {
-                        Debug.Assert(written == resultBytes.Length);
-                        return result;
-                    }
-                }
-            }
-            return String.Empty; // TODO: is this what we want to do if Bytes are invalid UTF8? Can Bytes be invalid UTF8?
-        }
-
-        private static int LastIndexOf(ReadOnlySpan<byte> buffer, ReadOnlySpan<byte> values)
-        {
-            if (buffer.Length < values.Length) return -1;
-            if (values.Length == 0) return 0;
-
-            int candidateLength = buffer.Length;
-            var firstByte = values[0];
-            while (true)
-            {
-                int index = LastIndexOf(buffer.Slice(0, candidateLength), firstByte);
-                if (index == -1) return -1;
-                var slice = buffer.Slice(index);
-                if (slice.StartsWith(values)) return index;
-                candidateLength = index;
-            }
-        }
-
-        private static int LastIndexOf(ReadOnlySpan<byte> buffer, byte value)
-        {
-            for (int i = buffer.Length - 1; i >= 0; i--)
-            {
-                if (buffer[i] == value) return i;
-            }
-            return -1;
-        }
-
-        private int Compare(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
-        {
-            var minLength = left.Length;
-            if(minLength > right.Length) minLength = right.Length;
-            for(int i=0; i < minLength; i++) {
-                var result = left[i].CompareTo(right[i]);
-                if(result != 0) return result;
-            }
-            return left.Length.CompareTo(right.Length);
         }
         #endregion
     }

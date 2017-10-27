@@ -2,23 +2,35 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-namespace System.Text.Utf8
+namespace System.Text.Primitives
 {
-    public ref struct Utf8CodePointEnumerator
+    internal ref struct Utf8CodePointReverseEnumerator
     {
-        private ReadOnlySpan<byte> _utf8Bytes;
+        private ReadOnlySpan<byte> _buffer;
         private int _index;
         private int _currentLenCache;
         private const int ResetIndex = -Utf8Helper.MaxCodeUnitsPerCodePoint - 1;
 
-        public Utf8CodePointEnumerator(ReadOnlySpan<byte> utf8Bytes) : this()
+        public Utf8CodePointReverseEnumerator(ReadOnlySpan<byte> buffer) : this()
         {
-            _utf8Bytes = utf8Bytes;
+            _buffer = buffer;
+
             Reset();
         }
 
         // TODO: Name TBD
-        public int PositionInCodeUnits => IsOnResetPosition() ? -1 : _index;
+        public int PositionInCodeUnits
+        {
+            get
+            {
+                if (IsOnResetPosition())
+                {
+                    return -1;
+                }
+
+                return _index;
+            }
+        }
 
         public uint Current
         {
@@ -34,7 +46,8 @@ namespace System.Text.Utf8
                     throw new InvalidOperationException("Current does not exist");
                 }
 
-                bool succeeded = Utf8Helper.TryDecodeCodePoint(_utf8Bytes, _index, out uint codePoint, out _currentLenCache);
+                ReadOnlySpan<byte> buffer = _buffer.Slice(0, _index);
+                bool succeeded = Utf8Helper.TryDecodeCodePointBackwards(buffer, out uint ret, out _currentLenCache);
 
                 if (!succeeded || _currentLenCache == 0)
                 {
@@ -42,7 +55,7 @@ namespace System.Text.Utf8
                     throw new Exception("Invalid code point!");
                 }
 
-                return codePoint;
+                return ret;
             }
         }
 
@@ -67,24 +80,25 @@ namespace System.Text.Utf8
                 }
             }
 
-            _index += _currentLenCache;
+            _index -= _currentLenCache;
             _currentLenCache = 0;
 
             return HasValue();
         }
 
         // This is different than Reset, it goes to the first element not before first
-        private void MoveToFirstPosition() => _index = 0;
+        private void MoveToFirstPosition() => _index = _buffer.Length;
 
         private bool IsOnResetPosition() => _index == ResetIndex;
 
         private bool HasValue()
         {
-            if (IsOnResetPosition()) {
+            if (IsOnResetPosition())
+            {
                 return true;
             }
 
-            return _index < _utf8Bytes.Length;
+            return _index > 0;
         }
 
         // This is different than MoveToFirstPosition, this actually goes before anything
@@ -93,6 +107,5 @@ namespace System.Text.Utf8
             _index = ResetIndex;
             _currentLenCache = 0;
         }
-    }
+    }  
 }
-

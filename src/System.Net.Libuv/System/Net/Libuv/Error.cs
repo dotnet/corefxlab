@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers.Text;
 using System.Text;
 
 namespace System.Net.Libuv
@@ -92,7 +93,7 @@ namespace System.Net.Libuv
             {
                 array[i] = nullTerminatedUtf8[i];
             }
-            var nameString = Encoding.UTF8.GetString(array, 0, array.Length);
+            var nameString = Encodings.Utf8.ToString(array);
             return nameString;
         }
 
