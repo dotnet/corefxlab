@@ -2420,6 +2420,11 @@ namespace System.Numerics.Tensors.Tests
                 new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
                 new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
             Assert.Equal(expected, actual);
+
+            Assert.Throws<ArgumentNullException>(() => tensorCollection.CopyTo(null, 0));
+            Assert.Throws<ArgumentException>(() => tensorCollection.CopyTo(new int[3, 4], 0));
+            Assert.Throws<ArgumentException>(() => tensorCollection.CopyTo(new int[5], 0));
+            Assert.Throws<ArgumentException>(() => tensorCollection.CopyTo(new int[6], 1));
         }
 
         [Theory]
@@ -2506,6 +2511,10 @@ namespace System.Numerics.Tensors.Tests
                 new[] { 0, 0, 1, 4, 2, 5, 3, 6 } :
                 new[] { 0, 0, 1, 2, 3, 4, 5, 6 };
             Assert.Equal(expected, actual);
+
+            Assert.Throws<ArgumentNullException>(() => tensorCollection.CopyTo(null, 0));
+            Assert.Throws<ArgumentException>(() => tensorCollection.CopyTo(new int[5], 0));
+            Assert.Throws<ArgumentException>(() => tensorCollection.CopyTo(new int[6], 1));
 
             tensorCollection.Clear();
             Assert.Equal(new[] { 0, 0, 0, 0, 0, 0 }, tensor);

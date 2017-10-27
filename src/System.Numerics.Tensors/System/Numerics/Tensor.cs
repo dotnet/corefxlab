@@ -947,6 +947,19 @@ namespace System.Numerics
 
         void ICollection.CopyTo(Array array, int index)
         {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (array.Rank != 1)
+            {
+                throw new ArgumentException("Only single dimensional arrays are supported for the requested action.", nameof(array));
+            }
+            if (array.Length < index + Length)
+            {
+                throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+            }
+
             if (array is T[] destinationArray)
             {
                 CopyTo(destinationArray, index);
@@ -1087,6 +1100,15 @@ namespace System.Numerics
         /// </param>
         protected virtual void CopyTo(T[] array, int arrayIndex)
         {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (array.Length < arrayIndex + Length)
+            {
+                throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+            }
+
             for (int i = 0; i < length; i++)
             {
                 array[arrayIndex + i] = GetValue(i);
