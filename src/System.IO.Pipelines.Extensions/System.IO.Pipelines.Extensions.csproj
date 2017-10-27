@@ -11,6 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion)" />
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
   </ItemGroup>
 </Project>
