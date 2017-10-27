@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json", "src\Sys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Dynamic", "src\System.Text.Json.Dynamic\System.Text.Json.Dynamic.csproj", "{9D002565-1885-48C7-9B7F-109A54CF5A53}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Threading.Tasks.Channels", "src\System.Threading.Tasks.Channels\System.Threading.Tasks.Channels.csproj", "{1BA5E3FD-B98D-40DA-9FD0-E358241D8DE1}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http", "src\System.Text.Http\System.Text.Http.csproj", "{E15ADC09-1D96-438F-8F95-D9D504A5ADE9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Tests", "tests\System.Text.Http.Tests\System.Text.Http.Tests.csproj", "{C4433A94-B6D8-42CD-B87F-0A6A2E24A1DE}"
@@ -66,6 +68,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests", "tests\System.Text.Json.Tests\System.Text.Json.Tests.csproj", "{2D5ED54D-9B5F-4E6E-8627-18A010207701}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests.Dynamic", "tests\System.Text.Json.Tests.Dynamic\System.Text.Json.Tests.Dynamic.csproj", "{645F271D-87B5-4289-9DCE-E9CE881E7460}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Threading.Tasks.Channels.Tests", "tests\System.Threading.Tasks.Channels.Tests\System.Threading.Tasks.Channels.Tests.csproj", "{6038B696-5E27-46EA-83B6-5AFB1D6001AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EDFD30EA-9024-45C0-8CB3-64ADD8463585}"
 EndProject
