@@ -5,8 +5,8 @@ namespace System
 {
     public struct Range<T> : IEquatable<Range<T>>, IFormattable
     {
-        public T From;
-        public T To;
+        public readonly T From;
+        public readonly T To;
 
         public Range(T from, T to)
         {
