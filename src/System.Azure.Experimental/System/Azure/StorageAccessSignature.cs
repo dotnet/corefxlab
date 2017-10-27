@@ -12,7 +12,7 @@ namespace System.Azure.Authentication
 {
     public static class StorageAccessSignature
     {
-        static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be beeded once we have UTF8 literals
+        static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
 
         public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
