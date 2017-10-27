@@ -15,7 +15,7 @@ using System.Text;
 using System.Text.Encodings.Web.Utf8;
 using System.Text.Utf8;
 
-public class AzureBench
+public class CosmosDbBench
 {
     static string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
     static string keyType = "master";
@@ -24,7 +24,6 @@ public class AzureBench
     static string resourceId = "";
     static string verb = "GET";
 
-    static Utf8String fakeKeyU8 = (Utf8String)"TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
     static Utf8String keyTypeU8 = (Utf8String)"master";
     static Utf8String resourceTypeU8 = (Utf8String)"dbs";
     static Utf8String versionU8 = (Utf8String)"1.0";
@@ -35,7 +34,7 @@ public class AzureBench
     static byte[] output = new byte[256];
     static Sha256 sha;
 
-    static AzureBench()
+    static CosmosDbBench()
     {
         var keyBytes = Key.ComputeKeyBytes(fakeKey);
         sha = Sha256.Create(keyBytes);

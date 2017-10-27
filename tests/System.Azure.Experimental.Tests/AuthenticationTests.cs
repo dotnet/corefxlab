@@ -46,7 +46,7 @@ namespace System.Azure.Tests
 
             // Generate using non-allocating APIs
             var buffer = new byte[256];
-            Assert.True(CosmosDbAuthorizationHeader.TryWrite(buffer, sha, (Utf8Span)keyType, (Utf8Span)"get", (Utf8Span)resourceId, (Utf8Span)resourceType, (Utf8Span)version, utc, out int bytesWritten));
+            Assert.True(CosmosDbAuthorizationHeader.TryWrite(buffer, sha, (Utf8Span)keyType, (Utf8Span)"GET", (Utf8Span)resourceId, (Utf8Span)resourceType, (Utf8Span)version, utc, out int bytesWritten));
             var signatureAsString = Encoding.UTF8.GetString(buffer, 0, bytesWritten);
 
             // Generate using existing .NET APIs (sample from Asure documentation)

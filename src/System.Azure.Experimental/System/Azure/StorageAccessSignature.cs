@@ -6,79 +6,56 @@ using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Buffers.Cryptography;
-using System.Text;
+using System.Text.Utf8;
 
 namespace System.Azure.Authentication
 {
     public static class StorageAccessSignature
     {
+        static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
+
         public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
-            int written, consumed;
-            bytesWritten = 0;
-
-            if (verb.Equals("GET", StringComparison.Ordinal))
+            try
             {
-                if (output.Length < 3)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-                s_GET.CopyTo(output);
-                bytesWritten += s_GET.Length;
+                var writer = new SpanWriter(output);
+                writer.WriteLine(verb);
+                writer.Write("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
+                writer.WriteLine(utc, 'R');
+                writer.Write(canonicalizedResource);
+                hash.Append(writer.Written);
+                writer.Index = 0;
+                writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+                bytesWritten = writer.Index;
+                return true;
             }
-            else
-            {
-                if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                output[written] = (byte)'\n';
-                bytesWritten += written + 1;
-            }
-
-            var free = output.Slice(bytesWritten);
-            s_emptyHeaders.CopyTo(free);
-            bytesWritten += s_emptyHeaders.Length;
-
-            free = output.Slice(bytesWritten);
-            if (!Utf8Formatter.TryFormat(utc, free, out written, 'R'))
+            catch (SpanWriter.BufferTooSmallException)
             {
                 bytesWritten = 0;
                 return false;
             }
-            free[written] = (byte)'\n';
-            bytesWritten += written + 1;
-            free = output.Slice(bytesWritten);
-
-            if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            bytesWritten += written;
-
-            var formatted = output.Slice(0, bytesWritten);
-
-            hash.Append(formatted);
-            if(!hash.TryWrite(output, out written)){
-                throw new NotImplementedException("need to resize buffer");
-            }
-
-            if (Base64.EncodeToUtf8InPlace(output, written, out written) != OperationStatus.Done)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            bytesWritten = written;
-            return true;
         }
 
-        static readonly byte[] s_GET = Encoding.UTF8.GetBytes("GET\n");
-
-        static readonly byte[] s_emptyHeaders = Encoding.UTF8.GetBytes("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
+        public static bool TryWrite(Span<byte> output, Sha256 hash, Utf8Span verb, Utf8Span canonicalizedResource, DateTime utc, out int bytesWritten)
+        {
+            try
+            {
+                var writer = new SpanWriter(output);
+                writer.WriteLine(verb);
+                writer.Write(s_emptyHeaders);
+                writer.WriteLine(utc, 'R');
+                writer.Write(canonicalizedResource);
+                hash.Append(writer.Written);
+                writer.Index = 0;
+                writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+                bytesWritten = writer.Index;
+                return true;
+            }
+            catch (SpanWriter.BufferTooSmallException)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+        }
     }
 }
