@@ -25,7 +25,7 @@ namespace System.Azure.Authentication
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
                 writer.Index = 0;
-                writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+                writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
                 bytesWritten = writer.Index;
                 return true;
             }
@@ -47,7 +47,7 @@ namespace System.Azure.Authentication
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
                 writer.Index = 0;
-                writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+                writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
                 bytesWritten = writer.Index;
                 return true;
             }
