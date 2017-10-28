@@ -24,6 +24,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.performance.core" Version="$(XunitPerformanceVersion)" />
     <PackageReference Include="System.IO.FileSystem" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
