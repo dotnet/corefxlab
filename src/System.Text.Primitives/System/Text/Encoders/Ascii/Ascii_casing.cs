@@ -13,6 +13,7 @@ namespace System.Buffers.Text
             static readonly byte[] s_toUpper = new byte[128];
 
             public static readonly IBufferTransformation ToLowercase = new ToLowerTransformation();
+            public static readonly IBufferTransformation ToUppercase = new ToUpperTransformation();
 
             static Ascii()
             {
@@ -76,14 +77,29 @@ namespace System.Buffers.Text
             {
                 OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 {
-                    var result = Ascii.ToLower(input, output, out written);
+                    var result = ToLower(input, output, out written);
                     consumed = written;
                     return result;
                 }
 
                 OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
                 {
-                    return Ascii.ToLowerInPlace(buffer.Slice(0, dataLength), out written);
+                    return ToLowerInPlace(buffer.Slice(0, dataLength), out written);
+                }
+            }
+
+            internal class ToUpperTransformation : IBufferTransformation
+            {
+                OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+                {
+                    var result = ToUpper(input, output, out written);
+                    consumed = written;
+                    return result;
+                }
+
+                OperationStatus IBufferTransformation.Transform(Span<byte> buffer, int dataLength, out int written)
+                {
+                    return ToUpperInPlace(buffer.Slice(0, dataLength), out written);
                 }
             }
         }

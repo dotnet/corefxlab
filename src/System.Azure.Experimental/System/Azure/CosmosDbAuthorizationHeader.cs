@@ -42,7 +42,7 @@ namespace System.Azure.Authentication
             writer.Write(tokenVersion);
             writer.Write("&sig=");
 
-            writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
@@ -74,7 +74,7 @@ namespace System.Azure.Authentication
             writer.Write(tokenVersion);
             writer.Write(s_sigLiteral);
 
-            writer.WriteBytes(hash, Base64.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
