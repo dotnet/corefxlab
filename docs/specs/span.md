@@ -208,7 +208,7 @@ public struct Span<T> {
 }
 ```
 
-A prototype of such fast `Span<T>` can be found [here](https://github.com/dotnet/coreclr/blob/SpanOfT/src/mscorlib/src/System/Span.cs). Through the magic of the "ref field", it can support slicing without requiring a strong pointer to the root of the sliced object. The GC is able to trace the interior pointer, keep the root object alive, and update the interior pointer if the object is relocated during a collection.
+A prototype of such fast `Span<T>` can be found [here](https://github.com/dotnet/coreclr/blob/master/src/mscorlib/shared/System/Span.cs). Through the magic of the "ref field", it can support slicing without requiring a strong pointer to the root of the sliced object. The GC is able to trace the interior pointer, keep the root object alive, and update the interior pointer if the object is relocated during a collection.
 
 A different representation will be implemented for platforms that don’t support ref fields (interior pointers):
 ```c#
@@ -218,7 +218,7 @@ public struct Span<T> {
     internal int _length;
 }
 ```
-A prototype of this design can be found [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Span.cs).
+A prototype of this design can be found [here](https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Span.cs).
 In this representation, the `Span<T>`'s indexer will add the `_pointer` and the address of `_relocatableObject` before accessing items in the Span. This will make the accessor slower, but it will ensure that when the GC moves the sliced object (e.g. array) in memory, the indexer still accesses the right memory location. Note that if the Span wraps a managed object, the `_pointer` field will be the offset off the object's root to the objects data slice, but if the Span wraps a native memory, the `_pointer` will point to the memory and the `_relocatableObject` will be set to null (zero). In either case, adding the pointer and the address of the object `(null == 0)` results in the right "effective" address.
 
 ## Struct Tearing
@@ -263,7 +263,7 @@ A stack-only type with the associated trade-offs is great for low level develope
 
 For the whole platform to be successful, we must add an exchange type, currently called `Memory<T>`, that can be used with the full power of the language, i.e. it’s not stack-only. `Memory<T>` can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When `Memory<T>` is finally ready to be manipulated by a data transformation routine, it will be temporarily converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
 
-See a prototype of `Memory<T>` [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs). Note that the prototype is currently not tearing safe. We will make it safe in the upcoming weeks.
+See a prototype of `Memory<T>` [here](https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/Memory.cs). Note that the prototype is currently not tearing safe. We will make it safe in the upcoming weeks.
 
 # Other Random Thoughts
 
