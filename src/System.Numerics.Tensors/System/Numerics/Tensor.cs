@@ -339,7 +339,7 @@ namespace System.Numerics
     /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
     [DebuggerDisplay("{GetArrayString(false)}")]
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
-    public abstract class Tensor<T> : IList, ICollection, IEnumerable, IStructuralComparable, IStructuralEquatable
+    public abstract class Tensor<T> : IList, IList<T>, IReadOnlyList<T>, IStructuralComparable, IStructuralEquatable
     {
         internal static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
@@ -932,18 +932,9 @@ namespace System.Numerics
         #endregion
 
         #region IEnumerable members
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Enumerate().GetEnumerator();
-        }
-
-        private IEnumerable<T> Enumerate()
-        {
-            for(int i = 0; i < Length; i++)
-            {
-                yield return GetValue(i);
-            }
-
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
         #endregion
 
@@ -956,9 +947,29 @@ namespace System.Numerics
 
         void ICollection.CopyTo(Array array, int index)
         {
-            for(int i = 0; i < length; i++)
+            if (array is T[] destinationArray)
             {
-                array.SetValue(GetValue(i), index + i);
+                CopyTo(destinationArray, index);
+            }
+            else
+            {
+                if (array == null)
+                {
+                    throw new ArgumentNullException(nameof(array));
+                }
+                if (array.Rank != 1)
+                {
+                    throw new ArgumentException("Only single dimensional arrays are supported for the requested action.", nameof(array));
+                }
+                if (array.Length < index + Length)
+                {
+                    throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+                }
+
+                for (int i = 0; i < length; i++)
+                {
+                    array.SetValue(GetValue(i), index + i);
+                }
             }
         }
         #endregion
@@ -999,27 +1010,19 @@ namespace System.Numerics
 
         bool IList.Contains(object value)
         {
-            for (int i = 0; i < Length; i++)
+            if (IsCompatibleObject(value))
             {
-                if (GetValue(i).Equals(value))
-                {
-                    return true;
-                }
+                return Contains((T)value);
             }
-
             return false;
         }
 
         int IList.IndexOf(object value)
         {
-            for (int i = 0; i < Length; i++)
+            if (IsCompatibleObject(value))
             {
-                if (GetValue(i).Equals(value))
-                {
-                    return i;
-                }
+                return IndexOf((T)value);
             }
-
             return -1;
         }
 
@@ -1037,6 +1040,138 @@ namespace System.Numerics
         {
             throw new InvalidOperationException();
         }
+        #endregion
+
+        #region IEnumerable<T> members
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                yield return GetValue(i);
+            }
+        }
+        #endregion
+
+        #region ICollection<T> members
+        int ICollection<T>.Count => (int)Length;
+
+        void ICollection<T>.Add(T item)
+        {
+            throw new InvalidOperationException();
+        }
+
+        void ICollection<T>.Clear()
+        {
+            Fill(default);
+        }
+
+        bool ICollection<T>.Contains(T item)
+        {
+            return Contains(item);
+        }
+
+        /// <summary>
+        /// Determines whether an element is in the Tensor<T>.
+        /// </summary>
+        /// <param name="item">
+        /// The object to locate in the Tensor<T>. The value can be null for reference types.
+        /// </param>
+        /// <returns>
+        /// true if item is found in the Tensor<T>; otherwise, false.
+        /// </returns>
+        protected virtual bool Contains(T item)
+        {
+            return Length != 0 && IndexOf(item) != -1;
+        }
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// Copies the elements of the Tensor<T> to an Array, starting at a particular Array index.
+        /// </summary>
+        /// <param name="array">
+        /// The one-dimensional Array that is the destination of the elements copied from Tensor<T>. The Array must have zero-based indexing.
+        /// </param>
+        /// <param name="arrayIndex">
+        /// The zero-based index in array at which copying begins.
+        /// </param>
+        protected virtual void CopyTo(T[] array, int arrayIndex)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (array.Length < arrayIndex + Length)
+            {
+                throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                array[arrayIndex + i] = GetValue(i);
+            }
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            throw new InvalidOperationException();
+        }
+        #endregion
+
+        #region IReadOnlyCollection<T> members
+
+        int IReadOnlyCollection<T>.Count => (int)Length;
+
+        #endregion
+
+        #region IList<T> members
+        T IList<T>.this[int index]
+        {
+            get { return GetValue(index); }
+            set { SetValue(index, value); }
+        }
+
+        int IList<T>.IndexOf(T item)
+        {
+            return IndexOf(item);
+        }
+
+        /// <summary>
+        /// Determines the index of a specific item in the Tensor<T>.
+        /// </summary>
+        /// <param name="item">The object to locate in the Tensor<T>.</param>
+        /// <returns>The index of item if found in the tensor; otherwise, -1.</returns>
+        protected virtual int IndexOf(T item)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                if (GetValue(i).Equals(item))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        void IList<T>.Insert(int index, T item)
+        {
+            throw new InvalidOperationException();
+        }
+
+        void IList<T>.RemoveAt(int index)
+        {
+            throw new InvalidOperationException();
+        }
+        #endregion
+
+        #region IReadOnlyList<T> members
+
+        T IReadOnlyList<T>.this[int index] => GetValue(index);
+
         #endregion
 
         #region IStructuralComparable members
@@ -1384,6 +1519,13 @@ namespace System.Numerics
                     builder.Append(' ');
                 }
             }
+        }
+
+        private static bool IsCompatibleObject(object value)
+        {
+            // Non-null values are fine.  Only accept nulls if T is a class or Nullable<T>.
+            // Note that default(T) is not equal to null for value types except when T is Nullable<T>.
+            return ((value is T) || (value == null && default(T) == null));
         }
     }
 }

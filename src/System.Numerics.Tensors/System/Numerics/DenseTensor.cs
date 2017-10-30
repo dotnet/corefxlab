@@ -98,6 +98,38 @@ namespace System.Numerics
             Buffer.Span[index] = value;
         }
 
+        protected override void CopyTo(T[] array, int arrayIndex)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (array.Length < arrayIndex + Length)
+            {
+                throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+            }
+
+            Buffer.Span.CopyTo(array.AsSpan().Slice(arrayIndex));
+        }
+
+        protected override int IndexOf(T item)
+        {
+            // TODO: use Span.IndexOf when/if it removes the IEquatable type constraint
+            if (Buffer.TryGetArray(out var arraySegment))
+            {
+                var result = Array.IndexOf(arraySegment.Array, item, arraySegment.Offset, arraySegment.Count);
+                if (result != -1)
+                {
+                    result -= arraySegment.Offset;
+                }
+                return result;
+            }
+            else
+            {
+                return base.IndexOf(item);
+            }
+        }
+
         /// <summary>
         /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
