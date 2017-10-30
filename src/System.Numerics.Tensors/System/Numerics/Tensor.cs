@@ -339,7 +339,7 @@ namespace System.Numerics
     /// <typeparam name="T">type contained within the Tensor.  Typically a value type such as int, double, float, etc.</typeparam>
     [DebuggerDisplay("{GetArrayString(false)}")]
     // When we cross-compile for frameworks that expose ICloneable this must implement ICloneable as well.
-    public abstract class Tensor<T> : IList, IList<T>, IStructuralComparable, IStructuralEquatable
+    public abstract class Tensor<T> : IList, IList<T>, IReadOnlyList<T>, IStructuralComparable, IStructuralEquatable
     {
         internal static ITensorArithmetic<T> arithmetic => TensorArithmetic.GetArithmetic<T>();
 
@@ -934,7 +934,7 @@ namespace System.Numerics
         #region IEnumerable members
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
         #endregion
 
@@ -947,25 +947,25 @@ namespace System.Numerics
 
         void ICollection.CopyTo(Array array, int index)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            if (array.Rank != 1)
-            {
-                throw new ArgumentException("Only single dimensional arrays are supported for the requested action.", nameof(array));
-            }
-            if (array.Length < index + Length)
-            {
-                throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
-            }
-
             if (array is T[] destinationArray)
             {
                 CopyTo(destinationArray, index);
             }
             else
             {
+                if (array == null)
+                {
+                    throw new ArgumentNullException(nameof(array));
+                }
+                if (array.Rank != 1)
+                {
+                    throw new ArgumentException("Only single dimensional arrays are supported for the requested action.", nameof(array));
+                }
+                if (array.Length < index + Length)
+                {
+                    throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
+                }
+
                 for (int i = 0; i < length; i++)
                 {
                     array.SetValue(GetValue(i), index + i);
@@ -1043,7 +1043,7 @@ namespace System.Numerics
         #endregion
 
         #region IEnumerable<T> members
-        public IEnumerator<T> GetEnumerator()
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             for (int i = 0; i < Length; i++)
             {
@@ -1121,6 +1121,12 @@ namespace System.Numerics
         }
         #endregion
 
+        #region IReadOnlyCollection<T> members
+
+        int IReadOnlyCollection<T>.Count => (int)Length;
+
+        #endregion
+
         #region IList<T> members
         T IList<T>.this[int index]
         {
@@ -1160,6 +1166,12 @@ namespace System.Numerics
         {
             throw new InvalidOperationException();
         }
+        #endregion
+
+        #region IReadOnlyList<T> members
+
+        T IReadOnlyList<T>.this[int index] => GetValue(index);
+
         #endregion
 
         #region IStructuralComparable members

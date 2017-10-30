@@ -2551,5 +2551,25 @@ namespace System.Numerics.Tensors.Tests
             Assert.Throws<InvalidOperationException>(() => (tensorList).Insert(2, 5));
             Assert.Throws<InvalidOperationException>(() => (tensorList).RemoveAt(0));
         }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void TestIReadOnlyTMembers(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+
+            IReadOnlyCollection<int> tensorCollection = tensor;
+            Assert.Equal(6, tensorCollection.Count);
+
+            IReadOnlyList<int> tensorList = tensor;
+            int expectedIndexValue = constructor.IsReversedStride ? 4 : 2;
+            Assert.Equal(expectedIndexValue, tensorList[1]);
+        }
     }
 }

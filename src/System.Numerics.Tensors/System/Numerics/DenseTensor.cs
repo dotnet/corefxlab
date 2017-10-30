@@ -114,7 +114,7 @@ namespace System.Numerics
 
         protected override int IndexOf(T item)
         {
-            // TODO: use Span.IndexOf when/if it removes the struct type constraint
+            // TODO: use Span.IndexOf when/if it removes the IEquatable type constraint
             if (Buffer.TryGetArray(out var arraySegment))
             {
                 var result = Array.IndexOf(arraySegment.Array, item, arraySegment.Offset, arraySegment.Count);
