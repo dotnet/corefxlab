@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Buffers.Cryptography;
 using System.Text.Utf8;
+using System.Binary.Base64Experimental;
 
 namespace System.Azure.Authentication
 {
@@ -25,7 +25,7 @@ namespace System.Azure.Authentication
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
                 writer.Index = 0;
-                writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
+                writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
                 bytesWritten = writer.Index;
                 return true;
             }
@@ -47,7 +47,7 @@ namespace System.Azure.Authentication
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
                 writer.Index = 0;
-                writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
+                writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
                 bytesWritten = writer.Index;
                 return true;
             }

@@ -7,9 +7,9 @@ using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Binary.Base64
+namespace System.Binary.Base64Experimental
 {
-    public static partial class Base64
+    public static partial class Base64Experimental
     {
         public static readonly Utf8Encoder BytesToUtf8Encoder = new Utf8Encoder();
 
@@ -41,7 +41,7 @@ namespace System.Binary.Base64
         {
             Debug.Assert(length >= 0);
 
-            int defaultLength = Buffers.Text.Base64.GetMaxEncodedToUtf8Length(length);
+            int defaultLength = Base64.GetMaxEncodedToUtf8Length(length);
             if (format.IsDefault) return defaultLength;
 
             format = ValidateFormat(format);
@@ -56,7 +56,7 @@ namespace System.Binary.Base64
 
         public static OperationStatus EncodeToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
         {
-            if (format.IsDefault) return Buffers.Text.Base64.EncodeToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
+            if (format.IsDefault) return Base64.EncodeToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
 
             format = ValidateFormat(format);
 
@@ -75,7 +75,7 @@ namespace System.Binary.Base64
 
             for (int i = 0; i < numLineBreaks; i++)
             {
-                status = Buffers.Text.Base64.EncodeToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
+                status = Base64.EncodeToUtf8(bytes.Slice(0, bytesInOneLine), utf8.Slice(0, lineLength), out int bytesConsumedLoop, out int bytesWrittenLoop);
                 utf8[lineLength] = (byte)'\r';
                 utf8[lineLength + 1] = (byte)'\n';
                 bytesWrittenLoop += 2;
@@ -87,7 +87,7 @@ namespace System.Binary.Base64
 
             if (isFinalBlock)
             {
-                status = Buffers.Text.Base64.EncodeToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
+                status = Base64.EncodeToUtf8(bytes, utf8, out int leftOverbytesConsumed, out int leftOverbytesWritten);
                 consumed += leftOverbytesConsumed;
                 written += leftOverbytesWritten;
                 return status;
@@ -105,10 +105,10 @@ namespace System.Binary.Base64
         public sealed class Utf8Encoder : IBufferOperation, IBufferTransformation
         {
             public OperationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
-                => Buffers.Text.Base64.EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
+                => Base64.EncodeToUtf8(source, destination, out bytesConsumed, out bytesWritten);
 
             public OperationStatus EncodeInPlace(Span<byte> buffer, int dataLength, out int written)
-                => Buffers.Text.Base64.EncodeToUtf8InPlace(buffer, dataLength, out written);
+                => Base64.EncodeToUtf8InPlace(buffer, dataLength, out written);
 
             OperationStatus IBufferOperation.Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
                 => Encode(input, output, out consumed, out written);

@@ -5,7 +5,6 @@
 using Microsoft.Xunit.Performance;
 using System;
 using System.Azure.Authentication;
-using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;

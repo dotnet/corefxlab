@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Xunit;
-using System.Collections.Generic;
 using System.Buffers;
 using System.Buffers.Text;
 
-namespace System.Binary.Base64.Tests
+namespace System.Binary.Base64Experimental.Tests
 {
     public class Base64Tests
     {
@@ -19,11 +18,11 @@ namespace System.Binary.Base64.Tests
                 Base64TestHelper.InitalizeBytes(source, numBytes);
 
                 char[] charArray = new char[numBytes * 10];
-                Span<byte> encodedBytes = new byte[Buffers.Text.Base64.GetMaxEncodedToUtf8Length(source.Length)];
-                Span<byte> encodedBytesWithLineBreaks = new byte[Base64.GetMaxEncodedToUtf8Length(source.Length, format)];
-                Assert.Equal(OperationStatus.Done, Buffers.Text.Base64.EncodeToUtf8(source, encodedBytes, out int consumed, out int encodedBytesCount));
+                Span<byte> encodedBytes = new byte[Base64.GetMaxEncodedToUtf8Length(source.Length)];
+                Span<byte> encodedBytesWithLineBreaks = new byte[Base64Experimental.GetMaxEncodedToUtf8Length(source.Length, format)];
+                Assert.Equal(OperationStatus.Done, Base64.EncodeToUtf8(source, encodedBytes, out int consumed, out int encodedBytesCount));
                 Assert.Equal(encodedBytes.Length, encodedBytesCount);
-                Assert.True(OperationStatus.Done == Base64.EncodeToUtf8(source, encodedBytesWithLineBreaks, out consumed, out encodedBytesCount, format), "At index: " + numBytes);
+                Assert.True(OperationStatus.Done == Base64Experimental.EncodeToUtf8(source, encodedBytesWithLineBreaks, out consumed, out encodedBytesCount, format), "At index: " + numBytes);
                 Assert.Equal(encodedBytesWithLineBreaks.Length, encodedBytesCount);
 
                 string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
@@ -45,9 +44,9 @@ namespace System.Binary.Base64.Tests
                 Base64TestHelper.InitalizeBytes(source, numBytes);
 
                 char[] charArray = new char[numBytes * 10];
-                Span<byte> encodedBytes = new byte[Buffers.Text.Base64.GetMaxEncodedToUtf8Length(source.Length)];
-                Span<byte> encodedBytesWithLineBreaks = new byte[Base64.GetMaxEncodedToUtf8Length(source.Length, format)];
-                Assert.True(OperationStatus.Done == Base64.EncodeToUtf8(source, encodedBytesWithLineBreaks, out int consumed, out int encodedBytesCount, format), "At index: " + numBytes);
+                Span<byte> encodedBytes = new byte[Base64.GetMaxEncodedToUtf8Length(source.Length)];
+                Span<byte> encodedBytesWithLineBreaks = new byte[Base64Experimental.GetMaxEncodedToUtf8Length(source.Length, format)];
+                Assert.True(OperationStatus.Done == Base64Experimental.EncodeToUtf8(source, encodedBytesWithLineBreaks, out int consumed, out int encodedBytesCount, format), "At index: " + numBytes);
                 Assert.Equal(encodedBytesWithLineBreaks.Length, encodedBytesCount);
 
                 string encodedTextWithLineBreaks = Text.Encoding.ASCII.GetString(encodedBytesWithLineBreaks.ToArray());
@@ -60,9 +59,9 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> inputSpan = new byte[1000];
             Base64TestHelper.InitalizeDecodableBytes(inputSpan);
-            int requiredLength = Buffers.Text.Base64.GetMaxDecodedFromUtf8Length(inputSpan.Length);
+            int requiredLength = Base64.GetMaxDecodedFromUtf8Length(inputSpan.Length);
             Span<byte> expected = new byte[requiredLength];
-            Assert.Equal(OperationStatus.Done, Buffers.Text.Base64.DecodeFromUtf8(inputSpan, expected, out int bytesConsumed, out int bytesWritten));
+            Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(inputSpan, expected, out int bytesConsumed, out int bytesWritten));
 
             byte[][] input = new byte[10][];
 
@@ -78,7 +77,7 @@ namespace System.Binary.Base64.Tests
             Assert.Equal(1000, sum);
 
             var output = new TestOutput();
-            Base64.Utf8ToBytesDecoder.Pipe(ReadOnlyBytes.Create(input), output);
+            Base64Experimental.Utf8ToBytesDecoder.Pipe(ReadOnlyBytes.Create(input), output);
 
             var expectedArray = expected.ToArray();
             var array = output.GetBuffer.ToArray();

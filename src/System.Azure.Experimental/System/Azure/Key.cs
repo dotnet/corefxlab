@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary.Base64;
 using System.Buffers;
 using System.Buffers.Text;
 
@@ -13,8 +12,7 @@ namespace System.Azure.Authentication
             int size = key.Length * 2;
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
-            int written, consumed;
-            if (Encodings.Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out int consumed, out int written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }

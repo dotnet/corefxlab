@@ -33,7 +33,7 @@ public class IndexOfBench
             using (iteration.StartMeasurement())
             {
                 for(int i=0; i<s_loops; i++) {
-                    index += buffer.IndexOf(255);
+                    index += buffer.IndexOf<byte>(255);
                 }
             }
         }
@@ -62,7 +62,7 @@ public class IndexOfBench
             using (iteration.StartMeasurement())
             {
                 for(int i=0; i<s_loops; i++) {
-                    index += buffer.IndexOf(255);
+                    index += buffer.IndexOf<byte>(255);
                 }
             }
         }
