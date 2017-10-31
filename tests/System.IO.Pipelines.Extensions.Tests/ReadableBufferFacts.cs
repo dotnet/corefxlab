@@ -337,10 +337,10 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(found);
                 var remaining = readBuffer.Slice(cursor);
                 var handle = remaining.First.Retain(pin: true);
-                Assert.True(handle.PinnedPointer != null);
+                Assert.True(handle.Pointer != null);
                 if (i % BlockSize == 0)
                 {
-                    Assert.True((byte*)handle.PinnedPointer == addresses[i]);
+                    Assert.True((byte*)handle.Pointer == addresses[i]);
                 }
                 handle.Dispose();
             }
@@ -362,7 +362,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var handle = memory.Retain(pin: true);
                 handles.Add(handle);
-                var ptr = (byte*)handle.PinnedPointer;
+                var ptr = (byte*)handle.Pointer;
                 for (int i = 0; i < memory.Length; i++)
                 {
                     addresses[index++] = ptr++;

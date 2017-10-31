@@ -121,7 +121,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             // It's ok to unpin the handle here because the memory is from the pool
             // we created, which is already pinned.
             var pin = memory.Retain(pin: true);
-            var spanPtr = (IntPtr)pin.PinnedPointer;
+            var spanPtr = (IntPtr)pin.Pointer;
             pin.Dispose();
 
             long startAddress;
