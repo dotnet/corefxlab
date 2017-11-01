@@ -95,6 +95,8 @@ namespace System.Buffers
             }
         }
 
+        public bool IsEmpty => _first.Length == 0 && _rest == null;
+
         public static ReadOnlyBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -175,6 +177,24 @@ namespace System.Buffers
             var index = _rest.IndexOf(value);
             if (index != -1) return firstLength + index;
             return -1;
+        }
+
+        public Cursor CursorOf(byte value)
+        {
+            ReadOnlySpan<byte> first = _first.Span;
+            int index = first.IndexOf(value);
+            if (index != -1) return new Cursor(this, index);
+            if (_rest == null) return default;
+            return CursorOf(_rest, value);
+        }
+
+        private static Cursor CursorOf(IReadOnlyBufferList<byte> list, byte value)
+        {
+            ReadOnlySpan<byte> first = list.First.Span;
+            int index = first.IndexOf(value);
+            if (index != -1) return new Cursor(list, index);
+            if (list.Rest == null) return default;
+            return CursorOf(list.Rest, value);
         }
 
         public int CopyTo(Span<byte> buffer)
@@ -327,6 +347,18 @@ namespace System.Buffers
             else
             {
                 return new ReadOnlyBytes(first);
+            }
+        }
+
+        public struct Cursor
+        {
+            IReadOnlyBufferList<byte> _node;
+            int _index;
+
+            public Cursor(IReadOnlyBufferList<byte> node, int index)
+            {
+                _node = node;
+                _index = index;
             }
         }
     }

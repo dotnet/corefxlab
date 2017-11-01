@@ -92,7 +92,7 @@ namespace System.Text.Http
         public bool TryGet(ref Position position, out HttpHeader value, bool advance = true)
         {
             var bytes = _headers.Slice(position.IntegerPosition);
-            if (bytes.Length == 0)
+            if (bytes.IsEmpty)
             {
                 value = default;
                 return false;
