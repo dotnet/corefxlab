@@ -181,8 +181,8 @@ namespace System.Buffers
 
         public Cursor CursorOf(byte value)
         {
-            var first = _first.Span;
-            var index = first.IndexOf(value);
+            ReadOnlySpan<byte> first = _first.Span;
+            int index = first.IndexOf(value);
             if (index != -1) return new Cursor(this, index);
             if (_rest == null) return default;
             return CursorOf(_rest, value);
@@ -190,8 +190,8 @@ namespace System.Buffers
 
         private static Cursor CursorOf(IReadOnlyBufferList<byte> list, byte value)
         {
-            var first = list.First.Span;
-            var index = first.IndexOf(value);
+            ReadOnlySpan<byte> first = list.First.Span;
+            int index = first.IndexOf(value);
             if (index != -1) return new Cursor(list, index);
             if (list.Rest == null) return default;
             return CursorOf(list.Rest, value);
@@ -355,7 +355,7 @@ namespace System.Buffers
             IReadOnlyBufferList<byte> _node;
             int _index;
 
-            public Cursor(IReadOnlyBufferList<byte> node, int index) : this()
+            public Cursor(IReadOnlyBufferList<byte> node, int index)
             {
                 _node = node;
                 _index = index;
