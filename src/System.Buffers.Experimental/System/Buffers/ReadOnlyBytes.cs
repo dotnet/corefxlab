@@ -95,6 +95,8 @@ namespace System.Buffers
             }
         }
 
+        public bool IsEmpty => _first.Length == 0 && _rest == null;
+
         public static ReadOnlyBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
