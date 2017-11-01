@@ -179,6 +179,24 @@ namespace System.Buffers
             return -1;
         }
 
+        public Cursor CursorOf(byte value)
+        {
+            var first = _first.Span;
+            var index = first.IndexOf(value);
+            if (index != -1) return new Cursor(this, index);
+            if (_rest == null) return default;
+            return CursorOf(_rest, value);
+        }
+
+        private static Cursor CursorOf(IReadOnlyBufferList<byte> list, byte value)
+        {
+            var first = list.First.Span;
+            var index = first.IndexOf(value);
+            if (index != -1) return new Cursor(list, index);
+            if (list.Rest == null) return default;
+            return CursorOf(list.Rest, value);
+        }
+
         public int CopyTo(Span<byte> buffer)
         {
             var first = First;
@@ -329,6 +347,18 @@ namespace System.Buffers
             else
             {
                 return new ReadOnlyBytes(first);
+            }
+        }
+
+        public struct Cursor
+        {
+            IReadOnlyBufferList<byte> _node;
+            int _index;
+
+            public Cursor(IReadOnlyBufferList<byte> node, int index) : this()
+            {
+                _node = node;
+                _index = index;
             }
         }
     }
