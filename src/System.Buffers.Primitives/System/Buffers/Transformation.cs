@@ -12,12 +12,4 @@ namespace System.Buffers
     {
         OperationStatus Transform(Span<byte> buffer, int dataLength, out int written);
     }
-
-    public enum OperationStatus
-    {
-        Done,
-        DestinationTooSmall,
-        NeedMoreData,
-        InvalidData, // TODO: how do we communicate details of the error
-    }
 }
