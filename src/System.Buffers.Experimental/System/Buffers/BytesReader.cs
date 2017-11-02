@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -45,7 +46,7 @@ namespace System.Buffers
         public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyBufferList<byte> bytes, SymbolTable encoder) : this(new ReadOnlyBytes(bytes))
+        public BytesReader(IReadOnlyBufferList<byte> bytes, SymbolTable encoder) : this(new ReadOnlyBytes(bytes, bytes.Length))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
@@ -158,11 +159,11 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(int count)
         {
-            _index += count;
             var unreadLength = _currentSegment.Length - _currentSegmentIndex;
             if (count < unreadLength)
             {
                 _currentSegmentIndex += count;
+                _index += count;
             }
             else
             {
@@ -172,41 +173,33 @@ namespace System.Buffers
 
         void AdvanceNextSegment(int count, int advancedInCurrent)
         {
-            var length = _unreadSegments.Length;
+            Debug.Assert(advancedInCurrent == _currentSegment.Length - _currentSegmentIndex);
+            var newUnreadSegments = _unreadSegments.Rest;
+            var toAdvanceUnreadSegments = count - advancedInCurrent;
 
-            var newSegments = _unreadSegments.Rest;
-            var toAdvance = count - advancedInCurrent;
-            while(toAdvance >= 0 || _currentSegment.Length == 0)
-            {
-                // if we are advancing by exactly how many bytes there are in the reader
-                if (newSegments == null && toAdvance == 0)
+            if (newUnreadSegments == null) { 
+                if (toAdvanceUnreadSegments == 0)
                 {
                     _unreadSegments = ReadOnlyBytes.Empty;
                     _currentSegment = ReadOnlyMemory<byte>.Empty;
                     _currentSegmentIndex = 0;
-                    return;
-                }
-
-                _currentSegment = newSegments.First;
-                // if currentSegment is long enough
-                if (_currentSegment.Length > toAdvance || toAdvance == 0)
-                {
-                    if (length != null) // this is to avoid computing length, if it is Unspecified
-                    {
-                        _unreadSegments = new ReadOnlyBytes(_currentSegment, newSegments.Rest, length.Value - count);
-                    }
-                    else
-                    {
-                        _unreadSegments = new ReadOnlyBytes(_currentSegment, newSegments.Rest);
-                    }
-                    _currentSegmentIndex = toAdvance;
+                    _index += count;
                     return;
                 }
                 else
                 {
-                    toAdvance -= _currentSegment.Length;
-                    newSegments = newSegments.Rest;
+                    throw new ArgumentOutOfRangeException(nameof(count));
                 }
+            }
+
+            _currentSegment = newUnreadSegments.First;
+            _currentSegmentIndex = 0;
+            _unreadSegments = _unreadSegments.Slice(_unreadSegments.First.Length);
+            _index += advancedInCurrent;
+
+            if (toAdvanceUnreadSegments != 0)
+            {
+                Advance(toAdvanceUnreadSegments); // TODO: this recursive implementation could be optimized
             }
         }
 
@@ -288,9 +281,11 @@ namespace System.Buffers
             var unread = Unread;
             if (CustomParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
             {
+                Debug.Assert(consumed <= unread.Length);
                 if (unread.Length > consumed)
                 {
                     _currentSegmentIndex += consumed;
+                    _index += consumed;
                     return true;
                 }
             }
@@ -316,6 +311,7 @@ namespace System.Buffers
                 if (unread.Length > consumed)
                 {
                     _currentSegmentIndex += consumed;
+                    _index += consumed;
                     return true;
                 }
             }

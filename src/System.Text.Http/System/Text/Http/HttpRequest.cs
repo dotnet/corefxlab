@@ -190,7 +190,8 @@ namespace System.Text.Http
 
         public static Utf8Span ToUtf8Span(this ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
-            var sb = new ArrayFormatter(bytes.ComputeLength(), SymbolTable.InvariantUtf8);
+            if (bytes.Length > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(bytes));
+            var sb = new ArrayFormatter((int)bytes.Length, SymbolTable.InvariantUtf8);
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;

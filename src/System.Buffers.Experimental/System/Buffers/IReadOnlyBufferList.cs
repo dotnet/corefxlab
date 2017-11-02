@@ -11,5 +11,7 @@ namespace System.Buffers
         ReadOnlyMemory<T> First { get; }
 
         IReadOnlyBufferList<T> Rest { get; }
+
+        long Length { get; }
     }
 }

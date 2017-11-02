@@ -7,7 +7,7 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public partial class ReadOnlyBytesTests
+    public partial class BytesReaderTests
     {
         [Fact]
         public void SingleSegmentBasics()
@@ -18,13 +18,7 @@ namespace System.Buffers.Tests
             var span = sliced.First.Span;
             Assert.Equal((byte)2, span[0]);
 
-            Assert.Equal(buffer.Length, bytes.Length.Value);
-            Assert.Equal(buffer.Length, bytes.ComputeLength());
-
-            bytes = new ReadOnlyBytes(buffer, null, -1);
-            Assert.False(bytes.Length.HasValue);
-            Assert.Equal(buffer.Length, bytes.ComputeLength());
-            Assert.Equal(buffer.Length, bytes.Length.Value);
+            Assert.Equal(buffer.Length, bytes.Length);
         }
 
         [Fact]
@@ -36,9 +30,7 @@ namespace System.Buffers.Tests
 
             bytes = Parse("A|CD|EFG");
 
-            Assert.False(bytes.Length.HasValue);
-            Assert.Equal(6, bytes.ComputeLength());
-            Assert.Equal(6, bytes.Length.Value);
+            Assert.Equal(6, bytes.Length);
         }
 
         [Fact]
@@ -72,7 +64,7 @@ namespace System.Buffers.Tests
             for(int i=1; i<=totalLength; i++) {
                 sliced  = bytes.Slice(i);
                 span = sliced.First.Span;
-                Assert.Equal(totalLength - i, sliced.ComputeLength());
+                Assert.Equal(totalLength - i, sliced.Length);
                 if(i!=totalLength) Assert.Equal(i, span[0]);
             }
             Assert.Equal(0, span.Length);
@@ -97,39 +89,6 @@ namespace System.Buffers.Tests
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(copy.Length, copied);
                 for(int i=0; i<copied; i++) {
-                    Assert.Equal(array[i], copy[i]);
-                }
-            }
-
-            { // copy to larger
-                var copy = new byte[array.Length + 1];
-                var copied = bytes.CopyTo(copy);
-                Assert.Equal(array.Length, copied);
-                for (int i = 0; i < copied; i++) {
-                    Assert.Equal(array[i], copy[i]);
-                }
-            }
-        }
-
-        [Fact]
-        public void SingleSegmentCopyToUnknownLength()
-        {
-            var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
-            ReadOnlyMemory<byte> buffer = array;
-            var bytes = new ReadOnlyBytes(buffer, null, -1);
-
-            { // copy to equal
-                var copy = new byte[array.Length];
-                var copied = bytes.CopyTo(copy);
-                Assert.Equal(array.Length, copied);
-                Assert.Equal(array, copy);
-            }
-
-            { // copy to smaller
-                var copy = new byte[array.Length - 1];
-                var copied = bytes.CopyTo(copy);
-                Assert.Equal(copy.Length, copied);
-                for (int i = 0; i < copied; i++) {
                     Assert.Equal(array[i], copy[i]);
                 }
             }

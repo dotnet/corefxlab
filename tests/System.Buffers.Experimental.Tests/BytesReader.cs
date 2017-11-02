@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public partial class ReadOnlyBytesTests
+    public partial class BytesReaderTests
     {
         [Fact]
         public void SingleSegmentBytesReader()
@@ -72,18 +72,24 @@ namespace System.Buffers.Tests
 
             var ab = reader.ReadBytesUntil((byte)' ');
             Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
+            Assert.Equal(2, reader.Index);
 
             reader.Advance(1);
+            Assert.Equal(3, reader.Index);
+
             var cd = reader.ReadBytesUntil((byte)'#');
             Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
+            Assert.Equal(5, reader.Index);
 
             reader.Advance(1);
+            Assert.Equal(6, reader.Index);
+
             var ef = reader.ReadBytesUntil(new byte[] { (byte)'&', (byte)'&' });
             Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
+            Assert.Equal(8, reader.Index);
 
             reader.Advance(2);
-
-            //Assert.True(reader.IsEmpty);
+            Assert.Equal(10, reader.Index);
         }
 
         [Fact]
@@ -113,21 +119,27 @@ namespace System.Buffers.Tests
 
             Assert.True(reader.TryParseUInt64(out u64));
             Assert.Equal(123ul, u64);
+            Assert.Equal(3, reader.Index);
 
             Assert.True(reader.TryParseBoolean(out b));
             Assert.Equal(true, b);
+            Assert.Equal(7, reader.Index);
 
             Assert.True(reader.TryParseUInt64(out u64));
             Assert.Equal(456ul, u64);
+            Assert.Equal(10, reader.Index);
 
             Assert.True(reader.TryParseBoolean(out b));
             Assert.Equal(true, b);
+            Assert.Equal(14, reader.Index);
 
             Assert.True(reader.TryParseUInt64(out u64));
             Assert.Equal(789ul, u64);
+            Assert.Equal(17, reader.Index);
 
             Assert.True(reader.TryParseBoolean(out b));
             Assert.Equal(false, b);
+            Assert.Equal(22, reader.Index);
 
             //Assert.True(reader.IsEmpty);
         }

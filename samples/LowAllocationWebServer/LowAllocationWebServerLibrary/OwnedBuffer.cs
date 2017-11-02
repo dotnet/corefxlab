@@ -38,6 +38,8 @@ namespace Microsoft.Net.Http
 
         public override int Length => _array.Length;
 
+        long IReadOnlyBufferList<byte>.Length => Length;
+
         public override Span<byte> Span
         {
             get
@@ -141,6 +143,16 @@ namespace Microsoft.Net.Http
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
                 return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
+        }
+
+        int IReadOnlyBufferList<byte>.CopyTo(Span<byte> buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ISequence<ReadOnlyMemory<byte>>.TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance)
+        {
+            throw new NotImplementedException();
         }
 
         internal OwnedBuffer _next;
