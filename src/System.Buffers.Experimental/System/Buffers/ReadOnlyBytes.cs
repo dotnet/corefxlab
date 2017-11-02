@@ -29,24 +29,16 @@ namespace System.Buffers
         }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> rest) :
-            this(first, rest, first.Length + rest.Length)
-        { }
+            this(first, rest, first.Length + (rest == null ? 0 : rest.Length)) { }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> buffer) :
-            this(buffer, null, buffer.Length)
-        { }
+            this(buffer, null, buffer.Length) { }
 
         public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
-            this(segments.First, segments.Rest, segments.Length)
-        { }
+            this(segments == null ? ReadOnlyMemory<byte>.Empty : segments.First, segments?.Rest, segments == null ? 0 : segments.Length) { }
 
         public ReadOnlyBytes(IReadOnlyBufferList<byte> segments, long length) :
-            this(segments.First, segments.Rest, length)
-        {
-            // TODO: should they be runtime/release checks?
-            Debug.Assert(segments != null);
-            Debug.Assert(segments.Length >= length);
-        }
+            this(segments == null ? ReadOnlyMemory<byte>.Empty : segments.First, segments?.Rest, length) { }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
@@ -114,7 +106,7 @@ namespace System.Buffers
                 if(slice.Length > 0) {
                     return new ReadOnlyBytes(slice);
                 }
-                return ReadOnlyBytes.Empty;
+                return Empty;
             }
             if (first.Length > index)
             {
@@ -214,7 +206,7 @@ namespace System.Buffers
             internal BufferListNode _rest;
             public ReadOnlyMemory<byte> First => _first;
 
-            public long Length => _first.Length + (_rest==null?0:_rest.Length);
+            public long Length => _first.Length + (_rest == null ? 0 : _rest.Length);
 
             public IReadOnlyBufferList<byte> Rest => _rest;
 
@@ -314,3 +306,5 @@ namespace System.Buffers
         }
     }
 }
+
+
