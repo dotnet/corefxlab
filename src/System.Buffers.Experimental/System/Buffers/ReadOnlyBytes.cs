@@ -10,11 +10,11 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public struct ReadOnlyBytes : IReadOnlyBufferList<byte>
+    public readonly struct ReadOnlyBytes : IReadOnlyBufferList<byte>
     {
-        ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
-        IReadOnlyBufferList<byte> _all;
-        long _totalLength;
+        readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
+        readonly IReadOnlyBufferList<byte> _all;
+        readonly long _totalLength;
 
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
