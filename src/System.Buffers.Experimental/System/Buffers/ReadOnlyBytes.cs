@@ -29,7 +29,7 @@ namespace System.Buffers
         {
             _first = segments.First;
             _all = segments;
-            _totalLength = segments.Length;
+            _totalLength = length;
         }
 
         private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> all, long length)
