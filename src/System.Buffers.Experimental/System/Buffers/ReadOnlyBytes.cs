@@ -299,10 +299,10 @@ namespace System.Buffers
             }
         }
 
-        public struct Cursor
+        public readonly struct Cursor
         {
-            internal IReadOnlyBufferList<byte> _node;
-            internal int _index;
+            internal readonly IReadOnlyBufferList<byte> _node;
+            internal readonly int _index;
 
             public Cursor(IReadOnlyBufferList<byte> node, int index)
             {
