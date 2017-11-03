@@ -206,6 +206,34 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void LengthCursorSlicing()
+        {
+            // single segment
+            {
+                var rob = new ReadOnlyBytes(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                var c2 = rob.CursorOf(2);
+                var c5 = rob.CursorOf(5);
+
+                var slice = rob.Slice(c2, c5);
+
+                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(4, slice.Length);
+            }
+
+            // multi segment
+            {
+                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
+                var c2 = rob.CursorOf(2);
+                var c5 = rob.CursorOf(5);
+
+                var slice = rob.Slice(c2, c5);
+
+                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(4, slice.Length);
+            }
+        }
+
+        [Fact]
         public void SingleSegmentCopyToKnownLength()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };

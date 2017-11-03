@@ -32,6 +32,10 @@ namespace System.Buffers
             _totalLength = length;
         }
 
+        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
+            this(segments, segments == null ? 0 : segments.Length)
+        { }
+
         private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> all, long length)
         {
             Debug.Assert(all != null);
@@ -40,9 +44,6 @@ namespace System.Buffers
             _all = all;
             _totalLength = length;
         }
-
-        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
-            this(segments, segments == null ? 0 : segments.Length) { }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
@@ -146,8 +147,9 @@ namespace System.Buffers
 
         int IndexOfRest(byte value, int firstLength)
         {
-            if (Rest == null) return -1;
-            var index = Rest.IndexOf(value);
+            var rest = Rest;
+            if (rest == null) return -1;
+            var index = rest.IndexOf(value);
             if (index != -1) return firstLength + index;
             return -1;
         }
@@ -156,6 +158,21 @@ namespace System.Buffers
         {
             if (from._node == null) return Slice(First.Length - from._index);
             return new ReadOnlyBytes(from._node).Slice(from._index);
+        }
+
+        public ReadOnlyBytes Slice(Cursor from, Cursor to)
+        {
+            if (from._node == null)
+            {
+                var indexFrom = First.Length - from._index;
+                var indexTo = First.Length - to._index;
+                return Slice(indexFrom, indexTo - indexFrom + 1);
+            }
+
+            var fromIndex = from._node.Length - from._index;
+            var toIndex = to._node.Length - to._index;
+
+            return new ReadOnlyBytes(from._node).Slice(from._index, fromIndex - toIndex + 1);
         }
 
         public Cursor CursorOf(byte value)
