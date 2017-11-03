@@ -71,11 +71,174 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void MultiSegmentCursorSlicing()
+        {
+            var array1 = new byte[] { 0, 1 };
+            var array2 = new byte[] { 2, 3 };
+            ReadOnlyBytes allBytes = ReadOnlyBytes.Create(array1, array2);
+
+            ReadOnlyBytes allBytesSlice1 = allBytes.Slice(1);
+            ReadOnlyBytes allBytesSlice2 = allBytes.Slice(2);
+            ReadOnlyBytes allBytesSlice3 = allBytes.Slice(3);
+
+            var cursorOf3 = allBytes.CursorOf(3);
+            var cursorOf1 = allBytes.CursorOf(1);
+
+            // all bytes
+            {
+                var slice = allBytes.Slice(cursorOf3);
+                Assert.Equal(1, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytes.Slice(cursorOf1);
+                Assert.Equal(3, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+
+            // allBytesSlice1
+            {
+                var slice = allBytesSlice1.Slice(cursorOf3);
+                Assert.Equal(1, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytesSlice1.Slice(cursorOf1);
+                Assert.Equal(3, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+
+            // allBytesSlice2
+            {
+                var slice = allBytesSlice2.Slice(cursorOf3);
+                Assert.Equal(1, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytesSlice2.Slice(cursorOf1);
+                Assert.Equal(3, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+
+            // allBytesSlice3
+            {
+                var slice = allBytesSlice3.Slice(cursorOf3);
+                Assert.Equal(1, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytesSlice3.Slice(cursorOf1);
+                Assert.Equal(3, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+        }
+
+        [Fact]
+        public void SingleSegmentCursorSlicing()
+        {
+            var array1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            ReadOnlyBytes allBytes = new ReadOnlyBytes(array1);
+
+            ReadOnlyBytes allBytesSlice = allBytes.Slice(1);
+
+            var cursorOf3 = allBytes.CursorOf(3);
+            var cursorOf1 = allBytes.CursorOf(1);
+
+            // all bytes
+            {
+                var slice = allBytes.Slice(cursorOf3);
+                Assert.Equal(6, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytes.Slice(cursorOf1);
+                Assert.Equal(8, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+
+            // allBytesSlice1
+            {
+                var slice = allBytesSlice.Slice(cursorOf3);
+                Assert.Equal(6, slice.Length);
+                Assert.Equal(3, slice.First.Span[0]);
+            }
+
+            {
+                var slice = allBytesSlice.Slice(cursorOf1);
+                Assert.Equal(8, slice.Length);
+                Assert.Equal(1, slice.First.Span[0]);
+            }
+        }
+
+        [Fact]
+        public void PavelsScenarioCursorSlicing()
+        {
+            // single segment
+            {
+                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                var c = rob.CursorOf(5);
+
+                var slice1 = rob.Slice(2).Slice(c);
+                var slice2 = rob.Slice(c).Slice(2);
+
+                Assert.NotEqual(slice1.First.Span[0], slice2.First.Span[0]);
+                Assert.Equal(5, slice1.First.Span[0]);
+                Assert.Equal(7, slice2.First.Span[0]);
+            }
+
+            // multi segment
+            {
+                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
+                var c = rob.CursorOf(5);
+
+                var slice1 = rob.Slice(2).Slice(c);
+                var slice2 = rob.Slice(c).Slice(2);
+
+                Assert.NotEqual(slice1.First.Span[0], slice2.First.Span[0]);
+                Assert.Equal(5, slice1.First.Span[0]);
+                Assert.Equal(7, slice2.First.Span[0]);
+            }
+        }
+
+        [Fact]
+        public void LengthCursorSlicing()
+        {
+            // single segment
+            {
+                var rob = new ReadOnlyBytes(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                var c2 = rob.CursorOf(2);
+                var c5 = rob.CursorOf(5);
+
+                var slice = rob.Slice(c2, c5);
+
+                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(4, slice.Length);
+            }
+
+            // multi segment
+            {
+                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
+                var c2 = rob.CursorOf(2);
+                var c5 = rob.CursorOf(5);
+
+                var slice = rob.Slice(c2, c5);
+
+                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(4, slice.Length);
+            }
+        }
+
+        [Fact]
         public void SingleSegmentCopyToKnownLength()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
             ReadOnlyMemory<byte> buffer = array;
-            var bytes = new ReadOnlyBytes(buffer, null, array.Length);
+            var bytes = new ReadOnlyBytes(buffer);
 
             { // copy to equal
                 var copy = new byte[array.Length];
