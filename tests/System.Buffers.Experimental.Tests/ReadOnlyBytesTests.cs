@@ -71,6 +71,19 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void MultiSegmentCursorSlicing()
+        {
+            var array1 = new byte[] { 0, 1 };
+            var array2 = new byte[] { 2, 3 };
+            ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
+
+            var cursor = bytes.CursorOf(3);
+            var slice = bytes.Slice(cursor);
+            Assert.Equal(1, slice.Length);
+            Assert.Equal(3, slice.First.Span[0]);
+        }
+
+        [Fact]
         public void SingleSegmentCopyToKnownLength()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };

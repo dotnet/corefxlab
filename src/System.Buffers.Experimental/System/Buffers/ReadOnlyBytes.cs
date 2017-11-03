@@ -148,11 +148,17 @@ namespace System.Buffers
             return -1;
         }
 
+        public ReadOnlyBytes Slice(Cursor from)
+        {
+            if (from._node == null) Slice(from._index);
+            return new ReadOnlyBytes(from._node).Slice(from._index);
+        }
+
         public Cursor CursorOf(byte value)
         {
             ReadOnlySpan<byte> first = _first.Span;
             int index = first.IndexOf(value);
-            if (index != -1) return new Cursor(this, index);
+            if (index != -1) return new Cursor(null, index);
             if (_rest == null) return default;
             return CursorOf(_rest, value);
         }
@@ -295,8 +301,8 @@ namespace System.Buffers
 
         public struct Cursor
         {
-            IReadOnlyBufferList<byte> _node;
-            int _index;
+            internal IReadOnlyBufferList<byte> _node;
+            internal int _index;
 
             public Cursor(IReadOnlyBufferList<byte> node, int index)
             {
