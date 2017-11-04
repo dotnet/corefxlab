@@ -101,10 +101,6 @@ namespace Microsoft.Dotnet.Scripts
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemMemoryVersion", "System.Memory");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemNumericsVectorsVersion", "System.Numerics.Vectors");
             yield return CreateFileUpdater(config.CLIVersionFilePath, "Microsoft.DotNet.Cli.Utils");
-
-            // Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "RuntimeFrameworkVersion", "Microsoft.NETCore.App");
-            yield return CreateFileUpdater(config.RuntimeVersionFilePath, "Microsoft.NETCore.App");
         }
 
         private static IDependencyUpdater CreateFileUpdater(string path, string packageId)
