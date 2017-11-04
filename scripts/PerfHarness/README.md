@@ -4,27 +4,27 @@ This project contains a simple harness to run performance tests and measure the
 results.
 
 ## Run the Performance Tests
-**Pre-requisite:** The dotnet cli is available at the root in the dotnet directory. On a clean repo, build.cmd at the root installs the latest available dotnet.exe.
+**Pre-requisite:** The dotnet cli is available at the root in the dotnetcli directory. On a clean repo, build.cmd at the root installs the latest available dotnet.exe.
 
 1. Navigate to the PerfHarness directory (corefxlab\scripts\PerfHarness\)
 
 2. Restore this project
    
-   (`..\..\dotnet\dotnet.exe restore`)
+   (`..\..\dotnetcli\dotnet.exe restore`)
 
 3a. Run the harness--make sure to use the release configuration
    
-   (`..\..\dotnet\dotnet.exe run -c Release`)
+   (`..\..\dotnetcli\dotnet.exe run -c Release`)
    
 3b. To run specific tests only, pass in the type names to the harness (this run types found in any of the assemblies):
    
-   (`..\..\dotnet\dotnet.exe run -c Release -- --perf:typenames name1 [name2] [...]`)
+   (`..\..\dotnetcli\dotnet.exe run -c Release -- --perf:typenames name1 [name2] [...]`)
    
 3c. To run specific tests found in a specific assembly only, pass in the assembly name and type names to the harness:
    
-   (`..\..\dotnet\dotnet.exe run -c Release -- --assembly <name> --perf:typenames name1 [name2] [...]`)
+   (`..\..\dotnetcli\dotnet.exe run -c Release -- --assembly <name> --perf:typenames name1 [name2] [...]`)
    
-   Example: `..\..\dotnet\dotnet.exe run -c Release -- --assembly System.Text.Primitives.Tests --perf:typenames System.Text.Primitives.Tests.EncodingPerfComparisonTests`
+   Example: `..\..\dotnetcli\dotnet.exe run -c Release -- --assembly System.Text.Primitives.Tests --perf:typenames System.Text.Primitives.Tests.EncodingPerfComparisonTests`
 
 ## Add a New Performance Test
 
