@@ -229,7 +229,7 @@ namespace System.Buffers.Tests
                 var slice = rob.Slice(c2, c5);
 
                 Assert.Equal(2, slice.First.Span[0]);
-                Assert.Equal(4, slice.Length);
+                Assert.Equal(3, slice.Length);
             }
         }
 
