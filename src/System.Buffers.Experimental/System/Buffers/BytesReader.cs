@@ -43,12 +43,6 @@ namespace System.Buffers
         public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
-        { }
-
-        public BytesReader(IReadOnlyBufferList<byte> bytes, SymbolTable encoder) : this(new ReadOnlyBytes(bytes, bytes.Length))
-        { }
-
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
 
         public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);

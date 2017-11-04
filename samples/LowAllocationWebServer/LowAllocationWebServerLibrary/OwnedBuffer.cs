@@ -38,8 +38,6 @@ namespace Microsoft.Net.Http
 
         public override int Length => _array.Length;
 
-        long IReadOnlyBufferList<byte>.Length => Length;
-
         public override Span<byte> Span
         {
             get
@@ -48,6 +46,8 @@ namespace Microsoft.Net.Http
                 return _array.AsSpan();
             }
         }
+
+        long IReadOnlyBufferList<byte>.Index => 0;
 
         public int CopyTo(Span<byte> buffer)
         {

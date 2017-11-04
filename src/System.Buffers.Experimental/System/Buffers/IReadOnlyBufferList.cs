@@ -12,6 +12,6 @@ namespace System.Buffers
 
         IReadOnlyBufferList<T> Rest { get; }
 
-        long Length { get; }
+        long Index { get; }
     }
 }

@@ -32,13 +32,8 @@ namespace System.Buffers
             _totalLength = length;
         }
 
-        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
-            this(segments, segments == null ? 0 : segments.Length)
-        { }
-
         private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> all, long length)
         {
-            Debug.Assert(all != null);
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
             _all = all;
@@ -89,6 +84,8 @@ namespace System.Buffers
 
         public long Length => _totalLength;
 
+        public long Index => _all == null ? 0 : _all.Index;
+
         public bool IsEmpty => _first.Length == 0 && _all == null;
 
         public static ReadOnlyBytes Empty => s_empty;
@@ -109,7 +106,7 @@ namespace System.Buffers
             {
                 var slice = first.Slice((int)index, (int)length);
                 if(slice.Length > 0) {
-                    return new ReadOnlyBytes(slice);
+                    return new ReadOnlyBytes(slice, _all, length);
                 }
                 return Empty;
             }
@@ -157,7 +154,11 @@ namespace System.Buffers
         public ReadOnlyBytes Slice(Cursor from)
         {
             if (from._node == null) return Slice(First.Length - from._index);
-            return new ReadOnlyBytes(from._node).Slice(from._index);
+            var headIndex = _all.Index + _all.First.Length - _first.Length;
+            var newHeadIndex = from._node.Index;
+            var diff = newHeadIndex - headIndex;
+            // TODO: this could be optimized to avoid the Slice
+            return new ReadOnlyBytes(from._node, Length - diff).Slice(from._index);
         }
 
         public ReadOnlyBytes Slice(Cursor from, Cursor to)
@@ -169,10 +170,15 @@ namespace System.Buffers
                 return Slice(indexFrom, indexTo - indexFrom + 1);
             }
 
-            var fromIndex = from._node.Length - from._index;
-            var toIndex = to._node.Length - to._index;
-
-            return new ReadOnlyBytes(from._node).Slice(from._index, fromIndex - toIndex + 1);
+            var headIndex = _all.Index + _all.First.Length - _first.Length;
+            var newHeadIndex = from._node.Index + from._index;
+            var newEndIndex = to._node.Index + to._index;
+            var slicedOffFront = newHeadIndex - headIndex;
+            var length = newEndIndex - newHeadIndex;
+            // TODO: this could be optimized to avoid the Slice
+            var a = new ReadOnlyBytes(from._node, length + from._index);
+            a = a.Slice(from._index);
+            return a;
         }
 
         public Cursor CursorOf(byte value)
@@ -239,14 +245,38 @@ namespace System.Buffers
 
         class BufferListNode : IReadOnlyBufferList<byte>
         {
-            internal ReadOnlyMemory<byte> _first;
-            internal BufferListNode _rest;
-            public ReadOnlyMemory<byte> First => _first;
+            internal ReadOnlyMemory<byte> _data;
+            internal BufferListNode _next;
+            private long _runningIndex;
 
-            public long Length => _first.Length + (_rest == null ? 0 : _rest.Length);
+            public BufferListNode(ReadOnlyMemory<byte> data)
+            {
+                _data = data;
+                _next = null;
+                _runningIndex = 0;
+            }
 
-            public IReadOnlyBufferList<byte> Rest => _rest;
+            private BufferListNode(ReadOnlyMemory<byte> data, long runningIndex)
+            {
+                _data = data;
+                _runningIndex = runningIndex;
+            }
 
+            public BufferListNode Append(ReadOnlyMemory<byte> data)
+            {
+                if (_next != null) throw new InvalidOperationException("Node cannot be appended");
+                var node = new BufferListNode(data, _runningIndex + Length);
+                _next = node;
+                return node;
+            }
+
+            public ReadOnlyMemory<byte> First => _data;
+            public IReadOnlyBufferList<byte> Rest => _next;
+
+            public long Length => _data.Length;
+
+            public long Index => _runningIndex;
+            
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
@@ -275,23 +305,23 @@ namespace System.Buffers
             {
                 if (position == Position.First)
                 {
-                    item = _first;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
+                    item = _data;
+                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                     return true;
                 }
                 else if (position.ObjectPosition == null) { item = default; return false; }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
-                item = sequence._first;
+                item = sequence._data;
                 if (advance)
                 {
                     if (position == Position.First)
                     {
-                        position.ObjectPosition = _rest;
+                        position.ObjectPosition = _next;
                     }
                     else
                     {
-                        position.ObjectPosition = sequence._rest;
+                        position.ObjectPosition = sequence._next;
                     }
                     position.IntegerPosition++;
                 }
@@ -301,33 +331,17 @@ namespace System.Buffers
 
         public static ReadOnlyBytes Create(params byte[][] buffers)
         {
-            BufferListNode first = null;
-            BufferListNode current = null;
-            foreach (var buffer in buffers)
+            if (buffers.Length == 0) return Empty;
+            if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
+
+            BufferListNode first = new BufferListNode(buffers[0]);
+            var last = first;
+            for(int i=1; i<buffers.Length; i++)
             {
-                if (first == null)
-                {
-                    current = new BufferListNode();
-                    first = current;
-                }
-                else
-                {
-                    current._rest = new BufferListNode();
-                    current = current._rest;
-                }
-                current._first = buffer;
+                last = last.Append(buffers[i]);
             }
 
-            if (first == null) return Empty;
-
-            if (first.Rest == null)
-            {
-                return new ReadOnlyBytes(first, first.First.Length);
-            }
-            else
-            {
-                return new ReadOnlyBytes(first);
-            }
+            return new ReadOnlyBytes(first, last.Index + last.Length);
         }
 
         public readonly struct Cursor
