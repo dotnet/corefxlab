@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class DateSerializationTests
     {

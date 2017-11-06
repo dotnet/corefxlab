@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class TimeOfDayConstructionTests
     {
