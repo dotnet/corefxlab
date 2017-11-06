@@ -40,13 +40,13 @@ namespace System
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object that is set to the current time in this time zone.
+        /// Gets a <see cref="Time"/> object that is set to the current time in this time zone.
         /// </summary>
         /// <param name="timeZoneInfo">The <see cref="TimeZoneInfo"/> instance.</param>
-        /// <returns>The current <see cref="TimeOfDay"/> for the instance time zone.</returns>
-        public static TimeOfDay GetCurrentTime(this TimeZoneInfo timeZoneInfo)
+        /// <returns>The current <see cref="Time"/> for the instance time zone.</returns>
+        public static Time GetCurrentTime(this TimeZoneInfo timeZoneInfo)
         {
-            return TimeOfDay.NowInTimeZone(timeZoneInfo);
+            return Time.NowInTimeZone(timeZoneInfo);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanAssignDateTimeTimeOfDayToTimeOfDay()
+        public void CanAssignDateTimeTimeToTime()
         {
-            TimeOfDay time = DateTime.Now.TimeOfDay;
+            Time time = DateTime.Now.TimeOfDay;
         }
 
         [Fact]

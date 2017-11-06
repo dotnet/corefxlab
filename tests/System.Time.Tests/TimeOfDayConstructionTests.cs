@@ -5,44 +5,44 @@ using Xunit;
 
 namespace System._Time.Tests
 {
-    public class TimeOfDayConstructionTests
+    public class TimeConstructionTests
     {
         [Fact]
-        public void CanConstructDefaultTimeOfDay()
+        public void CanConstructDefaultTime()
         {
-            TimeOfDay time = new TimeOfDay();
+            Time time = new Time();
             Assert.Equal(0, time.Ticks);
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFromTicks()
+        public void CanConstructTimeFromTicks()
         {
-            TimeOfDay time = new TimeOfDay(863999999999L);
+            Time time = new Time(863999999999L);
             Assert.Equal(863999999999L, time.Ticks);
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom24HoursAndMinutes()
+        public void CanConstructTimeFrom24HoursAndMinutes()
         {
-            TimeOfDay time = new TimeOfDay(23, 59);
+            Time time = new Time(23, 59);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute;
             Assert.Equal(expected, time.Ticks);
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom12HoursAndMinutes()
+        public void CanConstructTimeFrom12HoursAndMinutes()
         {
-            TimeOfDay time = new TimeOfDay(11, 59, Meridiem.PM);
+            Time time = new Time(11, 59, Meridiem.PM);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute;
             Assert.Equal(expected, time.Ticks);
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom24HoursAndMinutesAndSeconds()
+        public void CanConstructTimeFrom24HoursAndMinutesAndSeconds()
         {
-            TimeOfDay time = new TimeOfDay(23, 59, 59);
+            Time time = new Time(23, 59, 59);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute +
                                   59 * TimeSpan.TicksPerSecond;
@@ -50,9 +50,9 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom12HoursAndMinutesAndSeconds()
+        public void CanConstructTimeFrom12HoursAndMinutesAndSeconds()
         {
-            TimeOfDay time = new TimeOfDay(11, 59, 59, Meridiem.PM);
+            Time time = new Time(11, 59, 59, Meridiem.PM);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute +
                                   59 * TimeSpan.TicksPerSecond;
@@ -60,9 +60,9 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom24HoursAndMinutesAndSecondsAndMilliseconds()
+        public void CanConstructTimeFrom24HoursAndMinutesAndSecondsAndMilliseconds()
         {
-            TimeOfDay time = new TimeOfDay(23, 59, 59, 59);
+            Time time = new Time(23, 59, 59, 59);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute +
                                   59 * TimeSpan.TicksPerSecond +
@@ -71,9 +71,9 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanConstructTimeOfDayFrom12HoursAndMinutesAndSecondsAndMilliseconds()
+        public void CanConstructTimeFrom12HoursAndMinutesAndSecondsAndMilliseconds()
         {
-            TimeOfDay time = new TimeOfDay(11, 59, 59, 59, Meridiem.PM);
+            Time time = new Time(11, 59, 59, 59, Meridiem.PM);
             const long expected = 23 * TimeSpan.TicksPerHour +
                                   59 * TimeSpan.TicksPerMinute +
                                   59 * TimeSpan.TicksPerSecond +

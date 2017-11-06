@@ -11,19 +11,19 @@ using Xunit.Abstractions;
 
 namespace System._Time.Tests
 {
-    public class TimeOfDaySerializationTests
+    public class TimeSerializationTests
     {
         private readonly ITestOutputHelper _output;
 
-        public TimeOfDaySerializationTests(ITestOutputHelper output)
+        public TimeSerializationTests(ITestOutputHelper output)
         {
             _output = output;
         }
 
         [Fact]
-        public void CanSerializeTimeOfDayWithDataContractSerializer()
+        public void CanSerializeTimeWithDataContractSerializer()
         {
-            var obj = new TestObject { TestTime = new TimeOfDay(13, 24, 56, 789) };
+            var obj = new TestObject { TestTime = new Time(13, 24, 56, 789) };
             var serializer = new DataContractSerializer(typeof(TestObject));
 
             var sb = new StringBuilder();
@@ -39,7 +39,7 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanDeserializeTimeOfDayWithDataContractSerializer()
+        public void CanDeserializeTimeWithDataContractSerializer()
         {
             const string xml = "<TestObject xmlns=\"http://schemas.datacontract.org/2004/07/System.Time.Tests\"><TestTime>13:24:56.789</TestTime></TestObject>";
             var serializer = new DataContractSerializer(typeof (TestObject));
@@ -51,13 +51,13 @@ namespace System._Time.Tests
             }
 
             Assert.NotNull(obj);
-            Assert.Equal(new TimeOfDay(13, 24, 56, 789), obj.TestTime);
+            Assert.Equal(new Time(13, 24, 56, 789), obj.TestTime);
         }
 
         [Fact]
-        public void CanSerializeTimeOfDayWithXmlSerializer()
+        public void CanSerializeTimeWithXmlSerializer()
         {
-            var obj = new TestObject { TestTime = new TimeOfDay(13, 24, 56, 789) };
+            var obj = new TestObject { TestTime = new Time(13, 24, 56, 789) };
             var serializer = new XmlSerializer(typeof(TestObject));
 
             var sb = new StringBuilder();
@@ -73,7 +73,7 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanDeserializeTimeOfDayWithDataXmlSerializer()
+        public void CanDeserializeTimeWithDataXmlSerializer()
         {
             const string xml = "<TestObject><TestTime>13:24:56.789</TestTime></TestObject>";
             var serializer = new XmlSerializer(typeof(TestObject));
@@ -85,15 +85,15 @@ namespace System._Time.Tests
             }
 
             Assert.NotNull(obj);
-            Assert.Equal(new TimeOfDay(13, 24, 56, 789), obj.TestTime);
+            Assert.Equal(new Time(13, 24, 56, 789), obj.TestTime);
         }
 
         /*      TODO: Can't find XsdDataContractExporter in netcore.  Is there another way to validate the schema type?
         [Fact]
-        public void CanExportTimeOfDaySchema()
+        public void CanExportTimeSchema()
         {
             var exporter = new XsdDataContractExporter();
-            exporter.Export(typeof(TimeOfDay));
+            exporter.Export(typeof(Time));
             var schemaSet = exporter.Schemas;
 
             var serializer = new XmlSerializer(typeof(XmlSchema));
@@ -117,7 +117,7 @@ namespace System._Time.Tests
         public class TestObject
         {
             [DataMember]
-            public TimeOfDay TestTime { get; set; }
+            public Time TestTime { get; set; }
         }
     }
 }

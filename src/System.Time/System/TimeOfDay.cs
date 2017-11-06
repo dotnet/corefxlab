@@ -17,7 +17,7 @@ namespace System
     /// </summary>
     [DebuggerDisplay("{ToString()}")]
     [XmlSchemaProvider("GetSchema")]
-    public struct TimeOfDay : IEquatable<TimeOfDay>, IComparable<TimeOfDay>, IComparable, IFormattable, IXmlSerializable
+    public struct Time : IEquatable<Time>, IComparable<Time>, IComparable, IFormattable, IXmlSerializable
     {
         private const long TicksPerMillisecond = 10000;
         private const long TicksPerSecond = TicksPerMillisecond * 1000;   // 10,000,000
@@ -29,34 +29,34 @@ namespace System
         private const long MaxTicks = 863999999999L;
 
         /// <summary>
-        /// Represents the smallest possible value of <see cref="TimeOfDay"/>. This field is read-only.
+        /// Represents the smallest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
-        public static readonly TimeOfDay MinValue = new TimeOfDay(MinTicks);
+        public static readonly Time MinValue = new Time(MinTicks);
         
         /// <summary>
-        /// Represents the largest possible value of <see cref="TimeOfDay"/>. This field is read-only.
+        /// Represents the largest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
-        public static readonly TimeOfDay MaxValue = new TimeOfDay(MaxTicks);
+        public static readonly Time MaxValue = new Time(MaxTicks);
 
         // Number of ticks (100ns units) since midnight at the beginning of a standard 24-hour day.
         // NOTE: This is the only field in this structure.
         private readonly long _ticks;
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to a specified number of ticks.
+        /// Initializes a new instance of a <see cref="Time"/> structure to a specified number of ticks.
         /// </summary>
         /// <param name="ticks">
         /// A time expressed in the number of 100-nanosecond intervals that have elapsed since midnight (00:00:00),
         /// without regard to daylight saving time transitions.
         /// </param>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="ticks"/> is out of the range supported by the <see cref="TimeOfDay"/> object.
+        /// <paramref name="ticks"/> is out of the range supported by the <see cref="Time"/> object.
         /// </exception>
-        public TimeOfDay(long ticks)
+        public Time(long ticks)
         {
             if (ticks < MinTicks || ticks > MaxTicks)
             {
-                throw new ArgumentOutOfRangeException(nameof(ticks), ticks, Strings.ArgumentOutOfRange_TimeOfDayBadTicks);
+                throw new ArgumentOutOfRangeException(nameof(ticks), ticks, Strings.ArgumentOutOfRange_TimeBadTicks);
             }
 
             Contract.EndContractBlock();
@@ -65,7 +65,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour and minute.
         /// </summary>
         /// <param name="hour">The hours (0 through 23).</param>
@@ -75,7 +75,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="minute"/> is less than 0 or greater than 59.
         /// </exception>
-        public TimeOfDay(int hour, int minute)
+        public Time(int hour, int minute)
         {
             if (hour < 0 || hour > 23)
             {
@@ -94,7 +94,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour, minute, and meridiem, using the hours of a 12-hour clock.
         /// </summary>
         /// <param name="hour">The hours (1 through 12).</param>
@@ -106,7 +106,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="minute"/> is less than 0 or greater than 59.
         /// </exception>
-        public TimeOfDay(int hour, int minute, Meridiem meridiem)
+        public Time(int hour, int minute, Meridiem meridiem)
         {
             if (hour < 1 || hour > 12)
             {
@@ -131,7 +131,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour, minute, and second, using the hours of a 24-hour clock.
         /// </summary>
         /// <param name="hour">The hours (0 through 23).</param>
@@ -144,7 +144,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="second"/> is less than 0 or greater than 59.
         /// </exception>
-        public TimeOfDay(int hour, int minute, int second)
+        public Time(int hour, int minute, int second)
         {
             if (hour < 0 || hour > 23)
             {
@@ -169,7 +169,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour, minute, second, and meridiem, using the hours of a 12-hour clock.
         /// </summary>
         /// <param name="hour">The hours (1 through 12).</param>
@@ -184,7 +184,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="second"/> is less than 0 or greater than 59.
         /// </exception>
-        public TimeOfDay(int hour, int minute, int second, Meridiem meridiem)
+        public Time(int hour, int minute, int second, Meridiem meridiem)
         {
             if (hour < 1 || hour > 12)
             {
@@ -215,7 +215,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour, minute, second, and millisecond, using the hours of a 24-hour clock.
         /// </summary>
         /// <param name="hour">The hours (0 through 23).</param>
@@ -231,7 +231,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="millisecond"/> is less than 0 or greater than 999.
         /// </exception>
-        public TimeOfDay(int hour, int minute, int second, int millisecond)
+        public Time(int hour, int minute, int second, int millisecond)
         {
             if (hour < 0 || hour > 23)
             {
@@ -262,7 +262,7 @@ namespace System
         }
 
         /// <summary>
-        /// Initializes a new instance of a <see cref="TimeOfDay"/> structure to the specified
+        /// Initializes a new instance of a <see cref="Time"/> structure to the specified
         /// hour, minute, second, millisecond, and meridiem, using the hours of a 12-hour clock.
         /// </summary>
         /// <param name="hour">The hours (1 through 12).</param>
@@ -280,7 +280,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="millisecond"/> is less than 0 or greater than 999.
         /// </exception>
-        public TimeOfDay(int hour, int minute, int second, int millisecond, Meridiem meridiem)
+        public Time(int hour, int minute, int second, int millisecond, Meridiem meridiem)
         {
             if (hour < 1 || hour > 12)
             {
@@ -351,7 +351,7 @@ namespace System
         /// The meridiem can be used inconjunction with the <see cref="HourOf12HourClock"/> property
         /// to represent this instance's time on a 12-hour clock.
         /// </summary>
-        /// <value>An enumerated constant that indicates the meridiem of this <see cref="TimeOfDay"/> value.</value>
+        /// <value>An enumerated constant that indicates the meridiem of this <see cref="Time"/> value.</value>
         /// <remarks>
         /// Though commonly used in English, these abbreviations derive from Latin.
         /// AM is an abbreviation for "Ante Meridiem", meaning "before mid-day".
@@ -415,7 +415,7 @@ namespace System
         /// </summary>
         /// <value>
         /// The number of ticks that represent the time of this instance.
-        /// The value is between <c>TimeOfDay.MinValue.Ticks</c> and <c>TimeOfDay.MaxValue.Ticks</c>.
+        /// The value is between <c>Time.MinValue.Ticks</c> and <c>Time.MaxValue.Ticks</c>.
         /// </value>
         /// <remarks>
         /// Each tick is a 100-nanosecond interval.  Collectively, they represent the time that has
@@ -433,12 +433,12 @@ namespace System
         }
 
         /// <summary>
-        /// Creates a <see cref="DateTime"/> object from the current <see cref="TimeOfDay"/> and the specified <see cref="Date"/>.
+        /// Creates a <see cref="DateTime"/> object from the current <see cref="Time"/> and the specified <see cref="Date"/>.
         /// The resulting value has a <see cref="DateTime.Kind"/> of <see cref="DateTimeKind.Unspecified"/>.
         /// </summary>
         /// <remarks>
-        /// Since neither <see cref="Date"/> or <see cref="TimeOfDay"/> keep track of <see cref="DateTimeKind"/>,
-        /// recognize that the <see cref="DateTime"/> produced by <c>TimeOfDay.Now.On(Date.Today)</c> will have
+        /// Since neither <see cref="Date"/> or <see cref="Time"/> keep track of <see cref="DateTimeKind"/>,
+        /// recognize that the <see cref="DateTime"/> produced by <c>Time.Now.On(Date.Today)</c> will have
         /// <see cref="DateTimeKind.Unspecified"/>, rather than then <see cref="DateTimeKind.Local"/> that would be
         /// given by <c>DateTime.Now</c>.
         /// <para>The same applies for <see cref="DateTimeKind.Utc"/>.</para>
@@ -450,42 +450,42 @@ namespace System
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object that is set to the current time in the specified time zone.
+        /// Gets a <see cref="Time"/> object that is set to the current time in the specified time zone.
         /// </summary>
         /// <param name="timeZoneInfo">The <see cref="TimeZoneInfo"/> instance.</param>
-        /// <returns>The current <see cref="TimeOfDay"/> for the specified time zone.</returns>
-        public static TimeOfDay NowInTimeZone(TimeZoneInfo timeZoneInfo)
+        /// <returns>The current <see cref="Time"/> for the specified time zone.</returns>
+        public static Time NowInTimeZone(TimeZoneInfo timeZoneInfo)
         {
             DateTimeOffset utcNow = DateTimeOffset.UtcNow;
             DateTimeOffset localNow = TimeZoneInfo.ConvertTime(utcNow, timeZoneInfo);
-            return TimeOfDayFromTimeSpan(localNow.TimeOfDay);
+            return TimeFromTimeSpan(localNow.TimeOfDay);
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object that is set to the current time,
+        /// Gets a <see cref="Time"/> object that is set to the current time,
         /// expressed in this computer's local time zone.
         /// </summary>
         /// <value>An object whose value is the current local time.</value>
-        public static TimeOfDay Now
+        public static Time Now
         {
             get
             {
                 DateTime localNow = DateTime.Now;
-                return TimeOfDayFromTimeSpan(localNow.TimeOfDay);
+                return TimeFromTimeSpan(localNow.TimeOfDay);
             }
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object that is set to the current time,
+        /// Gets a <see cref="Time"/> object that is set to the current time,
         /// expressed as Coordinated Universal Time (UTC).
         /// </summary>
         /// <value>An object whose value is the current UTC time.</value>
-        public static TimeOfDay UtcNow
+        public static Time UtcNow
         {
             get
             {
                 DateTime utcNow = DateTime.UtcNow;
-                return TimeOfDayFromTimeSpan(utcNow.TimeOfDay);
+                return TimeFromTimeSpan(utcNow.TimeOfDay);
             }
         }
 
@@ -496,7 +496,7 @@ namespace System
         /// <param name="startTime">The starting time of day, inclusive.</param>
         /// <param name="endTime">The ending time of day, exclusive.</param>
         /// <returns>True, if the time falls within the range, false otherwise.</returns>
-        public bool IsBetween(TimeOfDay startTime, TimeOfDay endTime)
+        public bool IsBetween(Time startTime, Time endTime)
         {
             long startTicks = startTime._ticks;
             long endTicks = endTime._ticks;
@@ -510,7 +510,7 @@ namespace System
         /// Calculates the duration between two time values.
         /// Assumes a standard day, with no invalid or ambiguous times due to Daylight Saving Time.
         /// Supports both "normal" ranges such as 10:00-12:00, and ranges that span midnight such as 23:00-01:00.
-        /// Unlike <see cref="Subtract(System.TimeOfDay)"/>, this operation does not assume that both values
+        /// Unlike <see cref="Subtract(System.Time)"/>, this operation does not assume that both values
         /// belong to the same calendar date.  If <paramref name="startTime"/> is greater than
         /// <paramref name="endTime"/>, it behaves as if <see cref="endTime"/> were on the day following
         /// the <see cref="startTime"/> date.
@@ -518,13 +518,13 @@ namespace System
         /// <param name="startTime">The starting time of day, inclusive.</param>
         /// <param name="endTime">The ending time of day, exclusive.</param>
         /// <returns>A <see cref="TimeSpan"/> representing the duration between the two values.</returns>
-        public static TimeSpan CalculateDuration(TimeOfDay startTime, TimeOfDay endTime)
+        public static TimeSpan CalculateDuration(Time startTime, Time endTime)
         {
             return TimeSpan.FromTicks((endTime._ticks - startTime._ticks + TicksPerDay) % TicksPerDay);
         }
 
         /// <summary>
-        /// Subtracts another <see cref="TimeOfDay"/> value from this instance, returning a <see cref="TimeSpan"/>.
+        /// Subtracts another <see cref="Time"/> value from this instance, returning a <see cref="TimeSpan"/>.
         /// Assumes a standard day, with no invalid or ambiguous times due to Daylight Saving Time.
         /// This operation assumes that both values belong to the same calendar date, and thus the result will
         /// be negative if <paramref name="startTime"/> is greater than this instance.
@@ -534,89 +534,89 @@ namespace System
         /// A <see cref="TimeSpan"/> representing the duration between the <paramref name="startTime"/>
         /// (inclusive), and this instance (exclusive).
         /// </returns>
-        public TimeSpan Subtract(TimeOfDay startTime)
+        public TimeSpan Subtract(Time startTime)
         {
             return TimeSpan.FromTicks(_ticks - startTime._ticks);
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified amount of time. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
         /// <param name="timeSpan">The amount of time to adjust by. The value can be negative or positive.</param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="timeSpan"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:00 plus two hours is 01:00.
         /// </remarks>
-        public TimeOfDay Add(TimeSpan timeSpan)
+        public Time Add(TimeSpan timeSpan)
         {
             return AddTicks(timeSpan.Ticks);
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified number of hours. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
         /// <param name="hours">The number of hours to adjust by. The value can be negative or positive.</param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="hours"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:00 plus one hour is 00:00.
         /// </remarks>
-        public TimeOfDay AddHours(double hours)
+        public Time AddHours(double hours)
         {
             return AddTicks((long)(hours * TicksPerHour));
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified number of minutes. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
         /// <param name="minutes">The number of minutes to adjust by. The value can be negative or positive.</param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="minutes"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:59 plus one minute is 00:00.
         /// </remarks>
-        public TimeOfDay AddMinutes(double minutes)
+        public Time AddMinutes(double minutes)
         {
             return AddTicks((long)(minutes * TicksPerMinute));
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified number of seconds. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
         /// <param name="seconds">The number of seconds to adjust by. The value can be negative or positive.</param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="seconds"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:59:59 plus one second is 00:00:00.
         /// </remarks>
-        public TimeOfDay AddSeconds(double seconds)
+        public Time AddSeconds(double seconds)
         {
             return AddTicks((long)(seconds * TicksPerSecond));
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified number of milliseconds. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
@@ -624,20 +624,20 @@ namespace System
         /// The number of milliseconds to adjust by. The value can be negative or positive.
         /// </param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="milliseconds"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:59:59.9990000 plus one millisecond is 00:00:00.0000000.
         /// </remarks>
-        public TimeOfDay AddMilliseconds(double milliseconds)
+        public Time AddMilliseconds(double milliseconds)
         {
             return AddTicks((long)(milliseconds * TicksPerMillisecond));
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified number of ticks. Positive values will move the time forward; negative values will move the
         /// time backwards.
         /// </summary>
@@ -646,34 +646,34 @@ namespace System
         /// A tick is a unit of time equal to 100 nanoseconds.
         /// </param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="ticks"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:59:59.9999999 plus one tick is 00:00:00.0000000.
         /// </remarks>
-        public TimeOfDay AddTicks(long ticks)
+        public Time AddTicks(long ticks)
         {
             long t = (_ticks + TicksPerDay + (ticks % TicksPerDay)) % TicksPerDay;
-            return new TimeOfDay(t);
+            return new Time(t);
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> object whose value is ahead or behind the value of this instance by the
+        /// Gets a <see cref="Time"/> object whose value is ahead or behind the value of this instance by the
         /// specified amount of time. Positive values will move the time backwards; negative values will move the
         /// time forward.  This is equivalent to calling <c>Add(timeSpan.Negate())</c>.
         /// </summary>
         /// <param name="timeSpan">The amount of time to adjust by. The value can be negative or positive.</param>
         /// <returns>
-        /// A new <see cref="TimeOfDay"/> object which is the result of adjusting this instance by the
+        /// A new <see cref="Time"/> object which is the result of adjusting this instance by the
         /// <paramref name="timeSpan"/> specified.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries backwards
         /// into the previous day.  For example, 01:00 minus two hours is 23:00.
         /// </remarks>
-        public TimeOfDay Subtract(TimeSpan timeSpan)
+        public Time Subtract(TimeSpan timeSpan)
         {
             return AddTicks(-timeSpan.Ticks);
         }
@@ -682,37 +682,37 @@ namespace System
         /// <summary>
         /// Adds a specified time interval to a specified time, yielding a new time.
         /// </summary>
-        /// <param name="timeOfDay">The time of day value to add to.</param>
+        /// <param name="time">The time of day value to add to.</param>
         /// <param name="timeSpan">The time interval to add.</param>
         /// <returns>
-        /// A <see cref="TimeOfDay"/> object which is the result of adding the <paramref name="timeSpan"/>
-        /// specified to the <paramref name="timeOfDay"/> provided.
+        /// A <see cref="Time"/> object which is the result of adding the <paramref name="timeSpan"/>
+        /// specified to the <paramref name="time"/> provided.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries forward
         /// into the next day.  For example, 23:00 plus two hours is 01:00.
         /// </remarks>
-        public static TimeOfDay operator +(TimeOfDay timeOfDay, TimeSpan timeSpan)
+        public static Time operator +(Time time, TimeSpan timeSpan)
         {
-            return timeOfDay.Add(timeSpan);
+            return time.Add(timeSpan);
         }
 
         /// <summary>
         /// Subtracts a specified time interval to a specified time, yielding a new time.
         /// </summary>
-        /// <param name="timeOfDay">The time of day value to subtract from.</param>
+        /// <param name="time">The time of day value to subtract from.</param>
         /// <param name="timeSpan">The time interval to subtract.</param>
         /// <returns>
-        /// A <see cref="TimeOfDay"/> object which is the result of subtracting the <paramref name="timeSpan"/>
-        /// specified from the <paramref name="timeOfDay"/> provided.
+        /// A <see cref="Time"/> object which is the result of subtracting the <paramref name="timeSpan"/>
+        /// specified from the <paramref name="time"/> provided.
         /// </returns>
         /// <remarks>
         /// The time is modeled on a circular 24-hour clock.  When a value crosses midnight, it carries backwards
         /// into the previous day.  For example, 01:00 minus two hours is 23:00.
         /// </remarks>
-        public static TimeOfDay operator -(TimeOfDay timeOfDay, TimeSpan timeSpan)
+        public static Time operator -(Time time, TimeSpan timeSpan)
         {
-            return timeOfDay.Subtract(timeSpan);
+            return time.Subtract(timeSpan);
         }
 
         /// <summary>
@@ -727,13 +727,13 @@ namespace System
         /// <returns>
         /// A <see cref="TimeSpan"/> representing the duration between the two time of day values.
         /// </returns>
-        public static TimeSpan operator -(TimeOfDay endTime, TimeOfDay startTime)
+        public static TimeSpan operator -(Time endTime, Time startTime)
         {
             return endTime.Subtract(startTime);
         }
 
         /// <summary>
-        /// Compares two instances of <see cref="TimeOfDay"/> and returns an integer that indicates whether the first
+        /// Compares two instances of <see cref="Time"/> and returns an integer that indicates whether the first
         /// instance is earlier than, the same as, or later than the second instance, within the same day.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
@@ -760,7 +760,7 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public static int Compare(TimeOfDay left, TimeOfDay right)
+        public static int Compare(Time left, Time right)
         {
             if (left._ticks > right._ticks)
             {
@@ -776,9 +776,9 @@ namespace System
         }
 
         /// <summary>
-        /// Compares the value of this instance to a specified <see cref="TimeOfDay"/> value and returns an integer
+        /// Compares the value of this instance to a specified <see cref="Time"/> value and returns an integer
         /// that indicates whether this instance is earlier than, the same as, or later than the specified
-        /// <see cref="TimeOfDay"/> value, within the same day.
+        /// <see cref="Time"/> value, within the same day.
         /// </summary>
         /// <param name="value">The object to compare to the current instance.</param>
         /// <returns>
@@ -803,15 +803,15 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public int CompareTo(TimeOfDay value)
+        public int CompareTo(Time value)
         {
             return Compare(this, value);
         }
 
         /// <summary>
-        /// Compares the value of this instance to a specified object that contains a <see cref="TimeOfDay"/> value and
+        /// Compares the value of this instance to a specified object that contains a <see cref="Time"/> value and
         /// returns an integer that indicates whether this instance is earlier than, the same as, or later than the
-        /// specified <see cref="TimeOfDay"/> value, within the same day.
+        /// specified <see cref="Time"/> value, within the same day.
         /// </summary>
         /// <param name="value">The object to compare to the current instance.</param>
         /// <returns>
@@ -840,7 +840,7 @@ namespace System
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
         /// <exception cref="ArgumentException">
-        /// <paramref name="value"/> is not a <see cref="TimeOfDay"/>.
+        /// <paramref name="value"/> is not a <see cref="Time"/>.
         /// </exception>
         public int CompareTo(object value)
         {
@@ -849,35 +849,35 @@ namespace System
                 return 1;
             }
 
-            if (!(value is TimeOfDay))
+            if (!(value is Time))
             {
-                throw new ArgumentException(Strings.Argument_MustBeTimeOfDay);
+                throw new ArgumentException(Strings.Argument_MustBeTime);
             }
 
-            return Compare(this, (TimeOfDay)value);
+            return Compare(this, (Time)value);
         }
 
         /// <summary>
-        /// Returns a value indicating whether two <see cref="TimeOfDay"/> instances have the same time value.
+        /// Returns a value indicating whether two <see cref="Time"/> instances have the same time value.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
         /// <returns><c>true</c> if the two values are equal; otherwise, <c>false</c>.</returns>
-        public static bool Equals(TimeOfDay left, TimeOfDay right)
+        public static bool Equals(Time left, Time right)
         {
             return left.Equals(right);
         }
 
         /// <summary>
         /// Returns a value indicating whether the value of this instance is equal to the value of the specified
-        /// <see cref="TimeOfDay"/> instance.
+        /// <see cref="Time"/> instance.
         /// </summary>
-        /// <param name="value">The other <see cref="TimeOfDay"/> object to compare against this instance.</param>
+        /// <param name="value">The other <see cref="Time"/> object to compare against this instance.</param>
         /// <returns>
         /// <c>true</c> if the <paramref name="value"/> parameter equals the value of this instance;
         /// otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(TimeOfDay value)
+        public bool Equals(Time value)
         {
             return _ticks == value._ticks;
         }
@@ -887,7 +887,7 @@ namespace System
         /// </summary>
         /// <param name="value">The object to compare to this instance.</param>
         /// <returns>
-        /// <c>true</c> if <paramref name="value"/> is an instance of <see cref="TimeOfDay"/>
+        /// <c>true</c> if <paramref name="value"/> is an instance of <see cref="Time"/>
         /// and equals the value of this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object value)
@@ -897,7 +897,7 @@ namespace System
                 return false;
             }
 
-            return value is TimeOfDay && Equals((TimeOfDay)value);
+            return value is Time && Equals((Time)value);
         }
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace System
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         /// <remarks>
-        /// The hash code of a <see cref="TimeOfDay"/> object is the same as the hash code of
+        /// The hash code of a <see cref="Time"/> object is the same as the hash code of
         /// its <see cref="Ticks"/> value.
         /// </remarks>
         public override int GetHashCode()
@@ -914,9 +914,9 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent string representation.
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent string representation.
         /// </summary>
-        /// <returns>A string representation of value of the current <see cref="TimeOfDay"/> object.</returns>
+        /// <returns>A string representation of value of the current <see cref="Time"/> object.</returns>
         public override string ToString()
         {
             Contract.Ensures(Contract.Result<string>() != null);
@@ -924,12 +924,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent string representation
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent string representation
         /// using the specified culture-specific format information.
         /// </summary>
         /// <param name="provider">An object that supplies culture-specific formatting information.</param>
         /// <returns>
-        /// A string representation of value of the current <see cref="TimeOfDay"/> object as specified by
+        /// A string representation of value of the current <see cref="Time"/> object as specified by
         /// <paramref name="provider"/>.
         /// </returns>
         public string ToString(IFormatProvider provider)
@@ -939,12 +939,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent string representation
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent string representation
         /// using the specified format.
         /// </summary>
         /// <param name="format">A standard or custom time-of-day format string.</param>
         /// <returns>
-        /// A string representation of value of the current <see cref="TimeOfDay"/> object as specified by
+        /// A string representation of value of the current <see cref="Time"/> object as specified by
         /// <paramref name="format"/>.
         /// </returns>
         /// <exception cref="FormatException">
@@ -953,7 +953,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="format"/> does not contain a valid custom format pattern.
         /// <para>-or-</para>
-        /// The standard or custom format specified is not valid for a <see cref="TimeOfDay"/> object, because it
+        /// The standard or custom format specified is not valid for a <see cref="Time"/> object, because it
         /// contains a date component.
         /// </exception>
         public string ToString(string format)
@@ -964,13 +964,13 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent string representation
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent string representation
         /// using the specified format and culture-specific format information.
         /// </summary>
         /// <param name="format">A standard or custom time-of-day format string.</param>
         /// <param name="provider">An object that supplies culture-specific formatting information.</param>
         /// <returns>
-        /// A string representation of value of the current <see cref="TimeOfDay"/> object as specified by
+        /// A string representation of value of the current <see cref="Time"/> object as specified by
         /// <paramref name="format"/> and <paramref name="provider"/>.
         /// </returns>
         /// <exception cref="FormatException">
@@ -979,7 +979,7 @@ namespace System
         /// <para>-or-</para>
         /// <paramref name="format"/> does not contain a valid custom format pattern.
         /// <para>-or-</para>
-        /// The standard or custom format specified is not valid for a <see cref="TimeOfDay"/> object, because it
+        /// The standard or custom format specified is not valid for a <see cref="Time"/> object, because it
         /// contains a date component.
         /// </exception>
         public string ToString(string format, IFormatProvider provider)
@@ -990,12 +990,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent
         /// long time string representation.
         /// </summary>
         /// <returns>A string that contains the long time string representation of the
-        /// current <see cref="TimeOfDay"/> object.</returns>
-        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// current <see cref="Time"/> object.</returns>
+        /// <remarks>The value of the current <see cref="Time"/> object is formatted
         /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
         /// property associated with the current thread culture.</remarks>
         public string ToLongTimeString()
@@ -1004,12 +1004,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent
         /// long time string representation.
         /// </summary>
         /// <returns>A string that contains the long time string representation of the
-        /// current <see cref="TimeOfDay"/> object.</returns>
-        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// current <see cref="Time"/> object.</returns>
+        /// <remarks>The value of the current <see cref="Time"/> object is formatted
         /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
         /// property associated with the invariant culture.</remarks>
         public string ToLongTimeStringInvariant()
@@ -1018,12 +1018,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent
         /// short time string representation.
         /// </summary>
         /// <returns>A string that contains the short time string representation of the
-        /// current <see cref="TimeOfDay"/> object.</returns>
-        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// current <see cref="Time"/> object.</returns>
+        /// <remarks>The value of the current <see cref="Time"/> object is formatted
         /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
         /// property associated with the current thread culture.</remarks>
         public string ToShortTimeString()
@@ -1032,12 +1032,12 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// Converts the value of the current <see cref="Time"/> object to its equivalent
         /// short time string representation.
         /// </summary>
         /// <returns>A string that contains the short time string representation of the
-        /// current <see cref="TimeOfDay"/> object.</returns>
-        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// current <see cref="Time"/> object.</returns>
+        /// <remarks>The value of the current <see cref="Time"/> object is formatted
         /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
         /// property associated with the invariant culture.</remarks>
         public string ToShortTimeStringInvariant()
@@ -1046,7 +1046,7 @@ namespace System
         }
 
         /// <summary>
-        /// Converts the string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent.
+        /// Converts the string representation of a time-of-day to its <see cref="Time"/> equivalent.
         /// </summary>
         /// <param name="s">A string that contains a time-of-day to convert.</param>
         /// <returns>An object that is equivalent to the time-of-day contained in <paramref name="s"/>.</returns>
@@ -1056,14 +1056,14 @@ namespace System
         /// <exception cref="FormatException">
         /// <paramref name="s"/> does not contain a valid string representation of a time-of-day.
         /// </exception>
-        public static TimeOfDay Parse(string s)
+        public static Time Parse(string s)
         {
             DateTime dt = DateTime.Parse(s, null, DateTimeStyles.NoCurrentDateDefault);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// by using culture-specific format information.
         /// </summary>
         /// <param name="s">A string that contains a time-of-day to convert.</param>
@@ -1080,14 +1080,14 @@ namespace System
         /// <exception cref="FormatException">
         /// <paramref name="s"/> does not contain a valid string representation of a time-of-day.
         /// </exception>
-        public static TimeOfDay Parse(string s, IFormatProvider provider)
+        public static Time Parse(string s, IFormatProvider provider)
         {
             DateTime dt = DateTime.Parse(s, provider, DateTimeStyles.NoCurrentDateDefault);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// by using culture-specific format information and formatting style.
         /// </summary>
         /// <param name="s">A string that contains a time-of-day to convert.</param>
@@ -1097,7 +1097,7 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
         /// <returns>
@@ -1112,13 +1112,13 @@ namespace System
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static TimeOfDay Parse(string s, IFormatProvider provider, DateTimeStyles styles)
+        public static Time Parse(string s, IFormatProvider provider, DateTimeStyles styles)
         {
             if (((int)styles) >= 8)
             {
@@ -1128,11 +1128,11 @@ namespace System
             Contract.EndContractBlock();
 
             DateTime dt = DateTime.Parse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified format and culture-specific format information.
         /// The format of the string representation must match the specified format exactly or an exception is thrown.
         /// </summary>
@@ -1154,17 +1154,17 @@ namespace System
         /// <paramref name="s"/> does not contain a time-of-day that corresponds to the pattern specified in
         /// <paramref name="format"/>.
         /// <para>-or-</para>
-        /// <paramref name="format"/> contains a format pattern that is not applicable to a <see cref="TimeOfDay"/>.
+        /// <paramref name="format"/> contains a format pattern that is not applicable to a <see cref="Time"/>.
         /// </exception>
-        public static TimeOfDay ParseExact(string s, string format, IFormatProvider provider)
+        public static Time ParseExact(string s, string format, IFormatProvider provider)
         {
             format = NormalizeTimeFormat(format);
             DateTime dt = DateTime.ParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified format, culture-specific format information, and style.
         /// The format of the string representation must match the specified format exactly or an exception is thrown.
         /// </summary>
@@ -1176,7 +1176,7 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
         /// <returns>
@@ -1192,17 +1192,17 @@ namespace System
         /// <paramref name="s"/> does not contain a time-of-day that corresponds to the pattern specified in
         /// <paramref name="format"/>.
         /// <para>-or-</para>
-        /// <paramref name="format"/> contains a format pattern that is not applicable to a <see cref="TimeOfDay"/>.
+        /// <paramref name="format"/> contains a format pattern that is not applicable to a <see cref="Time"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static TimeOfDay ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles)
+        public static Time ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles)
         {
             if (((int)styles) >= 8)
             {
@@ -1213,11 +1213,11 @@ namespace System
 
             format = NormalizeTimeFormat(format);
             DateTime dt = DateTime.ParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified array of formats, culture-specific format information, and style.
         /// The format of the string representation must match at least one of the specified formats
         /// exactly or an exception is thrown.
@@ -1230,7 +1230,7 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
         /// <returns>
@@ -1249,17 +1249,17 @@ namespace System
         /// <paramref name="formats"/>.
         /// <para>-or-</para>
         /// An element of <paramref name="formats"/> contains a format pattern that is not applicable to a
-        /// <see cref="TimeOfDay"/>.
+        /// <see cref="Time"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static TimeOfDay ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles)
+        public static Time ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles)
         {
             if (((int)styles) >= 8)
             {
@@ -1274,16 +1274,16 @@ namespace System
             }
 
             DateTime dt = DateTime.ParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles);
-            return TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// and returns a value that indicates whether the conversion succeeded.
         /// </summary>
         /// <param name="s">A string containing a time-of-day to convert.</param>
-        /// <param name="timeOfDay">
-        /// When this method returns, contains the <see cref="TimeOfDay"/> value equivalent to the time-of-day
+        /// <param name="time">
+        /// When this method returns, contains the <see cref="Time"/> value equivalent to the time-of-day
         /// contained in <paramref name="s"/>, if the conversion succeeded, or <see cref="MinValue"/>
         /// if the conversion failed. The conversion fails if the <paramref name="s"/> parameter is
         /// <c>null</c>, is an empty string (""), or does not contain a valid string representation of a time-of-day.
@@ -1292,21 +1292,21 @@ namespace System
         /// <returns>
         /// <c>true</c> if the <paramref name="s"/> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
-        public static bool TryParse(string s, out TimeOfDay timeOfDay)
+        public static bool TryParse(string s, out Time time)
         {
             DateTime dt;
             if (!DateTime.TryParse(s, null, DateTimeStyles.NoCurrentDateDefault, out dt))
             {
-                timeOfDay = default;
+                time = default;
                 return false;
             }
 
-            timeOfDay = TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            time = TimeFromTimeSpan(dt.TimeOfDay);
             return true;
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified culture-specific format information and formatting style,
         /// and returns a value that indicates whether the conversion succeeded.
         /// </summary>
@@ -1317,11 +1317,11 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
-        /// <param name="timeOfDay">
-        /// When this method returns, contains the <see cref="TimeOfDay"/> value equivalent to the time-of-day
+        /// <param name="time">
+        /// When this method returns, contains the <see cref="Time"/> value equivalent to the time-of-day
         /// contained in <paramref name="s"/>, if the conversion succeeded, or <see cref="MinValue"/>
         /// if the conversion failed. The conversion fails if the <paramref name="s"/> parameter is
         /// <c>null</c>, is an empty string (""), or does not contain a valid string representation of a time-of-day.
@@ -1332,13 +1332,13 @@ namespace System
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static bool TryParse(string s, IFormatProvider provider, DateTimeStyles styles, out TimeOfDay timeOfDay)
+        public static bool TryParse(string s, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
             if (((int)styles) >= 8)
             {
@@ -1350,16 +1350,16 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default;
+                time = default;
                 return false;
             }
 
-            timeOfDay = TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            time = TimeFromTimeSpan(dt.TimeOfDay);
             return true;
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified format, culture-specific format information, and style.
         /// The format of the string representation must match the specified format exactly.
         /// The method returns a value that indicates whether the conversion succeeded.
@@ -1372,11 +1372,11 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
-        /// <param name="timeOfDay">
-        /// When this method returns, contains the <see cref="TimeOfDay"/> value equivalent to the time-of-day
+        /// <param name="time">
+        /// When this method returns, contains the <see cref="Time"/> value equivalent to the time-of-day
         /// contained in <paramref name="s"/>, if the conversion succeeded, or <see cref="MinValue"/>
         /// if the conversion failed. The conversion fails if either the <paramref name="s"/> or
         /// <paramref name="format"/> parameter is <c>null</c>, is an empty string (""), or does not
@@ -1388,13 +1388,13 @@ namespace System
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles, out TimeOfDay timeOfDay)
+        public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
             if (((int)styles) >= 8)
             {
@@ -1408,16 +1408,16 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default;
+                time = default;
                 return false;
             }
 
-            timeOfDay = TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            time = TimeFromTimeSpan(dt.TimeOfDay);
             return true;
         }
 
         /// <summary>
-        /// Converts the specified string representation of a time-of-day to its <see cref="TimeOfDay"/> equivalent
+        /// Converts the specified string representation of a time-of-day to its <see cref="Time"/> equivalent
         /// using the specified array of formats, culture-specific format information, and style.
         /// The format of the string representation must match at least one of the specified formats exactly.
         /// The method returns a value that indicates whether the conversion succeeded.
@@ -1430,11 +1430,11 @@ namespace System
         /// <param name="styles">
         /// A bitwise combination of the enumeration values that indicates the style elements that
         /// can be present in <paramref name="s"/> for the parse operation to succeed.
-        /// Note that only styles related to whitespace handling are applicable on a <see cref="TimeOfDay"/>.
+        /// Note that only styles related to whitespace handling are applicable on a <see cref="Time"/>.
         /// A typical value to specify is <see cref="DateTimeStyles.None"/>.
         /// </param>
-        /// <param name="timeOfDay">
-        /// When this method returns, contains the <see cref="TimeOfDay"/> value equivalent to the time-of-day
+        /// <param name="time">
+        /// When this method returns, contains the <see cref="Time"/> value equivalent to the time-of-day
         /// contained in <paramref name="s"/>, if the conversion succeeded, or <see cref="MinValue"/>
         /// if the conversion failed. The conversion fails if either the <paramref name="s"/> or
         /// <paramref name="formats"/> parameter is <c>null</c>, <paramref name="s"/> or an element of
@@ -1447,13 +1447,13 @@ namespace System
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
-        /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
+        /// The only styles that are valid for a <see cref="Time"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
         /// <see cref="DateTimeStyles.AllowWhiteSpaces"/>.  The other styles are invalid because they only apply
         /// when both a date and time are being parsed together.
         /// </exception>
-        public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles, out TimeOfDay timeOfDay)
+        public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
             if (((int)styles) >= 8)
             {
@@ -1470,16 +1470,16 @@ namespace System
             DateTime dt;
             if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
             {
-                timeOfDay = default;
+                time = default;
                 return false;
             }
 
-            timeOfDay = TimeOfDayFromTimeSpan(dt.TimeOfDay);
+            time = TimeFromTimeSpan(dt.TimeOfDay);
             return true;
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="TimeOfDay"/> are equal.
+        /// Determines whether two specified instances of <see cref="Time"/> are equal.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1487,13 +1487,13 @@ namespace System
         /// <c>true</c> if <paramref name="left"/> and <paramref name="right"/> represent the same time of day;
         /// otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator ==(TimeOfDay left, TimeOfDay right)
+        public static bool operator ==(Time left, Time right)
         {
             return left.Equals(right);
         }
 
         /// <summary>
-        /// Determines whether two specified instances of <see cref="TimeOfDay"/> are not equal.
+        /// Determines whether two specified instances of <see cref="Time"/> are not equal.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1501,14 +1501,14 @@ namespace System
         /// <c>true</c> if <paramref name="left"/> and <paramref name="right"/> do not represent the same time of day;
         /// otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(TimeOfDay left, TimeOfDay right)
+        public static bool operator !=(Time left, Time right)
         {
             return !left.Equals(right);
         }
 
         /// <summary>
-        /// Determines whether one specified <see cref="TimeOfDay"/> is later than another specified
-        /// <see cref="TimeOfDay"/>, within the same day.
+        /// Determines whether one specified <see cref="Time"/> is later than another specified
+        /// <see cref="Time"/>, within the same day.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1520,14 +1520,14 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public static bool operator >(TimeOfDay left, TimeOfDay right)
+        public static bool operator >(Time left, Time right)
         {
             return left._ticks > right._ticks;
         }
 
         /// <summary>
-        /// Determines whether one specified <see cref="TimeOfDay"/> is equal to or later than another specified
-        /// <see cref="TimeOfDay"/>, within the same day.
+        /// Determines whether one specified <see cref="Time"/> is equal to or later than another specified
+        /// <see cref="Time"/>, within the same day.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1539,14 +1539,14 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public static bool operator >=(TimeOfDay left, TimeOfDay right)
+        public static bool operator >=(Time left, Time right)
         {
             return left._ticks >= right._ticks;
         }
 
         /// <summary>
-        /// Determines whether one specified <see cref="TimeOfDay"/> is earlier than another specified
-        /// <see cref="TimeOfDay"/>, within the same day.
+        /// Determines whether one specified <see cref="Time"/> is earlier than another specified
+        /// <see cref="Time"/>, within the same day.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1558,14 +1558,14 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public static bool operator <(TimeOfDay left, TimeOfDay right)
+        public static bool operator <(Time left, Time right)
         {
             return left._ticks < right._ticks;
         }
 
         /// <summary>
-        /// Determines whether one specified <see cref="TimeOfDay"/> is equal to or earlier than another specified
-        /// <see cref="TimeOfDay"/>, within the same day.
+        /// Determines whether one specified <see cref="Time"/> is equal to or earlier than another specified
+        /// <see cref="Time"/>, within the same day.
         /// </summary>
         /// <param name="left">The first object to compare.</param>
         /// <param name="right">The second object to compare.</param>
@@ -1577,36 +1577,36 @@ namespace System
         /// This operation considers all time values to be contained within the same day.  If you need to compare
         /// time values that cross midnight into a different day, use the <see cref="IsBetween"/> method instead.
         /// </remarks>
-        public static bool operator <=(TimeOfDay left, TimeOfDay right)
+        public static bool operator <=(Time left, Time right)
         {
             return left._ticks <= right._ticks;
         }
 
         /// <summary>
-        /// Implicitly casts a <see cref="TimeSpan"/> object to a <see cref="TimeOfDay"/> by returning a new
-        /// <see cref="TimeOfDay"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
+        /// Implicitly casts a <see cref="TimeSpan"/> object to a <see cref="Time"/> by returning a new
+        /// <see cref="Time"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
         /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
-        /// midnight, such that their values can be assigned to a variable having a <see cref="TimeOfDay"/> type.
+        /// midnight, such that their values can be assigned to a variable having a <see cref="Time"/> type.
         /// </summary>
         /// <param name="timeSpan">A <see cref="TimeSpan"/> value representing the time elapsed since midnight,
         /// without regard to daylight saving time transitions.</param>
-        /// <returns>A newly constructed <see cref="TimeOfDay"/> object with an equivalent value.</returns>
+        /// <returns>A newly constructed <see cref="Time"/> object with an equivalent value.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="timeSpan"/> is either negative, or greater than <c>23:59:59.9999999</c>, and thus cannot be
-        /// mapped to a <see cref="TimeOfDay"/>.
+        /// mapped to a <see cref="Time"/>.
         /// </exception>
         /// <remarks>
         /// Fundamentally, a time-of-day and an elapsed-time are two different concepts.  In previous versions
-        /// of the .NET framework, the <see cref="TimeOfDay"/> type did not exist, and thus several time-of-day
+        /// of the .NET framework, the <see cref="Time"/> type did not exist, and thus several time-of-day
         /// values were represented by <see cref="TimeSpan"/> values erroneously.  For example, the
-        /// <see cref="DateTime.TimeOfDay"/> property returns a value having a <see cref="TimeSpan"/> type.
-        /// This implicit cast operator allows those APIs to be naturally used with <see cref="TimeOfDay"/>.
+        /// <see cref="DateTime.Time"/> property returns a value having a <see cref="TimeSpan"/> type.
+        /// This implicit cast operator allows those APIs to be naturally used with <see cref="Time"/>.
         /// <para>
         /// Also note that the input <paramref name="timeSpan"/> might actually *not* accurately represent the
         /// "time elapsed since midnight" on days containing a daylight saving time transition.
         /// </para>
         /// </remarks>
-        public static implicit operator TimeOfDay(TimeSpan timeSpan)
+        public static implicit operator Time(TimeSpan timeSpan)
         {
             long ticks = timeSpan.Ticks;
             if (ticks < 0 || ticks >= TicksPerDay)
@@ -1616,24 +1616,24 @@ namespace System
 
             Contract.EndContractBlock();
 
-            return new TimeOfDay(ticks);
+            return new Time(ticks);
         }
 
         /// <summary>
-        /// Enables explicit casting of a <see cref="TimeOfDay"/> object to a <see cref="TimeSpan"/> by returning a new
+        /// Enables explicit casting of a <see cref="Time"/> object to a <see cref="TimeSpan"/> by returning a new
         /// <see cref="TimeSpan"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
         /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
-        /// midnight, such that a <see cref="TimeOfDay"/> type can be passed to a method expecting a
+        /// midnight, such that a <see cref="Time"/> type can be passed to a method expecting a
         /// <see cref="TimeSpan"/> parameter as a time-of-day.
         /// </summary>
-        /// <param name="timeOfDay">A <see cref="TimeOfDay"/> value.</param>
+        /// <param name="time">A <see cref="Time"/> value.</param>
         /// <returns>
         /// A newly constructed <see cref="TimeSpan"/> object representing the time elapsed since midnight, without
         /// regard to daylight saving time transitions.
         /// </returns>
-        public static explicit operator TimeSpan(TimeOfDay timeOfDay)
+        public static explicit operator TimeSpan(Time time)
         {
-            return new TimeSpan(timeOfDay.Ticks);
+            return new TimeSpan(time.Ticks);
         }
 
         /// <summary>
@@ -1659,12 +1659,12 @@ namespace System
         }
 
         /// <summary>
-        /// Constructs a <see cref="TimeOfDay"/> from a <see cref="TimeSpan"/> representing the time elapsed since
+        /// Constructs a <see cref="Time"/> from a <see cref="TimeSpan"/> representing the time elapsed since
         /// midnight, without regard to daylight saving time transitions.
         /// </summary>
-        private static TimeOfDay TimeOfDayFromTimeSpan(TimeSpan timeSpan)
+        private static Time TimeFromTimeSpan(TimeSpan timeSpan)
         {
-            return new TimeOfDay(timeSpan.Ticks);
+            return new Time(timeSpan.Ticks);
         }
 
         /// <summary>
@@ -1703,7 +1703,7 @@ namespace System
                 }
 
 
-                // All other standard DateTime formats are invalid for TimeOfDay
+                // All other standard DateTime formats are invalid for Time
                 throw new FormatException(Strings.Format_InvalidString);
             }
 
@@ -1746,7 +1746,7 @@ namespace System
         }
 
         /// <summary>
-        /// Generates a <see cref="TimeOfDay"/> object from its XML representation.
+        /// Generates a <see cref="Time"/> object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="XmlReader"/> stream from which the object is deserialized.</param>
         /// <exception cref="FormatException">
@@ -1762,17 +1762,17 @@ namespace System
                 ? reader.ReadElementContentAsString()
                 : reader.ReadContentAsString();
 
-            TimeOfDay t;
+            Time t;
             if (!TryParseExact(s, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.None, out t))
             {
-                throw new FormatException(Strings.Format_BadTimeOfDay);
+                throw new FormatException(Strings.Format_BadTime);
             }
 
             this = t;
         }
 
         /// <summary>
-        /// Converts a <see cref="TimeOfDay"/> object into its XML representation.
+        /// Converts a <see cref="Time"/> object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="XmlWriter"/> stream to which the object is serialized.</param>
         /// <remarks>

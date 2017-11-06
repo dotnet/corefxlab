@@ -80,11 +80,11 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object must be of type TimeOfDay..
+        ///   Looks up a localized string similar to Object must be of type Time..
         /// </summary>
-        internal static string Argument_MustBeTimeOfDay {
+        internal static string Argument_MustBeTime {
             get {
-                return ResourceManager.GetString("Argument_MustBeTimeOfDay", resourceCulture);
+                return ResourceManager.GetString("Argument_MustBeTime", resourceCulture);
             }
         }
         
@@ -107,7 +107,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TimeSpan describes an un-representable TimeOfDay..
+        ///   Looks up a localized string similar to TimeSpan describes an un-representable Time..
         /// </summary>
         internal static string ArgumentOutOfRange_BadTimeSpan {
             get {
@@ -215,11 +215,11 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ticks must be between TimeOfDay.MinValue.Ticks and TimeOfDay.MaxValue.Ticks..
+        ///   Looks up a localized string similar to Ticks must be between Time.MinValue.Ticks and Time.MaxValue.Ticks..
         /// </summary>
-        internal static string ArgumentOutOfRange_TimeOfDayBadTicks {
+        internal static string ArgumentOutOfRange_TimeBadTicks {
             get {
-                return ResourceManager.GetString("ArgumentOutOfRange_TimeOfDayBadTicks", resourceCulture);
+                return ResourceManager.GetString("ArgumentOutOfRange_TimeBadTicks", resourceCulture);
             }
         }
         
@@ -242,11 +242,11 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to String was not recognized as a valid TimeOfDay..
+        ///   Looks up a localized string similar to String was not recognized as a valid Time..
         /// </summary>
-        internal static string Format_BadTimeOfDay {
+        internal static string Format_BadTime {
             get {
-                return ResourceManager.GetString("Format_BadTimeOfDay", resourceCulture);
+                return ResourceManager.GetString("Format_BadTime", resourceCulture);
             }
         }
         
