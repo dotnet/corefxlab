@@ -113,7 +113,7 @@ namespace System._Time.Tests
         }
         */
 
-        [DataContract(Name = "TestObject")]
+        [DataContract(Name = "TestObject", Namespace = "http://schemas.datacontract.org/2004/07/System.Time.Tests")]
         public class TestObject
         {
             [DataMember]
