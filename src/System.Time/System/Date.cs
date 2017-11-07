@@ -1651,7 +1651,7 @@ namespace System
         // Exactly the same as GetDatePart(int part), except computing all of
         // year/month/day rather than just one of them.  Used when all three
         // are needed rather than redoing the computations for each.
-        internal void GetDatePart(out int year, out int month, out int day)
+        private void GetDatePart(out int year, out int month, out int day)
         {
             // n = number of days since 1/1/0001
             int n = _dayNumber;
