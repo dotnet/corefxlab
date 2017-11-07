@@ -371,6 +371,15 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void EmptyReadOnlyBytesEnumeration()
+        {
+            var bytes = ReadOnlyBytes.Empty;
+            var position = new Position();
+            ReadOnlyMemory<byte> segment;
+            Assert.False(bytes.TryGet(ref position, out segment));
+        }
+
+        [Fact]
         public void ReadOnlyTailBytesEnumeration()
         {
             for (int i = 0; i < 6; i++)

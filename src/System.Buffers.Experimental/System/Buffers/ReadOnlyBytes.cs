@@ -27,6 +27,7 @@ namespace System.Buffers
 
         public ReadOnlyBytes(IReadOnlyBufferList<byte> segments, long length)
         {
+            // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.First;
             _all = segments;
             _totalLength = length;
@@ -51,7 +52,7 @@ namespace System.Buffers
                     position.Tag = _first.Length; // this is needed to know how much to slice off the last segment; see below
                     position.ObjectPosition = Rest;
                 }
-                return true;
+                return (!_first.IsEmpty || _all != null);
             }
 
             var rest = position.ObjectPosition as IReadOnlyBufferList<byte>;
@@ -306,23 +307,23 @@ namespace System.Buffers
                 if (position == Position.First)
                 {
                     item = _data;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
-                    return true;
+                    if (advance) {
+                        position.IntegerPosition++;
+                        position.ObjectPosition = _next;
+                    }
+                    return (!_data.IsEmpty || _next != null);
                 }
-                else if (position.ObjectPosition == null) { item = default; return false; }
+                else if (position.ObjectPosition == null)
+                {
+                    item = default;
+                    return false;
+                }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._data;
                 if (advance)
                 {
-                    if (position == Position.First)
-                    {
-                        position.ObjectPosition = _next;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = sequence._next;
-                    }
+                    position.ObjectPosition = sequence._next;
                     position.IntegerPosition++;
                 }
                 return true;
