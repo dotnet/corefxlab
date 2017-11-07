@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class DateTimeTests
     {
@@ -21,9 +21,9 @@ namespace System.Time.Tests
         }
 
         [Fact]
-        public void CanAssignDateTimeTimeOfDayToTimeOfDay()
+        public void CanAssignDateTimeTimeToTime()
         {
-            TimeOfDay time = DateTime.Now.TimeOfDay;
+            Time time = DateTime.Now.TimeOfDay;
         }
 
         [Fact]

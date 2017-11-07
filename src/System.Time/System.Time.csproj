@@ -9,4 +9,18 @@
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>System</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

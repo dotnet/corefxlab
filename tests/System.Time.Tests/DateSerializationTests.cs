@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class DateSerializationTests
     {
@@ -113,7 +113,7 @@ namespace System.Time.Tests
         }
         */
 
-        [DataContract(Name = "TestObject")]
+        [DataContract(Name = "TestObject", Namespace = "http://schemas.datacontract.org/2004/07/System.Time.Tests")]
         public class TestObject
         {
             [DataMember]

@@ -4,7 +4,7 @@
 namespace System
 {
     /// <summary>
-    /// Provides an enumeration of AM or PM to support 12-hour clock values in the <see cref="TimeOfDay"/> type.
+    /// Provides an enumeration of AM or PM to support 12-hour clock values in the <see cref="Time"/> type.
     /// </summary>
     /// <remarks>
     /// Though commonly used in English, these abbreviations derive from Latin.

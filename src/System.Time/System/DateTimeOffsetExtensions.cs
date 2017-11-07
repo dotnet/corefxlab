@@ -22,14 +22,14 @@ namespace System
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> value that represents the time component of the current
+        /// Gets a <see cref="Time"/> value that represents the time component of the current
         /// <see cref="DateTimeOffset"/> object.
         /// </summary>
         /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
-        /// <returns>The <see cref="TimeOfDay"/> value.</returns>
-        public static TimeOfDay GetTimeOfDay(this DateTimeOffset dateTimeOffset)
+        /// <returns>The <see cref="Time"/> value.</returns>
+        public static Time GetTime(this DateTimeOffset dateTimeOffset)
         {
-            return new TimeOfDay(dateTimeOffset.TimeOfDay.Ticks);
+            return new Time(dateTimeOffset.TimeOfDay.Ticks);
         }
 
         /// <summary>
