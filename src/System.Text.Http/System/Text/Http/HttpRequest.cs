@@ -23,6 +23,8 @@ namespace System.Text.Http
 
     public struct HttpRequest
     {
+        const int MaxHeadersLength = 16_384;
+
         internal static readonly byte[] Cr = new byte[] { (byte)'\r', (byte)'\n' };
         internal static readonly byte[] Cr2 = new byte[] { (byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n' };
 
@@ -62,7 +64,10 @@ namespace System.Text.Http
             var headers = reader.ReadRangeUntil(Cr2).Value;
             request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.Index, headers.Length + 2) };
 
-            request._bodyIndex = headers.Index + headers.Length + 4;
+            long headersLength = headers.Index + headers.Length + 4;
+            if (headersLength > MaxHeadersLength) throw new Exception("headers too long");
+
+            request._bodyIndex = (int)headersLength;
             return request;
         }
     }
@@ -87,6 +92,8 @@ namespace System.Text.Http
 
     public struct HttpHeaders : ISequence<HttpHeader>
     {
+        const int MaxHeaderLength = 1024;
+
         internal ReadOnlyBytes _headers;
 
         public bool TryGet(ref Position position, out HttpHeader value, bool advance = true)
@@ -109,12 +116,14 @@ namespace System.Text.Http
 
         static void ParseHeader(ReadOnlyBytes bytes, out HttpHeader value, out int consumed)
         {
-            int indexOfValue = bytes.IndexOf((byte)':');
+            long indexOfValue = bytes.IndexOf((byte)':');
+            if (indexOfValue > MaxHeaderLength) throw new Exception("header too long");
             var headerName = bytes.Slice(0, indexOfValue);
-            var endOfValue = bytes.IndexOf(HttpRequest.Cr);
+            long endOfValue = bytes.IndexOf(HttpRequest.Cr);
+            if (indexOfValue > MaxHeaderLength) throw new Exception("header too long");
             var headerValue = bytes.Slice(indexOfValue + 2, endOfValue - indexOfValue - 2);
             value = new HttpHeader() { Name = headerName, Value = headerValue };
-            consumed = endOfValue + 2;
+            consumed = (int)endOfValue + 2;
         }
 
         public override string ToString()
