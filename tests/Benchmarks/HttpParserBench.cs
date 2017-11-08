@@ -67,6 +67,40 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
+    static bool RequestLineRobCursors()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        ReadOnlyBytes.Cursor consumed = default;
+        ReadOnlyBytes.Cursor read;
+        bool success = true;
+
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
+
+                }
+            }
+        }
+
+        return success;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
     static bool RequestLineRob()
     {
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
@@ -122,6 +156,40 @@ public class HttpParserBench
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                }
+            }
+        }
+
+        return success;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
+    static bool HeadersRobCursors()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        ReadOnlyBytes.Cursor consumed = default;
+        ReadOnlyBytes.Cursor examined;
+        int consumedBytes;
+        bool success = true;
+
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
                 }
             }
         }
@@ -203,12 +271,16 @@ public class HttpParserBench
                 for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
                 }
@@ -248,6 +320,34 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
+    static bool FullRequestRobCursors()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        var parser = new HttpParser();
+        var request = new RequestStruct();
+        ReadOnlyBytes.Cursor consumed = default;
+        ReadOnlyBytes.Cursor examined;
+        bool success = true;
+
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
+                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
+                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
+                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
+                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
+                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
+                }
+            }
+        }
+
+        return success;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
     static int FullRequestLegacy()
     {
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
@@ -266,6 +366,54 @@ public class HttpParserBench
         }
 
         return request.BodyIndex;
+    }
+}
+
+static class HttpParserExtensions
+{
+    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined) where T : IHttpRequestLineHandler
+    {
+        if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
+        {
+            consumed = buffer.CursorAt(consumedBytes);
+            examined = consumed;
+            return true;
+        }
+        consumed = buffer.CursorAt(0);
+        examined = default;
+        return false;
+    }
+
+    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined, out int consumedBytes) where T : IHttpHeadersHandler
+    {
+        if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
+        {
+            consumed = buffer.CursorAt(consumedBytes);
+            examined = consumed;
+            return true;
+        }
+        consumed = buffer.CursorAt(0);
+        examined = default;
+        return false;
+    }
+
+    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
+    {
+        if (
+            parser.ParseRequestLine(ref handler, buffer, out var consumedRLBytes) &&
+            parser.ParseHeaders(ref handler, buffer.Slice(consumedRLBytes), out var consumedHDBytes)
+        )
+        {
+            consumed = buffer.CursorAt(consumedRLBytes + consumedHDBytes);
+            examined = consumed;
+            return true;
+        }
+        else
+        {
+            consumed = buffer.CursorAt(0);
+            examined = default;
+            return false;
+        }
     }
 }
 
