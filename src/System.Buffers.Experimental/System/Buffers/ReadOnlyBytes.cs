@@ -201,6 +201,27 @@ namespace System.Buffers
             return CursorOf(Rest, value);
         }
 
+        public Cursor CursorAt(int index)
+        {
+            ReadOnlySpan<byte> first = _first.Span;
+            int firstLength = first.Length;
+
+            if (index < firstLength)
+            {
+                if (_all == null)
+                {
+                    return new Cursor(null, firstLength - index);
+                }
+                else
+                {
+                    var allIndex = index + (_all.First.Length - firstLength);
+                    return new Cursor(_all, allIndex);
+                }
+            }
+            if (Rest == null) return default;
+            return CursorAt(Rest, index - firstLength);
+        }
+
         private static Cursor CursorOf(IReadOnlyMemoryList<byte> list, byte value)
         {
             ReadOnlySpan<byte> first = list.First.Span;
@@ -208,6 +229,19 @@ namespace System.Buffers
             if (index != -1) return new Cursor(list, index);
             if (list.Rest == null) return default;
             return CursorOf(list.Rest, value);
+        }
+
+        private static Cursor CursorAt(IReadOnlyMemoryList<byte> list, int index)
+        {
+            if (list == null) return default;
+            ReadOnlySpan<byte> first = list.First.Span;
+            int firstLength = first.Length;
+
+            if (index < firstLength)
+            {
+                return new Cursor(list, index);
+            }
+            return CursorAt(list.Rest, index - firstLength);
         }
 
         public int CopyTo(Span<byte> buffer)
