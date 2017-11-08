@@ -197,17 +197,8 @@ namespace System.Buffers
             }
         }
 
-        int IndexOf(IReadOnlyBufferList<byte> sequence, byte value)
-        {
-            if (sequence == null) return -1;
-            var first = sequence.First;
-            var index = first.Span.IndexOf(value);
-            if (index > -1) return index;
-
-            var indexOfRest = IndexOf(sequence.Rest, value);
-            if (indexOfRest < 0) return -1;
-            return first.Length + indexOfRest;
-        }
+        int IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
+            => sequence.IndexOf(value);
 
         int IndexOfStraddling(ReadOnlySpan<byte> value)
         {
@@ -257,7 +248,10 @@ namespace System.Buffers
 
         int IndexOfRest(byte value)
         {
-            var index = IndexOf(_unreadSegments.Rest, value);
+            var rest = _unreadSegments.Rest;
+            if (rest == null) return -1;
+
+            var index = IndexOf(rest, value);
             if (index == -1)
             {
                 return -1;

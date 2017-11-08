@@ -10,10 +10,10 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public readonly struct ReadOnlyBytes : IReadOnlyBufferList<byte>
+    public readonly struct ReadOnlyBytes : IReadOnlyMemorySequence<byte>
     {
         readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
-        readonly IReadOnlyBufferList<byte> _all;
+        readonly IReadOnlyMemoryList<byte> _all;
         readonly long _totalLength;
 
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
@@ -25,14 +25,15 @@ namespace System.Buffers
             _totalLength = _first.Length;
         }
 
-        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments, long length)
+        public ReadOnlyBytes(IReadOnlyMemoryList<byte> segments, long length)
         {
+            // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.First;
             _all = segments;
             _totalLength = length;
         }
 
-        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> all, long length)
+        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> all, long length)
         {
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
@@ -51,10 +52,10 @@ namespace System.Buffers
                     position.Tag = _first.Length; // this is needed to know how much to slice off the last segment; see below
                     position.ObjectPosition = Rest;
                 }
-                return true;
+                return (!_first.IsEmpty || _all != null);
             }
 
-            var rest = position.ObjectPosition as IReadOnlyBufferList<byte>;
+            var rest = position.ObjectPosition as IReadOnlyMemoryList<byte>;
             if (rest == null)
             {
                 value = default;
@@ -80,7 +81,7 @@ namespace System.Buffers
 
         public ReadOnlyMemory<byte> First => _first;
 
-        public IReadOnlyBufferList<byte> Rest => _all?.Rest;
+        internal IReadOnlyMemoryList<byte> Rest => _all?.Rest;
 
         public long Length => _totalLength;
 
@@ -200,7 +201,7 @@ namespace System.Buffers
             return CursorOf(Rest, value);
         }
 
-        private static Cursor CursorOf(IReadOnlyBufferList<byte> list, byte value)
+        private static Cursor CursorOf(IReadOnlyMemoryList<byte> list, byte value)
         {
             ReadOnlySpan<byte> first = list.First.Span;
             int index = first.IndexOf(value);
@@ -243,7 +244,7 @@ namespace System.Buffers
             return rest;
         }
 
-        class BufferListNode : IReadOnlyBufferList<byte>
+        class BufferListNode : IReadOnlyMemoryList<byte>
         {
             internal ReadOnlyMemory<byte> _data;
             internal BufferListNode _next;
@@ -271,7 +272,7 @@ namespace System.Buffers
             }
 
             public ReadOnlyMemory<byte> First => _data;
-            public IReadOnlyBufferList<byte> Rest => _next;
+            public IReadOnlyMemoryList<byte> Rest => _next;
 
             public long Length => _data.Length;
 
@@ -306,23 +307,23 @@ namespace System.Buffers
                 if (position == Position.First)
                 {
                     item = _data;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
-                    return true;
+                    if (advance) {
+                        position.IntegerPosition++;
+                        position.ObjectPosition = _next;
+                    }
+                    return (!_data.IsEmpty || _next != null);
                 }
-                else if (position.ObjectPosition == null) { item = default; return false; }
+                else if (position.ObjectPosition == null)
+                {
+                    item = default;
+                    return false;
+                }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._data;
                 if (advance)
                 {
-                    if (position == Position.First)
-                    {
-                        position.ObjectPosition = _next;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = sequence._next;
-                    }
+                    position.ObjectPosition = sequence._next;
                     position.IntegerPosition++;
                 }
                 return true;
@@ -346,10 +347,10 @@ namespace System.Buffers
 
         public readonly struct Cursor
         {
-            internal readonly IReadOnlyBufferList<byte> _node;
+            internal readonly IReadOnlyMemoryList<byte> _node;
             internal readonly int _index;
 
-            public Cursor(IReadOnlyBufferList<byte> node, int index)
+            public Cursor(IReadOnlyMemoryList<byte> node, int index)
             {
                 _node = node;
                 _index = index;
