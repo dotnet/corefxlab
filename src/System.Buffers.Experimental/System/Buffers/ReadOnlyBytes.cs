@@ -10,7 +10,7 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public readonly struct ReadOnlyBytes : IReadOnlyBufferList<byte>
+    public readonly struct ReadOnlyBytes : IReadOnlyBuffer<byte>
     {
         readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
         readonly IReadOnlyBufferList<byte> _all;
@@ -81,7 +81,7 @@ namespace System.Buffers
 
         public ReadOnlyMemory<byte> First => _first;
 
-        public IReadOnlyBufferList<byte> Rest => _all?.Rest;
+        internal IReadOnlyBufferList<byte> Rest => _all?.Rest;
 
         public long Length => _totalLength;
 

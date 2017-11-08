@@ -145,11 +145,14 @@ namespace System.Buffers
             var index = first.IndexOf(value);
             if (index != -1) return index;
 
-            var rest = sequence.Rest;
-            if (rest == null) return -1;
-
-            index = rest.IndexOf(value);
-            if (index != -1) return first.Length + index;
+            var p = Position.First;
+            int runningIndex = first.Length;
+            while(sequence.TryGet(ref p, out var memory, advance: true))
+            {
+                index = memory.Span.IndexOf(value);
+                if (index != -1) return index + runningIndex;
+                runningIndex += memory.Length;
+            }
 
             return -1;
         }

@@ -32,9 +32,7 @@ namespace Microsoft.Net.Http
 
         public int WrittenByteCount => _written;
 
-        ReadOnlyMemory<byte> IReadOnlyBufferList<byte>.First => Memory;
-
-        IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
+        Memory<byte> IBufferList<byte>.First => Memory;
 
         public override int Length => _array.Length;
 
@@ -47,7 +45,11 @@ namespace Microsoft.Net.Http
             }
         }
 
-        long IReadOnlyBufferList<byte>.Index => 0;
+        IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => throw new NotImplementedException();
+
+        public long Index => throw new NotImplementedException();
+
+        ReadOnlyMemory<byte> IReadOnlyBuffer<byte>.First => throw new NotImplementedException();
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -143,16 +145,6 @@ namespace Microsoft.Net.Http
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
                 return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
-        }
-
-        int IReadOnlyBufferList<byte>.CopyTo(Span<byte> buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool ISequence<ReadOnlyMemory<byte>>.TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance)
-        {
-            throw new NotImplementedException();
         }
 
         internal OwnedBuffer _next;
