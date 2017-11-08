@@ -376,16 +376,15 @@ namespace System.Text.Http.Parser
             consumedBytes = 0;
             var position = Position.First;
 
-            ReadOnlySpan<byte> span = buffer.First.Span;
-            var remaining = span.Length;
+            ReadOnlySpan<byte> currentSpan = buffer.First.Span;
+            var remaining = currentSpan.Length;
 
             while (true)
             {
-                fixed (byte* pBuffer = &span.DangerousGetPinnableReference())
+                fixed (byte* pBuffer = &currentSpan.DangerousGetPinnableReference())
                 {
                     while (remaining > 0)
                     {
-
                         int ch1;
                         int ch2;
 
@@ -398,17 +397,7 @@ namespace System.Text.Http.Parser
                         // Slow Path
                         else
                         {
-                            Span<byte> temp = stackalloc byte[2];
-                            if (buffer.Slice(consumedBytes).CopyTo(temp) < 2)
-                            {
-                                ch1 = -1;
-                                ch2 = -1;
-                            }
-                            else
-                            {
-                                ch1 = temp[0];
-                                ch2 = temp[1];
-                            }
+                            ReadTwoChars(buffer, consumedBytes, out ch1, out ch2);
                             // I think the above is fast enough. If we don't like it, we can do the code below after some modifications
                             // to ensure that one next.Span is enough
                             //if(hasNext) ReadNextTwoChars(pBuffer, remaining, index, out ch1, out ch2, next.Span);
@@ -473,28 +462,43 @@ namespace System.Text.Http.Parser
                     }
                 }
 
+                // This is just to get the position to be at the second segment
                 if (position == Position.First)
                 {
                     if (!buffer.TryGet(ref position, out ReadOnlyMemory<byte> current, advance: true))
                     {
+                        consumedBytes = 0;
                         return false;
                     }
                 }
 
-                ReadOnlyMemory<byte> next;
-                var hasNext = buffer.TryGet(ref position, out next, advance: true);
-                if (hasNext)
+                if (buffer.TryGet(ref position, out var nextSegment, advance: true))
                 {
-                    span = next.Span;
-                    remaining = span.Length + remaining;
-                    hasNext = buffer.TryGet(ref position, out next, advance: true);
-                    index = span.Length - remaining;
+                    currentSpan = nextSegment.Span;
+                    remaining = currentSpan.Length + remaining;
+                    index = currentSpan.Length - remaining;
                 }
                 else
                 {
                     consumedBytes = 0;
                     return false;
                 }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ReadTwoChars(ReadOnlyBytes buffer, int consumedBytes, out int ch1, out int ch2)
+        {
+            Span<byte> temp = stackalloc byte[2];
+            if (buffer.Slice(consumedBytes).CopyTo(temp) < 2)
+            {
+                ch1 = -1;
+                ch2 = -1;
+            }
+            else
+            {
+                ch1 = temp[0];
+                ch2 = temp[1];
             }
         }
 
