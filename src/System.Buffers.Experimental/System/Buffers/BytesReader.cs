@@ -62,13 +62,13 @@ namespace System.Buffers
             return ReadBytes(index);
         }
 
-        public Range? ReadRangeUntil(byte value)
+        public Range<int>? ReadRangeUntil(byte value)
         {
             var index = IndexOf(value);
             if (index == -1) return null;
             return ReadRange(index);
         }
-        public Range? ReadRangeUntil(ReadOnlySpan<byte> values)
+        public Range<int>? ReadRangeUntil(ReadOnlySpan<byte> values)
         {
             var index = IndexOf(values);
             if (index == -1) return null;
@@ -81,9 +81,9 @@ namespace System.Buffers
             Advance(count);
             return result;
         }
-        public Range ReadRange(int count)
+        public Range<int> ReadRange(int count)
         {
-            var result = new Range(_index, count);
+            var result = new Range<int>(_index, _index + count);
             Advance(count);
             return result;
         }

@@ -91,9 +91,9 @@ namespace System.Buffers
         public static ReadWriteBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadWriteBytes Slice(Range range)
+        public ReadWriteBytes Slice(Range<int> range)
         {
-            return Slice(range.Index, range.Length);
+            return Slice(range.From, range.Length());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

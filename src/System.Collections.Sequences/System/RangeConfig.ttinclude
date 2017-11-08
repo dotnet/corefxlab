@@ -1,0 +1,55 @@
+﻿<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#+
+    /*    This file includes static data used as compilation configuration for the rest of the code generation. 
+        It is shared here to ensure that all generated code compiles with the same constants and configurations.    */
+
+    // The set of supported numeric types to compile
+    public static Type[] SupportedTypes = new[] 
+    {
+        typeof(Byte), typeof(SByte),
+        typeof(UInt16), typeof(Int16),
+        typeof(UInt32), typeof(Int32),
+        typeof(UInt64), typeof(Int64),
+        typeof(Single), typeof(Double),
+        typeof(Decimal),
+        typeof(DateTime)
+    };
+
+    private static Dictionary<Type, Type> s_lengthTypes = new Dictionary<Type, Type>()
+    {
+        { typeof(SByte), typeof(SByte) },
+        { typeof(Int16), typeof(Int16) },
+        { typeof(Int32), typeof(Int32) },
+        { typeof(Int64), typeof(Int64) },
+        { typeof(Byte), typeof(Byte) },
+        { typeof(UInt16), typeof(UInt16) },
+        { typeof(UInt32), typeof(UInt32) },
+        { typeof(UInt64), typeof(UInt64) },
+        { typeof(Single), typeof(Single) },
+        { typeof(Double), typeof(Double) },
+        { typeof(Decimal), typeof(Decimal) },
+        { typeof(DateTime), typeof(TimeSpan) }
+    };
+
+    public static bool HasLengthType(Type t)
+    {
+        return s_lengthTypes.ContainsKey(t);
+    }
+
+    public static Type GetLengthType(Type t)
+    {
+        if (s_lengthTypes.TryGetValue(t, out var lt))
+            return lt;
+
+        throw new InvalidOperationException($"Substraction isn't supported by {t.Name}");
+    }
+
+    public void GenerateCopyrightHeader()
+    {
+#>// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+<#+
+    }
+#>
