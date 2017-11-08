@@ -374,7 +374,7 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            var position = Position.First;
+            Position position = Position.First;
 
             ReadOnlySpan<byte> currentSpan = buffer.First.Span;
             var remaining = currentSpan.Length;

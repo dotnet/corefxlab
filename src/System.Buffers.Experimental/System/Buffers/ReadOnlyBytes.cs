@@ -126,7 +126,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(ReadOnlySpan<byte> bytes)
+        public long IndexOf(ReadOnlySpan<byte> bytes)
         {
             var first = _first.Span;
             var index = first.IndexOf(bytes);
@@ -135,7 +135,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(byte value)
+        public long IndexOf(byte value)
         {
             var first = _first.Span;
             var index = first.IndexOf(value);
@@ -143,11 +143,11 @@ namespace System.Buffers
             return IndexOfRest(value, first.Length);
         }
 
-        int IndexOfRest(byte value, int firstLength)
+        long IndexOfRest(byte value, int firstLength)
         {
             var rest = Rest;
             if (rest == null) return -1;
-            var index = rest.IndexOf(value);
+            long index = rest.IndexOf(value);
             if (index != -1) return firstLength + index;
             return -1;
         }

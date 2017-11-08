@@ -14,7 +14,7 @@ namespace System.Buffers
     {
         readonly SymbolTable _symbolTable;
         ReadOnlyBytes _unreadSegments;
-        int _index; // index relative to the begining of bytes passed to the constructor
+        long _index; // index relative to the begining of bytes passed to the constructor
 
         ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
@@ -75,13 +75,13 @@ namespace System.Buffers
             return ReadRange(index);
         }
 
-        public ReadOnlyBytes ReadBytes(int count)
+        public ReadOnlyBytes ReadBytes(long count)
         {
             var result = _unreadSegments.Slice(_currentSegmentIndex, count);
             Advance(count);
             return result;
         }
-        public Range ReadRange(int count)
+        public Range ReadRange(long count)
         {
             var result = new Range(_index, count);
             Advance(count);
@@ -89,9 +89,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(byte value)
+        public long IndexOf(byte value)
         {
-            var index = Unread.IndexOf(value);
+            int index = Unread.IndexOf(value);
             if (index != -1)
             {
                 return index;
@@ -103,7 +103,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(ReadOnlySpan<byte> values)
+        public long IndexOf(ReadOnlySpan<byte> values)
         {
             var unread = Unread;
             var index = unread.IndexOf(values);
@@ -128,7 +128,7 @@ namespace System.Buffers
             }
         }
 
-        public int Index => _index;
+        public long Index => _index;
 
         int CopyTo(Span<byte> buffer)
         {
@@ -151,13 +151,13 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int count)
+        public void Advance(long count)
         {
             var unreadLength = _currentSegment.Length - _currentSegmentIndex;
             if (count < unreadLength)
             {
-                _currentSegmentIndex += count;
-                _index += count;
+                _currentSegmentIndex += (int)count;
+                _index += (int)count;
             }
             else
             {
@@ -165,7 +165,7 @@ namespace System.Buffers
             }
         }
 
-        void AdvanceNextSegment(int count, int advancedInCurrent)
+        void AdvanceNextSegment(long count, int advancedInCurrent)
         {
             Debug.Assert(advancedInCurrent == _currentSegment.Length - _currentSegmentIndex);
             var newUnreadSegments = _unreadSegments.Rest;
@@ -197,15 +197,15 @@ namespace System.Buffers
             }
         }
 
-        int IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
+        long IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
             => sequence.IndexOf(value);
 
-        int IndexOfStraddling(ReadOnlySpan<byte> value)
+        long IndexOfStraddling(ReadOnlySpan<byte> value)
         {
             var rest = _unreadSegments.Rest;
             if (rest == null) return -1;
             ReadOnlySpan<byte> unread = Unread;
-            int index = 0;
+            long index = 0;
             // try to find the bytes straddling _first and _rest
             int bytesToSkipFromFirst = 0; // these don't have to be searched again
             if (unread.Length > value.Length - 1)
@@ -246,7 +246,7 @@ namespace System.Buffers
             return -1;
         }
 
-        int IndexOfRest(byte value)
+        long IndexOfRest(byte value)
         {
             var rest = _unreadSegments.Rest;
             if (rest == null) return -1;

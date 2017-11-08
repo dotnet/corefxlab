@@ -11,6 +11,12 @@ namespace System.Buffers
         ReadOnlyMemory<T> First { get; }
     }
 
+    public interface IMemorySequence<T> : IReadOnlyMemorySequence<T>, ISequence<Memory<T>>
+    {
+        new Memory<T> First { get; }
+        IMemorySequence<T> Rest { get; }
+    }
+
     public interface IReadOnlyMemoryList<T> : IReadOnlyMemorySequence<T>
     {
         IReadOnlyMemoryList<T> Rest { get; }

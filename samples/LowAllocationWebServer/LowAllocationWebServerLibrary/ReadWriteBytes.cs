@@ -6,32 +6,25 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public interface IBufferList<T> : ISequence<Memory<T>>
-    {
-        int CopyTo(Span<T> buffer);
-        Memory<T> First { get; }
-        IBufferList<T> Rest { get; }
-    }
-
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public struct ReadWriteBytes : IBufferList<byte>
+    public struct ReadWriteBytes : IMemorySequence<byte>
     {
         Memory<byte> _first;
-        IBufferList<byte> _rest;
-        int _length;
+        IMemorySequence<byte> _rest;
+        long _length;
 
         static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
 
-        public ReadWriteBytes(Memory<byte> first, IBufferList<byte> rest, int length)
+        public ReadWriteBytes(Memory<byte> first, IMemorySequence<byte> rest, long length)
         {
             _rest = rest;
             _first = first;
             _length = length;
         }
 
-        public ReadWriteBytes(Memory<byte> first, IBufferList<byte> rest) :
+        public ReadWriteBytes(Memory<byte> first, IMemorySequence<byte> rest) :
             this(first, rest, Unspecified)
         { }
 
@@ -39,11 +32,11 @@ namespace System.Buffers
             this(buffer, null, buffer.Length)
         { }
 
-        public ReadWriteBytes(IBufferList<byte> segments, int length) :
+        public ReadWriteBytes(IMemorySequence<byte> segments, long length) :
             this(segments.First, segments.Rest, length)
         { }
 
-        public ReadWriteBytes(IBufferList<byte> segments) :
+        public ReadWriteBytes(IMemorySequence<byte> segments) :
             this(segments.First, segments.Rest, Unspecified)
         { }
 
@@ -61,7 +54,7 @@ namespace System.Buffers
                 return true;
             }
 
-            var rest = position.ObjectPosition as IBufferList<byte>;
+            var rest = position.ObjectPosition as IMemorySequence<byte>;
             if (rest == null)
             {
                 value = default;
@@ -72,7 +65,7 @@ namespace System.Buffers
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
             if (value.Length + position.Tag > _length && _length != Unspecified)
             {
-                value = value.Slice(0, _length - position.Tag);
+                value = value.Slice(0, (int)(_length - position.Tag));
                 if (value.Length == 0) return false;
             }
             if (advance)
@@ -86,9 +79,11 @@ namespace System.Buffers
 
         public Memory<byte> First => _first;
 
-        public IBufferList<byte> Rest => _rest;
+        public IMemorySequence<byte> Rest => _rest;
 
         public static ReadWriteBytes Empty => s_empty;
+
+        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => _first;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadWriteBytes Slice(Range range)
@@ -97,21 +92,21 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadWriteBytes Slice(int index, int length)
+        public ReadWriteBytes Slice(long index, long length)
         {
             if (First.Length >= length + index)
             {
-                return new ReadWriteBytes(First.Slice(index, length));
+                return new ReadWriteBytes(First.Slice((int)index, (int)length));
             }
             if (First.Length > index)
             {
-                return new ReadWriteBytes(_first.Slice(index), _rest, length);
+                return new ReadWriteBytes(_first.Slice((int)index), _rest, length);
             }
             return SliceRest(index, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadWriteBytes Slice(int index)
+        public ReadWriteBytes Slice(long index)
         {
             return Slice(index, ComputeLength() - index); // TODO (pri 1): this computes the Length; it should not.
         }
@@ -125,11 +120,10 @@ namespace System.Buffers
                 return buffer.Length;
             }
             first.Span.CopyTo(buffer);
-            // TODO (pri 2): do we need to compute the length here?
-            return first.Length + _rest.CopyTo(buffer.Slice(first.Length, ComputeLength() - first.Length));
+            return first.Length + _rest.CopyTo(buffer.Slice(first.Length));
         }
 
-        ReadWriteBytes SliceRest(int index, int length)
+        ReadWriteBytes SliceRest(long index, long length)
         {
             if (_rest == null)
             {
@@ -151,7 +145,7 @@ namespace System.Buffers
 
         // TODO (pri 3): do we want this to be public? Maybe Lazy<int> length?
         // TODO (pri 3): the problem is that this makes the type mutable, and since the type is a struct, the mutation can be lost when the stack unwinds.
-        public int ComputeLength()
+        public long ComputeLength()
         {
             if (_length != Unspecified) return _length;
 
@@ -172,13 +166,15 @@ namespace System.Buffers
         // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
         const int Unspecified = -1;
 
-        class BufferListNode : IBufferList<byte>
+        class BufferListNode : IMemorySequence<byte>
         {
             internal Memory<byte> _first;
             internal BufferListNode _rest;
             public Memory<byte> First => _first;
 
-            public IBufferList<byte> Rest => _rest;
+            public IMemorySequence<byte> Rest => _rest;
+
+            ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => _first;
 
             public int CopyTo(Span<byte> buffer)
             {
@@ -230,6 +226,17 @@ namespace System.Buffers
                 }
                 return true;
             }
+
+            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+            {
+                if(TryGet(ref position, out Memory<byte> memory, advance))
+                {
+                    item = memory;
+                    return true;
+                }
+                item = default;
+                return false;
+            }
         }
 
         public static ReadWriteBytes Create(params byte[][] buffers)
@@ -251,6 +258,17 @@ namespace System.Buffers
                 current._first = buffer;
             }
             return new ReadWriteBytes(first);
+        }
+
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        {
+            if (TryGet(ref position, out Memory<byte> memory, advance))
+            {
+                item = memory;
+                return true;
+            }
+            item = default;
+            return false;
         }
     }
 }

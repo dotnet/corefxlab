@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Http
 {
-    class OwnedBuffer : ReferenceCountedBuffer<byte>, IBufferList<byte>, IReadOnlyMemoryList<byte>
+    class OwnedBuffer : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
     {
         public const int DefaultBufferSize = 1024;
 
@@ -28,11 +28,11 @@ namespace Microsoft.Net.Http
 
         public Memory<byte> First => Memory;
 
-        public IBufferList<byte> Rest => _next;
+        public IMemorySequence<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        Memory<byte> IBufferList<byte>.First => Memory;
+        Memory<byte> IMemorySequence<byte>.First => Memory;
 
         public override int Length => _array.Length;
 
