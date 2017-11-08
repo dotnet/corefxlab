@@ -127,7 +127,7 @@ namespace System.Buffers
 
         // span creation helpers:
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, ReadOnlySpan<byte> value)
+        public static int IndexOf(this IReadOnlyMemoryList<byte> sequence, ReadOnlySpan<byte> value)
         {
             var first = sequence.First.Span;
             var index = first.IndexOf(value);
@@ -139,7 +139,7 @@ namespace System.Buffers
             return IndexOfStraddling(first, sequence.Rest, value);
         }
 
-        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, byte value)
+        public static int IndexOf(this IReadOnlyMemoryList<byte> sequence, byte value)
         {
             var first = sequence.First.Span;
             var index = first.IndexOf(value);
@@ -160,7 +160,7 @@ namespace System.Buffers
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest
-        internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyBufferList<byte> rest, ReadOnlySpan<byte> value)
+        internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyMemoryList<byte> rest, ReadOnlySpan<byte> value)
         {
             Debug.Assert(first.IndexOf(value) == -1);
             if (rest == null) return -1;

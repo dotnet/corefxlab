@@ -197,7 +197,7 @@ namespace System.Buffers
             }
         }
 
-        int IndexOf(IReadOnlyBufferList<byte> sequence, byte value)
+        int IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
             => sequence.IndexOf(value);
 
         int IndexOfStraddling(ReadOnlySpan<byte> value)

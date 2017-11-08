@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Http
 {
-    class OwnedBuffer : ReferenceCountedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
+    class OwnedBuffer : ReferenceCountedBuffer<byte>, IBufferList<byte>, IReadOnlyMemoryList<byte>
     {
         public const int DefaultBufferSize = 1024;
 
@@ -45,11 +45,11 @@ namespace Microsoft.Net.Http
             }
         }
 
-        IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => throw new NotImplementedException();
+        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => throw new NotImplementedException();
 
         public long Index => throw new NotImplementedException();
 
-        ReadOnlyMemory<byte> IReadOnlyBuffer<byte>.First => throw new NotImplementedException();
+        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => throw new NotImplementedException();
 
         public int CopyTo(Span<byte> buffer)
         {
