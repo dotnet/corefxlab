@@ -18,22 +18,12 @@ namespace System._Time.Tests
         }
 
         [Fact]
-        public void CanCalculateDuration_Negative()
-        {
-            Time startTime = new Time(12, 0);
-            Time endTime = new Time(10, 0);
-
-            TimeSpan duration = endTime - startTime;
-            Assert.Equal(TimeSpan.FromHours(-2), duration);
-        }
-
-        [Fact]
         public void CanCalculateDuration_OverMidnight()
         {
             Time startTime = new Time(23, 0);
             Time endTime = new Time(1, 0);
 
-            TimeSpan duration = Time.CalculateDuration(startTime, endTime);
+            TimeSpan duration = endTime - startTime;
             Assert.Equal(TimeSpan.FromHours(2), duration);
         }
 
