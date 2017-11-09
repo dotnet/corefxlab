@@ -357,13 +357,7 @@ namespace System
         /// AM is an abbreviation for "Ante Meridiem", meaning "before mid-day".
         /// PM is an abbreviation for "Post Meridiem", meaning "after mid-day".
         /// </remarks>
-        public Meridiem Meridiem
-        {
-            get
-            {
-                return Hour < 12 ? Meridiem.AM : Meridiem.PM;
-            }
-        }
+        public Meridiem Meridiem => Hour < 12 ? Meridiem.AM : Meridiem.PM;
 
         /// <summary>
         /// Gets the minute component of the time represented by this instance.
@@ -877,7 +871,7 @@ namespace System
                 return false;
             }
 
-            return value is Time && Equals((Time)value);
+            return value is Time time && Equals(time);
         }
 
         /// <summary>

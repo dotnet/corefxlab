@@ -787,7 +787,7 @@ namespace System
                 return false;
             }
 
-            return value is Date && Equals((Date)value);
+            return value is Date date && Equals(date);
         }
 
         /// <summary>
