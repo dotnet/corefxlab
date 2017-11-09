@@ -45,7 +45,7 @@ namespace System.Numerics
             return product;
         }
 
-        public static bool IsAscending(int[] values)
+        public static bool IsAscending(ReadOnlySpan<int> values)
         {
             for (int i = 1; i < values.Length; i++)
             {
@@ -58,7 +58,7 @@ namespace System.Numerics
             return true;
         }
 
-        public static bool IsDescending(int[] values)
+        public static bool IsDescending(ReadOnlySpan<int> values)
         {
             for (int i = 1; i < values.Length; i++)
             {
@@ -179,13 +179,13 @@ namespace System.Numerics
         }
         
         /// <summary>
-        /// Calculates the n-d indices from the 1-d index in a layoyut specificed by strides
+        /// Calculates the n-d indices from the 1-d index in a layout specificed by strides
         /// </summary>
         /// <param name="strides"></param>
         /// <param name="index"></param>
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
-        public static void GetIndices(int[] strides, bool reverseStride, int index, int[] indices, int startFromDimension = 0)
+        public static void GetIndices(ReadOnlySpan<int> strides, bool reverseStride, int index, int[] indices, int startFromDimension = 0)
         {
             Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);
@@ -203,13 +203,13 @@ namespace System.Numerics
         }
 
         /// <summary>
-        /// Calculates the n-d indices from the 1-d index in a layoyut specificed by strides
+        /// Calculates the n-d indices from the 1-d index in a layout specificed by strides
         /// </summary>
         /// <param name="strides"></param>
         /// <param name="index"></param>
         /// <param name="indices"></param>
         /// <param name="startFromDimension"></param>
-        public static void GetIndices(int[] strides, bool reverseStride, int index, Span<int> indices, int startFromDimension = 0)
+        public static void GetIndices(ReadOnlySpan<int> strides, bool reverseStride, int index, Span<int> indices, int startFromDimension = 0)
         {
             Debug.Assert(reverseStride ? IsAscending(strides) : IsDescending(strides), "Index decomposition requires ordered strides");
             Debug.Assert(strides.Length == indices.Length);

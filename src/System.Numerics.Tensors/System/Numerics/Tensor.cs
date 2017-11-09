@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 
@@ -1427,6 +1426,54 @@ namespace System.Numerics
                 compressedSparseTensor.SetValue(i, GetValue(i));
             }
             return compressedSparseTensor;
+        }
+
+        #endregion
+
+        #region Slice
+
+        public Tensor<T> Slice(params Range[] ranges)
+        {
+            return Slice(new ReadOnlySpan<Range>(ranges));
+        }
+
+        public Tensor<T> Slice(ReadOnlySpan<Range> ranges)
+        {
+            if (ranges.Length != Rank)
+            {
+                throw new ArgumentException($"{nameof(ranges.Length)} of {nameof(ranges)} ({ranges.Length}) must match the {nameof(Rank)} of this {nameof(Tensor)} ({Rank}).");
+            }
+
+            Span<int> newDimensions = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+            Span<int> newStrides = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+            int offset = 0;
+            int newDimensionCount = 0;
+
+            // construct new dimensions and strides, compute offset as the linearization of the lower bounds
+            for (int i = 0; i < ranges.Length; i++)
+            {
+                var range = ranges[i];
+
+                // Range guarantees the Length is positive
+                Debug.Assert(range.Length > 0);
+
+                offset += range.LowerBound * strides[i];
+
+                // only create a new dimension if the range requires it
+                if (range.Length > 1)
+                {
+                    newDimensions[newDimensionCount] = range.Length;
+                    newStrides[newDimensionCount] = strides[i];  // strides cannot change since the backing memory must stay the same.
+                    newDimensionCount++;
+                }
+            }
+
+            return Slice(newDimensions.Slice(0, newDimensionCount), newStrides.Slice(0, newDimensionCount), offset);
+        }
+
+        protected virtual Tensor<T> Slice(ReadOnlySpan<int> dimensions, ReadOnlySpan<int> strides, int offset)
+        {
+            return new TensorView<T>(this, dimensions, strides, offset);
         }
 
         #endregion
