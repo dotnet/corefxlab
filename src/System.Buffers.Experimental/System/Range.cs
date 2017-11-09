@@ -6,6 +6,11 @@ namespace System {
     {
         public Range(int index, int length)
         {
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException("Length must be non-negative.", nameof(length));
+            }
+
             Index = index;
             Length = length;
         }

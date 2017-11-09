@@ -1457,7 +1457,7 @@ namespace System.Numerics
                 // Range guarantees the Length is positive
                 Debug.Assert(range.Length > 0);
 
-                offset += range.LowerBound * strides[i];
+                offset += range.Index * strides[i];
 
                 // only create a new dimension if the range requires it
                 if (range.Length > 1)
