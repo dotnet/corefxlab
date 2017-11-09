@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers.Cryptography
@@ -38,7 +36,7 @@ namespace System.Buffers.Cryptography
             }
         }
 
-        public bool TryWrite(Span<byte> buffer, out int written, ParsedFormat format = default)
+        public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
         {
             if (!format.IsDefault) throw new ArgumentOutOfRangeException(nameof(format));
             if (buffer.Length < OutputSize) { written = 0; return false; }

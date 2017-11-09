@@ -33,10 +33,9 @@ namespace System.Text.Primitives.Tests
         public void TryComputeEncodedBytesShouldMatchEncoding_Utf8(string value)
         {
             int expectedBytes = Text.Encoding.UTF8.GetByteCount(value);
-            int actual;
 
             // test via string input
-            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(value.AsReadOnlySpan().AsBytes(), out actual));
+            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(value.AsReadOnlySpan().AsBytes(), out int actual));
             Assert.Equal(expectedBytes, actual);
 
             // test via utf16 input
@@ -55,11 +54,10 @@ namespace System.Text.Primitives.Tests
         public void TryComputeEncodedBytesShouldMatchEncoding_Utf16(string value)
         {
             int expectedBytes = Text.Encoding.Unicode.GetByteCount(value);
-            int actual;
 
             // test via utf8 input
             ReadOnlySpan<byte> bytes = Text.Encoding.UTF8.GetBytes(value);
-            Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf8.ToUtf16Length(bytes, out actual));
+            Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf8.ToUtf16Length(bytes, out int actual));
             Assert.Equal(expectedBytes, actual);
 
             // test via utf32 input

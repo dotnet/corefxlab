@@ -153,8 +153,7 @@ namespace System.Buffers
             if (_rest != null)
             {
                 Position position = new Position();
-                Memory<byte> segment;
-                while (_rest.TryGet(ref position, out segment))
+                while (_rest.TryGet(ref position, out Memory<byte> segment))
                 {
                     length += segment.Length;
                 }
@@ -180,9 +179,8 @@ namespace System.Buffers
             {
                 int copied = 0;
                 var position = Position.First;
-                Memory<byte> segment;
                 var free = buffer;
-                while (TryGet(ref position, out segment, true))
+                while (TryGet(ref position, out Memory<byte> segment, true))
                 {
                     if (segment.Length > free.Length)
                     {

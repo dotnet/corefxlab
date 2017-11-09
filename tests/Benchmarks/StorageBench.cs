@@ -8,10 +8,8 @@ using System.Azure.Authentication;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;
-using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Encodings.Web.Utf8;
 using System.Text.Utf8;
 
 public class StorageBench

@@ -226,9 +226,8 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
             // http://blogs.technet.com/b/wincat/archive/2012/12/05/fast-tcp-loopback-performance-and-low-latency-with-windows-server-2012-tcp-loopback-fast-path.aspx
             // https://github.com/libuv/libuv/issues/489
             var optionValue = 1;
-            uint dwBytes = 0u;
 
-            var result = NativeMethods.WSAIoctl(socket, SIO_LOOPBACK_FAST_PATH, &optionValue, sizeof(int), null, 0, out dwBytes, IntPtr.Zero, IntPtr.Zero);
+            var result = NativeMethods.WSAIoctl(socket, SIO_LOOPBACK_FAST_PATH, &optionValue, sizeof(int), null, 0, out uint dwBytes, IntPtr.Zero, IntPtr.Zero);
             if (result == SOCKET_ERROR)
             {
                 var errorId = NativeMethods.WSAGetLastError();

@@ -113,7 +113,7 @@ public class CosmosDbBench
 
     public static bool TryWritePrimitives(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
     {
-        int written, consumed, totalWritten = 0;
+        int totalWritten = 0;
         bytesWritten = 0;
 
         Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
@@ -121,7 +121,7 @@ public class CosmosDbBench
         s_type.CopyTo(buffer);
         totalWritten += s_type.Length;
 
-        if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out int consumed, out int written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }

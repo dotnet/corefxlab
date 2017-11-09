@@ -76,10 +76,9 @@ namespace System.IO.Pipelines.Tests
             var block1 = buffer.Start;
             var block2 = buffer.End;
             // Act
-            ReadCursor result;
 
             var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek);
+            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out ReadCursor result, (byte)seek);
             var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
             var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 
@@ -110,9 +109,8 @@ namespace System.IO.Pipelines.Tests
             var buffer = BufferUtilities.CreateBuffer(input);
 
             // Act
-            ReadCursor result;
             var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek);
+            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out ReadCursor result, (byte)seek);
             var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
             var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 

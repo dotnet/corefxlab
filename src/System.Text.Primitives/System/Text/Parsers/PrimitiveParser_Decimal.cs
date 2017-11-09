@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 
-using System.Buffers.Text;
 
 namespace System.Buffers.Text
 {
@@ -17,13 +16,12 @@ namespace System.Buffers.Text
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                return Utf8Parser.TryParseDecimal(text, out value, out bytesConsumed);
+                return Utf8Parser.TryParse(text, out value, out bytesConsumed);
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
-                int charactersConsumed;
-                bool result = Utf16Parser.TryParseDecimal(textChars, out value, out charactersConsumed);
+                bool result = Utf16Parser.TryParseDecimal(textChars, out value, out int charactersConsumed);
                 bytesConsumed = charactersConsumed * sizeof(char);
                 return result;
             }

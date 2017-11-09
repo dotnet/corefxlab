@@ -162,8 +162,7 @@ namespace System.IO.Pipelines.Compression
                         var memory = writerBuffer.Buffer;
                         var handle = memory.Retain(pin: true);
                         handles.Add(handle);
-                        int compressedBytes;
-                        flushed = _deflater.Flush((IntPtr)handle.Pointer, memory.Length, out compressedBytes);
+                        flushed = _deflater.Flush((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
                         writerBuffer.Advance(compressedBytes);
                     }
 
@@ -183,8 +182,7 @@ namespace System.IO.Pipelines.Compression
                         var memory = writerBuffer.Buffer;
                         var handle = memory.Retain(pin: true);
                         handles.Add(handle);
-                        int compressedBytes;
-                        finished = _deflater.Finish((IntPtr)handle.Pointer, memory.Length, out compressedBytes);
+                        finished = _deflater.Finish((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
                         writerBuffer.Advance(compressedBytes);
                     }
 

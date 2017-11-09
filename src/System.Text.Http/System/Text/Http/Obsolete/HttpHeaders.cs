@@ -64,11 +64,9 @@ namespace System.Text.Http.SingleSegment
 
         private static Utf8Span ParseHeaderLine(Utf8Span headerString, out Utf8SpanPair header)
         {
-            Utf8Span headerName;
-            Utf8Span headerValue;
 
             //TODO: this will be simplified once we have TrySubstringTo/From accepting strings            
-            if (!headerString.TrySubstringTo((byte) ':', out headerName))
+            if (!headerString.TrySubstringTo((byte)':', out Utf8Span headerName))
             {
                 throw new ArgumentException("headerString");
             }
@@ -79,7 +77,7 @@ namespace System.Text.Http.SingleSegment
                 headerString = headerString.Substring(1);
             }
             
-            if (!headerString.TrySubstringTo((byte)'\r', out headerValue))
+            if (!headerString.TrySubstringTo((byte)'\r', out Utf8Span headerValue))
             {
                 throw new ArgumentException("headerString");
             }

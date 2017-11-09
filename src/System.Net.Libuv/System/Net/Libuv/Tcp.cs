@@ -29,16 +29,14 @@ namespace System.Net.Libuv
 
         static sockaddr_in CreateSockaddr(string ip, int port)
         {
-            sockaddr_in address;
-            int result = UVInterop.uv_ip4_addr(ip, port, out address);
+            int result = UVInterop.uv_ip4_addr(ip, port, out sockaddr_in address);
             UVException.ThrowIfError(result);
             return address;
         }
 
         static sockaddr_in6 CreateSockaddrIp6(string ip, int port)
         {
-            sockaddr_in6 address;
-            int result = UVInterop.uv_ip6_addr(ip, port, out address);
+            int result = UVInterop.uv_ip6_addr(ip, port, out sockaddr_in6 address);
             UVException.ThrowIfError(result);
             return address;
         }

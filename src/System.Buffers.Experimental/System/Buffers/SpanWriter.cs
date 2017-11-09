@@ -28,7 +28,7 @@ namespace System.Buffers
             Enlarge = null;
         }
 
-        public void WriteBytes<T>(T value, ParsedFormat format = default, IBufferTransformation transformation = null) where T : IWritable
+        public void WriteBytes<T>(T value, StandardFormat format = default, IBufferTransformation transformation = null) where T : IWritable
         {
             int written;
             while (!value.TryWrite(Free, out written, format))
@@ -48,7 +48,7 @@ namespace System.Buffers
             }
         }
 
-        public void WriteBytes<T>(T value, ParsedFormat format, ReadOnlySpan<IBufferTransformation> transformations) where T : IWritable
+        public void WriteBytes<T>(T value, StandardFormat format, ReadOnlySpan<IBufferTransformation> transformations) where T : IWritable
         {
             int written;
             while (!value.TryWrite(Free, out written, format))
@@ -63,7 +63,7 @@ namespace System.Buffers
             }
         }
 
-        public void WriteText<T>(T value, ParsedFormat format = default, IBufferTransformation transformation = null) where T : IBufferFormattable
+        public void WriteText<T>(T value, StandardFormat format = default, IBufferTransformation transformation = null) where T : IBufferFormattable
         {
             int written;
             while (!value.TryFormat(Free, out written, format, _symbols))
@@ -84,7 +84,7 @@ namespace System.Buffers
             }
         }
 
-        public void WriteText<T>(T value, ParsedFormat format, ReadOnlySpan<IBufferTransformation> transformations) where T : IBufferFormattable
+        public void WriteText<T>(T value, StandardFormat format, ReadOnlySpan<IBufferTransformation> transformations) where T : IBufferFormattable
         {
             int written;
             while (!value.TryFormat(Free, out written, format, _symbols))
@@ -216,13 +216,13 @@ namespace System.Buffers
             _written++;
         }
 
-        public void Write(DateTime date, ParsedFormat format)
+        public void Write(DateTime date, StandardFormat format)
         {
             int written;
             while (!date.TryFormat(Free, out written, format, _symbols)) Resize();
             _written += written;
         }
-        public void WriteLine(DateTime date, ParsedFormat format)
+        public void WriteLine(DateTime date, StandardFormat format)
         {
             int written;
             while (!date.TryFormat(Free, out written, format, _symbols)) Resize();

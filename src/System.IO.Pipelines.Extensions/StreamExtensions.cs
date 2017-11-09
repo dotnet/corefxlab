@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,8 +61,7 @@ namespace System.IO.Pipelines
 
         private static async Task WriteToStream(Stream stream, Memory<byte> memory)
         {
-            ArraySegment<byte> data;
-            if (memory.TryGetArray(out data))
+            if (memory.TryGetArray(out ArraySegment<byte> data))
             {
                 await stream.WriteAsync(data.Array, data.Offset, data.Count)
                     .ConfigureAwait(continueOnCapturedContext: false);

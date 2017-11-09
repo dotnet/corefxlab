@@ -105,8 +105,7 @@ namespace System.Text.Http
                 return false;
             }
 
-            int consumed;
-            ParseHeader(bytes, out value, out consumed);
+            ParseHeader(bytes, out value, out int consumed);
             if (advance)
             {
                 position.IntegerPosition += consumed;
@@ -178,8 +177,7 @@ namespace System.Text.Http
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
-                while (bytes.TryGet(ref position, out segment, true))
+                while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
                 {
                     sb.Append(new Utf8Span(segment.Span).ToString());
                 }
@@ -204,8 +202,7 @@ namespace System.Text.Http
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
-                while (bytes.TryGet(ref position, out segment, true))
+                while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
                 {
                     sb.Append(new Utf8Span(segment.Span));
                 }

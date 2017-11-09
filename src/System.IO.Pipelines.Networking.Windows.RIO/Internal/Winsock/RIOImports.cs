@@ -28,7 +28,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock
         public unsafe static RegisteredIO Initalize(IntPtr socket)
         {
 
-            UInt32 dwBytes = 0;
             RioExtensionFunctionTable rio = new RioExtensionFunctionTable();
             Guid rioFunctionsTableId = new Guid("8509e081-96dd-4005-b165-9e2ee8c79e3f");
 
@@ -45,7 +44,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock
 
             result = WSAIoctlGeneral(socket, SioLoopbackFastPath, 
                                 &True, 4, null, 0,
-                                out dwBytes, IntPtr.Zero, IntPtr.Zero);
+                                out uint dwBytes, IntPtr.Zero, IntPtr.Zero);
 
             if (result != 0)
             {

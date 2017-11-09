@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-using System;
-using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,12 +204,11 @@ namespace System.Text.Utf8.Tests
         {
             Utf8Span u8s = new Utf8Span(s);
             byte codeUnit = (byte)(c);
-            Utf8Span u8result;
 
             int idx = s.IndexOf(c);
             bool expectedToFind = idx != -1;
 
-            Assert.Equal(expectedToFind, u8s.TrySubstringTo(codeUnit, out u8result));
+            Assert.Equal(expectedToFind, u8s.TrySubstringTo(codeUnit, out Utf8Span u8result));
             if (expectedToFind)
             {
                 string expected = s.Substring(0, idx);
@@ -594,8 +591,7 @@ namespace System.Text.Utf8.Tests
         {
             Utf8Span utf8s = new Utf8Span(s);
             Utf8Span utf8substring = new Utf8Span(substring);
-            Utf8Span result;
-            Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out result));
+            Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out Utf8Span result));
 
             if (expected != null)
             {
@@ -631,8 +627,7 @@ namespace System.Text.Utf8.Tests
         {
             Utf8Span utf8s = new Utf8Span(s);
             Utf8Span utf8substring = new Utf8Span(substring);
-            Utf8Span result;
-            Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out result));
+            Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out Utf8Span result));
 
             if (expected != null)
             {

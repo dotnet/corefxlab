@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
+
+using System.Buffers;
 
 namespace System.Text.Json
 {
@@ -9,9 +10,9 @@ namespace System.Text.Json
     {
         #region Formatting constants
 
-        public static readonly ParsedFormat NumberFormat = new ParsedFormat('D');
-        public static readonly ParsedFormat DateTimeFormat = new ParsedFormat('O');
-        public static readonly ParsedFormat GuidFormat = new ParsedFormat('D');
+        public static readonly StandardFormat NumberFormat = new StandardFormat('D');
+        public static readonly StandardFormat DateTimeFormat = new StandardFormat('O');
+        public static readonly StandardFormat GuidFormat = new StandardFormat('D');
 
         #endregion Formatting constants
 

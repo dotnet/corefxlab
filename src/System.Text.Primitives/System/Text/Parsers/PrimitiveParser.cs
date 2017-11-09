@@ -46,7 +46,7 @@ namespace System.Buffers.Text
         };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsHexFormat(ParsedFormat format)
+        public static bool IsHexFormat(StandardFormat format)
         {
             return format.Symbol == 'X' || format.Symbol == 'x';
         }

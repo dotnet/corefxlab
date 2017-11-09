@@ -111,17 +111,15 @@ namespace System.Buffers.Tests
         [Fact]
         public void BytesReaderParse()
         {
-            ulong u64;
-            bool b;
 
             ReadOnlyBytes bytes = Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BytesReader(bytes);
 
-            Assert.True(reader.TryParseUInt64(out u64));
+            Assert.True(reader.TryParseUInt64(out ulong u64));
             Assert.Equal(123ul, u64);
             Assert.Equal(3, reader.Index);
 
-            Assert.True(reader.TryParseBoolean(out b));
+            Assert.True(reader.TryParseBoolean(out bool b));
             Assert.Equal(true, b);
             Assert.Equal(7, reader.Index);
 

@@ -28,10 +28,7 @@ namespace System.IO.Pipelines.Samples
 
             if (_state == ParsingState.StartLine)
             {
-                // Find \n
-                ReadCursor delim;
-                ReadableBuffer startLine;
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out startLine, out delim))
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer startLine, out ReadCursor delim))
                 {
                     return ParseResult.Incomplete;
                 }
@@ -39,8 +36,7 @@ namespace System.IO.Pipelines.Samples
                 // Move the buffer to the rest
                 buffer = buffer.Slice(delim).Slice(2);
 
-                ReadableBuffer method;
-                if (!startLine.TrySliceTo((byte)' ', out method, out delim))
+                if (!startLine.TrySliceTo((byte)' ', out ReadableBuffer method, out delim))
                 {
                     return ParseResult.BadRequest;
                 }
@@ -50,8 +46,7 @@ namespace System.IO.Pipelines.Samples
                 // Skip ' '
                 startLine = startLine.Slice(delim).Slice(1);
 
-                ReadableBuffer path;
-                if (!startLine.TrySliceTo((byte)' ', out path, out delim))
+                if (!startLine.TrySliceTo((byte)' ', out ReadableBuffer path, out delim))
                 {
                     return ParseResult.BadRequest;
                 }
@@ -79,14 +74,8 @@ namespace System.IO.Pipelines.Samples
 
             while (!buffer.IsEmpty)
             {
-                var headerName = default(ReadableBuffer);
                 var headerValue = default(ReadableBuffer);
-
-                // End of the header
-                // \n
-                ReadCursor delim;
-                ReadableBuffer headerPair;
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out headerPair, out delim))
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer headerPair, out ReadCursor delim))
                 {
                     return ParseResult.Incomplete;
                 }
@@ -103,7 +92,7 @@ namespace System.IO.Pipelines.Samples
                 }
 
                 // :
-                if (!headerPair.TrySliceTo((byte)':', out headerName, out delim))
+                if (!headerPair.TrySliceTo((byte)':', out ReadableBuffer headerName, out delim))
                 {
                     return ParseResult.BadRequest;
                 }

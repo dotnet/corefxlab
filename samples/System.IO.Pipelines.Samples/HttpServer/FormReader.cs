@@ -30,17 +30,14 @@ namespace System.IO.Pipelines.Samples.Http
             while (!buffer.IsEmpty && _contentLength > 0)
             {
                 var next = buffer;
-                ReadCursor delim;
-                ReadableBuffer key;
-                if (!next.TrySliceTo((byte)'=', out key, out delim))
+                if (!next.TrySliceTo((byte)'=', out ReadableBuffer key, out ReadCursor delim))
                 {
                     break;
                 }
 
                 next = next.Slice(delim).Slice(1);
 
-                ReadableBuffer value;
-                if (next.TrySliceTo((byte)'&', out value, out delim))
+                if (next.TrySliceTo((byte)'&', out ReadableBuffer value, out delim))
                 {
                     next = next.Slice(delim).Slice(1);
                 }

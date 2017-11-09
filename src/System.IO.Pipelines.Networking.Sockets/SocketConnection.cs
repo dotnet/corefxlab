@@ -433,8 +433,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
         private static ArraySegment<byte> LeaseSmallBuffer()
         {
-            ArraySegment<byte> result;
-            if (!_smallBuffers.TryTake(out result))
+            if (!_smallBuffers.TryTake(out ArraySegment<byte> result))
             {
                 // use a throw-away buffer as a fallback
                 result = new ArraySegment<byte>(new byte[_smallBuffers.BytesPerItem]);
@@ -601,8 +600,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         // unsafe+async not good friends
         private unsafe void SetBuffer(Memory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
         {
-            ArraySegment<byte> segment;
-            if (!memory.TryGetArray(out segment))
+            if (!memory.TryGetArray(out ArraySegment<byte> segment))
             {
                 throw new InvalidOperationException("Memory is not backed by an array; oops!");
             }

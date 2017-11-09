@@ -101,9 +101,7 @@ namespace System.Text.Http.SingleSegment
 
         internal HttpMethod ReadMethod()
         {
-            HttpMethod method;
-            int parsedBytes;
-            if (!HttpRequestParser.TryParseMethod(Buffer, out method, out parsedBytes))
+            if (!HttpRequestParser.TryParseMethod(Buffer, out HttpMethod method, out int parsedBytes))
             {
                 return HttpMethod.Unknown;
             }
@@ -113,8 +111,7 @@ namespace System.Text.Http.SingleSegment
 
         internal Utf8Span ReadRequestUri()
         {
-            Utf8Span requestUri;
-            int parsedBytes = HttpRequestParser.TryParseRequestUri(Buffer, out requestUri);
+            int parsedBytes = HttpRequestParser.TryParseRequestUri(Buffer, out Utf8Span requestUri);
             if (parsedBytes == 0)
             {
                 return Utf8Span.Empty;
@@ -125,8 +122,7 @@ namespace System.Text.Http.SingleSegment
 
         Utf8Span ReadHttpVersionAsUtf8Span()
         {
-            Utf8Span httpVersion;
-            int parsedBytes = HttpRequestParser.TryParseHttpVersion(Buffer, out httpVersion);
+            int parsedBytes = HttpRequestParser.TryParseHttpVersion(Buffer, out Utf8Span httpVersion);
             if (parsedBytes == 0)
             {
                 return Utf8Span.Empty;

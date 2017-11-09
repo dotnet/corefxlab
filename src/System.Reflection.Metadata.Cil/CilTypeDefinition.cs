@@ -266,8 +266,7 @@ namespace System.Reflection.Metadata.Cil
         /// <returns>token of the method declaration, 0 if there is no overriding of that method.</returns>
         public int GetOverridenMethodToken(int methodBodyToken)
         {
-            int result = 0;
-            MethodImplementationDictionary.TryGetValue(methodBodyToken, out result);
+            MethodImplementationDictionary.TryGetValue(methodBodyToken, out int result);
             return result;
         }
 

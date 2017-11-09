@@ -169,8 +169,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             IOException error = null;
             if (errorDone)
             {
-                Exception uvError;
-                handle.Libuv.Check(status, out uvError);
+                handle.Libuv.Check(status, out Exception uvError);
                 error = new IOException(uvError.Message, uvError);
 
                 _inputBuffer?.Commit();

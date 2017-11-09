@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text.Parsing;
@@ -82,9 +81,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to parse</param>
         public static uint GetUInt32(this ReadableBuffer buffer)
         {
-            uint value;
-            int consumed;
-            if (!buffer.AsSequence().TryParseUInt32(out value, out consumed))
+            if (!buffer.AsSequence().TryParseUInt32(out uint value, out int consumed))
             {
                 throw new InvalidOperationException("could not parse uint");
             }
@@ -97,8 +94,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to parse</param>
         public static ulong GetUInt64(this ReadableBuffer buffer)
         {
-            ulong value;
-            if (Utf8Parser.TryParseUInt64(buffer.First.Span, out value))
+            if (Utf8Parser.TryParse(buffer.First.Span, out ulong value, out _))
             {
                 return value;
             }
@@ -116,7 +112,7 @@ namespace System.IO.Pipelines.Text.Primitives
             Span<byte> toParseBuffer = stackalloc byte[toParseLength];
             buffer.CopyTo(toParseBuffer);
 
-            if (Utf8Parser.TryParseUInt64(toParseBuffer, out value))
+            if (Utf8Parser.TryParse(toParseBuffer, out value, out _))
             {
                 return value;
             }

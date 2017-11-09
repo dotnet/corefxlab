@@ -69,7 +69,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatIntHex()
         {
-            ParsedFormat format = new ParsedFormat('X', ParsedFormat.NoPrecision);
+            StandardFormat format = new StandardFormat('X', StandardFormat.NoPrecision);
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)

@@ -111,9 +111,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
-            <#= structName #> <#= typeName #>;
-
-            GenerateFilledMatrixWithValues(out <#= typeName #>);
+            GenerateFilledMatrixWithValues(out <#= structName #> <#= typeName #>);
 
             for (double c = -10; c <= 10; c += 0.5)
             {
@@ -175,8 +173,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ColumnAccessorAreCorrect()
         {
-            <#= structName #> value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out <#= structName #> value);
 <#
                 for (int col = 1; col < colCount; col++)
                 {
@@ -195,8 +192,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void RowAccessorAreCorrect()
         {
-            <#= structName #> value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out <#= structName #> value);
 
 <#
                 for (int row = 1; row < rowCount; row++)
@@ -269,8 +265,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void MultiplyByIdentityReturnsEqualValue()
         {
-            <#= structName #> value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out <#= structName #> value);
             <#= structName #> result = value * <#= structName #>.Identity;
 
             Assert.Equal(value, result);

@@ -11,7 +11,7 @@ namespace System.Binary.Base64Experimental.Tests
         [Fact]
         public void BasicEncodingWithLineBreaksMime()
         {
-            var format = new ParsedFormat('M');
+            var format = new StandardFormat('M');
             for (int numBytes = 58; numBytes < 1000; numBytes++)
             {
                 Span<byte> source = new byte[numBytes];
@@ -37,7 +37,7 @@ namespace System.Binary.Base64Experimental.Tests
         [Fact]
         public void BasicEncodingWithLineBreaks()
         {
-            var format = new ParsedFormat('N', 64);
+            var format = new StandardFormat('N', 64);
             for (int numBytes = 0; numBytes < 1000; numBytes++)
             {
                 Span<byte> source = new byte[numBytes];

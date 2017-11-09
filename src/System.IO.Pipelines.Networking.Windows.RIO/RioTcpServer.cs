@@ -23,8 +23,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         public RioTcpServer(ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             var version = new Internal.Winsock.Version(2, 2);
-            WindowsSocketsData wsaData;
-            System.Net.Sockets.SocketError result = RioImports.WSAStartup((short)version.Raw, out wsaData);
+            System.Net.Sockets.SocketError result = RioImports.WSAStartup((short)version.Raw, out WindowsSocketsData wsaData);
             if (result != System.Net.Sockets.SocketError.Success)
             {
                 var error = RioImports.WSAGetLastError();

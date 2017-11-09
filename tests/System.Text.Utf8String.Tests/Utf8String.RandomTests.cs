@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -507,8 +506,7 @@ namespace System.Text.Utf8.Tests
         {
             Utf8String utf8s = new Utf8String(s);
             Utf8String utf8substring = new Utf8String(substring);
-            Utf8String result;
-            Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out result));
+            Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out Utf8String result));
 
             if (expected != null)
             {
@@ -544,8 +542,7 @@ namespace System.Text.Utf8.Tests
         {
             Utf8String utf8s = new Utf8String(s);
             Utf8String utf8substring = new Utf8String(substring);
-            Utf8String result;
-            Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out result));
+            Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out Utf8String result));
 
             if (expected != null)
             {

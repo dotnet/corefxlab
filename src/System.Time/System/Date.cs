@@ -1220,8 +1220,7 @@ namespace System
         /// </returns>
         public static bool TryParse(string s, out Date date)
         {
-            DateTime dt;
-            if (!DateTime.TryParse(s, out dt))
+            if (!DateTime.TryParse(s, out DateTime dt))
             {
                 date = default;
                 return false;
@@ -1273,8 +1272,7 @@ namespace System
 
             Contract.EndContractBlock();
 
-            DateTime dt;
-            if (!DateTime.TryParse(s, provider, styles, out dt))
+            if (!DateTime.TryParse(s, provider, styles, out DateTime dt))
             {
                 date = default;
                 return false;
@@ -1331,8 +1329,7 @@ namespace System
 
             format = NormalizeDateFormat(format);
 
-            DateTime dt;
-            if (!DateTime.TryParseExact(s, format, provider, styles, out dt))
+            if (!DateTime.TryParseExact(s, format, provider, styles, out DateTime dt))
             {
                 date = default;
                 return false;
@@ -1393,8 +1390,7 @@ namespace System
                 formats[i] = NormalizeDateFormat(formats[i]);
             }
 
-            DateTime dt;
-            if (!DateTime.TryParseExact(s, formats, provider, styles, out dt))
+            if (!DateTime.TryParseExact(s, formats, provider, styles, out DateTime dt))
             {
                 date = default;
                 return false;
@@ -1796,8 +1792,7 @@ namespace System
                 ? reader.ReadElementContentAsString()
                 : reader.ReadContentAsString();
 
-            Date d;
-            if (!TryParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d))
+            if (!TryParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out Date d))
             {
                 throw new FormatException(Strings.Format_BadDate);
             }

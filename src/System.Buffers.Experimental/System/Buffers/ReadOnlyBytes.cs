@@ -316,9 +316,8 @@ namespace System.Buffers
             {
                 int copied = 0;
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
                 var free = buffer;
-                while (TryGet(ref position, out segment, true))
+                while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
                 {
                     if (segment.Length > free.Length)
                     {

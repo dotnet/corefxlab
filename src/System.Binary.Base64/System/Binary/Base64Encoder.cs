@@ -15,14 +15,14 @@ namespace System.Binary.Base64Experimental
 
         private const int MaxLineLength = 76;
 
-        private static ParsedFormat ValidateFormat(ParsedFormat format)
+        private static StandardFormat ValidateFormat(StandardFormat format)
         {
             char symbol = format.Symbol;
 
             if (symbol == 'M')  // M (for MIME) == N76
             {
                 symbol = 'N';
-                return new ParsedFormat(symbol, MaxLineLength);
+                return new StandardFormat(symbol, MaxLineLength);
             }
 
             if (symbol == 'N')
@@ -37,7 +37,7 @@ namespace System.Binary.Base64Experimental
             throw new FormatException($"Format {format.Symbol}:{format.Precision} not supported for Base64 Encoding.");
         }
 
-        public static int GetMaxEncodedToUtf8Length(int length, ParsedFormat format)
+        public static int GetMaxEncodedToUtf8Length(int length, StandardFormat format)
         {
             Debug.Assert(length >= 0);
 
@@ -54,7 +54,7 @@ namespace System.Binary.Base64Experimental
             }
         }
 
-        public static OperationStatus EncodeToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, ParsedFormat format, bool isFinalBlock = true)
+        public static OperationStatus EncodeToUtf8(ReadOnlySpan<byte> bytes, Span<byte> utf8, out int consumed, out int written, StandardFormat format, bool isFinalBlock = true)
         {
             if (format.IsDefault) return Base64.EncodeToUtf8(bytes, utf8, out consumed, out written, isFinalBlock);
 

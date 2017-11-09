@@ -86,9 +86,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
-            Matrix3x4 matrix3x4;
-
-            GenerateFilledMatrixWithValues(out matrix3x4);
+            GenerateFilledMatrixWithValues(out Matrix3x4 matrix3x4);
 
             for (double c = -10; c <= 10; c += 0.5)
             {
@@ -152,8 +150,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ColumnAccessorAreCorrect()
         {
-            Matrix3x4 value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out Matrix3x4 value);
 
             Matrix1x4 column1 = value.Column1;
             for (int y = 0; y < value.Rows; y++)
@@ -171,8 +168,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void RowAccessorAreCorrect()
         {
-            Matrix3x4 value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out Matrix3x4 value);
 
 
             Matrix3x1 row1 = value.Row1;

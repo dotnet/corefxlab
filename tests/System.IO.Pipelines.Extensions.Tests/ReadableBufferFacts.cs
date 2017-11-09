@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Buffers.Pools;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Collections.Sequences;
@@ -44,9 +43,8 @@ namespace System.IO.Pipelines.Tests
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
             var position = Position.First;
-            ReadOnlyMemory<byte> memory;
             int spanCount = 0;
-            while (readable.TryGet(ref position, out memory))
+            while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 spanCount++;
                 Assert.Equal(spanCount, memory.Length);
@@ -304,9 +302,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            ReadableBuffer slice;
-            ReadCursor cursor;
-            Assert.True(buffer.TrySliceTo(sliceToBytes, out slice, out cursor));
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadableBuffer slice, out ReadCursor cursor));
             Assert.Equal(expected, slice.GetUtf8Span());
 
             _pipe.Reader.Advance(buffer.End);
@@ -320,11 +316,7 @@ namespace System.IO.Pipelines.Tests
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
-
-            // check it isn't there to start with
-            ReadableBuffer slice;
-            ReadCursor cursor;
-            var found = readBuffer.TrySliceTo(huntValue, out slice, out cursor);
+            var found = readBuffer.TrySliceTo(huntValue, out ReadableBuffer slice, out ReadCursor cursor);
             Assert.False(found);
 
             // correctness test all values

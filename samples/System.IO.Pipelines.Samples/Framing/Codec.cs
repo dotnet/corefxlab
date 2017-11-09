@@ -45,8 +45,7 @@ namespace System.IO.Pipelines.Samples.Framing
                                 break;
                             }
 
-                            Line line;
-                            while (decoder.TryDecode(ref input, out line))
+                            while (decoder.TryDecode(ref input, out Line line))
                             {
                                 await handler.HandleAsync(line);
                             }
@@ -117,9 +116,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         public bool TryDecode(ref ReadableBuffer input, out Line frame)
         {
-            ReadableBuffer slice;
-            ReadCursor cursor;
-            if (input.TrySliceTo((byte)'\r', (byte)'\n', out slice, out cursor))
+            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer slice, out ReadCursor cursor))
             {
                 frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);

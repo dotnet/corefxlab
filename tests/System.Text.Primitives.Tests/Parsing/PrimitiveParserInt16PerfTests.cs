@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 using Xunit;
 using Microsoft.Xunit.Performance;
-using System.Buffers;
 using System.Buffers.Text;
 
 namespace System.Text.Primitives.Tests
@@ -87,8 +86,8 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Utf8Parser.TryParseInt16(utf8ByteSpan, out short value);
-                        TestHelper.DoNotIgnore(value, 0);
+                        Utf8Parser.TryParse(utf8ByteSpan, out short value, out int consumed);
+                        TestHelper.DoNotIgnore(value, consumed);
                     }
                 }
             }
@@ -154,7 +153,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        Utf8Parser.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
+                        Utf8Parser.TryParse(utf8ByteSpan, out short value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }
@@ -178,7 +177,7 @@ namespace System.Text.Primitives.Tests
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                        Utf8Parser.TryParseInt16(utf8ByteSpan, out short value, out int bytesConsumed);
+                        Utf8Parser.TryParse(utf8ByteSpan, out short value, out int bytesConsumed);
                         TestHelper.DoNotIgnore(value, bytesConsumed);
                     }
                 }

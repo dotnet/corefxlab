@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
 using System.Text;
 
 namespace System.Buffers.Text
@@ -26,7 +25,7 @@ namespace System.Buffers.Text
 
         #region Date / Time APIs
 
-        public static bool TryFormat(DateTimeOffset value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(DateTimeOffset value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             TimeSpan offset = NullOffset;
             char symbol = format.Symbol;
@@ -55,7 +54,7 @@ namespace System.Buffers.Text
             }
         }
 
-        public static bool TryFormat(DateTime value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(DateTime value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             char symbol = format.IsDefault ? 'G' : format.Symbol;
 
@@ -78,7 +77,7 @@ namespace System.Buffers.Text
             }
         }
 
-        public static bool TryFormat(TimeSpan value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(TimeSpan value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             char symbol = format.IsDefault ? 'c' : format.Symbol;
 
@@ -100,31 +99,31 @@ namespace System.Buffers.Text
 
         #region Integer APIs
 
-        public static bool TryFormat(byte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(byte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(sbyte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(sbyte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, 0xff, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(ushort value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(ushort value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(short value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(short value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, 0xffff, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(uint value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(uint value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(int value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(int value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, 0xffffffff, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, buffer, out bytesWritten, format);
 
-        public static bool TryFormat(long value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(long value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => TryFormatCore(value, 0xffffffffffffffff, buffer, out bytesWritten, format);
 
-        static bool TryFormatCore(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        static bool TryFormatCore(long value, ulong mask, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             if (format.IsDefault)
             {
@@ -154,7 +153,7 @@ namespace System.Buffers.Text
             }
         }
 
-        static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             if (format.IsDefault)
             {
@@ -196,7 +195,7 @@ namespace System.Buffers.Text
         /// <param name="bytesWritten"></param>
         /// <param name="format">only 'G' format is supported</param>
         /// <returns></returns>
-        public static bool TryFormat(double value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(double value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => CustomFormatter.TryFormat(value, buffer, out bytesWritten, format, SymbolTable.InvariantUtf8);
 
         /// <summary>
@@ -207,7 +206,7 @@ namespace System.Buffers.Text
         /// <param name="bytesWritten"></param>
         /// <param name="format">only 'G' format is supported</param>
         /// <returns></returns>
-        public static bool TryFormat(float value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(float value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
             => CustomFormatter.TryFormat(value, buffer, out bytesWritten, format, SymbolTable.InvariantUtf8);
 
         /// <summary>
@@ -218,7 +217,7 @@ namespace System.Buffers.Text
         /// <param name="bytesWritten"></param>
         /// <param name="format">only 'G' format is supported</param>
         /// <returns></returns>
-        public static bool TryFormat(decimal value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(decimal value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             if (format.IsDefault) format = 'G';
             else if (format.Symbol != 'G') throw new FormatException();
@@ -236,7 +235,7 @@ namespace System.Buffers.Text
         #endregion Floating-point APIs
 
         #region Other
-        public static bool TryFormat(bool value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static bool TryFormat(bool value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             if (value)
             {
