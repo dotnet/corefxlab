@@ -3,6 +3,7 @@
 
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -14,7 +15,9 @@ namespace System
     /// Represents a whole date, having a year, month and day component.
     /// All values are in the proleptic Gregorian (ISO 8601) calendar system unless otherwise specified.
     /// </summary>
+    [Serializable]
     [XmlSchemaProvider("GetSchema")]
+    [StructLayout(LayoutKind.Auto)]
     public struct Date : IEquatable<Date>, IComparable<Date>, IComparable, IFormattable, IXmlSerializable
     {
         private const int MinDayNumber = 0;

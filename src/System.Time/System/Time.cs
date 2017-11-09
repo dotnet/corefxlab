@@ -3,6 +3,7 @@
 
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -14,7 +15,9 @@ namespace System
     /// Represents a time of day, as would be read from a clock, within the range 00:00:00 to 23:59:59.9999999
     /// Has properties for working with both 12-hour and 24-hour time values.
     /// </summary>
+    [Serializable]
     [XmlSchemaProvider("GetSchema")]
+    [StructLayout(LayoutKind.Auto)]
     public struct Time : IEquatable<Time>, IComparable<Time>, IComparable, IFormattable, IXmlSerializable
     {
         private const long TicksPerMillisecond = 10000;
