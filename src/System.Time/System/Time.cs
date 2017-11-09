@@ -1101,7 +1101,7 @@ namespace System
 
             Contract.EndContractBlock();
 
-            DateTime dt = DateTime.Parse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.Parse(s, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1186,7 +1186,7 @@ namespace System
             Contract.EndContractBlock();
 
             format = NormalizeTimeFormat(format);
-            DateTime dt = DateTime.ParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.ParseExact(s, format, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1247,7 +1247,7 @@ namespace System
                 formats[i] = NormalizeTimeFormat(formats[i]);
             }
 
-            DateTime dt = DateTime.ParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.ParseExact(s, formats, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1320,7 +1320,7 @@ namespace System
 
             Contract.EndContractBlock();
 
-            if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParse(s, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1377,7 +1377,7 @@ namespace System
 
             format = NormalizeTimeFormat(format);
 
-            if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParseExact(s, format, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1438,7 +1438,7 @@ namespace System
                 formats[i] = NormalizeTimeFormat(formats[i]);
             }
 
-            if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParseExact(s, formats, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
