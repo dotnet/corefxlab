@@ -388,7 +388,6 @@ namespace System.Text.Primitives.Tests
         #endregion
 
 
-
         #region sbyte
 
         [Theory]

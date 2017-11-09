@@ -13,7 +13,7 @@ namespace System.Text.Primitives.Tests
         Guid guidWithAllNonZeroDigits = new Guid("12345678-9abc-def1-2345-123456789abc");
 
         [Theory]
-        [InlineData(null)]
+        [InlineData(default)]
         [InlineData('D')]
         [InlineData('N')]
         [InlineData('P')]
@@ -26,7 +26,7 @@ namespace System.Text.Primitives.Tests
             var expected = guidWithAllNonZeroDigits;
             for (int i = 0; i < 100; i++)
             {
-                var expectedString = expected.ToString(format.ToString(), CultureInfo.InvariantCulture);
+                var expectedString = expected.ToString(format == default ? null : format.ToString(), CultureInfo.InvariantCulture);
                 var utf8Bytes = Text.Encoding.UTF8.GetBytes(expectedString);
 
                 Assert.True(Utf8Parser.TryParse(utf8Bytes, out Guid parsed, out int bytesConsumed, format));
@@ -39,7 +39,7 @@ namespace System.Text.Primitives.Tests
         }
 
         [Theory]
-        [InlineData(null)]
+        [InlineData(default)]
         [InlineData('D')]
         [InlineData('N')]
         [InlineData('P')]
@@ -52,7 +52,7 @@ namespace System.Text.Primitives.Tests
             var expected = guidWithAllNonZeroDigits;
             for (int i = 0; i < 100; i++)
             {
-                string expectedString = expected.ToString(format.ToString(), CultureInfo.InvariantCulture);
+                string expectedString = expected.ToString(format == default ? null : format.ToString(), CultureInfo.InvariantCulture);
 
                 Assert.True(Utf16Parser.TryParseGuid(expectedString.ToCharArray(), out Guid parsed, out int charactersConsumed, format));
                 Assert.Equal(expected, parsed);
