@@ -48,296 +48,29 @@ namespace System.Buffers.Text
             /// <param name="source">A span containing a sequence of UTF-8 bytes.</param>
             /// <param name="bytesNeeded">On exit, contains the number of bytes required for encoding from the <paramref name="source"/>.</param>
             /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
-            public unsafe static OperationStatus ToUtf16Length(ReadOnlySpan<byte> source, out int bytesNeeded)
+            public static OperationStatus ToUtf16Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             {
-                fixed (byte* pUtf8 = &source.DangerousGetPinnableReference())
+                if (Utf8Util.GetIndexOfFirstInvalidUtf8Sequence(source, out int scalarCount, out int surrogatePairCount) < 0)
                 {
-                    byte* pSrc = pUtf8;
-                    byte* pSrcEnd = pSrc + source.Length;
+                    // Well-formed UTF-8 string.
 
+                    // 'scalarCount + surrogatePairCount' is guaranteed not to overflow because
+                    // the UTF-16 representation of a string will never have a greater number of
+                    // of code units than its UTF-8 representation.
+                    int numCodeUnits = scalarCount + surrogatePairCount;
+
+                    // UTF-8 code units are 2 bytes.
+                    bytesNeeded = checked(numCodeUnits * 2);
+                    return OperationStatus.Done;
+                }
+                else
+                {
+                    // Not a well-formed UTF-8 string. Perhaps incomplete, perhaps invalid.
+                    // Regardless, we can't calculate an answer to return to the caller.
+                    // Since this API doesn't have a "bytes consumed" out parameter, the
+                    // input argument has an implicit "isFinalChunk = true", so we treat
+                    // incomplete strings identically to invalid strings.
                     bytesNeeded = 0;
-
-                    int ch = 0;
-                    while (pSrc < pSrcEnd)
-                    {
-                        int availableBytes = EncodingHelper.PtrDiff(pSrcEnd, pSrc);
-
-                        // don't fall into the fast decoding loop if we don't have enough bytes
-                        if (availableBytes <= 13)
-                        {
-                            // try to get over the remainder of the ascii characters fast though
-                            byte* pLocalEnd = pSrc + availableBytes;
-                            while (pSrc < pLocalEnd)
-                            {
-                                ch = *pSrc;
-                                pSrc++;
-
-                                if (ch > 0x7F)
-                                    goto LongCodeSlow;
-
-                                bytesNeeded++;
-                            }
-
-                            // we are done
-                            break;
-                        }
-
-                        // To compute the upper bound, assume that all characters are ASCII characters at this point,
-                        //  the boundary will be decreased for every non-ASCII character we encounter
-                        // Also, we need 7 chars reserve for the unrolled ansi decoding loop and for decoding of multibyte sequences
-                        byte* pStop = pSrc + availableBytes - 7;
-
-                        // Fast loop
-                        while (pSrc < pStop)
-                        {
-                            ch = *pSrc;
-                            pSrc++;
-
-                            if (ch > 0x7F)
-                                goto LongCode;
-
-                            bytesNeeded++;
-
-                            // 2-byte align
-                            if ((unchecked((int)pSrc) & 0x1) != 0)
-                            {
-                                ch = *pSrc;
-                                pSrc++;
-
-                                if (ch > 0x7F)
-                                    goto LongCode;
-
-                                bytesNeeded++;
-                            }
-
-                            // 4-byte align
-                            if ((unchecked((int)pSrc) & 0x2) != 0)
-                            {
-                                ch = *(ushort*)pSrc;
-                                if ((ch & 0x8080) != 0)
-                                    goto LongCodeWithMask16;
-                                pSrc += 2;
-                                bytesNeeded += 2;
-                            }
-
-                            // Run 8 characters at a time!
-                            while (pSrc < pStop)
-                            {
-                                ch = *(int*)pSrc;
-                                int chb = *(int*)(pSrc + 4);
-                                if (((ch | chb) & unchecked((int)0x80808080)) != 0)
-                                    goto LongCodeWithMask32;
-                                pSrc += 8;
-                                bytesNeeded += 8;
-                            }
-
-                            break;
-
-#if BIGENDIAN
-                    LongCodeWithMask32:
-                        // be careful about the sign extension
-                        ch = (int)(((uint)ch) >> 16);
-                    LongCodeWithMask16:
-                        ch = (int)(((uint)ch) >> 8);
-#else // BIGENDIAN
-                            LongCodeWithMask32:
-                            LongCodeWithMask16:
-                            ch &= 0xFF;
-#endif // BIGENDIAN
-                            pSrc++;
-                            if (ch <= 0x7F)
-                            {
-                                bytesNeeded++;
-                                continue;
-                            }
-
-                            LongCode:
-                            int chc = *pSrc;
-                            pSrc++;
-
-                            // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                            if ((ch & 0x40) == 0 || (chc & unchecked((sbyte)0xC0)) != 0x80)
-                                goto InvalidData;
-
-                            chc &= 0x3F;
-
-                            if ((ch & 0x20) != 0)
-                            {
-                                // Handle 3 or 4 byte encoding.
-
-                                // Fold the first 2 bytes together
-                                chc |= (ch & 0x0F) << 6;
-
-                                if ((ch & 0x10) != 0)
-                                {
-                                    // 4 byte - surrogate pair
-                                    ch = *pSrc;
-
-                                    // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                                    // and the trailing byte should be 10vvvvvv
-                                    if (!EncodingHelper.InRange(chc >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                        goto InvalidData;
-
-                                    // Merge 3rd byte then read the last byte
-                                    chc = (chc << 6) | (ch & 0x3F);
-                                    ch = *(pSrc + 1);
-
-                                    // The last trailing byte still holds the form 10vvvvvv
-                                    if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                        goto InvalidData;
-
-                                    pSrc += 2;
-                                    ch = (chc << 6) | (ch & 0x3F);
-
-                                    bytesNeeded++;
-
-                                    ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
-                                }
-                                else
-                                {
-                                    // 3 byte encoding
-                                    ch = *pSrc;
-
-                                    // Check for non-shortest form of 3 byte sequence
-                                    // No surrogates
-                                    // Trailing byte must be in the form 10vvvvvv
-                                    if ((chc & (0x1F << 5)) == 0 ||
-                                        (chc & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                        (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                        goto InvalidData;
-
-                                    pSrc++;
-                                    ch = (chc << 6) | (ch & 0x3F);
-                                }
-
-                                // extra byte, we're already planning 2 chars for 2 of these bytes,
-                                // but the big loop is testing the target against pStop, so we need
-                                // to subtract 2 more or we risk overrunning the input.  Subtract
-                                // one here and one below.
-                                pStop--;
-                            }
-                            else
-                            {
-                                // 2 byte encoding
-                                ch &= 0x1F;
-
-                                // Check for non-shortest form
-                                if (ch <= 1)
-                                    goto InvalidData;
-
-                                ch = (ch << 6) | chc;
-                            }
-
-                            bytesNeeded++;
-
-                            // extra byte, we're only expecting 1 char for each of these 2 bytes,
-                            // but the loop is testing the target (not source) against pStop.
-                            // subtract an extra count from pStop so that we don't overrun the input.
-                            pStop--;
-                        }
-
-                        continue;
-
-                        LongCodeSlow:
-                        if (pSrc >= pSrcEnd)
-                        {
-                            // This is a special case where hit the end of the buffer but are in the middle
-                            // of decoding a long code. The error exit thinks we have read 2 extra bytes already,
-                            // so we add +1 to pSrc to get the count correct for the bytes consumed value.
-                            pSrc++;
-                            goto NeedMoreData;
-                        }
-
-                        int chd = *pSrc;
-                        pSrc++;
-
-                        // Bit 6 should be 0, and trailing byte should be 10vvvvvv
-                        if ((ch & 0x40) == 0 || (chd & unchecked((sbyte)0xC0)) != 0x80)
-                            goto InvalidData;
-
-                        chd &= 0x3F;
-
-                        if ((ch & 0x20) != 0)
-                        {
-                            // Handle 3 or 4 byte encoding.
-
-                            // Fold the first 2 bytes together
-                            chd |= (ch & 0x0F) << 6;
-
-                            if ((ch & 0x10) != 0)
-                            {
-                                // 4 byte - surrogate pair
-                                // We need 2 more bytes
-                                if (pSrc >= pSrcEnd - 1)
-                                    goto NeedMoreData;
-
-                                ch = *pSrc;
-
-                                // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
-                                // and the trailing byte should be 10vvvvvv
-                                if (!EncodingHelper.InRange(chd >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                // Merge 3rd byte then read the last byte
-                                chd = (chd << 6) | (ch & 0x3F);
-                                ch = *(pSrc + 1);
-
-                                // The last trailing byte still holds the form 10vvvvvv
-                                // We only know for sure we have room for one more char, but we need an extra now.
-                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                pSrc += 2;
-                                ch = (chd << 6) | (ch & 0x3F);
-
-                                bytesNeeded++;
-
-                                ch = (ch & 0x3FF) + unchecked((short)(EncodingHelper.LowSurrogateStart));
-                            }
-                            else
-                            {
-                                // 3 byte encoding
-                                if (pSrc >= pSrcEnd)
-                                    goto NeedMoreData;
-
-                                ch = *pSrc;
-
-                                // Check for non-shortest form of 3 byte sequence
-                                // No surrogates
-                                // Trailing byte must be in the form 10vvvvvv
-                                if ((chd & (0x1F << 5)) == 0 ||
-                                    (chd & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                    (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                    goto InvalidData;
-
-                                pSrc++;
-                                ch = (chd << 6) | (ch & 0x3F);
-                            }
-                        }
-                        else
-                        {
-                            // 2 byte encoding
-                            ch &= 0x1F;
-
-                            // Check for non-shortest form
-                            if (ch <= 1)
-                                goto InvalidData;
-
-                            ch = (ch << 6) | chd;
-                        }
-
-                        bytesNeeded++;
-                    }
-
-                    bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
-                    return EncodingHelper.PtrDiff(pSrcEnd, pSrc) == 0 ? OperationStatus.Done : OperationStatus.DestinationTooSmall;
-
-                    NeedMoreData:
-                    bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
-                    return OperationStatus.NeedMoreData;
-
-                    InvalidData:
-                    bytesNeeded <<= 1;  // Count we have is chars, double for bytes.
                     return OperationStatus.InvalidData;
                 }
             }
@@ -768,30 +501,23 @@ namespace System.Buffers.Text
             /// <returns>A <see cref="OperationStatus"/> value representing the expected state of the conversion.</returns>
             public static OperationStatus ToUtf32Length(ReadOnlySpan<byte> source, out int bytesNeeded)
             {
-                bytesNeeded = 0;
-
-                int index = 0;
-                int length = source.Length;
-                ref byte src = ref source.DangerousGetPinnableReference();
-
-                while (index < length)
+                if (Utf8Util.GetIndexOfFirstInvalidUtf8Sequence(source, out int scalarCount, out _) < 0)
                 {
-                    int count = EncodingHelper.GetUtf8DecodedBytes(Unsafe.Add(ref src, index));
-                    if (count == 0)
-                        goto InvalidData;
-                    if (length - index < count)
-                        goto NeedMoreData;
-
-                    bytesNeeded += count;
+                    // Well-formed UTF-8 string.
+                    // UTF-32 code units are 4 bytes per scalar.
+                    bytesNeeded = checked(scalarCount * 4);
+                    return OperationStatus.Done;
                 }
-
-                return index < length ? OperationStatus.DestinationTooSmall : OperationStatus.Done;
-
-                InvalidData:
-                return OperationStatus.InvalidData;
-
-                NeedMoreData:
-                return OperationStatus.NeedMoreData;
+                else
+                {
+                    // Not a well-formed UTF-8 string. Perhaps incomplete, perhaps invalid.
+                    // Regardless, we can't calculate an answer to return to the caller.
+                    // Since this API doesn't have a "bytes consumed" out parameter, the
+                    // input argument has an implicit "isFinalChunk = true", so we treat
+                    // incomplete strings identically to invalid strings.
+                    bytesNeeded = 0;
+                    return OperationStatus.InvalidData;
+                }
             }
 
             /// <summary>
