@@ -1662,18 +1662,18 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                switch (format)
+                switch (format[0])
                 {
                     // pass-through formats
-                    case "T":
-                    case "t":
+                    case 'T':
+                    case 't':
                         return format;
 
                     // ISO formats
-                    case "O":
-                    case "o":
+                    case 'O':
+                    case 'o':
                         return "HH:mm:ss.fffffff";
-                    case "s":
+                    case 's':
                         return "HH:mm:ss";
 
                     default:

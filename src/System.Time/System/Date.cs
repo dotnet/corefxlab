@@ -1728,21 +1728,21 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                switch (format)
+                switch (format[0])
                 {
                     // pass-through formats
-                    case "D":
-                    case "d":
-                    case "M":
-                    case "m":
-                    case "Y":
-                    case "y":
+                    case 'D':
+                    case 'd':
+                    case 'M':
+                    case 'm':
+                    case 'Y':
+                    case 'y':
                         return format;
 
                     // ISO formats
-                    case "O":
-                    case "o":
-                    case "s":
+                    case 'O':
+                    case 'o':
+                    case 's':
                         return "yyyy-MM-dd";
 
                     default:
