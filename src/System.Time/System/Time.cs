@@ -32,7 +32,7 @@ namespace System
         /// Represents the smallest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
         public static readonly Time MinValue = new Time(MinTicks);
-        
+
         /// <summary>
         /// Represents the largest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
@@ -405,7 +405,7 @@ namespace System
             {
                 Contract.Ensures(Contract.Result<int>() >= 0);
                 Contract.Ensures(Contract.Result<int>() <= 999);
-                
+
                 return (int)((_ticks / TicksPerMillisecond) % 1000);
             }
         }
@@ -1575,7 +1575,7 @@ namespace System
         /// Fundamentally, a time-of-day and an elapsed-time are two different concepts.  In previous versions
         /// of the .NET framework, the <see cref="Time"/> type did not exist, and thus several time-of-day
         /// values were represented by <see cref="TimeSpan"/> values erroneously.  For example, the
-        /// <see cref="DateTime.Time"/> property returns a value having a <see cref="TimeSpan"/> type.
+        /// <see cref="DateTime.TimeOfDay"/> property returns a value having a <see cref="TimeSpan"/> type.
         /// This implicit cast operator allows those APIs to be naturally used with <see cref="Time"/>.
         /// <para>
         /// Also note that the input <paramref name="timeSpan"/> might actually *not* accurately represent the
