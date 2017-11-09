@@ -1294,8 +1294,7 @@ namespace System
         /// </returns>
         public static bool TryParse(string s, out Time time)
         {
-            DateTime dt;
-            if (!DateTime.TryParse(s, null, DateTimeStyles.NoCurrentDateDefault, out dt))
+            if (!DateTime.TryParse(s, null, DateTimeStyles.NoCurrentDateDefault, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1347,8 +1346,7 @@ namespace System
 
             Contract.EndContractBlock();
 
-            DateTime dt;
-            if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
+            if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1405,8 +1403,7 @@ namespace System
 
             format = NormalizeTimeFormat(format);
 
-            DateTime dt;
-            if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
+            if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1467,8 +1464,7 @@ namespace System
                 formats[i] = NormalizeTimeFormat(formats[i]);
             }
 
-            DateTime dt;
-            if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out dt))
+            if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1762,8 +1758,7 @@ namespace System
                 ? reader.ReadElementContentAsString()
                 : reader.ReadContentAsString();
 
-            Time t;
-            if (!TryParseExact(s, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.None, out t))
+            if (!TryParseExact(s, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.None, out Time t))
             {
                 throw new FormatException(Strings.Format_BadTime);
             }

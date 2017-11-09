@@ -5,7 +5,6 @@
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System;
-using System.Buffers;
 using System.Numerics;
 
 public class IndexOfBench

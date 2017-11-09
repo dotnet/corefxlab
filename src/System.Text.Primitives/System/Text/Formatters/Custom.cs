@@ -1,15 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
-
 namespace System.Buffers.Text
 {
     public static partial class CustomFormatter
     {
         #region Date / Time APIs
 
-        public static bool TryFormat(DateTimeOffset value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(DateTimeOffset value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
@@ -19,7 +17,7 @@ namespace System.Buffers.Text
                 throw new NotSupportedException();
         }
 
-        public static bool TryFormat(DateTime value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(DateTime value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
@@ -29,7 +27,7 @@ namespace System.Buffers.Text
                 throw new NotSupportedException();
         }
 
-        public static bool TryFormat(TimeSpan value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(TimeSpan value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
@@ -43,7 +41,7 @@ namespace System.Buffers.Text
 
         #region GUID APIs
 
-        public static bool TryFormat(Guid value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(Guid value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
@@ -57,7 +55,7 @@ namespace System.Buffers.Text
 
         #region Integer APIs
 
-        public static bool TryFormat(byte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(byte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -72,7 +70,7 @@ namespace System.Buffers.Text
                 return TryFormatUInt64(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(sbyte value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(sbyte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -87,7 +85,7 @@ namespace System.Buffers.Text
                 return TryFormatInt64(value, 0xff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(ushort value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(ushort value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -102,7 +100,7 @@ namespace System.Buffers.Text
                 return TryFormatUInt64(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(short value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(short value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -117,7 +115,7 @@ namespace System.Buffers.Text
                 return TryFormatInt64(value, 0xffff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(uint value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(uint value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -132,7 +130,7 @@ namespace System.Buffers.Text
                 return TryFormatUInt64(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(int value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(int value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -147,7 +145,7 @@ namespace System.Buffers.Text
                 return TryFormatInt64(value, 0xffffffff, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -162,7 +160,7 @@ namespace System.Buffers.Text
                 return TryFormatUInt64(value, buffer, out bytesWritten, format, symbolTable);
         }
 
-        public static bool TryFormat(long value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(long value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -181,7 +179,7 @@ namespace System.Buffers.Text
 
         #region Floating-point APIs
 
-        public static bool TryFormat(double value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(double value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (format.IsDefault)
             {
@@ -200,7 +198,7 @@ namespace System.Buffers.Text
             }
         }
 
-        public static bool TryFormat(float value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryFormat(float value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
 
             if (format.IsDefault)

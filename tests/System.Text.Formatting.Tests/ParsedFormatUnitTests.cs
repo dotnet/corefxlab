@@ -1,122 +1,122 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
 
+using System.Buffers;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
 {
-    public class ParsedFormatUnitTests
+    public class StandardFormatUnitTests
     {
         [Fact]
         public void ParseSimpleFormats()
         {
-            ParsedFormat parsed;
+            StandardFormat parsed;
 
-            parsed = ParsedFormat.Parse("B");
-            Verify(parsed, ParsedFormat.NoPrecision, 'B');
+            parsed = StandardFormat.Parse("B");
+            Verify(parsed, StandardFormat.NoPrecision, 'B');
 
-            parsed = ParsedFormat.Parse("b");
-            Verify(parsed, ParsedFormat.NoPrecision, 'b');
+            parsed = StandardFormat.Parse("b");
+            Verify(parsed, StandardFormat.NoPrecision, 'b');
 
-            parsed = ParsedFormat.Parse("D");
-            Verify(parsed, ParsedFormat.NoPrecision, 'D');
+            parsed = StandardFormat.Parse("D");
+            Verify(parsed, StandardFormat.NoPrecision, 'D');
 
-            parsed = ParsedFormat.Parse("d");
-            Verify(parsed, ParsedFormat.NoPrecision, 'd');
+            parsed = StandardFormat.Parse("d");
+            Verify(parsed, StandardFormat.NoPrecision, 'd');
 
-            parsed = ParsedFormat.Parse("E");
-            Verify(parsed, ParsedFormat.NoPrecision, 'E');
+            parsed = StandardFormat.Parse("E");
+            Verify(parsed, StandardFormat.NoPrecision, 'E');
 
-            parsed = ParsedFormat.Parse("e");
-            Verify(parsed, ParsedFormat.NoPrecision, 'e');
+            parsed = StandardFormat.Parse("e");
+            Verify(parsed, StandardFormat.NoPrecision, 'e');
 
-            parsed = ParsedFormat.Parse("F");
-            Verify(parsed, ParsedFormat.NoPrecision, 'F');
+            parsed = StandardFormat.Parse("F");
+            Verify(parsed, StandardFormat.NoPrecision, 'F');
 
-            parsed = ParsedFormat.Parse("f");
-            Verify(parsed, ParsedFormat.NoPrecision, 'f');
+            parsed = StandardFormat.Parse("f");
+            Verify(parsed, StandardFormat.NoPrecision, 'f');
 
-            parsed = ParsedFormat.Parse("G");
-            Verify(parsed, ParsedFormat.NoPrecision, 'G');
+            parsed = StandardFormat.Parse("G");
+            Verify(parsed, StandardFormat.NoPrecision, 'G');
 
-            parsed = ParsedFormat.Parse("g");
-            Verify(parsed, ParsedFormat.NoPrecision, 'g');
+            parsed = StandardFormat.Parse("g");
+            Verify(parsed, StandardFormat.NoPrecision, 'g');
 
-            parsed = ParsedFormat.Parse("N");
-            Verify(parsed, ParsedFormat.NoPrecision, 'N');
+            parsed = StandardFormat.Parse("N");
+            Verify(parsed, StandardFormat.NoPrecision, 'N');
 
-            parsed = ParsedFormat.Parse("n");
-            Verify(parsed, ParsedFormat.NoPrecision, 'n');
+            parsed = StandardFormat.Parse("n");
+            Verify(parsed, StandardFormat.NoPrecision, 'n');
 
-            parsed = ParsedFormat.Parse("O");
-            Verify(parsed, ParsedFormat.NoPrecision, 'O');
+            parsed = StandardFormat.Parse("O");
+            Verify(parsed, StandardFormat.NoPrecision, 'O');
 
-            parsed = ParsedFormat.Parse("o");
-            Verify(parsed, ParsedFormat.NoPrecision, 'o');
+            parsed = StandardFormat.Parse("o");
+            Verify(parsed, StandardFormat.NoPrecision, 'o');
 
-            parsed = ParsedFormat.Parse("P");
-            Verify(parsed, ParsedFormat.NoPrecision, 'P');
+            parsed = StandardFormat.Parse("P");
+            Verify(parsed, StandardFormat.NoPrecision, 'P');
 
-            parsed = ParsedFormat.Parse("p");
-            Verify(parsed, ParsedFormat.NoPrecision, 'p');
+            parsed = StandardFormat.Parse("p");
+            Verify(parsed, StandardFormat.NoPrecision, 'p');
 
-            parsed = ParsedFormat.Parse("R");
-            Verify(parsed, ParsedFormat.NoPrecision, 'R');
+            parsed = StandardFormat.Parse("R");
+            Verify(parsed, StandardFormat.NoPrecision, 'R');
 
-            parsed = ParsedFormat.Parse("r");
-            Verify(parsed, ParsedFormat.NoPrecision, 'r');
+            parsed = StandardFormat.Parse("r");
+            Verify(parsed, StandardFormat.NoPrecision, 'r');
 
-            parsed = ParsedFormat.Parse("t");
-            Verify(parsed, ParsedFormat.NoPrecision, 't');
+            parsed = StandardFormat.Parse("t");
+            Verify(parsed, StandardFormat.NoPrecision, 't');
 
-            parsed = ParsedFormat.Parse("X");
-            Verify(parsed, ParsedFormat.NoPrecision, 'X');
+            parsed = StandardFormat.Parse("X");
+            Verify(parsed, StandardFormat.NoPrecision, 'X');
 
-            parsed = ParsedFormat.Parse("x");
-            Verify(parsed, ParsedFormat.NoPrecision, 'x');
+            parsed = StandardFormat.Parse("x");
+            Verify(parsed, StandardFormat.NoPrecision, 'x');
         }
 
         [Fact]
         public void ParsePrecisionFormats()
         {
-            ParsedFormat parsed;
+            StandardFormat parsed;
 
-            parsed = ParsedFormat.Parse("D1");
+            parsed = StandardFormat.Parse("D1");
             Verify(parsed, 1, 'D');
 
-            parsed = ParsedFormat.Parse("d2");
+            parsed = StandardFormat.Parse("d2");
             Verify(parsed, 2, 'd');
 
-            parsed = ParsedFormat.Parse("E3");
+            parsed = StandardFormat.Parse("E3");
             Verify(parsed, 3, 'E');
 
-            parsed = ParsedFormat.Parse("e4");
+            parsed = StandardFormat.Parse("e4");
             Verify(parsed, 4, 'e');
 
-            parsed = ParsedFormat.Parse("F5");
+            parsed = StandardFormat.Parse("F5");
             Verify(parsed, 5, 'F');
 
-            parsed = ParsedFormat.Parse("f6");
+            parsed = StandardFormat.Parse("f6");
             Verify(parsed, 6, 'f');
 
-            parsed = ParsedFormat.Parse("G7");
+            parsed = StandardFormat.Parse("G7");
             Verify(parsed, 7, 'G');
 
-            parsed = ParsedFormat.Parse("g99");
+            parsed = StandardFormat.Parse("g99");
             Verify(parsed, 99, 'g');
 
-            parsed = ParsedFormat.Parse("N98");
+            parsed = StandardFormat.Parse("N98");
             Verify(parsed, 98, 'N');
 
-            parsed = ParsedFormat.Parse("n10");
+            parsed = StandardFormat.Parse("n10");
             Verify(parsed, 10, 'n');
 
-            parsed = ParsedFormat.Parse("X11");
+            parsed = StandardFormat.Parse("X11");
             Verify(parsed, 11, 'X');
 
-            parsed = ParsedFormat.Parse("x10");
+            parsed = StandardFormat.Parse("x10");
             Verify(parsed, 10, 'x');
 
             
@@ -125,10 +125,10 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void ParseThrowsExceptionWhenParsedPrecisionExceedsMaxPrecision()
         {
-            var ex = Assert.Throws<FormatException>(() => ParsedFormat.Parse($"x{100}"));
+            var ex = Assert.Throws<FormatException>(() => StandardFormat.Parse($"x{100}"));
         }
 
-        private static void Verify(ParsedFormat format, byte expectedPrecision, char expectedSymbol)
+        private static void Verify(StandardFormat format, byte expectedPrecision, char expectedSymbol)
         {
             Assert.Equal(format.Precision, expectedPrecision);
             Assert.Equal(format.Symbol, expectedSymbol.ToString()[0]);

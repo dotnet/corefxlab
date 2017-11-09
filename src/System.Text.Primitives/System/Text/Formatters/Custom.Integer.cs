@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
 using System.Diagnostics;
 
 namespace System.Buffers.Text
 {
     public static partial class CustomFormatter
     {
-        private static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
+        private static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, StandardFormat format, SymbolTable symbolTable)
         {
             if (value >= 0)
             {
@@ -20,15 +19,13 @@ namespace System.Buffers.Text
             }
             else
             {
-                int minusSignBytes = 0;
-                if (!symbolTable.TryEncode(SymbolTable.Symbol.MinusSign, buffer, out minusSignBytes))
+                if (!symbolTable.TryEncode(SymbolTable.Symbol.MinusSign, buffer, out int minusSignBytes))
                 {
                     bytesWritten = 0;
                     return false;
                 }
 
-                int digitBytes = 0;
-                if (!TryFormatUInt64(unchecked((ulong)-value), buffer.Slice(minusSignBytes), out digitBytes, format, symbolTable))
+                if (!TryFormatUInt64(unchecked((ulong)-value), buffer.Slice(minusSignBytes), out int digitBytes, format, symbolTable))
                 {
                     bytesWritten = 0;
                     return false;
@@ -38,7 +35,7 @@ namespace System.Buffers.Text
             }
         }
 
-        private static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
+        private static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format, SymbolTable symbolTable)
         {
             switch (format.Symbol)
             {
@@ -71,7 +68,7 @@ namespace System.Buffers.Text
             }
         }
 
-        private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             char symbol = char.ToUpperInvariant(format.Symbol);
             Precondition.Require(symbol == 'D' || symbol == 'G');
@@ -128,7 +125,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             char symbol = char.ToUpperInvariant(format.Symbol);
             Precondition.Require(symbol == 'D' || symbol == 'G');
@@ -183,7 +180,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
@@ -248,7 +245,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format)
+        private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format)
         {
             Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
@@ -314,7 +311,7 @@ namespace System.Buffers.Text
         // It does it twice to avoid reversing the formatted buffer, which can be tricky given it should handle arbitrary cultures.
         // One optimization I thought we could do is to do div/mod once and store digits in a temp buffer (but that would allocate). Modification to the idea would be to store the digits in a local struct
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
-        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, ParsedFormat format, SymbolTable symbolTable)
+        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format, SymbolTable symbolTable)
         {
             char symbol = char.ToUpperInvariant(format.Symbol);
             Precondition.Require(symbol == 'D' || format.Symbol == 'G' || format.Symbol == 'N');

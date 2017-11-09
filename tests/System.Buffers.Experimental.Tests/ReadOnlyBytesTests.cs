@@ -373,8 +373,7 @@ namespace System.Buffers.Tests
         {
             var bytes = ReadOnlyBytes.Empty;
             var position = new Position();
-            ReadOnlyMemory<byte> segment;
-            Assert.False(bytes.TryGet(ref position, out segment));
+            Assert.False(bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment));
         }
 
         [Fact]
@@ -386,8 +385,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(i);
                 var position = new Position();
                 var length = 0;
-                ReadOnlyMemory<byte> segment;
-                while (multibytes.TryGet(ref position, out segment))
+                while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     length += segment.Length;
                 }
@@ -404,8 +402,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(0, i);
                 var position = new Position();
                 var length = 0;
-                ReadOnlyMemory<byte> segment;
-                while (multibytes.TryGet(ref position, out segment))
+                while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     length += segment.Length;
                 }

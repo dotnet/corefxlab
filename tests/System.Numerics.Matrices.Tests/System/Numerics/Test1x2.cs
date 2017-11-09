@@ -86,9 +86,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
-            Matrix1x2 matrix1x2;
-
-            GenerateFilledMatrixWithValues(out matrix1x2);
+            GenerateFilledMatrixWithValues(out Matrix1x2 matrix1x2);
 
             for (double c = -10; c <= 10; c += 0.5)
             {

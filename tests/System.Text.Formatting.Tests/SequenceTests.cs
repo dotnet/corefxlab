@@ -19,10 +19,7 @@ namespace System.Text.Parsing.Tests
         [InlineData(123, 3, new string[] { "1", "2", "3_" })]
         public void ParseUInt32(uint expectedValue, int expectedConsumed, string[] segments) {
             var buffers = ToUtf8Buffers(segments);
-
-            uint value;
-            int consumed;
-            Assert.True(buffers.TryParseUInt32(out value, out consumed));
+            Assert.True(buffers.TryParseUInt32(out uint value, out int consumed));
             Assert.Equal(expectedValue, value);
             Assert.Equal(expectedConsumed, consumed);
         }
@@ -38,10 +35,7 @@ namespace System.Text.Parsing.Tests
         public void ParseUInt64(ulong expectedValue, int expectedConsumed, string[] segments)
         {
             var buffers = ToUtf8Buffers(segments);
-
-            ulong value;
-            int consumed;
-            Assert.True(buffers.TryParseUInt64(out value, out consumed));
+            Assert.True(buffers.TryParseUInt64(out ulong value, out int consumed));
             Assert.Equal(expectedValue, value);
             Assert.Equal(expectedConsumed, consumed);
         }

@@ -4,7 +4,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-
 namespace System.Drawing.Graphics
 {
     public class gdStreamWrapper

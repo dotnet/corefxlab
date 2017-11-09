@@ -160,9 +160,8 @@ namespace System.Text.Primitives
         {
             if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
             {
-                int realEncodedBytes;
                 // TODO: Inline decoding, as the invalid surrogate check can be done faster
-                bool ret = TryDecodeCodePoint(buffer, buffer.Length - encodedBytes, out codePoint, out realEncodedBytes);
+                bool ret = TryDecodeCodePoint(buffer, buffer.Length - encodedBytes, out codePoint, out int realEncodedBytes);
                 if (ret && encodedBytes != realEncodedBytes)
                 {
                     // invalid surrogate character

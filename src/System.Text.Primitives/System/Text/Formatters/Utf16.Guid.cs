@@ -21,7 +21,7 @@ namespace System.Buffers.Text
 
         #endregion Constants
 
-        public static unsafe bool TryFormat(Guid value, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default)
+        public static unsafe bool TryFormat(Guid value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default)
         {
             bool dash = format.Symbol != 'N';
             bool bookEnds = (format.Symbol == 'B') || (format.Symbol == 'P');

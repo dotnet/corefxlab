@@ -129,8 +129,8 @@ namespace System.Text.Json
         public JsonObject this[Utf8Span name]
         {
             get {
-                JsonObject value;
-                if(TryGetValue(name, out value)) {
+                if (TryGetValue(name, out JsonObject value))
+                {
                     return value;
                 }
                 throw new KeyNotFoundException();
@@ -139,8 +139,8 @@ namespace System.Text.Json
 
         public JsonObject this[string name] {
             get {
-                JsonObject value;
-                if (TryGetValue(name, out value)) {
+                if (TryGetValue(name, out JsonObject value))
+                {
                     return value;
                 }
                 throw new KeyNotFoundException();
@@ -226,8 +226,8 @@ namespace System.Text.Json
 
             var slice = json._values.Slice(record.Location);
 
-            bool result;
-            if(!Utf8Parser.TryParseBoolean(slice, out result)){
+            if (!Utf8Parser.TryParse(slice, out bool result, out _))
+            {
                 throw new InvalidCastException();
             }
             return result;
@@ -242,8 +242,8 @@ namespace System.Text.Json
 
             var slice = json._values.Slice(record.Location);
 
-            int result;
-            if (!Utf8Parser.TryParseInt32(slice, out result)) {
+            if (!Utf8Parser.TryParse(slice, out int result, out _))
+            {
                 throw new InvalidCastException();
             }
             return result;

@@ -10,8 +10,7 @@ namespace System.IO.Pipelines.Performance.Tests
         public static void Main(string[] args)
         {
             var options = (uint[])Enum.GetValues(typeof(BenchmarkType));
-            BenchmarkType type;
-            if (args.Length != 1 || !Enum.TryParse(args[0], out type))
+            if (args.Length != 1 || !Enum.TryParse(args[0], out BenchmarkType type))
             {
                 Console.WriteLine($"Please add benchmark to run as parameter:");
                 for (var i = 0; i < options.Length; i++)

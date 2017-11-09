@@ -121,8 +121,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
         {
             var stream = FromIntPtr<UvStreamHandle>(handle);
 
-            Exception error;
-            stream.Libuv.Check(status, out error);
+            stream.Libuv.Check(status, out Exception error);
             stream._listenCallback(stream, status, error, stream._listenState);
         }
 

@@ -24,13 +24,10 @@ namespace System.Text.Http.Tests
             var body = bytes.Slice(request.BodyIndex).ToString(SymbolTable.InvariantUtf8);
             Assert.Equal("Hello World", body);
 
-            HttpHeader header;
             var position = Position.First;
-            while (request.Headers.TryGet(ref position, out header, true))
+            while (request.Headers.TryGet(ref position, out HttpHeader header, true))
             {
-                string name;
-                string value;
-                header.Deconstruct(out name, out value);
+                header.Deconstruct(out string name, out string value);
                 if (name == "Connection") Assert.Equal("keep-alive", value);
             }
         }
@@ -48,13 +45,10 @@ namespace System.Text.Http.Tests
             var body = bytes.Slice(request.BodyIndex).ToString(SymbolTable.InvariantUtf8);
             Assert.Equal("Hello World", body);
 
-            HttpHeader header;
             var position = new Position();
-            while (request.Headers.TryGet(ref position, out header, true))
+            while (request.Headers.TryGet(ref position, out HttpHeader header, true))
             {
-                string name;
-                string value;
-                header.Deconstruct(out name, out value);
+                header.Deconstruct(out string name, out string value);
                 if (name == "Connection") Assert.Equal("keep-alive", value);
             }
         }

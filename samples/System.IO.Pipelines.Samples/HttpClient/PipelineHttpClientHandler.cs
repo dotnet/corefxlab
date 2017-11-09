@@ -104,18 +104,14 @@ namespace System.IO.Pipelines.Samples
                     {
                         break;
                     }
-
-                    ReadCursor delim;
-                    ReadableBuffer responseLine;
-                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out responseLine, out delim))
+                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer responseLine, out ReadCursor delim))
                     {
                         continue;
                     }
 
                     responseBuffer = responseBuffer.Slice(delim).Slice(2);
 
-                    ReadableBuffer httpVersion;
-                    if (!responseLine.TrySliceTo((byte)' ', out httpVersion, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer httpVersion, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -125,8 +121,7 @@ namespace System.IO.Pipelines.Samples
 
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    ReadableBuffer statusCode;
-                    if (!responseLine.TrySliceTo((byte)' ', out statusCode, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer statusCode, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -135,8 +130,7 @@ namespace System.IO.Pipelines.Samples
                     response.StatusCode = (HttpStatusCode)statusCode.GetUInt32();
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    ReadableBuffer remaining;
-                    if (!responseLine.TrySliceTo((byte)' ', out remaining, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer remaining, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -173,13 +167,9 @@ namespace System.IO.Pipelines.Samples
                             throw new Exception();
                         }
 
-                        var headerName = default(ReadableBuffer);
-                        var headerValue = default(ReadableBuffer);
-
                         // End of the header
                         // \n
-                        ReadableBuffer headerPair;
-                        if (!responseBuffer.TrySliceTo((byte)'\n', out headerPair, out delim))
+                        if (!responseBuffer.TrySliceTo((byte)'\n', out ReadableBuffer headerPair, out delim))
                         {
                             break;
                         }
@@ -187,7 +177,7 @@ namespace System.IO.Pipelines.Samples
                         responseBuffer = responseBuffer.Slice(delim).Slice(1);
 
                         // :
-                        if (!headerPair.TrySliceTo((byte)':', out headerName, out delim))
+                        if (!headerPair.TrySliceTo((byte)':', out ReadableBuffer headerName, out delim))
                         {
                             throw new Exception();
                         }
@@ -196,7 +186,7 @@ namespace System.IO.Pipelines.Samples
                         headerPair = headerPair.Slice(headerName.End).Slice(1);
 
                         // \r
-                        if (!headerPair.TrySliceTo((byte)'\r', out headerValue, out delim))
+                        if (!headerPair.TrySliceTo((byte)'\r', out ReadableBuffer headerValue, out delim))
                         {
                             // Bad request
                             throw new Exception();

@@ -13,8 +13,7 @@ namespace Microsoft.Net.Sockets
         public TcpServer(ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             var version = new TcpServer.Version(2, 2);
-            WSDATA data;
-            int result = SocketImports.WSAStartup((short)version.Raw, out data);
+            int result = SocketImports.WSAStartup((short)version.Raw, out WSDATA data);
             if (result != 0)
             {
                 var error = SocketImports.WSAGetLastError();

@@ -17,7 +17,6 @@ namespace System.IO.Pipelines.Compression
         private ZErrorCode _zlibErrorCode = ZErrorCode.Ok;
 
 
-
         /// <summary>
         /// This is the preferred constructor to use.
         /// The other constructors are provided for compliance to Fx design guidelines.

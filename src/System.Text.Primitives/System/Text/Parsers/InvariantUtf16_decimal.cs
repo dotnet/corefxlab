@@ -7,9 +7,8 @@ namespace System.Buffers.Text
     {
         unsafe static bool TryParseDecimal(char* text, int length, out decimal value)
         {
-            int consumed;
             var span = new ReadOnlySpan<char>(text, length);
-            return TryParseDecimal(span, out value, out consumed);
+            return TryParseDecimal(span, out value, out int consumed);
         }
         unsafe static bool TryParseDecimal(char* text, int length, out decimal value, out int charactersConsumed)
         {
@@ -18,8 +17,7 @@ namespace System.Buffers.Text
         }
         public static bool TryParseDecimal(ReadOnlySpan<char> text, out decimal value)
         {
-            int consumed;
-            return TryParseDecimal(text, out value, out consumed);
+            return TryParseDecimal(text, out value, out int consumed);
         }
         public static bool TryParseDecimal(ReadOnlySpan<char> text, out decimal value, out int charactersConsumed)
         {

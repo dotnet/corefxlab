@@ -609,8 +609,7 @@ namespace System.Collections.Generic
         {
             if (key == null)
                 throw new ArgumentNullException("key");
-            InnerCollectionView collection;
-            if (!dictionary.TryGetValue(key, out collection))
+            if (!dictionary.TryGetValue(key, out InnerCollectionView collection))
             {
                 collection = new InnerCollectionView(key, NewCollectionFactory());
                 dictionary.Add(key, collection);
@@ -638,8 +637,7 @@ namespace System.Collections.Generic
             if (values == null)
                 throw new ArgumentNullException("values");
 
-            InnerCollectionView collection;
-            if (!dictionary.TryGetValue(key, out collection))
+            if (!dictionary.TryGetValue(key, out InnerCollectionView collection))
             {
                 collection = new InnerCollectionView(key, NewCollectionFactory());
                 dictionary.Add(key, collection);
@@ -663,8 +661,7 @@ namespace System.Collections.Generic
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            InnerCollectionView collection;
-            if (dictionary.TryGetValue(key, out collection) && dictionary.Remove(key))
+            if (dictionary.TryGetValue(key, out InnerCollectionView collection) && dictionary.Remove(key))
             {
                 version++;
                 return true;
@@ -691,8 +688,7 @@ namespace System.Collections.Generic
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            InnerCollectionView collection;
-            if (dictionary.TryGetValue(key, out collection) && collection.RemoveValue(value))
+            if (dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.RemoveValue(value))
             {
                 if (collection.Count == 0)
                     dictionary.Remove(key);
@@ -715,8 +711,7 @@ namespace System.Collections.Generic
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            InnerCollectionView collection;
-            return (dictionary.TryGetValue(key, out collection) && collection.Contains(value));
+            return (dictionary.TryGetValue(key, out InnerCollectionView collection) && collection.Contains(value));
         }
 
         /// <summary>
@@ -803,8 +798,7 @@ namespace System.Collections.Generic
             if (key == null)
                 throw new ArgumentNullException("key");
 
-            InnerCollectionView collection;
-            var success = dictionary.TryGetValue(key, out collection);
+            var success = dictionary.TryGetValue(key, out InnerCollectionView collection);
             value = collection;
             return success;
         }
@@ -848,8 +842,7 @@ namespace System.Collections.Generic
                 if (key == null)
                     throw new ArgumentNullException("key");
 
-                InnerCollectionView collection;
-                if (dictionary.TryGetValue(key, out collection))
+                if (dictionary.TryGetValue(key, out InnerCollectionView collection))
                     return collection;
                 else
                     throw new KeyNotFoundException();

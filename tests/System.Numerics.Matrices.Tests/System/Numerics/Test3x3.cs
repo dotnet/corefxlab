@@ -86,9 +86,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
-            Matrix3x3 matrix3x3;
-
-            GenerateFilledMatrixWithValues(out matrix3x3);
+            GenerateFilledMatrixWithValues(out Matrix3x3 matrix3x3);
 
             for (double c = -10; c <= 10; c += 0.5)
             {
@@ -143,8 +141,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void ColumnAccessorAreCorrect()
         {
-            Matrix3x3 value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out Matrix3x3 value);
 
             Matrix1x3 column1 = value.Column1;
             for (int y = 0; y < value.Rows; y++)
@@ -162,8 +159,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void RowAccessorAreCorrect()
         {
-            Matrix3x3 value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out Matrix3x3 value);
 
 
             Matrix3x1 row1 = value.Row1;
@@ -228,8 +224,7 @@ namespace System.Numerics.Matrices.Tests
         [Fact]
         public void MultiplyByIdentityReturnsEqualValue()
         {
-            Matrix3x3 value;
-            GenerateFilledMatrixWithValues(out value);
+            GenerateFilledMatrixWithValues(out Matrix3x3 value);
             Matrix3x3 result = value * Matrix3x3.Identity;
 
             Assert.Equal(value, result);

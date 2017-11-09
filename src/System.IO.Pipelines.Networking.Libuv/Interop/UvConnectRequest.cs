@@ -37,16 +37,13 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
             _callback = callback;
             _state = state;
 
-            SockAddr addr;
             var addressText = endpoint.Address.ToString();
 
-            Exception error1;
-            _uv.ip4_addr(addressText, endpoint.Port, out addr, out error1);
+            _uv.ip4_addr(addressText, endpoint.Port, out SockAddr addr, out Exception error1);
 
             if (error1 != null)
             {
-                Exception error2;
-                _uv.ip6_addr(addressText, endpoint.Port, out addr, out error2);
+                _uv.ip6_addr(addressText, endpoint.Port, out addr, out Exception error2);
                 if (error2 != null)
                 {
                     throw error1;

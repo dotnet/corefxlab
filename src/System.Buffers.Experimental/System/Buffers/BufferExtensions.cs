@@ -115,9 +115,8 @@ namespace System.Buffers
         public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             Position position = Position.First;
-            ReadOnlyMemory<byte> buffer;
-            ResizableArray<byte> array = new ResizableArray<byte>(1024); 
-            while (bufferSequence.TryGet(ref position, out buffer))
+            ResizableArray<byte> array = new ResizableArray<byte>(1024);
+            while (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
                 array.AddAll(buffer.Span);
             }

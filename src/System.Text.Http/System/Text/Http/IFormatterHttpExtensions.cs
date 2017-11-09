@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
@@ -79,7 +80,7 @@ namespace System.Text.Http
             }
         }
 
-        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, ParsedFormat valueFormat = default(ParsedFormat)) where TFormatter : ITextOutput where T:IBufferFormattable
+        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T:IBufferFormattable
         {
             formatter.Append(name);
             formatter.Append(value, formatter.SymbolTable, valueFormat);

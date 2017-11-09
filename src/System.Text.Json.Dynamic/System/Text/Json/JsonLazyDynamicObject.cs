@@ -26,8 +26,7 @@ namespace System.Text.Json
 
         public bool TryGetUInt32(Utf8Span propertyName, out uint value)
         {
-            JsonObject jsonObject;
-            if (!_dom.TryGetValue(propertyName, out jsonObject))
+            if (!_dom.TryGetValue(propertyName, out JsonObject jsonObject))
             {
                 value = default;
                 return false;
@@ -42,8 +41,8 @@ namespace System.Text.Json
 
         public bool TryGetString(Utf8Span propertyName, out Utf8Span value)
         {
-            JsonObject jsonObject;
-            if (!_dom.TryGetValue(propertyName, out jsonObject)) {
+            if (!_dom.TryGetValue(propertyName, out JsonObject jsonObject))
+            {
                 value = default;
                 return false;
             }
@@ -56,8 +55,8 @@ namespace System.Text.Json
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            JsonObject jsonObject;
-            if (!_dom.TryGetValue(binder.Name, out jsonObject)) {
+            if (!_dom.TryGetValue(binder.Name, out JsonObject jsonObject))
+            {
                 result = default;
                 return false;
             }

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
@@ -67,7 +66,7 @@ namespace System.Buffers.Text
     }
     public static partial class CustomParser
     {
-        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -80,11 +79,11 @@ namespace System.Buffers.Text
             {
                 if (Parsers.IsHexFormat(format))
                 {
-                    return Utf8Parser.Hex.TryParseSByte(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed, 'X');
                 }
                 else
                 {
-                    return Utf8Parser.TryParseSByte(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed);
                 }
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -113,10 +112,7 @@ namespace System.Buffers.Text
             {
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
-
-            SymbolTable.Symbol nextSymbol;
-            int thisSymbolConsumed;
-            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out SymbolTable.Symbol nextSymbol, out int thisSymbolConsumed))
             {
                 value = default;
                 bytesConsumed = 0;
@@ -181,7 +177,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -194,11 +190,11 @@ namespace System.Buffers.Text
             {
                 if (Parsers.IsHexFormat(format))
                 {
-                    return Utf8Parser.Hex.TryParseInt16(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed, 'X');
                 }
                 else
                 {
-                    return Utf8Parser.TryParseInt16(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed);
                 }
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -227,10 +223,7 @@ namespace System.Buffers.Text
             {
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
-
-            SymbolTable.Symbol nextSymbol;
-            int thisSymbolConsumed;
-            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out SymbolTable.Symbol nextSymbol, out int thisSymbolConsumed))
             {
                 value = default;
                 bytesConsumed = 0;
@@ -295,7 +288,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             bool isDefault = format.IsDefault;
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
@@ -309,8 +302,8 @@ namespace System.Buffers.Text
 
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                return isHex ? Utf8Parser.Hex.TryParseInt32(text, out value, out bytesConsumed) :
-                        Utf8Parser.TryParseInt32(text, out value, out bytesConsumed);
+                return isHex ? Utf8Parser.TryParse(text, out value, out bytesConsumed, 'X') :
+                        Utf8Parser.TryParse(text, out value, out bytesConsumed);
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
@@ -414,7 +407,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             symbolTable = symbolTable ?? SymbolTable.InvariantUtf8;
 
@@ -427,11 +420,11 @@ namespace System.Buffers.Text
             {
                 if (Parsers.IsHexFormat(format))
                 {
-                    return Utf8Parser.Hex.TryParseInt64(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed, 'X');
                 }
                 else
                 {
-                    return Utf8Parser.TryParseInt64(text, out value, out bytesConsumed);
+                    return Utf8Parser.TryParse(text, out value, out bytesConsumed);
                 }
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -460,10 +453,7 @@ namespace System.Buffers.Text
             {
                 throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
-
-            SymbolTable.Symbol nextSymbol;
-            int thisSymbolConsumed;
-            if (!symbolTable.TryParse(text, out nextSymbol, out thisSymbolConsumed))
+            if (!symbolTable.TryParse(text, out SymbolTable.Symbol nextSymbol, out int thisSymbolConsumed))
             {
                 value = default;
                 bytesConsumed = 0;

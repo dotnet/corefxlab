@@ -5,6 +5,7 @@
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Buffers.Text;
+using System.Buffers;
 
 namespace System.Binary.Base64Experimental.Tests
 {
@@ -12,7 +13,7 @@ namespace System.Binary.Base64Experimental.Tests
     {
         private const int InnerCount = 1000;
 
-        private static readonly ParsedFormat format = new ParsedFormat('M');
+        private static readonly StandardFormat format = new StandardFormat('M');
 
         [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(10)]

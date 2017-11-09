@@ -265,9 +265,8 @@ namespace System.Buffers
         // TODO: these methods hardcode the format. Do we need this to be something that can be specified?
         public bool TryParseBoolean(out bool value)
         {
-            int consumed;
             var unread = Unread;
-            if (CustomParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
+            if (CustomParser.TryParseBoolean(unread, out value, out int consumed, _symbolTable))
             {
                 Debug.Assert(consumed <= unread.Length);
                 if (unread.Length > consumed)
@@ -292,9 +291,8 @@ namespace System.Buffers
 
         public bool TryParseUInt64(out ulong value)
         {
-            int consumed;
             var unread = Unread;
-            if (CustomParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
+            if (CustomParser.TryParseUInt64(unread, out value, out int consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {

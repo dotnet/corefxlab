@@ -49,7 +49,7 @@ namespace System.Buffers.Text
                 value = -value;
             }
 
-            if (precision != ParsedFormat.NoPrecision)
+            if (precision != StandardFormat.NoPrecision)
             {
                 int leadingZeros = (int)precision - digitCount;
                 while (leadingZeros-- > 0)
@@ -73,7 +73,7 @@ namespace System.Buffers.Text
             // operation using the unsigned versions.
             value = FormattingHelpers.DivMod(value, 10, out ulong lastDigit);
 
-            if (precision != ParsedFormat.NoPrecision && precision > 0)
+            if (precision != StandardFormat.NoPrecision && precision > 0)
                 precision -= 1;
 
             if (!TryFormatDecimalInt64((long)value, precision, buffer, out bytesWritten))
@@ -103,7 +103,7 @@ namespace System.Buffers.Text
                 groupSeperators--;
             }
 
-            int trailingZeros = (precision == ParsedFormat.NoPrecision) ? 2 : precision;
+            int trailingZeros = (precision == StandardFormat.NoPrecision) ? 2 : precision;
             int charsNeeded = (int)((value >> 63) & 1) + digitCount + groupSeperators;
             int idx = charsNeeded;
 
@@ -174,7 +174,7 @@ namespace System.Buffers.Text
             if (!TryFormatNumericInt64((long)value, 0, buffer, out bytesWritten))
                 return false;
 
-            if (precision == ParsedFormat.NoPrecision)
+            if (precision == StandardFormat.NoPrecision)
                 precision = 2;
 
             // Since this method routes entirely to the long version if the number is smaller than
@@ -235,7 +235,7 @@ namespace System.Buffers.Text
             }
             if (v > 0xF) digits++;
 
-            int paddingCount = (precision == ParsedFormat.NoPrecision) ? 0 : precision - digits;
+            int paddingCount = (precision == StandardFormat.NoPrecision) ? 0 : precision - digits;
             if (paddingCount < 0) paddingCount = 0;
 
             int charsNeeded = digits + paddingCount;

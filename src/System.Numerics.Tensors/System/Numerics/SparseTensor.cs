@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace System.Numerics
 {
@@ -71,9 +70,8 @@ namespace System.Numerics
         /// <returns>The value at the specified position in this Tensor.</returns>
         public override T GetValue(int index)
         {
-            T value;
 
-            if (!values.TryGetValue(index, out value))
+            if (!values.TryGetValue(index, out T value))
             {
                 value = arithmetic.Zero;
             }

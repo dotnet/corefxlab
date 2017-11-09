@@ -18,7 +18,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(' ', false, "False")]
         public void BooleanUtf8(char format, bool value, string expected)
         {
-            ParsedFormat f = format == ' ' ? default(ParsedFormat) : new ParsedFormat(format);
+            StandardFormat f = format == ' ' ? default : new StandardFormat(format);
             byte[] buffer = new byte[256];
             Assert.True(Utf8Formatter.TryFormat(value, buffer, out int bytesWritten, f));
             var actual = Text.Encoding.UTF8.GetString(buffer, 0, bytesWritten);
@@ -34,7 +34,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(' ', false, "False")]
         public void BooleanUtf16(char format, bool value, string expected)
         {
-            ParsedFormat f = format == ' ' ? default(ParsedFormat) : new ParsedFormat(format);
+            StandardFormat f = format == ' ' ? default : new StandardFormat(format);
             byte[] buffer = new byte[256];
             Assert.True(Utf16Formatter.TryFormat(value, buffer, out int bytesWritten, f));
             var actual = Text.Encoding.Unicode.GetString(buffer, 0, bytesWritten);

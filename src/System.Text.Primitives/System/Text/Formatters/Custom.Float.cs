@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Text;
 using System.Diagnostics;
 
 namespace System.Buffers.Text
 {
     public static partial class CustomFormatter
     {
-        private static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, ParsedFormat format = default, SymbolTable symbolTable = null)
+        private static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,13 +15,13 @@ namespace System.IO.Pipelines
         /// <param name="writer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task CopyToAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default)
         {
             // 81920 is the default bufferSize, there is not stream.CopyToAsync overload that takes only a cancellationToken
             return stream.CopyToAsync(new PipelineWriterStream(writer), bufferSize: 81920, cancellationToken: cancellationToken);
         }
 
-        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -62,8 +61,7 @@ namespace System.IO.Pipelines
 
         private static async Task WriteToStream(Stream stream, Memory<byte> memory)
         {
-            ArraySegment<byte> data;
-            if (memory.TryGetArray(out data))
+            if (memory.TryGetArray(out ArraySegment<byte> data))
             {
                 await stream.WriteAsync(data.Array, data.Offset, data.Count)
                     .ConfigureAwait(continueOnCapturedContext: false);

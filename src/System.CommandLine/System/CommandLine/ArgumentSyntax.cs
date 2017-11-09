@@ -154,10 +154,8 @@ namespace System.CommandLine
 
             try
             {
-                T value;
-                bool specified;
-                if (Parser.TryParseOption(option.GetDisplayName(), option.Names, valueConverter, isRequired, out value, out specified))
-                { 
+                if (Parser.TryParseOption(option.GetDisplayName(), option.Names, valueConverter, isRequired, out T value, out bool specified))
+                {
                     option.SetValue(value);
                 }
                 else if (specified)
@@ -191,9 +189,7 @@ namespace System.CommandLine
 
             try
             {
-                IReadOnlyList<T> value;
-                bool specified;
-                if (Parser.TryParseOptionList(optionList.GetDisplayName(), optionList.Names, valueConverter, isRequired, out value, out specified))
+                if (Parser.TryParseOptionList(optionList.GetDisplayName(), optionList.Names, valueConverter, isRequired, out IReadOnlyList<T> value, out bool specified))
                 {
                     optionList.SetValue(value);
                 }
@@ -239,8 +235,7 @@ namespace System.CommandLine
 
             try
             {
-                T value;
-                if (Parser.TryParseParameter(parameter.GetDisplayName(), valueConverter, out value))
+                if (Parser.TryParseParameter(parameter.GetDisplayName(), valueConverter, out T value))
                     parameter.SetValue(value);
             }
             catch (ArgumentSyntaxException ex)
@@ -273,8 +268,7 @@ namespace System.CommandLine
 
             try
             {
-                IReadOnlyList<T> values;
-                if (Parser.TryParseParameterList(parameterList.GetDisplayName(), valueConverter, out values))
+                if (Parser.TryParseParameterList(parameterList.GetDisplayName(), valueConverter, out IReadOnlyList<T> values))
                     parameterList.SetValue(values);
             }
             catch (ArgumentSyntaxException ex)

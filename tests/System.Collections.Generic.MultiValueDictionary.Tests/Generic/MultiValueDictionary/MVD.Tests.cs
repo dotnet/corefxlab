@@ -1675,10 +1675,9 @@ namespace System.Collections.Tests
             {
                 foreach (var mvd in Multi<string, TValue, List<TValue>>())
                 {
-                    IReadOnlyCollection<TValue> retCol;
                     Assert.Throws<ArgumentNullException>(() =>
                     {
-                        tgv(mvd, null, out retCol);
+                        tgv(mvd, null, out IReadOnlyCollection<TValue> retCol);
                     });
                 }
             }
@@ -1691,10 +1690,9 @@ namespace System.Collections.Tests
                 foreach (var mvd in Multi<TKey, TValue, List<TValue>>())
                 {
                     TKey newKey = (TKey)TypeBuilder<TKey>();
-                    IReadOnlyCollection<TValue> retCol;
                     mvd.Remove(newKey);
 
-                    Assert.False(tgv(mvd, newKey, out retCol));
+                    Assert.False(tgv(mvd, newKey, out IReadOnlyCollection<TValue> retCol));
                 }
             }
         }
@@ -1707,10 +1705,9 @@ namespace System.Collections.Tests
                 {
                     TKey newKey = (TKey)TypeBuilder<TKey>();
                     TValue newValue = (TValue)TypeBuilder<TValue>();
-                    IReadOnlyCollection<TValue> retCol;
                     mvd.Add(newKey, newValue);
 
-                    Assert.True(tgv(mvd, newKey, out retCol));
+                    Assert.True(tgv(mvd, newKey, out IReadOnlyCollection<TValue> retCol));
                     Assert.True(retCol.Contains(newValue));
                     CompareEnumerables<TValue>(retCol, mvd[newKey], true);
                 }
@@ -1724,11 +1721,10 @@ namespace System.Collections.Tests
                 foreach (var mvd in Multi<TKey, TValue, List<TValue>>())
                 {
                     TKey newKey = (TKey)TypeBuilder<TKey>();
-                    IReadOnlyCollection<TValue> retCol;
                     mvd.Remove(newKey);
                     mvd.Add(newKey, (TValue)TypeBuilder<TValue>());
 
-                    Assert.True(tgv(mvd, newKey, out retCol));
+                    Assert.True(tgv(mvd, newKey, out IReadOnlyCollection<TValue> retCol));
                     mvd.Add(newKey, (TValue)TypeBuilder<TValue>());
                     mvd.Add(newKey, (TValue)TypeBuilder<TValue>());
                     mvd.Add(newKey, (TValue)TypeBuilder<TValue>());
