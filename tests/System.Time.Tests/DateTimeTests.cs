@@ -15,18 +15,6 @@ namespace System._Time.Tests
 #endif
 
         [Fact]
-        public void CanAssignDateTimeTodayToDate()
-        {
-            Date dt = DateTime.Today;
-        }
-
-        [Fact]
-        public void CanAssignDateTimeTimeToTime()
-        {
-            Time time = DateTime.Now.TimeOfDay;
-        }
-
-        [Fact]
         public void CanAddYearsAcrossDstTransition()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);

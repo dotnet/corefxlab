@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -15,12 +15,17 @@ namespace System
     /// Represents a whole date, having a year, month and day component.
     /// All values are in the proleptic Gregorian (ISO 8601) calendar system unless otherwise specified.
     /// </summary>
-    [DebuggerDisplay("{ToString()}")]
+    [Serializable]
     [XmlSchemaProvider("GetSchema")]
+    [StructLayout(LayoutKind.Auto)]
     public struct Date : IEquatable<Date>, IComparable<Date>, IComparable, IFormattable, IXmlSerializable
     {
         private const int MinDayNumber = 0;
         private const int MaxDayNumber = 3652058;
+
+        private static readonly Regex EscapeCharRegex = new Regex(@"\\.|"".*?""|'.*?'", RegexOptions.Compiled);
+        private static readonly Regex InvalidFormatsRegex = new Regex(@"[fFghHKmstz:]+|%[fFgGrRtTuU]", RegexOptions.Compiled);
+        private static readonly Regex ISOFormatRegex = new Regex(@"%[Oos]", RegexOptions.Compiled);
 
         /// <summary>
         /// Represents the smallest possible value of <see cref="Date"/>. This field is read-only.
@@ -633,7 +638,7 @@ namespace System
         {
             return this >= startDate && (this < endDate || (this == endDate && !exclusiveEndDate));
         }
-        
+
         /// <summary>
         /// Compares two instances of <see cref="Date"/> and returns an integer that indicates whether the first
         /// instance is earlier than, the same as, or later than the second instance.
@@ -787,7 +792,7 @@ namespace System
                 return false;
             }
 
-            return value is Date && Equals((Date)value);
+            return value is Date date && Equals(date);
         }
 
         /// <summary>
@@ -1048,7 +1053,7 @@ namespace System
         /// </exception>
         public static Date Parse(string s, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1131,7 +1136,7 @@ namespace System
         /// </exception>
         public static Date ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1187,7 +1192,7 @@ namespace System
         /// </exception>
         public static Date ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1265,7 +1270,7 @@ namespace System
         /// </exception>
         public static bool TryParse(string s, IFormatProvider provider, DateTimeStyles styles, out Date date)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1320,7 +1325,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles, out Date date)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1378,7 +1383,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles, out Date date)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1481,38 +1486,50 @@ namespace System
         }
 
         /// <summary>
-        /// Implicitly casts a <see cref="DateTime"/> object to a <see cref="Date"/> by returning a new
-        /// <see cref="Date"/> object that has the equivalent year, month, and day components.  This is useful when
-        /// using APIs that express a calendar date as a <see cref="DateTime"/> and expect the consumer to ignore
-        /// the time portion of the value.  This operator enables these values to be assigned to a variable having
-        /// a <see cref="Date"/> type.
+        /// Casts a <see cref="DateTime"/> object to a <see cref="Date"/> by returning a new
+        /// <see cref="Date"/> object that has the equivalent year, month, and day components. This is useful when
+        /// using APIs that express a calendar date as a <see cref="DateTime"/> with time set at midnight (00:00:00).
+        /// This operator enables these values to be assigned to a variable having a <see cref="Date"/> type.
+        /// However, since <see cref="DateTime"/> values containing a time are not allowed, the cast is required to
+        /// be applied explicitly. Note that the <see cref="DateTime.Kind"/> property is ignored for this operation.
         /// </summary>
         /// <param name="dateTime">A <see cref="DateTime"/> value whose date portion will be used to construct a new
-        /// <see cref="Date"/> object, and whose time portion will be ignored.</param>
+        /// <see cref="Date"/> object, whose time portion must be set to midnight (00:00:00), and whose kind will be ignored.</param>
         /// <returns>A newly constructed <see cref="Date"/> object with an equivalent date value.</returns>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="dateTime"/> has some non-zero time value, and thus cannot be cast to a <see cref="Date"/>.
+        /// </exception>
         /// <remarks>
         /// Fundamentally, a date-only value and a date-time value are two different concepts.  In previous versions
         /// of the .NET framework, the <see cref="Date"/> type did not exist, and thus several date-only values were
         /// represented by using a <see cref="DateTime"/> with the time set to midnight (00:00:00).  For example, the
         /// <see cref="DateTime.Today"/> and <see cref="DateTime.Date"/> properties exhibit this behavior.
-        /// This implicit cast operator allows those APIs to be naturally used with <see cref="Date"/>.
+        /// This cast operator allows those APIs to be used with <see cref="Date"/>, when explicitly cast.
         /// <para>
         /// Also note that when evaluated as a full date-time, the input <paramref name="dateTime"/> might not actually
         /// exist, since some time zones (ex: Brazil) will spring-forward directly from 23:59 to 01:00, skipping over
         /// midnight.  Using a <see cref="Date"/> object avoids this particular edge case, and several others.
         /// </para>
         /// </remarks>
-        public static implicit operator Date(DateTime dateTime)
+        public static explicit operator Date(DateTime dateTime)
         {
+            if (dateTime.TimeOfDay != TimeSpan.Zero)
+            {
+                throw new InvalidCastException(Strings.InvalidCast_BadDateTime);
+            }
+
+            Contract.EndContractBlock();
+
             return DateFromDateTime(dateTime);
         }
 
         /// <summary>
         /// Implicitly casts a <see cref="Date"/> object to a <see cref="DateTime"/> by returning a new
         /// <see cref="DateTime"/> object that has the equivalent year, month, and day components, and has its time
-        /// set to midnight (00:00:00).  This is useful when using APIs that express a calendar date as a
-        /// <see cref="DateTime"/> and ignore the time portion of the value.  This operator enables <see cref="Date"/>
-        /// values to be passed to a method expecting a <see cref="DateTime"/>.
+        /// set to midnight (00:00:00) and its kind set to <see cref="DateTimeKind.Unspecified"/>.
+        /// This is useful when using APIs that express a calendar date as a <see cref="DateTime"/> and ignore
+        /// the time portion of the value.  This operator enables <see cref="Date"/> values to be passed to a method
+        /// expecting a <see cref="DateTime"/>.
         /// <para>
         /// Use with caution, as midnight may not necessarily be valid in every time zone on every day of the year.
         /// For example, when Brazil springs forward for daylight saving time, the clocks skip from 23:59:59 directly
@@ -1523,7 +1540,7 @@ namespace System
         /// <see cref="DateTime"/> object.</param>
         /// <returns>
         /// A newly constructed <see cref="DateTime"/> object with an equivalent date value, and the time set
-        /// to midnight (00:00:00).
+        /// to midnight (00:00:00), and kind set to <see cref="DateTimeKind.Unspecified"/>.
         /// </returns>
         /// <remarks>
         /// Fundamentally, a date-only value and a date-time value are two different concepts.  In previous versions
@@ -1654,37 +1671,37 @@ namespace System
 
             // y400 = number of whole 400-year periods since 1/1/0001
             int y400 = n / DaysPer400Years;
-            
+
             // n = day number within 400-year period
             n -= y400 * DaysPer400Years;
-            
+
             // y100 = number of whole 100-year periods within 400-year period
             int y100 = n / DaysPer100Years;
-            
+
             // Last 100-year period has an extra day, so decrement result if 4
             if (y100 == 4) y100 = 3;
-            
+
             // n = day number within 100-year period
             n -= y100 * DaysPer100Years;
-            
+
             // y4 = number of whole 4-year periods within 100-year period
             int y4 = n / DaysPer4Years;
-            
+
             // n = day number within 4-year period
             n -= y4 * DaysPer4Years;
-            
+
             // y1 = number of whole years within 4-year period
             int y1 = n / DaysPerYear;
-            
+
             // Last year has an extra day, so decrement result if 4
             if (y1 == 4) y1 = 3;
-            
+
             // compute year
             year = y400 * 400 + y100 * 100 + y4 * 4 + y1 + 1;
-            
+
             // n = day number within year
             n -= y1 * DaysPerYear;
-            
+
             // dayOfYear = n + 1;
             // Leap year calculation looks different from IsLeapYear since y1, y4,
             // and y100 are relative to year 1, not year 0
@@ -1694,10 +1711,10 @@ namespace System
             // All months have less than 32 days, so n >> 5 is a good conservative
             // estimate for the month
             int m = (n >> 5) + 1;
-            
+
             // m = 1-based month number
             while (n >= days[m]) m++;
-            
+
             // compute month and day
             month = m;
             day = n - days[m - 1] + 1;
@@ -1721,33 +1738,40 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                // pass-through formats
-                if ("DdMmYy".Contains(format))
+                switch (format[0])
                 {
-                    return format;
-                }
+                    // pass-through formats
+                    case 'D':
+                    case 'd':
+                    case 'M':
+                    case 'm':
+                    case 'Y':
+                    case 'y':
+                        return format;
 
-                // ISO formats
-                if ("Oos".Contains(format))
-                {
-                    return "yyyy-MM-dd";
-                }
+                    // ISO formats
+                    case 'O':
+                    case 'o':
+                    case 's':
+                        return "yyyy-MM-dd";
 
-                // All other standard DateTime formats are invalid for Date
-                throw new FormatException(Strings.Format_InvalidString);
+                    default:
+                        // All other standard DateTime formats are invalid for Date
+                        throw new FormatException(Strings.Format_InvalidString);
+                }
             }
 
             // custom format - test for time components or embedded standard time formats
             // except when escaped by preceding \ or enclosed in "" or '' quotes
 
-            var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
-            if (Regex.IsMatch(filtered, "([fFghHKmstz:]+)|(%[fFgGrRtTuU]+)"))
+            var filtered = EscapeCharRegex.Replace(format, String.Empty);
+            if (InvalidFormatsRegex.IsMatch(filtered))
             {
                 throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
-            format = Regex.Replace(format, @"(%[Oos])", "yyyy-MM-dd");
+            format = ISOFormatRegex.Replace(format, "yyyy-MM-dd");
 
             // pass through
             return format;

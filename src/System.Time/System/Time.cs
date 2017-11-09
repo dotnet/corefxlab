@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -15,8 +15,9 @@ namespace System
     /// Represents a time of day, as would be read from a clock, within the range 00:00:00 to 23:59:59.9999999
     /// Has properties for working with both 12-hour and 24-hour time values.
     /// </summary>
-    [DebuggerDisplay("{ToString()}")]
+    [Serializable]
     [XmlSchemaProvider("GetSchema")]
+    [StructLayout(LayoutKind.Auto)]
     public struct Time : IEquatable<Time>, IComparable<Time>, IComparable, IFormattable, IXmlSerializable
     {
         private const long TicksPerMillisecond = 10000;
@@ -28,11 +29,15 @@ namespace System
         private const long MinTicks = 0L;
         private const long MaxTicks = 863999999999L;
 
+        private static readonly Regex EscapeCharRegex = new Regex(@"\\.|"".*?""|'.*?'", RegexOptions.Compiled);
+        private static readonly Regex InvalidFormatsRegex = new Regex(@"[dKMyz\/]+|%[dDfFgGmMrRuUyY]", RegexOptions.Compiled);
+        private static readonly Regex ISOFormatRegex = new Regex(@"%[Oos]", RegexOptions.Compiled);
+
         /// <summary>
         /// Represents the smallest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
         public static readonly Time MinValue = new Time(MinTicks);
-        
+
         /// <summary>
         /// Represents the largest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
@@ -357,13 +362,7 @@ namespace System
         /// AM is an abbreviation for "Ante Meridiem", meaning "before mid-day".
         /// PM is an abbreviation for "Post Meridiem", meaning "after mid-day".
         /// </remarks>
-        public Meridiem Meridiem
-        {
-            get
-            {
-                return Hour < 12 ? Meridiem.AM : Meridiem.PM;
-            }
-        }
+        public Meridiem Meridiem => Hour < 12 ? Meridiem.AM : Meridiem.PM;
 
         /// <summary>
         /// Gets the minute component of the time represented by this instance.
@@ -405,7 +404,7 @@ namespace System
             {
                 Contract.Ensures(Contract.Result<int>() >= 0);
                 Contract.Ensures(Contract.Result<int>() <= 999);
-                
+
                 return (int)((_ticks / TicksPerMillisecond) % 1000);
             }
         }
@@ -507,27 +506,9 @@ namespace System
         }
 
         /// <summary>
-        /// Calculates the duration between two time values.
-        /// Assumes a standard day, with no invalid or ambiguous times due to Daylight Saving Time.
-        /// Supports both "normal" ranges such as 10:00-12:00, and ranges that span midnight such as 23:00-01:00.
-        /// Unlike <see cref="Subtract(System.Time)"/>, this operation does not assume that both values
-        /// belong to the same calendar date.  If <paramref name="startTime"/> is greater than
-        /// <paramref name="endTime"/>, it behaves as if <see cref="endTime"/> were on the day following
-        /// the <see cref="startTime"/> date.
-        /// </summary>
-        /// <param name="startTime">The starting time of day, inclusive.</param>
-        /// <param name="endTime">The ending time of day, exclusive.</param>
-        /// <returns>A <see cref="TimeSpan"/> representing the duration between the two values.</returns>
-        public static TimeSpan CalculateDuration(Time startTime, Time endTime)
-        {
-            return TimeSpan.FromTicks((endTime._ticks - startTime._ticks + TicksPerDay) % TicksPerDay);
-        }
-
-        /// <summary>
         /// Subtracts another <see cref="Time"/> value from this instance, returning a <see cref="TimeSpan"/>.
         /// Assumes a standard day, with no invalid or ambiguous times due to Daylight Saving Time.
-        /// This operation assumes that both values belong to the same calendar date, and thus the result will
-        /// be negative if <paramref name="startTime"/> is greater than this instance.
+        /// Supports both "normal" ranges such as 10:00-12:00, and ranges that span midnight such as 23:00-01:00.
         /// </summary>
         /// <param name="startTime">The starting time of day, inclusive.</param>
         /// <returns>
@@ -536,7 +517,7 @@ namespace System
         /// </returns>
         public TimeSpan Subtract(Time startTime)
         {
-            return TimeSpan.FromTicks(_ticks - startTime._ticks);
+            return TimeSpan.FromTicks((_ticks - startTime._ticks + TicksPerDay) % TicksPerDay);
         }
 
         /// <summary>
@@ -719,8 +700,6 @@ namespace System
         /// Calculates the duration between the <paramref name="startTime"/> and <see cref="endTime"/>.
         /// Assumes a standard day, with no invalid or ambiguous times due to Daylight Saving Time.
         /// Supports both "normal" ranges such as 10:00-12:00, and ranges that span midnight such as 23:00-01:00.
-        /// This operation assumes that both values belong to the same calendar date, and thus the result will
-        /// be negative if <paramref name="startTime"/> is greater than <paramref name="endTime"/>.
         /// </summary>
         /// <param name="startTime">The starting time of day, inclusive.</param>
         /// <param name="endTime">The ending time of day, exclusive.</param>
@@ -897,7 +876,7 @@ namespace System
                 return false;
             }
 
-            return value is Time && Equals((Time)value);
+            return value is Time time && Equals(time);
         }
 
         /// <summary>
@@ -1120,14 +1099,14 @@ namespace System
         /// </exception>
         public static Time Parse(string s, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
 
-            DateTime dt = DateTime.Parse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.Parse(s, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1204,7 +1183,7 @@ namespace System
         /// </exception>
         public static Time ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1212,7 +1191,7 @@ namespace System
             Contract.EndContractBlock();
 
             format = NormalizeTimeFormat(format);
-            DateTime dt = DateTime.ParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.ParseExact(s, format, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1261,7 +1240,7 @@ namespace System
         /// </exception>
         public static Time ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1273,7 +1252,7 @@ namespace System
                 formats[i] = NormalizeTimeFormat(formats[i]);
             }
 
-            DateTime dt = DateTime.ParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles);
+            DateTime dt = DateTime.ParseExact(s, formats, provider, styles);
             return TimeFromTimeSpan(dt.TimeOfDay);
         }
 
@@ -1339,14 +1318,14 @@ namespace System
         /// </exception>
         public static bool TryParse(string s, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
 
-            if (!DateTime.TryParse(s, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParse(s, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1394,7 +1373,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1403,7 +1382,7 @@ namespace System
 
             format = NormalizeTimeFormat(format);
 
-            if (!DateTime.TryParseExact(s, format, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParseExact(s, format, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1452,7 +1431,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1464,7 +1443,7 @@ namespace System
                 formats[i] = NormalizeTimeFormat(formats[i]);
             }
 
-            if (!DateTime.TryParseExact(s, formats, provider, DateTimeStyles.NoCurrentDateDefault | styles, out DateTime dt))
+            if (!DateTime.TryParseExact(s, formats, provider, styles, out DateTime dt))
             {
                 time = default;
                 return false;
@@ -1579,35 +1558,37 @@ namespace System
         }
 
         /// <summary>
-        /// Implicitly casts a <see cref="TimeSpan"/> object to a <see cref="Time"/> by returning a new
-        /// <see cref="Time"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
-        /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
-        /// midnight, such that their values can be assigned to a variable having a <see cref="Time"/> type.
+        /// Casts a <see cref="TimeSpan"/> object to a <see cref="Time"/> by returning a new <see cref="Time"/> object
+        /// that has the equivalent hours, minutes, seconds, and fractional seconds components.  This is useful when
+        /// using APIs that express a time-of-day as the elapsed time since midnight, such that their values can be
+        /// assigned to a variable having a <see cref="Time"/> type.  However, since it's possible for a <see cref="TimeSpan"/>
+        /// to not be representable as a <see cref="Time"/>, the cast is required to be applied explicitly.
+        /// Such unrepresentable values will throw an <see cref="InvalidCastException"/>.
         /// </summary>
         /// <param name="timeSpan">A <see cref="TimeSpan"/> value representing the time elapsed since midnight,
-        /// without regard to daylight saving time transitions.</param>
+        /// without regard to daylight saving time or other time zone transitions.</param>
         /// <returns>A newly constructed <see cref="Time"/> object with an equivalent value.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
+        /// <exception cref="InvalidCastException">
         /// <paramref name="timeSpan"/> is either negative, or greater than <c>23:59:59.9999999</c>, and thus cannot be
-        /// mapped to a <see cref="Time"/>.
+        /// cast to a <see cref="Time"/>.
         /// </exception>
         /// <remarks>
         /// Fundamentally, a time-of-day and an elapsed-time are two different concepts.  In previous versions
         /// of the .NET framework, the <see cref="Time"/> type did not exist, and thus several time-of-day
         /// values were represented by <see cref="TimeSpan"/> values erroneously.  For example, the
-        /// <see cref="DateTime.Time"/> property returns a value having a <see cref="TimeSpan"/> type.
-        /// This implicit cast operator allows those APIs to be naturally used with <see cref="Time"/>.
+        /// <see cref="DateTime.TimeOfDay"/> property returns a value having a <see cref="TimeSpan"/> type.
+        /// This cast operator allows those APIs to be used with <see cref="Time"/>, when explicitly cast.
         /// <para>
         /// Also note that the input <paramref name="timeSpan"/> might actually *not* accurately represent the
-        /// "time elapsed since midnight" on days containing a daylight saving time transition.
+        /// "time elapsed since midnight" on days containing a daylight saving time transition or other time zone transition.
         /// </para>
         /// </remarks>
-        public static implicit operator Time(TimeSpan timeSpan)
+        public static explicit operator Time(TimeSpan timeSpan)
         {
             long ticks = timeSpan.Ticks;
             if (ticks < 0 || ticks >= TicksPerDay)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeSpan), timeSpan, Strings.ArgumentOutOfRange_BadTimeSpan);
+                throw new InvalidCastException(Strings.InvalidCast_BadTimeSpan);
             }
 
             Contract.EndContractBlock();
@@ -1616,7 +1597,7 @@ namespace System
         }
 
         /// <summary>
-        /// Enables explicit casting of a <see cref="Time"/> object to a <see cref="TimeSpan"/> by returning a new
+        /// Implicitly casts a <see cref="Time"/> object to a <see cref="TimeSpan"/> by returning a new
         /// <see cref="TimeSpan"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
         /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
         /// midnight, such that a <see cref="Time"/> type can be passed to a method expecting a
@@ -1627,7 +1608,7 @@ namespace System
         /// A newly constructed <see cref="TimeSpan"/> object representing the time elapsed since midnight, without
         /// regard to daylight saving time transitions.
         /// </returns>
-        public static explicit operator TimeSpan(Time time)
+        public static implicit operator TimeSpan(Time time)
         {
             return new TimeSpan(time.Ticks);
         }
@@ -1642,7 +1623,7 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(hours12), hours12, Strings.ArgumentOutOfRange_Hour12HF);
             }
 
-            if (!Enum.IsDefined(typeof(Meridiem), meridiem))
+            if (meridiem < Meridiem.AM || meridiem > Meridiem.PM)
             {
                 throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, Strings.ArgumentOutOfRange_Meridiem);
             }
@@ -1681,40 +1662,37 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                // pass-through formats
-                if ("Tt".Contains(format))
+                switch (format[0])
                 {
-                    return format;
+                    // pass-through formats
+                    case 'T':
+                    case 't':
+                        return format;
+
+                    // ISO formats
+                    case 'O':
+                    case 'o':
+                        return "HH:mm:ss.fffffff";
+                    case 's':
+                        return "HH:mm:ss";
+
+                    default:
+                        // All other standard DateTime formats are invalid for Time
+                        throw new FormatException(Strings.Format_InvalidString);
                 }
-
-                // ISO formats
-                if (format == "s")
-                {
-                    return "HH:mm:ss";
-                }
-
-                if ("Oo".Contains(format))
-                {
-                    return "HH:mm:ss.fffffff";
-                }
-
-
-                // All other standard DateTime formats are invalid for Time
-                throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format - test for date components or embedded standard date formats
             // except when escaped by preceding \ or enclosed in "" or '' quotes
 
-            var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
-            if (Regex.IsMatch(filtered, "([dKMyz/]+)|(%[dDfFgGmMrRuUyY]+)"))
+            var filtered = EscapeCharRegex.Replace(format, String.Empty);
+            if (InvalidFormatsRegex.IsMatch(filtered))
             {
                 throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
-            format = format.Replace("%s", "HH:mm:ss");
-            format = Regex.Replace(format, @"(%[Oo])", "HH:mm:ss.fffffff");
+            format = ISOFormatRegex.Replace(format, m => m.Value == "%s" ? "HH:mm:ss" : "HH:mm:ss.fffffff");
 
             // pass through
             return format;

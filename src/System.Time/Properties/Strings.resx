@@ -123,9 +123,6 @@
   <data name="ArgumentOutOfRange_BadMonths" xml:space="preserve">
     <value>Months value must be between +/-120000.</value>
   </data>
-  <data name="ArgumentOutOfRange_BadTimeSpan" xml:space="preserve">
-    <value>TimeSpan describes an un-representable Time.</value>
-  </data>
   <data name="ArgumentOutOfRange_BadYearDay" xml:space="preserve">
     <value>Year and Day parameters describe an un-representable Date.</value>
   </data>
@@ -182,5 +179,11 @@
   </data>
   <data name="Format_InvalidString" xml:space="preserve">
     <value>Input string was not in a correct format.</value>
+  </data>
+  <data name="InvalidCast_BadDateTime" xml:space="preserve">
+    <value>DateTime cannot be cast as Date because it has a non-zero time component.</value>
+  </data>
+  <data name="InvalidCast_BadTimeSpan" xml:space="preserve">
+    <value>TimeSpan cannot be cast as Time because it describes an un-representable Time.</value>
   </data>
 </root>

@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Strings.Designer.cs">
