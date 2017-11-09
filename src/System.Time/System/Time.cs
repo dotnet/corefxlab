@@ -1616,7 +1616,7 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(hours12), hours12, Strings.ArgumentOutOfRange_Hour12HF);
             }
 
-            if (!Enum.IsDefined(typeof(Meridiem), meridiem))
+            if (meridiem < Meridiem.AM || meridiem > Meridiem.PM)
             {
                 throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, Strings.ArgumentOutOfRange_Meridiem);
             }
