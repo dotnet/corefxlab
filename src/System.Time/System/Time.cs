@@ -1655,26 +1655,24 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                // pass-through formats
-                if ("Tt".Contains(format))
+                switch (format)
                 {
-                    return format;
+                    // pass-through formats
+                    case "T":
+                    case "t":
+                        return format;
+
+                    // ISO formats
+                    case "O":
+                    case "o":
+                        return "HH:mm:ss.fffffff";
+                    case "s":
+                        return "HH:mm:ss";
+
+                    default:
+                        // All other standard DateTime formats are invalid for Time
+                        throw new FormatException(Strings.Format_InvalidString);
                 }
-
-                // ISO formats
-                if (format == "s")
-                {
-                    return "HH:mm:ss";
-                }
-
-                if ("Oo".Contains(format))
-                {
-                    return "HH:mm:ss.fffffff";
-                }
-
-
-                // All other standard DateTime formats are invalid for Time
-                throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format - test for date components or embedded standard date formats

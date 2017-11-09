@@ -1721,20 +1721,27 @@ namespace System
             // standard formats
             if (format.Length == 1)
             {
-                // pass-through formats
-                if ("DdMmYy".Contains(format))
+                switch (format)
                 {
-                    return format;
-                }
+                    // pass-through formats
+                    case "D":
+                    case "d":
+                    case "M":
+                    case "m":
+                    case "Y":
+                    case "y":
+                        return format;
 
-                // ISO formats
-                if ("Oos".Contains(format))
-                {
-                    return "yyyy-MM-dd";
-                }
+                    // ISO formats
+                    case "O":
+                    case "o":
+                    case "s":
+                        return "yyyy-MM-dd";
 
-                // All other standard DateTime formats are invalid for Date
-                throw new FormatException(Strings.Format_InvalidString);
+                    default:
+                        // All other standard DateTime formats are invalid for Date
+                        throw new FormatException(Strings.Format_InvalidString);
+                }
             }
 
             // custom format - test for time components or embedded standard time formats
