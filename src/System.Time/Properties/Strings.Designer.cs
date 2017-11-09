@@ -251,6 +251,15 @@ namespace System {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DateTime cannot be cast as Date because it has a non-zero time component..
+        /// </summary>
+        internal static string InvalidCast_BadDateTime {
+            get {
+                return ResourceManager.GetString("InvalidCast_BadDateTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TimeSpan cannot be cast as Time because it describes an un-representable Time..
         /// </summary>
         internal static string InvalidCast_BadTimeSpan {

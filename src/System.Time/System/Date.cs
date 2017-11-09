@@ -1487,15 +1487,18 @@ namespace System
 
         /// <summary>
         /// Casts a <see cref="DateTime"/> object to a <see cref="Date"/> by returning a new
-        /// <see cref="Date"/> object that has the equivalent year, month, and day components.  This is useful when
-        /// using APIs that express a calendar date as a <see cref="DateTime"/> and expect the consumer to ignore
-        /// the time portion of the value.  This operator enables these values to be assigned to a variable having
-        /// a <see cref="Date"/> type.  However, since the time and kind of the <see cref="DateTime"/> are ignored,
-        /// the cast is required to be applied explicitly.
+        /// <see cref="Date"/> object that has the equivalent year, month, and day components. This is useful when
+        /// using APIs that express a calendar date as a <see cref="DateTime"/> with time set at midnight (00:00:00).
+        /// This operator enables these values to be assigned to a variable having a <see cref="Date"/> type.
+        /// However, since <see cref="DateTime"/> values containing a time are not allowed, the cast is required to
+        /// be applied explicitly. Note that the <see cref="DateTime.Kind"/> property is ignored for this operation.
         /// </summary>
         /// <param name="dateTime">A <see cref="DateTime"/> value whose date portion will be used to construct a new
-        /// <see cref="Date"/> object, and whose time portion and kind will be ignored.</param>
+        /// <see cref="Date"/> object, whose time portion must be set to midnight (00:00:00), and whose kind will be ignored.</param>
         /// <returns>A newly constructed <see cref="Date"/> object with an equivalent date value.</returns>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="dateTime"/> has some non-zero time value, and thus cannot be cast to a <see cref="Date"/>.
+        /// </exception>
         /// <remarks>
         /// Fundamentally, a date-only value and a date-time value are two different concepts.  In previous versions
         /// of the .NET framework, the <see cref="Date"/> type did not exist, and thus several date-only values were
@@ -1510,6 +1513,13 @@ namespace System
         /// </remarks>
         public static explicit operator Date(DateTime dateTime)
         {
+            if (dateTime.TimeOfDay != TimeSpan.Zero)
+            {
+                throw new InvalidCastException(Strings.InvalidCast_BadDateTime);
+            }
+
+            Contract.EndContractBlock();
+
             return DateFromDateTime(dateTime);
         }
 

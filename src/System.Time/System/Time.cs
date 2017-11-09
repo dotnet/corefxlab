@@ -1577,7 +1577,7 @@ namespace System
         /// of the .NET framework, the <see cref="Time"/> type did not exist, and thus several time-of-day
         /// values were represented by <see cref="TimeSpan"/> values erroneously.  For example, the
         /// <see cref="DateTime.TimeOfDay"/> property returns a value having a <see cref="TimeSpan"/> type.
-        /// This implicit cast operator allows those APIs to be naturally used with <see cref="Time"/>.
+        /// This cast operator allows those APIs to be used with <see cref="Time"/>, when explicitly cast.
         /// <para>
         /// Also note that the input <paramref name="timeSpan"/> might actually *not* accurately represent the
         /// "time elapsed since midnight" on days containing a daylight saving time transition or other time zone transition.
@@ -1597,7 +1597,7 @@ namespace System
         }
 
         /// <summary>
-        /// Enables explicit casting of a <see cref="Time"/> object to a <see cref="TimeSpan"/> by returning a new
+        /// Implicitly casts a <see cref="Time"/> object to a <see cref="TimeSpan"/> by returning a new
         /// <see cref="TimeSpan"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
         /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
         /// midnight, such that a <see cref="Time"/> type can be passed to a method expecting a
@@ -1608,7 +1608,7 @@ namespace System
         /// A newly constructed <see cref="TimeSpan"/> object representing the time elapsed since midnight, without
         /// regard to daylight saving time transitions.
         /// </returns>
-        public static explicit operator TimeSpan(Time time)
+        public static implicit operator TimeSpan(Time time)
         {
             return new TimeSpan(time.Ticks);
         }
