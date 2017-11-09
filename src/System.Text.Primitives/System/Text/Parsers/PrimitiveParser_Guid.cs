@@ -5,7 +5,7 @@ namespace System.Buffers.Text
 {
     public static partial class Utf16Parser
     {
-        public static bool TryParseGuid(ReadOnlySpan<char> text, out Guid value, out int charactersConsumed, StandardFormat format = default(StandardFormat))
+        public static bool TryParseGuid(ReadOnlySpan<char> text, out Guid value, out int charactersConsumed, StandardFormat format = default)
         {
             if (format.IsDefault) format = 'D';
             switch (format.Symbol)

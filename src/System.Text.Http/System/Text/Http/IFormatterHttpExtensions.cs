@@ -80,7 +80,7 @@ namespace System.Text.Http
             }
         }
 
-        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default(StandardFormat)) where TFormatter : ITextOutput where T:IBufferFormattable
+        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T:IBufferFormattable
         {
             formatter.Append(name);
             formatter.Append(value, formatter.SymbolTable, valueFormat);

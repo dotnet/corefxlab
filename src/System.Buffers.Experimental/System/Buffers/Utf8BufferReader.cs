@@ -22,7 +22,7 @@ namespace System.Buffers.Adapters {
         {
             if (_index >= _buffer.Length) return -1;
             var utf8Unread = _buffer.Span.Slice(_index);
-            char result = default(char);
+            char result = default;
             unsafe
             {
                 var destination = new Span<char>(&result, 1).AsBytes();
@@ -39,7 +39,7 @@ namespace System.Buffers.Adapters {
         {
             if (_index >= _buffer.Length) return -1;
             var utf8Unread = _buffer.Span.Slice(_index);
-            char result = default(char);
+            char result = default;
             unsafe
             {
                 var destination = new Span<char>(&result, 1).AsBytes();
@@ -89,7 +89,7 @@ namespace System.Buffers.Adapters {
 
         protected override void Dispose(bool disposing)
         {
-            _buffer = default(ReadOnlyMemory<byte>);
+            _buffer = default;
             _index = 0;
         }
     }
