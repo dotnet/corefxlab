@@ -29,6 +29,56 @@ namespace System.Buffers.Text
         }
 
         /// <summary>
+        /// Given a 24-bit integer which represents a three-byte buffer read in machine endianness,
+        /// counts the number of consecutive ASCII bytes starting from the beginning of the buffer.
+        /// Returns a value 0 - 3, inclusive.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint CountNumberOfLeadingAsciiBytesFrom24BitInteger(uint value)
+        {
+            // TODO: BMI & TZCNT support as optimization
+
+            // The 'allBytesUpToNowAreAscii' DWORD uses bit twiddling to hold a 1 or a 0 depending
+            // on whether all processed bytes were ASCII. Then we accumulate all of the
+            // results to calculate how many consecutive ASCII bytes are present.
+
+            value = ~value;
+
+            if (BitConverter.IsLittleEndian)
+            {
+                // Read first byte
+                uint allBytesUpToNowAreAscii = (value >>= 7) & 1;
+                uint numAsciiBytes = allBytesUpToNowAreAscii;
+
+                // Read second byte
+                allBytesUpToNowAreAscii &= (value >>= 8);
+                numAsciiBytes += allBytesUpToNowAreAscii;
+
+                // Read third byte
+                allBytesUpToNowAreAscii &= (value >>= 8);
+                numAsciiBytes += allBytesUpToNowAreAscii;
+
+                return numAsciiBytes;
+            }
+            else
+            {
+                // Read first byte
+                uint allBytesUpToNowAreAscii = (value = ROL32(value, 1)) & 1;
+                uint numAsciiBytes = allBytesUpToNowAreAscii;
+
+                // Read second byte
+                allBytesUpToNowAreAscii &= (value = ROL32(value, 8));
+                numAsciiBytes += allBytesUpToNowAreAscii;
+
+                // Read third byte
+                allBytesUpToNowAreAscii &= (value = ROL32(value, 8));
+                numAsciiBytes += allBytesUpToNowAreAscii;
+
+                return numAsciiBytes;
+            }
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> iff all bytes in <paramref name="value"/> are ASCII.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -259,7 +309,7 @@ namespace System.Buffers.Text
             return (BitConverter.IsLittleEndian && IsInRangeInclusive(value & 0xC0FFU, 0x80C2U, 0x80DFU))
                 || (!BitConverter.IsLittleEndian && false); // this line - while weird - helps JITter produce optimal code
         }
-
+        
         /// <summary>
         /// Given a UTF-8 buffer which has been read into a DWORD on a little-endian machine,
         /// returns <see langword="true"/> iff the last two bytes of the buffer are a well-formed
@@ -275,30 +325,6 @@ namespace System.Buffers.Text
 
             return (BitConverter.IsLittleEndian && IsInRangeInclusive(value & 0xC0FF0000U, 0x80C20000U, 0x80DF0000U))
                 || (!BitConverter.IsLittleEndian && false); // this line - while weird - helps JITter produce optimal code
-        }
-
-        /// <summary>
-        /// Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
-        /// returns <see langword="true"/> iff the first byte of the buffer is ASCII.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool DWordFirstByteIsAscii(uint value)
-        {
-            // The code in this method is equivalent to the code
-            // below, but the JITter is able to inline + optimize it
-            // better in release builds.
-            //
-            // if (BitConverter.IsLittleEndian)
-            // {
-            //     return ((value & 0x80U) == 0U);
-            // }
-            // else
-            // {
-            //     return ((int)value >= 0);
-            // }
-
-            return (BitConverter.IsLittleEndian && ((value & 0x80U) == 0U))
-                || (!BitConverter.IsLittleEndian && ((int)value >= 0));
         }
 
         /// <summary>
@@ -327,30 +353,6 @@ namespace System.Buffers.Text
 
         /// <summary>
         /// Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
-        /// returns <see langword="true"/> iff the second byte of the buffer is ASCII.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool DWordSecondByteIsAscii(uint value)
-        {
-            // The code in this method is equivalent to the code
-            // below, but the JITter is able to inline + optimize it
-            // better in release builds.
-            //
-            // if (BitConverter.IsLittleEndian)
-            // {
-            //     return ((value & 0x8000U) == 0U);
-            // }
-            // else
-            // {
-            //     return ((value & 0x800000U) == 0U);
-            // }
-
-            return (BitConverter.IsLittleEndian && ((value & 0x8000U) == 0U))
-                || (!BitConverter.IsLittleEndian && ((value & 0x800000U) == 0U));
-        }
-
-        /// <summary>
-        /// Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
         /// returns <see langword="true"/> iff the third byte of the buffer is ASCII.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -374,10 +376,18 @@ namespace System.Buffers.Text
         }
 
         /// <summary>
-        /// Returns <see langword="true"/> iff (<paramref name="a"/> &lt; <paramref name="b"/>).
+        /// Given a memory reference, returns the number of bytes that must be added to the reference
+        /// before the reference is DWORD-aligned. Returns a number in the range 0 - 3, inclusive.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe static bool IntPtrIsLessThan(IntPtr a, IntPtr b) => (a.ToPointer() < b.ToPointer());
+        private static unsafe int GetNumberOfBytesToNextDWordAlignment(ref byte @ref)
+            => (int)((uint)sizeof(uint) - ((uint)Unsafe.AsPointer(ref @ref) % sizeof(uint)));
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff (<paramref name="a"/> &lt;= <paramref name="b"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe static bool IntPtrIsLessThanOrEqualTo(IntPtr a, IntPtr b) => (a.ToPointer() <= b.ToPointer());
 
         /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is between
@@ -428,6 +438,12 @@ namespace System.Buffers.Text
             return Unsafe.ReadUnaligned<ulong>(ref buffer)
                 | Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref buffer, sizeof(ulong)));
         }
+
+        /// <summary>
+        /// Rotates a DWORD left. The JITter is smart enough to turn this into a ROL / ROR instruction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint ROL32(uint value, int shift) => (value << shift) | (value >> (32 - shift));
 
         /// <summary>
         /// Returns <see langword="true"/> iff all bytes in <paramref name="value"/> are ASCII.
