@@ -28,6 +28,10 @@ namespace System
         private const long MinTicks = 0L;
         private const long MaxTicks = 863999999999L;
 
+        private static readonly Regex EscapeCharRegex = new Regex(@"\\.|"".*?""|'.*?'", RegexOptions.Compiled);
+        private static readonly Regex InvalidFormatsRegex = new Regex(@"[dKMyz\/]+|%[dDfFgGmMrRuUyY]", RegexOptions.Compiled);
+        private static readonly Regex ISOFormatRegex = new Regex(@"%[Oos]", RegexOptions.Compiled);
+
         /// <summary>
         /// Represents the smallest possible value of <see cref="Time"/>. This field is read-only.
         /// </summary>
@@ -1678,15 +1682,14 @@ namespace System
             // custom format - test for date components or embedded standard date formats
             // except when escaped by preceding \ or enclosed in "" or '' quotes
 
-            var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
-            if (Regex.IsMatch(filtered, "([dKMyz/]+)|(%[dDfFgGmMrRuUyY]+)"))
+            var filtered = EscapeCharRegex.Replace(format, String.Empty);
+            if (InvalidFormatsRegex.IsMatch(filtered))
             {
                 throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
-            format = format.Replace("%s", "HH:mm:ss");
-            format = Regex.Replace(format, @"(%[Oo])", "HH:mm:ss.fffffff");
+            format = ISOFormatRegex.Replace(format, m => m.Value == "%s" ? "HH:mm:ss" : "HH:mm:ss.fffffff");
 
             // pass through
             return format;

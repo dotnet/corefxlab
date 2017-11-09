@@ -22,6 +22,10 @@ namespace System
         private const int MinDayNumber = 0;
         private const int MaxDayNumber = 3652058;
 
+        private static readonly Regex EscapeCharRegex = new Regex(@"\\.|"".*?""|'.*?'", RegexOptions.Compiled);
+        private static readonly Regex InvalidFormatsRegex = new Regex(@"[fFghHKmstz:]+|%[fFgGrRtTuU]", RegexOptions.Compiled);
+        private static readonly Regex ISOFormatRegex = new Regex(@"%[Oos]", RegexOptions.Compiled);
+
         /// <summary>
         /// Represents the smallest possible value of <see cref="Date"/>. This field is read-only.
         /// </summary>
@@ -1747,14 +1751,14 @@ namespace System
             // custom format - test for time components or embedded standard time formats
             // except when escaped by preceding \ or enclosed in "" or '' quotes
 
-            var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
-            if (Regex.IsMatch(filtered, "([fFghHKmstz:]+)|(%[fFgGrRtTuU]+)"))
+            var filtered = EscapeCharRegex.Replace(format, String.Empty);
+            if (InvalidFormatsRegex.IsMatch(filtered))
             {
                 throw new FormatException(Strings.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
-            format = Regex.Replace(format, @"(%[Oos])", "yyyy-MM-dd");
+            format = ISOFormatRegex.Replace(format, "yyyy-MM-dd");
 
             // pass through
             return format;
