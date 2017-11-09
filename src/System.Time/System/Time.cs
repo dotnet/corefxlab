@@ -1558,17 +1558,19 @@ namespace System
         }
 
         /// <summary>
-        /// Implicitly casts a <see cref="TimeSpan"/> object to a <see cref="Time"/> by returning a new
-        /// <see cref="Time"/> object that has the equivalent hours, minutes, seconds, and fractional seconds
-        /// components.  This is useful when using APIs that express a time-of-day as the elapsed time since
-        /// midnight, such that their values can be assigned to a variable having a <see cref="Time"/> type.
+        /// Casts a <see cref="TimeSpan"/> object to a <see cref="Time"/> by returning a new <see cref="Time"/> object
+        /// that has the equivalent hours, minutes, seconds, and fractional seconds components.  This is useful when
+        /// using APIs that express a time-of-day as the elapsed time since midnight, such that their values can be
+        /// assigned to a variable having a <see cref="Time"/> type.  However, since it's possible for a <see cref="TimeSpan"/>
+        /// to not be representable as a <see cref="Time"/>, the cast is required to be applied explicitly.
+        /// Such unrepresentable values will throw an <see cref="InvalidCastException"/>.
         /// </summary>
         /// <param name="timeSpan">A <see cref="TimeSpan"/> value representing the time elapsed since midnight,
-        /// without regard to daylight saving time transitions.</param>
+        /// without regard to daylight saving time or other time zone transitions.</param>
         /// <returns>A newly constructed <see cref="Time"/> object with an equivalent value.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
+        /// <exception cref="InvalidCastException">
         /// <paramref name="timeSpan"/> is either negative, or greater than <c>23:59:59.9999999</c>, and thus cannot be
-        /// mapped to a <see cref="Time"/>.
+        /// cast to a <see cref="Time"/>.
         /// </exception>
         /// <remarks>
         /// Fundamentally, a time-of-day and an elapsed-time are two different concepts.  In previous versions
@@ -1578,15 +1580,15 @@ namespace System
         /// This implicit cast operator allows those APIs to be naturally used with <see cref="Time"/>.
         /// <para>
         /// Also note that the input <paramref name="timeSpan"/> might actually *not* accurately represent the
-        /// "time elapsed since midnight" on days containing a daylight saving time transition.
+        /// "time elapsed since midnight" on days containing a daylight saving time transition or other time zone transition.
         /// </para>
         /// </remarks>
-        public static implicit operator Time(TimeSpan timeSpan)
+        public static explicit operator Time(TimeSpan timeSpan)
         {
             long ticks = timeSpan.Ticks;
             if (ticks < 0 || ticks >= TicksPerDay)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeSpan), timeSpan, Strings.ArgumentOutOfRange_BadTimeSpan);
+                throw new InvalidCastException(Strings.InvalidCast_BadTimeSpan);
             }
 
             Contract.EndContractBlock();

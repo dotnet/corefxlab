@@ -107,15 +107,6 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TimeSpan describes an un-representable Time..
-        /// </summary>
-        internal static string ArgumentOutOfRange_BadTimeSpan {
-            get {
-                return ResourceManager.GetString("ArgumentOutOfRange_BadTimeSpan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Year and Day parameters describe an un-representable Date..
         /// </summary>
         internal static string ArgumentOutOfRange_BadYearDay {
@@ -256,6 +247,15 @@ namespace System {
         internal static string Format_InvalidString {
             get {
                 return ResourceManager.GetString("Format_InvalidString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TimeSpan cannot be cast as Time because it describes an un-representable Time..
+        /// </summary>
+        internal static string InvalidCast_BadTimeSpan {
+            get {
+                return ResourceManager.GetString("InvalidCast_BadTimeSpan", resourceCulture);
             }
         }
     }

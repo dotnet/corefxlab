@@ -1486,28 +1486,29 @@ namespace System
         }
 
         /// <summary>
-        /// Implicitly casts a <see cref="DateTime"/> object to a <see cref="Date"/> by returning a new
+        /// Casts a <see cref="DateTime"/> object to a <see cref="Date"/> by returning a new
         /// <see cref="Date"/> object that has the equivalent year, month, and day components.  This is useful when
         /// using APIs that express a calendar date as a <see cref="DateTime"/> and expect the consumer to ignore
         /// the time portion of the value.  This operator enables these values to be assigned to a variable having
-        /// a <see cref="Date"/> type.
+        /// a <see cref="Date"/> type.  However, since the time and kind of the <see cref="DateTime"/> are ignored,
+        /// the cast is required to be applied explicitly.
         /// </summary>
         /// <param name="dateTime">A <see cref="DateTime"/> value whose date portion will be used to construct a new
-        /// <see cref="Date"/> object, and whose time portion will be ignored.</param>
+        /// <see cref="Date"/> object, and whose time portion and kind will be ignored.</param>
         /// <returns>A newly constructed <see cref="Date"/> object with an equivalent date value.</returns>
         /// <remarks>
         /// Fundamentally, a date-only value and a date-time value are two different concepts.  In previous versions
         /// of the .NET framework, the <see cref="Date"/> type did not exist, and thus several date-only values were
         /// represented by using a <see cref="DateTime"/> with the time set to midnight (00:00:00).  For example, the
         /// <see cref="DateTime.Today"/> and <see cref="DateTime.Date"/> properties exhibit this behavior.
-        /// This implicit cast operator allows those APIs to be naturally used with <see cref="Date"/>.
+        /// This cast operator allows those APIs to be used with <see cref="Date"/>, when explicitly cast.
         /// <para>
         /// Also note that when evaluated as a full date-time, the input <paramref name="dateTime"/> might not actually
         /// exist, since some time zones (ex: Brazil) will spring-forward directly from 23:59 to 01:00, skipping over
         /// midnight.  Using a <see cref="Date"/> object avoids this particular edge case, and several others.
         /// </para>
         /// </remarks>
-        public static implicit operator Date(DateTime dateTime)
+        public static explicit operator Date(DateTime dateTime)
         {
             return DateFromDateTime(dateTime);
         }
@@ -1515,9 +1516,10 @@ namespace System
         /// <summary>
         /// Implicitly casts a <see cref="Date"/> object to a <see cref="DateTime"/> by returning a new
         /// <see cref="DateTime"/> object that has the equivalent year, month, and day components, and has its time
-        /// set to midnight (00:00:00).  This is useful when using APIs that express a calendar date as a
-        /// <see cref="DateTime"/> and ignore the time portion of the value.  This operator enables <see cref="Date"/>
-        /// values to be passed to a method expecting a <see cref="DateTime"/>.
+        /// set to midnight (00:00:00) and its kind set to <see cref="DateTimeKind.Unspecified"/>.
+        /// This is useful when using APIs that express a calendar date as a <see cref="DateTime"/> and ignore
+        /// the time portion of the value.  This operator enables <see cref="Date"/> values to be passed to a method
+        /// expecting a <see cref="DateTime"/>.
         /// <para>
         /// Use with caution, as midnight may not necessarily be valid in every time zone on every day of the year.
         /// For example, when Brazil springs forward for daylight saving time, the clocks skip from 23:59:59 directly
@@ -1528,7 +1530,7 @@ namespace System
         /// <see cref="DateTime"/> object.</param>
         /// <returns>
         /// A newly constructed <see cref="DateTime"/> object with an equivalent date value, and the time set
-        /// to midnight (00:00:00).
+        /// to midnight (00:00:00), and kind set to <see cref="DateTimeKind.Unspecified"/>.
         /// </returns>
         /// <remarks>
         /// Fundamentally, a date-only value and a date-time value are two different concepts.  In previous versions

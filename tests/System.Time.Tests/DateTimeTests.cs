@@ -17,13 +17,13 @@ namespace System._Time.Tests
         [Fact]
         public void CanAssignDateTimeTodayToDate()
         {
-            Date dt = DateTime.Today;
+            Date dt = (Date) DateTime.Today;
         }
 
         [Fact]
         public void CanAssignDateTimeTimeToTime()
         {
-            Time time = DateTime.Now.TimeOfDay;
+            Time time = (Time) DateTime.Now.TimeOfDay;
         }
 
         [Fact]
