@@ -1094,7 +1094,7 @@ namespace System
         /// </exception>
         public static Time Parse(string s, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1178,7 +1178,7 @@ namespace System
         /// </exception>
         public static Time ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1235,7 +1235,7 @@ namespace System
         /// </exception>
         public static Time ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1313,7 +1313,7 @@ namespace System
         /// </exception>
         public static bool TryParse(string s, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1368,7 +1368,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
@@ -1426,7 +1426,7 @@ namespace System
         /// </exception>
         public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles styles, out Time time)
         {
-            if (((int)styles) >= 8)
+            if (styles < DateTimeStyles.None || styles >= DateTimeStyles.NoCurrentDateDefault)
             {
                 throw new ArgumentException(Strings.Argument_InvalidDateTimeStyles, nameof(styles));
             }
