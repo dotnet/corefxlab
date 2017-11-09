@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -15,7 +14,6 @@ namespace System
     /// Represents a whole date, having a year, month and day component.
     /// All values are in the proleptic Gregorian (ISO 8601) calendar system unless otherwise specified.
     /// </summary>
-    [DebuggerDisplay("{ToString()}")]
     [XmlSchemaProvider("GetSchema")]
     public struct Date : IEquatable<Date>, IComparable<Date>, IComparable, IFormattable, IXmlSerializable
     {
