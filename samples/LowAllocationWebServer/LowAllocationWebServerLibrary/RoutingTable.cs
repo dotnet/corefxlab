@@ -5,34 +5,34 @@ using System;
 using System.Buffers.Text;
 using System.Text.Http;
 using System.Text.Utf8;
+using static System.Text.Http.Parser.Http;
 
-namespace Microsoft.Net.Http
+namespace Microsoft.Net
 {
     public class ApiRoutingTable<TRequestId>
     {
         const int tablecapacity = 20;
         byte[][] _uris = new byte[tablecapacity][];
         TRequestId[] _requestIds = new TRequestId[tablecapacity];
-        HttpMethod[] _verbs = new HttpMethod[tablecapacity];
+        Method[] _verbs = new Method[tablecapacity];
         Action<HttpRequest, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, TcpConnectionFormatter>[tablecapacity];
         int _count;
 
-        public TRequestId GetRequestId(HttpRequestLine requestLine)
+        public TRequestId GetRequestId(HttpRequest request)
         {
             for(int i=0; i<_count; i++) {
-                if (requestLine.RequestUri.Span.SequenceEqual(_uris[i]) && requestLine.Method == _verbs[i]) return _requestIds[i];
+                if (request.PathBytes.SequenceEqual(_uris[i]) && request.Method == _verbs[i]) return _requestIds[i];
             }
             return default;
         }
 
         public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)
         {
-            // TODO: this should not allocate new string
-            Utf8Span requestUtf8 = request.Path.ToUtf8Span(SymbolTable.InvariantUtf8);
+            var path = new Utf8Span(request.PathBytes);
             for (int i = 0; i < _count; i++)
             {
                 // TODO: this should check the verb too
-                if (requestUtf8.Equals(new Utf8Span(_uris[i])))
+                if (path.Equals(new Utf8Span(_uris[i])))
                 {
                     _handlers[i](request, response);
                     return true;
@@ -41,7 +41,7 @@ namespace Microsoft.Net.Http
             return false;
         }
 
-        public void Add(HttpMethod method, string requestUri, TRequestId requestId, Action<HttpRequest, TcpConnectionFormatter> handler = null)
+        public void Add(Method method, string requestUri, TRequestId requestId, Action<HttpRequest, TcpConnectionFormatter> handler = null)
         {
             if (_count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
             _uris[_count] = new Utf8Span(requestUri).Bytes.ToArray();
