@@ -346,27 +346,6 @@ public class HttpParserBench
 
         return success;
     }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static int FullRequestLegacy()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        HttpRequest request = default;
-
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    request = HttpRequest.Parse(buffer);
-                    request = HttpRequest.Parse(buffer);
-                    request = HttpRequest.Parse(buffer);
-                    request = HttpRequest.Parse(buffer);
-                    request = HttpRequest.Parse(buffer);
-                }
-            }
-        }
-
-        return request.BodyIndex;
-    }
 }
 
 static class HttpParserExtensions

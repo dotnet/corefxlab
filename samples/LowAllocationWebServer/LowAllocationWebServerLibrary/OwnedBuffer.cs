@@ -7,7 +7,7 @@ using System.Buffers;
 using System.Collections.Sequences;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.Net.Http
+namespace Microsoft.Net
 {
     class OwnedBuffer : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
     {
