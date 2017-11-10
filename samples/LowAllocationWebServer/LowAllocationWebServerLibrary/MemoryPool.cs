@@ -5,9 +5,9 @@ namespace Microsoft.Net
 {
     static class MemoryPoolHelper {
 
-        public static OwnedBuffer Rent(int size = OwnedBuffer.DefaultBufferSize)
+        public static BufferSequence Rent(int size = BufferSequence.DefaultBufferSize)
         {
-            return new OwnedBuffer(size);
+            return new BufferSequence(size);
         }
     }
 }

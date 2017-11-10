@@ -9,47 +9,40 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Net
 {
-    class OwnedBuffer : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
+    class BufferSequence : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
     {
         public const int DefaultBufferSize = 1024;
 
-        public OwnedBuffer(int desiredSize = DefaultBufferSize)
-        {
-            _array = Allocate(desiredSize);
-        }
+        byte[] _array;
+        int _written;
+        BufferSequence _next;
 
-        static byte[] Allocate(int size)
+        public BufferSequence(int desiredSize = DefaultBufferSize)
         {
-            return new byte[size];
-        }
-        static void Free(byte[] array)
-        {
+            _array = new byte[desiredSize];
         }
 
         public Memory<byte> First => Memory;
+
+        public override Span<byte> Span
+        {
+            get {
+                if (IsDisposed) throw new ObjectDisposedException(nameof(BufferSequence));
+                return _array.AsSpan();
+            }
+        }
 
         public IMemorySequence<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        Memory<byte> IMemorySequence<byte>.First => Memory;
-
         public override int Length => _array.Length;
-
-        public override Span<byte> Span
-        {
-            get
-            {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
-                return _array.AsSpan();
-            }
-        }
-
-        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => throw new NotImplementedException();
 
         public long Index => throw new NotImplementedException();
 
-        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => throw new NotImplementedException();
+        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => _next;
+
+        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => First;
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -71,7 +64,7 @@ namespace Microsoft.Net
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
-            var sequence = (OwnedBuffer)position.ObjectPosition;
+            var sequence = (BufferSequence)position.ObjectPosition;
             item = sequence.Memory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
@@ -94,7 +87,7 @@ namespace Microsoft.Net
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
-            var sequence = (OwnedBuffer)position.ObjectPosition;
+            var sequence = (BufferSequence)position.ObjectPosition;
             item = sequence.Memory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
@@ -108,9 +101,9 @@ namespace Microsoft.Net
             return true;
         }
 
-        public OwnedBuffer Enlarge(int desiredSize = DefaultBufferSize)
+        public BufferSequence Append(int desiredSize = DefaultBufferSize)
         {
-            _next = new OwnedBuffer(desiredSize);
+            _next = new BufferSequence(desiredSize);
             return _next;
         }
 
@@ -123,7 +116,6 @@ namespace Microsoft.Net
         {
             var array = _array;
             base.Dispose(disposing);
-            Free(array);
             if (_next != null) {
                 _next.Dispose();
             }
@@ -132,7 +124,7 @@ namespace Microsoft.Net
 
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(BufferSequence));
             arraySegment = new ArraySegment<byte>(_array);
             return true;
         }
@@ -146,9 +138,5 @@ namespace Microsoft.Net
                 return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
             }
         }
-
-        internal OwnedBuffer _next;
-        int _written;
-        byte[] _array;
     }
 }
