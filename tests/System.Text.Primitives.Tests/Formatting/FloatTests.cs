@@ -22,17 +22,6 @@ namespace System.Text.Primitives.Tests
 
         [Theory]
         [MemberData(nameof(GetDecimals))]
-        public void DecimalFormattingUtf8(decimal number)
-        {
-            var expected = number.ToString("G", CultureInfo.InvariantCulture);
-            var buffer = new byte[expected.Length * 2];
-            Assert.True(Utf8Formatter.TryFormat(number, buffer, out int bytesWritten, 'G'));
-            var actual = Text.Encoding.UTF8.GetString(buffer, 0, bytesWritten);
-            Assert.Equal(expected, actual);
-        }
-
-        [Theory]
-        [MemberData(nameof(GetDecimals))]
         public void DecimalFormattingUtf16(decimal number)
         {
             var expected = number.ToString("G", CultureInfo.InvariantCulture);

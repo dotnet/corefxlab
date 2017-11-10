@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Formatting;
+using System.Text.Http.Formatter;
 using System.Text.Utf8;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void It_has_an_extension_method_to_write_status_line()
         {
-            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8Span("OK"));
+            _formatter.AppendHttpStatusLine(Parser.Http.Version.Http11, 200, new Utf8Span("OK"));
 
             var result = _formatter.Formatted;
 
@@ -46,7 +47,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void The_http_extension_methods_can_be_composed_to_generate_the_http_message()
         {
-            _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8Span("OK"));
+            _formatter.AppendHttpStatusLine(Parser.Http.Version.Http11, 200, new Utf8Span("OK"));
             _formatter.Append(new Utf8Span("Connection : open"));
             _formatter.AppendHttpNewLine();
             _formatter.AppendHttpNewLine();
@@ -64,7 +65,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void ComposeHttpRequest()
         {
-            _formatter.AppendHttpRequestLine(HttpMethod.Get, HttpVersion.V1_1, "/path");
+            _formatter.AppendHttpRequestLine(Parser.Http.Method.Get, Parser.Http.Version.Http11, "/path");
 
             _formatter.AppendHttpHeader("header1:", "header_value1");
             _formatter.AppendHttpHeader("header2:", "header_value2");
