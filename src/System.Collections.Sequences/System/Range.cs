@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace System
 {
-    public struct Range<T> : IEquatable<Range<T>>, IFormattable
+    public readonly struct Range<T> : IEquatable<Range<T>>, IFormattable
     {
         public readonly T From;
         public readonly T To;
@@ -21,7 +21,7 @@ namespace System
         }
 
         public override bool Equals(object obj) =>
-            obj is Range<T> && Equals((Range<T>)obj);
+            obj is Range<T> range && Equals(range);
 
         public bool Equals(Range<T> other)
         {
@@ -32,8 +32,8 @@ namespace System
         public override int GetHashCode()
         {
             var comparer = EqualityComparer<T>.Default;
-            var fh = comparer.GetHashCode(From);
-            var th = comparer.GetHashCode(To);
+            int fh = comparer.GetHashCode(From);
+            int th = comparer.GetHashCode(To);
 
             // From System.Numerics.Hashing.HashHelpers
             uint rol5 = ((uint)fh << 5) | ((uint)fh >> 27);
@@ -42,7 +42,7 @@ namespace System
 
         public override string ToString()
         {
-            var separator = NumberFormatInfo.GetInstance(CultureInfo.CurrentCulture).NumberGroupSeparator;
+            string separator = NumberFormatInfo.GetInstance(CultureInfo.CurrentCulture).NumberGroupSeparator;
             return ToStringConcat(From.ToString(), To.ToString(), separator);
         }
 
@@ -51,7 +51,7 @@ namespace System
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            var separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
+            string separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
             return ToStringConcat(ToStringValue(From, format, formatProvider), ToStringValue(To, format, formatProvider), separator);
         }
 
