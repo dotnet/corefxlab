@@ -218,15 +218,15 @@ namespace System.Buffers
 
         public void Write(DateTime date, StandardFormat format)
         {
-            int written;
-            while (!date.TryFormat(Free, out written, format, _symbols)) Resize();
-            _written += written;
+            int bytesWritten;
+            while (!CustomFormatter.TryFormat(date, Free, out bytesWritten, format, _symbols)) Resize();
+            _written += bytesWritten;
         }
         public void WriteLine(DateTime date, StandardFormat format)
         {
-            int written;
-            while (!date.TryFormat(Free, out written, format, _symbols)) Resize();
-            _written += written;
+            int bytesWritten;
+            while (!CustomFormatter.TryFormat(date, Free, out bytesWritten, format, _symbols)) Resize();
+            _written += bytesWritten;
             WriteBytes(Newline);
         }
 

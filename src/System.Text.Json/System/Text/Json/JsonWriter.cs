@@ -367,7 +367,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -378,7 +378,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -389,7 +389,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -400,7 +400,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -411,7 +411,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
