@@ -58,7 +58,7 @@ namespace Microsoft.Net
         {
             Log.LogVerbose("Processing Request");
 
-            using (BufferSequence rootBuffer = MemoryPoolHelper.Rent(RequestBufferSize)) {
+            using (BufferSequence rootBuffer = new BufferSequence(RequestBufferSize)) {
                 BufferSequence requestBuffer = rootBuffer;
                 int totalWritten = 0;
                 while (true) {

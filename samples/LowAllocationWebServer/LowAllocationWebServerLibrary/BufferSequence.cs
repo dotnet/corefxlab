@@ -19,7 +19,7 @@ namespace Microsoft.Net
 
         public BufferSequence(int desiredSize = DefaultBufferSize)
         {
-            _array = new byte[desiredSize];
+            _array = ArrayPool<byte>.Shared.Rent(desiredSize);
         }
 
         public Memory<byte> Memory => new Memory<byte>(_array);
@@ -111,7 +111,9 @@ namespace Microsoft.Net
 
         protected virtual void Dispose(bool disposing)
         {
+            var array = _array;
             _array = null;
+            if (array != null) ArrayPool<byte>.Shared.Return(array);
             if (_next != null) {
                 _next.Dispose();
             }
