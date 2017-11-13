@@ -33,11 +33,11 @@ namespace System.Buffers
         { }
 
         public ReadWriteBytes(IMemorySequence<byte> segments, long length) :
-            this(segments.First, segments.Rest, length)
+            this(segments.Memory, segments.Rest, length)
         { }
 
         public ReadWriteBytes(IMemorySequence<byte> segments) :
-            this(segments.First, segments.Rest, Unspecified)
+            this(segments.Memory, segments.Rest, Unspecified)
         { }
 
         public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
@@ -61,7 +61,7 @@ namespace System.Buffers
                 return false;
             }
 
-            value = rest.First;
+            value = rest.Memory;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
             if (value.Length + position.Tag > _length && _length != Unspecified)
             {
@@ -77,7 +77,7 @@ namespace System.Buffers
             return true;
         }
 
-        public Memory<byte> First => _first;
+        public Memory<byte> Memory => _first;
 
         public IMemorySequence<byte> Rest => _rest;
 
@@ -94,11 +94,11 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadWriteBytes Slice(long index, long length)
         {
-            if (First.Length >= length + index)
+            if (Memory.Length >= length + index)
             {
-                return new ReadWriteBytes(First.Slice((int)index, (int)length));
+                return new ReadWriteBytes(Memory.Slice((int)index, (int)length));
             }
-            if (First.Length > index)
+            if (Memory.Length > index)
             {
                 return new ReadWriteBytes(_first.Slice((int)index), _rest, length);
             }
@@ -113,7 +113,7 @@ namespace System.Buffers
 
         public int CopyTo(Span<byte> buffer)
         {
-            var first = First;
+            var first = Memory;
             if (first.Length > buffer.Length)
             {
                 first.Slice(buffer.Length).Span.CopyTo(buffer);
@@ -127,7 +127,7 @@ namespace System.Buffers
         {
             if (_rest == null)
             {
-                if (First.Length == index && length == 0)
+                if (Memory.Length == index && length == 0)
                 {
                     return new ReadWriteBytes(Memory<byte>.Empty);
                 }
@@ -139,7 +139,7 @@ namespace System.Buffers
 
             // TODO (pri 2): this could be optimized
             var rest = new ReadWriteBytes(_rest, length);
-            rest = rest.Slice(index - First.Length, length);
+            rest = rest.Slice(index - Memory.Length, length);
             return rest;
         }
 
@@ -169,7 +169,7 @@ namespace System.Buffers
         {
             internal Memory<byte> _first;
             internal BufferListNode _rest;
-            public Memory<byte> First => _first;
+            public Memory<byte> Memory => _first;
 
             public IMemorySequence<byte> Rest => _rest;
 

@@ -9,15 +9,15 @@ namespace System.Buffers.Text
     {
         public const int ByteOverflowLength = 3;
         public const int ByteOverflowLengthHex = 2;
-        public const int UInt16OverflowLength = 5;
-        public const int UInt16OverflowLengthHex = 4;
-        public const int UInt32OverflowLength = 10;
-        public const int UInt32OverflowLengthHex = 8;
-        public const int UInt64OverflowLength = 20;
-        public const int UInt64OverflowLengthHex = 16;
+        //public const int UInt16OverflowLength = 5;
+        //public const int UInt16OverflowLengthHex = 4;
+        //public const int UInt32OverflowLength = 10;
+        //public const int UInt32OverflowLengthHex = 8;
+        //public const int UInt64OverflowLength = 20;
+        //public const int UInt64OverflowLengthHex = 16;
 
-        public const int SByteOverflowLength = 3;
-        public const int SByteOverflowLengthHex = 2;
+        //public const int SByteOverflowLength = 3;
+        //public const int SByteOverflowLengthHex = 2;
         public const int Int16OverflowLength = 5;
         public const int Int16OverflowLengthHex = 4;
         public const int Int32OverflowLength = 10;
@@ -25,8 +25,8 @@ namespace System.Buffers.Text
         public const int Int64OverflowLength = 19;
         public const int Int64OverflowLengthHex = 16;
 
-        public const sbyte maxValueSbyteDiv10 = sbyte.MaxValue / 10;
-        public const short maxValueShortDiv10 = short.MaxValue / 10;
+        //public const sbyte maxValueSbyteDiv10 = sbyte.MaxValue / 10;
+        //public const short maxValueShortDiv10 = short.MaxValue / 10;
         public const int maxValueIntDiv10 = int.MaxValue / 10;
         public const long maxValueLongDiv10 = long.MaxValue / 10;
 
@@ -57,33 +57,9 @@ namespace System.Buffers.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsDigit(int i)
-        {
-            return (uint)(i - '0') <= ('9' - '0');
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValid(SymbolTable.Symbol symbol)
         {
             return symbol <= SymbolTable.Symbol.D9;
-        }
-
-        // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
-        // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool WillOverFlow(sbyte value, int nextDigit, int sign)
-        {
-            bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueSbyteDiv10 || (value == maxValueSbyteDiv10 && nextDigitTooLarge));
-        }
-
-        // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
-        // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool WillOverFlow(short value, int nextDigit, int sign)
-        {
-            bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueShortDiv10 || (value == maxValueShortDiv10 && nextDigitTooLarge));
         }
 
         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
@@ -93,15 +69,6 @@ namespace System.Buffers.Text
         {
             bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
             return (value > maxValueIntDiv10 || (value == maxValueIntDiv10 && nextDigitTooLarge));
-        }
-
-        // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
-        // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool WillOverFlow(long value, int nextDigit, int sign)
-        {
-            bool nextDigitTooLarge = nextDigit > 8 || (sign > 0 && nextDigit > 7);
-            return (value > maxValueLongDiv10 || (value == maxValueLongDiv10 && nextDigitTooLarge));
         }
     }
 }

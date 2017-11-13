@@ -13,7 +13,7 @@ namespace System.Buffers
 
     public interface IMemorySequence<T> : IReadOnlyMemorySequence<T>, ISequence<Memory<T>>
     {
-        new Memory<T> First { get; }
+        new Memory<T> Memory { get; }
         IMemorySequence<T> Rest { get; }
     }
 

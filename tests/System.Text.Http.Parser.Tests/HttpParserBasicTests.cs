@@ -22,7 +22,7 @@ namespace System.Text.Http.Parser.Tests
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
-            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+            Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
             Assert.Equal(8, consumed);
 
             // request line
@@ -57,7 +57,7 @@ namespace System.Text.Http.Parser.Tests
                     Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
                     Assert.Equal(25, consumed);
 
-                    Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+                    Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
                     Assert.Equal(8, consumed);
                 }
                 catch {
@@ -86,7 +86,7 @@ namespace System.Text.Http.Parser.Tests
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
-            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+            Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
             Assert.Equal(139, consumed);
 
             // request line

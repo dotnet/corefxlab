@@ -152,7 +152,7 @@ namespace System.Text.Http.Parser.Tests
 
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
-            Assert.False(parser.ParseHeaders(requestHandler, buffer, out var consumed));
+            Assert.False(parser.ParseHeaders(ref requestHandler, buffer, out var consumed));
         }
 
         [Theory]
@@ -177,7 +177,7 @@ namespace System.Text.Http.Parser.Tests
 
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
-            parser.ParseHeaders(requestHandler, buffer, out var consumed);
+            parser.ParseHeaders(ref requestHandler, buffer, out var consumed);
 
             Assert.Equal(0, consumed);
         }
@@ -265,12 +265,12 @@ namespace System.Text.Http.Parser.Tests
             const string headerLine = "Header: value\r\n\r";
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(headerLine));
             var requestHandler = new RequestHandler();
-            Assert.False(parser.ParseHeaders(requestHandler, buffer, out var consumed));
+            Assert.False(parser.ParseHeaders(ref requestHandler, buffer, out var consumed));
 
             Assert.Equal(headerLine.Length - 1, consumed);
 
             var buffer2 = new ReadOnlyBytes(Encoding.ASCII.GetBytes("\r\n"));
-            Assert.True(parser.ParseHeaders(requestHandler, buffer2, out consumed));
+            Assert.True(parser.ParseHeaders(ref requestHandler, buffer2, out consumed));
 
             Assert.Equal(2, consumed);
         }
@@ -299,7 +299,7 @@ namespace System.Text.Http.Parser.Tests
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
-                parser.ParseHeaders(requestHandler, buffer, out var consumed));
+                parser.ParseHeaders(ref requestHandler, buffer, out var consumed));
 
             //Assert.Equal(expectedExceptionMessage, exception.Message);
             //Assert.Equal(StatusCodes.Status400BadRequest, exception.StatusCode);

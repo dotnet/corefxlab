@@ -37,6 +37,7 @@ namespace Microsoft.Net
 
         public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
         {
+            if (_headers.Items == null) _headers.Items = new Header[4];
             _headers.Add(new Header(name.ToArray(), value.ToArray()));
         }
 

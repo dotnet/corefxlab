@@ -62,7 +62,7 @@ namespace Microsoft.Net
                 BufferSequence requestBuffer = rootBuffer;
                 int totalWritten = 0;
                 while (true) {
-                    Span<byte> requestSpan = requestBuffer.Span;
+                    Span<byte> requestSpan = requestBuffer.Free;
 
                     int requestBytesRead = socket.Receive(requestSpan);
                     if (requestBytesRead == 0) {
@@ -93,12 +93,12 @@ namespace Microsoft.Net
                     throw new Exception();
                 }
 
-                var body = requestBytes.Slice(consumed);
+                var requestBody = requestBytes.Slice(consumed);
 
-                Log.LogRequest(request, body);
+                Log.LogRequest(request, requestBody);
 
                 using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize)) {
-                    WriteResponse(ref request, body, response);
+                    WriteResponse(ref request, requestBody, response);
                 }
 
                 socket.Close();
