@@ -58,7 +58,7 @@ namespace System.Numerics
         {
             EnsureValidIndex(index);
 
-            Span<int> indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+            Span<int> indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
             ArrayUtilities.GetIndices(Strides, IsReversedStride, index, indices);
 
             return this[indices];
@@ -68,7 +68,7 @@ namespace System.Numerics
         {
             EnsureValidIndex(index);
 
-            Span<int> indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+            Span<int> indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
             ArrayUtilities.GetIndices(Strides, IsReversedStride, index, indices);
 
             this[indices] = value;
@@ -128,7 +128,7 @@ namespace System.Numerics
 
             for (int i = 0; i < indices.Length; i++)
             {
-                if (indices[i] < 0 || indices[i] >= Dimensions[i])
+                if ((uint)indices[i] >= (uint)Dimensions[i])
                 {
                     throw new ArgumentOutOfRangeException($"Index at position '{i}' must be non-negative and less than the Dimension '{Dimensions[i]}' at that position. The index value is '{indices[i]}'.", nameof(indices));
                 }
@@ -137,7 +137,7 @@ namespace System.Numerics
 
         private void EnsureValidIndex(int index)
         {
-            if (index < 0 || index >= Length)
+            if ((uint)index >= (uint)Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(index), $"Index with value '{index}' must be non-negative and less than Length '{Length}'.");
             }

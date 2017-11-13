@@ -88,7 +88,7 @@ namespace System.Numerics
 
             // TODO: allow specification of axis1 and axis2?
             var rank = diagonal.dimensions.Length + 1;
-            Span<int> dimensions = rank < ArrayUtilities.StackallocMax ? stackalloc int[rank] : new Span<int>(new int[rank]);
+            Span<int> dimensions = rank < ArrayUtilities.StackallocMax ? stackalloc int[rank] : new int[rank];
 
             // assume square
             var axisLength = diagonalLength + Math.Abs(offset);
@@ -100,7 +100,7 @@ namespace System.Numerics
             }
 
             var result = diagonal.CloneEmpty(dimensions);
-            
+
             var sizePerDiagonal = diagonal.Length / diagonalLength;
 
             var diagProjectionStride = diagonal.IsReversedStride && diagonal.Rank > 1 ? diagonal.strides[1] : 1;
@@ -253,7 +253,7 @@ namespace System.Numerics
                 throw new ArgumentException($"{nameof(leftAxes)} and {nameof(rightAxes)} must have the same length, but were {leftAxes.Length} and {rightAxes.Length}, respectively.");
             }
 
-            for(int i = 0; i < leftAxes.Length; i++)
+            for (int i = 0; i < leftAxes.Length; i++)
             {
                 var leftAxis = leftAxes[i];
 
@@ -320,7 +320,7 @@ namespace System.Numerics
                 throw new ArgumentException($"{nameof(result)} should have {expectedDimensions.Length} dimensions but had {result.Rank}.");
             }
 
-            for(int i = 0; i < expectedDimensions.Length; i++)
+            for (int i = 0; i < expectedDimensions.Length; i++)
             {
                 if (result.dimensions[i] != expectedDimensions[i])
                 {
@@ -560,10 +560,10 @@ namespace System.Numerics
             }
 
             var newTensorRank = Rank - 1;
-            var newTensorDimensions = newTensorRank < ArrayUtilities.StackallocMax ? stackalloc int[newTensorRank] : new Span<int>(new int[newTensorRank]);
+            var newTensorDimensions = newTensorRank < ArrayUtilities.StackallocMax ? stackalloc int[newTensorRank] : new int[newTensorRank];
             newTensorDimensions[0] = diagonalLength;
 
-            for(int i = 2; i < dimensions.Length; i++)
+            for (int i = 2; i < dimensions.Length; i++)
             {
                 newTensorDimensions[i - 1] = dimensions[i];
             }
@@ -652,7 +652,7 @@ namespace System.Numerics
             for (int diagIndex = 0; diagIndex < diagonalLength; diagIndex++)
             {
                 // starting point for the tri
-                var triIndex0 = offset > 0 ? diagIndex - offset: diagIndex;
+                var triIndex0 = offset > 0 ? diagIndex - offset : diagIndex;
                 var triIndex1 = offset > 0 ? diagIndex : diagIndex + offset;
 
                 // for lower triangle, iterate index0 keeping same index1
@@ -1226,7 +1226,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1325,7 +1325,7 @@ namespace System.Numerics
             }
             else
             {
-                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+                var indices = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
                 for (int i = 0; i < Length; i++)
                 {
                     ArrayUtilities.GetIndices(strides, IsReversedStride, i, indices);
@@ -1355,7 +1355,7 @@ namespace System.Numerics
                     throw new ArgumentException($"Cannot compare {nameof(Tensor<T>)} to {nameof(Array)} with differning dimension {i}, {dimensions[i]} != {otherDimension}.", nameof(other));
                 }
             }
-            
+
             var indices = new int[Rank];
             for (int i = 0; i < Length; i++)
             {
@@ -1384,7 +1384,7 @@ namespace System.Numerics
         #endregion
 
         #region Translations
-        
+
         /// <summary>
         /// Creates a copy of this tensor as a DenseTensor<T>.  If this tensor is already a DenseTensor<T> calling this method is equivalent to calling Clone().
         /// </summary>
@@ -1437,15 +1437,15 @@ namespace System.Numerics
             return Slice(new ReadOnlySpan<Range>(ranges));
         }
 
-        public Tensor<T> Slice(ReadOnlySpan<Range> ranges)
+        public virtual Tensor<T> Slice(ReadOnlySpan<Range> ranges)
         {
             if (ranges.Length != Rank)
             {
                 throw new ArgumentException($"{nameof(ranges.Length)} of {nameof(ranges)} ({ranges.Length}) must match the {nameof(Rank)} of this {nameof(Tensor)} ({Rank}).");
             }
 
-            Span<int> newDimensions = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
-            Span<int> newStrides = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new Span<int>(new int[Rank]);
+            Span<int> newDimensions = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
+            Span<int> newStrides = Rank < ArrayUtilities.StackallocMax ? stackalloc int[Rank] : new int[Rank];
             int offset = 0;
             int newDimensionCount = 0;
 
@@ -1457,7 +1457,21 @@ namespace System.Numerics
                 // Range guarantees the Length is positive
                 Debug.Assert(range.Length > 0);
 
-                offset += range.Index * strides[i];
+                int currentDimension = Dimensions[i];
+                if ((uint)range.Index >= (uint)currentDimension)
+                {
+                    throw new ArgumentOutOfRangeException($"Range.Index at position '{i}' must be non-negative and less than the Dimension '{currentDimension}' at that position. The Range.Index value is '{range.Index}'.", nameof(ranges));
+                }
+
+                checked
+                {
+                    if (range.Index + range.Length > currentDimension)
+                    {
+                        throw new ArgumentOutOfRangeException($"The Range at position '{i}' targets values outside of the Dimension '{currentDimension}' at that position. The Range.Index value is '{range.Index}'. The Range.Length value is '{range.Length}'.", nameof(ranges));
+                    }
+
+                    offset += range.Index * strides[i];
+                }
 
                 // only create a new dimension if the range requires it
                 if (range.Length > 1)
@@ -1468,12 +1482,7 @@ namespace System.Numerics
                 }
             }
 
-            return Slice(newDimensions.Slice(0, newDimensionCount), newStrides.Slice(0, newDimensionCount), offset);
-        }
-
-        protected virtual Tensor<T> Slice(ReadOnlySpan<int> dimensions, ReadOnlySpan<int> strides, int offset)
-        {
-            return new TensorView<T>(this, dimensions, strides, offset);
+            return new TensorView<T>(this, newDimensions.Slice(0, newDimensionCount), newStrides.Slice(0, newDimensionCount), offset);
         }
 
         #endregion
@@ -1508,7 +1517,7 @@ namespace System.Numerics
                     }
                 }
 
-                for(int innerIndex = 0; innerIndex < innerLength; innerIndex++)
+                for (int innerIndex = 0; innerIndex < innerLength; innerIndex++)
                 {
                     indices[innerDimension] = innerIndex;
 
@@ -1528,7 +1537,7 @@ namespace System.Numerics
                 }
                 builder.Append('}');
 
-                for(int i = Rank - 2; i >= 0; i--)
+                for (int i = Rank - 2; i >= 0; i--)
                 {
                     var lastIndex = dimensions[i] - 1;
                     if (indices[i] == lastIndex)
@@ -1559,9 +1568,9 @@ namespace System.Numerics
 
         private static void Indent(StringBuilder builder, int tabs, int spacesPerTab = 4)
         {
-            for(int tab = 0; tab < tabs; tab++)
+            for (int tab = 0; tab < tabs; tab++)
             {
-                for(int space = 0; space < spacesPerTab; space++)
+                for (int space = 0; space < spacesPerTab; space++)
                 {
                     builder.Append(' ');
                 }

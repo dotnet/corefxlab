@@ -148,7 +148,7 @@ namespace System.Numerics.Tensors.Tests
                 { 2, 3 },
                 { 18, 19 },
             };
-            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(diag, expected));
+            Assert.True(StructuralComparisons.StructuralEqualityComparer.Equals(diag, expected));
             Assert.Equal(constructor.IsReversedStride, diag.IsReversedStride);
         }
 
@@ -173,7 +173,7 @@ namespace System.Numerics.Tensors.Tests
                 },
 
             };
-            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(incremented, expected));
+            Assert.True(StructuralComparisons.StructuralEqualityComparer.Equals(incremented, expected));
             Assert.Equal(constructor.IsReversedStride, incremented.IsReversedStride);
         }
 
@@ -215,7 +215,7 @@ namespace System.Numerics.Tensors.Tests
                 };
             }
 
-            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(reshaped, expected));
+            Assert.True(StructuralComparisons.StructuralEqualityComparer.Equals(reshaped, expected));
             Assert.Equal(constructor.IsReversedStride, reshaped.IsReversedStride);
         }
 
@@ -284,6 +284,41 @@ namespace System.Numerics.Tensors.Tests
         [Theory]
         [MemberData(nameof(GetSingleTensorConstructors))]
         public void SliceOutOfRange(TensorConstructor constructor)
+        {
+            var arr = new[, ,]
+            {
+                {
+                   { 0, 1,  2,  3 },
+                   { 4, 5,  6,  7 },
+                   { 8, 9, 10, 11 },
+                },
+                {
+                   { 12, 13, 14, 15 },
+                   { 16, 17, 18, 19 },
+                   { 20, 21, 22, 23 },
+                },
+
+            };
+            var tensor = constructor.CreateFromArray<int>(arr).Reshape(new[] { 2, 3, 4 });
+
+            // first dimension is invalid
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 3), new Range(0, 1), new Range(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 10), new Range(0, 1), new Range(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(1, 2), new Range(0, 1), new Range(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(2, 1), new Range(0, 1), new Range(0, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(-1, 1), new Range(0, 1), new Range(0, 1)));
+
+            // third dimension is invalid
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(0, 5)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(0, 10)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(3, 2)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(4, 1)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => tensor.Slice(new Range(0, 1), new Range(0, 1), new Range(-1, 1)));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void SliceIndexOutOfRange(TensorConstructor constructor)
         {
             var slice = Get3DSlice(constructor);
 
