@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-
 namespace System.IO.Pipelines.Samples
 {
     public class SocketHttpClientHandler : PipelineHttpClientHandler

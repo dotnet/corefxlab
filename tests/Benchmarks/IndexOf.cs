@@ -5,7 +5,6 @@
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System;
-using System.Buffers;
 using System.Numerics;
 
 public class IndexOfBench
@@ -33,7 +32,7 @@ public class IndexOfBench
             using (iteration.StartMeasurement())
             {
                 for(int i=0; i<s_loops; i++) {
-                    index += buffer.IndexOf(255);
+                    index += buffer.IndexOf<byte>(255);
                 }
             }
         }
@@ -62,7 +61,7 @@ public class IndexOfBench
             using (iteration.StartMeasurement())
             {
                 for(int i=0; i<s_loops; i++) {
-                    index += buffer.IndexOf(255);
+                    index += buffer.IndexOf<byte>(255);
                 }
             }
         }

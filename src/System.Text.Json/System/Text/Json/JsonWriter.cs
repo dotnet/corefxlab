@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text.Formatting;
@@ -368,7 +367,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -379,7 +378,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -390,7 +389,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -401,7 +400,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);
@@ -412,7 +411,7 @@ namespace System.Text.Json
         {
             var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
+            while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
 
             _output.Advance(written);

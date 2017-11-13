@@ -87,7 +87,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                     var memory = buffer.First;
                     var memoryHandle = memory.Retain(pin: true);
                     _handles.Add(memoryHandle);
-                    pBuffers[0] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
+                    pBuffers[0] = Libuv.buf_init((IntPtr)memoryHandle.Pointer, memory.Length);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                     {
                         var memoryHandle = memory.Retain(pin: true);
                         _handles.Add(memoryHandle);
-                        pBuffers[i++] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
+                        pBuffers[i++] = Libuv.buf_init((IntPtr)memoryHandle.Pointer, memory.Length);
                     }
                 }
 

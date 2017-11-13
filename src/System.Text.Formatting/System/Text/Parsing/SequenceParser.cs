@@ -18,20 +18,20 @@ namespace System.Text.Parsing
             Position position = Position.First;
 
             // Fetch the first segment
-            ReadOnlyMemory<byte> first;
-            if (!bufferSequence.TryGet(ref position, out first)) {
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
+            {
                 return false;
             }
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
-            bool parsed = Utf8Parser.TryParseUInt64(first.Span, out value, out consumed);
+            bool parsed = Utf8Parser.TryParse(first.Span, out value, out consumed);
             if (parsed && consumed < first.Length) {
                 return true;
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            ReadOnlyMemory<byte> second;
-            if (!bufferSequence.TryGet(ref position, out second)) {
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> second))
+            {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
                 return false;
@@ -49,10 +49,9 @@ namespace System.Text.Parsing
                 second.Span.CopyTo(free);
                 free = free.Slice(second.Length);
 
-                ReadOnlyMemory<byte> next;
                 while (free.Length > 0)
                 {
-                    if (bufferSequence.TryGet(ref position, out next))
+                    if (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> next))
                     {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
                         next.Span.CopyTo(free);
@@ -67,7 +66,7 @@ namespace System.Text.Parsing
                 var combinedStackSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                 // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                if (Utf8Parser.TryParseUInt64(combinedStackSpan, out value, out consumed))
+                if (Utf8Parser.TryParse(combinedStackSpan, out value, out consumed))
                 {
                     if (consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize)
                     {
@@ -79,7 +78,7 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             var combinedSpan = bufferSequence.ToSpan();
-            if (!Utf8Parser.TryParseUInt64(combinedSpan, out value, out consumed)) {
+            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed)) {
                 return false;
             }
             return true;
@@ -92,20 +91,20 @@ namespace System.Text.Parsing
             Position position = Position.First;
 
             // Fetch the first segment
-            ReadOnlyMemory<byte> first;
-            if (!bufferSequence.TryGet(ref position, out first)) {
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
+            {
                 return false;
             }
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
-            bool parsed = Utf8Parser.TryParseUInt32(first.Span, out value, out consumed);
+            bool parsed = Utf8Parser.TryParse(first.Span, out value, out consumed);
             if (parsed && consumed < first.Length) {
                 return true;
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            ReadOnlyMemory<byte> second;
-            if (!bufferSequence.TryGet(ref position, out second)) {
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> second))
+            {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
                 return false;
@@ -123,14 +122,16 @@ namespace System.Text.Parsing
                 second.Span.CopyTo(free);
                 free = free.Slice(second.Length);
 
-                ReadOnlyMemory<byte> next;
-                while (free.Length > 0) {
-                    if (bufferSequence.TryGet(ref position, out next)) {
+                while (free.Length > 0)
+                {
+                    if (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> next))
+                    {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
                         next.Span.CopyTo(free);
                         free = free.Slice(next.Length);
                     }
-                    else {
+                    else
+                    {
                         break;
                     }
                 }
@@ -138,7 +139,7 @@ namespace System.Text.Parsing
                 var combinedStackSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                 // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                if (Utf8Parser.TryParseUInt32(combinedStackSpan, out value, out consumed)) {
+                if (Utf8Parser.TryParse(combinedStackSpan, out value, out consumed)) {
                     if(consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize) {
                         return true;
                     }
@@ -148,7 +149,7 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             var combinedSpan = bufferSequence.ToSpan();
-            if (!Utf8Parser.TryParseUInt32(combinedSpan, out value, out consumed)) {
+            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed)) {
                 return false;
             }
             return true;

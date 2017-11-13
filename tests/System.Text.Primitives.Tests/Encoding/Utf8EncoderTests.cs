@@ -232,13 +232,11 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("PartialEncodeUtf8ToUtf16TestCases")]
         public void TryPartialUtf8ToUtf16DecodingTest(int outputSize, int expectedConsumed, byte[] inputBytes, byte[] expected1, byte[] expected2)
         {
-            int written;
-            int consumed;
 
             ReadOnlySpan<byte> input = inputBytes;
             Span<byte> output = new byte[outputSize];
 
-            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encodings.Utf8.ToUtf16(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encodings.Utf8.ToUtf16(input, output, out int consumed, out int written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected1), "Bad first segment of partial sequence");
@@ -279,13 +277,11 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("PartialEncodeUtf16ToUtf8TestCases")]
         public void TryPartialUtf16ToUtf8EncodingTest(int outputSize, int expectedConsumed, char[] inputBytes, byte[] expected1, byte[] expected2)
         {
-            int written;
-            int consumed;
 
             ReadOnlySpan<byte> input = inputBytes.AsSpan().AsBytes();
             Span<byte> output = new byte[outputSize];
 
-            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encodings.Utf16.ToUtf8(input, output, out consumed, out written));
+            Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encodings.Utf16.ToUtf8(input, output, out int consumed, out int written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(output.Slice(0, written).SequenceEqual(expected1), "Bad first segment of partial sequence");

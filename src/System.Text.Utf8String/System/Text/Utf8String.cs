@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Buffers.Text;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -321,7 +322,7 @@ namespace System.Text.Utf8
 
         public int LastIndexOf(uint codePoint) => Span.LastIndexOf(codePoint);
 
-        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public bool TryFormat(Span<byte> buffer, out int written, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (!format.IsDefault) throw new ArgumentOutOfRangeException(nameof(format));
             if(symbolTable == SymbolTable.InvariantUtf8)

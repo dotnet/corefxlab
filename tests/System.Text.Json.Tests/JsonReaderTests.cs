@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Text.Json.Tests.Resources;
@@ -295,7 +294,6 @@ namespace System.Text.Json.Tests
 
         private static Value GetValue(ref JsonReader jsonReader)
         {
-            int consumed;
             var value = new Value { Type = MapValueType(jsonReader.ValueType) };
             switch (value.Type)
             {
@@ -303,7 +301,7 @@ namespace System.Text.Json.Tests
                     value.StringValue = ReadString(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out consumed, jsonReader.SymbolTable);
+                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed, jsonReader.SymbolTable);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:

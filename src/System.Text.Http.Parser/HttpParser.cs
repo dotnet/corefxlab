@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -370,35 +371,51 @@ namespace System.Text.Http.Parser
 
         public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
-            var index = 0;        
-            var rest = buffer.Rest;
-            var span = buffer.First.Span;
-            var remaining = span.Length;
+            var index = 0;
             consumedBytes = 0;
-            while (true) {
-                fixed (byte* pBuffer = &span.DangerousGetPinnableReference()) {
-                    while (remaining > 0) {
+            Position position = Position.First;
 
+            ReadOnlySpan<byte> currentSpan = buffer.First.Span;
+            var remaining = currentSpan.Length;
+
+            while (true)
+            {
+                fixed (byte* pBuffer = &currentSpan.DangerousGetPinnableReference())
+                {
+                    while (remaining > 0)
+                    {
                         int ch1;
                         int ch2;
 
                         // Fast path, we're still looking at the same span
-                        if (remaining >= 2) {
+                        if (remaining >= 2)
+                        {
                             ch1 = pBuffer[index];
                             ch2 = pBuffer[index + 1];
                         }
                         // Slow Path
-                        else {
-                            ReadNextTwoChars(pBuffer, remaining, index, out ch1, out ch2, rest);
+                        else
+                        {
+                            ReadTwoChars(buffer, consumedBytes, out ch1, out ch2);
+                            // I think the above is fast enough. If we don't like it, we can do the code below after some modifications
+                            // to ensure that one next.Span is enough
+                            //if(hasNext) ReadNextTwoChars(pBuffer, remaining, index, out ch1, out ch2, next.Span);
+                            //else
+                            //{
+                            //    return false;
+                            //}
                         }
 
-                        if (ch1 == ByteCR) {
-                            if (ch2 == ByteLF) {
+                        if (ch1 == ByteCR)
+                        {
+                            if (ch2 == ByteLF)
+                            {
                                 consumedBytes += 2;
                                 return true;
                             }
 
-                            if (ch2 == -1) {
+                            if (ch2 == -1)
+                            {
                                 consumedBytes = 0;
                                 return false;
                             }
@@ -410,16 +427,19 @@ namespace System.Text.Http.Parser
                         var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
                         var length = 0;
 
-                        if (endIndex != -1) {
+                        if (endIndex != -1)
+                        {
                             length = endIndex + 1;
                             var pHeader = pBuffer + index;
 
                             TakeSingleHeader(pHeader, length, handler);
                         }
-                        else {
+                        else
+                        {
                             // Split buffers
                             var end = buffer.Slice(index).IndexOf(ByteLF);
-                            if (end == -1) {
+                            if (end == -1)
+                            {
                                 // Not there
                                 consumedBytes = 0;
                                 return false;
@@ -428,7 +448,8 @@ namespace System.Text.Http.Parser
                             var headerSpan = buffer.Slice(index, end - index + 1).ToSpan();
                             length = headerSpan.Length;
 
-                            fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference()) {
+                            fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference())
+                            {
                                 TakeSingleHeader(pHeader, length, handler);
                             }
                         }
@@ -440,51 +461,72 @@ namespace System.Text.Http.Parser
                     }
                 }
 
-                if (rest != null) {
-                    span = rest.First.Span;
-                    rest = rest.Rest;
-                    remaining = span.Length + remaining;
-                    index = span.Length - remaining;
+                // This is just to get the position to be at the second segment
+                if (position == Position.First)
+                {
+                    if (!buffer.TryGet(ref position, out ReadOnlyMemory<byte> current, advance: true))
+                    {
+                        consumedBytes = 0;
+                        return false;
+                    }
                 }
-                else {
+
+                if (buffer.TryGet(ref position, out var nextSegment, advance: true))
+                {
+                    currentSpan = nextSegment.Span;
+                    remaining = currentSpan.Length + remaining;
+                    index = currentSpan.Length - remaining;
+                }
+                else
+                {
                     consumedBytes = 0;
                     return false;
                 }
             }
         }
 
-        private static unsafe void ReadNextTwoChars(byte* pBuffer, int remaining, int index, out int ch1, out int ch2, IReadOnlyBufferList<byte> rest)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ReadTwoChars(ReadOnlyBytes buffer, int consumedBytes, out int ch1, out int ch2)
         {
-            if (remaining == 1) {
-                ch1 = pBuffer[index];
-                if (rest == null) {
-                    ch2 = -1;
-                }
-                else {
-                    ch2 = rest.First.Span[0];
-                }
-            }
-            else {
+            Span<byte> temp = stackalloc byte[2];
+            if (buffer.Slice(consumedBytes).CopyTo(temp) < 2)
+            {
                 ch1 = -1;
                 ch2 = -1;
-                if (rest != null) {
-                    var nextSpan = rest.First.Span;
-                    if (nextSpan.Length > 0) {
-                        ch1 = nextSpan[0];
-
-                        if (nextSpan.Length > 1) {
-                            ch2 = nextSpan[1];
-                        }
-                        else {
-                            ch2 = -1;
-                        }
-                    }
-                    else {
-                        ch2 = -1;
-                    }
-                }
+            }
+            else
+            {
+                ch1 = temp[0];
+                ch2 = temp[1];
             }
         }
+
+        // This is not needed, but I will leave it here for now, as we might need it later when optimizing
+        //private static unsafe void ReadNextTwoChars(byte* pBuffer, int remaining, int index, out int ch1, out int ch2, ReadOnlySpan<byte> next)
+        //{
+        //    Debug.Assert(next.Length > 1);
+        //    Debug.Assert(remaining == 0 || remaining == 1);
+
+        //    if (remaining == 1)
+        //    {
+        //        ch1 = pBuffer[index];
+        //        ch2 = next.IsEmpty ? -1 : next[0];
+        //    }
+        //    else
+        //    {
+        //        ch1 = -1;
+        //        ch2 = -1;
+
+        //        if (next.Length > 0)
+        //        {
+        //            ch1 = next[0];
+        //            if (next.Length > 1)
+        //            {
+        //                ch2 = next[1];
+        //            }
+        //        }
+        //    }
+        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe int FindEndOfName(byte* headerLine, int length)

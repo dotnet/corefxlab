@@ -32,8 +32,7 @@ namespace System.IO.Pipelines.Samples.Http
         {
             get
             {
-                StringValues values;
-                TryGetValue(key, out values);
+                TryGetValue(key, out StringValues values);
                 return values;
             }
 
@@ -62,8 +61,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public ReadableBuffer GetHeaderRaw(string key)
         {
-            HeaderValue value;
-            if (_headers.TryGetValue(key, out value))
+            if (_headers.TryGetValue(key, out HeaderValue value))
             {
                 return value.Raw.Value.Buffer;
             }
@@ -207,8 +205,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public bool TryGetValue(string key, out StringValues value)
         {
-            HeaderValue headerValue;
-            if (_headers.TryGetValue(key, out headerValue))
+            if (_headers.TryGetValue(key, out HeaderValue headerValue))
             {
                 value = headerValue.GetValue();
                 return true;

@@ -30,9 +30,7 @@ namespace System.IO.Pipelines.Samples.Http
         {
             var feature = Features.Get<IServerAddressesFeature>();
             var address = feature.Addresses.FirstOrDefault();
-            IPAddress ip;
-            int port;
-            GetIp(address, out ip, out port);
+            GetIp(address, out IPAddress ip, out int port);
             Task.Factory.StartNew(() => StartAccepting(application, ip, port), TaskCreationOptions.LongRunning);
         }
 

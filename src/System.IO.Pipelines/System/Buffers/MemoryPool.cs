@@ -96,8 +96,7 @@ namespace System.Buffers
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
 
-            MemoryPoolBlock block;
-            if (_blocks.TryDequeue(out block))
+            if (_blocks.TryDequeue(out MemoryPoolBlock block))
             {
                 // block successfully taken from the stack - return it
 
@@ -198,8 +197,7 @@ namespace System.Buffers
 #endif
                 if (disposing)
                 {
-                    MemoryPoolSlab slab;
-                    while (_slabs.TryPop(out slab))
+                    while (_slabs.TryPop(out MemoryPoolSlab slab))
                     {
                         // dispose managed state (managed objects).
                         slab.Dispose();
@@ -207,8 +205,7 @@ namespace System.Buffers
                 }
 
                 // Discard blocks in pool
-                MemoryPoolBlock block;
-                while (_blocks.TryDequeue(out block))
+                while (_blocks.TryDequeue(out MemoryPoolBlock block))
                 {
                     GC.SuppressFinalize(block);
                 }

@@ -22,8 +22,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         {
             var awaitable = (LibuvAwaitable<TRequest>)state;
 
-            Exception exception;
-            req.Libuv.Check(status, out exception);
+            req.Libuv.Check(status, out Exception exception);
             awaitable._exception = exception;
             awaitable._status = status;
 

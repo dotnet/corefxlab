@@ -99,8 +99,8 @@ namespace System.Text.Json.Dynamic.Tests
 
         public static Utf8Span First(this JsonDynamicObject json)
         {
-            Utf8Span value;
-            if(json.TryGetString(new Utf8Span(s_first), out value)) {
+            if (json.TryGetString(new Utf8Span(s_first), out Utf8Span value))
+            {
                 return value;
             }
             throw new InvalidOperationException();
@@ -108,8 +108,8 @@ namespace System.Text.Json.Dynamic.Tests
 
         public static uint Age(this JsonDynamicObject json)
         {
-            uint value;
-            if (json.TryGetUInt32(new Utf8Span(s_age), out value)) {
+            if (json.TryGetUInt32(new Utf8Span(s_age), out uint value))
+            {
                 return value;
             }
             throw new InvalidOperationException();

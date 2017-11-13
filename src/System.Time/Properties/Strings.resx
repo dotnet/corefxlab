@@ -123,9 +123,6 @@
   <data name="ArgumentOutOfRange_BadMonths" xml:space="preserve">
     <value>Months value must be between +/-120000.</value>
   </data>
-  <data name="ArgumentOutOfRange_BadTimeSpan" xml:space="preserve">
-    <value>TimeSpan describes an un-representable TimeOfDay.</value>
-  </data>
   <data name="ArgumentOutOfRange_BadYearDay" xml:space="preserve">
     <value>Year and Day parameters describe an un-representable Date.</value>
   </data>
@@ -159,8 +156,8 @@
   <data name="ArgumentOutOfRange_Second" xml:space="preserve">
     <value>Second must be between 0 and 59.</value>
   </data>
-  <data name="ArgumentOutOfRange_TimeOfDayBadTicks" xml:space="preserve">
-    <value>Ticks must be between TimeOfDay.MinValue.Ticks and TimeOfDay.MaxValue.Ticks.</value>
+  <data name="ArgumentOutOfRange_TimeBadTicks" xml:space="preserve">
+    <value>Ticks must be between Time.MinValue.Ticks and Time.MaxValue.Ticks.</value>
   </data>
   <data name="ArgumentOutOfRange_Year" xml:space="preserve">
     <value>Year must be between 1 and 9999.</value>
@@ -171,16 +168,22 @@
   <data name="Argument_MustBeDate" xml:space="preserve">
     <value>Object must be of type Date.</value>
   </data>
-  <data name="Argument_MustBeTimeOfDay" xml:space="preserve">
-    <value>Object must be of type TimeOfDay.</value>
+  <data name="Argument_MustBeTime" xml:space="preserve">
+    <value>Object must be of type Time.</value>
   </data>
   <data name="Format_BadDate" xml:space="preserve">
     <value>String was not recognized as a valid Date.</value>
   </data>
-  <data name="Format_BadTimeOfDay" xml:space="preserve">
-    <value>String was not recognized as a valid TimeOfDay.</value>
+  <data name="Format_BadTime" xml:space="preserve">
+    <value>String was not recognized as a valid Time.</value>
   </data>
   <data name="Format_InvalidString" xml:space="preserve">
     <value>Input string was not in a correct format.</value>
+  </data>
+  <data name="InvalidCast_BadDateTime" xml:space="preserve">
+    <value>DateTime cannot be cast as Date because it has a non-zero time component.</value>
+  </data>
+  <data name="InvalidCast_BadTimeSpan" xml:space="preserve">
+    <value>TimeSpan cannot be cast as Time because it describes an un-representable Time.</value>
   </data>
 </root>

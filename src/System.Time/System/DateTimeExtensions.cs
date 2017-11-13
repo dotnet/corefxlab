@@ -22,14 +22,14 @@ namespace System
         }
 
         /// <summary>
-        /// Gets a <see cref="TimeOfDay"/> value that represents the time component of the current
+        /// Gets a <see cref="Time"/> value that represents the time component of the current
         /// <see cref="DateTime"/> object.
         /// </summary>
         /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
-        /// <returns>The <see cref="TimeOfDay"/> value.</returns>
-        public static TimeOfDay GetTimeOfDay(this DateTime dateTime)
+        /// <returns>The <see cref="Time"/> value.</returns>
+        public static Time GetTime(this DateTime dateTime)
         {
-            return new TimeOfDay(dateTime.TimeOfDay.Ticks);
+            return new Time(dateTime.TimeOfDay.Ticks);
         }
         
         /// <summary>
@@ -47,32 +47,32 @@ namespace System
 
         public static DateTimeOffset AddYears(this DateTime dateTime, int years, TimeZoneInfo timeZone)
         {
-            return AddByDate(dateTime, dt => dt.AddYears(years), timeZone, TimeZoneOffsetResolvers.Default);
+            return AddByDate(dateTime, (dt, val) => dt.AddYears(val), years, timeZone, TimeZoneOffsetResolvers.Default);
         }
 
         public static DateTimeOffset AddYears(this DateTime dateTime, int years, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            return AddByDate(dateTime, dt => dt.AddYears(years), timeZone, resolver);
+            return AddByDate(dateTime, (dt, val) => dt.AddYears(val), years, timeZone, resolver);
         }
 
         public static DateTimeOffset AddMonths(this DateTime dateTime, int months, TimeZoneInfo timeZone)
         {
-            return AddByDate(dateTime, dt => dt.AddMonths(months), timeZone, TimeZoneOffsetResolvers.Default);
+            return AddByDate(dateTime, (dt, val) => dt.AddMonths(val), months, timeZone, TimeZoneOffsetResolvers.Default);
         }
 
         public static DateTimeOffset AddMonths(this DateTime dateTime, int months, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            return AddByDate(dateTime, dt => dt.AddMonths(months), timeZone, resolver);
+            return AddByDate(dateTime, (dt, val) => dt.AddMonths(val), months, timeZone, resolver);
         }
 
         public static DateTimeOffset AddDays(this DateTime dateTime, int days, TimeZoneInfo timeZone)
         {
-            return AddByDate(dateTime, dt => dt.AddDays(days), timeZone, TimeZoneOffsetResolvers.Default);
+            return AddByDate(dateTime, (dt, val) => dt.AddDays(val), days, timeZone, TimeZoneOffsetResolvers.Default);
         }
 
         public static DateTimeOffset AddDays(this DateTime dateTime, int days, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            return AddByDate(dateTime, dt => dt.AddDays(days), timeZone, resolver);
+            return AddByDate(dateTime, (dt, val) => dt.AddDays(val), days, timeZone, resolver);
         }
 
         public static DateTimeOffset AddHours(this DateTime dateTime, double hours, TimeZoneInfo timeZone)
@@ -142,20 +142,20 @@ namespace System
 
         public static DateTimeOffset Add(this DateTime dateTime, TimeSpan timeSpan, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            var dto = resolver.Invoke(dateTime, timeZone);
+            DateTimeOffset dto = resolver(dateTime, timeZone);
             var result = dto.Add(timeSpan);
             return TimeZoneInfo.ConvertTime(result, timeZone);
         }
         
-        private static DateTimeOffset AddByDate(DateTime dateTime, Func<DateTime, DateTime> operation, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
+        private static DateTimeOffset AddByDate(DateTime dateTime, Func<DateTime, int, DateTime> operation, int value, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
             if (dateTime.Kind != DateTimeKind.Unspecified)
             {
                 dateTime = TimeZoneInfo.ConvertTime(dateTime, timeZone);
             }
 
-            var result = operation.Invoke(dateTime);
-            return resolver.Invoke(result, timeZone);
+            var result = operation(dateTime, value);
+            return resolver(result, timeZone);
         }
 
         /// <summary>

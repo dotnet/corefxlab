@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class DateTimeTests
     {
@@ -13,18 +13,6 @@ namespace System.Time.Tests
 #else
     string TimeZoneId = "America/Los_Angeles";
 #endif
-
-        [Fact]
-        public void CanAssignDateTimeTodayToDate()
-        {
-            Date dt = DateTime.Today;
-        }
-
-        [Fact]
-        public void CanAssignDateTimeTimeOfDayToTimeOfDay()
-        {
-            TimeOfDay time = DateTime.Now.TimeOfDay;
-        }
 
         [Fact]
         public void CanAddYearsAcrossDstTransition()

@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary.Base64;
-using System.Buffers;
+using System.Binary.Base64Experimental;
 using System.Buffers.Text;
-using System.Text;
-using System.Text.Utf8;
 using Xunit;
 using static System.Buffers.Binary.BinaryPrimitives;
 
@@ -16,8 +13,8 @@ namespace System.Buffers.Tests
         static IBufferTransformation[] s_transformations = new IBufferTransformation[] {
             Encodings.Ascii.ToLowercase,
             Encodings.Ascii.ToUppercase,
-            Base64.Utf8ToBytesDecoder,
-            Base64.BytesToUtf8Encoder
+            Base64Experimental.Utf8ToBytesDecoder,
+            Base64Experimental.BytesToUtf8Encoder
         };
 
         [Fact]
@@ -73,7 +70,7 @@ namespace System.Buffers.Tests
 
         const int size = sizeof(ulong) * 2;
 
-        public bool TryWrite(Span<byte> buffer, out int written, ParsedFormat format = default)
+        public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
         {
             if (!format.IsDefault) throw new Exception("invalid format");
 

@@ -169,8 +169,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             IOException error = null;
             if (errorDone)
             {
-                Exception uvError;
-                handle.Libuv.Check(status, out uvError);
+                handle.Libuv.Check(status, out Exception uvError);
                 error = new IOException(uvError.Message, uvError);
 
                 _inputBuffer?.Commit();
@@ -239,7 +238,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             var pinnedHandle = inputBuffer.Buffer.Retain(pin: true);
             _inputBufferPin = pinnedHandle;
 
-            return handle.Libuv.buf_init((IntPtr)pinnedHandle.PinnedPointer, inputBuffer.Buffer.Length);
+            return handle.Libuv.buf_init((IntPtr)pinnedHandle.Pointer, inputBuffer.Buffer.Length);
         }
     }
 }

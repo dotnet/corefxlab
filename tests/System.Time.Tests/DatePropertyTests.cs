@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.Time.Tests
+namespace System._Time.Tests
 {
     public class DatePropertyTests
     {
@@ -81,7 +81,7 @@ namespace System.Time.Tests
         public void CanGetDateTimeFromDateAtTime()
         {
             Date date = new Date(2000, 12, 31);
-            TimeOfDay time = new TimeOfDay(23, 59, 59);
+            Time time = new Time(23, 59, 59);
             DateTime dt = date.At(time);
 
             DateTime expected = new DateTime(2000, 12, 31, 23, 59, 59);

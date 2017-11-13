@@ -145,7 +145,7 @@ namespace System.Text.Formatting
             }
         }
 
-        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, ParsedFormat format) where TFormatter : ITextOutput
+        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, StandardFormat format) where TFormatter : ITextOutput
         {
             #region Built in types
             var i32 = value as int?;
@@ -344,11 +344,9 @@ namespace System.Text.Formatting
 
             CompositeSegment ParseInsertionPoint()
             {
-                uint arg;
-                int consumed;
                 char? formatSpecifier = null;
 
-                if (!TryParse(_compositeFormatString, _currentIndex, 5, out arg, out consumed))
+                if (!TryParse(_compositeFormatString, _currentIndex, 5, out uint arg, out int consumed))
                 {
                     throw new Exception("invalid insertion point");
                 }
@@ -371,8 +369,8 @@ namespace System.Text.Formatting
                 }
 
                 _currentIndex++;
-                var parsedFormat = (formatSpecifier.HasValue && formatSpecifier.Value != 0) ? new ParsedFormat(formatSpecifier.Value) : default;
-                return CompositeSegment.InsertionPoint(arg, parsedFormat);
+                var StandardFormat = (formatSpecifier.HasValue && formatSpecifier.Value != 0) ? new StandardFormat(formatSpecifier.Value) : default;
+                return CompositeSegment.InsertionPoint(arg, StandardFormat);
             }
 
             public enum State : byte
@@ -384,11 +382,11 @@ namespace System.Text.Formatting
 
             public struct CompositeSegment
             {
-                public ParsedFormat Format { get; private set; }
+                public StandardFormat Format { get; private set; }
                 public int Index { get; private set; }
                 public int Count { get; private set; }
 
-                public static CompositeSegment InsertionPoint(uint argIndex, ParsedFormat format)
+                public static CompositeSegment InsertionPoint(uint argIndex, StandardFormat format)
                 {
                     return new CompositeSegment() { Index = (int)argIndex, Format = format };
                 }

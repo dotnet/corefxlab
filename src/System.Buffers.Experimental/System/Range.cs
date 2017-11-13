@@ -4,7 +4,7 @@
 namespace System {
     public struct Range
     {
-        public Range(int index, int length)
+        public Range(long index, long length)
         {
             if (length < 0)
             {
@@ -14,10 +14,10 @@ namespace System {
             Index = index;
             Length = length;
         }
-        public readonly int Index;
-        public readonly int Length;
+        public readonly long Index;
+        public readonly long Length;
 
-        public void Deconstruct(out int index, out int length)
+        public void Deconstruct(out long index, out long length)
         {
             index = Index;
             length = Length;

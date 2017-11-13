@@ -121,12 +121,11 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             // It's ok to unpin the handle here because the memory is from the pool
             // we created, which is already pinned.
             var pin = memory.Retain(pin: true);
-            var spanPtr = (IntPtr)pin.PinnedPointer;
+            var spanPtr = (IntPtr)pin.Pointer;
             pin.Dispose();
 
-            long startAddress;
             long spanAddress = spanPtr.ToInt64();
-            var bufferId = GetBufferId(spanPtr, out startAddress);
+            var bufferId = GetBufferId(spanPtr, out long startAddress);
 
             checked
             {
@@ -305,9 +304,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             _rio.Notify(ReceiveCompletionQueue);
             while (!_token.IsCancellationRequested)
             {
-                NativeOverlapped* overlapped;
-                uint bytes, key;
-                var success = GetQueuedCompletionStatus(CompletionPort, out bytes, out key, out overlapped, -1);
+                var success = GetQueuedCompletionStatus(CompletionPort, out uint bytes, out uint key, out NativeOverlapped* overlapped, -1);
                 if (success)
                 {
                     var activatedNotify = false;
@@ -418,9 +415,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             _rio.Notify(ReceiveCompletionQueue);
             while (!_token.IsCancellationRequested)
             {
-                NativeOverlapped* overlapped;
-                uint bytes, key;
-                var success = GetQueuedCompletionStatus(CompletionPort, out bytes, out key, out overlapped, -1);
+                var success = GetQueuedCompletionStatus(CompletionPort, out uint bytes, out uint key, out NativeOverlapped* overlapped, -1);
                 if (success)
                 {
                     var activatedNotify = false;

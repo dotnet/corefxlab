@@ -20,59 +20,6 @@ namespace System.Buffers.Text
         // A simple lookup table for converting numbers to hex.
         private const string HexTable = "0123456789abcdef";
 
-        #region UTF-8 Helper methods
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteHexByte(byte value, ref byte buffer, int index)
-        {
-            Unsafe.Add(ref buffer, index) = (byte)HexTable[value >> 4];
-            Unsafe.Add(ref buffer, index + 1) = (byte)HexTable[value & 0xF];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int WriteFractionDigits(long value, int digitCount, ref byte buffer, int index)
-        {
-            for (var i = FractionDigits; i > digitCount; i--)
-                value /= 10;
-
-            return WriteDigits(value, digitCount, ref buffer, index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int WriteDigits(long value, int digitCount, ref byte buffer, int index)
-        {
-            long left = value;
-
-            for (var i = digitCount - 1; i >= 0; i--)
-            {
-                left = DivMod(left, 10, out long num);
-                Unsafe.Add(ref buffer, index + i) = (byte)('0' + num);
-            }
-
-            return digitCount;
-        }
-
-        /// <summary>
-        /// The unsigned long implementation of this method is much slower than the signed version above
-        /// due to optimization tricks that happen at the IL to ASM stage. Use the signed version unless
-        /// you definitely need to deal with numbers larger than long.MaxValue.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int WriteDigits(ulong value, int digitCount, ref byte buffer, int index)
-        {
-            ulong left = value;
-
-            for (var i = digitCount - 1; i >= 0; i--)
-            {
-                left = DivMod(left, 10, out ulong num);
-                Unsafe.Add(ref buffer, index + i) = (byte)('0' + num);
-            }
-
-            return digitCount;
-        }
-
-        #endregion UTF-8 Helper methods
-
         #region UTF-16 Helper methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

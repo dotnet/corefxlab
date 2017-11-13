@@ -54,8 +54,7 @@ namespace System.IO.Pipelines.Compression
 
             try
             {
-                int bytesRead;
-                if (ReadInflateOutput(buffer, count, ZLibNative.FlushCode.NoFlush, out bytesRead) == ZLibNative.ErrorCode.StreamEnd)
+                if (ReadInflateOutput(buffer, count, ZLibNative.FlushCode.NoFlush, out int bytesRead) == ZLibNative.ErrorCode.StreamEnd)
                 {
                     _finished = true;
                 }

@@ -116,8 +116,7 @@ namespace System.IO.Pipelines.Compression
 
             try
             {
-                int bytesRead;
-                ReadDeflateOutput(buffer, count, ZFlushCode.NoFlush, out bytesRead);
+                ReadDeflateOutput(buffer, count, ZFlushCode.NoFlush, out int bytesRead);
                 return bytesRead;
             }
             finally

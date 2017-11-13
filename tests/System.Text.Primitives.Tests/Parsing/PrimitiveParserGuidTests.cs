@@ -14,24 +14,23 @@ namespace System.Text.Primitives.Tests
         Guid guidWithAllNonZeroDigits = new Guid("12345678-9abc-def1-2345-123456789abc");
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("D")]
-        [InlineData("N")]
-        [InlineData("P")]
-        [InlineData("B")]
-        public unsafe void GuidParsingUtf8(string format)
+        [InlineData(default)]
+        [InlineData('D')]
+        [InlineData('N')]
+        [InlineData('P')]
+        [InlineData('B')]
+        public unsafe void GuidParsingUtf8(char format)
         {
-            var parsedFormat = ParsedFormat.Parse(format);
             var random = new Random(1000);
             var guidBytes = new byte[16];
 
             var expected = guidWithAllNonZeroDigits;
             for (int i = 0; i < 100; i++)
             {
-                var expectedString = expected.ToString(format, CultureInfo.InvariantCulture);
+                var expectedString = expected.ToString(format == default ? null : format.ToString(), CultureInfo.InvariantCulture);
                 var utf8Bytes = Text.Encoding.UTF8.GetBytes(expectedString);
 
-                Assert.True(Utf8Parser.TryParseGuid(utf8Bytes, out Guid parsed, out int bytesConsumed, parsedFormat));
+                Assert.True(Utf8Parser.TryParse(utf8Bytes, out Guid parsed, out int bytesConsumed, format));
                 Assert.Equal(expected, parsed);
                 Assert.Equal(expectedString.Length, bytesConsumed);
 
@@ -48,7 +47,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("B")]
         public unsafe void GuidParsingUtf16(string format)
         {
-            var parsedFormat = ParsedFormat.Parse(format);
+            var parsedFormat = StandardFormat.Parse(format);
             var random = new Random(1000);
             var guidBytes = new byte[16];
 

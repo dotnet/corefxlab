@@ -38,8 +38,7 @@ namespace System.CommandLine
 
         public bool TryParseOption<T>(string diagnosticName, IReadOnlyCollection<string> names, Func<string, T> valueConverter, bool isRequired, out T value, out bool specified)
         {
-            IReadOnlyList<T> values;
-            if (!TryParseOptionList(diagnosticName, names, valueConverter, isRequired, out values, out specified))
+            if (!TryParseOptionList(diagnosticName, names, valueConverter, isRequired, out IReadOnlyList<T> values, out specified))
             {
                 value = default;
                 return false;
@@ -66,8 +65,7 @@ namespace System.CommandLine
                 if (TryParseOption(ref tokenIndex, names))
                 {
                     specified = true;
-                    string valueText;
-                    if (TryParseOptionArgument(ref tokenIndex, isFlag, out valueText))
+                    if (TryParseOptionArgument(ref tokenIndex, isFlag, out string valueText))
                     {
                         var value = ParseValue(diagnosticName, valueConverter, valueText);
                         result.Add(value);
@@ -119,8 +117,7 @@ namespace System.CommandLine
         {
             var result = new List<T>();
 
-            T value;
-            while (TryParseParameter(diagnosticName, valueConverter, out value))
+            while (TryParseParameter(diagnosticName, valueConverter, out T value))
             {
                 result.Add(value);
             }
@@ -173,11 +170,10 @@ namespace System.CommandLine
             // OK, we may need to have to advance one or two tokens. Since we don't know
             // up front, we'll take a look ahead.
 
-            ArgumentToken lookahead;
 
             // So, do we have a token?
 
-            if (!TryGetNextToken(tokenIndex, out lookahead))
+            if (!TryGetNextToken(tokenIndex, out ArgumentToken lookahead))
                 return false;
 
             // If it's an option, then it's not an argument and we're done.

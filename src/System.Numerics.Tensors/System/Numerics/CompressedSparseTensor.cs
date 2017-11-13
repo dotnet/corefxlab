@@ -136,9 +136,8 @@ namespace System.Numerics
                 var compressedIndex = indices[compressedDimension];
                 var nonCompressedIndex = ArrayUtilities.GetIndex(nonCompressedStrides, indices);
 
-                var valueIndex = 0;
 
-                if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
+                if (TryFindIndex(compressedIndex, nonCompressedIndex, out int valueIndex))
                 {
                     return values.Span[valueIndex];
                 }
@@ -168,9 +167,8 @@ namespace System.Numerics
             var compressedIndex = index / compressedDimensionStride;
             var nonCompressedIndex = index % compressedDimensionStride;
 
-            var valueIndex = 0;
 
-            if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
+            if (TryFindIndex(compressedIndex, nonCompressedIndex, out int valueIndex))
             {
                 return values.Span[valueIndex];
             }
@@ -330,10 +328,9 @@ namespace System.Numerics
 
         private void SetAt(T value, int compressedIndex, int nonCompressedIndex)
         {
-            var valueIndex = 0;
             bool isZero = value.Equals(arithmetic.Zero);
 
-            if (TryFindIndex(compressedIndex, nonCompressedIndex, out valueIndex))
+            if (TryFindIndex(compressedIndex, nonCompressedIndex, out int valueIndex))
             {
                 if (isZero)
                 {

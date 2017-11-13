@@ -153,8 +153,6 @@ namespace System.Drawing.Graphics
         [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         public static extern int gdAlphaBlend(int src, int dst);
 
-
-
         /// Return Type: int 
         ///param0: gdIOCtx* 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 

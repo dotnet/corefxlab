@@ -10,38 +10,36 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public struct ReadOnlyBytes : IReadOnlyBufferList<byte>
+    public readonly struct ReadOnlyBytes : IReadOnlyMemorySequence<byte>
     {
-        ReadOnlyMemory<byte> _first;
-        int _totalLength;
-        IReadOnlyBufferList<byte> _rest;
-        
+        readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
+        readonly IReadOnlyMemoryList<byte> _all;
+        readonly long _totalLength;
+
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> rest, int length)
+        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer)
         {
-            Debug.Assert(rest != null || length <= first.Length);
-            _rest = rest;
-            _first = first;
+            _first = buffer;
+            _all = null;
+            _totalLength = _first.Length;
+        }
+
+        public ReadOnlyBytes(IReadOnlyMemoryList<byte> segments, long length)
+        {
+            // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
+            _first = segments.First;
+            _all = segments;
             _totalLength = length;
         }
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyBufferList<byte> rest) :
-            this(first, rest, rest==null?first.Length:Unspecified)
+        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> all, long length)
         {
+            // TODO: add assert that first overlaps all (once we have Overlap on Span)
+            _first = first;
+            _all = all;
+            _totalLength = length;
         }
-
-        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer) :
-            this(buffer, null, buffer.Length)
-        { }
-
-        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments, int length) :
-            this(segments.First, segments.Rest, length)
-        { }
-
-        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
-            this(segments.First, segments.Rest, Unspecified)
-        { }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
@@ -52,12 +50,12 @@ namespace System.Buffers
                 {
                     position.IntegerPosition++;
                     position.Tag = _first.Length; // this is needed to know how much to slice off the last segment; see below
-                    position.ObjectPosition = _rest;
+                    position.ObjectPosition = Rest;
                 }
-                return true;
+                return (!_first.IsEmpty || _all != null);
             }
 
-            var rest = position.ObjectPosition as IReadOnlyBufferList<byte>;
+            var rest = position.ObjectPosition as IReadOnlyMemoryList<byte>;
             if (rest == null)
             {
                 value = default;
@@ -66,9 +64,10 @@ namespace System.Buffers
 
             value = rest.First;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + position.Tag > _totalLength && _totalLength != Unspecified)
+            if (value.Length + position.Tag > _totalLength)
             {
-                value = value.Slice(0, _totalLength - position.Tag);
+                // TODO (pri 0): this cannot cast to int. What we need to do is store the high order length bits in position.IntegerPosition
+                value = value.Slice(0, (int)_totalLength - position.Tag);
                 if (value.Length == 0) return false;
             }
             if (advance)
@@ -82,18 +81,13 @@ namespace System.Buffers
 
         public ReadOnlyMemory<byte> First => _first;
 
-        public IReadOnlyBufferList<byte> Rest => _rest;
+        internal IReadOnlyMemoryList<byte> Rest => _all?.Rest;
 
-        public int? Length
-        {
-            get {
-                if (_totalLength == Unspecified)
-                {
-                    return null;
-                }
-                return _totalLength;
-            }
-        }
+        public long Length => _totalLength;
+
+        public long Index => _all == null ? 0 : _all.Index;
+
+        public bool IsEmpty => _first.Length == 0 && _all == null;
 
         public static ReadOnlyBytes Empty => s_empty;
 
@@ -104,64 +98,44 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBytes Slice(int index, int length)
+        public ReadOnlyBytes Slice(long index, long length)
         {
-            if(length==0) return ReadOnlyBytes.Empty;
+            if(length==0) return Empty;
 
             var first = First;
             if (first.Length >= length + index)
             {
-                var slice = first.Slice(index, length);
+                var slice = first.Slice((int)index, (int)length);
                 if(slice.Length > 0) {
-                    return new ReadOnlyBytes(first.Slice(index, length));
+                    return new ReadOnlyBytes(slice, _all, length);
                 }
-                return ReadOnlyBytes.Empty;
+                return Empty;
             }
             if (first.Length > index)
             {
-                Debug.Assert(_rest != null);
-                return new ReadOnlyBytes(first.Slice(index), _rest, length);
+                Debug.Assert(_all != null);
+                return new ReadOnlyBytes(first.Slice((int)index), _all, length);
             }
             return SliceRest(index, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBytes Slice(int index)
+        public ReadOnlyBytes Slice(long index)
         {
-            if (_totalLength != Unspecified) {
-                return Slice(index, _totalLength - index);
-            }
-            else {
-                var first = First;
-                if (first.Length > index) {
-                    var slice = first.Slice(index);
-                    if(slice.Length > 0 || _rest!=null) {
-                        return new ReadOnlyBytes(slice, _rest);
-                    }
-                    return ReadOnlyBytes.Empty;
-                }
-
-                var toSlice = index - first.Length;
-                if (_rest == null && toSlice == 0) return Empty;
-                var rest = new ReadOnlyBytes(_rest);
-                if(toSlice > 0) {
-                    rest = rest.Slice(toSlice);
-                }
-                return rest;
-            }
+            return Slice(index, _totalLength - index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(ReadOnlySpan<byte> bytes)
+        public long IndexOf(ReadOnlySpan<byte> bytes)
         {
             var first = _first.Span;
             var index = first.IndexOf(bytes);
             if (index != -1) return index;
-            return first.IndexOfStraddling(_rest, bytes);
+            return first.IndexOfStraddling(Rest, bytes);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(byte value)
+        public long IndexOf(byte value)
         {
             var first = _first.Span;
             var index = first.IndexOf(value);
@@ -169,12 +143,105 @@ namespace System.Buffers
             return IndexOfRest(value, first.Length);
         }
 
-        int IndexOfRest(byte value, int firstLength)
+        long IndexOfRest(byte value, int firstLength)
         {
-            if (_rest == null) return -1;
-            var index = _rest.IndexOf(value);
+            var rest = Rest;
+            if (rest == null) return -1;
+            long index = rest.IndexOf(value);
             if (index != -1) return firstLength + index;
             return -1;
+        }
+
+        public ReadOnlyBytes Slice(Cursor from)
+        {
+            if (from._node == null) return Slice(First.Length - from._index);
+            var headIndex = _all.Index + _all.First.Length - _first.Length;
+            var newHeadIndex = from._node.Index;
+            var diff = newHeadIndex - headIndex;
+            // TODO: this could be optimized to avoid the Slice
+            return new ReadOnlyBytes(from._node, Length - diff).Slice(from._index);
+        }
+
+        public ReadOnlyBytes Slice(Cursor from, Cursor to)
+        {
+            if (from._node == null)
+            {
+                var indexFrom = First.Length - from._index;
+                var indexTo = First.Length - to._index;
+                return Slice(indexFrom, indexTo - indexFrom + 1);
+            }
+
+            var headIndex = _all.Index + _all.First.Length - _first.Length;
+            var newHeadIndex = from._node.Index + from._index;
+            var newEndIndex = to._node.Index + to._index;
+            var slicedOffFront = newHeadIndex - headIndex;
+            var length = newEndIndex - newHeadIndex;
+            // TODO: this could be optimized to avoid the Slice
+            var a = new ReadOnlyBytes(from._node, length + from._index);
+            a = a.Slice(from._index);
+            return a;
+        }
+
+        public Cursor CursorOf(byte value)
+        {
+            ReadOnlySpan<byte> first = _first.Span;
+            int index = first.IndexOf(value);
+            if (index != -1)
+            {
+                if (_all == null)
+                {
+                    return new Cursor(null, first.Length - index);
+                }
+                else { 
+                    var allIndex = index + (_all.First.Length - first.Length);
+                    return new Cursor(_all, allIndex);
+                }
+            }
+            if (Rest == null) return default;
+            return CursorOf(Rest, value);
+        }
+
+        public Cursor CursorAt(int index)
+        {
+            ReadOnlySpan<byte> first = _first.Span;
+            int firstLength = first.Length;
+
+            if (index < firstLength)
+            {
+                if (_all == null)
+                {
+                    return new Cursor(null, firstLength - index);
+                }
+                else
+                {
+                    var allIndex = index + (_all.First.Length - firstLength);
+                    return new Cursor(_all, allIndex);
+                }
+            }
+            if (Rest == null) return default;
+            return CursorAt(Rest, index - firstLength);
+        }
+
+        private static Cursor CursorOf(IReadOnlyMemoryList<byte> list, byte value)
+        {
+            ReadOnlySpan<byte> first = list.First.Span;
+            int index = first.IndexOf(value);
+            if (index != -1) return new Cursor(list, index);
+            if (list.Rest == null) return default;
+            return CursorOf(list.Rest, value);
+        }
+
+        private static Cursor CursorAt(IReadOnlyMemoryList<byte> list, int index)
+        {
+            if (list == null) return default;
+            ReadOnlySpan<byte> first = list.First.Span;
+            int firstLength = first.Length;
+
+            if (index < firstLength)
+            {
+                return new Cursor(list, index);
+            }
+            return CursorAt(list.Rest, index - firstLength);
         }
 
         public int CopyTo(Span<byte> buffer)
@@ -187,13 +254,13 @@ namespace System.Buffers
                 return buffer.Length;
             }
             first.Span.CopyTo(buffer);
-            if (buffer.Length == firstLength || _rest == null) return firstLength;
-            return firstLength + _rest.CopyTo(buffer.Slice(firstLength));
+            if (buffer.Length == firstLength || Rest == null) return firstLength;
+            return firstLength + Rest.CopyTo(buffer.Slice(firstLength));
         }
 
-        ReadOnlyBytes SliceRest(int index, int length)
+        ReadOnlyBytes SliceRest(long index, long length)
         {
-            if (_rest == null)
+            if (Rest == null)
             {
                 if (First.Length == index && length == 0)
                 {
@@ -206,56 +273,51 @@ namespace System.Buffers
             }
 
             // TODO (pri 2): this could be optimized
-            var rest = new ReadOnlyBytes(_rest, length);
+            var rest = new ReadOnlyBytes(Rest, length);
             rest = rest.Slice(index - First.Length, length);
             return rest;
         }
 
-        // TODO (pri 3): do we want this to be public? Maybe Lazy<int> length?
-        // TODO (pri 3): the problem is that this makes the type mutable, and since the type is a struct, the mutation can be lost when the stack unwinds.
-        public int ComputeLength()
+        class BufferListNode : IReadOnlyMemoryList<byte>
         {
-            if (_totalLength != Unspecified) return _totalLength;
+            internal ReadOnlyMemory<byte> _data;
+            internal BufferListNode _next;
+            private long _runningIndex;
 
-            int length = 0;
-            if (_rest != null)
+            public BufferListNode(ReadOnlyMemory<byte> data)
             {
-                Position position = new Position();
-                ReadOnlyMemory<byte> segment;
-                while (_rest.TryGet(ref position, out segment))
-                {
-                    length += segment.Length;
-                }
-            }
-            _totalLength = length + _first.Length;
-            return _totalLength;
-        }
-
-        // this is used for unspecified _length; ReadOnlyBytes can be created from list of buffers of unknown total size, 
-        // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
-        const int Unspecified = -1;
-
-        class BufferListNode : IReadOnlyBufferList<byte>
-        {
-            internal ReadOnlyMemory<byte> _first;
-            internal BufferListNode _rest;
-            public ReadOnlyMemory<byte> First => _first;
-
-            public int? Length {
-                get {
-                    throw new NotImplementedException();
-                }
+                _data = data;
+                _next = null;
+                _runningIndex = 0;
             }
 
-            public IReadOnlyBufferList<byte> Rest => _rest;
+            private BufferListNode(ReadOnlyMemory<byte> data, long runningIndex)
+            {
+                _data = data;
+                _runningIndex = runningIndex;
+            }
 
+            public BufferListNode Append(ReadOnlyMemory<byte> data)
+            {
+                if (_next != null) throw new InvalidOperationException("Node cannot be appended");
+                var node = new BufferListNode(data, _runningIndex + Length);
+                _next = node;
+                return node;
+            }
+
+            public ReadOnlyMemory<byte> First => _data;
+            public IReadOnlyMemoryList<byte> Rest => _next;
+
+            public long Length => _data.Length;
+
+            public long Index => _runningIndex;
+            
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
                 var free = buffer;
-                while (TryGet(ref position, out segment, true))
+                while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
                 {
                     if (segment.Length > free.Length)
                     {
@@ -277,24 +339,24 @@ namespace System.Buffers
             {
                 if (position == Position.First)
                 {
-                    item = _first;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
-                    return true;
+                    item = _data;
+                    if (advance) {
+                        position.IntegerPosition++;
+                        position.ObjectPosition = _next;
+                    }
+                    return (!_data.IsEmpty || _next != null);
                 }
-                else if (position.ObjectPosition == null) { item = default; return false; }
+                else if (position.ObjectPosition == null)
+                {
+                    item = default;
+                    return false;
+                }
 
                 var sequence = (BufferListNode)position.ObjectPosition;
-                item = sequence._first;
+                item = sequence._data;
                 if (advance)
                 {
-                    if (position == Position.First)
-                    {
-                        position.ObjectPosition = _rest;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = sequence._rest;
-                    }
+                    position.ObjectPosition = sequence._next;
                     position.IntegerPosition++;
                 }
                 return true;
@@ -303,31 +365,31 @@ namespace System.Buffers
 
         public static ReadOnlyBytes Create(params byte[][] buffers)
         {
-            BufferListNode first = null;
-            BufferListNode current = null;
-            foreach (var buffer in buffers)
+            if (buffers.Length == 0) return Empty;
+            if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
+
+            BufferListNode first = new BufferListNode(buffers[0]);
+            var last = first;
+            for(int i=1; i<buffers.Length; i++)
             {
-                if (first == null)
-                {
-                    current = new BufferListNode();
-                    first = current;
-                }
-                else
-                {
-                    current._rest = new BufferListNode();
-                    current = current._rest;
-                }
-                current._first = buffer;
+                last = last.Append(buffers[i]);
             }
 
-            if (first.Rest == null)
+            return new ReadOnlyBytes(first, last.Index + last.Length);
+        }
+
+        public readonly struct Cursor
+        {
+            internal readonly IReadOnlyMemoryList<byte> _node;
+            internal readonly int _index;
+
+            public Cursor(IReadOnlyMemoryList<byte> node, int index)
             {
-                return new ReadOnlyBytes(first, first.First.Length);
-            }
-            else
-            {
-                return new ReadOnlyBytes(first);
+                _node = node;
+                _index = index;
             }
         }
     }
 }
+
+

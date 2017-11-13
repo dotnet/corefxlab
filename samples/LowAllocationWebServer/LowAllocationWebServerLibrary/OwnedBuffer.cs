@@ -7,9 +7,9 @@ using System.Buffers;
 using System.Collections.Sequences;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.Net.Http
+namespace Microsoft.Net
 {
-    class OwnedBuffer : ReferenceCountedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
+    class OwnedBuffer : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
     {
         public const int DefaultBufferSize = 1024;
 
@@ -28,13 +28,11 @@ namespace Microsoft.Net.Http
 
         public Memory<byte> First => Memory;
 
-        public IBufferList<byte> Rest => _next;
+        public IMemorySequence<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        ReadOnlyMemory<byte> IReadOnlyBufferList<byte>.First => Memory;
-
-        IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
+        Memory<byte> IMemorySequence<byte>.First => Memory;
 
         public override int Length => _array.Length;
 
@@ -46,6 +44,12 @@ namespace Microsoft.Net.Http
                 return _array.AsSpan();
             }
         }
+
+        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => throw new NotImplementedException();
+
+        public long Index => throw new NotImplementedException();
+
+        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => throw new NotImplementedException();
 
         public int CopyTo(Span<byte> buffer)
         {

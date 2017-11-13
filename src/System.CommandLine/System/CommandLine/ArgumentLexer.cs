@@ -68,9 +68,8 @@ namespace System.CommandLine
                     //      -f:false
                     //      --name=hello
 
-                    string nameAndValue;
 
-                    if (!TryExtractOption(arg, out modifier, out nameAndValue))
+                    if (!TryExtractOption(arg, out modifier, out string nameAndValue))
                     {
                         name = arg;
                         value = null;

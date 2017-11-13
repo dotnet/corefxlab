@@ -7,10 +7,10 @@ using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Formatting;
-using System.Text.Http;
+using System.Text.Http.Formatter;
 using System.Text.Utf8;
 
-namespace Microsoft.Net.Http
+namespace Microsoft.Net
 {
     public class TcpConnectionFormatter : ITextOutput, IDisposable
     {

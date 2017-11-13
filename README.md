@@ -55,7 +55,7 @@ This component, PollingWatcher, allows to monitory directory changes by polling,
 allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected.
 
 * **System.Time**.
-This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
+This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
 
 * **System.Collections.Generic.MultiValueDictionary**.

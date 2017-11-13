@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -13,7 +14,7 @@ namespace System.Buffers
     {
         readonly SymbolTable _symbolTable;
         ReadOnlyBytes _unreadSegments;
-        int _index; // index relative to the begining of bytes passed to the constructor
+        long _index; // index relative to the begining of bytes passed to the constructor
 
         ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
@@ -40,12 +41,6 @@ namespace System.Buffers
         { }
 
         public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
-        { }
-
-        public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
-        { }
-
-        public BytesReader(IReadOnlyBufferList<byte> bytes, SymbolTable encoder) : this(new ReadOnlyBytes(bytes))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
@@ -80,13 +75,13 @@ namespace System.Buffers
             return ReadRange(index);
         }
 
-        public ReadOnlyBytes ReadBytes(int count)
+        public ReadOnlyBytes ReadBytes(long count)
         {
             var result = _unreadSegments.Slice(_currentSegmentIndex, count);
             Advance(count);
             return result;
         }
-        public Range ReadRange(int count)
+        public Range ReadRange(long count)
         {
             var result = new Range(_index, count);
             Advance(count);
@@ -94,9 +89,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(byte value)
+        public long IndexOf(byte value)
         {
-            var index = Unread.IndexOf(value);
+            int index = Unread.IndexOf(value);
             if (index != -1)
             {
                 return index;
@@ -108,7 +103,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int IndexOf(ReadOnlySpan<byte> values)
+        public long IndexOf(ReadOnlySpan<byte> values)
         {
             var unread = Unread;
             var index = unread.IndexOf(values);
@@ -133,7 +128,7 @@ namespace System.Buffers
             }
         }
 
-        public int Index => _index;
+        public long Index => _index;
 
         int CopyTo(Span<byte> buffer)
         {
@@ -156,13 +151,13 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int count)
+        public void Advance(long count)
         {
-            _index += count;
             var unreadLength = _currentSegment.Length - _currentSegmentIndex;
             if (count < unreadLength)
             {
-                _currentSegmentIndex += count;
+                _currentSegmentIndex += (int)count;
+                _index += (int)count;
             }
             else
             {
@@ -170,64 +165,47 @@ namespace System.Buffers
             }
         }
 
-        void AdvanceNextSegment(int count, int advancedInCurrent)
+        void AdvanceNextSegment(long count, int advancedInCurrent)
         {
-            var length = _unreadSegments.Length;
+            Debug.Assert(advancedInCurrent == _currentSegment.Length - _currentSegmentIndex);
+            var newUnreadSegments = _unreadSegments.Rest;
+            var toAdvanceUnreadSegments = count - advancedInCurrent;
 
-            var newSegments = _unreadSegments.Rest;
-            var toAdvance = count - advancedInCurrent;
-            while(toAdvance >= 0 || _currentSegment.Length == 0)
-            {
-                // if we are advancing by exactly how many bytes there are in the reader
-                if (newSegments == null && toAdvance == 0)
+            if (newUnreadSegments == null) { 
+                if (toAdvanceUnreadSegments == 0)
                 {
                     _unreadSegments = ReadOnlyBytes.Empty;
                     _currentSegment = ReadOnlyMemory<byte>.Empty;
                     _currentSegmentIndex = 0;
-                    return;
-                }
-
-                _currentSegment = newSegments.First;
-                // if currentSegment is long enough
-                if (_currentSegment.Length > toAdvance || toAdvance == 0)
-                {
-                    if (length != null) // this is to avoid computing length, if it is Unspecified
-                    {
-                        _unreadSegments = new ReadOnlyBytes(_currentSegment, newSegments.Rest, length.Value - count);
-                    }
-                    else
-                    {
-                        _unreadSegments = new ReadOnlyBytes(_currentSegment, newSegments.Rest);
-                    }
-                    _currentSegmentIndex = toAdvance;
+                    _index += count;
                     return;
                 }
                 else
                 {
-                    toAdvance -= _currentSegment.Length;
-                    newSegments = newSegments.Rest;
+                    throw new ArgumentOutOfRangeException(nameof(count));
                 }
+            }
+
+            _currentSegment = newUnreadSegments.First;
+            _currentSegmentIndex = 0;
+            _unreadSegments = _unreadSegments.Slice(_unreadSegments.First.Length);
+            _index += advancedInCurrent;
+
+            if (toAdvanceUnreadSegments != 0)
+            {
+                Advance(toAdvanceUnreadSegments); // TODO: this recursive implementation could be optimized
             }
         }
 
-        int IndexOf(IReadOnlyBufferList<byte> sequence, byte value)
-        {
-            if (sequence == null) return -1;
-            var first = sequence.First;
-            var index = first.Span.IndexOf(value);
-            if (index > -1) return index;
+        long IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
+            => sequence.IndexOf(value);
 
-            var indexOfRest = IndexOf(sequence.Rest, value);
-            if (indexOfRest < 0) return -1;
-            return first.Length + indexOfRest;
-        }
-
-        int IndexOfStraddling(ReadOnlySpan<byte> value)
+        long IndexOfStraddling(ReadOnlySpan<byte> value)
         {
             var rest = _unreadSegments.Rest;
             if (rest == null) return -1;
             ReadOnlySpan<byte> unread = Unread;
-            int index = 0;
+            long index = 0;
             // try to find the bytes straddling _first and _rest
             int bytesToSkipFromFirst = 0; // these don't have to be searched again
             if (unread.Length > value.Length - 1)
@@ -268,9 +246,12 @@ namespace System.Buffers
             return -1;
         }
 
-        int IndexOfRest(byte value)
+        long IndexOfRest(byte value)
         {
-            var index = IndexOf(_unreadSegments.Rest, value);
+            var rest = _unreadSegments.Rest;
+            if (rest == null) return -1;
+
+            var index = IndexOf(rest, value);
             if (index == -1)
             {
                 return -1;
@@ -284,13 +265,14 @@ namespace System.Buffers
         // TODO: these methods hardcode the format. Do we need this to be something that can be specified?
         public bool TryParseBoolean(out bool value)
         {
-            int consumed;
             var unread = Unread;
-            if (CustomParser.TryParseBoolean(unread, out value, out consumed, _symbolTable))
+            if (CustomParser.TryParseBoolean(unread, out value, out int consumed, _symbolTable))
             {
+                Debug.Assert(consumed <= unread.Length);
                 if (unread.Length > consumed)
                 {
                     _currentSegmentIndex += consumed;
+                    _index += consumed;
                     return true;
                 }
             }
@@ -309,13 +291,13 @@ namespace System.Buffers
 
         public bool TryParseUInt64(out ulong value)
         {
-            int consumed;
             var unread = Unread;
-            if (CustomParser.TryParseUInt64(unread, out value, out consumed, default, _symbolTable))
+            if (CustomParser.TryParseUInt64(unread, out value, out int consumed, default, _symbolTable))
             {
                 if (unread.Length > consumed)
                 {
                     _currentSegmentIndex += consumed;
+                    _index += consumed;
                     return true;
                 }
             }

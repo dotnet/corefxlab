@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.Net.Http;
 using System;
 using System.Diagnostics;
 using System.Text.Formatting;
 using System.Text.Json;
-using System.Text.Http;
 using System.Buffers;
 using System.Threading;
+using System.Text.Http.Parser;
+using Microsoft.Net;
 
 namespace LowAllocationWebServer
 {
@@ -24,10 +24,10 @@ namespace LowAllocationWebServer
 
         static SampleRestServer()
         {
-            Apis.Add(HttpMethod.Get, "/plaintext", Api.HelloWorld, WriteResponseForHelloWorld);
-            Apis.Add(HttpMethod.Get, "/time", Api.GetTime, WriteResponseForGetTime);
-            Apis.Add(HttpMethod.Get, "/json", Api.GetJson, WriteResponseForGetJson);
-            Apis.Add(HttpMethod.Post, "/jsonpost", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }"
+            Apis.Add(Http.Method.Get, "/plaintext", Api.HelloWorld, WriteResponseForHelloWorld);
+            Apis.Add(Http.Method.Get, "/time", Api.GetTime, WriteResponseForGetTime);
+            Apis.Add(Http.Method.Get, "/json", Api.GetJson, WriteResponseForGetJson);
+            Apis.Add(Http.Method.Post, "/jsonpost", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }"
         }
 
         public SampleRestServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
@@ -36,7 +36,7 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForHelloWorld(HttpRequest request, TcpConnectionFormatter response)
         {
-            WriteCommonHeaders(ref response, HttpVersion.V1_1, 200, "OK");
+            WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
             response.Append("Content-Type : text/plain; charset=UTF-8\r\n");
             response.AppendEoh();
@@ -46,7 +46,7 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForGetTime(HttpRequest request, TcpConnectionFormatter response)
         {
-            WriteCommonHeaders(ref response, HttpVersion.V1_1, 200, "OK");
+            WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
             response.Append("Content-Type : text/html; charset=UTF-8\r\n");
             response.AppendEoh();
@@ -56,7 +56,7 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForGetJson(HttpRequest request, TcpConnectionFormatter response)
         {
-            WriteCommonHeaders(ref response, HttpVersion.V1_1, 200, "OK");
+            WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
             response.Append("Content-Type : application/json; charset=UTF-8\r\n");
             response.AppendEoh();
@@ -79,7 +79,7 @@ namespace LowAllocationWebServer
             int requestedCount;
 
             // TODO: this should not convert to span
-            var dom = JsonObject.Parse(request.Body.ToSpan());
+            var dom = JsonObject.Parse(request.Body);
             try
             {
                 requestedCount = (int)dom["Count"];
@@ -89,7 +89,7 @@ namespace LowAllocationWebServer
                 dom.Dispose();
             }
 
-            WriteCommonHeaders(ref response, HttpVersion.V1_1, 200, "OK");
+            WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
             response.Append("Content-Type : application/json; charset=UTF-8\r\n");
             response.AppendEoh();
 

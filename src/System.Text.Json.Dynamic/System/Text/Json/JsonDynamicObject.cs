@@ -87,25 +87,23 @@ namespace System.Text.Json
         public bool TryGetUInt32(Utf8Span property, out uint value)
         {
             var jsonProperty= new JsonProperty(this, property);
-            JsonValue jsonValue;
-            if (!_properties.TryGetValue(jsonProperty, out jsonValue))
+            if (!_properties.TryGetValue(jsonProperty, out JsonValue jsonValue))
             {
                 value = default;
                 return false;
             }
 
-            if(jsonValue.Type != JsonValueType.Number)
+            if (jsonValue.Type != JsonValueType.Number)
             {
                 throw new InvalidOperationException();
             }
-            return Utf8Parser.TryParseUInt32(jsonValue.Value.Bytes, out value);
+            return Utf8Parser.TryParse(jsonValue.Value.Bytes, out value, out _);
         }
 
         public bool TryGetString(Utf8Span property, out Utf8Span value)
         {
             var jsonProperty = new JsonProperty(this, property);
-            JsonValue jsonValue;
-            if (!_properties.TryGetValue(jsonProperty, out jsonValue))
+            if (!_properties.TryGetValue(jsonProperty, out JsonValue jsonValue))
             {
                 value = default;
                 return false;
@@ -137,8 +135,7 @@ namespace System.Text.Json
         {
             var name = new Utf8Span(binder.Name);
             var property = new JsonProperty(this, name);
-            JsonValue value;
-            if(!_properties.TryGetValue(property, out value))
+            if (!_properties.TryGetValue(property, out JsonValue value))
             {
                 result = null;
                 return false;
@@ -165,11 +162,10 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+        public bool TryFormat(Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
         {
             written = 0;
-            int justWritten;
-            if(!TryEncodeControlChar(symbolTable, (byte)'{', buffer, out justWritten))
+            if (!TryEncodeControlChar(symbolTable, (byte)'{', buffer, out int justWritten))
             {
                 return false;
             }
@@ -277,7 +273,7 @@ namespace System.Text.Json
 
             static readonly byte[] nullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l'};
 
-            public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+            public bool TryFormat(Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
             {
                 int consumed;
 
@@ -332,7 +328,7 @@ namespace System.Text.Json
 
             public override int GetHashCode() => _name.GetHashCode();
 
-            public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+            public bool TryFormat(Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
             {
                 return _name.TryFormatQuotedString(buffer, out written, format, symbolTable);
             }
@@ -341,12 +337,12 @@ namespace System.Text.Json
 
     static class Utf8SpanExtensions
     {
-        public static bool TryFormat(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+        public static bool TryFormat(this Utf8Span str, Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
         {
             return symbolTable.TryEncode(str.Bytes, buffer, out var consumed, out written);
         }
 
-        public static bool TryFormatQuotedString(this Utf8Span str, Span<byte> buffer, out int written, ParsedFormat format, SymbolTable symbolTable)
+        public static bool TryFormatQuotedString(this Utf8Span str, Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;

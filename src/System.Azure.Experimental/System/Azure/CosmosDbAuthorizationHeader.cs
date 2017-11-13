@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Binary.Base64;
+using System.Binary.Base64Experimental;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;
@@ -42,7 +42,7 @@ namespace System.Azure.Authentication
             writer.Write(tokenVersion);
             writer.Write("&sig=");
 
-            writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
@@ -74,7 +74,7 @@ namespace System.Azure.Authentication
             writer.Write(tokenVersion);
             writer.Write(s_sigLiteral);
 
-            writer.WriteBytes(hash, default, Base64.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
@@ -84,7 +84,7 @@ namespace System.Azure.Authentication
             return true;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, ParsedFormat format = default, SymbolTable symbolTable = null)
+        public bool TryFormat(Span<byte> buffer, out int written, StandardFormat format = default, SymbolTable symbolTable = null)
         {
             if (TryWrite(buffer, Hash, KeyType, Method, ResourceId, ResourceType, Version, Time, out written))
             {

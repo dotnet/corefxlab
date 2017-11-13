@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.Net;
 using System.Buffers.Text;
 using System.Collections.Sequences;
 using System.Text.Http;
+using static System.Buffers.Text.Encodings;
 
 namespace System.Diagnostics
 {
@@ -87,18 +89,20 @@ namespace System.Diagnostics
             if (log.IsVerbose)
             {
                 // TODO: this is much ceremony. We need to do something with this. ReadOnlyBytes.AsUtf8 maybe?
-                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.Verb.ToUtf8Span(SymbolTable.InvariantUtf8).ToString());
-                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.Path.ToUtf8Span(SymbolTable.InvariantUtf8).ToString());
-                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version.ToUtf8Span(SymbolTable.InvariantUtf8).ToString());
+                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.Method);
+                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.Path);
+                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version);
 
                 log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
                 var position = Position.First;
-                while(request.Headers.TryGet(ref position, out var header, true))
-                {
-                    log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", header.Name.ToUtf8Span(SymbolTable.InvariantUtf8).ToString(), header.Value.ToUtf8Span(SymbolTable.InvariantUtf8).ToString());
+                var headers = request.Headers;
+                for(int i=0; i<headers.Length; i++) {
+                    var header = headers[i];
+                    log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", Utf8.ToString(header.Name), Utf8.ToString(header.Value));
                 }
 
-                var body = request.Body.ToString(SymbolTable.InvariantUtf8);
+                var body = Utf8.ToString(request.Body);
+                // TODO: Logger should support Utf8Span
                 log.LogMessage(Log.Level.Verbose, body);
             }
         }

@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
+using System.Text.Http.Parser;
 
-namespace System.Text.Http
+namespace System.Text.Http.Formatter
 {
     public static class IFormatterHttpExtensions
     {
         //TODO: Issue #387: In the Http extensions of IFormatter, we need to ensure that all the characters follow the basic rules of rfc2616
         private static readonly string Http10 = "HTTP/1.0";
         private static readonly string Http11 = "HTTP/1.1";
-        private static readonly string Http20 = "HTTP/2.0";
 
         private static readonly byte[] s_Http10Utf8 = Encoding.UTF8.GetBytes(" HTTP/1.0\r\n");
         private static readonly byte[] s_Http11Utf8 = Encoding.UTF8.GetBytes(" HTTP/1.1\r\n");
@@ -23,12 +24,12 @@ namespace System.Text.Http
         private static readonly byte[] s_PutUtf8 = Encoding.UTF8.GetBytes("PUT ");
         private static readonly byte[] s_DeleteUtf8 = Encoding.UTF8.GetBytes("DELETE ");
 
-        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextOutput
+        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, Parser.Http.Version version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextOutput
         {
             switch (version) {
-                case HttpVersion.V1_0: formatter.Append(Http10); break;
-                case HttpVersion.V1_1: formatter.Append(Http11); break;
-                case HttpVersion.V2_0: formatter.Append(Http20); break;
+                case Parser.Http.Version.Http10: formatter.Append(Http10); break;
+                case Parser.Http.Version.Http11: formatter.Append(Http11); break;
+                //case HttpVersion.V2_0: formatter.Append(Http20); break;
                 default: throw new ArgumentException(nameof(version));
             }
 
@@ -39,16 +40,16 @@ namespace System.Text.Http
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpRequestLine<TFormatter>(this TFormatter formatter, HttpMethod method, HttpVersion version, string path) where TFormatter : ITextOutput
+        public static void AppendHttpRequestLine<TFormatter>(this TFormatter formatter, Parser.Http.Method method, Parser.Http.Version version, string path) where TFormatter : ITextOutput
         {
             if (formatter.SymbolTable == SymbolTable.InvariantUtf8)
             {
                 switch (method)
                 {
-                    case HttpMethod.Get: formatter.AppendBytes(s_GetUtf8); break;
-                    case HttpMethod.Post: formatter.AppendBytes(s_PostUtf8); break;
-                    case HttpMethod.Put: formatter.AppendBytes(s_PutUtf8); break;
-                    case HttpMethod.Delete: formatter.AppendBytes(s_DeleteUtf8); break;
+                    case Parser.Http.Method.Get: formatter.AppendBytes(s_GetUtf8); break;
+                    case Parser.Http.Method.Post: formatter.AppendBytes(s_PostUtf8); break;
+                    case Parser.Http.Method.Put: formatter.AppendBytes(s_PutUtf8); break;
+                    case Parser.Http.Method.Delete: formatter.AppendBytes(s_DeleteUtf8); break;
                     default: formatter.Append(method.ToString()); formatter.Append(' '); break;
                 }
 
@@ -56,9 +57,9 @@ namespace System.Text.Http
 
                 switch (version)
                 {
-                    case HttpVersion.V1_0: formatter.AppendBytes(s_Http10Utf8); break;
-                    case HttpVersion.V1_1: formatter.AppendBytes(s_Http11Utf8); break;
-                    case HttpVersion.V2_0: formatter.AppendBytes(s_Http20Utf8); break;
+                    case Parser.Http.Version.Http10: formatter.AppendBytes(s_Http10Utf8); break;
+                    case Parser.Http.Version.Http11: formatter.AppendBytes(s_Http11Utf8); break;
+                    //case HttpVersion.V2_0: formatter.AppendBytes(s_Http20Utf8); break;
                     default: throw new ArgumentException(nameof(version));
                 }
             }
@@ -70,16 +71,16 @@ namespace System.Text.Http
                 formatter.Append(' ');
                 switch (version)
                 {
-                    case HttpVersion.V1_0: formatter.Append(Http10); break;
-                    case HttpVersion.V1_1: formatter.Append(Http11); break;
-                    case HttpVersion.V2_0: formatter.Append(Http20); break;
+                    case Parser.Http.Version.Http10: formatter.Append(Http10); break;
+                    case Parser.Http.Version.Http11: formatter.Append(Http11); break;
+                    //case HttpVersion.V2_0: formatter.Append(Http20); break;
                     default: throw new ArgumentException(nameof(version));
                 }
                 formatter.AppendHttpNewLine();
             }
         }
 
-        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, ParsedFormat valueFormat = default(ParsedFormat)) where TFormatter : ITextOutput where T:IBufferFormattable
+        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T:IBufferFormattable
         {
             formatter.Append(name);
             formatter.Append(value, formatter.SymbolTable, valueFormat);

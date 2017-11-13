@@ -1965,7 +1965,6 @@ namespace System.Numerics.Tensors.Tests
         }
 
 
-
         [Theory]
         [MemberData(nameof(GetDualTensorConstructors))]
         public void Contract(TensorConstructor leftConstructor, TensorConstructor rightConstructor)

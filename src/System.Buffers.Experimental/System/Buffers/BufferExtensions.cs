@@ -115,9 +115,8 @@ namespace System.Buffers
         public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             Position position = Position.First;
-            ReadOnlyMemory<byte> buffer;
-            ResizableArray<byte> array = new ResizableArray<byte>(1024); 
-            while (bufferSequence.TryGet(ref position, out buffer))
+            ResizableArray<byte> array = new ResizableArray<byte>(1024);
+            while (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
                 array.AddAll(buffer.Span);
             }
@@ -127,7 +126,7 @@ namespace System.Buffers
 
         // span creation helpers:
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, ReadOnlySpan<byte> value)
+        public static long IndexOf(this IReadOnlyMemoryList<byte> sequence, ReadOnlySpan<byte> value)
         {
             var first = sequence.First.Span;
             var index = first.IndexOf(value);
@@ -139,17 +138,20 @@ namespace System.Buffers
             return IndexOfStraddling(first, sequence.Rest, value);
         }
 
-        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, byte value)
+        public static long IndexOf(this IReadOnlyMemoryList<byte> sequence, byte value)
         {
             var first = sequence.First.Span;
-            var index = first.IndexOf(value);
+            long index = first.IndexOf(value);
             if (index != -1) return index;
 
-            var rest = sequence.Rest;
-            if (rest == null) return -1;
-
-            index = rest.IndexOf(value);
-            if (index != -1) return first.Length + index;
+            var p = Position.First;
+            int runningIndex = first.Length;
+            while(sequence.TryGet(ref p, out var memory, advance: true))
+            {
+                index = memory.Span.IndexOf(value);
+                if (index != -1) return index + runningIndex;
+                runningIndex += memory.Length;
+            }
 
             return -1;
         }
@@ -157,7 +159,7 @@ namespace System.Buffers
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest
-        internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyBufferList<byte> rest, ReadOnlySpan<byte> value)
+        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyMemoryList<byte> rest, ReadOnlySpan<byte> value)
         {
             Debug.Assert(first.IndexOf(value) == -1);
             if (rest == null) return -1;
@@ -181,7 +183,7 @@ namespace System.Buffers
                 bytesToSearchAgain = first;
             }
 
-            int index;
+            long index;
 
             // now combine the bytes from the end of the first buffer with bytes in the rest, and serarch the combined buffer
             // this check is a small optimization: if the first byte from the value does not exist in the bytesToSearchAgain, there is no reason to combine

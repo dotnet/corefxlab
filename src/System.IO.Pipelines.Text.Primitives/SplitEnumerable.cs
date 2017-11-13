@@ -36,9 +36,7 @@ namespace System.IO.Pipelines.Text.Primitives
 
             int count = 1;
             var current = _buffer;
-            ReadableBuffer ignore;
-            ReadCursor cursor;
-            while (current.TrySliceTo(_delimiter, out ignore, out cursor))
+            while (current.TrySliceTo(_delimiter, out ReadableBuffer ignore, out ReadCursor cursor))
             {
                 current = current.Slice(cursor).Slice(1);
                 count++;
