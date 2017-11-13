@@ -1470,15 +1470,15 @@ namespace System.Numerics
                         throw new ArgumentOutOfRangeException($"The Range at position '{i}' targets values outside of the Dimension '{currentDimension}' at that position. The Range.Index value is '{range.Index}'. The Range.Length value is '{range.Length}'.", nameof(ranges));
                     }
 
-                    offset += range.Index * strides[i];
-                }
+                    offset += (int)(range.Index * strides[i]);
 
-                // only create a new dimension if the range requires it
-                if (range.Length > 1)
-                {
-                    newDimensions[newDimensionCount] = range.Length;
-                    newStrides[newDimensionCount] = strides[i];  // strides cannot change since the backing memory must stay the same.
-                    newDimensionCount++;
+                    // only create a new dimension if the range requires it
+                    if (range.Length > 1)
+                    {
+                        newDimensions[newDimensionCount] = (int)range.Length;
+                        newStrides[newDimensionCount] = strides[i];  // strides cannot change since the backing memory must stay the same.
+                        newDimensionCount++;
+                    }
                 }
             }
 
