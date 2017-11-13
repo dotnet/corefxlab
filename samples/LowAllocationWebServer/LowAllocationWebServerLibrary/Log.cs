@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Net;
+using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Sequences;
 using System.Text.Http;
@@ -84,7 +85,7 @@ namespace System.Diagnostics
 
     public static class HttpLogExtensions
     {
-        public static void LogRequest(this Log log, HttpRequest request)
+        public static void LogRequest(this Log log, HttpRequest request, ReadOnlyBytes body)
         {
             if (log.IsVerbose)
             {
@@ -101,9 +102,8 @@ namespace System.Diagnostics
                     log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", Utf8.ToString(header.Name), Utf8.ToString(header.Value));
                 }
 
-                var body = Utf8.ToString(request.Body);
                 // TODO: Logger should support Utf8Span
-                log.LogMessage(Log.Level.Verbose, body);
+                log.LogMessage(Log.Level.Verbose, Utf8.ToString(body.First.Span));
             }
         }
     }

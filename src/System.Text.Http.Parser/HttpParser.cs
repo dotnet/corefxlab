@@ -70,7 +70,7 @@ namespace System.Text.Http.Parser
             // Fix and parse the span
             fixed (byte* data = &span.DangerousGetPinnableReference())
             {
-                ParseRequestLine(handler, data, span.Length);
+                ParseRequestLine(ref handler, data, span.Length);
             }
 
             examined = consumed;
@@ -103,14 +103,14 @@ namespace System.Text.Http.Parser
             // Fix and parse the span
             fixed (byte* data = &span.DangerousGetPinnableReference())
             {
-                ParseRequestLine(handler, data, span.Length);
+                ParseRequestLine(ref handler, data, span.Length);
             }
 
             consumed = span.Length;
             return true;
         }
 
-        private unsafe void ParseRequestLine<T>(T handler, byte* data, int length) where T : IHttpRequestLineHandler
+        private unsafe void ParseRequestLine<T>(ref T handler, byte* data, int length) where T : IHttpRequestLineHandler
         {
             // Get Method and set the offset
             var method = HttpUtilities.GetKnownMethod(data, length, out var offset);
@@ -314,7 +314,7 @@ namespace System.Text.Http.Parser
                                 length = endIndex + 1;
                                 var pHeader = pBuffer + index;
 
-                                TakeSingleHeader(pHeader, length, handler);
+                                TakeSingleHeader(pHeader, length, ref handler);
                             }
                             else
                             {
@@ -334,7 +334,7 @@ namespace System.Text.Http.Parser
 
                                 fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference())
                                 {
-                                    TakeSingleHeader(pHeader, length, handler);
+                                    TakeSingleHeader(pHeader, length, ref handler);
                                 }
 
                                 // We're going to the next span after this since we know we crossed spans here
@@ -362,11 +362,6 @@ namespace System.Text.Http.Parser
                     examined = consumed;
                 }
             }
-        }
-
-        public unsafe bool ParseHeaders<T>(T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : class, IHttpHeadersHandler
-        {
-            return ParseHeaders(ref handler, buffer, out consumedBytes);
         }
 
         public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
@@ -432,7 +427,7 @@ namespace System.Text.Http.Parser
                             length = endIndex + 1;
                             var pHeader = pBuffer + index;
 
-                            TakeSingleHeader(pHeader, length, handler);
+                            TakeSingleHeader(pHeader, length, ref handler);
                         }
                         else
                         {
@@ -450,7 +445,7 @@ namespace System.Text.Http.Parser
 
                             fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference())
                             {
-                                TakeSingleHeader(pHeader, length, handler);
+                                TakeSingleHeader(pHeader, length, ref handler);
                             }
                         }
 
@@ -555,7 +550,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void TakeSingleHeader<T>(byte* headerLine, int length, T handler) where T : IHttpHeadersHandler
+        private unsafe void TakeSingleHeader<T>(byte* headerLine, int length, ref T handler) where T : IHttpHeadersHandler
         {
             // Skip CR, LF from end position
             var valueEnd = length - 3;

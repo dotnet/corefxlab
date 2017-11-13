@@ -9,56 +9,44 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Net
 {
-    class OwnedBuffer : ReferenceCountedBuffer<byte>, IMemorySequence<byte>, IReadOnlyMemoryList<byte>
+    class BufferSequence : IMemorySequence<byte>, IReadOnlyMemoryList<byte>, IDisposable
     {
         public const int DefaultBufferSize = 1024;
 
-        public OwnedBuffer(int desiredSize = DefaultBufferSize)
+        byte[] _array;
+        int _written;
+        BufferSequence _next;
+
+        public BufferSequence(int desiredSize = DefaultBufferSize)
         {
-            _array = Allocate(desiredSize);
+            _array = ArrayPool<byte>.Shared.Rent(desiredSize);
         }
 
-        static byte[] Allocate(int size)
-        {
-            return new byte[size];
-        }
-        static void Free(byte[] array)
-        {
-        }
+        public Memory<byte> Memory => new Memory<byte>(_array);
+        public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
 
-        public Memory<byte> First => Memory;
+        public ReadOnlySpan<byte> Written => new ReadOnlySpan<byte>(_array, 0, _written);
+
+        public Span<byte> First => _array.AsSpan();
 
         public IMemorySequence<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        Memory<byte> IMemorySequence<byte>.First => Memory;
-
-        public override int Length => _array.Length;
-
-        public override Span<byte> Span
-        {
-            get
-            {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
-                return _array.AsSpan();
-            }
-        }
-
-        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => throw new NotImplementedException();
-
         public long Index => throw new NotImplementedException();
 
-        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => throw new NotImplementedException();
+        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => _next;
+
+        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => Memory;
 
         public int CopyTo(Span<byte> buffer)
         {
             if (buffer.Length > _written) {
-                Memory.Slice(0, _written).Span.CopyTo(buffer);
+                Written.CopyTo(buffer);
                 return _next.CopyTo(buffer.Slice(_written));
             }
 
-            Memory.Slice(0, buffer.Length).Span.CopyTo(buffer);
+            Written.Slice(0, buffer.Length).CopyTo(buffer);
             return buffer.Length;
         }
 
@@ -71,7 +59,7 @@ namespace Microsoft.Net
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
-            var sequence = (OwnedBuffer)position.ObjectPosition;
+            var sequence = (BufferSequence)position.ObjectPosition;
             item = sequence.Memory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
@@ -94,7 +82,7 @@ namespace Microsoft.Net
             }
             else if (position.ObjectPosition == null) { item = default; return false; }
 
-            var sequence = (OwnedBuffer)position.ObjectPosition;
+            var sequence = (BufferSequence)position.ObjectPosition;
             item = sequence.Memory.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
@@ -108,9 +96,9 @@ namespace Microsoft.Net
             return true;
         }
 
-        public OwnedBuffer Enlarge(int desiredSize = DefaultBufferSize)
+        public BufferSequence Append(int desiredSize = DefaultBufferSize)
         {
-            _next = new OwnedBuffer(desiredSize);
+            _next = new BufferSequence(desiredSize);
             return _next;
         }
 
@@ -119,36 +107,17 @@ namespace Microsoft.Net
             _written = bytes;
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose() => Dispose(true);
+
+        protected virtual void Dispose(bool disposing)
         {
             var array = _array;
-            base.Dispose(disposing);
-            Free(array);
+            _array = null;
+            if (array != null) ArrayPool<byte>.Shared.Return(array);
             if (_next != null) {
                 _next.Dispose();
             }
             _next = null;
         }
-
-        protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
-        {
-            if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
-            arraySegment = new ArraySegment<byte>(_array);
-            return true;
-        }
-
-        public override MemoryHandle Pin()
-        {
-            unsafe
-            {
-                Retain();
-                var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
-            }
-        }
-
-        internal OwnedBuffer _next;
-        int _written;
-        byte[] _array;
     }
 }
