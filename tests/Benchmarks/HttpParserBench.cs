@@ -238,16 +238,16 @@ public class HttpParserBench
         foreach (var iteration in Benchmark.Iterations) {
             using (iteration.StartMeasurement()) {
                 for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
+                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
                 }
             }
         }

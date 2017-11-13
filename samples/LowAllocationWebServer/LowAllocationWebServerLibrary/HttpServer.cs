@@ -11,60 +11,9 @@ using System.Text.Utf8;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.Http.Parser;
-using static System.Buffers.Text.Encodings;
-using System.Collections.Sequences;
 
 namespace Microsoft.Net
 {
-    public struct HttpRequest : IHttpRequestLineHandler, IHttpHeadersHandler
-    {
-        Http.Method _method;
-        Http.Version _version;
-        string _target;
-        byte[] _path;
-        string _query;
-        byte[] _customMethod;
-        ResizableArray<Header> _headers;
-
-        public ReadOnlySpan<byte> PathBytes => _path;
-        public string Path => Ascii.ToUtf16String(_path);
-        public Http.Method Method => _method;
-        public Http.Version Version => _version;
-
-        public ReadOnlySpan<Header> Headers => _headers.Full;
-
-        public ReadOnlySpan<byte> Body => ReadOnlySpan<byte>.Empty;
-
-        public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
-        {
-            _headers.Add(new Header(name.ToArray(), value.ToArray()));
-        }
-
-        public void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded)
-        {
-            _method = method;
-            _version = version;
-            _target = Ascii.ToUtf16String(target);
-            _path = path.ToArray();
-            _query = Ascii.ToUtf16String(query);
-            _customMethod = customMethod.IsEmpty ? null : customMethod.ToArray();
-        }
-
-        public struct Header
-        {
-            byte[] _name;
-            byte[] _value;
-
-            public Header(byte[] name, byte[] value)
-            {
-                _name = name;
-                _value = value;
-            }
-            public ReadOnlySpan<byte> Name => _name;
-            public ReadOnlySpan<byte> Value => _value;
-        }
-    }
-
     public abstract class HttpServer
     {
         CancellationToken _cancellation;
@@ -109,11 +58,11 @@ namespace Microsoft.Net
         {
             Log.LogVerbose("Processing Request");
 
-            using (OwnedBuffer rootBuffer = MemoryPoolHelper.Rent(RequestBufferSize)) {
-                OwnedBuffer requestBuffer = rootBuffer;
+            using (BufferSequence rootBuffer = new BufferSequence(RequestBufferSize)) {
+                BufferSequence requestBuffer = rootBuffer;
                 int totalWritten = 0;
                 while (true) {
-                    Span<byte> requestSpan = requestBuffer.Span;
+                    Span<byte> requestSpan = requestBuffer.Free;
 
                     int requestBytesRead = socket.Receive(requestSpan);
                     if (requestBytesRead == 0) {
@@ -124,7 +73,7 @@ namespace Microsoft.Net
                     requestBuffer.Advance(requestBytesRead);
                     totalWritten += requestBytesRead;
                     if (requestBytesRead == requestSpan.Length) {
-                        requestBuffer = requestBuffer.Enlarge(RequestBufferSize);
+                        requestBuffer = requestBuffer.Append(RequestBufferSize);
                     }
                     else {
                         break;
@@ -143,10 +92,13 @@ namespace Microsoft.Net
                 {
                     throw new Exception();
                 }
-                Log.LogRequest(request);
+
+                var requestBody = requestBytes.Slice(consumed);
+
+                Log.LogRequest(request, requestBody);
 
                 using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize)) {
-                    WriteResponse(request, response);
+                    WriteResponse(ref request, requestBody, response);
                 }
 
                 socket.Close();
@@ -164,18 +116,16 @@ namespace Microsoft.Net
             response.AppendEoh();
         }
 
-        // TODO: HttpRequest is a large struct. We cannot pass it around like that
-        protected virtual void WriteResponseFor404(HttpRequest request, TcpConnectionFormatter response) // Not Found
+        protected virtual void WriteResponseFor404(ref HttpRequest request, TcpConnectionFormatter response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path);
             WriteCommonHeaders(ref response, Http.Version.Http11, 404, "Not Found");
             response.AppendEoh();
         }
 
-        // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
         protected static void WriteCommonHeaders<TFormatter>(
             ref TFormatter formatter,
-            System.Text.Http.Parser.Http.Version version,
+            Http.Version version,
             int statuCode,
             string reasonCode)
             where TFormatter : ITextOutput
@@ -187,7 +137,7 @@ namespace Microsoft.Net
             formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
-        protected abstract void WriteResponse(HttpRequest request, TcpConnectionFormatter response);
+        protected abstract void WriteResponse(ref HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response);
     }
 
     public abstract class RoutingServer<T> : HttpServer
@@ -198,10 +148,10 @@ namespace Microsoft.Net
         {
         }
 
-        protected override void WriteResponse(HttpRequest request, TcpConnectionFormatter response)
+        protected override void WriteResponse(ref HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
-            if (!Apis.TryHandle(request, response)) {
-                WriteResponseFor404(request, response);
+            if (!Apis.TryHandle(request, body, response)) {
+                WriteResponseFor404(ref request, response);
             }
         }
     }

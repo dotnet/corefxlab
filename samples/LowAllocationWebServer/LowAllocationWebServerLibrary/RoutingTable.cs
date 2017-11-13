@@ -2,10 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Buffers.Text;
-using System.Text.Http;
+using System.Buffers;
+using System.Text.Http.Parser;
 using System.Text.Utf8;
-using static System.Text.Http.Parser.Http;
 
 namespace Microsoft.Net
 {
@@ -14,8 +13,8 @@ namespace Microsoft.Net
         const int tablecapacity = 20;
         byte[][] _uris = new byte[tablecapacity][];
         TRequestId[] _requestIds = new TRequestId[tablecapacity];
-        Method[] _verbs = new Method[tablecapacity];
-        Action<HttpRequest, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, TcpConnectionFormatter>[tablecapacity];
+        Http.Method[] _verbs = new Http.Method[tablecapacity];
+        Action<HttpRequest, ReadOnlyBytes, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, ReadOnlyBytes, TcpConnectionFormatter>[tablecapacity];
         int _count;
 
         public TRequestId GetRequestId(HttpRequest request)
@@ -26,7 +25,7 @@ namespace Microsoft.Net
             return default;
         }
 
-        public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)
+        public bool TryHandle(HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
             var path = new Utf8Span(request.PathBytes);
             for (int i = 0; i < _count; i++)
@@ -34,14 +33,14 @@ namespace Microsoft.Net
                 // TODO: this should check the verb too
                 if (path.Equals(new Utf8Span(_uris[i])))
                 {
-                    _handlers[i](request, response);
+                    _handlers[i](request, body, response);
                     return true;
                 }
             }
             return false;
         }
 
-        public void Add(Method method, string requestUri, TRequestId requestId, Action<HttpRequest, TcpConnectionFormatter> handler = null)
+        public void Add(Http.Method method, string requestUri, TRequestId requestId, Action<HttpRequest, ReadOnlyBytes, TcpConnectionFormatter> handler = null)
         {
             if (_count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
             _uris[_count] = new Utf8Span(requestUri).Bytes.ToArray();

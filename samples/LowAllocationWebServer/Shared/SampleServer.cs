@@ -34,7 +34,7 @@ namespace LowAllocationWebServer
             : base(cancellation, log, port, address1, address2, address3, address4)
         { }
 
-        static void WriteResponseForHelloWorld(HttpRequest request, TcpConnectionFormatter response)
+        static void WriteResponseForHelloWorld(HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -44,7 +44,7 @@ namespace LowAllocationWebServer
             response.Append("Hello, World");
         }
 
-        static void WriteResponseForGetTime(HttpRequest request, TcpConnectionFormatter response)
+        static void WriteResponseForGetTime(HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -54,7 +54,7 @@ namespace LowAllocationWebServer
             response.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
         }
 
-        static void WriteResponseForGetJson(HttpRequest request, TcpConnectionFormatter response)
+        static void WriteResponseForGetJson(HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -73,13 +73,13 @@ namespace LowAllocationWebServer
             jsonWriter.WriteObjectEnd();
         }
 
-        static void WriteResponseForPostJson(HttpRequest request, TcpConnectionFormatter response)
+        static void WriteResponseForPostJson(HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
         {
             // read request json
             int requestedCount;
 
             // TODO: this should not convert to span
-            var dom = JsonObject.Parse(request.Body);
+            var dom = JsonObject.Parse(body.First.Span);
             try
             {
                 requestedCount = (int)dom["Count"];
