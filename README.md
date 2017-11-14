@@ -56,7 +56,7 @@ allocations, when no changes are detected. In fact, it does not allocate anythin
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
-It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
+These types will ultimately be submited for inclusion in `System.Runtime`.
 
 * **System.Collections.Generic.MultiValueDictionary**.
 The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
