@@ -35,6 +35,8 @@ namespace System.IO.Pipelines
                 for (int i = 0; i < _count; i++)
                 {
                     var callback = _callbacks[i];
+                    _callbacks[i] = default;
+
                     try
                     {
                         callback.Callback(_exception, callback.State);
@@ -56,7 +58,7 @@ namespace System.IO.Pipelines
             }
             finally
             {
-                _pool.Return(_callbacks);
+                _pool.Return(_callbacks, clearArray: true);
             }
         }
     }
