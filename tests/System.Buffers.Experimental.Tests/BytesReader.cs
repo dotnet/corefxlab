@@ -111,7 +111,6 @@ namespace System.Buffers.Tests
         [Fact]
         public void BytesReaderParse()
         {
-
             ReadOnlyBytes bytes = Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = new BytesReader(bytes);
 
@@ -183,7 +182,7 @@ namespace System.Buffers.Tests
             var sb = new StringBuilder();
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                var position = Position.First;
+                Position position = default;
                 while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     sb.Append(new Utf8Span(segment.Span).ToString());

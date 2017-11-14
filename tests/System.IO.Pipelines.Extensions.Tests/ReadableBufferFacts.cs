@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferSequenceWorks()
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
-            var position = Position.First;
+            Position position = default;
             int spanCount = 0;
             while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {

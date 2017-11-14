@@ -95,7 +95,6 @@ namespace System.Diagnostics
                 log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version);
 
                 log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
-                var position = Position.First;
                 var headers = request.Headers;
                 for(int i=0; i<headers.Length; i++) {
                     var header = headers[i];

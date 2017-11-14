@@ -14,7 +14,7 @@ namespace System.Collections.Sequences
 
         public SequenceEnumerator(ISequence<T> sequence) {
             _sequence = sequence;
-            _position = Position.First;
+            _position = default;
             _current = default;
             first = true;
         }

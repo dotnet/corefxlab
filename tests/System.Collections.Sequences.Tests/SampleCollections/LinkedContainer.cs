@@ -31,35 +31,35 @@ namespace System.Collections.Sequences
             item = default;
 
             if(_count == 0) {
-                position = Position.AfterLast;
+                position = Position.Infinity;
                 return false;
             }
 
-            if (position.Equals(Position.AfterLast)) {
+            if (position.IsInfinity) {
                 return false;
             }
 
-            if(position.Equals(Position.First)) {
+            if(position == default) {
                 item = _head._item;
-                if (advance) position.ObjectPosition = _head._next;
-                if (position.ObjectPosition == null) position = Position.AfterLast;
+                if (advance) position.Set(_head._next);
+                if (_head._next == null) position = Position.Infinity;
                 return true;
             }
 
-            var node = (Node)position.ObjectPosition;
+            var node = position.As<Node>();
             
             if (node == null) {
-                position = Position.AfterLast;
+                position = Position.Infinity;
                 return false;
             }
 
             if (advance) {
                 if (node._next != null) {
-                    position.ObjectPosition = node._next;
-                    if (position.ObjectPosition == null) position = Position.AfterLast;
+                    position.Set(node._next);
+                    if (node._next == null) position = Position.Infinity;
                 }
                 else {
-                    position = Position.AfterLast;
+                    position = Position.Infinity;
                 }
             }
 

@@ -22,7 +22,7 @@ namespace System.Buffers
             ReadOnlySpan<byte> remainder = stackalloc byte[0];
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
-            var poisition = Position.First;
+            Position poisition = default;
             while (source.TryGet(ref poisition, out var sourceBuffer, true))
             {
                 Span<byte> outputSpan = destination.Buffer;
@@ -114,7 +114,7 @@ namespace System.Buffers
 
         public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
-            Position position = Position.First;
+            Position position = default;
             ResizableArray<byte> array = new ResizableArray<byte>(1024);
             while (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
@@ -144,9 +144,9 @@ namespace System.Buffers
             long index = first.IndexOf(value);
             if (index != -1) return index;
 
-            var p = Position.First;
+            Position position = default;
             int runningIndex = first.Length;
-            while(sequence.TryGet(ref p, out var memory, advance: true))
+            while(sequence.TryGet(ref position, out var memory, advance: true))
             {
                 index = memory.Span.IndexOf(value);
                 if (index != -1) return index + runningIndex;

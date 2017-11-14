@@ -43,19 +43,18 @@ namespace System.Buffers
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
-            if (position == Position.First)
+            if (position == default)
             {
                 value = _first;
                 if (advance)
                 {
-                    position.IntegerPosition++;
-                    position.Tag = _first.Length; // this is needed to know how much to slice off the last segment; see below
-                    position.ObjectPosition = Rest;
+                    position +=_first.Length; // this is needed to know how much to slice off the last segment; see below
+                    position.Set(Rest);
                 }
                 return (!_first.IsEmpty || _all != null);
             }
 
-            var rest = position.ObjectPosition as IReadOnlyMemoryList<byte>;
+            var rest = position.As<IReadOnlyMemoryList<byte>>();
             if (rest == null)
             {
                 value = default;
@@ -63,18 +62,18 @@ namespace System.Buffers
             }
 
             value = rest.First;
-            // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + position.Tag > _totalLength)
+            // We need to slice off the last segment based on length of this. 
+            // ReadOnlyBytes is a potentially shorted view over a longer buffer list.
+            long positionIndex = position;
+            if (value.Length + positionIndex > _totalLength)
             {
-                // TODO (pri 0): this cannot cast to int. What we need to do is store the high order length bits in position.IntegerPosition
-                value = value.Slice(0, (int)_totalLength - position.Tag);
+                value = value.Slice(0, (int)(_totalLength - positionIndex));
                 if (value.Length == 0) return false;
             }
             if (advance)
             {
-                position.IntegerPosition++;
-                position.Tag += value.Length;
-                position.ObjectPosition = rest.Rest;
+                position += value.Length;
+                position.Set(rest.Rest);
             }
             return true;
         }
@@ -315,7 +314,7 @@ namespace System.Buffers
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
-                var position = Position.First;
+                Position position = default;
                 var free = buffer;
                 while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
                 {
@@ -337,28 +336,23 @@ namespace System.Buffers
 
             public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
             {
-                if (position == Position.First)
+                if (position == default)
                 {
                     item = _data;
                     if (advance) {
-                        position.IntegerPosition++;
-                        position.ObjectPosition = _next;
+                        position.Set(_next);
                     }
                     return (!_data.IsEmpty || _next != null);
                 }
-                else if (position.ObjectPosition == null)
+                else if (position.IsInfinity)
                 {
                     item = default;
                     return false;
                 }
 
-                var sequence = (BufferListNode)position.ObjectPosition;
+                var sequence = position.As<BufferListNode>();
                 item = sequence._data;
-                if (advance)
-                {
-                    position.ObjectPosition = sequence._next;
-                    position.IntegerPosition++;
-                }
+                if (advance) { position.Set(sequence._next); }
                 return true;
             }
         }
