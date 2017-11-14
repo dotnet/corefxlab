@@ -56,10 +56,7 @@ namespace System.IO.Pipelines
             }
             finally
             {
-                // Clear manually here because _count might
-                // be smaller then _callbacks.Length
-                Array.Clear(_callbacks, 0, _count);
-                _pool.Return(_callbacks);
+                _pool.Return(_callbacks, clearArray: true);
             }
         }
     }

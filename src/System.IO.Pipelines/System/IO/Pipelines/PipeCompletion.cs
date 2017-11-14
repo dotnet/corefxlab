@@ -64,7 +64,7 @@ namespace System.IO.Pipelines
             {
                 var newArray = CompletionCallbackPool.Rent(_callbacks.Length * 2);
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
-                CompletionCallbackPool.Return(_callbacks);
+                CompletionCallbackPool.Return(_callbacks, clearArray: true);
                 _callbacks = newArray;
             }
 
