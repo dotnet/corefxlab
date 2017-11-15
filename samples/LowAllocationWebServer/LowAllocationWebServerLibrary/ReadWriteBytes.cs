@@ -45,15 +45,11 @@ namespace System.Buffers
             if (position == default)
             {
                 value = _first;
-                if (advance)
-                {
-                    position += _first.Length; // this is needed to know how much to slice off the last segment; see below
-                    position.Set(Rest);
-                }
+                if (advance) position.Advance(Rest, _first.Length); 
                 return (!_first.IsEmpty || _rest != null);
             }
 
-            var rest = position.As<IMemorySequence<byte>>();
+            var (rest, runningIndex) = position.Get<IMemorySequence<byte>>();
             if (rest == null)
             {
                 value = default;
@@ -61,18 +57,14 @@ namespace System.Buffers
             }
 
             value = rest.Memory;
-            long positionIndex = position;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (positionIndex + value.Length > _totalLength)
+            if (runningIndex + value.Length > _totalLength)
             {
-                value = value.Slice(0, (int)(_totalLength - positionIndex));
+                value = value.Slice(0, (int)(_totalLength - runningIndex));
                 if (value.Length == 0) return false;
             }
-            if (advance)
-            {
-                position += value.Length;
-                position.Set(rest.Rest);
-            }
+
+            if (advance) position.Advance(rest.Rest, value.Length);
             return true;
         }
 
@@ -202,14 +194,14 @@ namespace System.Buffers
                 if (position == default)
                 {
                     item = _first;
-                    if (advance) { position.Set(_rest); }
+                    if (advance) { position.SetItem(_rest); }
                     return true;
                 }
-                else if (position.IsInfinity) { item = default; return false; }
+                else if (position.IsEnd) { item = default; return false; }
 
-                var sequence = position.As<BufferListNode>();
+                var sequence = position.GetItem<BufferListNode>();
                 item = sequence._first;
-                if (advance) { position.Set(sequence._rest); }
+                if (advance) { position.SetItem(sequence._rest); }
                 return true;
             }
 

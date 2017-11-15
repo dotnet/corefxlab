@@ -9,32 +9,19 @@ namespace System.Collections.Sequences
     {
         ResizableArray<T> _items;
 
-        public ArrayList()
-        {
-            _items = new ResizableArray<T>(0);
-        }
-        public ArrayList(int capacity)
-        {
-            _items = new ResizableArray<T>(capacity);
-        }
+        public ArrayList() => _items = new ResizableArray<T>(0);
+
+        public ArrayList(int capacity) => _items = new ResizableArray<T>(capacity);
 
         public int Length => _items.Count;
 
         public T this[int index] => _items[index];
 
-        public void Add(T item)
-        {
-            _items.Add(item);
-        }
+        public void Add(T item) => _items.Add(item);
 
-        public SequenceEnumerator<T> GetEnumerator()
-        {
-            return new SequenceEnumerator<T>(this);
-        }
+        public SequenceEnumerator<T> GetEnumerator() => new SequenceEnumerator<T>(this);
 
-        public bool TryGet(ref Position position, out T item, bool advance = true)
-        {
-            return _items.TryGet(ref position, out item, advance);
-        }
+        public bool TryGet(ref Position position, out T item, bool advance = true) =>
+            _items.TryGet(ref position, out item, advance);
     }
 }

@@ -23,7 +23,7 @@ namespace System.Text.Formatting
 
         Position _currentPosition = default;
         int _currentWrittenBytes;
-        Position _previousPosition = Position.Infinity;
+        Position _previousPosition = Position.End;
         int _previousWrittenBytes;
         int _totalWritten;
 

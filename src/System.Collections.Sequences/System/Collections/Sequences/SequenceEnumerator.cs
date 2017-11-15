@@ -10,21 +10,36 @@ namespace System.Collections.Sequences
         Position _position;
         ISequence<T> _sequence;
         T _current;
-        bool first; // this is needed so that MoveNext does not advance the first time it's called
 
-        public SequenceEnumerator(ISequence<T> sequence) {
+        public SequenceEnumerator(ISequence<T> sequence)
+        {
             _sequence = sequence;
             _position = default;
             _current = default;
-            first = true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() {
-            var result = _sequence.TryGet(ref _position, out _current, advance: !first);
-            first = false;
-            return result;
+        public bool MoveNext() => _sequence.TryGet(ref _position, out _current);
+
+        public T Current => _current;
+    }
+
+    public struct SequenceEnumerator<T, TSequence>
+        where TSequence : ISequence<T>
+    {
+        Position _position;
+        TSequence _sequence;
+        T _current;
+
+        public SequenceEnumerator(TSequence sequence)
+        {
+            _sequence = sequence;
+            _position = default;
+            _current = default;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext() => _sequence.TryGet(ref _position, out _current);
 
         public T Current => _current;
     }

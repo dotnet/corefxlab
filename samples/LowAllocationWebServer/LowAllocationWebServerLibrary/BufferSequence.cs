@@ -53,14 +53,14 @@ namespace Microsoft.Net
         {
             if (position == default) {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.Set(_next); }
+                if (advance) { position.SetItem(_next); }
                 return true;
             }
-            else if (position.IsInfinity) { item = default; return false; }
+            else if (position.IsEnd) { item = default; return false; }
 
-            var sequence = position.As<BufferSequence>();
+            var sequence = position.GetItem<BufferSequence>();
             item = sequence.Memory.Slice(0, sequence._written);
-            if (advance) { position.Set(sequence._next); }
+            if (advance) { position.SetItem(sequence._next); }
             return true;
         }
 
@@ -69,14 +69,14 @@ namespace Microsoft.Net
             if (position == default)
             {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.Set(_next); }
+                if (advance) { position.SetItem(_next); }
                 return true;
             }
-            else if (position.IsInfinity) { item = default; return false; }
+            else if (position.IsEnd) { item = default; return false; }
 
-            var sequence = position.As<BufferSequence>();
+            var sequence = position.GetItem<BufferSequence>();
             item = sequence.Memory.Slice(0, sequence._written);
-            if (advance) { position.Set(sequence._next); }
+            if (advance) { position.SetItem(sequence._next); }
             return true;
         }
 

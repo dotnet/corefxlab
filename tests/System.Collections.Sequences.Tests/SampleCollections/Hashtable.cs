@@ -91,19 +91,19 @@ namespace System.Collections.Sequences
         {
             item = default;
 
-            if (_count == 0 | position == Position.Infinity) {
-                position = Position.Infinity;
+            if (_count == 0 | position == Position.End) {
+                position = Position.End;
                 return false;
             }
 
             if (position == default) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {
-                    position = Position.Infinity;
+                    position = Position.End;
                     return false;
                 }
 
-                position.Set(firstOccupiedSlot);
+                position.SetIndex(firstOccupiedSlot);
             }
 
             var index = (int)position;
@@ -114,9 +114,9 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position.Set(first);
+                position.SetIndex(first);
                 if (first == -1) {
-                    position = Position.Infinity;
+                    position = Position.End;
                 }
             }
 

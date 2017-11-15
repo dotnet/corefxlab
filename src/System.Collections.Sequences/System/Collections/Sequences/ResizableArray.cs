@@ -6,12 +6,14 @@ namespace System.Collections.Sequences
     // a List<T> like type designed to be embeded in other types
     public struct ResizableArray<T>
     {
+        private static T[] s_empty = new T[0];
+
         private T[] _array;
         private int _count;
 
         public ResizableArray(int capacity)
         {
-            _array = new T[capacity];
+            _array = capacity == 0 ? s_empty : new T[capacity];
             _count = 0;
         }
 
@@ -114,7 +116,7 @@ namespace System.Collections.Sequences
             }
 
             item = default;
-            position = Position.Infinity;
+            position = Position.End;
             return false;
         }
 

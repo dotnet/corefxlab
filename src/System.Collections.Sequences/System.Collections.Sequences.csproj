@@ -9,5 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0-preview2-25707-02</Version>
+    </PackageReference>
   </ItemGroup>
 </Project>

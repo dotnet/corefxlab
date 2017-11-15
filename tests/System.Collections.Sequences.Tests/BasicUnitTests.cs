@@ -12,7 +12,7 @@ namespace System.Collections.Sequences.Tests
         [Theory]
         [InlineData(new int[] { })]
         [InlineData(new int[] { 1 })]
-        [InlineData(new int[] { 1, 2, 3})]
+        [InlineData(new int[] { 1, 2, 3 })]
         public void ArrayList(int[] array)
         {
             ArrayList<int> collection = CreateArrayList(array);
@@ -23,6 +23,14 @@ namespace System.Collections.Sequences.Tests
             {
                 Assert.Equal(array[arrayIndex++], item);
             }
+            Assert.Equal(array.Length, arrayIndex);
+
+            arrayIndex = 0;
+            foreach (int item in collection)
+            {
+                Assert.Equal(array[arrayIndex++], item);
+            }
+            Assert.Equal(array.Length, arrayIndex);
         }
 
         private static ArrayList<int> CreateArrayList(int[] array)
@@ -38,7 +46,7 @@ namespace System.Collections.Sequences.Tests
         [InlineData(new int[] { 1, 2, 3 })]
         public void LinkedContainer(int[] array)
         {
-            LinkedContainer<int> collection = CreateLinkedContainer(array);
+             LinkedContainer<int> collection = CreateLinkedContainer(array);
 
             Position position = default;
             int arrayIndex = array.Length;

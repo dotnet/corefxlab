@@ -24,25 +24,25 @@ namespace System.IO.Pipelines
                 {
                     if (_buffer.Start.IsEnd)
                     {
-                        position = Position.Infinity;
+                        position = Position.End;
                     }
                     else
                     {
-                        position.Set(_buffer.Start.Segment.Next);
+                        position.SetItem(_buffer.Start.Segment.Next);
                     }
                 }
                 return true;
             }
-            else if (position == Position.Infinity)
+            else if (position == Position.End)
             {
                 item = default;
                 return false;
             }
 
-            var currentSegment = position.As<BufferSegment>();
+            var currentSegment = position.GetItem<BufferSegment>();
             if (advance)
             {
-                position.Set(currentSegment.Next);
+                position.SetItem(currentSegment.Next);
             }
             if (currentSegment == _buffer.End.Segment)
             {
