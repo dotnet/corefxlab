@@ -106,14 +106,15 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
-            if (position.IntegerPosition < _count) {
-                item = _array[position.IntegerPosition];
-                if (advance) { position.IntegerPosition++; }
+            int index = (int)position;
+            if (index < _count) {
+                item = _array[index];
+                if (advance) { position += 1; }
                 return true;
             }
 
             item = default;
-            position = Position.AfterLast;
+            position = Position.Infinity;
             return false;
         }
 

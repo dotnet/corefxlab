@@ -15,7 +15,7 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            Position position = Position.First;
+            Position position = default;
 
             // Fetch the first segment
             if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
@@ -88,7 +88,7 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            Position position = Position.First;
+            Position position = default;
 
             // Fetch the first segment
             if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))

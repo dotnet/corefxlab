@@ -91,22 +91,22 @@ namespace System.Collections.Sequences
         {
             item = default;
 
-            if (_count == 0 | position.Equals(Position.AfterLast)) {
-                position = Position.AfterLast;
+            if (_count == 0 | position == Position.Infinity) {
+                position = Position.Infinity;
                 return false;
             }
 
-            if (position.Equals(Position.First)) {
+            if (position == default) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {
-                    position = Position.AfterLast;
+                    position = Position.Infinity;
                     return false;
                 }
 
-                position.IntegerPosition = firstOccupiedSlot;
+                position.Set(firstOccupiedSlot);
             }
 
-            var index = position.IntegerPosition;
+            var index = (int)position;
             var entry = _entries[index];
             if (entry.IsEmpty) {
                 throw new InvalidOperationException();
@@ -114,9 +114,9 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position.IntegerPosition = first;
+                position.Set(first);
                 if (first == -1) {
-                    position = Position.AfterLast;
+                    position = Position.Infinity;
                 }
             }
 

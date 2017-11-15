@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Runtime.InteropServices;
 
 namespace Microsoft.Net
 {
@@ -52,47 +51,32 @@ namespace Microsoft.Net
 
         public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
-            if (position == Position.First) {
+            if (position == default) {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
+                if (advance) { position.Set(_next); }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default; return false; }
+            else if (position.IsInfinity) { item = default; return false; }
 
-            var sequence = (BufferSequence)position.ObjectPosition;
-            item = sequence.Memory.Slice(0, _written);
-            if (advance) {
-                if (position == Position.First) {
-                    position.ObjectPosition = _next;
-                }
-                else {
-                    position.ObjectPosition = sequence._next;
-                }
-                position.IntegerPosition++;
-            }
+            var sequence = position.As<BufferSequence>();
+            item = sequence.Memory.Slice(0, sequence._written);
+            if (advance) { position.Set(sequence._next); }
             return true;
         }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position == Position.First) {
+            if (position == default)
+            {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
+                if (advance) { position.Set(_next); }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default; return false; }
+            else if (position.IsInfinity) { item = default; return false; }
 
-            var sequence = (BufferSequence)position.ObjectPosition;
-            item = sequence.Memory.Slice(0, _written);
-            if (advance) {
-                if (position == Position.First) {
-                    position.ObjectPosition = _next;
-                }
-                else {
-                    position.ObjectPosition = sequence._next;
-                }
-                position.IntegerPosition++;
-            }
+            var sequence = position.As<BufferSequence>();
+            item = sequence.Memory.Slice(0, sequence._written);
+            if (advance) { position.Set(sequence._next); }
             return true;
         }
 
