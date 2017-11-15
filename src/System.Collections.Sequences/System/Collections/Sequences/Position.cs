@@ -25,7 +25,7 @@ namespace System.Collections.Sequences
         public void SetIndex(long index) => _index = index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetItem<T>(T item) where T:class
+        public void SetItem<T>(T item) where T : class
         {
             if (item == null) this = End;
             else _item = item;
@@ -42,7 +42,7 @@ namespace System.Collections.Sequences
             }
         }
 
-        public void Advance<T>(T item, long offset) where T:class
+        public void Advance<T>(T item, long offset) where T : class
         {
             if (item == null) this = End;
             else

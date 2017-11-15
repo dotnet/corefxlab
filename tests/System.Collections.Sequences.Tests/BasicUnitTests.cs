@@ -46,7 +46,7 @@ namespace System.Collections.Sequences.Tests
         [InlineData(new int[] { 1, 2, 3 })]
         public void LinkedContainer(int[] array)
         {
-             LinkedContainer<int> collection = CreateLinkedContainer(array);
+            LinkedContainer<int> collection = CreateLinkedContainer(array);
 
             Position position = default;
             int arrayIndex = array.Length;
