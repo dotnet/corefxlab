@@ -23,7 +23,7 @@ namespace System.Buffers
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
             Position poisition = default;
-            while (source.TryGet(ref poisition, out var sourceBuffer, true))
+            while (source.TryGet(ref poisition, out var sourceBuffer))
             {
                 Span<byte> outputSpan = destination.Buffer;
                 ReadOnlySpan<byte> sourceSpan = sourceBuffer.Span;
@@ -146,7 +146,7 @@ namespace System.Buffers
 
             Position position = default;
             int runningIndex = first.Length;
-            while(sequence.TryGet(ref position, out var memory, advance: true))
+            while(sequence.TryGet(ref position, out var memory))
             {
                 index = memory.Span.IndexOf(value);
                 if (index != -1) return index + runningIndex;

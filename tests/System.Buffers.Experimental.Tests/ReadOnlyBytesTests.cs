@@ -14,7 +14,7 @@ namespace System.Buffers.Tests
         {
             ReadOnlyMemory<byte> buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
-            var sliced  = bytes.Slice(1, 3);
+            var sliced = bytes.Slice(1, 3);
             var span = sliced.First.Span;
             Assert.Equal((byte)2, span[0]);
 
@@ -42,11 +42,12 @@ namespace System.Buffers.Tests
 
             ReadOnlyBytes sliced = bytes;
             ReadOnlySpan<byte> span;
-            for(int i=1; i<=array.Length; i++) {
-                sliced  = bytes.Slice(i);
+            for (int i = 1; i <= array.Length; i++)
+            {
+                sliced = bytes.Slice(i);
                 span = sliced.First.Span;
                 Assert.Equal(array.Length - i, span.Length);
-                if(i!=array.Length) Assert.Equal(i, span[0]);
+                if (i != array.Length) Assert.Equal(i, span[0]);
             }
             Assert.Equal(0, span.Length);
         }
@@ -61,11 +62,12 @@ namespace System.Buffers.Tests
 
             ReadOnlyBytes sliced = bytes;
             ReadOnlySpan<byte> span;
-            for(int i=1; i<=totalLength; i++) {
-                sliced  = bytes.Slice(i);
+            for (int i = 1; i <= totalLength; i++)
+            {
+                sliced = bytes.Slice(i);
                 span = sliced.First.Span;
                 Assert.Equal(totalLength - i, sliced.Length);
-                if(i!=totalLength) Assert.Equal(i, span[0]);
+                if (i != totalLength) Assert.Equal(i, span[0]);
             }
             Assert.Equal(0, span.Length);
         }
@@ -251,7 +253,8 @@ namespace System.Buffers.Tests
                 var copy = new byte[array.Length - 1];
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(copy.Length, copied);
-                for(int i=0; i<copied; i++) {
+                for (int i = 0; i < copied; i++)
+                {
                     Assert.Equal(array[i], copy[i]);
                 }
             }
@@ -260,7 +263,8 @@ namespace System.Buffers.Tests
                 var copy = new byte[array.Length + 1];
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(array.Length, copied);
-                for (int i = 0; i < copied; i++) {
+                for (int i = 0; i < copied; i++)
+                {
                     Assert.Equal(array[i], copy[i]);
                 }
             }
@@ -278,7 +282,8 @@ namespace System.Buffers.Tests
                 var copy = new byte[totalLength];
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(totalLength, copied);
-                for (int i = 0; i < totalLength; i++) {
+                for (int i = 0; i < totalLength; i++)
+                {
                     Assert.Equal(i, copy[i]);
                 }
             }
@@ -287,7 +292,8 @@ namespace System.Buffers.Tests
                 var copy = new byte[totalLength - 1];
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(copy.Length, copied);
-                for (int i = 0; i < copied; i++) {
+                for (int i = 0; i < copied; i++)
+                {
                     Assert.Equal(i, copy[i]);
                 }
             }
@@ -296,7 +302,8 @@ namespace System.Buffers.Tests
                 var copy = new byte[totalLength + 1];
                 var copied = bytes.CopyTo(copy);
                 Assert.Equal(totalLength, copied);
-                for (int i = 0; i < totalLength; i++) {
+                for (int i = 0; i < totalLength; i++)
+                {
                     Assert.Equal(i, copy[i]);
                 }
             }
@@ -338,7 +345,8 @@ namespace System.Buffers.Tests
             Assert.Equal(10, bytes.First.Length);
             Assert.Equal(9, bytes.First.Span[9]);
 
-            for(int i=0; i<20; i++){
+            for (int i = 0; i < 20; i++)
+            {
                 var index = bytes.IndexOf((byte)i);
                 Assert.Equal(i, index);
             }
@@ -372,8 +380,16 @@ namespace System.Buffers.Tests
         public void EmptyReadOnlyBytesEnumeration()
         {
             var bytes = ReadOnlyBytes.Empty;
-            Position position = default;
-            Assert.False(bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment));
+            {
+                Position position = default;
+                Assert.False(bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment));
+            }
+            {
+                foreach (var segment in bytes)
+                {
+                    Assert.False(true);
+                }
+            }
         }
 
         [Fact]
@@ -383,13 +399,24 @@ namespace System.Buffers.Tests
             {
                 var multibytes = Parse("A|CD|EFG");
                 multibytes = multibytes.Slice(i);
-                Position position = default;
-                var length = 0;
-                while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
+
                 {
-                    length += segment.Length;
+                    Position position = default;
+                    var length = 0;
+                    while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
+                    {
+                        length += segment.Length;
+                    }
+                    Assert.Equal(6 - i, length);
                 }
-                Assert.Equal(6 - i, length);
+                {
+                    var length = 0;
+                    foreach (var segment in multibytes)
+                    {
+                        length += segment.Length;
+                    }
+                    Assert.Equal(6 - i, length);
+                }
             }
         }
 
@@ -400,13 +427,24 @@ namespace System.Buffers.Tests
             {
                 var multibytes = Parse("A|CD|EFG");
                 multibytes = multibytes.Slice(0, i);
-                Position position = default;
-                var length = 0;
-                while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
+
                 {
-                    length += segment.Length;
+                    Position position = default;
+                    var length = 0;
+                    while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
+                    {
+                        length += segment.Length;
+                    }
+                    Assert.Equal(i, length);
                 }
-                Assert.Equal(i, length);
+                {
+                    var length = 0;
+                    foreach (var segment in multibytes)
+                    {
+                        length += segment.Length;
+                    }
+                    Assert.Equal(i, length);
+                }
             }
         }
 
