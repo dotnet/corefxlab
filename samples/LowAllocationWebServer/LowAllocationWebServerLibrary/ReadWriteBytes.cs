@@ -49,7 +49,7 @@ namespace System.Buffers
                 return (!_first.IsEmpty || _rest != null);
             }
 
-            var (rest, runningIndex) = position.Get<IMemorySequence<byte>>();
+            var (rest, runningIndex) = position.GetLong<IMemorySequence<byte>>();
             if (rest == null)
             {
                 value = default;

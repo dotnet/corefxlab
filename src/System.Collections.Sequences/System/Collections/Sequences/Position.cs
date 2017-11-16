@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -12,15 +11,29 @@ namespace System.Collections.Sequences
         long _index;
         object _item;
 
+        public static Position Create<T>(T item, long index) where T : class
+        {
+            Position position = default;
+            position.Set(item, index);
+            return position;
+        }
+
         public static explicit operator int(Position position) => (int)position._index;
 
         public static implicit operator long(Position position) => position._index;
 
-        public long GetIndex() => _index;
+        public long GetIndexLong() => _index;
 
+        public int GetIndex() => (int)_index;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
 
-        public (T item, long index) Get<T>() => (GetItem<T>(), this);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public (T item, long index) GetLong<T>() => (GetItem<T>(), this);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
 
         public void SetIndex(long index) => _index = index;
 
@@ -42,6 +55,7 @@ namespace System.Collections.Sequences
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance<T>(T item, long offset) where T : class
         {
             if (item == null) this = End;
