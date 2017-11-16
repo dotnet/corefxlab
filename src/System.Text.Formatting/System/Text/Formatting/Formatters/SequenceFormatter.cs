@@ -21,9 +21,9 @@ namespace System.Text.Formatting
         ISequence<Memory<byte>> _buffers;
         SymbolTable _symbolTable;
 
-        Position _currentPosition = Position.First;
+        Position _currentPosition = default;
         int _currentWrittenBytes;
-        Position _previousPosition = Position.AfterLast;
+        Position _previousPosition = Position.End;
         int _previousWrittenBytes;
         int _totalWritten;
 

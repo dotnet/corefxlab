@@ -12,17 +12,25 @@ namespace System.Collections.Sequences.Tests
         [Theory]
         [InlineData(new int[] { })]
         [InlineData(new int[] { 1 })]
-        [InlineData(new int[] { 1, 2, 3})]
+        [InlineData(new int[] { 1, 2, 3 })]
         public void ArrayList(int[] array)
         {
             ArrayList<int> collection = CreateArrayList(array);
 
-            var position = Position.First;
+            Position position = default;
             int arrayIndex = 0;
             while (collection.TryGet(ref position, out int item))
             {
                 Assert.Equal(array[arrayIndex++], item);
             }
+            Assert.Equal(array.Length, arrayIndex);
+
+            arrayIndex = 0;
+            foreach (int item in collection)
+            {
+                Assert.Equal(array[arrayIndex++], item);
+            }
+            Assert.Equal(array.Length, arrayIndex);
         }
 
         private static ArrayList<int> CreateArrayList(int[] array)
@@ -40,7 +48,7 @@ namespace System.Collections.Sequences.Tests
         {
             LinkedContainer<int> collection = CreateLinkedContainer(array);
 
-            var position = Position.First;
+            Position position = default;
             int arrayIndex = array.Length;
             while (collection.TryGet(ref position, out int item))
             {
@@ -64,7 +72,7 @@ namespace System.Collections.Sequences.Tests
             Hashtable<int, string> collection = CreateHashtable(array);
 
             int arrayIndex = 0;
-            var position = Position.First;
+            Position position = default;
             while (collection.TryGet(ref position, out KeyValuePair<int, string> item))
             {
                 Assert.Equal(array[arrayIndex++], item.Key);

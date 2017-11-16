@@ -16,7 +16,7 @@ namespace System.IO.Pipelines
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position == Position.First)
+            if (position == default)
             {
                 // First is already sliced
                 item = _buffer.First;
@@ -24,33 +24,25 @@ namespace System.IO.Pipelines
                 {
                     if (_buffer.Start.IsEnd)
                     {
-                        position = Position.AfterLast;
+                        position = Position.End;
                     }
                     else
                     {
-                        position.ObjectPosition = _buffer.Start.Segment.Next;
-                        if (position.ObjectPosition == null)
-                        {
-                            position = Position.AfterLast;
-                        }
+                        position.SetItem(_buffer.Start.Segment.Next);
                     }
                 }
                 return true;
             }
-            else if (position == Position.AfterLast)
+            else if (position == Position.End)
             {
                 item = default;
                 return false;
             }
 
-            var currentSegment = (BufferSegment)position.ObjectPosition;
+            var currentSegment = position.GetItem<BufferSegment>();
             if (advance)
             {
-                position.ObjectPosition = currentSegment.Next;
-                if (position.ObjectPosition == null)
-                {
-                    position = Position.AfterLast;
-                }
+                position.SetItem(currentSegment.Next);
             }
             if (currentSegment == _buffer.End.Segment)
             {

@@ -9,5 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

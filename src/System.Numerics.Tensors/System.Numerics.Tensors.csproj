@@ -9,12 +9,14 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\System.Buffers.Experimental\System\Range.cs" Link="System\Range.cs" />
     <Compile Include="System\Numerics\ArrayUtilities.cs" />
     <Compile Include="System\Numerics\ArrayTensorExtensions.cs" />
     <Compile Include="System\Numerics\DenseTensor.cs" />
     <Compile Include="System\Numerics\CompressedSparseTensor.cs" />
     <Compile Include="System\Numerics\SparseTensor.cs" />
     <Compile Include="System\Numerics\Tensor.cs" />
+    <Compile Include="System\Numerics\TensorView.cs" />
     <Compile Include="System\Numerics\TensorArithmetic.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

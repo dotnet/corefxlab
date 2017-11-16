@@ -6,12 +6,14 @@ namespace System.Collections.Sequences
     // a List<T> like type designed to be embeded in other types
     public struct ResizableArray<T>
     {
+        private static T[] s_empty = new T[0];
+
         private T[] _array;
         private int _count;
 
         public ResizableArray(int capacity)
         {
-            _array = new T[capacity];
+            _array = capacity == 0 ? s_empty : new T[capacity];
             _count = 0;
         }
 
@@ -106,14 +108,15 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
-            if (position.IntegerPosition < _count) {
-                item = _array[position.IntegerPosition];
-                if (advance) { position.IntegerPosition++; }
+            int index = (int)position;
+            if (index < _count) {
+                item = _array[index];
+                if (advance) { position += 1; }
                 return true;
             }
 
             item = default;
-            position = Position.AfterLast;
+            position = Position.End;
             return false;
         }
 

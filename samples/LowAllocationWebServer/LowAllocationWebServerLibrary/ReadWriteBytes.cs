@@ -13,7 +13,7 @@ namespace System.Buffers
     {
         Memory<byte> _first;
         IMemorySequence<byte> _rest;
-        long _length;
+        long _totalLength;
 
         static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
 
@@ -21,7 +21,7 @@ namespace System.Buffers
         {
             _rest = rest;
             _first = first;
-            _length = length;
+            _totalLength = length;
         }
 
         public ReadWriteBytes(Memory<byte> first, IMemorySequence<byte> rest) :
@@ -42,19 +42,14 @@ namespace System.Buffers
 
         public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
         {
-            if (position == Position.First)
+            if (position == default)
             {
                 value = _first;
-                if (advance)
-                {
-                    position.IntegerPosition++;
-                    position.Tag = _first.Length; // this is needed to know how much to slice off the last segment; see below
-                    position.ObjectPosition = _rest;
-                }
-                return true;
+                if (advance) position.Advance(Rest, _first.Length); 
+                return (!_first.IsEmpty || _rest != null);
             }
 
-            var rest = position.ObjectPosition as IMemorySequence<byte>;
+            var (rest, runningIndex) = position.GetLong<IMemorySequence<byte>>();
             if (rest == null)
             {
                 value = default;
@@ -63,17 +58,13 @@ namespace System.Buffers
 
             value = rest.Memory;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + position.Tag > _length && _length != Unspecified)
+            if (runningIndex + value.Length > _totalLength)
             {
-                value = value.Slice(0, (int)(_length - position.Tag));
+                value = value.Slice(0, (int)(_totalLength - runningIndex));
                 if (value.Length == 0) return false;
             }
-            if (advance)
-            {
-                position.IntegerPosition++;
-                position.Tag += value.Length;
-                position.ObjectPosition = rest.Rest;
-            }
+
+            if (advance) position.Advance(rest.Rest, value.Length);
             return true;
         }
 
@@ -147,12 +138,12 @@ namespace System.Buffers
         // TODO (pri 3): the problem is that this makes the type mutable, and since the type is a struct, the mutation can be lost when the stack unwinds.
         public long ComputeLength()
         {
-            if (_length != Unspecified) return _length;
+            if (_totalLength != Unspecified) return _totalLength;
 
             int length = 0;
             if (_rest != null)
             {
-                Position position = new Position();
+                Position position = default;
                 while (_rest.TryGet(ref position, out Memory<byte> segment))
                 {
                     length += segment.Length;
@@ -178,7 +169,7 @@ namespace System.Buffers
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
-                var position = Position.First;
+                Position position = default;
                 var free = buffer;
                 while (TryGet(ref position, out Memory<byte> segment, true))
                 {
@@ -200,28 +191,17 @@ namespace System.Buffers
 
             public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
             {
-                if (position == Position.First)
+                if (position == default)
                 {
                     item = _first;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
+                    if (advance) { position.SetItem(_rest); }
                     return true;
                 }
-                else if (position.ObjectPosition == null) { item = default; return false; }
+                else if (position.IsEnd) { item = default; return false; }
 
-                var sequence = (BufferListNode)position.ObjectPosition;
+                var sequence = position.GetItem<BufferListNode>();
                 item = sequence._first;
-                if (advance)
-                {
-                    if (position == Position.First)
-                    {
-                        position.ObjectPosition = _rest;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = sequence._rest;
-                    }
-                    position.IntegerPosition++;
-                }
+                if (advance) { position.SetItem(sequence._rest); }
                 return true;
             }
 

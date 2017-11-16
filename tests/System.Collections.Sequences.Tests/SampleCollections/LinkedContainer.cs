@@ -28,42 +28,28 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
-            item = default;
-
-            if(_count == 0) {
-                position = Position.AfterLast;
+            if(_count == 0)
+            {
+                item = default;
                 return false;
             }
 
-            if (position.Equals(Position.AfterLast)) {
-                return false;
-            }
-
-            if(position.Equals(Position.First)) {
+            if (position == default)
+            {
                 item = _head._item;
-                if (advance) position.ObjectPosition = _head._next;
-                if (position.ObjectPosition == null) position = Position.AfterLast;
-                return true;
+                if (advance) position.SetItem(_head._next);
+                return _count > 0;
             }
 
-            var node = (Node)position.ObjectPosition;
-            
+            var node = position.GetItem<Node>();
             if (node == null) {
-                position = Position.AfterLast;
+                item = default;
+                position = Position.End;
                 return false;
-            }
-
-            if (advance) {
-                if (node._next != null) {
-                    position.ObjectPosition = node._next;
-                    if (position.ObjectPosition == null) position = Position.AfterLast;
-                }
-                else {
-                    position = Position.AfterLast;
-                }
             }
 
             item = node._item;
+            if (advance) { position.SetItem(node._next); }
             return true;
         }
 
