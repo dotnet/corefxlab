@@ -50,7 +50,7 @@ namespace System.Buffers
                 return (!_first.IsEmpty || _all != null);
             }
 
-            var (rest, runningIndex) = position.Get<IReadOnlyMemoryList<byte>>();
+            var (rest, runningIndex) = position.GetLong<IReadOnlyMemoryList<byte>>();
             if (rest == null)
             {
                 value = default;
