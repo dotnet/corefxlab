@@ -22,10 +22,8 @@ namespace System.Collections.Sequences
 
         public static implicit operator long(Position position) => position._index;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long GetIndexLong() => _index;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetIndex() => (int)_index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
