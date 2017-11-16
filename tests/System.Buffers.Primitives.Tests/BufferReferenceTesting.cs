@@ -246,10 +246,17 @@ namespace System.Buffers.Tests
                 unsafe
                 {
                     var p = (byte*)pinned.Pointer;
-                    Assert.True(null != p);
-                    for (int i = 0; i < buffer.Length; i++)
+                    if (buffer.Length == 0)
                     {
-                        Assert.Equal(array[i], p[i]);
+                        Assert.True(null == p);
+                    }
+                    else
+                    {
+                        Assert.True(null != p);
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            Assert.Equal(array[i], p[i]);
+                        }
                     }
                 }
             }
@@ -286,10 +293,17 @@ namespace System.Buffers.Tests
                 unsafe
                 {
                     var p = (byte*)pinned.Pointer;
-                    Assert.True(null != p);
-                    for (int i = 0; i < buffer.Length; i++)
+                    if (buffer.Length == 0)
                     {
-                        Assert.Equal(array[i], p[i]);
+                        Assert.True(null == p);
+                    }
+                    else
+                    {
+                        Assert.True(null != p);
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            Assert.Equal(array[i], p[i]);
+                        }
                     }
                 }
             }
