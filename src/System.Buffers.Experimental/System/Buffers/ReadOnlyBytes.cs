@@ -347,10 +347,18 @@ namespace System.Buffers
 
             public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
             {
+                var result = TryGet(ref position, out Memory<byte> memory, advance);
+                item = memory;
+                return result;
+            }
+
+            public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+            {
                 if (position == default)
                 {
                     item = _data;
-                    if (advance) {
+                    if (advance)
+                    {
                         position.SetItem(_next);
                     }
                     return (!_data.IsEmpty || _next != null);
@@ -365,11 +373,6 @@ namespace System.Buffers
                 item = sequence._data;
                 if (advance) { position.SetItem(sequence._next); }
                 return true;
-            }
-
-            public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
-            {
-                throw new NotImplementedException();
             }
         }
 
