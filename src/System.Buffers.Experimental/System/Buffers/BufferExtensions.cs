@@ -128,7 +128,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long IndexOf(this IMemoryList<byte> sequence, ReadOnlySpan<byte> value)
         {
-            var first = sequence.First.Span;
+            var first = sequence.Memory.Span;
             var index = first.IndexOf(value);
             if (index != -1) return index;
 
@@ -140,17 +140,17 @@ namespace System.Buffers
 
         public static long IndexOf(this IMemoryList<byte> sequence, byte value)
         {
-            var first = sequence.First.Span;
+            var first = sequence.Memory.Span;
             long index = first.IndexOf(value);
             if (index != -1) return index;
 
             Position position = default;
-            int runningIndex = first.Length;
+            int virtualIndex = first.Length;
             while(sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 index = memory.Span.IndexOf(value);
-                if (index != -1) return index + runningIndex;
-                runningIndex += memory.Length;
+                if (index != -1) return index + virtualIndex;
+                virtualIndex += memory.Length;
             }
 
             return -1;
