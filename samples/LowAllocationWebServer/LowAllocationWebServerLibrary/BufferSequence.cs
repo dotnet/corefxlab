@@ -8,7 +8,7 @@ using System.Collections.Sequences;
 
 namespace Microsoft.Net
 {
-    class BufferSequence : IMemorySequence<byte>, IReadOnlyMemoryList<byte>, IDisposable
+    class BufferSequence : IMemoryList<byte>, IDisposable
     {
         public const int DefaultBufferSize = 1024;
 
@@ -22,21 +22,18 @@ namespace Microsoft.Net
         }
 
         public Memory<byte> Memory => new Memory<byte>(_array);
-        public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
+
+        public Memory<byte> First => new Memory<byte>(_array, 0, _written);
 
         public ReadOnlySpan<byte> Written => new ReadOnlySpan<byte>(_array, 0, _written);
 
-        public Span<byte> First => _array.AsSpan();
+        public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
 
-        public IMemorySequence<byte> Rest => _next;
+        public IMemoryList<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
         public long Index => throw new NotImplementedException();
-
-        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => _next;
-
-        ReadOnlyMemory<byte> IReadOnlyMemorySequence<byte>.First => Memory;
 
         public int CopyTo(Span<byte> buffer)
         {
