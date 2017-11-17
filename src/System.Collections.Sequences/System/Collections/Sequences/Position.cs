@@ -8,8 +8,8 @@ namespace System.Collections.Sequences
 {
     public struct Position : IEquatable<Position>
     {
-        int _index;
         object _item;
+        public int Index { get; set; }
 
         public static Position Create<T>(T item, int index) where T : class
         {
@@ -18,17 +18,13 @@ namespace System.Collections.Sequences
             return position;
         }
 
-        public static explicit operator int(Position position) => position._index;
-
-        public int GetIndex() => _index;
+        public static explicit operator int(Position position) => position.Index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
-
-        public void SetIndex(int index) => _index = index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetItem<T>(T item) where T : class
@@ -44,7 +40,7 @@ namespace System.Collections.Sequences
             else
             {
                 _item = item;
-                _index = index;
+                Index = index;
             }
         }
 
@@ -55,20 +51,20 @@ namespace System.Collections.Sequences
             else
             {
                 _item = item;
-                _index += offset;
+                Index += offset;
             }
         }
 
-        public static Position operator +(Position position, int offset) => new Position(position._item, position._index + offset);
+        public static Position operator +(Position position, int offset) => new Position(position.Index + offset, position._item);
 
-        public static Position operator -(Position position, int offset) => new Position(position._item, position._index - offset);
+        public static Position operator -(Position position, int offset) => new Position(position.Index - offset, position._item);
 
-        public static readonly Position End = new Position(new object(), int.MaxValue);
+        public static readonly Position End = new Position(int.MaxValue, new object());
 
         public bool IsEnd => this == End;
 
-        public static bool operator ==(Position left, Position right) => left._index == right._index && left._item == right._item;
-        public static bool operator !=(Position left, Position right) => left._index != right._index || left._item != right._item;
+        public static bool operator ==(Position left, Position right) => left.Index == right.Index && left._item == right._item;
+        public static bool operator !=(Position left, Position right) => left.Index != right.Index || left._item != right._item;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(Position position) => this == position;
@@ -79,16 +75,16 @@ namespace System.Collections.Sequences
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() =>
-            _index.GetHashCode() ^ (_item == null ? 0 : _item.GetHashCode());
+            Index.GetHashCode() ^ (_item == null ? 0 : _item.GetHashCode());
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() =>
             _item == null ? @"{_index}" : @"{_index}, {_obj}";
 
-        private Position(object obj, int index)
+        private Position(int index, object item)
         {
-            _item = obj;
-            _index = index;
+            _item = item;
+            Index = index;
         }
     }
 }

@@ -7,11 +7,11 @@ namespace System.Buffers
 {
     public interface IMemorySegment<T> : ISequence<Memory<T>>, ISequence<ReadOnlyMemory<T>>
     {
-        Memory<T> First { get; }
+        Memory<T> Memory { get; }
 
         IMemorySegment<T> Rest { get; }
 
-        long Index { get; }
+        long VirtualIndex { get; }
 
         int CopyTo(Span<T> buffer);
     }

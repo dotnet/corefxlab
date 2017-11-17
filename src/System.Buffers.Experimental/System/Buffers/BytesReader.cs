@@ -186,7 +186,7 @@ namespace System.Buffers
                 }
             }
 
-            _currentSegment = newUnreadSegments.First;
+            _currentSegment = newUnreadSegments.Memory;
             _currentSegmentIndex = 0;
             _unreadSegments = _unreadSegments.Slice(_unreadSegments.First.Length);
             _index += advancedInCurrent;

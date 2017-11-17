@@ -23,7 +23,7 @@ namespace Microsoft.Net
 
         public Memory<byte> Memory => new Memory<byte>(_array);
 
-        public Memory<byte> First => new Memory<byte>(_array, 0, _written);
+        public Memory<byte> WrittenMemory => new Memory<byte>(_array, 0, _written);
 
         public ReadOnlySpan<byte> Written => new ReadOnlySpan<byte>(_array, 0, _written);
 
@@ -33,7 +33,7 @@ namespace Microsoft.Net
 
         public int WrittenByteCount => _written;
 
-        public long Index => throw new NotImplementedException();
+        public long VirtualIndex => throw new NotImplementedException();
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -72,7 +72,7 @@ namespace Microsoft.Net
             else if (position.IsEnd) { item = default; return false; }
 
             var sequence = position.GetItem<BufferSequence>();
-            item = sequence.Memory.Slice(0, sequence._written);
+            item = sequence.WrittenMemory;
             if (advance) { position.SetItem(sequence._next); }
             return true;
         }

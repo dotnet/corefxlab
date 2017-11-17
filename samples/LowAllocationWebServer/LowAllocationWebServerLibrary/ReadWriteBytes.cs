@@ -33,11 +33,11 @@ namespace System.Buffers
         { }
 
         public ReadWriteBytes(IMemorySegment<byte> segments, long length) :
-            this(segments.First, segments.Rest, length)
+            this(segments.Memory, segments.Rest, length)
         { }
 
         public ReadWriteBytes(IMemorySegment<byte> segments) :
-            this(segments.First, segments.Rest, Unspecified)
+            this(segments.Memory, segments.Rest, Unspecified)
         { }
 
         public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
@@ -56,7 +56,7 @@ namespace System.Buffers
                 return false;
             }
 
-            value = rest.First;
+            value = rest.Memory;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
             if (runningIndex + value.Length > _totalLength)
             {
@@ -158,11 +158,11 @@ namespace System.Buffers
         {
             internal Memory<byte> _first;
             internal BufferListNode _rest;
-            public Memory<byte> First => _first;
+            public Memory<byte> Memory => _first;
 
             public IMemorySegment<byte> Rest => _rest;
 
-            public long Index => throw new NotImplementedException();
+            public long VirtualIndex => throw new NotImplementedException();
 
             public int CopyTo(Span<byte> buffer)
             {
