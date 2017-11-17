@@ -4,10 +4,10 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Buffers
+namespace System.Buffers.Native
 {
     // This is to support secnarios today covered by Memory<T> in corefxlab
-    public class OwnedPinnedBuffer<T> : ReferenceCountedBuffer<T>
+    public class OwnedPinnedBuffer<T> : ReferenceCountedMemory<T>
     {
         public unsafe OwnedPinnedBuffer(T[] array, void* pointer, GCHandle handle = default)
         {

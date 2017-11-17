@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Text.Utf8;
 using System.Binary.Base64Experimental;
+using System.Buffers.Text;
 
 namespace System.Azure.Authentication
 {

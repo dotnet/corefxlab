@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Buffers.Pools
+namespace System.Buffers.Native
 {
     public unsafe sealed partial class NativeBufferPool : BufferPool
     {
@@ -62,10 +62,10 @@ namespace System.Buffers.Pools
                 throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new BufferManager(this, new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
+            return new Memory(this, new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
         }
 
-        internal void Return(BufferManager pooledBuffer)
+        internal void Return(Memory pooledBuffer)
         {
             var memory = pooledBuffer.Pointer.ToInt64();
             var offset = memory - _memory.ToInt64();

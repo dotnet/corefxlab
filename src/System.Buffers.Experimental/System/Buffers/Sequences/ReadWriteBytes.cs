@@ -10,9 +10,9 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public readonly struct ReadOnlyBytes : ISequence<ReadOnlyMemory<byte>>
+    public readonly struct ReadWriteBytes : ISequence<Memory<byte>>
     {
-        readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
+        readonly Memory<byte> _first; // pointer + index:int + length:int
         readonly IMemoryList<byte> _all;
 
         // For multi-segment ROB, this is the total length of the ROB
@@ -20,20 +20,20 @@ namespace System.Buffers
         // Otherwise zero
         readonly long _totalLengthOrVirtualIndex;
 
-        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
+        static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> memory) : this(memory, 0)
+        public ReadWriteBytes(Memory<byte> memory) : this(memory, 0)
         {
         }
 
-        private ReadOnlyBytes(ReadOnlyMemory<byte> memory, int offset)
+        private ReadWriteBytes(Memory<byte> memory, int virtualIndex)
         {
             _first = memory;
             _all = null;
-            _totalLengthOrVirtualIndex = offset;
+            _totalLengthOrVirtualIndex = virtualIndex;
         }
 
-        public ReadOnlyBytes(IMemoryList<byte> segments, long length)
+        public ReadWriteBytes(IMemoryList<byte> segments, long length)
         {
             // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.Memory;
@@ -41,7 +41,7 @@ namespace System.Buffers
             _totalLengthOrVirtualIndex = length;
         }
 
-        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IMemoryList<byte> all, long length)
+        private ReadWriteBytes(Memory<byte> first, IMemoryList<byte> all, long length)
         {
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
@@ -49,7 +49,7 @@ namespace System.Buffers
             _totalLengthOrVirtualIndex = _all == null ? 0 : length;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
+        public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
         {
             if (position == default)
             {
@@ -93,12 +93,12 @@ namespace System.Buffers
                 value = memory.Slice(0, (int)(Length - lengthOfFirst));
                 if (index < value.Length)
                 {
-                    if(index > 0) value = value.Slice(index);
+                    if (index > 0) value = value.Slice(index);
                     return true;
                 }
                 else
                 {
-                    value = ReadOnlyMemory<byte>.Empty;
+                    value = Memory<byte>.Empty;
                     return false;
                 }
             }
@@ -110,7 +110,7 @@ namespace System.Buffers
             }
         }
 
-        public ReadOnlyMemory<byte> First => _first;
+        public Memory<byte> First => _first;
 
         internal IMemoryList<byte> Rest => _all?.Rest;
 
@@ -120,61 +120,53 @@ namespace System.Buffers
 
         public bool IsEmpty => _first.Length == 0 && _all == null;
 
-        public static ReadOnlyBytes Empty => s_empty;
+        public static ReadWriteBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBytes Slice(Range range)
+        public ReadWriteBytes Slice(Range range)
         {
             return Slice(range.Index, range.Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBytes Slice(long index, long length)
+        public ReadWriteBytes Slice(long index, long length)
         {
             var totalLength = Length;
             if (index > totalLength) throw new ArgumentOutOfRangeException(nameof(index));
             if (totalLength - index < length) throw new ArgumentOutOfRangeException(nameof(length));
 
-            if (length==0) return Empty;
+            if (length == 0) return Empty;
 
-            if(_all == null)
+            if (_all == null)
             {
                 if (index > _first.Length) throw new ArgumentOutOfRangeException(nameof(index));
                 if (length > _first.Length - index) throw new ArgumentOutOfRangeException(nameof(length));
 
-                return new ReadOnlyBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrVirtualIndex + index));
+                return new ReadWriteBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrVirtualIndex + index));
             }
 
             var first = First;
             if (first.Length >= length + index)
             {
                 var slice = first.Slice((int)index, (int)length);
-                if(slice.Length > 0) {
-                    return new ReadOnlyBytes(slice, _all, length);
+                if (slice.Length > 0)
+                {
+                    return new ReadWriteBytes(slice, _all, length);
                 }
                 return Empty;
             }
             if (first.Length > index)
             {
                 Debug.Assert(_all != null);
-                return new ReadOnlyBytes(first.Slice((int)index), _all, length);
+                return new ReadWriteBytes(first.Slice((int)index), _all, length);
             }
             return SliceRest(index, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBytes Slice(long index)
+        public ReadWriteBytes Slice(long index)
         {
             return Slice(index, Length - index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long IndexOf(ReadOnlySpan<byte> bytes)
-        {
-            var first = _first.Span;
-            var index = first.IndexOf(bytes);
-            if (index != -1) return index;
-            return first.IndexOfStraddling(Rest, bytes);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -195,7 +187,7 @@ namespace System.Buffers
             return -1;
         }
 
-        public ReadOnlyBytes Slice(Position from)
+        public ReadWriteBytes Slice(Position from)
         {
             var (segment, index) = from.Get<IMemoryList<byte>>();
             if (segment == null) return Slice(First.Length - index);
@@ -203,10 +195,10 @@ namespace System.Buffers
             var newHeadIndex = segment.VirtualIndex;
             var diff = newHeadIndex - headIndex;
             // TODO: this could be optimized to avoid the Slice
-            return new ReadOnlyBytes(segment, Length - diff).Slice(index);
+            return new ReadWriteBytes(segment, Length - diff).Slice(index);
         }
 
-        public ReadOnlyBytes Slice(Position from, Position to)
+        public ReadWriteBytes Slice(Position from, Position to)
         {
             var (fromSegment, fromIndex) = from.Get<IMemoryList<byte>>();
             var (toSegment, toIndex) = to.Get<IMemoryList<byte>>();
@@ -224,7 +216,7 @@ namespace System.Buffers
             var slicedOffFront = newHeadIndex - headIndex;
             var length = newEndIndex - newHeadIndex;
             // TODO: this could be optimized to avoid the Slice
-            var slice = new ReadOnlyBytes(fromSegment, length + fromIndex);
+            var slice = new ReadWriteBytes(fromSegment, length + fromIndex);
             slice = slice.Slice(fromIndex);
             return slice;
         }
@@ -239,7 +231,8 @@ namespace System.Buffers
                 {
                     return Position.Create(first.Length - index);
                 }
-                else { 
+                else
+                {
                     var allIndex = index + (_all.Memory.Length - first.Length);
                     return Position.Create(allIndex, _all);
                 }
@@ -305,13 +298,13 @@ namespace System.Buffers
             return firstLength + Rest.CopyTo(buffer.Slice(firstLength));
         }
 
-        ReadOnlyBytes SliceRest(long index, long length)
+        ReadWriteBytes SliceRest(long index, long length)
         {
             if (Rest == null)
             {
                 if (First.Length == index && length == 0)
                 {
-                    return new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
+                    return Empty;
                 }
                 else
                 {
@@ -320,13 +313,13 @@ namespace System.Buffers
             }
 
             // TODO (pri 2): this could be optimized
-            var rest = new ReadOnlyBytes(Rest, length + index - _first.Length);
+            var rest = new ReadWriteBytes(Rest, length + index - _first.Length);
             rest = rest.Slice(index - First.Length, length);
             return rest;
         }
 
-        public SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes> GetEnumerator()
-            => new SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes>(this);
+        public SequenceEnumerator<Memory<byte>, ReadWriteBytes> GetEnumerator()
+            => new SequenceEnumerator<Memory<byte>, ReadWriteBytes>(this);
     }
 }
 

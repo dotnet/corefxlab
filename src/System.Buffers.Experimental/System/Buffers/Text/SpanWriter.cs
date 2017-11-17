@@ -6,7 +6,7 @@ using System.Buffers.Text;
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     public ref struct SpanWriter
     {
