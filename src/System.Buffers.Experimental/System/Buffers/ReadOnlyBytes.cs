@@ -98,7 +98,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    value = Memory<byte>.Empty;
+                    value = ReadOnlyMemory<byte>.Empty;
                     return false;
                 }
             }

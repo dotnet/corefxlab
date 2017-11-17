@@ -44,21 +44,6 @@ namespace System.Collections.Sequences
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance<T>(T item, int offset) where T : class
-        {
-            if (item == null) this = End;
-            else
-            {
-                _item = item;
-                Index += offset;
-            }
-        }
-
-        public static Position operator +(Position position, int offset) => new Position(position.Index + offset, position._item);
-
-        public static Position operator -(Position position, int offset) => new Position(position.Index - offset, position._item);
-
         public static readonly Position End = new Position(int.MaxValue, new object());
 
         public bool IsEnd => this == End;
