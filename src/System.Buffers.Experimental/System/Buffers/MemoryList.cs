@@ -20,10 +20,10 @@ namespace System.Buffers
             _virtualIndex = 0;
         }
 
-        private MemoryList(Memory<byte> bytes, long runningIndex)
+        private MemoryList(Memory<byte> bytes, long virtualIndex)
         {
             _data = bytes;
-            _virtualIndex = runningIndex;
+            _virtualIndex = virtualIndex;
         }
 
         public MemoryList Append(Memory<byte> bytes)

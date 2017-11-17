@@ -18,7 +18,7 @@ namespace System.Buffers
         // For multi-segment ROB, this is the total length of the ROB
         // For single-segment ROB that are slices, this is the offset of the first byte from the original ROB
         // Otherwise zero
-        readonly long _totalLengthOrOffset;
+        readonly long _totalLengthOrVirtualIndex;
 
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
@@ -30,7 +30,7 @@ namespace System.Buffers
         {
             _first = memory;
             _all = null;
-            _totalLengthOrOffset = offset;
+            _totalLengthOrVirtualIndex = offset;
         }
 
         public ReadOnlyBytes(IMemoryList<byte> segments, long length)
@@ -38,7 +38,7 @@ namespace System.Buffers
             // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.Memory;
             _all = segments;
-            _totalLengthOrOffset = length;
+            _totalLengthOrVirtualIndex = length;
         }
 
         private ReadOnlyBytes(ReadOnlyMemory<byte> first, IMemoryList<byte> all, long length)
@@ -46,7 +46,7 @@ namespace System.Buffers
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
             _all = all;
-            _totalLengthOrOffset = _all == null ? 0 : length;
+            _totalLengthOrVirtualIndex = _all == null ? 0 : length;
         }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
@@ -69,7 +69,7 @@ namespace System.Buffers
             {
                 if (_all == null) // single segment ROB
                 {
-                    value = _first.Slice(index - (int)_totalLengthOrOffset);
+                    value = _first.Slice(index - (int)_totalLengthOrVirtualIndex);
                     if (advance) position = Position.End;
                     return true;
                 }
@@ -114,9 +114,9 @@ namespace System.Buffers
 
         internal IMemoryList<byte> Rest => _all?.Rest;
 
-        public long Length => _all == null ? _first.Length : _totalLengthOrOffset;
+        public long Length => _all == null ? _first.Length : _totalLengthOrVirtualIndex;
 
-        private long VirtualIndex => _all == null ? _totalLengthOrOffset : _all.VirtualIndex + (_all.Memory.Length - _first.Length);
+        private long VirtualIndex => _all == null ? _totalLengthOrVirtualIndex : _all.VirtualIndex + (_all.Memory.Length - _first.Length);
 
         public bool IsEmpty => _first.Length == 0 && _all == null;
 
@@ -131,14 +131,18 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(long index, long length)
         {
-            if(length==0) return Empty;
+            var totalLength = Length;
+            if (index > totalLength) throw new ArgumentOutOfRangeException(nameof(index));
+            if (totalLength - index < length) throw new ArgumentOutOfRangeException(nameof(length));
+
+            if (length==0) return Empty;
 
             if(_all == null)
             {
                 if (index > _first.Length) throw new ArgumentOutOfRangeException(nameof(index));
                 if (length > _first.Length - index) throw new ArgumentOutOfRangeException(nameof(length));
 
-                return new ReadOnlyBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrOffset + index));
+                return new ReadOnlyBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrVirtualIndex + index));
             }
 
             var first = First;
@@ -220,9 +224,9 @@ namespace System.Buffers
             var slicedOffFront = newHeadIndex - headIndex;
             var length = newEndIndex - newHeadIndex;
             // TODO: this could be optimized to avoid the Slice
-            var a = new ReadOnlyBytes(fromSegment, length + fromIndex);
-            a = a.Slice(fromIndex);
-            return a;
+            var slice = new ReadOnlyBytes(fromSegment, length + fromIndex);
+            slice = slice.Slice(fromIndex);
+            return slice;
         }
 
         public Position PositionOf(byte value)
