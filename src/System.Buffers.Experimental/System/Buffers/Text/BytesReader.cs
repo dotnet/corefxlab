@@ -5,7 +5,7 @@ using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers
+namespace System.Buffers.Text
 {
     /// <summary>
     /// Used to read text from byte buffers

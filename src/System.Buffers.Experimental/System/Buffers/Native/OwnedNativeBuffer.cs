@@ -3,9 +3,9 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Buffers
+namespace System.Buffers.Native
 {
-    public class OwnedNativeBuffer : ReferenceCountedBuffer<byte>
+    public class OwnedNativeBuffer : ReferenceCountedMemory<byte>
     {
         public OwnedNativeBuffer(int length) : this(length, Marshal.AllocHGlobal(length))
         { }

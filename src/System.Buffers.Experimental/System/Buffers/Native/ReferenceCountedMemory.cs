@@ -4,16 +4,16 @@
 
 using System.Threading;
 
-namespace System.Buffers
+namespace System.Buffers.Native
 {
-    public abstract class ReferenceCountedBuffer<T> : OwnedMemory<T>
+    public abstract class ReferenceCountedMemory<T> : OwnedMemory<T>
     {
         int _referenceCount;
         bool _disposed;
 
         public override void Retain()
         {
-            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(ReferenceCountedBuffer<T>));
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(ReferenceCountedMemory<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
