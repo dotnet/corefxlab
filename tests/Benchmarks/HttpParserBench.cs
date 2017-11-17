@@ -6,6 +6,7 @@ using Microsoft.Xunit.Performance;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.Sequences;
 using System.IO.Pipelines;
 using System.Text;
 using System.Text.Http;
@@ -72,8 +73,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
-        ReadOnlyBytes.Cursor consumed = default;
-        ReadOnlyBytes.Cursor read;
+        Position consumed = default;
+        Position read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -169,8 +170,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        ReadOnlyBytes.Cursor consumed = default;
-        ReadOnlyBytes.Cursor examined;
+        Position consumed = default;
+        Position examined;
         int consumedBytes;
         bool success = true;
 
@@ -325,8 +326,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new RequestStruct();
-        ReadOnlyBytes.Cursor consumed = default;
-        ReadOnlyBytes.Cursor examined;
+        Position consumed = default;
+        Position examined;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -350,46 +351,46 @@ public class HttpParserBench
 
 static class HttpParserExtensions
 {
-    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined) where T : IHttpRequestLineHandler
+    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
     {
         if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
         {
-            consumed = buffer.CursorAt(consumedBytes);
+            consumed = buffer.PositionAt(consumedBytes);
             examined = consumed;
             return true;
         }
-        consumed = buffer.CursorAt(0);
+        consumed = buffer.PositionAt(0);
         examined = default;
         return false;
     }
 
-    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined, out int consumedBytes) where T : IHttpHeadersHandler
+    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
     {
         if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
         {
-            consumed = buffer.CursorAt(consumedBytes);
+            consumed = buffer.PositionAt(consumedBytes);
             examined = consumed;
             return true;
         }
-        consumed = buffer.CursorAt(0);
+        consumed = buffer.PositionAt(0);
         examined = default;
         return false;
     }
 
-    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out ReadOnlyBytes.Cursor consumed, out ReadOnlyBytes.Cursor examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
+    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
     {
         if (
             parser.ParseRequestLine(ref handler, buffer, out var consumedRLBytes) &&
             parser.ParseHeaders(ref handler, buffer.Slice(consumedRLBytes), out var consumedHDBytes)
         )
         {
-            consumed = buffer.CursorAt(consumedRLBytes + consumedHDBytes);
+            consumed = buffer.PositionAt(consumedRLBytes + consumedHDBytes);
             examined = consumed;
             return true;
         }
         else
         {
-            consumed = buffer.CursorAt(0);
+            consumed = buffer.PositionAt(0);
             examined = default;
             return false;
         }

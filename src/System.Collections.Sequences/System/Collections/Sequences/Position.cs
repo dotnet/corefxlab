@@ -11,12 +11,14 @@ namespace System.Collections.Sequences
         object _item;
         public int Index { get; set; }
 
-        public static Position Create<T>(T item, int index) where T : class
+        public static Position Create<T>(int index, T item) where T : class
         {
             Position position = default;
             position.Set(item, index);
             return position;
         }
+
+        public static Position Create(int index) => new Position(index, null);
 
         public static explicit operator int(Position position) => position.Index;
 

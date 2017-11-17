@@ -22,13 +22,13 @@ namespace System.Buffers
 
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer) : this(buffer, 0)
+        public ReadOnlyBytes(ReadOnlyMemory<byte> memory) : this(memory, 0)
         {
         }
 
-        private ReadOnlyBytes(ReadOnlyMemory<byte> buffer, int offset)
+        private ReadOnlyBytes(ReadOnlyMemory<byte> memory, int offset)
         {
-            _first = buffer;
+            _first = memory;
             _all = null;
             _totalLengthOrOffset = offset;
         }
@@ -85,7 +85,7 @@ namespace System.Buffers
             // We need to slice off the last segment based on length of this ROB. 
             // This ROB is a potentially shorted view over a longer segment list.
             var virtualIndex = segment.VirtualIndex;
-            var lengthOfFirst = virtualIndex - Index;
+            var lengthOfFirst = virtualIndex - VirtualIndex;
             var lengthOfEnd = lengthOfFirst + memory.Length;
             if (lengthOfEnd > Length)
             {
@@ -116,7 +116,7 @@ namespace System.Buffers
 
         public long Length => _all == null ? _first.Length : _totalLengthOrOffset;
 
-        public long Index => _all == null ? _totalLengthOrOffset : _all.VirtualIndex + (_all.Memory.Length - _first.Length);
+        private long VirtualIndex => _all == null ? _totalLengthOrOffset : _all.VirtualIndex + (_all.Memory.Length - _first.Length);
 
         public bool IsEmpty => _first.Length == 0 && _all == null;
 
@@ -191,37 +191,41 @@ namespace System.Buffers
             return -1;
         }
 
-        public ReadOnlyBytes Slice(Cursor from)
+        public ReadOnlyBytes Slice(Position from)
         {
-            if (from._node == null) return Slice(First.Length - from._index);
+            var (segment, index) = from.Get<IMemoryList<byte>>();
+            if (segment == null) return Slice(First.Length - index);
             var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
-            var newHeadIndex = from._node.VirtualIndex;
+            var newHeadIndex = segment.VirtualIndex;
             var diff = newHeadIndex - headIndex;
             // TODO: this could be optimized to avoid the Slice
-            return new ReadOnlyBytes(from._node, Length - diff).Slice(from._index);
+            return new ReadOnlyBytes(segment, Length - diff).Slice(index);
         }
 
-        public ReadOnlyBytes Slice(Cursor from, Cursor to)
+        public ReadOnlyBytes Slice(Position from, Position to)
         {
-            if (from._node == null)
+            var (fromSegment, fromIndex) = from.Get<IMemoryList<byte>>();
+            var (toSegment, toIndex) = to.Get<IMemoryList<byte>>();
+
+            if (fromSegment == null)
             {
-                var indexFrom = First.Length - from._index;
-                var indexTo = First.Length - to._index;
+                var indexFrom = First.Length - fromIndex;
+                var indexTo = First.Length - toIndex;
                 return Slice(indexFrom, indexTo - indexFrom + 1);
             }
 
             var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
-            var newHeadIndex = from._node.VirtualIndex + from._index;
-            var newEndIndex = to._node.VirtualIndex + to._index;
+            var newHeadIndex = fromSegment.VirtualIndex + fromIndex;
+            var newEndIndex = toSegment.VirtualIndex + toIndex;
             var slicedOffFront = newHeadIndex - headIndex;
             var length = newEndIndex - newHeadIndex;
             // TODO: this could be optimized to avoid the Slice
-            var a = new ReadOnlyBytes(from._node, length + from._index);
-            a = a.Slice(from._index);
+            var a = new ReadOnlyBytes(fromSegment, length + fromIndex);
+            a = a.Slice(fromIndex);
             return a;
         }
 
-        public Cursor CursorOf(byte value)
+        public Position PositionOf(byte value)
         {
             ReadOnlySpan<byte> first = _first.Span;
             int index = first.IndexOf(value);
@@ -229,18 +233,18 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return new Cursor(null, first.Length - index);
+                    return Position.Create(first.Length - index);
                 }
                 else { 
                     var allIndex = index + (_all.Memory.Length - first.Length);
-                    return new Cursor(_all, allIndex);
+                    return Position.Create(allIndex, _all);
                 }
             }
             if (Rest == null) return default;
-            return CursorOf(Rest, value);
+            return PositionOf(Rest, value);
         }
 
-        public Cursor CursorAt(int index)
+        public Position PositionAt(int index)
         {
             ReadOnlySpan<byte> first = _first.Span;
             int firstLength = first.Length;
@@ -249,28 +253,28 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return new Cursor(null, firstLength - index);
+                    return Position.Create(firstLength - index);
                 }
                 else
                 {
                     var allIndex = index + (_all.Memory.Length - firstLength);
-                    return new Cursor(_all, allIndex);
+                    return Position.Create(allIndex, _all);
                 }
             }
             if (Rest == null) return default;
-            return CursorAt(Rest, index - firstLength);
+            return PositionAt(Rest, index - firstLength);
         }
 
-        private static Cursor CursorOf(IMemoryList<byte> list, byte value)
+        private static Position PositionOf(IMemoryList<byte> list, byte value)
         {
             ReadOnlySpan<byte> first = list.Memory.Span;
             int index = first.IndexOf(value);
-            if (index != -1) return new Cursor(list, index);
+            if (index != -1) return Position.Create(index, list);
             if (list.Rest == null) return default;
-            return CursorOf(list.Rest, value);
+            return PositionOf(list.Rest, value);
         }
 
-        private static Cursor CursorAt(IMemoryList<byte> list, int index)
+        private static Position PositionAt(IMemoryList<byte> list, int index)
         {
             if (list == null) return default;
             ReadOnlySpan<byte> first = list.Memory.Span;
@@ -278,9 +282,9 @@ namespace System.Buffers
 
             if (index < firstLength)
             {
-                return new Cursor(list, index);
+                return Position.Create(index, list);
             }
-            return CursorAt(list.Rest, index - firstLength);
+            return PositionAt(list.Rest, index - firstLength);
         }
 
         public int CopyTo(Span<byte> buffer)
@@ -319,33 +323,6 @@ namespace System.Buffers
 
         public SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes> GetEnumerator()
             => new SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes>(this);
-
-        public static ReadOnlyBytes Create(params byte[][] buffers)
-        {
-            if (buffers.Length == 0) return Empty;
-            if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
-
-            MemoryList first = new MemoryList(buffers[0]);
-            var last = first;
-            for(int i=1; i<buffers.Length; i++)
-            {
-                last = last.Append(buffers[i]);
-            }
-
-            return new ReadOnlyBytes(first, last.VirtualIndex + last.Length);
-        }
-
-        public readonly struct Cursor
-        {
-            internal readonly IMemoryList<byte> _node;
-            internal readonly int _index;
-
-            public Cursor(IMemoryList<byte> node, int index)
-            {
-                _node = node;
-                _index = index;
-            }
-        }
     }
 }
 

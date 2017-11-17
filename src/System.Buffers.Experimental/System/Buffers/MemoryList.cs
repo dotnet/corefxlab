@@ -7,10 +7,10 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    class MemoryList : IMemoryList<byte>
+    public class MemoryList : IMemoryList<byte>
     {
-        internal Memory<byte> _data;
-        internal MemoryList _next;
+        private Memory<byte> _data;
+        private MemoryList _next;
         private long _virtualIndex;
 
         public MemoryList(Memory<byte> bytes)
@@ -29,7 +29,7 @@ namespace System.Buffers
         public MemoryList Append(Memory<byte> bytes)
         {
             if (_next != null) throw new InvalidOperationException("Node cannot be appended");
-            var node = new MemoryList(bytes, _virtualIndex + Length);
+            var node = new MemoryList(bytes, _virtualIndex + _data.Length);
             _next = node;
             return node;
         }
@@ -37,8 +37,6 @@ namespace System.Buffers
         public Memory<byte> Memory => _data;
 
         public IMemoryList<byte> Rest => _next;
-
-        public long Length => _data.Length;
 
         public long VirtualIndex => _virtualIndex;
 
@@ -93,6 +91,23 @@ namespace System.Buffers
             item = sequence._data;
             if (advance) { position.SetItem(sequence._next); }
             return true;
+        }
+
+        public static (MemoryList list, long length) Create(params byte[][] buffers)
+        {
+            if(buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
+            {
+                return (new MemoryList(Memory<byte>.Empty), 0);
+            }
+
+            MemoryList first = new MemoryList(buffers[0]);
+            var last = first;
+            for (int i = 1; i < buffers.Length; i++)
+            {
+                last = last.Append(buffers[i]);
+            }
+
+            return (first, last.VirtualIndex + last.Memory.Length);
         }
     }
 }

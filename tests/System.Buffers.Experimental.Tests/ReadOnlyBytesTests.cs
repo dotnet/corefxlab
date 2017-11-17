@@ -58,7 +58,7 @@ namespace System.Buffers.Tests
             var array1 = new byte[] { 0, 1 };
             var array2 = new byte[] { 2, 3 };
             var totalLength = array1.Length + array2.Length;
-            ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
+            ReadOnlyBytes bytes = ListHelper.CreateRob(array1, array2);
 
             ReadOnlyBytes sliced = bytes;
             ReadOnlySpan<byte> span;
@@ -73,105 +73,105 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public void MultiSegmentCursorSlicing()
+        public void MultiSegmentPositionSlicing()
         {
             var array1 = new byte[] { 0, 1 };
             var array2 = new byte[] { 2, 3 };
-            ReadOnlyBytes allBytes = ReadOnlyBytes.Create(array1, array2);
+            ReadOnlyBytes allBytes = ListHelper.CreateRob(array1, array2);
 
             ReadOnlyBytes allBytesSlice1 = allBytes.Slice(1);
             ReadOnlyBytes allBytesSlice2 = allBytes.Slice(2);
             ReadOnlyBytes allBytesSlice3 = allBytes.Slice(3);
 
-            var cursorOf3 = allBytes.CursorOf(3);
-            var cursorOf1 = allBytes.CursorOf(1);
+            var positionOf3 = allBytes.PositionOf(3);
+            var positionOf1 = allBytes.PositionOf(1);
 
             // all bytes
             {
-                var slice = allBytes.Slice(cursorOf3);
+                var slice = allBytes.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytes.Slice(cursorOf1);
+                var slice = allBytes.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
 
             // allBytesSlice1
             {
-                var slice = allBytesSlice1.Slice(cursorOf3);
+                var slice = allBytesSlice1.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytesSlice1.Slice(cursorOf1);
+                var slice = allBytesSlice1.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
 
             // allBytesSlice2
             {
-                var slice = allBytesSlice2.Slice(cursorOf3);
+                var slice = allBytesSlice2.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytesSlice2.Slice(cursorOf1);
+                var slice = allBytesSlice2.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
 
             // allBytesSlice3
             {
-                var slice = allBytesSlice3.Slice(cursorOf3);
+                var slice = allBytesSlice3.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytesSlice3.Slice(cursorOf1);
+                var slice = allBytesSlice3.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
         }
 
         [Fact]
-        public void SingleSegmentCursorSlicing()
+        public void SingleSegmentPositionSlicing()
         {
             var array1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
             ReadOnlyBytes allBytes = new ReadOnlyBytes(array1);
 
             ReadOnlyBytes allBytesSlice = allBytes.Slice(1);
 
-            var cursorOf3 = allBytes.CursorOf(3);
-            var cursorOf1 = allBytes.CursorOf(1);
+            var positionOf3 = allBytes.PositionOf(3);
+            var positionOf1 = allBytes.PositionOf(1);
 
             // all bytes
             {
-                var slice = allBytes.Slice(cursorOf3);
+                var slice = allBytes.Slice(positionOf3);
                 Assert.Equal(6, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytes.Slice(cursorOf1);
+                var slice = allBytes.Slice(positionOf1);
                 Assert.Equal(8, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
 
             // allBytesSlice1
             {
-                var slice = allBytesSlice.Slice(cursorOf3);
+                var slice = allBytesSlice.Slice(positionOf3);
                 Assert.Equal(6, slice.Length);
                 Assert.Equal(3, slice.First.Span[0]);
             }
 
             {
-                var slice = allBytesSlice.Slice(cursorOf1);
+                var slice = allBytesSlice.Slice(positionOf1);
                 Assert.Equal(8, slice.Length);
                 Assert.Equal(1, slice.First.Span[0]);
             }
@@ -182,8 +182,8 @@ namespace System.Buffers.Tests
         {
             // single segment
             {
-                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-                var c = rob.CursorOf(5);
+                var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                var c = rob.PositionOf(5);
 
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
@@ -195,8 +195,8 @@ namespace System.Buffers.Tests
 
             // multi segment
             {
-                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
-                var c = rob.CursorOf(5);
+                var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
+                var c = rob.PositionOf(5);
 
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
@@ -208,13 +208,13 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public void LengthCursorSlicing()
+        public void LengthPositionSlicing()
         {
             // single segment
             {
                 var rob = new ReadOnlyBytes(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-                var c2 = rob.CursorOf(2);
-                var c5 = rob.CursorOf(5);
+                var c2 = rob.PositionOf(2);
+                var c5 = rob.PositionOf(5);
 
                 var slice = rob.Slice(c2, c5);
 
@@ -224,9 +224,9 @@ namespace System.Buffers.Tests
 
             // multi segment
             {
-                var rob = ReadOnlyBytes.Create(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
-                var c2 = rob.CursorOf(2);
-                var c5 = rob.CursorOf(5);
+                var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
+                var c2 = rob.PositionOf(2);
+                var c5 = rob.PositionOf(5);
 
                 var slice = rob.Slice(c2, c5);
 
@@ -276,7 +276,7 @@ namespace System.Buffers.Tests
             var array1 = new byte[] { 0, 1 };
             var array2 = new byte[] { 2, 3 };
             var totalLength = array1.Length + array2.Length;
-            ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
+            ReadOnlyBytes bytes = ListHelper.CreateRob(array1, array2);
 
             { // copy to equal
                 var copy = new byte[totalLength];
@@ -312,7 +312,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultiSegmentIndexOfSpan()
         {
-            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+            var bytes = ListHelper.CreateRob(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
             Assert.Equal(10, bytes.First.Length);
             Assert.Equal(9, bytes.First.Span[9]);
 
@@ -341,7 +341,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultiSegmentIndexOfByte()
         {
-            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+            var bytes = ListHelper.CreateRob(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
             Assert.Equal(10, bytes.First.Length);
             Assert.Equal(9, bytes.First.Span[9]);
 
@@ -455,7 +455,7 @@ namespace System.Buffers.Tests
             {
                 buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-            return ReadOnlyBytes.Create(buffers.ToArray());
+            return ListHelper.CreateRob(buffers.ToArray());
         }
 
         private ReadOnlyBytes Parse(string text)
@@ -466,7 +466,7 @@ namespace System.Buffers.Tests
             {
                 buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-            return ReadOnlyBytes.Create(buffers.ToArray());
+            return ListHelper.CreateRob(buffers.ToArray());
         }
     }
 }
