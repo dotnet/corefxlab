@@ -14,15 +14,23 @@ namespace System.Buffers
     {
         readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
         readonly IMemoryList<byte> _all;
-        readonly long _totalLength;
+
+        // For multi-segment ROB, this is the total length of the ROB
+        // For single-segment ROB that are slices, this is the offset of the first byte from the original ROB
+        // Otherwise zero
+        readonly long _totalLengthOrOffset;
 
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer)
+        public ReadOnlyBytes(ReadOnlyMemory<byte> buffer) : this(buffer, 0)
+        {
+        }
+
+        private ReadOnlyBytes(ReadOnlyMemory<byte> buffer, int offset)
         {
             _first = buffer;
             _all = null;
-            _totalLength = _first.Length;
+            _totalLengthOrOffset = offset;
         }
 
         public ReadOnlyBytes(IMemoryList<byte> segments, long length)
@@ -30,7 +38,7 @@ namespace System.Buffers
             // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.First;
             _all = segments;
-            _totalLength = length;
+            _totalLengthOrOffset = length;
         }
 
         private ReadOnlyBytes(ReadOnlyMemory<byte> first, IMemoryList<byte> all, long length)
@@ -38,7 +46,7 @@ namespace System.Buffers
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
             _all = all;
-            _totalLength = length;
+            _totalLengthOrOffset = _all == null ? 0 : length;
         }
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
@@ -60,9 +68,9 @@ namespace System.Buffers
             value = rest.First;
             // We need to slice off the last segment based on length of this. 
             // ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + runningIndex > _totalLength)
+            if (value.Length + runningIndex > Length)
             {
-                value = value.Slice(0, (int)(_totalLength - runningIndex));
+                value = value.Slice(0, (int)(Length - runningIndex));
                 if (value.Length == 0) return false;
             }
 
@@ -74,7 +82,7 @@ namespace System.Buffers
 
         internal IMemoryList<byte> Rest => _all?.Rest;
 
-        public long Length => _totalLength;
+        public long Length => _all == null ? _first.Length : _totalLengthOrOffset;
 
         public long Index => _all == null ? 0 : _all.Index;
 
@@ -92,6 +100,14 @@ namespace System.Buffers
         public ReadOnlyBytes Slice(long index, long length)
         {
             if(length==0) return Empty;
+
+            if(_all == null)
+            {
+                if (index > _first.Length) throw new ArgumentOutOfRangeException(nameof(index));
+                if (length > _first.Length - index) throw new ArgumentOutOfRangeException(nameof(length));
+
+                return new ReadOnlyBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrOffset + index));
+            }
 
             var first = First;
             if (first.Length >= length + index)
@@ -113,7 +129,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(long index)
         {
-            return Slice(index, _totalLength - index);
+            return Slice(index, Length - index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
