@@ -8,34 +8,27 @@ namespace System.Collections.Sequences
 {
     public struct Position : IEquatable<Position>
     {
-        long _index;
+        int _index;
         object _item;
 
-        public static Position Create<T>(T item, long index) where T : class
+        public static Position Create<T>(T item, int index) where T : class
         {
             Position position = default;
             position.Set(item, index);
             return position;
         }
 
-        public static explicit operator int(Position position) => (int)position._index;
+        public static explicit operator int(Position position) => position._index;
 
-        public static implicit operator long(Position position) => position._index;
-
-        public long GetIndexLong() => _index;
-
-        public int GetIndex() => (int)_index;
+        public int GetIndex() => _index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (T item, long index) GetLong<T>() => (GetItem<T>(), this);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
 
-        public void SetIndex(long index) => _index = index;
+        public void SetIndex(int index) => _index = index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetItem<T>(T item) where T : class
@@ -45,7 +38,7 @@ namespace System.Collections.Sequences
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(T item, long index) where T : class
+        public void Set<T>(T item, int index) where T : class
         {
             if (item == null) this = End;
             else
@@ -56,7 +49,7 @@ namespace System.Collections.Sequences
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance<T>(T item, long offset) where T : class
+        public void Advance<T>(T item, int offset) where T : class
         {
             if (item == null) this = End;
             else
@@ -66,11 +59,11 @@ namespace System.Collections.Sequences
             }
         }
 
-        public static Position operator +(Position position, long offset) => new Position(position._item, position._index + offset);
+        public static Position operator +(Position position, int offset) => new Position(position._item, position._index + offset);
 
-        public static Position operator -(Position position, long offset) => new Position(position._item, position._index - offset);
+        public static Position operator -(Position position, int offset) => new Position(position._item, position._index - offset);
 
-        public static readonly Position End = new Position(new object(), long.MaxValue);
+        public static readonly Position End = new Position(new object(), int.MaxValue);
 
         public bool IsEnd => this == End;
 
@@ -92,7 +85,7 @@ namespace System.Collections.Sequences
         public override string ToString() =>
             _item == null ? @"{_index}" : @"{_index}, {_obj}";
 
-        private Position(object obj, long index)
+        private Position(object obj, int index)
         {
             _item = obj;
             _index = index;

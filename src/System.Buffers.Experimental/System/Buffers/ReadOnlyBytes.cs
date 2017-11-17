@@ -13,7 +13,7 @@ namespace System.Buffers
     public readonly struct ReadOnlyBytes : ISequence<ReadOnlyMemory<byte>>
     {
         readonly ReadOnlyMemory<byte> _first; // pointer + index:int + length:int
-        readonly IMemoryList<byte> _all;
+        readonly IMemorySegment<byte> _all;
 
         // For multi-segment ROB, this is the total length of the ROB
         // For single-segment ROB that are slices, this is the offset of the first byte from the original ROB
@@ -33,7 +33,7 @@ namespace System.Buffers
             _totalLengthOrOffset = offset;
         }
 
-        public ReadOnlyBytes(IMemoryList<byte> segments, long length)
+        public ReadOnlyBytes(IMemorySegment<byte> segments, long length)
         {
             // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
             _first = segments.First;
@@ -41,7 +41,7 @@ namespace System.Buffers
             _totalLengthOrOffset = length;
         }
 
-        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IMemoryList<byte> all, long length)
+        private ReadOnlyBytes(ReadOnlyMemory<byte> first, IMemorySegment<byte> all, long length)
         {
             // TODO: add assert that first overlaps all (once we have Overlap on Span)
             _first = first;
@@ -54,37 +54,69 @@ namespace System.Buffers
             if (position == default)
             {
                 value = _first;
-                if (advance) position.Advance(Rest, _first.Length);
+                if (advance) position.SetItem(Rest);
                 return (!_first.IsEmpty || _all != null);
             }
-
-            var (rest, runningIndex) = position.GetLong<IMemoryList<byte>>();
-            if (rest == null)
+            if (position.IsEnd)
             {
                 value = default;
                 return false;
             }
 
-            value = rest.First;
-            // We need to slice off the last segment based on length of this. 
-            // ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + runningIndex > Length)
+            var (segment, index) = position.Get<IMemorySegment<byte>>();
+
+            if (segment == null)
             {
-                value = value.Slice(0, (int)(Length - runningIndex));
-                if (value.Length == 0) return false;
+                if (_all == null) // single segment ROB
+                {
+                    value = _first.Slice(index - (int)_totalLengthOrOffset);
+                    if (advance) position = Position.End;
+                    return true;
+                }
+                else
+                {
+                    value = default;
+                    return false;
+                }
             }
 
-            if (advance) position.Advance(rest.Rest, value.Length);
-            return true;
+            var memory = segment.First;
+
+            // We need to slice off the last segment based on length of this ROB. 
+            // This ROB is a potentially shorted view over a longer segment list.
+            var virtualIndex = segment.Index;
+            var lengthOfFirst = virtualIndex - Index;
+            var lengthOfEnd = lengthOfFirst + memory.Length;
+            if (lengthOfEnd > Length)
+            {
+                if (advance) position = Position.End;
+                value = memory.Slice(0, (int)(Length - lengthOfFirst));
+                if (index < value.Length)
+                {
+                    if(index > 0) value = value.Slice(index);
+                    return true;
+                }
+                else
+                {
+                    value = Memory<byte>.Empty;
+                    return false;
+                }
+            }
+            else
+            {
+                value = memory.Slice(index);
+                if (advance) position.SetItem(segment.Rest);
+                return true;
+            }
         }
 
         public ReadOnlyMemory<byte> First => _first;
 
-        internal IMemoryList<byte> Rest => _all?.Rest;
+        internal IMemorySegment<byte> Rest => _all?.Rest;
 
         public long Length => _all == null ? _first.Length : _totalLengthOrOffset;
 
-        public long Index => _all == null ? 0 : _all.Index;
+        public long Index => _all == null ? _totalLengthOrOffset : _all.Index + (_all.First.Length - _first.Length);
 
         public bool IsEmpty => _first.Length == 0 && _all == null;
 
@@ -229,7 +261,7 @@ namespace System.Buffers
             return CursorAt(Rest, index - firstLength);
         }
 
-        private static Cursor CursorOf(IMemoryList<byte> list, byte value)
+        private static Cursor CursorOf(IMemorySegment<byte> list, byte value)
         {
             ReadOnlySpan<byte> first = list.First.Span;
             int index = first.IndexOf(value);
@@ -238,7 +270,7 @@ namespace System.Buffers
             return CursorOf(list.Rest, value);
         }
 
-        private static Cursor CursorAt(IMemoryList<byte> list, int index)
+        private static Cursor CursorAt(IMemorySegment<byte> list, int index)
         {
             if (list == null) return default;
             ReadOnlySpan<byte> first = list.First.Span;
@@ -280,7 +312,7 @@ namespace System.Buffers
             }
 
             // TODO (pri 2): this could be optimized
-            var rest = new ReadOnlyBytes(Rest, length);
+            var rest = new ReadOnlyBytes(Rest, length + index - _first.Length);
             rest = rest.Slice(index - First.Length, length);
             return rest;
         }
@@ -288,7 +320,7 @@ namespace System.Buffers
         public SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes> GetEnumerator()
             => new SequenceEnumerator<ReadOnlyMemory<byte>, ReadOnlyBytes>(this);
 
-        class BufferListNode : IMemoryList<byte>
+        class BufferListNode : IMemorySegment<byte>
         {
             internal Memory<byte> _data;
             internal BufferListNode _next;
@@ -316,7 +348,7 @@ namespace System.Buffers
             }
 
             public Memory<byte> First => _data;
-            public IMemoryList<byte> Rest => _next;
+            public IMemorySegment<byte> Rest => _next;
 
             public long Length => _data.Length;
 
@@ -393,10 +425,10 @@ namespace System.Buffers
 
         public readonly struct Cursor
         {
-            internal readonly IMemoryList<byte> _node;
+            internal readonly IMemorySegment<byte> _node;
             internal readonly int _index;
 
-            public Cursor(IMemoryList<byte> node, int index)
+            public Cursor(IMemorySegment<byte> node, int index)
             {
                 _node = node;
                 _index = index;

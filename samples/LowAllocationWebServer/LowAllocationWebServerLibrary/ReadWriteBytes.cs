@@ -12,19 +12,19 @@ namespace System.Buffers
     public struct ReadWriteBytes : ISequence<Memory<byte>>, ISequence<ReadOnlyMemory<byte>>
     {
         Memory<byte> _first;
-        IMemoryList<byte> _rest;
+        IMemorySegment<byte> _rest;
         long _totalLength;
 
         static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
 
-        public ReadWriteBytes(Memory<byte> first, IMemoryList<byte> rest, long length)
+        public ReadWriteBytes(Memory<byte> first, IMemorySegment<byte> rest, long length)
         {
             _rest = rest;
             _first = first;
             _totalLength = length;
         }
 
-        public ReadWriteBytes(Memory<byte> first, IMemoryList<byte> rest) :
+        public ReadWriteBytes(Memory<byte> first, IMemorySegment<byte> rest) :
             this(first, rest, Unspecified)
         { }
 
@@ -32,11 +32,11 @@ namespace System.Buffers
             this(buffer, null, buffer.Length)
         { }
 
-        public ReadWriteBytes(IMemoryList<byte> segments, long length) :
+        public ReadWriteBytes(IMemorySegment<byte> segments, long length) :
             this(segments.First, segments.Rest, length)
         { }
 
-        public ReadWriteBytes(IMemoryList<byte> segments) :
+        public ReadWriteBytes(IMemorySegment<byte> segments) :
             this(segments.First, segments.Rest, Unspecified)
         { }
 
@@ -49,7 +49,7 @@ namespace System.Buffers
                 return (!_first.IsEmpty || _rest != null);
             }
 
-            var (rest, runningIndex) = position.GetLong<IMemoryList<byte>>();
+            var (rest, runningIndex) = position.Get<IMemorySegment<byte>>();
             if (rest == null)
             {
                 value = default;
@@ -70,7 +70,7 @@ namespace System.Buffers
 
         public Memory<byte> Memory => _first;
 
-        public IMemoryList<byte> Rest => _rest;
+        public IMemorySegment<byte> Rest => _rest;
 
         public static ReadWriteBytes Empty => s_empty;
 
@@ -154,13 +154,13 @@ namespace System.Buffers
         // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
         const int Unspecified = -1;
 
-        class BufferListNode : IMemoryList<byte>
+        class BufferListNode : IMemorySegment<byte>
         {
             internal Memory<byte> _first;
             internal BufferListNode _rest;
             public Memory<byte> First => _first;
 
-            public IMemoryList<byte> Rest => _rest;
+            public IMemorySegment<byte> Rest => _rest;
 
             public long Index => throw new NotImplementedException();
 

@@ -409,14 +409,14 @@ namespace System.Buffers.Tests
                     }
                     Assert.Equal(6 - i, length);
                 }
-                {
-                    var length = 0;
-                    foreach (var segment in multibytes)
-                    {
-                        length += segment.Length;
-                    }
-                    Assert.Equal(6 - i, length);
-                }
+                //{
+                //    var length = 0;
+                //    foreach (var segment in multibytes)
+                //    {
+                //        length += segment.Length;
+                //    }
+                //    Assert.Equal(6 - i, length);
+                //}
             }
         }
 
