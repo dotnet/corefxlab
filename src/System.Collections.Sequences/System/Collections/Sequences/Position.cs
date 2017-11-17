@@ -8,34 +8,25 @@ namespace System.Collections.Sequences
 {
     public struct Position : IEquatable<Position>
     {
-        long _index;
         object _item;
+        public int Index { get; set; }
 
-        public static Position Create<T>(T item, long index) where T : class
+        public static Position Create<T>(int index, T item) where T : class
         {
             Position position = default;
             position.Set(item, index);
             return position;
         }
 
-        public static explicit operator int(Position position) => (int)position._index;
+        public static Position Create(int index) => new Position(index, null);
 
-        public static implicit operator long(Position position) => position._index;
-
-        public long GetIndexLong() => _index;
-
-        public int GetIndex() => (int)_index;
+        public static explicit operator int(Position position) => position.Index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (T item, long index) GetLong<T>() => (GetItem<T>(), this);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
-
-        public void SetIndex(long index) => _index = index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetItem<T>(T item) where T : class
@@ -45,37 +36,22 @@ namespace System.Collections.Sequences
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(T item, long index) where T : class
+        public void Set<T>(T item, int index) where T : class
         {
             if (item == null) this = End;
             else
             {
                 _item = item;
-                _index = index;
+                Index = index;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance<T>(T item, long offset) where T : class
-        {
-            if (item == null) this = End;
-            else
-            {
-                _item = item;
-                _index += offset;
-            }
-        }
-
-        public static Position operator +(Position position, long offset) => new Position(position._item, position._index + offset);
-
-        public static Position operator -(Position position, long offset) => new Position(position._item, position._index - offset);
-
-        public static readonly Position End = new Position(new object(), long.MaxValue);
+        public static readonly Position End = new Position(int.MaxValue, new object());
 
         public bool IsEnd => this == End;
 
-        public static bool operator ==(Position left, Position right) => left._index == right._index && left._item == right._item;
-        public static bool operator !=(Position left, Position right) => left._index != right._index || left._item != right._item;
+        public static bool operator ==(Position left, Position right) => left.Index == right.Index && left._item == right._item;
+        public static bool operator !=(Position left, Position right) => left.Index != right.Index || left._item != right._item;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(Position position) => this == position;
@@ -86,16 +62,16 @@ namespace System.Collections.Sequences
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() =>
-            _index.GetHashCode() ^ (_item == null ? 0 : _item.GetHashCode());
+            Index.GetHashCode() ^ (_item == null ? 0 : _item.GetHashCode());
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() =>
             _item == null ? @"{_index}" : @"{_index}, {_obj}";
 
-        private Position(object obj, long index)
+        private Position(int index, object item)
         {
-            _item = obj;
-            _index = index;
+            _item = item;
+            Index = index;
         }
     }
 }

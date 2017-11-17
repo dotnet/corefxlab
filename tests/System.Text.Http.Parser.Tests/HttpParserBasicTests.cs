@@ -49,7 +49,8 @@ namespace System.Text.Http.Parser.Tests
                 var frontBytes = Encoding.ASCII.GetBytes(front);
                 var endBytes = Encoding.ASCII.GetBytes(back);
 
-                ReadOnlyBytes buffer = ReadOnlyBytes.Create(frontBytes, endBytes);
+                var (list, length) = MemoryList.Create(frontBytes, endBytes);
+                ReadOnlyBytes buffer = new ReadOnlyBytes(list, length);
 
                 var request = new Request();
 

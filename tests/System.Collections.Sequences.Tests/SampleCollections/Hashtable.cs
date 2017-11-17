@@ -103,7 +103,7 @@ namespace System.Collections.Sequences
                     return false;
                 }
 
-                position.SetIndex(firstOccupiedSlot);
+                position.Index = firstOccupiedSlot;
             }
 
             var index = (int)position;
@@ -114,7 +114,7 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position.SetIndex(first);
+                position.Index = first;
                 if (first == -1) {
                     position = Position.End;
                 }

@@ -36,7 +36,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
-            ReadOnlyBytes bytes = ReadOnlyBytes.Create(new byte[][] {
+            ReadOnlyBytes bytes = ListHelper.CreateRob(new byte[][] {
                 new byte[] { 0          },
                 new byte[] { 1, 2       },
                 new byte[] { 3, 4       },
@@ -168,9 +168,18 @@ namespace System.Buffers.Tests
         }
     }
 
+    static class ListHelper
+    {
+        public static ReadOnlyBytes CreateRob(params byte[][] buffers)
+        {
+            if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
+            var (list, length) = MemoryList.Create(buffers);
+            return new ReadOnlyBytes(list, length);
+        }
+    }
+
     public static class ReadOnlyBytesTextExtensions
     {
-
         public static string ToString(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
         {
             if (!bytes.HasValue) return string.Empty;
