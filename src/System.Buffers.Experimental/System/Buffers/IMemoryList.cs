@@ -5,11 +5,11 @@ using System.Collections.Sequences;
 
 namespace System.Buffers
 {
-    public interface IMemorySegment<T> : ISequence<Memory<T>>, ISequence<ReadOnlyMemory<T>>
+    public interface IMemoryList<T> : ISequence<Memory<T>>, ISequence<ReadOnlyMemory<T>>
     {
         Memory<T> Memory { get; }
 
-        IMemorySegment<T> Rest { get; }
+        IMemoryList<T> Rest { get; }
 
         long VirtualIndex { get; }
 
