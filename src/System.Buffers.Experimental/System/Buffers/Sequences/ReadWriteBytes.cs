@@ -237,7 +237,7 @@ namespace System.Buffers
                     return Position.Create(allIndex, _all);
                 }
             }
-            if (Rest == null) return default;
+            if (Rest == null) return Position.End;
             return PositionOf(Rest, value);
         }
 
@@ -267,13 +267,13 @@ namespace System.Buffers
             ReadOnlySpan<byte> first = list.Memory.Span;
             int index = first.IndexOf(value);
             if (index != -1) return Position.Create(index, list);
-            if (list.Rest == null) return default;
+            if (list.Rest == null) return Position.End;
             return PositionOf(list.Rest, value);
         }
 
         private static Position PositionAt(IMemoryList<byte> list, int index)
         {
-            if (list == null) return default;
+            if (list == null) return Position.End;
             ReadOnlySpan<byte> first = list.Memory.Span;
             int firstLength = first.Length;
 

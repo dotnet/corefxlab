@@ -66,7 +66,7 @@ namespace System.Collections.Sequences
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() =>
-            _item == null ? @"{_index}" : @"{_index}, {_obj}";
+            _item == null ? $"{Index}" : $"{Index}, {_item}";
 
         private Position(int index, object item)
         {

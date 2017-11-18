@@ -4,6 +4,7 @@
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace System.Buffers
 {
@@ -108,6 +109,25 @@ namespace System.Buffers
             }
 
             return (first, last.VirtualIndex + last.Memory.Length);
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.Append('[');
+            bool first = true;
+            for (int i = 0; i < Math.Min(5, _data.Length); i++)
+            {
+                if (!first) { builder.Append(", "); }
+                first = false;
+                builder.Append(_data.Span[i]);        
+            }
+            if(_data.Length > 5 || _next != null)
+            {
+                builder.Append(", ...");
+            }
+            builder.Append(']');
+            return builder.ToString();
         }
     }
 }

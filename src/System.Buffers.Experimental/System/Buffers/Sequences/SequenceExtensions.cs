@@ -20,5 +20,16 @@ namespace System.Buffers
             }
             return -1;
         }
+
+        public static Position PositionOf(this IMemoryList<byte> sequence, byte value)
+        {
+            while (sequence != null)
+            {
+                var index = sequence.Memory.Span.IndexOf(value);
+                if (index != -1) return Position.Create(index, sequence);
+                sequence = sequence.Rest;
+            }
+            return Position.End;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.IO.Pipelines;
-using System.IO.Pipelines.Testing;
+﻿using System.Collections.Sequences;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -58,6 +57,50 @@ namespace System.Buffers.Tests
             for (int i = 0; i < bytes.Length; i++)
             {
                 Assert.Equal(i, SequenceExtensions.IndexOf(bytes, (byte)(i + 2)));
+            }
+        }
+
+        [Fact]
+        public void SequencePositionOfMultiSegment()
+        {
+            var (list, length) = MemoryList.Create(
+                new byte[] { 1, 2 },
+                new byte[] { 3, 4 }
+            );
+            var bytes = new ReadOnlyBytes(list, length);
+
+            Assert.Equal(4, length);
+            Assert.Equal(4, bytes.Length);
+
+            // Static method call to avoid calling instance methods
+            Assert.Equal(Position.End, SequenceExtensions.PositionOf(list, 0));
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                var value = (byte)(i + 1);
+                var position = SequenceExtensions.PositionOf(list, value);
+                var (node, index) = position.Get<IMemoryList<byte>>();
+                Assert.Equal(value, node.Memory.Span[index]);
+
+                var robPosition = bytes.PositionOf(value);
+                Assert.Equal(position, robPosition);
+
+                var robSlice = bytes.Slice(1);
+                robPosition = robSlice.PositionOf(value);
+                if (i > 0)
+                {
+                    Assert.Equal(position, robPosition);
+                }
+                else
+                {
+                    Assert.Equal(Position.End, robPosition);
+                }
+
+                if (position != Position.End)
+                {
+                    robSlice = bytes.Slice(position);
+                    Assert.Equal(value, robSlice.First.Span[0]);
+                }
             }
         }
     }
