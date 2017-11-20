@@ -81,7 +81,7 @@ namespace System.Text.Http.Parser
         public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
-            var span = buffer.First.Span;
+            var span = buffer.Memory.Span;
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
@@ -370,7 +370,7 @@ namespace System.Text.Http.Parser
             consumedBytes = 0;
             Position position = default;
 
-            ReadOnlySpan<byte> currentSpan = buffer.First.Span;
+            ReadOnlySpan<byte> currentSpan = buffer.Memory.Span;
             var remaining = currentSpan.Length;
 
             while (true)

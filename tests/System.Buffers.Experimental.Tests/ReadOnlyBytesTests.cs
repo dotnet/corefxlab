@@ -15,7 +15,7 @@ namespace System.Buffers.Tests
             ReadOnlyMemory<byte> buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
             var sliced = bytes.Slice(1, 3);
-            var span = sliced.First.Span;
+            var span = sliced.Memory.Span;
             Assert.Equal((byte)2, span[0]);
 
             Assert.Equal(buffer.Length, bytes.Length);
@@ -26,7 +26,7 @@ namespace System.Buffers.Tests
         {
             var bytes = Parse("A|CD|EFG");
             bytes = bytes.Slice(2, 3);
-            Assert.Equal((byte)'D', bytes.First.Span[0]);
+            Assert.Equal((byte)'D', bytes.Memory.Span[0]);
 
             bytes = Parse("A|CD|EFG");
 
@@ -45,7 +45,7 @@ namespace System.Buffers.Tests
             for (int i = 1; i <= array.Length; i++)
             {
                 sliced = bytes.Slice(i);
-                span = sliced.First.Span;
+                span = sliced.Memory.Span;
                 Assert.Equal(array.Length - i, span.Length);
                 if (i != array.Length) Assert.Equal(i, span[0]);
             }
@@ -65,7 +65,7 @@ namespace System.Buffers.Tests
             for (int i = 1; i <= totalLength; i++)
             {
                 sliced = bytes.Slice(i);
-                span = sliced.First.Span;
+                span = sliced.Memory.Span;
                 Assert.Equal(totalLength - i, sliced.Length);
                 if (i != totalLength) Assert.Equal(i, span[0]);
             }
@@ -90,52 +90,52 @@ namespace System.Buffers.Tests
             {
                 var slice = allBytes.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytes.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
 
             // allBytesSlice1
             {
                 var slice = allBytesSlice1.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytesSlice1.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
 
             // allBytesSlice2
             {
                 var slice = allBytesSlice2.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytesSlice2.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
 
             // allBytesSlice3
             {
                 var slice = allBytesSlice3.Slice(positionOf3);
                 Assert.Equal(1, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytesSlice3.Slice(positionOf1);
                 Assert.Equal(3, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
         }
 
@@ -154,26 +154,26 @@ namespace System.Buffers.Tests
             {
                 var slice = allBytes.Slice(positionOf3);
                 Assert.Equal(6, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytes.Slice(positionOf1);
                 Assert.Equal(8, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
 
             // allBytesSlice1
             {
                 var slice = allBytesSlice.Slice(positionOf3);
                 Assert.Equal(6, slice.Length);
-                Assert.Equal(3, slice.First.Span[0]);
+                Assert.Equal(3, slice.Memory.Span[0]);
             }
 
             {
                 var slice = allBytesSlice.Slice(positionOf1);
                 Assert.Equal(8, slice.Length);
-                Assert.Equal(1, slice.First.Span[0]);
+                Assert.Equal(1, slice.Memory.Span[0]);
             }
         }
 
@@ -188,9 +188,9 @@ namespace System.Buffers.Tests
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
 
-                Assert.NotEqual(slice1.First.Span[0], slice2.First.Span[0]);
-                Assert.Equal(5, slice1.First.Span[0]);
-                Assert.Equal(7, slice2.First.Span[0]);
+                Assert.NotEqual(slice1.Memory.Span[0], slice2.Memory.Span[0]);
+                Assert.Equal(5, slice1.Memory.Span[0]);
+                Assert.Equal(7, slice2.Memory.Span[0]);
             }
 
             // multi segment
@@ -201,9 +201,9 @@ namespace System.Buffers.Tests
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
 
-                Assert.NotEqual(slice1.First.Span[0], slice2.First.Span[0]);
-                Assert.Equal(5, slice1.First.Span[0]);
-                Assert.Equal(7, slice2.First.Span[0]);
+                Assert.NotEqual(slice1.Memory.Span[0], slice2.Memory.Span[0]);
+                Assert.Equal(5, slice1.Memory.Span[0]);
+                Assert.Equal(7, slice2.Memory.Span[0]);
             }
         }
 
@@ -218,7 +218,7 @@ namespace System.Buffers.Tests
 
                 var slice = rob.Slice(c2, c5);
 
-                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(2, slice.Memory.Span[0]);
                 Assert.Equal(4, slice.Length);
             }
 
@@ -230,7 +230,7 @@ namespace System.Buffers.Tests
 
                 var slice = rob.Slice(c2, c5);
 
-                Assert.Equal(2, slice.First.Span[0]);
+                Assert.Equal(2, slice.Memory.Span[0]);
                 Assert.Equal(3, slice.Length);
             }
         }
@@ -313,8 +313,8 @@ namespace System.Buffers.Tests
         public void MultiSegmentIndexOfSpan()
         {
             var bytes = ListHelper.CreateRob(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-            Assert.Equal(10, bytes.First.Length);
-            Assert.Equal(9, bytes.First.Span[9]);
+            Assert.Equal(10, bytes.Memory.Length);
+            Assert.Equal(9, bytes.Memory.Span[9]);
 
             var index = bytes.IndexOf(new byte[] { 2, 3 });
             Assert.Equal(2, index);
@@ -342,8 +342,8 @@ namespace System.Buffers.Tests
         public void MultiSegmentIndexOfByte()
         {
             var bytes = ListHelper.CreateRob(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-            Assert.Equal(10, bytes.First.Length);
-            Assert.Equal(9, bytes.First.Span[9]);
+            Assert.Equal(10, bytes.Memory.Length);
+            Assert.Equal(9, bytes.Memory.Span[9]);
 
             for (int i = 0; i < 20; i++)
             {

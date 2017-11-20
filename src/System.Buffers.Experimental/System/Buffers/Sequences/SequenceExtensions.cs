@@ -8,26 +8,37 @@ namespace System.Buffers
 {
     public static class SequenceExtensions
     {
-        public static long IndexOf(this ISequence<ReadOnlyMemory<byte>> sequence, byte value)
+        // TODO: this cannot be an extension method (as I would like iot to be).
+        // If I make it an extensions method, the compiler complains Span<T> cannot
+        // be used as a type parameter.
+        public static long IndexOf<TSequence>(TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             Position position = default;
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var index = memory.Span.IndexOf(value);
+                var index = SpanExtensions.IndexOf(memory.Span, value);
                 if (index != -1) return index + totalIndex;
                 totalIndex += memory.Length;
             }
             return -1;
         }
 
-        public static Position PositionOf(this IMemoryList<byte> sequence, byte value)
+        public static Position PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            while (sequence != null)
+            if (sequence == null) return Position.End;
+
+            Position position = sequence.First;
+            Position result = position;
+            while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var index = sequence.Memory.Span.IndexOf(value);
-                if (index != -1) return Position.Create(index, sequence);
-                sequence = sequence.Rest;
+                var index = SpanExtensions.IndexOf(memory.Span, value);
+                if (index != -1)
+                {
+                    result.Index += index;
+                    return result;
+                }
+                result = position;
             }
             return Position.End;
         }

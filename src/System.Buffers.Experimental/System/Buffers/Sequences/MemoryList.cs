@@ -41,6 +41,8 @@ namespace System.Buffers
 
         public long VirtualIndex => _virtualIndex;
 
+        public Position First => Position.Create(0, this);
+
         public int CopyTo(Span<byte> buffer)
         {
             int copied = 0;

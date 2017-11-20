@@ -35,6 +35,8 @@ namespace Microsoft.Net
 
         public long VirtualIndex => throw new NotImplementedException();
 
+        public Position First => Position.Create(0, this);
+
         public int CopyTo(Span<byte> buffer)
         {
             if (buffer.Length > _written) {

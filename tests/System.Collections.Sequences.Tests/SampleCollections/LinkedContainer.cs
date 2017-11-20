@@ -26,6 +26,8 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
+        public Position First => Position.Create(0, _head);
+
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
             if(_count == 0)

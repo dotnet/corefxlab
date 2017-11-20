@@ -73,33 +73,46 @@ namespace System.Buffers.Tests
             Assert.Equal(4, bytes.Length);
 
             // Static method call to avoid calling instance methods
-            Assert.Equal(Position.End, SequenceExtensions.PositionOf(list, 0));
+            Assert.Equal(Position.End, SequenceExtensions.PositionOf(bytes, 0));
 
             for (int i = 0; i < bytes.Length; i++)
             {
                 var value = (byte)(i + 1);
-                var position = SequenceExtensions.PositionOf(list, value);
-                var (node, index) = position.Get<IMemoryList<byte>>();
-                Assert.Equal(value, node.Memory.Span[index]);
+
+                var listPosition = SequenceExtensions.PositionOf(list, value);
+                var (node, index) = listPosition.Get<IMemoryList<byte>>();
+
+                if (!listPosition.IsEnd)
+                {
+                    Assert.Equal(value, node.Memory.Span[index]);
+                }
 
                 var robPosition = bytes.PositionOf(value);
-                Assert.Equal(position, robPosition);
+                var robSequencePosition = SequenceExtensions.PositionOf(bytes, value);
+
+                Assert.Equal(listPosition, robPosition);
+                Assert.Equal(listPosition, robSequencePosition);
 
                 var robSlice = bytes.Slice(1);
                 robPosition = robSlice.PositionOf(value);
+                robSequencePosition = SequenceExtensions.PositionOf(robSlice, value);
+
                 if (i > 0)
                 {
-                    Assert.Equal(position, robPosition);
+
+                    Assert.Equal(listPosition, robPosition);
+                    Assert.Equal(listPosition, robSequencePosition);
                 }
                 else
                 {
                     Assert.Equal(Position.End, robPosition);
+                    Assert.Equal(Position.End, robSequencePosition);
                 }
 
-                if (position != Position.End)
+                if (listPosition != Position.End)
                 {
-                    robSlice = bytes.Slice(position);
-                    Assert.Equal(value, robSlice.First.Span[0]);
+                    robSlice = bytes.Slice(listPosition);
+                    Assert.Equal(value, robSlice.Memory.Span[0]);
                 }
             }
         }

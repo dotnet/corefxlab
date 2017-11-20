@@ -79,7 +79,7 @@ namespace LowAllocationWebServer
             int requestedCount;
 
             // TODO: this should not convert to span
-            var dom = JsonObject.Parse(body.First.Span);
+            var dom = JsonObject.Parse(body.Memory.Span);
             try
             {
                 requestedCount = (int)dom["Count"];
