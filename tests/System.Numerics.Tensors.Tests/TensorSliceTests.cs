@@ -323,8 +323,8 @@ namespace System.Numerics.Tensors.Tests
             var slice = Get3DSlice(constructor);
 
             Assert.Throws<ArgumentNullException>(() => slice[(int[])null]);
-            Assert.Throws<ArgumentNullException>(() => slice[(ReadOnlySpan<int>)null]);
             Assert.Throws<ArgumentException>(() => slice[new int[] { }]);
+            Assert.Throws<ArgumentException>(() => slice[default(ReadOnlySpan<int>)]);
             Assert.Throws<ArgumentException>(() => slice[2, 0]);
             Assert.Throws<ArgumentException>(() => slice[2, 0, 0, 4]);
 
