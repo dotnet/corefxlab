@@ -17,7 +17,7 @@ namespace System.Buffers
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var index = SpanExtensions.IndexOf(memory.Span, value);
+                var index = MemoryExtensions.IndexOf(memory.Span, value);
                 if (index != -1) return index + totalIndex;
                 totalIndex += memory.Length;
             }
@@ -32,7 +32,7 @@ namespace System.Buffers
             Position result = position;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var index = SpanExtensions.IndexOf(memory.Span, value);
+                var index = MemoryExtensions.IndexOf(memory.Span, value);
                 if (index != -1)
                 {
                     result.Index += index;
