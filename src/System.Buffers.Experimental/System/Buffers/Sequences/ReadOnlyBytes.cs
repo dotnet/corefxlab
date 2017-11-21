@@ -49,6 +49,14 @@ namespace System.Buffers
             _totalLengthOrVirtualIndex = _all == null ? 0 : length;
         }
 
+        public Position First
+        {
+            get {
+                if (_all == null) return Position.Create((int)_totalLengthOrVirtualIndex);
+                return Position.Create(_all.Memory.Length - _first.Length, _all);
+            }
+        }
+
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
             if (position == default)
@@ -105,12 +113,12 @@ namespace System.Buffers
             else
             {
                 value = memory.Slice(index);
-                if (advance) position.SetItem(segment.Rest);
+                if (advance) position = Position.Create(0, segment.Rest);
                 return true;
             }
         }
 
-        public ReadOnlyMemory<byte> First => _first;
+        public ReadOnlyMemory<byte> Memory => _first;
 
         internal IMemoryList<byte> Rest => _all?.Rest;
 
@@ -145,7 +153,7 @@ namespace System.Buffers
                 return new ReadOnlyBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrVirtualIndex + index));
             }
 
-            var first = First;
+            var first = Memory;
             if (first.Length >= length + index)
             {
                 var slice = first.Slice((int)index, (int)length);
@@ -198,7 +206,7 @@ namespace System.Buffers
         public ReadOnlyBytes Slice(Position from)
         {
             var (segment, index) = from.Get<IMemoryList<byte>>();
-            if (segment == null) return Slice(First.Length - index);
+            if (segment == null) return Slice(Memory.Length - index);
             var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
             var newHeadIndex = segment.VirtualIndex;
             var diff = newHeadIndex - headIndex;
@@ -213,8 +221,8 @@ namespace System.Buffers
 
             if (fromSegment == null)
             {
-                var indexFrom = First.Length - fromIndex;
-                var indexTo = First.Length - toIndex;
+                var indexFrom = Memory.Length - fromIndex;
+                var indexTo = Memory.Length - toIndex;
                 return Slice(indexFrom, indexTo - indexFrom + 1);
             }
 
@@ -293,7 +301,7 @@ namespace System.Buffers
 
         public int CopyTo(Span<byte> buffer)
         {
-            var first = First;
+            var first = Memory;
             var firstLength = first.Length;
             if (firstLength > buffer.Length)
             {
@@ -309,7 +317,7 @@ namespace System.Buffers
         {
             if (Rest == null)
             {
-                if (First.Length == index && length == 0)
+                if (Memory.Length == index && length == 0)
                 {
                     return new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
                 }
@@ -321,7 +329,7 @@ namespace System.Buffers
 
             // TODO (pri 2): this could be optimized
             var rest = new ReadOnlyBytes(Rest, length + index - _first.Length);
-            rest = rest.Slice(index - First.Length, length);
+            rest = rest.Slice(index - Memory.Length, length);
             return rest;
         }
 

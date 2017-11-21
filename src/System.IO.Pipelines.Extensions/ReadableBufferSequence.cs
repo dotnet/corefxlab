@@ -14,6 +14,8 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
+        public Position First => Position.Create(_buffer.BufferStart.Index, _buffer.BufferStart.Segment);
+
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             if (position == default)

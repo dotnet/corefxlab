@@ -102,7 +102,7 @@ namespace System.Diagnostics
                 }
 
                 // TODO: Logger should support Utf8Span
-                log.LogMessage(Log.Level.Verbose, Utf8.ToString(body.First.Span));
+                log.LogMessage(Log.Level.Verbose, Utf8.ToString(body.Memory.Span));
             }
         }
     }

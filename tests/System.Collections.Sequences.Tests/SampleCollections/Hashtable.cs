@@ -87,6 +87,8 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
+        public Position First => default;
+
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
         {
             item = default;

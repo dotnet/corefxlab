@@ -22,7 +22,7 @@ namespace System.Buffers.Text
         public BytesReader(ReadOnlyBytes bytes, SymbolTable symbolTable)
         {
             _unreadSegments = bytes;
-            _currentSegment = bytes.First;
+            _currentSegment = bytes.Memory;
             _symbolTable = symbolTable;
             _currentSegmentIndex = 0;
             _index = 0;
@@ -188,7 +188,7 @@ namespace System.Buffers.Text
 
             _currentSegment = newUnreadSegments.Memory;
             _currentSegmentIndex = 0;
-            _unreadSegments = _unreadSegments.Slice(_unreadSegments.First.Length);
+            _unreadSegments = _unreadSegments.Slice(_unreadSegments.Memory.Length);
             _index += advancedInCurrent;
 
             if (toAdvanceUnreadSegments != 0)

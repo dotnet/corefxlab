@@ -59,7 +59,7 @@ public class BytesReaderBench
                 int read = 0;
                 while (true)
                 {
-                    var slice = s_bytes.First.Slice(read);
+                    var slice = s_bytes.Memory.Slice(read);
                     var index = slice.Span.IndexOf(eol);
                     if (index == -1) break;
                     read += index;
