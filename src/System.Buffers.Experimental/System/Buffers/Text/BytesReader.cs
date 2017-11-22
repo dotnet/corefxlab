@@ -196,10 +196,6 @@ namespace System.Buffers.Text
                 Advance(toAdvanceUnreadSegments); // TODO: this recursive implementation could be optimized
             }
         }
-
-        long IndexOf(IMemoryList<byte> sequence, byte value)
-            => sequence.IndexOf(value);
-
         long IndexOfStraddling(ReadOnlySpan<byte> value)
         {
             var rest = _unreadSegments.Rest;
@@ -251,7 +247,7 @@ namespace System.Buffers.Text
             var rest = _unreadSegments.Rest;
             if (rest == null) return -1;
 
-            var index = IndexOf(rest, value);
+            var index = Sequence.IndexOf(rest, value);
             if (index == -1)
             {
                 return -1;
