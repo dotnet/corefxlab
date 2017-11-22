@@ -190,7 +190,7 @@ namespace System.Buffers
         {
             var rest = Rest;
             if (rest == null) return -1;
-            long index = rest.IndexOf(value);
+            long index = Sequence.IndexOf(rest, value); 
             if (index != -1) return firstLength + index;
             return -1;
         }

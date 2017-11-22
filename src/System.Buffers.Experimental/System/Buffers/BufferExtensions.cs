@@ -112,18 +112,6 @@ namespace System.Buffers
             return;
         }
 
-        public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyMemory<byte>>
-        {
-            Position position = default;
-            ResizableArray<byte> array = new ResizableArray<byte>(1024);
-            while (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
-            {
-                array.AddAll(buffer.Span);
-            }
-            array.Resize(array.Count);
-            return array.Span.Slice(0, array.Count);
-        }
-
         // span creation helpers:
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long IndexOf(this IMemoryList<byte> sequence, ReadOnlySpan<byte> value)
@@ -136,24 +124,6 @@ namespace System.Buffers
             if (rest == null) return -1;
 
             return IndexOfStraddling(first, sequence.Rest, value);
-        }
-
-        public static long IndexOf(this IMemoryList<byte> sequence, byte value)
-        {
-            var first = sequence.Memory.Span;
-            long index = first.IndexOf(value);
-            if (index != -1) return index;
-
-            Position position = default;
-            int virtualIndex = first.Length;
-            while(sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
-            {
-                index = memory.Span.IndexOf(value);
-                if (index != -1) return index + virtualIndex;
-                virtualIndex += memory.Length;
-            }
-
-            return -1;
         }
 
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
