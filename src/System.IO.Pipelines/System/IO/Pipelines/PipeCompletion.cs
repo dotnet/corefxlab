@@ -62,11 +62,12 @@ namespace System.IO.Pipelines
 
             if (newIndex == _callbacks.Length)
             {
-                var newArray = new PipeCompletionCallback[_callbacks.Length * 2];
+                var newArray = CompletionCallbackPool.Rent(_callbacks.Length * 2);
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
-                CompletionCallbackPool.Return(_callbacks);
+                CompletionCallbackPool.Return(_callbacks, clearArray: true);
                 _callbacks = newArray;
             }
+
             _callbacks[newIndex].Callback = callback;
             _callbacks[newIndex].State = state;
 

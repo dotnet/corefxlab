@@ -56,7 +56,7 @@ namespace System.IO.Pipelines
             }
             finally
             {
-                _pool.Return(_callbacks);
+                _pool.Return(_callbacks, clearArray: true);
             }
         }
     }
