@@ -12,19 +12,62 @@ namespace System
 {
     public static class RangeExtensions
     {
+        #region Helpers
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool FromLessThan<T>(T left, T right, IComparer<T> comparer)
+        {
+            if (left == null) return true;
+            if (right == null) return false;
+            return comparer.Compare(left, right) < 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool FromLessThanOrEquals<T>(T left, T right, IComparer<T> comparer)
+        {
+            if (left == null) return true;
+            if (right == null) return false;
+            return comparer.Compare(left, right) <= 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ToLessThan<T>(T left, T right, IComparer<T> comparer)
+        {
+            if (right == null) return true;
+            if (left == null) return false;
+            return comparer.Compare(left, right) < 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ToLessThanOrEquals<T>(T left, T right, IComparer<T> comparer)
+        {
+            if (right == null) return true;
+            if (left == null) return false;
+            return comparer.Compare(left, right) <= 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool FromLessThanTo<T>(T left, T right, IComparer<T> comparer)
+        {
+            if (left == null || right == null) return true;
+            return comparer.Compare(left, right) < 0;
+        }
+
+        #endregion
+
         #region IsEmpty Methods
 
         public static bool IsEmpty<T>(this Range<T> range)
-        {
-            return range.IsEmpty(null);
-        }
+            => IsEmptyImpl(range, Comparer<T>.Default);
 
-        public static bool IsEmpty<T>(this Range<T> range, IEqualityComparer<T> comparer)
-        {
-            if (comparer == null)
-                comparer = EqualityComparer<T>.Default;
+        public static bool IsEmpty<T>(this Range<T> range, IComparer<T> comparer)
+            => IsEmptyImpl(range, comparer ?? Comparer<T>.Default);
 
-            return comparer.Equals(range.From, range.To);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsEmptyImpl<T>(Range<T> range, IComparer<T> comparer)
+        {
+            if (range.From == null && range.To == null) return false;
+            return comparer.Compare(range.From, range.To) == 0;
         }
 <# 
     foreach (var type in SupportedTypes)
@@ -62,29 +105,29 @@ namespace System
         #region Normalization Methods
 
         public static bool IsNormalized<T>(this Range<T> range)
-        {
-            return range.IsNormalized(null);
-        }
+            => IsNormalizedImpl(range, Comparer<T>.Default);
 
         public static bool IsNormalized<T>(this Range<T> range, IComparer<T> comparer)
-        {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
+            => IsNormalizedImpl(range, comparer ?? Comparer<T>.Default);
 
-            return comparer.Compare(range.To, range.From) >= 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsNormalizedImpl<T>(Range<T> range, IComparer<T> comparer)
+        {
+            if (range.From == null || range.To == null) return true;
+            return comparer.Compare(range.From, range.To) <= 0;
         }
 
         public static Range<T> Normalize<T>(this Range<T> range)
-        {
-            return range.Normalize(null);
-        }
+            => NormalizeImpl(range, Comparer<T>.Default);
 
         public static Range<T> Normalize<T>(this Range<T> range, IComparer<T> comparer)
-        {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
+            => NormalizeImpl(range, comparer ?? Comparer<T>.Default);
 
-            return (comparer.Compare(range.To, range.From) >= 0) ? range : new Range<T>(range.To, range.From);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Range<T> NormalizeImpl<T>(Range<T> range, IComparer<T> comparer)
+        {
+            if (IsNormalizedImpl(range, comparer)) return range;
+            return new Range<T>(range.To, range.From);
         }
 <# 
     foreach (var type in SupportedTypes)
@@ -111,16 +154,16 @@ namespace System
         #region Contains Methods
 
         public static bool Contains<T>(this Range<T> range, T value)
-        {
-            return range.Contains(value, null);
-        }
+            => ContainsImpl(range, value, Comparer<T>.Default);
 
         public static bool Contains<T>(this Range<T> range, T value, IComparer<T> comparer)
-        {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
+            => ContainsImpl(range, value, comparer ?? Comparer<T>.Default);
 
-            return comparer.Compare(range.From, value) <= 0 && comparer.Compare(range.To, value) > 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ContainsImpl<T>(Range<T> range, T value, IComparer<T> comparer)
+        {
+            if (value == null) return false;
+            return FromLessThanOrEquals(range.From, value, comparer) && ToLessThan(value, range.To, comparer);
         }
 <# 
     foreach (var type in SupportedTypes)
@@ -141,36 +184,33 @@ namespace System
         #region Intersection Methods
 
         public static bool Intersects<T>(this Range<T> range, Range<T> other)
-        {
-            return range.Intersects(other, null);
-        }
+            => IntersectsImpl(range, other, Comparer<T>.Default);
 
         public static bool Intersects<T>(this Range<T> range, Range<T> other, IComparer<T> comparer)
-        {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
+            => IntersectsImpl(range, other, comparer ?? Comparer<T>.Default);
 
-            return (comparer.Compare(range.From, other.From) <= 0)
-                ? comparer.Compare(other.From, other.To) != 0 && comparer.Compare(range.To, other.From) > 0
-                : comparer.Compare(range.From, range.To) != 0 && comparer.Compare(range.From, other.To) < 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IntersectsImpl<T>(Range<T> range, Range<T> other, IComparer<T> comparer)
+        {
+            return FromLessThanOrEquals(range.From, other.From, comparer)
+                ? FromLessThanTo(other.From, range.To, comparer) && !IsEmptyImpl(other, comparer)
+                : FromLessThanTo(range.From, other.To, comparer) && !IsEmptyImpl(range, comparer);
         }
 
         public static Range<T> Intersect<T>(this Range<T> range, Range<T> other)
-        {
-            return range.Intersect(other, null);
-        }
+            => IntersectImpl(range, other, Comparer<T>.Default);
 
         public static Range<T> Intersect<T>(this Range<T> range, Range<T> other, IComparer<T> comparer)
+            => IntersectImpl(range, other, comparer ?? Comparer<T>.Default);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Range<T> IntersectImpl<T>(Range<T> range, Range<T> other, IComparer<T> comparer)
         {
-            if (comparer == null)
-                comparer = Comparer<T>.Default;
-
-            if (comparer.Compare(range.From, other.To) >= 0 || comparer.Compare(range.To, other.From) <= 0)
-                return new Range<T>();
-
-            return new Range<T>(
-                (comparer.Compare(range.From, other.From) > 0) ? range.From : other.From,
-                (comparer.Compare(range.To, other.To) < 0) ? range.To : other.To);
+            var result = new Range<T>(
+                FromLessThan(range.From, other.From, comparer) ? other.From : range.From,
+                ToLessThan(range.To, other.To, comparer) ? range.To : other.To);
+            if (IsNormalizedImpl(result, comparer)) return result;
+            return new Range<T>(result.To, result.To);
         }
 <# 
     foreach (var type in SupportedTypes)
