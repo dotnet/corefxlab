@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -25,6 +26,28 @@ namespace System.IO.Pipelines.Tests
             reader.Take();
             Assert.True(reader.End);
             Assert.True(reader.Cursor.IsEnd);
+        }
+
+        [Fact]
+        public void CursorIsCorrectWithEmptyLastBlock()
+        {
+            var last = new BufferSegment();
+            last.SetMemory(new OwnedArray<byte>(new byte[4]), 0, 4);
+
+            var first = new BufferSegment();
+            first.SetMemory(new OwnedArray<byte>(new byte[2] { 1, 2 }), 0, 2);
+            first.SetNext(last);
+
+            var start = new ReadCursor(first);
+            var end = new ReadCursor(last);
+
+            var reader = new ReadableBufferReader(start, end);
+            reader.Take();
+            reader.Take();
+            reader.Take();
+            Assert.Same(last, reader.Cursor.Segment);
+            Assert.Equal(0, reader.Cursor.Index);
+            Assert.True(reader.End);
         }
 
         [Fact]
@@ -82,7 +105,7 @@ namespace System.IO.Pipelines.Tests
                 reader.Skip(6);
                 Assert.True(false);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.True(ex is ArgumentOutOfRangeException);
             }
@@ -182,7 +205,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void PeekWorkesWithEmptySegments()
         {
-            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] {  }, new byte[] { 1 } });
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { }, new byte[] { 1 } });
             var reader = new ReadableBufferReader(buffer);
 
             Assert.Equal(0, reader.Index);
