@@ -19,11 +19,7 @@ SafeSum(nativeSpan);
 Marshal.FreeHGlobal(nativeMemory);
 
 // stack memory
-Span<byte> stackSpan;
-unsafe {
-    byte* stackMemory = stackalloc byte[100];
-    stackSpan = new Span<byte>(stackMemory, 100);
-}
+Span<byte> stackSpan = stackalloc byte[100];
 SafeSum(stackSpan);
 ```
 
@@ -51,9 +47,8 @@ The full API surface of `Span<T>` is not yet finalized, but the main APIs we wil
 ```c#
 public struct Span<T> {
     public Span(T[] array)
-    public Span(T[] array, int index)
-    public Span(T[] array, int index, int length)
-    public unsafe Span(void* memory, int length)
+    public Span(T[] array, int start, int length)
+    public unsafe Span(void* pointer, int length)
 
     public static implicit operator Span<T> (ArraySegment<T> arraySegment);
     public static implicit operator Span<T> (T[] array);
@@ -61,9 +56,8 @@ public struct Span<T> {
     public int Length { get; }
     public ref T this[int index] { get; }
 
-    public Span<T> Slice(int index);
-    public Span<T> Slice(int index, int length);
-    public bool TryCopyTo(T[] destination);
+    public Span<T> Slice(int start);
+    public Span<T> Slice(int start, int length);
     public bool TryCopyTo(Span<T> destination);
 
     public T[] ToArray();
@@ -108,9 +102,8 @@ public unsafe static uint GetUInt32(this ReadableBuffer buffer) {
     }
 
     uint value;
-    var utf8Buffer = new Utf8String(textSpan);
     // yet the actual parsing routine is always the same and simple
-    if (!PrimitiveParser.TryParseUInt32(utf8Buffer, out value)) {
+    if (!Utf8Parser.TryParse(textSpan, out value)) {
         throw new InvalidOperationException();
     }
     return value;
@@ -126,21 +119,19 @@ One of the most common basic string operations is string slicing. Currently, `Sy
 ```c#
 public struct ReadOnlySpan<T> {
     public ReadOnlySpan(T[] array)
-    public ReadOnlySpan(T[] array, int index)
-    public ReadOnlySpan(T[] array, int index, int length)
+    public ReadOnlySpan(T[] array, int start, int length)
     public unsafe ReadOnlySpan(void* memory, int length)
 
     public int Length { get; }
     public T this[int index] { get; }
 
-    public ReadOnlySpan <T> Slice(int index)
-    public ReadOnlySpan <T> Slice(int index, int count)
+    public ReadOnlySpan <T> Slice(int start)
+    public ReadOnlySpan <T> Slice(int start, int length)
 
-    public bool TryCopyTo(T[] destination);
     public bool TryCopyTo(Span<T> destination);
 }
 
-ReadOnlySpan<char> lengthText = "content-length:123".Slice(15);
+ReadOnlySpan<char> lengthText = "content-length:123".AsReadOnlySpan().Slice(15);
 ```
 ### Parsing
 Currently, the .NET parsing APIs require the exact string representing the text being parsed to be passed as the argument to the APIs:
@@ -150,31 +141,19 @@ Currently, the .NET parsing APIs require the exact string representing the text 
 ```
 We do not have APIs that can parse a slice of a string or a text buffer without the need to first allocate a substring representing the text being parsed. `ReadOnlySpan<char>`-based APIs, together with non-allocating substring APIs discussed above, could solve this problem:
 ```c#
-public static class SpanParsingExtensions {
-    static bool TryParse(this ReadOnlySpan<char> text, out int value)
+public struct Int32 {
+    static bool TryParse(this ReadOnlySpan<char> text, out int value);
 }
 
-"content-length:123".Slice(15).TryParse(out int value);
-```
-The API can be further improved (take in `Span<byte>`) to parse text buffers regardless of the encoding (e.g. UTF8)
-```c#
-public static class SpanParsingExtensions {
-    static bool TryParse(this ReadOnlySpan<byte> text, EncodingData encoding, out int value)
-}
-
-var byteArray = new byte[]{49, 50, 51};
-var bytesFromStringSlice = "content-length:123".Slice(15).As<byte>();
-var bytesFromUtf8StringSlice = new Utf8String("content-length:123").Slice(15);
-
-byteArray.TryParse(EncodingData.Utf8, out int value);
-bytesFromStringSlice.TryParse(EncodingData.Utf16, out int value);
-bytesFromUtf8StringSlice.TryParse(EncodingData.Utf8, out int value);
+Int32.TryParse("content-length:123".AsReadOnlySpan().Slice(15), out int value);
 ```
 
 ### Formatting
 Similarly, formatting (the reverse of parsing) can be very elegantly and efficiently done on existing memory buffers backed by slices of arrays, native buffers, and stack allocated arrays. For Example, the following routine from [corfxlab](https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Primitives/System/Text/Formatting/PrimitiveFormatter.cs#L41) formats an integer (as UTF8 text) into an arbitrary byte buffer:
 ```c#
-public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten)
+public static class Utf8Formatter {
+    public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten);
+}
 ```
 
 ### Buffer Pooling
@@ -270,13 +249,16 @@ See a prototype of `Memory<T>` [here](https://github.com/dotnet/corefx/blob/mast
 ## Optimizations
 We need to enable the existing array bounds check optimizations for `Span<T>` – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans.
 
+You can read about full details of the optimizations [here](https://blogs.msdn.microsoft.com/dotnet/2017/10/16/ryujit-just-in-time-compiler-optimization-enhancements/)
+
 ## Conversions
 `Span<T>` will support reinterpret cast conversions to `Span<byte>`. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
 
 A prototype of such API can be found [here](https://github.com/dotnet/corefxlab/blob/7f7a0a4fa491c94fdc7cf0ebd01e9af44991c487/src/System.Slices/System/SpanExtensions.cs#L151), and the API can be used as follows:
 ```c#
 var bytes = new Span<byte>(buffer);
-var characters = bytes.Cast<byte, char>();
+var characters = bytes.NonPortableCast<byte, char>(); // non portable because of potential alignment issues.
+var backToBytes = characters.AsBytes();
 if(char.IsLower(characters[0]) { ... }
 ```
 
@@ -330,14 +312,3 @@ Separately from this document, we are exploring language features to better supp
     public static Span<U> Cast<T, U>(this Span<T> slice) where T:primitive where U:primitive
     { ... }
     ```
-
-# Open Issues
-
-1. Detailed design of `Memory<T>`
-    - Representation
-    - Operations
-    - Lifetime/Pinning
-4. `Span<T>` API design details
-    - Type of the Length property
-    - Namespace and type name
-5. Details of runtime optimizations
