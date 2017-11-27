@@ -8,6 +8,7 @@ using BenchmarkDotNet.Attributes;
 namespace System.IO.Pipelines.Performance.Tests
 {
     [Config(typeof(CoreConfig))]
+    [BenchmarkDotNet.Attributes.KeepBenchmarkFiles]
     public class PipeThroughput
     {
         private const int WriteLength = 57;
@@ -26,7 +27,7 @@ namespace System.IO.Pipelines.Performance.Tests
         };
 
         private IPipe _pipe;
-        private MemoryPool _memoryPool;
+        private BufferPool _memoryPool;
 
         [GlobalSetup]
         public void Setup()
