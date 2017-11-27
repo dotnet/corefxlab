@@ -761,12 +761,7 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                result.ResultBuffer.BufferLength = _length;
-
-                result.ResultBuffer.BufferStart.Segment = head;
-                result.ResultBuffer.BufferStart.Index = head.Start;
+                result.ResultBuffer = new ReadableBuffer(_commitHead, _commitHeadIndex, head, head.Start);
             }
 
             if (isCancelled)
