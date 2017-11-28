@@ -39,6 +39,8 @@ namespace System.IO.Pipelines
                     break;
                 }
             }
+
+            _buffer = default;
         }
 
     }
