@@ -6,6 +6,7 @@ using Microsoft.Xunit.Performance;
 using System;
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections.Sequences;
 using System.Text;
 
 public class BytesReaderBench
@@ -33,15 +34,14 @@ public class BytesReaderBench
 
         foreach (var iteration in Benchmark.Iterations)
         {
-            var reader = new BytesReader(s_bytes, SymbolTable.InvariantUtf8);
+            var reader = BytesReader.Create(s_bytes);
 
             using (iteration.StartMeasurement())
             {
                 while (true)
                 {
-                    var result = reader.ReadRangeUntil(eol);
-                    if (result == null) break;
-                    reader.Advance(eol.Length);
+                    var range = reader.ReadRange(eol);
+                    if (range.To == Position.End) break;
                 }
             }
         }

@@ -53,6 +53,9 @@ namespace System.Collections.Sequences
         public static bool operator ==(Position left, Position right) => left.Index == right.Index && left._item == right._item;
         public static bool operator !=(Position left, Position right) => left.Index != right.Index || left._item != right._item;
 
+        public static Position operator +(Position position, int offset) => position.Offset(offset);
+        public static Position operator -(Position position, int offset) => position.Offset(-offset);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(Position position) => this == position;
 
@@ -73,5 +76,7 @@ namespace System.Collections.Sequences
             _item = item;
             Index = index;
         }
+
+        private Position Offset(int index) => new Position(Index + index, _item);
     }
 }

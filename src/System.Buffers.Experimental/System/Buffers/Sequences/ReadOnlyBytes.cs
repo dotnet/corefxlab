@@ -7,6 +7,12 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
+    public struct PositionRange
+    {
+        public Position From;
+        public Position To;
+    }
+
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
@@ -206,7 +212,7 @@ namespace System.Buffers
         public ReadOnlyBytes Slice(Position from)
         {
             var (segment, index) = from.Get<IMemoryList<byte>>();
-            if (segment == null) return Slice(Memory.Length - index);
+            if (segment == null) return Slice(index - _totalLengthOrVirtualIndex);
             var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
             var newHeadIndex = segment.VirtualIndex;
             var diff = newHeadIndex - headIndex;
@@ -221,9 +227,7 @@ namespace System.Buffers
 
             if (fromSegment == null)
             {
-                var indexFrom = Memory.Length - fromIndex;
-                var indexTo = Memory.Length - toIndex;
-                return Slice(indexFrom, indexTo - indexFrom + 1);
+                return Slice(fromIndex - _totalLengthOrVirtualIndex, toIndex - fromIndex);
             }
 
             var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
@@ -237,6 +241,12 @@ namespace System.Buffers
             return slice;
         }
 
+        public ReadOnlyBytes Slice(PositionRange range)
+        {
+            if (range.To.IsEnd || range.From.IsEnd) return Empty;
+            return Slice(range.From, range.To);
+        }
+
         public Position PositionOf(byte value)
         {
             ReadOnlySpan<byte> first = _first.Span;
@@ -245,7 +255,7 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return Position.Create(first.Length - index);
+                    return Position.Create(index);
                 }
                 else { 
                     var allIndex = index + (_all.Memory.Length - first.Length);
@@ -265,7 +275,7 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return Position.Create(firstLength - index);
+                    return Position.Create(index);
                 }
                 else
                 {
