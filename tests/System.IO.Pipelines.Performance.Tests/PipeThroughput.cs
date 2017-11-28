@@ -26,7 +26,7 @@ namespace System.IO.Pipelines.Performance.Tests
         };
 
         private IPipe _pipe;
-        private MemoryPool _memoryPool;
+        private BufferPool _memoryPool;
 
         [GlobalSetup]
         public void Setup()

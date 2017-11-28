@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.10" />
   </ItemGroup>
 
 </Project>

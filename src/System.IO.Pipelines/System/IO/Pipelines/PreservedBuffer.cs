@@ -40,7 +40,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            _buffer.ClearCursors();
+            _buffer = default;
         }
 
     }

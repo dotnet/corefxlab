@@ -6,10 +6,10 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    public struct ReadCursor : IEquatable<ReadCursor>
+    public readonly struct ReadCursor : IEquatable<ReadCursor>
     {
-        internal BufferSegment Segment;
-        internal int Index;
+        internal readonly BufferSegment Segment;
+        internal readonly int Index;
 
         internal ReadCursor(BufferSegment segment)
         {
