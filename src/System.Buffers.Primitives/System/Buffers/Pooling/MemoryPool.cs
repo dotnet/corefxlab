@@ -3,11 +3,13 @@
 
 namespace System.Buffers
 {
-    public abstract class BufferPool : IDisposable
+    public abstract class MemoryPool<T> : IDisposable
     {
-        public static BufferPool Default => Internal.ManagedBufferPool.Shared;
+        public static MemoryPool<T> Default => Internal.ArrayMemoryPool<T>.Shared;
 
-        public abstract OwnedMemory<byte> Rent(int minimumBufferSize);
+        public abstract OwnedMemory<T> Rent(int minimumBufferSize);
+
+        public abstract void Return(OwnedMemory<T> buffer);
 
         public void Dispose()
         {
@@ -15,7 +17,7 @@ namespace System.Buffers
             GC.SuppressFinalize(this);
         }
 
-        ~BufferPool()
+        ~MemoryPool()
         {
             Dispose(false);
         }

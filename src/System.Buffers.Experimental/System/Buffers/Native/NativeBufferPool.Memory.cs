@@ -5,8 +5,13 @@ using System.Buffers.Native;
 
 namespace System.Buffers.Native
 {
-    public unsafe sealed partial class NativeBufferPool : BufferPool
+    public unsafe sealed partial class NativeBufferPool : MemoryPool<byte>
     {
+        public override void Return(OwnedMemory<byte> buffer)
+        {
+            buffer.Dispose();
+        }
+
         internal sealed class Memory : ReferenceCountedMemory<byte>
         {
             public Memory(NativeBufferPool pool, IntPtr memory, int length)

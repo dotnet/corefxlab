@@ -93,7 +93,7 @@ namespace System.IO.Pipelines.Tests
             await pipe.Writer.WriteAsync(new byte[writeSize]);
         }
 
-        private class DisposeTrackingBufferPool : BufferPool
+        private class DisposeTrackingBufferPool : MemoryPool
         {
             public override OwnedMemory<byte> Rent(int size)
             {

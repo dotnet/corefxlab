@@ -11,7 +11,7 @@ namespace System.IO.Pipelines.Samples
 {
     public class RawSocketHttpClientSample : RawHttpClientSampleBase
     {
-        private BufferPool pool;
+        private MemoryPool pool;
 
         public RawSocketHttpClientSample()
         {
@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Samples
             return Task.FromResult((IPipeConnection)pipeConnection);
         }
 
-        protected override BufferPool GetBufferPool()
+        protected override MemoryPool GetBufferPool()
         {
             return pool;
         }

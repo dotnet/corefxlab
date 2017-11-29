@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -19,7 +20,7 @@ namespace System.Buffers
 
         public OwnedArray(T[] array)
         {
-            if (array == null) BufferPrimitivesThrowHelper.ThrowArgumentNullException(nameof(array)); 
+            if (array == null) new ArgumentNullException(nameof(array)); 
             _array = array;
         }
 
@@ -31,7 +32,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+                if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
                 return new Span<T>(_array);
             }
         }
@@ -48,7 +49,7 @@ namespace System.Buffers
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)
         {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+            if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
             arraySegment = new ArraySegment<T>(_array);
             return true;
         }
@@ -60,14 +61,14 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+            if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
         public override bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
-            if (newRefCount < 0)  BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+            if (newRefCount < 0)  ThrowInvalidOperationException();
             if (newRefCount == 0)
             {
                 OnNoReferences();
@@ -83,5 +84,13 @@ namespace System.Buffers
         protected override bool IsRetained => _referenceCount > 0;
 
         public override bool IsDisposed => _array == null;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowObjectDisposedException(string objectName)
+            => throw new ObjectDisposedException(objectName);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowInvalidOperationException()
+            => throw new InvalidOperationException();
     }
 }
