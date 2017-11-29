@@ -92,6 +92,20 @@ namespace System.Buffers
             return copied;
         }
 
+        public static int Copy<TSequence>(TSequence sequence, Position from, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        {
+            int copied = 0;
+            while (sequence.TryGet(ref from, out ReadOnlyMemory<byte> memory, true))
+            {
+                var span = memory.Span;
+                var toCopy = Math.Min(span.Length, buffer.Length - copied);
+                span.Slice(0, toCopy).CopyTo(buffer.Slice(copied));
+                copied += toCopy;
+                if (copied >= buffer.Length) break;
+            }
+            return copied;
+        }
+
         public static bool TryParse<TSequence>(TSequence sequence, out int value, out int consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             var position = sequence.First;

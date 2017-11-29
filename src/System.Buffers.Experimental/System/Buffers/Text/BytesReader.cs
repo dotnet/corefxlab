@@ -2,257 +2,153 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
+using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
 {
+    public static class BytesReader
+    {
+        public static BytesReader<T> Create<T>(T sequence) where T : ISequence<ReadOnlyMemory<byte>>
+        {
+            return new BytesReader<T>(sequence);
+        }
+    }
+
     /// <summary>
     /// Used to read text from byte buffers
     /// </summary>
-    public struct BytesReader
+    public ref struct BytesReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
     {
+        readonly TSequence _bytes;
+        Position _currentSegmentPosition;
+        Position _nextSegmentPosition;
+        ReadOnlyMemory<byte> _currentMemory; // TODO: I think this can be removed
+        ReadOnlySpan<byte> _currentSpan;
+        int _currentSpanIndex;
+
         readonly SymbolTable _symbolTable;
-        ReadOnlyBytes _unreadSegments;
-        long _index; // index relative to the begining of bytes passed to the constructor
 
-        ReadOnlyMemory<byte> _currentSegment;
-        int _currentSegmentIndex;
-
-        public BytesReader(ReadOnlyBytes bytes, SymbolTable symbolTable)
+        // TODO: should there be a ctor that takes sequence + position? 
+        // TODO: should there be a type that is sequence + position?
+        public BytesReader(TSequence bytes)
         {
-            _unreadSegments = bytes;
-            _currentSegment = bytes.Memory;
-            _symbolTable = symbolTable;
-            _currentSegmentIndex = 0;
-            _index = 0;
+            _bytes = bytes;
+            _currentSegmentPosition = bytes.First;
+            _nextSegmentPosition = _currentSegmentPosition;
+            _bytes.TryGet(ref _nextSegmentPosition, out _currentMemory);
+            _currentSpan = _currentMemory.Span;
+            _symbolTable = SymbolTable.InvariantUtf8;
+            _currentSpanIndex = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes, SymbolTable symbolTable)
+        public BytesReader(ReadOnlyMemory<byte> bytes)
         {
-            _unreadSegments = new ReadOnlyBytes(bytes);
-            _currentSegment = bytes;
-            _symbolTable = symbolTable;
-            _currentSegmentIndex = 0;
-            _index = 0;
+            _bytes = default;
+            _nextSegmentPosition = default;
+            _currentSegmentPosition = Position.Create(0);
+            _currentMemory = bytes;
+            _currentSpan = bytes.Span;
+            _symbolTable = SymbolTable.InvariantUtf8;
+            _currentSpanIndex = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, SymbolTable.InvariantUtf8)
-        { }
-
-        public BytesReader(ReadOnlyBytes bytes) : this(bytes, SymbolTable.InvariantUtf8)
-        { }
-
-        public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
-
-        public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);
-
-        public SymbolTable SymbolTable => _symbolTable;
-
-        public ReadOnlyBytes? ReadBytesUntil(byte value)
+        public BytesReader(ReadOnlySpan<byte> bytes)
         {
-            var index = IndexOf(value);
-            if (index == -1) return null;
-            return ReadBytes(index);
-        }
-        public ReadOnlyBytes? ReadBytesUntil(ReadOnlySpan<byte> value)
-        {
-            var index = IndexOf(value);
-            if (index == -1) return null;
-            return ReadBytes(index);
+            _bytes = default;
+            _nextSegmentPosition = default;
+            _currentSegmentPosition = Position.Create(0);
+            _currentMemory = default;
+            _currentSpan = bytes;
+            _symbolTable = SymbolTable.InvariantUtf8;
+            _currentSpanIndex = 0;
         }
 
-        public Range? ReadRangeUntil(byte value)
-        {
-            var index = IndexOf(value);
-            if (index == -1) return null;
-            return ReadRange(index);
-        }
-        public Range? ReadRangeUntil(ReadOnlySpan<byte> values)
-        {
-            var index = IndexOf(values);
-            if (index == -1) return null;
-            return ReadRange(index);
-        }
-
-        public ReadOnlyBytes ReadBytes(long count)
-        {
-            var result = _unreadSegments.Slice(_currentSegmentIndex, count);
-            Advance(count);
-            return result;
-        }
-        public Range ReadRange(long count)
-        {
-            var result = new Range(_index, count);
-            Advance(count);
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long IndexOf(byte value)
-        {
-            int index = Unread.IndexOf(value);
-            if (index != -1)
-            {
-                return index;
-            }
-
-            var indexOfRest = IndexOfRest(value);
-            if (indexOfRest == -1) return -1;
-            return indexOfRest + _currentSegment.Length - _currentSegmentIndex;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long IndexOf(ReadOnlySpan<byte> values)
-        {
-            var unread = Unread;
-            var index = unread.IndexOf(values);
-            if (index != -1)
-            {
-                return index;
-            }
-
-            return IndexOfStraddling(values);
-        }
-
-        public bool IsEmpty
-        {
+        public bool IsEmpty {
             get {
-                if (_currentSegment.Length - _currentSegmentIndex > 0)
+                if (_currentSpan.Length - _currentSpanIndex > 0)
                 {
                     return false;
                 }
-                AdvanceNextSegment(0, 0);
-                if (_currentSegment.Length == 0) return true;
-                return IsEmpty;
+
+                Position position = _nextSegmentPosition;
+                while (_bytes.TryGet(ref position, out ReadOnlyMemory<byte> next))
+                {
+                    if (!next.IsEmpty) return false;
+                }
+                return true;
             }
         }
 
-        public long Index => _index;
-
-        int CopyTo(Span<byte> buffer)
+        public bool TryPeek(out byte value)
         {
-            var first = Unread;
-            if (first.Length > buffer.Length)
+            if (_currentSpan.Length > _currentSpanIndex)
             {
-                first.Slice(0, buffer.Length).CopyTo(buffer);
-                return buffer.Length;
-            }
-            if (first.Length == buffer.Length)
-            {
-                first.CopyTo(buffer);
-                return buffer.Length;
+                value = _currentSpan[_currentSpanIndex];
+                return true;
             }
 
-            first.CopyTo(buffer);
-            var rest = _unreadSegments.Rest;
-            if (rest == null) return first.Length;
-            return first.Length + rest.CopyTo(buffer.Slice(first.Length));
+            // TODO: this should try to advance
+            value = default;
+            return false;
+        }
+
+        public PositionRange ReadRange(byte delimiter)
+        {
+            var range = new PositionRange();
+            range.From = Position;
+            range.To = AdvanceToDelimiter(delimiter);
+            return range;
+        }
+
+        public PositionRange ReadRange(ReadOnlySpan<byte> delimiter)
+        {
+            var range = new PositionRange();
+            range.From = Position;
+            range.To = PositionOf(delimiter);
+            if (!range.To.IsEnd)
+            {
+                Seek(range.To);
+                Seek(delimiter.Length);
+            }
+            return range;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(long count)
+        public void Seek(long count)
         {
-            var unreadLength = _currentSegment.Length - _currentSegmentIndex;
-            if (count < unreadLength)
+            var unreadLength = _currentSpan.Length - _currentSpanIndex;
+            if (count <= unreadLength)
             {
-                _currentSegmentIndex += (int)count;
-                _index += (int)count;
+                _currentSpanIndex += (int)count;
             }
             else
             {
-                AdvanceNextSegment(count, advancedInCurrent:unreadLength);
-            }
-        }
-
-        void AdvanceNextSegment(long count, int advancedInCurrent)
-        {
-            Debug.Assert(advancedInCurrent == _currentSegment.Length - _currentSegmentIndex);
-            var newUnreadSegments = _unreadSegments.Rest;
-            var toAdvanceUnreadSegments = count - advancedInCurrent;
-
-            if (newUnreadSegments == null) { 
-                if (toAdvanceUnreadSegments == 0)
-                {
-                    _unreadSegments = ReadOnlyBytes.Empty;
-                    _currentSegment = ReadOnlyMemory<byte>.Empty;
-                    _currentSegmentIndex = 0;
-                    _index += count;
-                    return;
-                }
-                else
+                if (!_bytes.TryGet(ref _nextSegmentPosition, out _currentMemory))
                 {
                     throw new ArgumentOutOfRangeException(nameof(count));
                 }
-            }
-
-            _currentSegment = newUnreadSegments.Memory;
-            _currentSegmentIndex = 0;
-            _unreadSegments = _unreadSegments.Slice(_unreadSegments.Memory.Length);
-            _index += advancedInCurrent;
-
-            if (toAdvanceUnreadSegments != 0)
-            {
-                Advance(toAdvanceUnreadSegments); // TODO: this recursive implementation could be optimized
+                _currentSpan = _currentMemory.Span;
+                _currentSpanIndex = 0;
+                Seek(count - unreadLength);
             }
         }
-        long IndexOfStraddling(ReadOnlySpan<byte> value)
+
+        public void Seek(Position position)
         {
-            var rest = _unreadSegments.Rest;
-            if (rest == null) return -1;
-            ReadOnlySpan<byte> unread = Unread;
-            long index = 0;
-            // try to find the bytes straddling _first and _rest
-            int bytesToSkipFromFirst = 0; // these don't have to be searched again
-            if (unread.Length > value.Length - 1)
+            _currentSegmentPosition = position;
+            _nextSegmentPosition = position;
+            if (_bytes.TryGet(ref _nextSegmentPosition, out _currentMemory))
             {
-                bytesToSkipFromFirst = unread.Length - value.Length - 1;
-            }
-            ReadOnlySpan<byte> bytesToSearchAgain;
-            if (bytesToSkipFromFirst > 0)
-            {
-                bytesToSearchAgain = unread.Slice(bytesToSkipFromFirst);
+                _currentSpan = _currentMemory.Span;
             }
             else
             {
-                bytesToSearchAgain = unread;
+                _currentSpan = default;
             }
+            _currentSpanIndex = 0;
 
-            if (bytesToSearchAgain.IndexOf(value[0]) != -1)
-            {
-                var tempLen = value.Length << 1;
-                var tempSpan = tempLen < 128 ?
-                                        stackalloc byte[tempLen] :
-                                        // TODO (pri 3): I think this could be imporved by chunking values
-                                        new byte[tempLen];
-
-                bytesToSearchAgain.CopyTo(tempSpan);
-                rest.CopyTo(tempSpan.Slice(bytesToSearchAgain.Length));
-                index = tempSpan.IndexOf(value);
-                if (index != -1)
-                {
-                    return index + bytesToSkipFromFirst;
-                }
-            }
-
-            // try to find the bytes in _rest
-            index = rest.IndexOf(value);
-            if (index != -1) return unread.Length + index;
-
-            return -1;
-        }
-
-        long IndexOfRest(byte value)
-        {
-            var rest = _unreadSegments.Rest;
-            if (rest == null) return -1;
-
-            var index = Sequence.IndexOf(rest, value);
-            if (index == -1)
-            {
-                return -1;
-            }
-            return index;
         }
 
         #region Parsing Methods
@@ -267,18 +163,17 @@ namespace System.Buffers.Text
                 Debug.Assert(consumed <= unread.Length);
                 if (unread.Length > consumed)
                 {
-                    _currentSegmentIndex += consumed;
-                    _index += consumed;
+                    _currentSpanIndex += consumed;
                     return true;
                 }
             }
 
             Span<byte> tempSpan = stackalloc byte[15];
-            var copied = CopyTo(tempSpan);
+            CopyTo(this, tempSpan, out var copied);
 
             if (CustomParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _symbolTable))
             {
-                Advance(consumed);
+                Seek(consumed);
                 return true;
             }
 
@@ -292,23 +187,114 @@ namespace System.Buffers.Text
             {
                 if (unread.Length > consumed)
                 {
-                    _currentSegmentIndex += consumed;
-                    _index += consumed;
+                    _currentSpanIndex += consumed;
                     return true;
                 }
             }
 
             Span<byte> tempSpan = stackalloc byte[32];
-            var copied = CopyTo(tempSpan);
+            CopyTo(this, tempSpan, out int copied);
 
             if (CustomParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _symbolTable))
             {
-                Advance(consumed);
+                Seek(consumed);
                 return true;
             }
 
             return false;
         }
         #endregion
+
+        ReadOnlySpan<byte> Unread => _currentSpan.Slice(_currentSpanIndex);
+
+        Position Position
+        {
+            get {
+                var result = _currentSegmentPosition;
+                result.Index += _currentSpanIndex;
+                return result;
+            }
+        }
+
+        Position AdvanceToDelimiter(byte value)
+        {
+            var unread = Unread;
+            var index = unread.IndexOf(value);
+            if (index != -1)
+            {
+                _currentSpanIndex += index;
+                var result = _currentSegmentPosition + _currentSpanIndex;
+                _currentSpanIndex++; // skip delimiter
+                return result;
+            }
+
+            var nextPosition = _nextSegmentPosition;
+            var currentPosition = _currentSegmentPosition;
+            var previousPosition = _nextSegmentPosition;
+            var memory = _currentMemory;
+            while (_bytes.TryGet(ref _nextSegmentPosition, out _currentMemory))
+            {
+                index = _currentMemory.Span.IndexOf(value);
+                if (index != -1)
+                {
+                    _currentSegmentPosition = previousPosition;
+                    _currentSpan = _currentMemory.Span;
+                    _currentSpanIndex = index + 1;
+                    return _currentSegmentPosition + index;
+                }
+                previousPosition = _nextSegmentPosition;
+            }
+
+            _currentMemory = memory;
+            _nextSegmentPosition = nextPosition;
+            _currentSegmentPosition = currentPosition;
+            return Position.End;
+        }
+
+        Position PositionOf(ReadOnlySpan<byte> value)
+        {
+            var unread = Unread;
+            var index = unread.IndexOf(value);
+            if (index != -1)
+            {
+                return _currentSegmentPosition + (index + _currentSpanIndex);
+            }
+
+            index = unread.IndexOf(value[0]);
+            if(index != -1 && unread.Length - index < value.Length)
+            {
+                Span<byte> temp = stackalloc byte[value.Length];
+                int copied = Sequence.Copy(_bytes, _currentSegmentPosition + _currentSpanIndex + index, temp);
+                if (copied < value.Length) return Position.End;
+
+                if (temp.SequenceEqual(value)) return _currentSegmentPosition + _currentSpanIndex + index;
+                else throw new NotImplementedException(); // need to check farther in this span
+            }
+
+            if (unread.Length == 0) return Position.End;
+
+            throw new NotImplementedException();
+        }
+
+        static void CopyTo(BytesReader<TSequence> bytes, Span<byte> buffer, out int copied)
+        {
+            var first = bytes.Unread;
+            if (first.Length > buffer.Length)
+            {
+                first.Slice(0, buffer.Length).CopyTo(buffer);
+                copied = buffer.Length;
+            }
+            else if (first.Length == buffer.Length)
+            {
+                first.CopyTo(buffer);
+                copied = buffer.Length;
+            }
+            else
+            {
+                first.CopyTo(buffer);
+                copied = first.Length;
+                copied += Sequence.Copy(bytes._bytes, bytes._nextSegmentPosition, buffer.Slice(copied));
+            }
+        }
     }
 }
