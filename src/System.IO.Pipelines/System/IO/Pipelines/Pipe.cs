@@ -92,7 +92,7 @@ namespace System.IO.Pipelines
 
             _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
 
-            _pool = options.BufferPool;
+            _pool = options.Pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;

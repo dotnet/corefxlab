@@ -158,6 +158,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.ReferenceCountZero:
                     resourceString = "Can't release when reference count is already zero";
                     break;
+                case ExceptionResource.BufferDoesNotBelongToPool:
+                    resourceString = "Can't return buffers that were not rented from this pool";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -200,6 +203,7 @@ namespace System.IO.Pipelines
         AdvancingWithNoBuffer,
         BackpressureDeadlock,
         AdvanceToInvalidCursor,
-        ReferenceCountZero
+        ReferenceCountZero,
+        BufferDoesNotBelongToPool,
     }
 }

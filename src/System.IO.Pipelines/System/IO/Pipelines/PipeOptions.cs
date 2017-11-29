@@ -10,13 +10,13 @@ namespace System.IO.Pipelines
     public class PipeOptions
     {
         public PipeOptions(
-            MemoryPool bufferPool,
+            MemoryPool pool,
             IScheduler readerScheduler = null,
             IScheduler writerScheduler = null,
             long maximumSizeHigh = 0,
             long maximumSizeLow = 0)
         {
-            BufferPool = bufferPool;
+            Pool = pool;
             ReaderScheduler = readerScheduler;
             WriterScheduler = writerScheduler;
             MaximumSizeHigh = maximumSizeHigh;
@@ -31,6 +31,6 @@ namespace System.IO.Pipelines
 
         public IScheduler ReaderScheduler { get; }
 
-        public MemoryPool BufferPool { get; }
+        public MemoryPool Pool { get; }
     }
 }

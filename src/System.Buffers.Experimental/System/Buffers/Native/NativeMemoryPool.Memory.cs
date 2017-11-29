@@ -5,16 +5,11 @@ using System.Buffers.Native;
 
 namespace System.Buffers.Native
 {
-    public unsafe sealed partial class NativeBufferPool : MemoryPool<byte>
+    public unsafe sealed partial class NativeMemoryPool : MemoryPool<byte>
     {
-        public override void Return(OwnedMemory<byte> buffer)
-        {
-            buffer.Dispose();
-        }
-
         internal sealed class Memory : ReferenceCountedMemory<byte>
         {
-            public Memory(NativeBufferPool pool, IntPtr memory, int length)
+            public Memory(NativeMemoryPool pool, IntPtr memory, int length)
             {
                 _pool = pool;
                 _pointer = memory;
@@ -29,7 +24,7 @@ namespace System.Buffers.Native
             {
                 get
                 {
-                    if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(NativeBufferPool.Memory));
+                    if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(NativeMemoryPool.Memory));
                     return new Span<byte>(_pointer.ToPointer(), _length);
                 }
             }
@@ -52,7 +47,7 @@ namespace System.Buffers.Native
                 return new MemoryHandle(this, _pointer.ToPointer());
             }
 
-            private readonly NativeBufferPool _pool;
+            private readonly NativeMemoryPool _pool;
             IntPtr _pointer;
             int _length;
         }

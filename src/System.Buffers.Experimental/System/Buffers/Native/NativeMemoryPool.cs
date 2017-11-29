@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers.Native
 {
-    public unsafe sealed partial class NativeBufferPool : MemoryPool<byte>
+    public unsafe sealed partial class NativeMemoryPool : MemoryPool<byte>
     {
-        static NativeBufferPool s_shared = new NativeBufferPool(4096);
+        static NativeMemoryPool s_shared = new NativeMemoryPool(4096);
         object _lock = new object();
         bool _disposed;
 
@@ -16,9 +16,9 @@ namespace System.Buffers.Native
         int _bufferCount;
         bool[] _rented;
 
-        public static NativeBufferPool Shared => s_shared;
+        public static NativeMemoryPool Shared => s_shared;
 
-        public NativeBufferPool(int bufferSize, int bufferCount = 10)
+        public NativeMemoryPool(int bufferSize, int bufferCount = 10)
         {
             if (bufferSize < 1) throw new ArgumentOutOfRangeException(nameof(bufferSize));
             if (bufferCount < 1) throw new ArgumentOutOfRangeException(nameof(bufferSize));

@@ -9,8 +9,6 @@ namespace System.Buffers
 
         public abstract OwnedMemory<T> Rent(int minimumBufferSize);
 
-        public abstract void Return(OwnedMemory<T> buffer);
-
         public void Dispose()
         {
             Dispose(true);

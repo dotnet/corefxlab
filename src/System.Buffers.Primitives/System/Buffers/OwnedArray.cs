@@ -20,7 +20,7 @@ namespace System.Buffers
 
         public OwnedArray(T[] array)
         {
-            if (array == null) new ArgumentNullException(nameof(array)); 
+            if (array == null) ThrowArgumentNullException(nameof(array)); 
             _array = array;
         }
 
@@ -92,5 +92,9 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowInvalidOperationException()
             => throw new InvalidOperationException();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void ThrowArgumentNullException(string argumentName)
+    => throw new ArgumentNullException(argumentName);
     }
 }

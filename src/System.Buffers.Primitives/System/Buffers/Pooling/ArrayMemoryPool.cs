@@ -19,11 +19,6 @@ namespace System.Buffers.Internal
             return new ArrayPoolMemory(minimumBufferSize);
         }
 
-        public override void Return(OwnedMemory<T> buffer)
-        {
-            if (!buffer.IsDisposed) buffer.Dispose();
-        }
-
         protected override void Dispose(bool disposing)
         {
         }

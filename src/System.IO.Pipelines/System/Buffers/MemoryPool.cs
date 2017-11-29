@@ -78,12 +78,6 @@ namespace System.Buffers
             return block;
         }
 
-        public override void Return(OwnedMemory<byte> buffer)
-        {
-            var block = buffer as MemoryPoolBlock;
-            if (block != null) Return(block);
-        }
-
         public void RegisterSlabAllocationCallback(Action<MemoryPoolSlab> callback)
         {
             _slabAllocationCallback = callback;
@@ -173,7 +167,7 @@ namespace System.Buffers
         /// leaving "dead zones" in the slab due to lost block tracking objects.
         /// </summary>
         /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
-        private void Return(MemoryPoolBlock block)
+        internal void Return(MemoryPoolBlock block)
         {
 #if BLOCK_LEASE_TRACKING
             Debug.Assert(block.Pool == this, "Returned block was not leased from this pool");
