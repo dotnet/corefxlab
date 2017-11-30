@@ -34,22 +34,31 @@ namespace System.Buffers.Tests
                 new byte[] { 1, 2       },
                 new byte[] { 3, 4       },
                 new byte[] { 5, 6, 7, 8 },
-                new byte[] { 8          }
+                new byte[] { 8, 0       },
+                new byte[] { 1,         },
+                new byte[] { 0, 2,      },
+                new byte[] { 1, 2, 3, 4 },
             });
 
             var reader = BytesReader.Create(bytes);
 
-            var value = bytes.Slice(reader.ReadRange(2)).ToSpan();
-            Assert.Equal(0, value[0]);
-            Assert.Equal(1, value[1]);
+            var span = bytes.Slice(reader.ReadRange(2)).ToSpan();
+            Assert.Equal(0, span[0]);
+            Assert.Equal(1, span[1]);
 
-            value = bytes.Slice(reader.ReadRange(5)).ToSpan();
-            Assert.Equal(3, value[0]);
-            Assert.Equal(4, value[1]);
+            span = bytes.Slice(reader.ReadRange(5)).ToSpan();
+            Assert.Equal(3, span[0]);
+            Assert.Equal(4, span[1]);
 
-            value = bytes.Slice(reader.ReadRange(new byte[] { 8, 8 })).ToSpan();
-            Assert.Equal(6, value[0]);
-            Assert.Equal(7, value[1]);
+            span = bytes.Slice(reader.ReadRange(new byte[] { 8, 8 })).ToSpan();
+            Assert.Equal(6, span[0]);
+            Assert.Equal(7, span[1]);
+
+            Assert.True(reader.TryRead(out int value, true));
+            Assert.Equal(BitConverter.ToInt32(new byte[] { 0, 1, 0, 2 }), value);
+
+            Assert.True(reader.TryRead(out value));
+            Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
         }
 
         [Fact]
@@ -87,22 +96,22 @@ namespace System.Buffers.Tests
             ReadOnlyBytes bytes = Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BytesReader.Create(bytes);
 
-            Assert.True(reader.TryParseUInt64(out ulong u64));
+            Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
 
-            Assert.True(reader.TryParseBoolean(out bool b));
+            Assert.True(reader.TryParse(out bool b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParseUInt64(out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(456ul, u64);
 
-            Assert.True(reader.TryParseBoolean(out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(true, b);
 
-            Assert.True(reader.TryParseUInt64(out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(789ul, u64);
 
-            Assert.True(reader.TryParseBoolean(out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(false, b);
         }
 
