@@ -103,20 +103,44 @@ namespace System.Buffers.Text
         public void Advance(long count)
         {
             var unreadLength = _currentSpan.Length - _currentSpanIndex;
-            if (count <= unreadLength)
-            {
+            if (count < unreadLength) {
                 _currentSpanIndex += (int)count;
+            }
+            else {
+                AdvanceNextSegment(count, unreadLength);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Advance(int count)
+        {
+            var unreadLength = _currentSpan.Length - _currentSpanIndex;
+            if (count < unreadLength)
+            {
+                _currentSpanIndex += count;
             }
             else
             {
-                if (!_bytes.TryGet(ref _nextSegmentPosition, out ReadOnlyMemory<byte> memory))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(count));
-                }
-                _currentSpan = memory.Span;
-                _currentSpanIndex = 0;
-                Advance(count - unreadLength);
+                AdvanceNextSegment(count, unreadLength);
             }
+        }
+
+        private void AdvanceNextSegment(long count, int currentSegmentUnread)
+        {
+            if (!_bytes.TryGet(ref _nextSegmentPosition, out ReadOnlyMemory<byte> memory))
+            {
+                if (count > currentSegmentUnread) throw new ArgumentOutOfRangeException(nameof(count));
+                else
+                {
+                    Debug.Assert(count == currentSegmentUnread);
+                    _currentSpan = Span<byte>.Empty;
+                    _currentSpanIndex = 0;
+                    return;
+                }
+            }
+            _currentSpan = memory.Span;
+            _currentSpanIndex = 0;
+            Advance(count - currentSegmentUnread);
         }
 
         public void Advance(Position position)
@@ -159,6 +183,32 @@ namespace System.Buffers.Text
                 return true;
             }
 
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryParse(out int value)
+        {
+            var unread = Unread;
+            if (Utf8Parser.TryParse(unread, out value, out int consumed))
+            {
+                if (unread.Length > consumed) {
+                    _currentSpanIndex += consumed;
+                    return true;
+                }
+            }
+            return TryParseStraddling(out value);
+        }
+
+        private bool TryParseStraddling(out int value)
+        {
+            Span<byte> tempSpan = stackalloc byte[15];
+            var copied = CopyTo(this, tempSpan);
+            if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out int consumed))
+            {
+                Advance(consumed);
+                return true;
+            }
             return false;
         }
 

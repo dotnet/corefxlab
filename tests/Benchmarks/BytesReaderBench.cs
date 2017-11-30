@@ -6,12 +6,11 @@ using Microsoft.Xunit.Performance;
 using System;
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Sequences;
+using System.IO.Pipelines;
 using System.Text;
 
 public class BytesReaderBench
 {
-    static byte[] s_eol = new byte[] { (byte)'\r', (byte)'\n' };
     static byte[] s_data;
     static ReadOnlyBytes s_bytes;
 
@@ -21,49 +20,57 @@ public class BytesReaderBench
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < sections; i++)
         {
-            sb.Append("123456789012345678\r\n");
+            sb.Append("1234 ");
         }
         s_data = Encoding.UTF8.GetBytes(sb.ToString());
         s_bytes = new ReadOnlyBytes(s_data);
     }
 
     [Benchmark]
-    static void BytesReaderBasic()
+    static void ParseInt32BytesReader()
     {
-        var eol = new ReadOnlySpan<byte>(s_eol);
-
-        foreach (var iteration in Benchmark.Iterations)
-        {
+        foreach (var iteration in Benchmark.Iterations) {
             var reader = BytesReader.Create(s_bytes);
 
-            using (iteration.StartMeasurement())
-            {
-                while (true)
+            using (iteration.StartMeasurement()) {
+                while(reader.TryParse(out int value))
                 {
-                    var range = reader.ReadRange(eol);
-                    if (range.To == Position.End) break;
+                    reader.Advance(1);
                 }
             }
         }
     }
 
     [Benchmark]
-    static void BytesReaderBaseline()
+    static void ParseInt32Utf8Parser()
     {
-        var eol = new ReadOnlySpan<byte>(s_eol);
+        var data = new ReadOnlySpan<byte>(s_data);
 
         foreach (var iteration in Benchmark.Iterations)
         {
             using (iteration.StartMeasurement())
             {
-                int read = 0;
-                while (true)
+                int totalConsumed = 0;
+                while(Utf8Parser.TryParse(data.Slice(totalConsumed), out int value, out int consumed))
                 {
-                    var slice = s_bytes.Memory.Slice(read);
-                    var index = slice.Span.IndexOf(eol);
-                    if (index == -1) break;
-                    read += index;
-                    read += eol.Length;
+                    totalConsumed += consumed + 1;
+                }
+            }
+        }
+    }
+
+    [Benchmark]
+    static void ParseInt32ReadableBufferReader()
+    {
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            var buffer = ReadableBuffer.Create(s_data);
+            var reader = new ReadableBufferReader(buffer);
+
+            using (iteration.StartMeasurement())
+            {
+                while(Utf8Parser.TryParse(reader.Span.Slice(reader.ConsumedBytes), out int value, out int consumed)){
+                    reader.Skip(consumed + 1);
                 }
             }
         }
