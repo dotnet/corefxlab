@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     {
         private Span<byte> _currentSpan;
         private int _index;
-        private SegmentEnumerator _enumerator;
+        private BufferEnumerator _enumerator;
         private int _consumedBytes;
         private bool _end;
 
@@ -22,7 +22,7 @@ namespace System.IO.Pipelines
             _end = false;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = new SegmentEnumerator(start, end);
+            _enumerator = new BufferEnumerator(start, end);
             _currentSpan = default;
             MoveNext();
         }
@@ -31,15 +31,7 @@ namespace System.IO.Pipelines
 
         public int Index => _index;
 
-        public ReadCursor Cursor
-        {
-            get
-            {
-                var part = _enumerator.Current;
-
-                return new ReadCursor(part.Segment, part.Start + _index);
-            }
-        }
+        public ReadCursor Cursor => _enumerator.CreateCursor(_index);
 
         public Span<byte> Span => _currentSpan;
 
@@ -82,11 +74,11 @@ namespace System.IO.Pipelines
             while (_enumerator.MoveNext())
             {
                 _index = 0;
-                var part = _enumerator.Current;
-                var length = part.Length;
+                var memory = _enumerator.Current;
+                var length = memory.Length;
                 if (length != 0)
                 {
-                    _currentSpan = part.Segment.Buffer.Span.Slice(part.Start, length);
+                    _currentSpan = memory.Span;
                     return;
                 }
             }

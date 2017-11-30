@@ -110,7 +110,7 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        internal Memory<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
+        internal Memory<byte> Buffer => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -257,7 +257,8 @@ namespace System.IO.Pipelines
 
             EnsureAlloc();
 
-            var clonedBegin = BufferSegment.Clone(buffer.Start, buffer.End, out BufferSegment clonedEnd);
+            // TODO: this has to support array buffers
+            var clonedBegin = BufferSegment.Clone(buffer.Start.GetSegment(), buffer.Start.Index, buffer.End.GetSegment(), buffer.End.Index, out BufferSegment clonedEnd);
 
             if (_writingHead == null)
             {
@@ -353,7 +354,7 @@ namespace System.IO.Pipelines
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
-                var buffer = _writingHead.Buffer;
+                var buffer = _writingHead.Memory;
                 var bufferIndex = _writingHead.End + bytesWritten;
 
                 if (bufferIndex > buffer.Length)
@@ -392,22 +393,6 @@ namespace System.IO.Pipelines
             TrySchedule(_readerScheduler, awaitable);
 
             return new WritableBufferAwaitable(this);
-        }
-
-        internal ReadableBuffer AsReadableBuffer()
-        {
-            if (_writingHead == null)
-            {
-                return new ReadableBuffer(); // Nothing written return empty
-            }
-
-            ReadCursor readStart;
-            lock (_sync)
-            {
-                readStart = new ReadCursor(_commitHead, _commitHeadIndex);
-            }
-
-            return new ReadableBuffer(readStart, new ReadCursor(_writingHead, _writingHead.End));
         }
 
         /// <summary>
@@ -466,11 +451,13 @@ namespace System.IO.Pipelines
                         return;
                     }
 
+                    var consumedSegment = consumed.GetSegment();
+
                     returnStart = _readHead;
-                    returnEnd = consumed.Segment;
+                    returnEnd = consumedSegment;
 
                     // Check if we crossed _maximumSizeLow and complete backpressure
-                    var consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumed.Segment, consumed.Index);
+                    var consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumedSegment, consumed.Index);
                     var oldLength = _length;
                     _length -= consumedBytes;
 
@@ -499,7 +486,7 @@ namespace System.IO.Pipelines
                     }
                     else
                     {
-                        _readHead = consumed.Segment;
+                        _readHead = consumedSegment;
                         _readHead.Start = consumed.Index;
                     }
                 }

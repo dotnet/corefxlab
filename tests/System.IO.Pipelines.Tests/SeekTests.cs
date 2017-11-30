@@ -91,8 +91,8 @@ namespace System.IO.Pipelines.Tests
             {
                 var seekCharIndex = input.IndexOf(seek);
                 var expectedEndBlock = limit <= input.Length / 2 ?
-                    block1.Segment :
-                    (seekCharIndex != -1 && seekCharIndex < input.Length / 2 ? block1.Segment : block2.Segment);
+                    block1.GetSegment() :
+                    (seekCharIndex != -1 && seekCharIndex < input.Length / 2 ? block1.GetSegment() : block2.GetSegment());
 
                 Assert.Same(expectedEndBlock, result.Segment);
 
@@ -122,7 +122,7 @@ namespace System.IO.Pipelines.Tests
             if (expectedReturnValue != -1)
             {
                 Assert.Same(buffer.Start.Segment, result.Segment);
-                Assert.Equal(result.Segment.Start + input.IndexOf(seek), result.Index);
+                Assert.Equal(result.GetSegment().Start + input.IndexOf(seek), result.Index);
             }
         }
 
@@ -231,8 +231,8 @@ namespace System.IO.Pipelines.Tests
                 var seekCharIndex = input.IndexOf(seek);
                 var limitAtIndex = input.IndexOf(limitAt);
                 var expectedEndBlock = seekCharIndex != -1 && seekCharIndex < input.Length / 2 ?
-                    start.Segment :
-                    (limitAtIndex != -1 && limitAtIndex < input.Length / 2 ? start.Segment : end.Segment);
+                    start.GetSegment() :
+                    (limitAtIndex != -1 && limitAtIndex < input.Length / 2 ? start.GetSegment() : end.GetSegment());
                 Assert.Same(expectedEndBlock, scan1.Segment);
                 Assert.Same(expectedEndBlock, scan2_1.Segment);
                 Assert.Same(expectedEndBlock, scan2_2.Segment);

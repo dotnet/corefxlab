@@ -75,10 +75,10 @@ namespace System.IO.Pipelines.Tests
             // [                ##############] -> [##############                ]
             //                         ^c1            ^c2
             var bufferSegment1 = new BufferSegment();
-            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 50, 99);
+            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), default, 50, 99);
 
             var bufferSegment2 = new BufferSegment();
-            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
+            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), default, 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
             var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 50), new ReadCursor(bufferSegment2, 50));

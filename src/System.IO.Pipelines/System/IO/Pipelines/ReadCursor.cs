@@ -8,7 +8,7 @@ namespace System.IO.Pipelines
 {
     public readonly struct ReadCursor : IEquatable<ReadCursor>
     {
-        internal readonly BufferSegment Segment;
+        internal readonly object Segment;
         internal readonly int Index;
 
         internal ReadCursor(BufferSegment segment)
@@ -17,9 +17,21 @@ namespace System.IO.Pipelines
             Index = segment?.Start ?? 0;
         }
 
+        internal ReadCursor(object segment, int index)
+        {
+            Segment = segment;
+            Index = index;
+        }
+
         internal ReadCursor(BufferSegment segment, int index)
         {
             Segment = segment;
+            Index = index;
+        }
+
+        internal ReadCursor(byte[] array, int index)
+        {
+            Segment = array;
             Index = index;
         }
 
@@ -36,25 +48,38 @@ namespace System.IO.Pipelines
                 {
                     return true;
                 }
-                else if (Index < segment.End)
+
+                if (segment is BufferSegment bufferSegment)
                 {
-                    return false;
+                    if (Index < bufferSegment.End)
+                    {
+                        return false;
+                    }
+
+                    return bufferSegment.Next == null ||
+                           IsEndMultiSegment(bufferSegment);
                 }
-                else if (segment.Next == null)
+
+                if (segment is byte[] array)
                 {
-                    return true;
+                    return Index >= array.Length;
                 }
-                else
-                {
-                    return IsEndMultiSegment();
-                }
+
+                ThrowWrongType();
+                return default;
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private bool IsEndMultiSegment()
+        private void ThrowWrongType()
         {
-            var segment = Segment.Next;
+            throw new InvalidOperationException();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool IsEndMultiSegment(BufferSegment segment)
+        {
+            segment = segment.Next;
             while (segment != null)
             {
                 if (segment.Start < segment.End)
@@ -74,7 +99,19 @@ namespace System.IO.Pipelines
                 return 0;
             }
 
-            return GetLength(Segment, Index, end.Segment, end.Index);
+            var segment = Segment;
+            if (segment is BufferSegment bufferSegment)
+            {
+                return GetLength(bufferSegment, Index, (BufferSegment)end.Segment, end.Index);
+            }
+
+            if (segment is byte[])
+            {
+                return end.Index - Index;
+            }
+
+            ThrowWrongType();
+            return default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -122,15 +159,17 @@ namespace System.IO.Pipelines
             ReadCursor result = default;
             bool foundResult = false;
 
-            foreach (var segmentPart in new SegmentEnumerator(this, end))
+            var enumerator = new BufferEnumerator(this, end);
+            while (enumerator.MoveNext())
             {
+                var memory = enumerator.Current;
                 // We need to loop up until the end to make sure start and end are connected
                 // if end is not trusted
                 if (!foundResult)
                 {
-                    if (segmentPart.Length >= bytes)
+                    if (memory.Length >= bytes)
                     {
-                        result = new ReadCursor(segmentPart.Segment, segmentPart.Start + (int)bytes);
+                        result = enumerator.CreateCursor((int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)
                         {
@@ -139,7 +178,7 @@ namespace System.IO.Pipelines
                     }
                     else
                     {
-                        bytes -= segmentPart.Length;
+                        bytes -= memory.Length;
                     }
                 }
 
@@ -155,10 +194,11 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void BoundsCheck(ReadCursor newCursor)
         {
-            if (!this.GreaterOrEqual(newCursor))
-            {
-                ThrowOutOfBoundsException();
-            }
+            // TODO
+            //if (!this.GreaterOrEqual(newCursor))
+            //{
+            //    ThrowOutOfBoundsException();
+            //}
         }
 
         private static void ThrowOutOfBoundsException()
@@ -178,29 +218,39 @@ namespace System.IO.Pipelines
             var segment = Segment;
             var index = Index;
 
-            if (end.Segment == segment)
+            if (segment is BufferSegment bufferSegment)
             {
-                var following = end.Index - index;
-
-                if (following > 0)
+                if (end.Segment == segment)
                 {
-                    data = segment.Buffer.Slice(index, following);
-                    return true;
-                }
+                    var following = end.Index - index;
 
-                data = Memory<byte>.Empty;
-                return false;
+                    if (following > 0)
+                    {
+                        data = bufferSegment.Memory.Slice(index, following);
+                        return true;
+                    }
+
+                    data = Memory<byte>.Empty;
+                    return false;
+                }
+                else
+                {
+                    return TryGetBufferMultiBlock(bufferSegment, Index, (BufferSegment)end.Segment, end.Index, out data);
+                }
             }
-            else
+
+            if (segment is byte[] array)
             {
-                return TryGetBufferMultiBlock(end, out data);
+                data = ((Memory<byte>) array).Slice(Index, end.Index - Index);
             }
+
+            ThrowWrongType();
+            return default;
         }
 
-        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
+        private static bool TryGetBufferMultiBlock(BufferSegment start, int startIndex, BufferSegment end, int endIndex, out Memory<byte> data)
         {
-            var segment = Segment;
-            var index = Index;
+            var segment = start;
 
             // Determine if we might attempt to copy data from segment.Next before
             // calculating "following" so we don't risk skipping data that could
@@ -211,15 +261,15 @@ namespace System.IO.Pipelines
 
             while (true)
             {
-                var wasLastSegment = segment.Next == null || end.Segment == segment;
+                var wasLastSegment = segment.Next == null || end == segment;
 
-                if (end.Segment == segment)
+                if (end == segment)
                 {
-                    following = end.Index - index;
+                    following = endIndex - startIndex;
                 }
                 else
                 {
-                    following = segment.End - index;
+                    following = segment.End - startIndex;
                 }
 
                 if (following > 0)
@@ -235,11 +285,11 @@ namespace System.IO.Pipelines
                 else
                 {
                     segment = segment.Next;
-                    index = segment.Start;
+                    startIndex = segment.Start;
                 }
             }
 
-            data = segment.Buffer.Slice(index, following);
+            data = segment.Memory.Slice(startIndex, following);
             return true;
         }
 
@@ -251,8 +301,9 @@ namespace System.IO.Pipelines
             }
 
             var sb = new StringBuilder();
-            Span<byte> span = Segment.Buffer.Span.Slice(Index, Segment.End - Index);
-            SpanLiteralExtensions.AppendAsLiteral(span, sb);
+            //Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
+            //SpanLiteralExtensions.AppendAsLiteral(span, sb);
+            sb.Append("TODO");
             return sb.ToString();
         }
 
@@ -285,12 +336,23 @@ namespace System.IO.Pipelines
             return ((int)shift5 + h1) ^ h2;
         }
 
-        internal bool GreaterOrEqual(ReadCursor other)
+        internal static bool GreaterOrEqual(BufferSegment start, int startIndex, BufferSegment end, int endIndex)
         {
             // other.Segment.RunningLength + other.Index  - other.Segment.Start <= Segment.RunningLength + Index- Segment.Start
             // fliped to avoid overflows
 
-            return other.Segment.RunningLength - Index - other.Segment.Start <= Segment.RunningLength - other.Index - Segment.Start;
+            return end.RunningLength - startIndex - end.Start <= start.RunningLength - endIndex - start.Start;
+        }
+
+        internal BufferSegment GetSegment()
+        {
+            if (Segment is BufferSegment bufferSegment)
+            {
+                return bufferSegment;
+            }
+
+            ThrowWrongType();
+            return default;
         }
     }
 }

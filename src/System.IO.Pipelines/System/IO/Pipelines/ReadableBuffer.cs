@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Generic;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -62,7 +63,7 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Clone(in ReadableBuffer buffer)
         {
-            var segmentHead = BufferSegment.Clone(buffer.BufferStart, buffer.BufferEnd, out var segmentTail);
+            var segmentHead = BufferSegment.Clone(buffer.BufferStart.GetSegment(), buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
 
             return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
         }
@@ -148,7 +149,7 @@ namespace System.IO.Pipelines
         public PreservedBuffer Preserve()
         {
             var buffer = Clone(this);
-            return new PreservedBuffer(ref buffer);
+            return new PreservedBuffer(buffer);
         }
 
         /// <summary>
@@ -201,18 +202,89 @@ namespace System.IO.Pipelines
             return new BufferEnumerator(BufferStart, BufferEnd);
         }
 
+        public ReadCursor Move(ReadCursor cursor, long count)
+        {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+            return cursor.Seek(count, BufferEnd, false);
+        }
+
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an array.
+        /// Create a <see cref="ReadableBuffer"/> over an <see cref="IEnumerable{Memory{Byte}}"/>.
         /// </summary>
-        public static ReadableBuffer Create(byte[] data)
+        public static ReadableBuffer Create(IEnumerable<Memory<byte>> data)
         {
             if (data == null)
             {
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            OwnedMemory<byte> buffer = new OwnedArray<byte>(data);
-            return CreateInternal(buffer, 0, data.Length);
+            BufferSegment first = null;
+            BufferSegment segment = null;
+
+            foreach (var memory in data)
+            {
+                var previous = segment;
+
+                segment = new BufferSegment();
+                segment.SetMemory(null, memory, 0, memory.Length);
+
+                if (previous == null)
+                {
+                    first = segment;
+                }
+                else
+                {
+                    previous.SetNext(segment);
+                }
+            }
+
+            if (first == null)
+            {
+                return default;
+            }
+
+            return new ReadableBuffer(first, 0, segment, segment.End);
+        }
+
+        /// <summary>
+        /// Create a <see cref="ReadableBuffer"/> over an <see cref="IEnumerable{OwnedMemory{Byte}}"/>.
+        /// </summary>
+        public static PreservedBuffer Create(IEnumerable<OwnedMemory<byte>> data)
+        {
+            if (data == null)
+            {
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            BufferSegment first = null;
+            BufferSegment segment = null;
+            foreach (var ownedMemory in data)
+            {
+                var previous = segment;
+                var memory = ownedMemory.Memory;
+
+                segment = new BufferSegment();
+                segment.SetMemory(ownedMemory, memory, 0, memory.Length);
+
+                if (previous == null)
+                {
+                    first = segment;
+                }
+                else
+                {
+                    previous.SetNext(segment);
+                }
+            }
+
+            if (first == null)
+            {
+                return default;
+            }
+
+            return new PreservedBuffer(new ReadableBuffer(first, 0, segment, segment.End));
         }
 
         /// <summary>
@@ -225,13 +297,24 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(new OwnedArray<byte>(data), offset, length);
+            return Create(((Memory<byte>)data).Slice(offset, length));
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an OwnedMemory.
+        /// Create a <see cref="ReadableBuffer"/> over an <see cref="Memory{Byte}"/>.
         /// </summary>
-        public static ReadableBuffer Create(OwnedMemory<byte> data, int offset, int length)
+        public static ReadableBuffer Create(Memory<byte> memory)
+        {
+            var segment = new BufferSegment();
+            segment.SetMemory(null, memory, 0, memory.Length);
+
+            return new ReadableBuffer(segment, 0, segment, segment.End);
+        }
+
+        /// <summary>
+        /// Create a <see cref="ReadableBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
+        /// </summary>
+        public static PreservedBuffer Create(OwnedMemory<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -248,24 +331,10 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            return CreateInternal(data, offset, length);
-        }
-
-        private static ReadableBuffer CreateInternal(OwnedMemory<byte> data, int offset, int length)
-        {
             var segment = new BufferSegment();
-            segment.SetMemory(data, offset, offset + length);
+            segment.SetMemory(data, default, 0, data.Memory.Length);
 
-            return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
-        }
-
-        public ReadCursor Move(ReadCursor cursor, long count)
-        {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-            return cursor.Seek(count, BufferEnd, false);
+            return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End));
         }
     }
 }

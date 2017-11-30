@@ -8,17 +8,15 @@ namespace System.IO.Pipelines
     {
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
         {
-            var enumerator = new SegmentEnumerator(begin, end);
+            var enumerator = new BufferEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var segmentPart = enumerator.Current;
-                var segment = segmentPart.Segment;
-                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
+                var span = enumerator.Current.Span;
 
                 int index = span.IndexOf(byte0);
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, segmentPart.Start + index);
+                    result = enumerator.CreateCursor(index);
                     return span[index];
                 }
             }
@@ -29,18 +27,15 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
         {
-            var enumerator = new SegmentEnumerator(begin, end);
+            var enumerator = new BufferEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var segmentPart = enumerator.Current;
-                var segment = segmentPart.Segment;
-                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
-
+                var span = enumerator.Current.Span;
                 int index = span.IndexOfAny(byte0, byte1);
 
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, segmentPart.Start + index);
+                    result = enumerator.CreateCursor(index);
                     return span[index];
                 }
             }
@@ -51,18 +46,15 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
         {
-            var enumerator = new SegmentEnumerator(begin, end);
+            var enumerator = new BufferEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var segmentPart = enumerator.Current;
-                var segment = segmentPart.Segment;
-                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
-
+                var span = enumerator.Current.Span;
                 int index = span.IndexOfAny(byte0, byte1, byte2);
 
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, segmentPart.Start + index);
+                    result = enumerator.CreateCursor(index);
                     return span[index];
                 }
             }

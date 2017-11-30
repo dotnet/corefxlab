@@ -6,11 +6,11 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public struct PreservedBuffer : IDisposable
+    public readonly struct PreservedBuffer : IDisposable
     {
-        private ReadableBuffer _buffer;
+        private readonly ReadableBuffer _buffer;
 
-        internal PreservedBuffer(ref ReadableBuffer buffer)
+        internal PreservedBuffer(in ReadableBuffer buffer)
         {
             _buffer = buffer;
         }
@@ -25,8 +25,8 @@ namespace System.IO.Pipelines
         /// </summary>
         public void Dispose()
         {
-            var returnStart = _buffer.Start.Segment;
-            var returnEnd = _buffer.End.Segment;
+            var returnStart = _buffer.Start.GetSegment();
+            var returnEnd = _buffer.End.GetSegment();
 
             while (true)
             {
@@ -39,9 +39,6 @@ namespace System.IO.Pipelines
                     break;
                 }
             }
-
-            _buffer = default;
         }
-
     }
 }

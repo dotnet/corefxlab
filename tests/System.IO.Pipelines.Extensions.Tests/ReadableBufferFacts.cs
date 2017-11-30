@@ -94,8 +94,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            OwnedMemory<byte> owned = new OwnedArray<byte>(data);
-            var buffer = ReadableBuffer.Create(owned, 3, data.Length - 7);
+            var buffer = ReadableBuffer.Create(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -507,6 +506,30 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(rb.ToArray(), ms.ToArray());
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
             }
+        }
+
+        [Fact]
+        public void Create_WorksWithArray()
+        {
+            var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
+            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
+        }
+
+        [Fact]
+        public void Create_WorksWithMemory()
+        {
+            Memory<byte> memory = new byte[] {1, 2, 3, 4, 5};
+            memory = memory.Slice(2, 3);
+            var readableBuffer = ReadableBuffer.Create(memory);
+            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
+        }
+
+        [Fact]
+        public void Create_WorksWithOwnedMemory()
+        {
+            var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
+            var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
+            Assert.Equal(readableBuffer.Buffer.ToArray(), new byte[] {3, 4, 5});
         }
     }
 }
