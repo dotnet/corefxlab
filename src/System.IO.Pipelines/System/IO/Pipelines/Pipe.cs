@@ -27,7 +27,7 @@ namespace System.IO.Pipelines
         // 3. _readerAwaitable & _writerAwaitable
         private readonly object _sync = new object();
 
-        private readonly BufferPool _pool;
+        private readonly MemoryPool _pool;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
@@ -92,7 +92,7 @@ namespace System.IO.Pipelines
 
             _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
 
-            _pool = options.BufferPool;
+            _pool = options.Pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;

@@ -2,42 +2,36 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace System.Buffers.Internal
 {
-    internal sealed class ManagedBufferPool : BufferPool
+    internal sealed class ArrayMemoryPool<T> : MemoryPool<T>
     {
-        readonly static ManagedBufferPool s_shared = new ManagedBufferPool();
+        readonly static ArrayMemoryPool<T> s_shared = new ArrayMemoryPool<T>();
 
-        public static ManagedBufferPool Shared
-        {
-            get
-            {
-                return s_shared;
-            }
-        }
+        public static ArrayMemoryPool<T> Shared => s_shared;
 
-        public override OwnedMemory<byte> Rent(int minimumBufferSize)
+        public override OwnedMemory<T> Rent(int minimumBufferSize)
         {
-            var buffer = new ArrayPoolBuffer(minimumBufferSize);
-            return buffer;
+            return new ArrayPoolMemory(minimumBufferSize);
         }
 
         protected override void Dispose(bool disposing)
         {
         }
 
-        private sealed class ArrayPoolBuffer : OwnedMemory<byte>
+        private sealed class ArrayPoolMemory : OwnedMemory<T>
         {
-            byte[] _array;
+            T[] _array;
             bool _disposed;
             int _referenceCount;
             
-            public ArrayPoolBuffer(int size)
+            public ArrayPoolMemory(int size)
             {
-                _array = ArrayPool<byte>.Shared.Rent(size);
+                _array = ArrayPool<T>.Shared.Rent(size);
             }
 
             public override int Length => _array.Length;
@@ -46,12 +40,12 @@ namespace System.Buffers.Internal
 
             protected override bool IsRetained => _referenceCount > 0;
 
-            public override Span<byte> Span
+            public override Span<T> Span
             {
                 get
                 {
-                    if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
-                    return new Span<byte>(_array);
+                    if (IsDisposed) ThrowObjectDisposedException(nameof(ArrayPoolMemory));
+                    return _array;
                 }
             }
 
@@ -60,14 +54,14 @@ namespace System.Buffers.Internal
                 var array = Interlocked.Exchange(ref _array, null);
                 if (array != null)  {
                     _disposed = true;
-                    ArrayPool<byte>.Shared.Return(array);
+                    ArrayPool<T>.Shared.Return(array);
                 }
             }
 
-            protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
+            protected override bool TryGetArray(out ArraySegment<T> arraySegment)
             {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
-                arraySegment = new ArraySegment<byte>(_array);
+                if (IsDisposed) ThrowObjectDisposedException(nameof(ArrayMemoryPool<T>));
+                arraySegment = new ArraySegment<T>(_array);
                 return true;
             }
 
@@ -83,7 +77,7 @@ namespace System.Buffers.Internal
 
             public override void Retain()
             {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
+                if (IsDisposed) ThrowObjectDisposedException(nameof(ArrayPoolMemory));
                 Interlocked.Increment(ref _referenceCount);
             }
 
@@ -98,6 +92,10 @@ namespace System.Buffers.Internal
                 }
                 return true;
             }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static void ThrowObjectDisposedException(string objectName)
+                => throw new ObjectDisposedException(objectName);
         }
     }
 }
