@@ -14,8 +14,11 @@ namespace System.Buffers.Internal
 
         public static ArrayMemoryPool<T> Shared => s_shared;
 
+        public override int MaxBufferSize => 1024 * 1024 * 1024;
+
         public override OwnedMemory<T> Rent(int minimumBufferSize)
         {
+            if (minimumBufferSize > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(minimumBufferSize));
             return new ArrayPoolMemory(minimumBufferSize);
         }
 

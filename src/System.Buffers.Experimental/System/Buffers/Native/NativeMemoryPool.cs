@@ -39,9 +39,11 @@ namespace System.Buffers.Native
             Marshal.FreeHGlobal(_memory);
         }
 
+        public override int MaxBufferSize => 1024 * 1024 * 1024;
+
         public override OwnedMemory<byte> Rent(int numberOfBytes)
         {
-            if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
+            if (numberOfBytes < 1 || numberOfBytes > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
 
             int i;

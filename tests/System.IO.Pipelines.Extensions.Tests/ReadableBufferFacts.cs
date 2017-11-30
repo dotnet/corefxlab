@@ -24,7 +24,7 @@ namespace System.IO.Pipelines.Tests
         const int BlockSize = 4032;
 
         private IPipe _pipe;
-        private MemoryPool _pool;
+        private MemoryPool<byte> _pool;
 
         public ReadableBufferFacts()
         {

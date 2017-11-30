@@ -13,7 +13,7 @@ namespace System.IO.Pipelines.Tests
     public class PipelineReaderWriterFacts : IDisposable
     {
         private IPipe _pipe;
-        private MemoryPool _pool;
+        private MemoryPool<byte> _pool;
 
         public PipelineReaderWriterFacts()
         {

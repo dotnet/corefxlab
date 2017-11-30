@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket = null;
         }
 
-        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, MemoryPool memoryPool, Socket socket)
+        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, MemoryPool<byte> memoryPool, Socket socket)
         {
             using (var ns = new NetworkStream(socket))
             {

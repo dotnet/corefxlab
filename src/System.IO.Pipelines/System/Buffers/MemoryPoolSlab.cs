@@ -9,7 +9,7 @@ namespace System.Buffers
     /// Slab tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independant array segments.
     /// </summary>
-    public class MemoryPoolSlab : IDisposable
+    internal class MemoryPoolSlab : OwnedMemory<byte>
     {
         /// <summary>
         /// This handle pins the managed array in memory until the slab is disposed. This prevents it from being
@@ -20,7 +20,7 @@ namespace System.Buffers
         private byte[] _data;
 
         private bool _isActive;
-        internal Action<MemoryPoolSlab> _deallocationCallback;
+        internal Action<OwnedMemory<byte>> _deallocationCallback;
         private bool _disposedValue;
 
         public MemoryPoolSlab(byte[] data)
@@ -45,7 +45,11 @@ namespace System.Buffers
 
         public byte[] Array => _data;
 
-        public int Length => _data.Length;
+        public override int Length => _data.Length;
+
+        public override bool IsDisposed => _disposedValue;
+
+        public override Span<byte> Span => new Span<byte>(_data, 0, _data.Length);
 
         public static MemoryPoolSlab Create(int length)
         {
@@ -56,7 +60,7 @@ namespace System.Buffers
             return new MemoryPoolSlab(array);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
@@ -88,13 +92,26 @@ namespace System.Buffers
             Dispose(false);
         }
 
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
+        public unsafe override MemoryHandle Pin()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // uncomment the following line if the finalizer is overridden above.
-            GC.SuppressFinalize(this);
+            return new MemoryHandle(this, _nativePointer.ToPointer(), _gcHandle);
+        }
+
+        public override bool Release()
+        {
+            return true;
+        }
+
+        public override void Retain()
+        {
+        }
+
+        protected override bool IsRetained => false;
+
+        protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
+        {
+            arraySegment = new ArraySegment<byte>(_data);
+            return true;
         }
     }
 }

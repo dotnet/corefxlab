@@ -25,7 +25,7 @@ namespace System.IO.Pipelines.Samples
             return await client.ConnectAsync();
         }
 
-        protected override MemoryPool GetBufferPool()
+        protected override MemoryPool<byte> GetBufferPool()
         {
             return thread.Pool;
         }

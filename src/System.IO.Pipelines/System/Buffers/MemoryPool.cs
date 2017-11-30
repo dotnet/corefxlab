@@ -39,7 +39,7 @@ namespace System.Buffers
         /// Max allocation block size for pooled blocks,
         /// larger values can be leased but they will be disposed after use rather than returned to the pool.
         /// </summary>
-        public const int MaxPooledBlockLength = _blockLength;
+        public override int MaxBufferSize { get; } = _blockLength;
 
         /// <summary>
         /// 4096 * 32 gives you a slabLength of 128k contiguous bytes allocated per slab
@@ -63,9 +63,15 @@ namespace System.Buffers
         /// </summary>
         private bool _disposedValue = false; // To detect redundant calls
 
-        private Action<MemoryPoolSlab> _slabAllocationCallback;
+        private Action<OwnedMemory<byte>> _slabAllocationCallback;
 
-        private Action<MemoryPoolSlab> _slabDeallocationCallback;
+        private Action<OwnedMemory<byte>> _slabDeallocationCallback;
+
+        public MemoryPool(Action<OwnedMemory<byte>> allocationCallback = null, Action<OwnedMemory<byte>> deallocationCallback = null)
+        {
+            _slabAllocationCallback = allocationCallback;
+            _slabDeallocationCallback = deallocationCallback;
+        }
 
         public override OwnedMemory<byte> Rent(int size)
         {
@@ -76,16 +82,6 @@ namespace System.Buffers
 
             var block = Lease();
             return block;
-        }
-
-        public void RegisterSlabAllocationCallback(Action<MemoryPoolSlab> callback)
-        {
-            _slabAllocationCallback = callback;
-        }
-
-        public void RegisterSlabDeallocationCallback(Action<MemoryPoolSlab> callback)
-        {
-            _slabDeallocationCallback = callback;
         }
 
         /// <summary>

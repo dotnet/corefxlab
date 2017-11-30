@@ -9,6 +9,8 @@ namespace System.Buffers
 
         public abstract OwnedMemory<T> Rent(int minimumBufferSize);
 
+        public abstract int MaxBufferSize { get;  }
+
         public void Dispose()
         {
             Dispose(true);

@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         private readonly Queue<NotifyBatch> _notifyBatches;
         private readonly Queue<NotifyBatch> _processedBatches;
 
-        private MemoryPool _pool;
+        private MemoryPool<byte> _pool;
         private Dictionary<long, RioTcpConnection> _connections;
         private List<BufferMapping> _bufferIdMappings;
 
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         public IntPtr CompletionPort => _completionPort;
 
-        public MemoryPool Pool => _pool;
+        public MemoryPool<byte> Pool => _pool;
 
         public RioThread(int id, CancellationToken token, IntPtr completionPort, IntPtr completionQueue, RegisteredIO rio)
         {
@@ -134,36 +134,41 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        private void OnSlabAllocated(MemoryPoolSlab slab)
+        private void OnSlabAllocated(OwnedMemory<byte> slab)
         {
             lock (_bufferIdMappings)
             {
-                var memoryPtr = slab.NativePointer;
-                var bufferId = _rio.RioRegisterBuffer(memoryPtr, (uint)slab.Length);
-                var addressLong = memoryPtr.ToInt64();
-
-                _bufferIdMappings.Add(new BufferMapping
+                using (var handle = slab.Pin())
                 {
-                    Id = bufferId,
-                    Start = addressLong,
-                    End = addressLong + slab.Length
-                });
+                    var memoryPtr = new IntPtr(handle.Pointer);
+                    var bufferId = _rio.RioRegisterBuffer(memoryPtr, (uint)slab.Length);
+                    var addressLong = memoryPtr.ToInt64();
+
+                    _bufferIdMappings.Add(new BufferMapping
+                    {
+                        Id = bufferId,
+                        Start = addressLong,
+                        End = addressLong + slab.Length
+                    });
+                }
             }
         }
 
-        private void OnSlabDeallocated(MemoryPoolSlab slab)
+        private void OnSlabDeallocated(OwnedMemory<byte> slab)
         {
-            var memoryPtr = slab.NativePointer;
-            var addressLong = memoryPtr.ToInt64();
-
-            lock (_bufferIdMappings)
+            using (var handle = slab.Pin())
             {
-                for (int i = _bufferIdMappings.Count - 1; i >= 0; i--)
+                var memoryPtr = handle.Pointer;
+                var addressLong = (long)memoryPtr;
+                lock (_bufferIdMappings)
                 {
-                    if (addressLong == _bufferIdMappings[i].Start)
+                    for (int i = _bufferIdMappings.Count - 1; i >= 0; i--)
                     {
-                        _bufferIdMappings.RemoveAt(i);
-                        break;
+                        if (addressLong == _bufferIdMappings[i].Start)
+                        {
+                            _bufferIdMappings.RemoveAt(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -189,9 +194,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             thread._connections = new Dictionary<long, RioTcpConnection>();
             thread._bufferIdMappings = new List<BufferMapping>();
 
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
+            var memoryPool = new MemoryPool(thread.OnSlabAllocated, thread.OnSlabDeallocated);
             thread._pool = memoryPool;
 
             thread.ProcessLogicalCompletions();
@@ -215,9 +218,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             thread._connections = new Dictionary<long, RioTcpConnection>();
             thread._bufferIdMappings = new List<BufferMapping>();
 
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
+            var memoryPool = new MemoryPool(thread.OnSlabAllocated, thread.OnSlabDeallocated);
             thread._pool = memoryPool;
 
             thread.ProcessPhysicalCompletions();

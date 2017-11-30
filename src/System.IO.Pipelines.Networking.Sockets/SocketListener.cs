@@ -16,8 +16,8 @@ namespace System.IO.Pipelines.Networking.Sockets
         private readonly bool _ownsPool;
         private Socket _socket;
         private Socket Socket => _socket;
-        private MemoryPool _pool;
-        private MemoryPool PipePool => _pool;
+        private MemoryPool<byte> _pool;
+        private MemoryPool<byte> PipePool => _pool;
         private Func<SocketConnection, Task> Callback { get; set; }
         static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
@@ -25,7 +25,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// Creates a new SocketListener instance
         /// </summary>
         /// <param name="pool">Optionally allows the underlying <see cref="PipePool"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipePool"/> will be instantiated and owned by the listener</param>
-        public SocketListener(MemoryPool pool = null)
+        public SocketListener(MemoryPool<byte> pool = null)
         {
             _ownsPool = pool == null;
             _pool = pool ?? new MemoryPool();
