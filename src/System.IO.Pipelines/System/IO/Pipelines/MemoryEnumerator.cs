@@ -9,6 +9,8 @@ namespace System.IO.Pipelines
     public struct BufferEnumerator
     {
         private object _segment;
+        private object _cursorSegment;
+        private int _cursorStart;
         private int _startIndex;
         private readonly int _endIndex;
         private readonly object _endSegment;
@@ -20,6 +22,8 @@ namespace System.IO.Pipelines
         {
             _startIndex = start.Index;
             _segment = start.Segment;
+            _cursorSegment = null;
+            _cursorStart = 0;
             _endSegment = end.Segment;
             _endIndex = end.Index;
             Current = default;
@@ -70,14 +74,21 @@ namespace System.IO.Pipelines
                 }
 
                 Current = bufferSegment.Memory.Slice(start, end - start);
+                _cursorSegment = bufferSegment;
+                _cursorStart = start;
+                return true;
             }
 
             if (segment is byte[] array)
             {
                 Current = ((Memory<byte>)array).Slice(_startIndex, _endIndex - _startIndex);
+                _cursorSegment = segment;
+
+                return true;
             }
 
-            return true;
+            PipelinesThrowHelper.ThrowNotSupportedException();
+            return default;
         }
 
         private void ThrowEndNotSeen()
@@ -97,7 +108,7 @@ namespace System.IO.Pipelines
 
         public ReadCursor CreateCursor(int offset)
         {
-            return new ReadCursor(_segment, _startIndex + offset);
+            return new ReadCursor(_cursorSegment, _cursorStart + offset);
         }
     }
 }

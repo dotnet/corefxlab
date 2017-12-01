@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
 {
+    [DebuggerDisplay("{Segment}[{Index}]")]
     public readonly struct ReadCursor : IEquatable<ReadCursor>
     {
         internal readonly object Segment;
@@ -160,9 +162,10 @@ namespace System.IO.Pipelines
             bool foundResult = false;
 
             var enumerator = new BufferEnumerator(this, end);
+            Memory<byte> memory;
             while (enumerator.MoveNext())
             {
-                var memory = enumerator.Current;
+                memory = enumerator.Current;
                 // We need to loop up until the end to make sure start and end are connected
                 // if end is not trusted
                 if (!foundResult)
@@ -194,11 +197,20 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void BoundsCheck(ReadCursor newCursor)
         {
-            // TODO
-            //if (!this.GreaterOrEqual(newCursor))
-            //{
-            //    ThrowOutOfBoundsException();
-            //}
+            if (ReferenceEquals(Segment, newCursor.Segment))
+            {
+                if (newCursor.Index > Index)
+                {
+                    ThrowOutOfBoundsException();
+                }
+            }
+            else
+            {
+                if (!GreaterOrEqual(GetSegment(), Index, newCursor.GetSegment(), newCursor.Index))
+                {
+                    ThrowOutOfBoundsException();
+                }
+            }
         }
 
         private static void ThrowOutOfBoundsException()
@@ -301,9 +313,6 @@ namespace System.IO.Pipelines
             }
 
             var sb = new StringBuilder();
-            //Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
-            //SpanLiteralExtensions.AppendAsLiteral(span, sb);
-            sb.Append("TODO");
             return sb.ToString();
         }
 
@@ -346,6 +355,10 @@ namespace System.IO.Pipelines
 
         internal BufferSegment GetSegment()
         {
+            if (Segment == null)
+            {
+                return null;
+            }
             if (Segment is BufferSegment bufferSegment)
             {
                 return bufferSegment;

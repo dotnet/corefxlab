@@ -102,16 +102,13 @@ namespace System.IO.Pipelines
         {
             if (_memory.IsEmpty)
             {
-                return "<NO MEMORY ATTACHED>";
+                return "<EMPTY>";
             }
 
             var builder = new StringBuilder();
             var data = _memory.Slice(Start, ReadableBytes).Span;
 
-            for (int i = 0; i < ReadableBytes; i++)
-            {
-                builder.Append((char)data[i]);
-            }
+            SpanLiteralExtensions.AppendAsLiteral(data, builder);
             return builder.ToString();
         }
 
