@@ -90,7 +90,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                var eol = buffer.IndexOf(s_Eol);
+                var eol = Sequence.IndexOf(buffer, s_Eol[0], s_Eol[1]);
                 if (eol == -1)
                 {
                     consumed = 0;
@@ -432,7 +432,7 @@ namespace System.Text.Http.Parser
                         else
                         {
                             // Split buffers
-                            var end = buffer.Slice(index).IndexOf(ByteLF);
+                            var end = Sequence.IndexOf(buffer.Slice(index), ByteLF);
                             if (end == -1)
                             {
                                 // Not there

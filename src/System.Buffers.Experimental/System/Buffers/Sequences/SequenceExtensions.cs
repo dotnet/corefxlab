@@ -30,8 +30,39 @@ namespace System.Buffers
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var index = MemoryExtensions.IndexOf(memory.Span, value);
+                var index = memory.Span.IndexOf(value);
                 if (index != -1) return index + totalIndex;
+                totalIndex += memory.Length;
+            }
+            return -1;
+        }
+
+        public static long IndexOf<TSequence>(TSequence sequence, byte v1, byte v2) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        {
+            Position position = default;
+            int totalIndex = 0;
+            while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
+            {
+                var span = memory.Span;
+                var index = span.IndexOf(v1);
+                if (index != -1)
+                {
+                    if(span.Length > index + 1)
+                    {
+                        if (span[index + 1] == v2) return index + totalIndex;
+                        else throw new NotImplementedException(); // need to check farther in the span
+                    }
+                    else
+                    {
+                        if(sequence.TryGet(ref position, out var next, false)) {
+                            var nextSpan = next.Span;
+                            if(nextSpan.Length > 0)
+                            {
+                                if (next.Span[0] == v2) return totalIndex + index;
+                            }
+                        }
+                    }
+                }
                 totalIndex += memory.Length;
             }
             return -1;

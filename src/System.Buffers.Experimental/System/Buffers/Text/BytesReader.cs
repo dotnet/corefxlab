@@ -24,10 +24,16 @@ namespace System.Buffers.Text
         public BytesReader(TSequence bytes)
         {
             _bytes = bytes;
-            _currentSegmentPosition = bytes.First;
-            _nextSegmentPosition = _currentSegmentPosition;
-            _bytes.TryGet(ref _nextSegmentPosition, out ReadOnlyMemory<byte> memory);
-            _currentSpan = memory.Span;
+            _nextSegmentPosition = bytes.First;
+            _currentSegmentPosition = _nextSegmentPosition;
+            if(_bytes.TryGet(ref _nextSegmentPosition, out ReadOnlyMemory<byte> memory))
+            {
+                _currentSpan = memory.Span;
+            }
+            else
+            {
+                _currentSpan = ReadOnlySpan<byte>.Empty;
+            }
             _currentSpanIndex = 0;
         }
 
@@ -78,22 +84,48 @@ namespace System.Buffers.Text
             return false;
         }
 
-        public PositionRange ReadRange(byte delimiter)
+        public bool TryReadBytes(out ReadOnlyBytes bytes, byte delimiter)
         {
-            var range = new PositionRange();
-            range.From = Position;
-            range.To = AdvanceToDelimiter(delimiter);
-            return range;
+            var range = ReadRange(delimiter);
+            if(range.Start.IsEnd || range.End.IsEnd)
+            {
+                bytes = default;
+                return false;
+            }
+
+            var startObj = range.Start.GetItem<object>();
+            var endObj = range.End.GetItem<object>();
+            // TODO: this is a hack. Once we move this to System.Memory, we should remove
+            if (startObj == null || endObj == null)
+            {
+                bytes = default;
+                return false;
+            }
+
+            bytes = new ReadOnlyBytes(startObj, range.Start.Index, endObj, range.End.Index);
+            return true;
+        }
+        public bool TryReadBytes(out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
+        {
+            var range = ReadRange(delimiter);
+            if (range.Start.IsEnd || range.End.IsEnd)
+            {
+                bytes = default;
+                return false;
+            }
+            bytes = new ReadOnlyBytes(range.Start.GetItem<object>(), range.Start.Index, range.End.GetItem<object>(), range.End.Index);
+            return true;
         }
 
-        public PositionRange ReadRange(ReadOnlySpan<byte> delimiter)
+        PositionRange ReadRange(byte delimiter)
+            => new PositionRange(Position, AdvanceToDelimiter(delimiter));
+
+        PositionRange ReadRange(ReadOnlySpan<byte> delimiter)
         {
-            var range = new PositionRange();
-            range.From = Position;
-            range.To = PositionOf(delimiter);
-            if (!range.To.IsEnd)
+            var range = new PositionRange(Position, PositionOf(delimiter));
+            if (!range.End.IsEnd)
             {
-                Advance(range.To);
+                Advance(range.End);
                 Advance(delimiter.Length);
             }
             return range;
@@ -364,6 +396,18 @@ namespace System.Buffers.Text
         public static BytesReader<T> Create<T>(T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             return new BytesReader<T>(sequence);
+        }
+    }
+
+    struct PositionRange
+    {
+        public readonly Position Start;
+        public readonly Position End;
+
+        public PositionRange(Position start, Position end)
+        {
+            Start = start;
+            End = end;
         }
     }
 }

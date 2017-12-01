@@ -42,15 +42,15 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
 
-            for (int pivot = 0; pivot < requestText.Length; pivot++) {
+            for (int pivot = 24; pivot < requestText.Length; pivot++) {
                 var front = requestText.Substring(0, pivot);
                 var back = requestText.Substring(pivot);
 
                 var frontBytes = Encoding.ASCII.GetBytes(front);
                 var endBytes = Encoding.ASCII.GetBytes(back);
 
-                var (list, length) = MemoryList.Create(frontBytes, endBytes);
-                ReadOnlyBytes buffer = new ReadOnlyBytes(list, length);
+                var (first, last) = MemoryList.Create(frontBytes, endBytes);
+                ReadOnlyBytes buffer = new ReadOnlyBytes(first, last);
 
                 var request = new Request();
 

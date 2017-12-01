@@ -80,7 +80,7 @@ namespace Microsoft.Net
                     }
                 }
 
-                var requestBytes = new ReadOnlyBytes(rootBuffer, totalWritten);
+                var requestBytes = new ReadOnlyBytes(rootBuffer, requestBuffer);
 
                 var request = new HttpRequest();
                 if(!s_parser.ParseRequestLine(ref request, requestBytes, out int consumed))
