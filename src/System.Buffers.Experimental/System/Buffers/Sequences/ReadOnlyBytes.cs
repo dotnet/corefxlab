@@ -114,10 +114,14 @@ namespace System.Buffers
             }
         }
 
+        public ReadOnlyBytes Slice(int index, int length)
+            => Slice((long)index, (long)length);
+
         public ReadOnlyBytes Slice(long index)
-        {
-            return Slice(index, Length - index);
-        }
+            => Slice(index, Length - index);
+
+        public ReadOnlyBytes Slice(int index)
+            => Slice((long)index);
 
         public ReadOnlyBytes Slice(Position position)
         {
@@ -128,7 +132,7 @@ namespace System.Buffers
                     var array = position.GetItem<byte[]>();
                     return new ReadOnlyBytes(array, position.Index, array.Length - position.Index);
                 case Type.MemoryList:
-                    return Slice(position, Position.Create(_endIndex, (IMemoryList<byte>)_end));
+                    return Slice(position, Position.Create((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
@@ -223,7 +227,7 @@ namespace System.Buffers
             }
         }
 
-        public Position First => Position.Create(_startIndex, _start);
+        public Position First => Position.Create(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -279,7 +283,7 @@ namespace System.Buffers
                 {
                     var first = _start as IMemoryList<byte>;
                     item = first.Memory.Slice(_startIndex);
-                    if (advance) position.Set(first.Rest, 0);
+                    if (advance) position = Position.Create(first.Rest);
                     if (ReferenceEquals(_end, _start)){
                         item = item.Slice(0, (int)Length);
                         if (advance) position = Position.End;
@@ -287,16 +291,16 @@ namespace System.Buffers
                     return true;
                 }
 
-                var (ml, index) = position.Get<IMemoryList<byte>>();
-                item = ml.Memory.Slice(index);
-                if (ReferenceEquals(ml, _end))
+                var (node, index) = position.Get<IMemoryList<byte>>();
+                item = node.Memory.Slice(index);
+                if (ReferenceEquals(node, _end))
                 {
                     item = item.Slice(0, _endIndex - index);
                     if (advance) position = Position.End;
                 }
                 else
                 {
-                    if (advance) position.Set(ml.Rest, 0);
+                    if (advance) position = Position.Create(node.Rest);
                 }
                 return true;
             }

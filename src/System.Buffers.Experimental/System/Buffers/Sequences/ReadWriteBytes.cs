@@ -52,8 +52,8 @@ namespace System.Buffers
         public Position First
         {
             get {
-                if (_all == null) return Position.Create((int)_totalLengthOrVirtualIndex);
-                return Position.Create(_all.Memory.Length - _first.Length, _all);
+                if (_all == null) return (int)_totalLengthOrVirtualIndex;
+                return Position.Create(_all, _all.Memory.Length - _first.Length);
             }
         }
 
@@ -62,7 +62,7 @@ namespace System.Buffers
             if (position == default)
             {
                 value = _first;
-                if (advance) position.SetItem(Rest);
+                if (advance) position = Position.Create(Rest);
                 return (!_first.IsEmpty || _all != null);
             }
             if (position.IsEnd)
@@ -113,7 +113,7 @@ namespace System.Buffers
             else
             {
                 value = memory.Slice(index);
-                if (advance) position.SetItem(segment.Rest);
+                if (advance) position = Position.Create(segment.Rest);
                 return true;
             }
         }
@@ -172,10 +172,17 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadWriteBytes Slice(int index, int length)
+            => Slice((long)index, (long)length);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadWriteBytes Slice(long index)
         {
             return Slice(index, Length - index);
         }
+
+        public ReadWriteBytes Slice(int index)
+            => Slice((long)index);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long IndexOf(byte value)
@@ -237,12 +244,12 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return Position.Create(first.Length - index);
+                    return first.Length - index;
                 }
                 else
                 {
                     var allIndex = index + (_all.Memory.Length - first.Length);
-                    return Position.Create(allIndex, _all);
+                    return Position.Create(_all, allIndex);
                 }
             }
             if (Rest == null) return Position.End;
@@ -258,12 +265,12 @@ namespace System.Buffers
             {
                 if (_all == null)
                 {
-                    return Position.Create(firstLength - index);
+                    return firstLength - index;
                 }
                 else
                 {
                     var allIndex = index + (_all.Memory.Length - firstLength);
-                    return Position.Create(allIndex, _all);
+                    return Position.Create(_all, allIndex);
                 }
             }
             if (Rest == null) return default;
@@ -274,7 +281,7 @@ namespace System.Buffers
         {
             ReadOnlySpan<byte> first = list.Memory.Span;
             int index = first.IndexOf(value);
-            if (index != -1) return Position.Create(index, list);
+            if (index != -1) return Position.Create(list, index);
             if (list.Rest == null) return Position.End;
             return PositionOf(list.Rest, value);
         }
@@ -287,7 +294,7 @@ namespace System.Buffers
 
             if (index < firstLength)
             {
-                return Position.Create(index, list);
+                return Position.Create(list, index);
             }
             return PositionAt(list.Rest, index - firstLength);
         }

@@ -6,45 +6,25 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
-    public struct Position : IEquatable<Position>
+    public readonly struct Position : IEquatable<Position>
     {
-        object _item;
-        public int Index { get; set; }
+        readonly object _item;
+        readonly int _index;
 
-        public static Position Create<T>(int index, T item) where T : class
-        {
-            Position position = default;
-            position.Set(item, index);
-            return position;
-        }
+        public static Position Create<T>(T item, int index = 0) where T : class
+            => item == null ? End : new Position(index, item);
 
-        public static Position Create(int index) => new Position(index, null);
+        public static implicit operator Position(int index) => new Position(index, null);
 
         public static explicit operator int(Position position) => position.Index;
+
+        public int Index => _index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetItem<T>(T item) where T : class
-        {
-            if (item == null) this = End;
-            else _item = item;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set<T>(T item, int index) where T : class
-        {
-            if (item == null) this = End;
-            else
-            {
-                _item = item;
-                Index = index;
-            }
-        }
 
         public static readonly Position End = new Position(int.MaxValue, new object());
 
@@ -69,12 +49,12 @@ namespace System.Collections.Sequences
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() =>
-            _item == null ? $"{Index}" : $"{Index}, {_item}";
+            IsEnd ? "END" : _item == null ? $"{Index}" : $"{Index}, {_item}";
 
         private Position(int index, object item)
         {
             _item = item;
-            Index = index;
+            _index = index;
         }
 
         private Position Offset(int index) => new Position(Index + index, _item);

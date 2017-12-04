@@ -41,7 +41,7 @@ namespace System.Buffers
 
         public long VirtualIndex => _virtualIndex;
 
-        public Position First => Position.Create(0, this);
+        public Position First => Position.Create(this);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -80,7 +80,7 @@ namespace System.Buffers
                 item = _data;
                 if (advance)
                 {
-                    position.SetItem(_next);
+                    position = Position.Create(_next);
                 }
                 return (!_data.IsEmpty || _next != null);
             }
@@ -92,7 +92,7 @@ namespace System.Buffers
 
             var sequence = position.GetItem<MemoryList>();
             item = sequence._data;
-            if (advance) { position.SetItem(sequence._next); }
+            if (advance) { position = Position.Create(sequence._next); }
             return true;
         }
 

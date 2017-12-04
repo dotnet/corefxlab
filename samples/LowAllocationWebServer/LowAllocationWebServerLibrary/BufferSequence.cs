@@ -35,7 +35,7 @@ namespace Microsoft.Net
 
         public long VirtualIndex => throw new NotImplementedException();
 
-        public Position First => Position.Create(0, this);
+        public Position First => Position.Create(this);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -52,14 +52,14 @@ namespace Microsoft.Net
         {
             if (position == default) {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.SetItem(_next); }
+                if (advance) { position = Position.Create(_next); }
                 return true;
             }
             else if (position.IsEnd) { item = default; return false; }
 
             var sequence = position.GetItem<BufferSequence>();
             item = sequence.Memory.Slice(0, sequence._written);
-            if (advance) { position.SetItem(sequence._next); }
+            if (advance) { position = Position.Create(sequence._next); }
             return true;
         }
 
@@ -68,14 +68,14 @@ namespace Microsoft.Net
             if (position == default)
             {
                 item = Memory.Slice(0, _written);
-                if (advance) { position.SetItem(_next); }
+                if (advance) { position = Position.Create(_next); }
                 return true;
             }
             else if (position.IsEnd) { item = default; return false; }
 
             var sequence = position.GetItem<BufferSequence>();
             item = sequence.WrittenMemory;
-            if (advance) { position.SetItem(sequence._next); }
+            if (advance) { position = Position.Create(sequence._next); }
             return true;
         }
 
@@ -85,10 +85,7 @@ namespace Microsoft.Net
             return _next;
         }
 
-        public void Advance(int bytes)
-        {
-            _written = bytes;
-        }
+        public void Advance(int bytes) => _written = bytes;
 
         public void Dispose() => Dispose(true);
 

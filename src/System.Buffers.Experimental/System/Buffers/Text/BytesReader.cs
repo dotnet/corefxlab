@@ -41,7 +41,7 @@ namespace System.Buffers.Text
         {
             _bytes = default;
             _nextSegmentPosition = default;
-            _currentSegmentPosition = Position.Create(0);
+            _currentSegmentPosition = 0;
             _currentSpan = bytes.Span;
             _currentSpanIndex = 0;
         }
@@ -50,7 +50,7 @@ namespace System.Buffers.Text
         {
             _bytes = default;
             _nextSegmentPosition = default;
-            _currentSegmentPosition = Position.Create(0);
+            _currentSegmentPosition = 0;
             _currentSpan = bytes;
             _currentSpanIndex = 0;
         }
@@ -306,7 +306,7 @@ namespace System.Buffers.Text
         {
             get {
                 var result = _currentSegmentPosition;
-                result.Index += _currentSpanIndex;
+                result += _currentSpanIndex;
                 return result;
             }
         }
