@@ -231,43 +231,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an <see cref="IEnumerable{OwnedMemory{Byte}}"/>.
-        /// </summary>
-        public static PreservedBuffer Create(IEnumerable<OwnedMemory<byte>> data)
-        {
-            if (data == null)
-            {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            BufferSegment first = null;
-            BufferSegment segment = null;
-            foreach (var ownedMemory in data)
-            {
-                var previous = segment;
-
-                segment = new BufferSegment();
-                segment.SetMemory(ownedMemory, 0, ownedMemory.Length);
-
-                if (previous == null)
-                {
-                    first = segment;
-                }
-                else
-                {
-                    previous.SetNext(segment);
-                }
-            }
-
-            if (first == null)
-            {
-                return default;
-            }
-
-            return new PreservedBuffer(new ReadableBuffer(first, 0, segment, segment.End));
-        }
-
-        /// <summary>
         /// Create a <see cref="ReadableBuffer"/> over an array.
         /// </summary>
         public static ReadableBuffer Create(byte[] data, int offset, int length)
