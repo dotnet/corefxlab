@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public UvLoopHandle Loop { get; private set; }
 
-        public MemoryPool Pool { get; } = new MemoryPool();
+        public MemoryPool<byte> Pool { get; } = new MemoryPool();
 
         public WriteReqPool WriteReqPool { get; }
 

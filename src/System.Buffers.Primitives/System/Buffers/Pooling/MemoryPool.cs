@@ -5,9 +5,13 @@ namespace System.Buffers
 {
     public abstract class MemoryPool<T> : IDisposable
     {
+        public const int AnySize = int.MinValue;
+
         public static MemoryPool<T> Default => Internal.ArrayMemoryPool<T>.Shared;
 
-        public abstract OwnedMemory<T> Rent(int minimumBufferSize);
+        public abstract OwnedMemory<T> Rent(int minimumBufferSize = AnySize);
+
+        public abstract int MaxBufferSize { get;  }
 
         public void Dispose()
         {

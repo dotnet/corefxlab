@@ -12,7 +12,7 @@ namespace System.Buffers
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independent array segments.
     /// </summary>
-    internal class MemoryPoolBlock : OwnedMemory<byte>
+    internal class RioMemoryPoolBlock : OwnedMemory<byte>
     {
         private readonly int _offset;
         private readonly int _length;
@@ -22,7 +22,7 @@ namespace System.Buffers
         /// <summary>
         /// This object cannot be instantiated outside of the static Create method
         /// </summary>
-        protected MemoryPoolBlock(MemoryPool pool, MemoryPoolSlab slab, int offset, int length)
+        protected RioMemoryPoolBlock(RioMemoryPool pool, RioMemoryPoolSlab slab, int offset, int length)
         {
             _offset = offset;
             _length = length;
@@ -34,12 +34,12 @@ namespace System.Buffers
         /// <summary>
         /// Back-reference to the memory pool which this block was allocated from. It may only be returned to this pool.
         /// </summary>
-        public MemoryPool Pool { get; }
+        public RioMemoryPool Pool { get; }
 
         /// <summary>
         /// Back-reference to the slab from which this block was taken, or null if it is one-time-use memory.
         /// </summary>
-        public MemoryPoolSlab Slab { get; }
+        public RioMemoryPoolSlab Slab { get; }
 
         public override int Length => _length;
 
@@ -47,7 +47,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+                if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
                 return new Span<byte>(Slab.Array, _offset, _length);
             }
         }
@@ -57,7 +57,7 @@ namespace System.Buffers
         public string Leaser { get; set; }
 #endif
 
-        ~MemoryPoolBlock()
+        ~RioMemoryPoolBlock()
         {
             if (Slab != null && Slab.IsActive)
             {
@@ -70,17 +70,17 @@ namespace System.Buffers
 #endif
 
                 // Need to make a new object because this one is being finalized
-                Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
+                Pool.Return(new RioMemoryPoolBlock(Pool, Slab, _offset, _length));
             }
         }
 
-        internal static MemoryPoolBlock Create(
+        internal static RioMemoryPoolBlock Create(
             int offset,
             int length,
-            MemoryPool pool,
-            MemoryPoolSlab slab)
+            RioMemoryPool pool,
+            RioMemoryPoolSlab slab)
         {
-            return new MemoryPoolBlock(pool, slab, offset, length);
+            return new RioMemoryPoolBlock(pool, slab, offset, length);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace System.Buffers
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
+            RioSpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
             return builder.ToString();
         }
 
@@ -106,14 +106,14 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
             Interlocked.Increment(ref _referenceCount);
         }
 
         public override bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
-            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount < 0) RioPipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
             if (newRefCount == 0)
             {
                OnZeroReferences();
@@ -129,14 +129,14 @@ namespace System.Buffers
         // this method access modifiers need to be `protected internal`
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
             arraySegment = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
         public override MemoryHandle Pin()
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
             Retain();
             unsafe
             {

@@ -36,7 +36,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
 
         private readonly bool _ownsPool;
-        private MemoryPool _pool;
+        private MemoryPool<byte> _pool;
         private IPipe _input, _output;
         private Socket _socket;
         private Task _receiveTask;
@@ -72,7 +72,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        internal SocketConnection(Socket socket, MemoryPool pool)
+        internal SocketConnection(Socket socket, MemoryPool<byte> pool)
         {
             socket.NoDelay = true;
             _socket = socket;
@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// </summary>
         public IPipeWriter Output => _output.Writer;
 
-        private MemoryPool Pool => _pool;
+        private MemoryPool<byte> Pool => _pool;
 
         private Socket Socket => _socket;
 
@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// </summary>
         /// <param name="endPoint">The endpoint to which to connect</param>
         /// <param name="pool">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the connection</param>
-        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, MemoryPool pool = null)
+        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, MemoryPool<byte> pool = null)
         {
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
@@ -229,7 +229,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (MemoryPool)tcs.Task.AsyncState));
+                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (MemoryPool<byte>)tcs.Task.AsyncState));
                 }
                 else
                 {
@@ -353,7 +353,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         buffer = _input.Writer.Alloc(SmallBufferSize * 2);
                         haveWriteBuffer = true;
 
-                        const int FlushInputEveryBytes = 4 * MemoryPool.MaxPooledBlockLength;
+                        int FlushInputEveryBytes = 4 * Pool.MaxBufferSize;
 
                         if (initialSegment.Array != null)
                         {

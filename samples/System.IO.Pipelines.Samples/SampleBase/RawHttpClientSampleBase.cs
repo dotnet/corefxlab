@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        protected abstract MemoryPool GetBufferPool();
+        protected abstract MemoryPool<byte> GetBufferPool();
 
         protected abstract Task<IPipeConnection> GetConnection();
 

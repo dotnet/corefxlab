@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Samples
             throw new NotImplementedException();
         }
 
-        protected override MemoryPool GetBufferPool()
+        protected override MemoryPool<byte> GetBufferPool()
         {
             throw new NotImplementedException();
         }

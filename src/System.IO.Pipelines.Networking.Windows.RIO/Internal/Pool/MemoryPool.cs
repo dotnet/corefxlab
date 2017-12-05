@@ -10,7 +10,7 @@ namespace System.Buffers
     /// <summary>
     /// Used to allocate and distribute re-usable blocks of memory.
     /// </summary>
-    public class MemoryPool : MemoryPool<byte>
+    class RioMemoryPool : MemoryPool<byte>
     {
         /// <summary>
         /// The gap between blocks' starting address. 4096 is chosen because most operating systems are 4k pages in size and alignment.
@@ -50,25 +50,35 @@ namespace System.Buffers
         /// Thread-safe collection of blocks which are currently in the pool. A slab will pre-allocate all of the block tracking objects
         /// and add them to this collection. When memory is requested it is taken from here first, and when it is returned it is re-added.
         /// </summary>
-        private readonly ConcurrentQueue<MemoryPoolBlock> _blocks = new ConcurrentQueue<MemoryPoolBlock>();
+        private readonly ConcurrentQueue<RioMemoryPoolBlock> _blocks = new ConcurrentQueue<RioMemoryPoolBlock>();
 
         /// <summary>
         /// Thread-safe collection of slabs which have been allocated by this pool. As long as a slab is in this collection and slab.IsActive,
         /// the blocks will be added to _blocks when returned.
         /// </summary>
-        private readonly ConcurrentStack<MemoryPoolSlab> _slabs = new ConcurrentStack<MemoryPoolSlab>();
+        private readonly ConcurrentStack<RioMemoryPoolSlab> _slabs = new ConcurrentStack<RioMemoryPoolSlab>();
 
         /// <summary>
         /// This is part of implementing the IDisposable pattern.
         /// </summary>
         private bool _disposedValue = false; // To detect redundant calls
 
+        private Action<RioMemoryPoolSlab> _slabAllocationCallback;
+
+        private Action<RioMemoryPoolSlab> _slabDeallocationCallback;
+
+        public RioMemoryPool(Action<RioMemoryPoolSlab> allocationCallback = null, Action<RioMemoryPoolSlab> deallocationCallback = null)
+        {
+            _slabAllocationCallback = allocationCallback;
+            _slabDeallocationCallback = deallocationCallback;
+        }
+
         public override OwnedMemory<byte> Rent(int size = AnySize)
         {
             if (size == AnySize) size = _blockLength;
             else if (size > _blockLength)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
+                RioPipelinesThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
             }
 
             var block = Lease();
@@ -79,11 +89,11 @@ namespace System.Buffers
         /// Called to take a block from the pool.
         /// </summary>
         /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
-        private MemoryPoolBlock Lease()
+        private RioMemoryPoolBlock Lease()
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
 
-            if (_blocks.TryDequeue(out MemoryPoolBlock block))
+            if (_blocks.TryDequeue(out RioMemoryPoolBlock block))
             {
                 // block successfully taken from the stack - return it
 
@@ -107,10 +117,13 @@ namespace System.Buffers
         /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the
         /// block tracking objects, and adds them all to the pool.
         /// </summary>
-        private MemoryPoolBlock AllocateSlab()
+        private RioMemoryPoolBlock AllocateSlab()
         {
-            var slab = MemoryPoolSlab.Create(_slabLength);
+            var slab = RioMemoryPoolSlab.Create(_slabLength);
             _slabs.Push(slab);
+
+            _slabAllocationCallback?.Invoke(slab);
+            slab._deallocationCallback = _slabDeallocationCallback;
 
             var basePtr = slab.NativePointer;
             var firstOffset = (int)((_blockStride - 1) - ((ulong)(basePtr + _blockStride - 1) % _blockStride));
@@ -122,7 +135,7 @@ namespace System.Buffers
                 offset + _blockLength < poolAllocationLength;
                 offset += _blockStride)
             {
-                var block = MemoryPoolBlock.Create(
+                var block = RioMemoryPoolBlock.Create(
                     offset,
                     _blockLength,
                     this,
@@ -134,7 +147,7 @@ namespace System.Buffers
             }
 
             // return last block rather than adding to pool
-            var newBlock = MemoryPoolBlock.Create(
+            var newBlock = RioMemoryPoolBlock.Create(
                     offset,
                     _blockLength,
                     this,
@@ -151,7 +164,7 @@ namespace System.Buffers
         /// leaving "dead zones" in the slab due to lost block tracking objects.
         /// </summary>
         /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
-        internal void Return(MemoryPoolBlock block)
+        internal void Return(RioMemoryPoolBlock block)
         {
 #if BLOCK_LEASE_TRACKING
             Debug.Assert(block.Pool == this, "Returned block was not leased from this pool");
@@ -181,7 +194,7 @@ namespace System.Buffers
 #endif
                 if (disposing)
                 {
-                    while (_slabs.TryPop(out MemoryPoolSlab slab))
+                    while (_slabs.TryPop(out RioMemoryPoolSlab slab))
                     {
                         // dispose managed state (managed objects).
                         slab.Dispose();
@@ -189,7 +202,7 @@ namespace System.Buffers
                 }
 
                 // Discard blocks in pool
-                while (_blocks.TryDequeue(out MemoryPoolBlock block))
+                while (_blocks.TryDequeue(out RioMemoryPoolBlock block))
                 {
                     GC.SuppressFinalize(block);
                 }

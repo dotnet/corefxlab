@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -10,12 +9,18 @@ namespace System.Buffers.Internal
 {
     internal sealed class ArrayMemoryPool<T> : MemoryPool<T>
     {
+        const int DefaultSize = 4096;
+
         readonly static ArrayMemoryPool<T> s_shared = new ArrayMemoryPool<T>();
 
         public static ArrayMemoryPool<T> Shared => s_shared;
 
-        public override OwnedMemory<T> Rent(int minimumBufferSize)
+        public override int MaxBufferSize => 1024 * 1024 * 1024;
+
+        public override OwnedMemory<T> Rent(int minimumBufferSize = AnySize)
         {
+            if (minimumBufferSize == AnySize) minimumBufferSize = DefaultSize;
+            else if (minimumBufferSize > MaxBufferSize || minimumBufferSize < 1) throw new ArgumentOutOfRangeException(nameof(minimumBufferSize));
             return new ArrayPoolMemory(minimumBufferSize);
         }
 

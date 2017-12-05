@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         private readonly Queue<NotifyBatch> _notifyBatches;
         private readonly Queue<NotifyBatch> _processedBatches;
 
-        private MemoryPool _pool;
+        private MemoryPool<byte> _pool;
         private Dictionary<long, RioTcpConnection> _connections;
         private List<BufferMapping> _bufferIdMappings;
 
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         public IntPtr CompletionPort => _completionPort;
 
-        public MemoryPool Pool => _pool;
+        public MemoryPool<byte> Pool => _pool;
 
         public RioThread(int id, CancellationToken token, IntPtr completionPort, IntPtr completionQueue, RegisteredIO rio)
         {
@@ -134,7 +134,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        private void OnSlabAllocated(MemoryPoolSlab slab)
+        private void OnSlabAllocated(RioMemoryPoolSlab slab)
         {
             lock (_bufferIdMappings)
             {
@@ -151,7 +151,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        private void OnSlabDeallocated(MemoryPoolSlab slab)
+        private void OnSlabDeallocated(RioMemoryPoolSlab slab)
         {
             var memoryPtr = slab.NativePointer;
             var addressLong = memoryPtr.ToInt64();
@@ -189,9 +189,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             thread._connections = new Dictionary<long, RioTcpConnection>();
             thread._bufferIdMappings = new List<BufferMapping>();
 
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
+            var memoryPool = new RioMemoryPool(thread.OnSlabAllocated, thread.OnSlabDeallocated);
             thread._pool = memoryPool;
 
             thread.ProcessLogicalCompletions();
@@ -215,9 +213,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             thread._connections = new Dictionary<long, RioTcpConnection>();
             thread._bufferIdMappings = new List<BufferMapping>();
 
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
+            var memoryPool = new RioMemoryPool(thread.OnSlabAllocated, thread.OnSlabDeallocated);
             thread._pool = memoryPool;
 
             thread.ProcessPhysicalCompletions();

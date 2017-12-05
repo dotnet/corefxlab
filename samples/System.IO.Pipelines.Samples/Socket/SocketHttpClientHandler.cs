@@ -11,7 +11,7 @@ namespace System.IO.Pipelines.Samples
 {
     public class SocketHttpClientHandler : PipelineHttpClientHandler
     {
-        MemoryPool bufferPool = new MemoryPool();
+        MemoryPool<byte> bufferPool = new MemoryPool();
 
         protected override void Dispose(bool disposing)
         {
