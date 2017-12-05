@@ -12,329 +12,319 @@ namespace System.Buffers
     /// </summary>
     public readonly struct ReadWriteBytes : ISequence<Memory<byte>>
     {
-        readonly Memory<byte> _first; // pointer + index:int + length:int
-        readonly IMemoryList<byte> _all;
+        readonly object _start;
+        readonly int _startIndex;
+        readonly object _end;
+        readonly int _endIndex;
 
-        // For multi-segment ROB, this is the total length of the ROB
-        // For single-segment ROB that are slices, this is the offset of the first byte from the original ROB
-        // Otherwise zero
-        readonly long _totalLengthOrVirtualIndex;
-
-        static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
-
-        public ReadWriteBytes(Memory<byte> memory) : this(memory, 0)
+        public ReadWriteBytes(byte[] bytes)
         {
+            _start = bytes;
+            _startIndex = 0;
+            _end = bytes;
+            _endIndex = bytes.Length;
+
+            Validate();
         }
 
-        private ReadWriteBytes(Memory<byte> memory, int virtualIndex)
+        public ReadWriteBytes(Memory<byte> bytes)
         {
-            _first = memory;
-            _all = null;
-            _totalLengthOrVirtualIndex = virtualIndex;
-        }
-
-        public ReadWriteBytes(IMemoryList<byte> segments, long length)
-        {
-            // TODO: should we skip all empty buffers, i.e. of _first.IsEmpty?
-            _first = segments.Memory;
-            _all = segments;
-            _totalLengthOrVirtualIndex = length;
-        }
-
-        private ReadWriteBytes(Memory<byte> first, IMemoryList<byte> all, long length)
-        {
-            // TODO: add assert that first overlaps all (once we have Overlap on Span)
-            _first = first;
-            _all = all;
-            _totalLengthOrVirtualIndex = _all == null ? 0 : length;
-        }
-
-        public Position First
-        {
-            get {
-                if (_all == null) return (int)_totalLengthOrVirtualIndex;
-                return Position.Create(_all, _all.Memory.Length - _first.Length);
-            }
-        }
-
-        public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
-        {
-            if (position == default)
+            if (!bytes.TryGetArray(out var segment))
             {
-                value = _first;
-                if (advance) position = Position.Create(Rest);
-                return (!_first.IsEmpty || _all != null);
+                // TODO: once we are in System.Memory, this will get OwnedMemory out of the Memory
+                throw new NotImplementedException();
             }
-            if (position.IsEnd)
-            {
-                value = default;
-                return false;
-            }
+            _start = segment.Array;
+            _startIndex = segment.Offset;
+            _end = segment.Array;
+            _endIndex = segment.Count + _startIndex;
 
-            var (segment, index) = position.Get<IMemoryList<byte>>();
-
-            if (segment == null)
-            {
-                if (_all == null) // single segment ROB
-                {
-                    value = _first.Slice(index - (int)_totalLengthOrVirtualIndex);
-                    if (advance) position = Position.End;
-                    return true;
-                }
-                else
-                {
-                    value = default;
-                    return false;
-                }
-            }
-
-            var memory = segment.Memory;
-
-            // We need to slice off the last segment based on length of this ROB. 
-            // This ROB is a potentially shorted view over a longer segment list.
-            var virtualIndex = segment.VirtualIndex;
-            var lengthOfFirst = virtualIndex - VirtualIndex;
-            var lengthOfEnd = lengthOfFirst + memory.Length;
-            if (lengthOfEnd > Length)
-            {
-                if (advance) position = Position.End;
-                value = memory.Slice(0, (int)(Length - lengthOfFirst));
-                if (index < value.Length)
-                {
-                    if (index > 0) value = value.Slice(index);
-                    return true;
-                }
-                else
-                {
-                    value = Memory<byte>.Empty;
-                    return false;
-                }
-            }
-            else
-            {
-                value = memory.Slice(index);
-                if (advance) position = Position.Create(segment.Rest);
-                return true;
-            }
+            Validate();
         }
 
-        public Memory<byte> Memory => _first;
-
-        internal IMemoryList<byte> Rest => _all?.Rest;
-
-        public long Length => _all == null ? _first.Length : _totalLengthOrVirtualIndex;
-
-        private long VirtualIndex => _all == null ? _totalLengthOrVirtualIndex : _all.VirtualIndex + (_all.Memory.Length - _first.Length);
-
-        public bool IsEmpty => _first.Length == 0 && _all == null;
-
-        public static ReadWriteBytes Empty => s_empty;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadWriteBytes Slice(Range range)
+        public ReadWriteBytes(IMemoryList<byte> first, IMemoryList<byte> last)
         {
-            return Slice(range.Index, range.Length);
+            _start = first;
+            _startIndex = 0;
+            _end = last;
+            _endIndex = last.Memory.Length;
+
+            Validate();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadWriteBytes(Position first, Position last)
+        {
+            (_start, _startIndex) = first.Get<object>();
+            (_end, _endIndex) = last.Get<object>();
+
+            Validate();
+        }
+
+        private ReadWriteBytes(byte[] bytes, int index, int length)
+        {
+            _start = bytes;
+            _startIndex = index;
+            _end = bytes;
+            _endIndex = length + index;
+        }
+
+        private ReadWriteBytes(object start, int startIndex, object end, int endIndex)
+        {
+            _start = start;
+            _startIndex = startIndex;
+            _end = end;
+            _endIndex = endIndex;
+        }
+
         public ReadWriteBytes Slice(long index, long length)
         {
-            var totalLength = Length;
-            if (index > totalLength) throw new ArgumentOutOfRangeException(nameof(index));
-            if (totalLength - index < length) throw new ArgumentOutOfRangeException(nameof(length));
-
             if (length == 0) return Empty;
+            if (index == 0 && length == Length) return this;
 
-            if (_all == null)
+            var kind = Kind;
+            switch (kind)
             {
-                if (index > _first.Length) throw new ArgumentOutOfRangeException(nameof(index));
-                if (length > _first.Length - index) throw new ArgumentOutOfRangeException(nameof(length));
+                case Type.Array:
+                    return new ReadWriteBytes((byte[])_start, (int)(_startIndex + index), (int)length);
+                case Type.MemoryList:
+                    var sl = (IMemoryList<byte>)_start;
+                    index += _startIndex;
+                    while (true)
+                    {
+                        var m = sl.Memory;
+                        if (m.Length > index)
+                        {
+                            break;
+                        }
+                        index -= m.Length;
+                        sl = sl.Rest;
+                    }
 
-                return new ReadWriteBytes(_first.Slice((int)index, (int)length), (int)(_totalLengthOrVirtualIndex + index));
-            }
+                    var el = sl;
+                    length += index;
+                    while (true)
+                    {
+                        var m = el.Memory;
+                        if (m.Length > length)
+                        {
+                            return new ReadWriteBytes(sl, (int)index, el, (int)length);
+                        }
 
-            var first = Memory;
-            if (first.Length >= length + index)
-            {
-                var slice = first.Slice((int)index, (int)length);
-                if (slice.Length > 0)
-                {
-                    return new ReadWriteBytes(slice, _all, length);
-                }
-                return Empty;
+                        length -= m.Length;
+
+                        if (length == 0)
+                        {
+                            return new ReadWriteBytes(sl, (int)index, el, m.Length);
+                        }
+                        el = el.Rest;
+                    }
+                default:
+                    throw new NotImplementedException();
             }
-            if (first.Length > index)
-            {
-                Debug.Assert(_all != null);
-                return new ReadWriteBytes(first.Slice((int)index), _all, length);
-            }
-            return SliceRest(index, length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadWriteBytes Slice(int index, int length)
             => Slice((long)index, (long)length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadWriteBytes Slice(long index)
-        {
-            return Slice(index, Length - index);
-        }
+            => Slice(index, Length - index);
 
         public ReadWriteBytes Slice(int index)
             => Slice((long)index);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long IndexOf(byte value)
+        public ReadWriteBytes Slice(Position position)
         {
-            var first = _first.Span;
-            var index = first.IndexOf(value);
-            if (index != -1) return index;
-            return IndexOfRest(value, first.Length);
-        }
-
-        long IndexOfRest(byte value, int firstLength)
-        {
-            var rest = Rest;
-            if (rest == null) return -1;
-            long index = Sequence.IndexOf(rest, value); 
-            if (index != -1) return firstLength + index;
-            return -1;
-        }
-
-        public ReadWriteBytes Slice(Position from)
-        {
-            var (segment, index) = from.Get<IMemoryList<byte>>();
-            if (segment == null) return Slice(Memory.Length - index);
-            var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
-            var newHeadIndex = segment.VirtualIndex;
-            var diff = newHeadIndex - headIndex;
-            // TODO: this could be optimized to avoid the Slice
-            return new ReadWriteBytes(segment, Length - diff).Slice(index);
-        }
-
-        public ReadWriteBytes Slice(Position from, Position to)
-        {
-            var (fromSegment, fromIndex) = from.Get<IMemoryList<byte>>();
-            var (toSegment, toIndex) = to.Get<IMemoryList<byte>>();
-
-            if (fromSegment == null)
+            var kind = Kind;
+            switch (kind)
             {
-                var indexFrom = Memory.Length - fromIndex;
-                var indexTo = Memory.Length - toIndex;
-                return Slice(indexFrom, indexTo - indexFrom + 1);
+                case Type.Array:
+                    var array = position.GetItem<byte[]>();
+                    return new ReadWriteBytes(array, position.Index, array.Length - position.Index);
+                case Type.MemoryList:
+                    return Slice(position, Position.Create((IMemoryList<byte>)_end, _endIndex));
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public ReadWriteBytes Slice(Position start, Position end)
+        {
+            var kind = Kind;
+            switch (kind)
+            {
+                case Type.Array:
+                    var startArray = start.GetItem<byte[]>();
+                    return new ReadWriteBytes(startArray, start.Index, end.Index - start.Index);
+                case Type.MemoryList:
+                    var startList = start.GetItem<IMemoryList<byte>>();
+                    var endList = end.GetItem<IMemoryList<byte>>();
+                    return new ReadWriteBytes(startList, start.Index, endList, end.Index);
+                default:
+                    throw new NotImplementedException();
             }
 
-            var headIndex = _all.VirtualIndex + _all.Memory.Length - _first.Length;
-            var newHeadIndex = fromSegment.VirtualIndex + fromIndex;
-            var newEndIndex = toSegment.VirtualIndex + toIndex;
-            var slicedOffFront = newHeadIndex - headIndex;
-            var length = newEndIndex - newHeadIndex;
-            // TODO: this could be optimized to avoid the Slice
-            var slice = new ReadWriteBytes(fromSegment, length + fromIndex);
-            slice = slice.Slice(fromIndex);
-            return slice;
         }
 
-        public Position PositionOf(byte value)
-        {
-            ReadOnlySpan<byte> first = _first.Span;
-            int index = first.IndexOf(value);
-            if (index != -1)
-            {
-                if (_all == null)
-                {
-                    return first.Length - index;
-                }
-                else
-                {
-                    var allIndex = index + (_all.Memory.Length - first.Length);
-                    return Position.Create(_all, allIndex);
-                }
-            }
-            if (Rest == null) return Position.End;
-            return PositionOf(Rest, value);
-        }
+        public static readonly ReadWriteBytes Empty = new ReadWriteBytes(new byte[0]);
 
-        public Position PositionAt(int index)
+        public ReadOnlyMemory<byte> Memory
         {
-            ReadOnlySpan<byte> first = _first.Span;
-            int firstLength = first.Length;
-
-            if (index < firstLength)
-            {
-                if (_all == null)
+            get {
+                var kind = Kind;
+                switch (kind)
                 {
-                    return firstLength - index;
-                }
-                else
-                {
-                    var allIndex = index + (_all.Memory.Length - firstLength);
-                    return Position.Create(_all, allIndex);
+                    case Type.Array:
+                        return new ReadOnlyMemory<byte>((byte[])_start, _startIndex, _endIndex - _startIndex);
+                    case Type.MemoryList:
+                        var list = (IMemoryList<byte>)_start;
+                        if (ReferenceEquals(list, _end))
+                        {
+                            return list.Memory.Slice(_startIndex, _endIndex - _startIndex);
+                        }
+                        else
+                        {
+                            return list.Memory.Slice(_startIndex);
+                        }
+                    default:
+                        throw new NotImplementedException();
                 }
             }
-            if (Rest == null) return default;
-            return PositionAt(Rest, index - firstLength);
         }
 
-        private static Position PositionOf(IMemoryList<byte> list, byte value)
+        public long Length
         {
-            ReadOnlySpan<byte> first = list.Memory.Span;
-            int index = first.IndexOf(value);
-            if (index != -1) return Position.Create(list, index);
-            if (list.Rest == null) return Position.End;
-            return PositionOf(list.Rest, value);
-        }
-
-        private static Position PositionAt(IMemoryList<byte> list, int index)
-        {
-            if (list == null) return Position.End;
-            ReadOnlySpan<byte> first = list.Memory.Span;
-            int firstLength = first.Length;
-
-            if (index < firstLength)
-            {
-                return Position.Create(list, index);
+            get {
+                var kind = Kind;
+                switch (kind)
+                {
+                    case Type.Array:
+                        return _endIndex - _startIndex;
+                    case Type.MemoryList:
+                        var sl = (IMemoryList<byte>)_start;
+                        var el = (IMemoryList<byte>)_end;
+                        return (el.VirtualIndex + _endIndex) - (sl.VirtualIndex + _startIndex);
+                    default:
+                        throw new NotImplementedException();
+                }
             }
-            return PositionAt(list.Rest, index - firstLength);
         }
+
+        private void Validate()
+        {
+            var kind = Kind;
+            switch (kind)
+            {
+                case Type.Array:
+                case Type.OwnedMemory:
+                    if (!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }
+                    break;
+                case Type.MemoryList:
+                    // assume it's good?
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        Type Kind
+        {
+            get {
+                if (_start is byte[]) return Type.Array;
+                if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
+                if (_start is IMemoryList<byte>) return Type.MemoryList;
+                throw new NotSupportedException();
+            }
+        }
+
+        public Position First => Position.Create(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
-            var first = Memory;
-            var firstLength = first.Length;
-            if (firstLength > buffer.Length)
+            var array = _start as byte[];
+            if (array != null)
             {
-                first.Slice(0, buffer.Length).Span.CopyTo(buffer);
-                return buffer.Length;
+                int length = _endIndex - _startIndex;
+                if (buffer.Length < length) length = buffer.Length;
+                array.AsSpan().Slice(_startIndex, length).CopyTo(buffer);
+                return length;
             }
-            first.Span.CopyTo(buffer);
-            if (buffer.Length == firstLength || Rest == null) return firstLength;
-            return firstLength + Rest.CopyTo(buffer.Slice(firstLength));
+
+            var position = First;
+            int copied = 0;
+            while (TryGet(ref position, out var memory) && buffer.Length > 0)
+            {
+                var segment = memory.Span;
+                var length = segment.Length;
+                if (buffer.Length < length) length = buffer.Length;
+                segment.Slice(0, length).CopyTo(buffer);
+                buffer = buffer.Slice(length);
+                copied += length;
+            }
+            return copied;
         }
 
-        ReadWriteBytes SliceRest(long index, long length)
+        public Span<byte> ToSpan()
         {
-            if (Rest == null)
+            var array = new byte[Length];
+            CopyTo(array);
+            return array;
+        }
+
+        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        {
+            if (position.IsEnd)
             {
-                if (Memory.Length == index && length == 0)
+                item = default;
+                return false;
+            }
+
+            var array = _start as byte[];
+            if (array != null)
+            {
+                var start = _startIndex + position.Index;
+                var length = _endIndex - _startIndex - position.Index;
+                item = new Memory<byte>(array, start, length);
+                if (advance) position = Position.End;
+                return true;
+            }
+
+            if (Kind == Type.MemoryList)
+            {
+                if (position == default)
                 {
-                    return Empty;
+                    var first = _start as IMemoryList<byte>;
+                    item = first.Memory.Slice(_startIndex);
+                    if (advance) position = Position.Create(first.Rest);
+                    if (ReferenceEquals(_end, _start))
+                    {
+                        item = item.Slice(0, (int)Length);
+                        if (advance) position = Position.End;
+                    }
+                    return true;
+                }
+
+                var (node, index) = position.Get<IMemoryList<byte>>();
+                item = node.Memory.Slice(index);
+                if (ReferenceEquals(node, _end))
+                {
+                    item = item.Slice(0, _endIndex - index);
+                    if (advance) position = Position.End;
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException("index or length");
+                    if (advance) position = Position.Create(node.Rest);
                 }
+                return true;
             }
 
-            // TODO (pri 2): this could be optimized
-            var rest = new ReadWriteBytes(Rest, length + index - _first.Length);
-            rest = rest.Slice(index - Memory.Length, length);
-            return rest;
+            throw new NotImplementedException();
         }
 
-        public SequenceEnumerator<Memory<byte>, ReadWriteBytes> GetEnumerator()
-            => new SequenceEnumerator<Memory<byte>, ReadWriteBytes>(this);
+        enum Type : byte
+        {
+            Array,
+            OwnedMemory,
+            MemoryList,
+        }
     }
 }
 

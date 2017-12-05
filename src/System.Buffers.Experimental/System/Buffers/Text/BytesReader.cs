@@ -102,7 +102,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            bytes = new ReadOnlyBytes(startObj, range.Start.Index, endObj, range.End.Index);
+            bytes = new ReadOnlyBytes(range.Start, range.End);
             return true;
         }
         public bool TryReadBytes(out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
@@ -113,7 +113,7 @@ namespace System.Buffers.Text
                 bytes = default;
                 return false;
             }
-            bytes = new ReadOnlyBytes(range.Start.GetItem<object>(), range.Start.Index, range.End.GetItem<object>(), range.End.Index);
+            bytes = new ReadOnlyBytes(range.Start, range.End);
             return true;
         }
 

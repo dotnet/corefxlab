@@ -28,10 +28,11 @@ namespace System.Buffers
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> bytes)
         {
-            var m = MemoryMarshal.AsMemory(bytes);
-            if (!m.TryGetArray(out var segment))
+            Memory<byte> memory = MemoryMarshal.AsMemory(bytes);
+            if (!memory.TryGetArray(out var segment))
             {
-                throw new NotSupportedException();
+                // TODO: once we are in System.Memory, this will get OwnedMemory out of the Memory
+                throw new NotImplementedException();
             }
             _start = segment.Array;
             _startIndex = segment.Offset;
@@ -41,12 +42,21 @@ namespace System.Buffers
             Validate();
         }
 
+        // TODO: Hide this ctor and force users to pass Positions. This will let us hide Position.Object 
         public ReadOnlyBytes(IMemoryList<byte> first, IMemoryList<byte> last)
         {
             _start = first;
             _startIndex = 0;
             _end = last;
             _endIndex = last.Memory.Length;
+
+            Validate();
+        }
+
+        public ReadOnlyBytes(Position first, Position last)
+        {
+            (_start, _startIndex) = first.Get<object>();
+            (_end, _endIndex) = last.Get<object>();
 
             Validate();
         }
@@ -59,7 +69,7 @@ namespace System.Buffers
             _endIndex = length + index;
         }
 
-        internal ReadOnlyBytes(object start, int startIndex, object end, int endIndex)
+        private ReadOnlyBytes(object start, int startIndex, object end, int endIndex)
         {
             _start = start;
             _startIndex = startIndex;
@@ -204,7 +214,6 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                case Type.String:
                 case Type.OwnedMemory:
                     if(!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }              
                     break;
@@ -220,7 +229,6 @@ namespace System.Buffers
         {
             get {
                 if (_start is byte[]) return Type.Array;
-                if (_start is string) return Type.String;
                 if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
                 if (_start is IMemoryList<byte>) return Type.MemoryList;
                 throw new NotSupportedException();
@@ -232,22 +240,24 @@ namespace System.Buffers
         public int CopyTo(Span<byte> buffer)
         {
             var array = _start as byte[];
-            int toCopy;
             if (array != null)
             {
-                toCopy = Math.Min((int)Length, buffer.Length);
-                array.AsSpan().Slice(_startIndex, toCopy).CopyTo(buffer);
-                return toCopy;
+                int length = _endIndex - _startIndex;
+                if (buffer.Length < length) length = buffer.Length;
+                array.AsSpan().Slice(_startIndex, length).CopyTo(buffer);
+                return length;
             }
 
-            var position = this.First;
+            var position = First;
             int copied = 0;
-            while(this.TryGet(ref position, out var memory) && buffer.Length > 0){
+            while (TryGet(ref position, out var memory) && buffer.Length > 0)
+            {
                 var segment = memory.Span;
-                toCopy = Math.Min(segment.Length, buffer.Length);
-                segment.Slice(0, toCopy).CopyTo(buffer);
-                buffer = buffer.Slice(toCopy);
-                copied += toCopy;
+                var length = segment.Length;
+                if (buffer.Length < length) length = buffer.Length;
+                segment.Slice(0, length).CopyTo(buffer);
+                buffer = buffer.Slice(length);
+                copied += length;
             }
             return copied;
         }
@@ -271,7 +281,7 @@ namespace System.Buffers
             if (array != null)
             {
                 var start = _startIndex + position.Index;
-                var length = (int)Length - position.Index;
+                var length = _endIndex - _startIndex - position.Index;
                 item = new ReadOnlyMemory<byte>(array, start, length);
                 if (advance) position = Position.End;
                 return true;
@@ -311,7 +321,6 @@ namespace System.Buffers
         enum Type : byte
         {
             Array,
-            String,
             OwnedMemory,
             MemoryList,
         }
