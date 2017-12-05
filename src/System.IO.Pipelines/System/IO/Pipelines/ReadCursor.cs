@@ -136,11 +136,6 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ReadCursor Seek(long bytes, ReadCursor end, bool checkEndReachable = true)
         {
-            if (IsEnd)
-            {
-                return this;
-            }
-
             ReadCursor cursor;
             if (Segment == end.Segment && end.Index - Index >= bytes)
             {
@@ -307,11 +302,6 @@ namespace System.IO.Pipelines
 
         public override string ToString()
         {
-            if (IsEnd)
-            {
-                return "<end>";
-            }
-
             var sb = new StringBuilder();
             return sb.ToString();
         }

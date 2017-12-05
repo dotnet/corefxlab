@@ -83,7 +83,9 @@ namespace System.IO.Pipelines
             {
                 Current = ((Memory<byte>)array).Slice(_startIndex, _endIndex - _startIndex);
                 _cursorSegment = segment;
+                _cursorStart = _startIndex;
 
+                _segment = null;
                 return true;
             }
 

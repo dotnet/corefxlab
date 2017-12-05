@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -10,6 +11,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
+    [DebuggerDisplay("")]
     public readonly struct ReadableBuffer
     {
         internal readonly ReadCursor BufferStart;
@@ -59,6 +61,12 @@ namespace System.IO.Pipelines
         {
             BufferStart = new ReadCursor(startSegment, startIndex);
             BufferEnd = new ReadCursor(endSegment, endIndex);
+        }
+
+        internal ReadableBuffer(byte[] startSegment, int startIndex, int lenght)
+        {
+            BufferStart = new ReadCursor(startSegment, startIndex);
+            BufferEnd = new ReadCursor(startSegment, startIndex + lenght);
         }
 
         private ReadableBuffer Clone(in ReadableBuffer buffer)

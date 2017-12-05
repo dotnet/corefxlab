@@ -4,43 +4,83 @@
 
 using System.Buffers;
 using System.IO.Pipelines.Testing;
+using System.Linq;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadableBufferFacts
+    public abstract class ReadableBufferFacts
     {
+        public class Array: ReadableBufferFacts
+        {
+            public Array() : base(TestBufferFactory.Array) { }
+        }
+
+        public class SingleSegment: ReadableBufferFacts
+        {
+            public SingleSegment() : base(TestBufferFactory.SingleSegment) { }
+        }
+
+        public class SegmentPerByte: ReadableBufferFacts
+        {
+            public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
+        }
+
+        internal TestBufferFactory Factory { get; }
+
+        internal ReadableBufferFacts(TestBufferFactory factory)
+        {
+            Factory = factory;
+        }
+
         [Fact]
         public void EmptyIsCorrect()
         {
-            var buffer = BufferUtilities.CreateBuffer(0, 0);
+            var buffer = Factory.CreateOfSize(0);
             Assert.Equal(0, buffer.Length);
             Assert.True(buffer.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(8)]
+        public void LengthIsCorrect(int length)
+        {
+            var buffer = Factory.CreateOfSize(length);
+            Assert.Equal(length, buffer.Length);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(8)]
+        public void ToArrayIsCorrect(int length)
+        {
+            var data = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+            var buffer = Factory.CreateWithContent(data);
+            Assert.Equal(length, buffer.Length);
+            Assert.Equal(data, buffer.ToArray());
         }
 
         [Theory]
         [MemberData(nameof(OutOfRangeSliceCases))]
         public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
         {
-            foreach (var p in Size100ReadableBuffers)
-            {
-                var buffer = (ReadableBuffer) p[0];
-                var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
-            }
+            var buffer = Factory.CreateOfSize(100);
+            var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
         }
 
-        [Theory]
-        [MemberData(nameof(Size100ReadableBuffers))]
-        public void ReadableBufferMove_MovesReadCursor(ReadableBuffer buffer)
+        [Fact]
+        public void ReadableBufferMove_MovesReadCursor()
         {
+            var buffer = Factory.CreateOfSize(100);
             var cursor = buffer.Move(buffer.Start, 65);
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
-        [Theory]
-        [MemberData(nameof(Size100ReadableBuffers))]
-        public void ReadableBufferMove_ChecksBounds(ReadableBuffer buffer)
+        [Fact]
+        public void ReadableBufferMove_ChecksBounds()
         {
+            var buffer = Factory.CreateOfSize(100);
             Assert.Throws<InvalidOperationException>(() => buffer.Move(buffer.Start, 101));
         }
 
@@ -90,13 +130,6 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(30, sliced.Length);
         }
-
-        public static TheoryData<ReadableBuffer> Size100ReadableBuffers => new TheoryData<ReadableBuffer>
-        {
-            BufferUtilities.CreateBuffer(100),
-            BufferUtilities.CreateBuffer(50, 50),
-            BufferUtilities.CreateBuffer(33, 33, 34)
-        };
 
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadableBuffer>>
         {

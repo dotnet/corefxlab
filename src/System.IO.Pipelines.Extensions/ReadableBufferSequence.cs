@@ -24,14 +24,7 @@ namespace System.IO.Pipelines
                 item = _buffer.First;
                 if (advance)
                 {
-                    if (_buffer.Start.IsEnd)
-                    {
-                        position = Position.End;
-                    }
-                    else
-                    {
-                        position = Position.Create(_buffer.Start.GetSegment().Next);
-                    }
+                    position.SetItem(_buffer.Start.GetSegment());
                 }
                 return true;
             }
