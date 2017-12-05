@@ -22,8 +22,8 @@ namespace System.Buffers.Tests
             Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
             Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
 
-            //Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
-            //Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
+            Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
+            Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
         }
 
         [Fact]
