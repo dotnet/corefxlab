@@ -87,24 +87,23 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadableBufferMove_DoesNotAlowNegative()
         {
-            var data = new byte[20];
-            var buffer = ReadableBuffer.Create(data);
+            var buffer = Factory.CreateOfSize(20);
             Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
         }
 
         [Fact]
         public void ReadCursorSeekChecksEndIfNotTrustingEnd()
         {
-            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
-            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
+            var buffer = Factory.CreateOfSize(3);
+            var buffer2 = Factory.CreateOfSize(3);
             Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, true));
         }
 
         [Fact]
         public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
         {
-            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
-            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
+            var buffer = Factory.CreateOfSize(3);
+            var buffer2 = Factory.CreateOfSize(3);
             buffer.Start.Seek(2, buffer2.End, false);
         }
 
@@ -115,10 +114,10 @@ namespace System.IO.Pipelines.Tests
             // [                ##############] -> [##############                ]
             //                         ^c1            ^c2
             var bufferSegment1 = new BufferSegment();
-            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), default, 50, 99);
+            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 50, 99);
 
             var bufferSegment2 = new BufferSegment();
-            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), default, 0, 50);
+            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
             var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 50), new ReadCursor(bufferSegment2, 50));

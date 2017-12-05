@@ -83,10 +83,10 @@ namespace System.IO.Pipelines.Tests
         public void CursorIsCorrectWithEmptyLastBlock()
         {
             var last = new BufferSegment();
-            last.SetMemory(new OwnedArray<byte>(new byte[4]), default, 0, 4);
+            last.SetMemory(new OwnedArray<byte>(new byte[4]), 0, 4);
 
             var first = new BufferSegment();
-            first.SetMemory(new OwnedArray<byte>(new byte[] { 1, 2 }), default, 0, 2);
+            first.SetMemory(new OwnedArray<byte>(new byte[] { 1, 2 }), 0, 2);
             first.SetNext(last);
 
             var start = new ReadCursor(first);

@@ -45,22 +45,15 @@ namespace System.IO.Pipelines
 
         public void SetMemory(OwnedMemory<byte> buffer)
         {
-            SetMemory(buffer, default, 0, 0);
+            SetMemory(buffer, 0, 0);
         }
 
-        public void SetMemory(OwnedMemory<byte> ownedMemory, Memory<byte> buffer, int start, int end, bool readOnly = false)
+        public void SetMemory(OwnedMemory<byte> ownedMemory, int start, int end, bool readOnly = false)
         {
-            if (ownedMemory != null)
-            {
-                _ownedMemory = ownedMemory;
-                _ownedMemory.Retain();
+            _ownedMemory = ownedMemory;
+            _ownedMemory.Retain();
 
-                _memory = _ownedMemory.Memory;
-            }
-            else
-            {
-                _memory = buffer;
-            }
+            _memory = _ownedMemory.Memory;
 
             ReadOnly = readOnly;
             RunningLength = 0;
@@ -120,12 +113,12 @@ namespace System.IO.Pipelines
             if (beginOrig == endOrig)
             {
                 lastSegment = new BufferSegment();
-                lastSegment.SetMemory(beginOrig._ownedMemory, beginOrig.Memory, startIndex, endIndex);
+                lastSegment.SetMemory(beginOrig._ownedMemory, startIndex, endIndex);
                 return lastSegment;
             }
 
             var beginClone = new BufferSegment();
-            beginClone.SetMemory(beginOrig._ownedMemory, beginOrig.Memory, startIndex, beginOrig.End);
+            beginClone.SetMemory(beginOrig._ownedMemory, startIndex, beginOrig.End);
             var endClone = beginClone;
 
             beginOrig = beginOrig.Next;
@@ -133,7 +126,7 @@ namespace System.IO.Pipelines
             while (beginOrig != endOrig)
             {
                 var next = new BufferSegment();
-                next.SetMemory(beginOrig._ownedMemory, beginOrig.Memory, beginOrig.Start, beginOrig.End);
+                next.SetMemory(beginOrig._ownedMemory, beginOrig.Start, beginOrig.End);
                 endClone.SetNext(next);
 
                 endClone = endClone.Next;
@@ -141,7 +134,7 @@ namespace System.IO.Pipelines
             }
 
             lastSegment = new BufferSegment();
-            lastSegment.SetMemory(endOrig._ownedMemory, beginOrig.Memory, endOrig.Start, endIndex);
+            lastSegment.SetMemory(endOrig._ownedMemory, endOrig.Start, endIndex);
             endClone.SetNext(lastSegment);
 
             return beginClone;

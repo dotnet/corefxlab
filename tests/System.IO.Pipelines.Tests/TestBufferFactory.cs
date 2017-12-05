@@ -27,14 +27,14 @@ namespace System.IO.Pipelines.Tests
         {
             public override ReadableBuffer CreateOfSize(int size)
             {
-                return new ReadableBuffer(new byte[size + 20], 10, size);
+                return ReadableBuffer.Create(new byte[size + 20], 10, size);
             }
 
             public override ReadableBuffer CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return new ReadableBuffer(startSegment, 10, data.Length);
+                return ReadableBuffer.Create(startSegment, 10, data.Length);
             }
         }
 

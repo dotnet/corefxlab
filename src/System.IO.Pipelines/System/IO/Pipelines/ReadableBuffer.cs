@@ -220,44 +220,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an <see cref="IEnumerable{Memory{Byte}}"/>.
-        /// </summary>
-        public static ReadableBuffer Create(IEnumerable<Memory<byte>> data)
-        {
-            if (data == null)
-            {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            BufferSegment first = null;
-            BufferSegment segment = null;
-
-            foreach (var memory in data)
-            {
-                var previous = segment;
-
-                segment = new BufferSegment();
-                segment.SetMemory(null, memory, 0, memory.Length);
-
-                if (previous == null)
-                {
-                    first = segment;
-                }
-                else
-                {
-                    previous.SetNext(segment);
-                }
-            }
-
-            if (first == null)
-            {
-                return default;
-            }
-
-            return new ReadableBuffer(first, 0, segment, segment.End);
-        }
-
-        /// <summary>
         /// Create a <see cref="ReadableBuffer"/> over an <see cref="IEnumerable{OwnedMemory{Byte}}"/>.
         /// </summary>
         public static PreservedBuffer Create(IEnumerable<OwnedMemory<byte>> data)
@@ -272,10 +234,9 @@ namespace System.IO.Pipelines
             foreach (var ownedMemory in data)
             {
                 var previous = segment;
-                var memory = ownedMemory.Memory;
 
                 segment = new BufferSegment();
-                segment.SetMemory(ownedMemory, memory, 0, memory.Length);
+                segment.SetMemory(ownedMemory, 0, ownedMemory.Length);
 
                 if (previous == null)
                 {
@@ -305,18 +266,20 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(((Memory<byte>)data).Slice(offset, length));
+            return new ReadableBuffer(data, offset, length);
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an <see cref="Memory{Byte}"/>.
+        /// Create a <see cref="ReadableBuffer"/> over an array.
         /// </summary>
-        public static ReadableBuffer Create(Memory<byte> memory)
+        public static ReadableBuffer Create(byte[] data)
         {
-            var segment = new BufferSegment();
-            segment.SetMemory(null, memory, 0, memory.Length);
+            if (data == null)
+            {
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
 
-            return new ReadableBuffer(segment, 0, segment, segment.End);
+            return new ReadableBuffer(data, 0, data.Length);
         }
 
         /// <summary>
@@ -340,7 +303,7 @@ namespace System.IO.Pipelines
             }
 
             var segment = new BufferSegment();
-            segment.SetMemory(data, default, 0, data.Memory.Length);
+            segment.SetMemory(data, 0, data.Memory.Length);
 
             return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End));
         }

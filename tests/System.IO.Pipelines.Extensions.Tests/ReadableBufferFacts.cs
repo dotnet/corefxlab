@@ -516,15 +516,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void Create_WorksWithMemory()
-        {
-            Memory<byte> memory = new byte[] {1, 2, 3, 4, 5};
-            memory = memory.Slice(2, 3);
-            var readableBuffer = ReadableBuffer.Create(memory);
-            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
-        }
-
-        [Fact]
         public void Create_WorksWithOwnedMemory()
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
