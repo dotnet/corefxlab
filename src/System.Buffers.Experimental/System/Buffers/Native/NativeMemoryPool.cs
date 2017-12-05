@@ -7,7 +7,9 @@ namespace System.Buffers.Native
 {
     public unsafe sealed partial class NativeMemoryPool : MemoryPool<byte>
     {
-        static NativeMemoryPool s_shared = new NativeMemoryPool(4096);
+        const int DefaultSize = 4096;
+
+        static NativeMemoryPool s_shared = new NativeMemoryPool(DefaultSize);
         object _lock = new object();
         bool _disposed;
 
@@ -41,8 +43,9 @@ namespace System.Buffers.Native
 
         public override int MaxBufferSize => 1024 * 1024 * 1024;
 
-        public override OwnedMemory<byte> Rent(int numberOfBytes)
+        public override OwnedMemory<byte> Rent(int numberOfBytes = DefaultSize)
         {
+            if (numberOfBytes == AnySize) numberOfBytes = DefaultSize;
             if (numberOfBytes < 1 || numberOfBytes > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
 

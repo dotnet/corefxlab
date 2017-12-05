@@ -9,7 +9,7 @@ namespace System.Buffers
     /// Slab tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independant array segments.
     /// </summary>
-    internal class MemoryPoolSlab : IDisposable
+    internal class RioMemoryPoolSlab : IDisposable
     {
         /// <summary>
         /// This handle pins the managed array in memory until the slab is disposed. This prevents it from being
@@ -20,10 +20,10 @@ namespace System.Buffers
         private byte[] _data;
 
         private bool _isActive;
-        internal Action<OwnedMemory<byte>> _deallocationCallback;
+        internal Action<RioMemoryPoolSlab> _deallocationCallback;
         private bool _disposedValue;
 
-        public MemoryPoolSlab(byte[] data)
+        public RioMemoryPoolSlab(byte[] data)
         {
             _data = data;
             _gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
@@ -47,13 +47,13 @@ namespace System.Buffers
 
         public int Length => _data.Length;
 
-        public static MemoryPoolSlab Create(int length)
+        public static RioMemoryPoolSlab Create(int length)
         {
             // allocate and pin requested memory length
             var array = new byte[length];
 
             // allocate and return slab tracking object
-            return new MemoryPoolSlab(array);
+            return new RioMemoryPoolSlab(array);
         }
 
         protected void Dispose(bool disposing)
@@ -66,6 +66,8 @@ namespace System.Buffers
                 }
 
                 _isActive = false;
+
+                _deallocationCallback?.Invoke(this);
 
                 if (_gcHandle.IsAllocated)
                 {
@@ -80,7 +82,7 @@ namespace System.Buffers
         }
 
         // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        ~MemoryPoolSlab()
+        ~RioMemoryPoolSlab()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(false);
