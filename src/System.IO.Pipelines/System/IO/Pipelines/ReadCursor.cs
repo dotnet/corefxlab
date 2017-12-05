@@ -249,6 +249,7 @@ namespace System.IO.Pipelines
             if (segment is byte[] array)
             {
                 data = ((Memory<byte>) array).Slice(Index, end.Index - Index);
+                return true;
             }
 
             ThrowWrongType();

@@ -85,6 +85,11 @@ namespace System.IO.Pipelines
                 _cursorSegment = segment;
                 _cursorStart = _startIndex;
 
+                if (_segment != _endSegment)
+                {
+                    ThrowEndNotSeen();
+                }
+
                 _segment = null;
                 return true;
             }

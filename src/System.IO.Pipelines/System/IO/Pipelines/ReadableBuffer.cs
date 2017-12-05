@@ -316,7 +316,7 @@ namespace System.IO.Pipelines
             var segment = new BufferSegment();
             segment.SetMemory(data, offset, offset + length);
 
-            return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End));
+            return new PreservedBuffer(new ReadableBuffer(segment, segment.Start, segment, segment.End));
         }
     }
 }
