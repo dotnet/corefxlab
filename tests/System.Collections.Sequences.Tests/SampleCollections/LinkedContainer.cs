@@ -26,7 +26,7 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        public Position First => Position.Create(0, _head);
+        public Position First => Position.Create(_head);
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
@@ -39,7 +39,7 @@ namespace System.Collections.Sequences
             if (position == default)
             {
                 item = _head._item;
-                if (advance) position.SetItem(_head._next);
+                if (advance) position = Position.Create(_head._next);
                 return _count > 0;
             }
 
@@ -51,7 +51,7 @@ namespace System.Collections.Sequences
             }
 
             item = node._item;
-            if (advance) { position.SetItem(node._next); }
+            if (advance) { position = Position.Create(node._next); }
             return true;
         }
 

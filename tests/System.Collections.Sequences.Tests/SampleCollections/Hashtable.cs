@@ -105,7 +105,7 @@ namespace System.Collections.Sequences
                     return false;
                 }
 
-                position.Index = firstOccupiedSlot;
+                position = firstOccupiedSlot;
             }
 
             var index = (int)position;
@@ -116,7 +116,7 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position.Index = first;
+                position = first;
                 if (first == -1) {
                     position = Position.End;
                 }

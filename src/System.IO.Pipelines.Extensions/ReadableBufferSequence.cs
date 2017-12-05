@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-        public Position First => Position.Create(_buffer.BufferStart.Index, _buffer.BufferStart.Segment);
+        public Position First => Position.Create(_buffer.BufferStart.Segment, _buffer.BufferStart.Index);
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
@@ -30,7 +30,7 @@ namespace System.IO.Pipelines
                     }
                     else
                     {
-                        position.SetItem(_buffer.Start.Segment.Next);
+                        position = Position.Create(_buffer.Start.Segment.Next);
                     }
                 }
                 return true;
@@ -44,7 +44,7 @@ namespace System.IO.Pipelines
             var currentSegment = position.GetItem<BufferSegment>();
             if (advance)
             {
-                position.SetItem(currentSegment.Next);
+                position = Position.Create(currentSegment.Next);
             }
             if (currentSegment == _buffer.End.Segment)
             {

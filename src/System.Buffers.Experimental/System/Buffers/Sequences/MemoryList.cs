@@ -41,7 +41,7 @@ namespace System.Buffers
 
         public long VirtualIndex => _virtualIndex;
 
-        public Position First => Position.Create(0, this);
+        public Position First => Position.Create(this);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -80,7 +80,7 @@ namespace System.Buffers
                 item = _data;
                 if (advance)
                 {
-                    position.SetItem(_next);
+                    position = Position.Create(_next);
                 }
                 return (!_data.IsEmpty || _next != null);
             }
@@ -92,15 +92,16 @@ namespace System.Buffers
 
             var sequence = position.GetItem<MemoryList>();
             item = sequence._data;
-            if (advance) { position.SetItem(sequence._next); }
+            if (advance) { position = Position.Create(sequence._next); }
             return true;
         }
 
-        public static (MemoryList list, long length) Create(params byte[][] buffers)
+        public static (MemoryList first, MemoryList last) Create(params byte[][] buffers)
         {
             if(buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
             {
-                return (new MemoryList(Memory<byte>.Empty), 0);
+                var list = new MemoryList(Memory<byte>.Empty);
+                return (list, list);
             }
 
             MemoryList first = new MemoryList(buffers[0]);
@@ -110,7 +111,7 @@ namespace System.Buffers
                 last = last.Append(buffers[i]);
             }
 
-            return (first, last.VirtualIndex + last.Memory.Length);
+            return (first, last);
         }
 
         public override string ToString()

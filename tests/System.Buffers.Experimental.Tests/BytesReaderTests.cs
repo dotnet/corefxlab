@@ -16,13 +16,13 @@ namespace System.Buffers.Tests
             ReadOnlyBytes bytes = Create("AB CD#EF&&");
             var reader = BytesReader.Create(bytes);
 
-            var ab = bytes.Slice(reader.ReadRange((byte)' '));
+            Assert.True(reader.TryReadBytes(out var ab, (byte)' '));
             Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
 
-            var cd = bytes.Slice(reader.ReadRange((byte)'#'));
+            Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
             Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
 
-            var ef = bytes.Slice(reader.ReadRange(new byte[] { (byte)'&', (byte)'&' }));
+            Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
             Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
         }
 
@@ -42,15 +42,18 @@ namespace System.Buffers.Tests
 
             var reader = BytesReader.Create(bytes);
 
-            var span = bytes.Slice(reader.ReadRange(2)).ToSpan();
+            Assert.True(reader.TryReadBytes(out var bytesValue, 2));
+            var span = bytesValue.ToSpan();
             Assert.Equal(0, span[0]);
             Assert.Equal(1, span[1]);
 
-            span = bytes.Slice(reader.ReadRange(5)).ToSpan();
+            Assert.True(reader.TryReadBytes(out bytesValue, 5));
+            span = bytesValue.ToSpan();
             Assert.Equal(3, span[0]);
             Assert.Equal(4, span[1]);
 
-            span = bytes.Slice(reader.ReadRange(new byte[] { 8, 8 })).ToSpan();
+            Assert.True(reader.TryReadBytes(out bytesValue, new byte[] { 8, 8 }));
+            span = bytesValue.ToSpan();
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
 
@@ -67,27 +70,26 @@ namespace System.Buffers.Tests
             ReadOnlyBytes bytes = Parse("A|B |CD|#EF&|&");
             var reader = BytesReader.Create(bytes);
 
-            var ab = bytes.Slice(reader.ReadRange((byte)' '));
+            Assert.True(reader.TryReadBytes(out var ab, (byte)' '));
             Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
 
-            var cd = bytes.Slice(reader.ReadRange((byte)'#'));
-            Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
+            Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
+            Assert.Equal("CD", cd.Utf8ToString());
 
-            var ef = bytes.Slice(reader.ReadRange(new byte[] { (byte)'&', (byte)'&' }));
-            Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));        }
+            //Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
+            //Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
+        }
 
         [Fact]
         public void EmptyBytesReader()
         {
             ReadOnlyBytes bytes = Create("");
             var reader = BytesReader.Create(bytes);
-            var range = reader.ReadRange((byte)' ');
-            Assert.Equal(Position.End, range.To);
+            Assert.False(reader.TryReadBytes(out var range, (byte)' '));
 
             bytes = Parse("|");
             reader = BytesReader.Create(bytes);
-            range = reader.ReadRange((byte)' ');
-            Assert.Equal(Position.End, range.To);
+            Assert.False(reader.TryReadBytes(out range, (byte)' '));
         }
 
         [Fact]
@@ -124,20 +126,32 @@ namespace System.Buffers.Tests
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < sections; i++)
             {
-                sb.Append("123456789012345678\r\n");
+                sb.Append("1234 ");
             }
             var data = Encoding.UTF8.GetBytes(sb.ToString());
 
-            var eol = new Span<byte>(s_eol);
-            var bytes = new ReadOnlyBytes(data);
+            var readOnlyBytes = new ReadOnlyBytes(data);
+            var bytesRange = new ReadOnlyBytes(data);
 
-            var reader = BytesReader.Create(bytes);
+            var robReader = BytesReader.Create(readOnlyBytes);
 
-            while (true)
+            long robSum = 0;
+            while (robReader.TryParse(out int value))
             {
-                var range = reader.ReadRange(eol);
-                if (range.To == Position.End) break;
+                robSum += value;
+                robReader.Advance(1);
             }
+
+            var brReader = BytesReader.Create(bytesRange);
+            long brSum = 0;
+            while (brReader.TryParse(out int value))
+            {
+                brSum += value;
+                brReader.Advance(1);
+            }
+
+            Assert.Equal(robSum, brSum);
+            Assert.NotEqual(brSum, 0);
         }
     }
 
@@ -146,20 +160,14 @@ namespace System.Buffers.Tests
         public static ReadOnlyBytes CreateRob(params byte[][] buffers)
         {
             if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
-            var (list, length) = MemoryList.Create(buffers);
-            return new ReadOnlyBytes(list, length);
+            var (first, last) = MemoryList.Create(buffers);
+            return new ReadOnlyBytes(first, last);
         }
     }
 
     public static class ReadOnlyBytesTextExtensions
     {
-        public static string ToString(this ReadOnlyBytes? bytes, SymbolTable symbolTable)
-        {
-            if (!bytes.HasValue) return string.Empty;
-            return ToString(bytes.Value, symbolTable);
-        }
-
-        public static string ToString(this ReadOnlyBytes bytes, SymbolTable symbolTable)
+        public static string ToString<TSequence>(this TSequence bytes, SymbolTable symbolTable) where TSequence: ISequence<ReadOnlyMemory<byte>>
         {
             var sb = new StringBuilder();
             if (symbolTable == SymbolTable.InvariantUtf8)
@@ -173,6 +181,18 @@ namespace System.Buffers.Tests
             else
             {
                 throw new NotImplementedException();
+            }
+            return sb.ToString();
+        }
+
+        public static string Utf8ToString<TSequence>(this TSequence bytes) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        {
+            var sb = new StringBuilder();
+
+            Position position = default;
+            while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
+            {
+                sb.Append(new Utf8Span(segment.Span).ToString());
             }
             return sb.ToString();
         }

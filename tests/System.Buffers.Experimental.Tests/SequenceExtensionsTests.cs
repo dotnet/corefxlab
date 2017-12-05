@@ -64,13 +64,12 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequencePositionOfMultiSegment()
         {
-            var (list, length) = MemoryList.Create(
+            var (first, last) = MemoryList.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
-            var bytes = new ReadOnlyBytes(list, length);
+            var bytes = new ReadOnlyBytes(first, last);
 
-            Assert.Equal(4, length);
             Assert.Equal(4, bytes.Length);
 
             // Static method call to avoid calling instance methods
@@ -80,7 +79,7 @@ namespace System.Buffers.Tests
             {
                 var value = (byte)(i + 1);
 
-                var listPosition = Sequence.PositionOf(list, value);
+                var listPosition = Sequence.PositionOf(first, value);
                 var (node, index) = listPosition.Get<IMemoryList<byte>>();
 
                 if (!listPosition.IsEnd)
@@ -132,10 +131,10 @@ namespace System.Buffers.Tests
             {
                 var front = memory.Slice(0, pivot);
                 var back = memory.Slice(pivot);
-                var list = new MemoryList(front);
-                list.Append(back);
+                var first = new MemoryList(front);
+                var last = first.Append(back);
 
-                var bytes = new ReadOnlyBytes(list, memory.Length);
+                var bytes = new ReadOnlyBytes(first, last);
 
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);

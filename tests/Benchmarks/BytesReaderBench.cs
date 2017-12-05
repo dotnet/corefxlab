@@ -12,7 +12,8 @@ using System.Text;
 public class BytesReaderBench
 {
     static byte[] s_data;
-    static ReadOnlyBytes s_bytes;
+    static ReadOnlyBytes s_readOnlyBytes;
+    static ReadOnlyBytes s_bytesRange;
 
     static BytesReaderBench()
     {
@@ -23,18 +24,32 @@ public class BytesReaderBench
             sb.Append("1234 ");
         }
         s_data = Encoding.UTF8.GetBytes(sb.ToString());
-        s_bytes = new ReadOnlyBytes(s_data);
+        s_readOnlyBytes = new ReadOnlyBytes(s_data);
+        s_bytesRange = new ReadOnlyBytes(s_data);
     }
 
     [Benchmark]
     static void ParseInt32BytesReader()
     {
         foreach (var iteration in Benchmark.Iterations) {
-            var reader = BytesReader.Create(s_bytes);
+            var reader = BytesReader.Create(s_readOnlyBytes);
 
             using (iteration.StartMeasurement()) {
-                while(reader.TryParse(out int value))
-                {
+                while(reader.TryParse(out int value)) {
+                    reader.Advance(1);
+                }
+            }
+        }
+    }
+
+    [Benchmark]
+    static void ParseInt32BytesRangeReader()
+    {
+        foreach (var iteration in Benchmark.Iterations) {
+            var reader = BytesReader.Create(s_bytesRange);
+
+            using (iteration.StartMeasurement()) {
+                while (reader.TryParse(out int value)) {
                     reader.Advance(1);
                 }
             }
