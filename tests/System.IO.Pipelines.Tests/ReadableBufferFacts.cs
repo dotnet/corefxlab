@@ -130,6 +130,21 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(30, sliced.Length);
         }
 
+        [Fact]
+        public void Create_WorksWithArray()
+        {
+            var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
+            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
+        }
+
+        [Fact]
+        public void Create_WorksWithOwnedMemory()
+        {
+            var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
+            var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
+            Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.Buffer.ToArray());
+        }
+
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadableBuffer>>
         {
             b => b.Slice(101),

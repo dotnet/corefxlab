@@ -507,20 +507,5 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
             }
         }
-
-        [Fact]
-        public void Create_WorksWithArray()
-        {
-            var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
-            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
-        }
-
-        [Fact]
-        public void Create_WorksWithOwnedMemory()
-        {
-            var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
-            var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
-            Assert.Equal(readableBuffer.Buffer.ToArray(), new byte[] {3, 4, 5});
-        }
     }
 }

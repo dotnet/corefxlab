@@ -71,9 +71,21 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Clone(in ReadableBuffer buffer)
         {
-            var segmentHead = BufferSegment.Clone(buffer.BufferStart.GetSegment(), buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
+            if (buffer.Start.Segment is BufferSegment bufferSegment)
+            {
+                var segmentHead = BufferSegment.Clone(bufferSegment, buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
+                return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
+            }
 
-            return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
+            if (buffer.Start.Segment is byte[] array)
+            {
+                var arrayClone = new byte[buffer.End.Index - buffer.Start.Index];
+                Array.Copy(array, buffer.Start.Index, arrayClone, 0, arrayClone.Length);
+                return new ReadableBuffer(arrayClone, 0, arrayClone.Length);
+            }
+
+            PipelinesThrowHelper.ThrowNotSupportedException();
+            return default;
         }
 
         /// <summary>
@@ -303,7 +315,7 @@ namespace System.IO.Pipelines
             }
 
             var segment = new BufferSegment();
-            segment.SetMemory(data, 0, data.Memory.Length);
+            segment.SetMemory(data, offset, length);
 
             return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End));
         }

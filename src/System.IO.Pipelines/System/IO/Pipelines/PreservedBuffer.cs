@@ -25,18 +25,20 @@ namespace System.IO.Pipelines
         /// </summary>
         public void Dispose()
         {
-            var returnStart = _buffer.Start.GetSegment();
-            var returnEnd = _buffer.End.GetSegment();
-
-            while (true)
+            if (_buffer.Start.Segment is BufferSegment returnStart)
             {
-                var returnSegment = returnStart;
-                returnStart = returnStart?.Next;
-                returnSegment?.ResetMemory();
+                var returnEnd = _buffer.End.GetSegment();
 
-                if (returnSegment == returnEnd)
+                while (true)
                 {
-                    break;
+                    var returnSegment = returnStart;
+                    returnStart = returnStart?.Next;
+                    returnSegment?.ResetMemory();
+
+                    if (returnSegment == returnEnd)
+                    {
+                        break;
+                    }
                 }
             }
         }
