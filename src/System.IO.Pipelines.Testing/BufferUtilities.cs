@@ -11,7 +11,7 @@ namespace System.IO.Pipelines.Testing
     {
         public static ReadableBuffer CreateBuffer(params byte[][] inputs)
         {
-            if (inputs == null)
+            if (inputs == null || inputs.Length == 0)
             {
                 throw new InvalidOperationException();
             }

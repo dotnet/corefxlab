@@ -39,58 +39,10 @@ namespace System.IO.Pipelines
 
         internal bool IsDefault => Segment == null;
 
-        internal bool IsEnd
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                var segment = Segment;
-
-                if (segment == null)
-                {
-                    return true;
-                }
-
-                if (segment is BufferSegment bufferSegment)
-                {
-                    if (Index < bufferSegment.End)
-                    {
-                        return false;
-                    }
-
-                    return bufferSegment.Next == null ||
-                           IsEndMultiSegment(bufferSegment);
-                }
-
-                if (segment is byte[] array)
-                {
-                    return Index >= array.Length;
-                }
-
-                ThrowWrongType();
-                return default;
-            }
-        }
-
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void ThrowWrongType()
         {
             throw new InvalidOperationException();
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool IsEndMultiSegment(BufferSegment segment)
-        {
-            segment = segment.Next;
-            while (segment != null)
-            {
-                if (segment.Start < segment.End)
-                {
-                    return false; // subsequent block has data - IsEnd is false
-                }
-                segment = segment.Next;
-            }
-            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -299,12 +251,6 @@ namespace System.IO.Pipelines
 
             data = segment.Memory.Slice(startIndex, following);
             return true;
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            return sb.ToString();
         }
 
         public static bool operator ==(ReadCursor c1, ReadCursor c2)
