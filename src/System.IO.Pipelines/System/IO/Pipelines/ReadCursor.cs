@@ -13,27 +13,9 @@ namespace System.IO.Pipelines
         internal readonly object Segment;
         internal readonly int Index;
 
-        internal ReadCursor(BufferSegment segment)
-        {
-            Segment = segment;
-            Index = segment?.Start ?? 0;
-        }
-
         internal ReadCursor(object segment, int index)
         {
             Segment = segment;
-            Index = index;
-        }
-
-        internal ReadCursor(BufferSegment segment, int index)
-        {
-            Segment = segment;
-            Index = index;
-        }
-
-        internal ReadCursor(byte[] array, int index)
-        {
-            Segment = array;
             Index = index;
         }
 
