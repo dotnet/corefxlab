@@ -24,6 +24,16 @@ namespace System.IO.Pipelines.Tests
         public class SegmentPerByte: ReadableBufferFacts
         {
             public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
+
+            [Fact]
+            // This test verifies that optimization for known cursors works and
+            // avoids additional walk but it's only valid for multi segmented buffers
+            public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
+            {
+                var buffer = Factory.CreateOfSize(3);
+                var buffer2 = Factory.CreateOfSize(3);
+                buffer.Start.Seek(2, buffer2.End, false);
+            }
         }
 
         internal TestBufferFactory Factory { get; }
@@ -97,14 +107,6 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateOfSize(3);
             var buffer2 = Factory.CreateOfSize(3);
             Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, true));
-        }
-
-        [Fact]
-        public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
-        {
-            var buffer = Factory.CreateOfSize(3);
-            var buffer2 = Factory.CreateOfSize(3);
-            buffer.Start.Seek(2, buffer2.End, false);
         }
 
         [Fact]

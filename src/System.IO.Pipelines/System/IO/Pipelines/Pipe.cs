@@ -257,7 +257,6 @@ namespace System.IO.Pipelines
 
             EnsureAlloc();
 
-            // TODO: this has to support array buffers
             var clonedBegin = BufferSegment.Clone(buffer.Start.GetSegment(), buffer.Start.Index, buffer.End.GetSegment(), buffer.End.Index, out BufferSegment clonedEnd);
 
             if (_writingHead == null)

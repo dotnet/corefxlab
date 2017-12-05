@@ -246,45 +246,45 @@ namespace System.IO.Pipelines.Tests
 
                 // Non-vector inputs
 
-                //data.Add(new object[] { "hello, world", 'h', 'd', 'h' });
-                //data.Add(new object[] { "hello, world", ' ', 'd', ' ' });
-                //data.Add(new object[] { "hello, world", 'd', 'd', 'd' });
-                //data.Add(new object[] { "hello, world", '!', 'd', -1 });
-                //data.Add(new object[] { "hello, world", 'h', 'w', 'h' });
-                //data.Add(new object[] { "hello, world", 'o', 'w', 'o' });
-                //data.Add(new object[] { "hello, world", 'r', 'w', -1 });
-                //data.Add(new object[] { "hello, world", 'd', 'w', -1 });
+                data.Add(new object[] { "hello, world", 'h', 'd', 'h' });
+                data.Add(new object[] { "hello, world", ' ', 'd', ' ' });
+                data.Add(new object[] { "hello, world", 'd', 'd', 'd' });
+                data.Add(new object[] { "hello, world", '!', 'd', -1 });
+                data.Add(new object[] { "hello, world", 'h', 'w', 'h' });
+                data.Add(new object[] { "hello, world", 'o', 'w', 'o' });
+                data.Add(new object[] { "hello, world", 'r', 'w', -1 });
+                data.Add(new object[] { "hello, world", 'd', 'w', -1 });
 
                 // Vector inputs
 
                 // Single vector, no seek char in input, expect failure
                 data.Add(new object[] { new string('a', vectorSpan), 'b', 'b', -1 });
-                //// Two vectors, no seek char in input, expect failure
-                //data.Add(new object[] { new string('a', vectorSpan * 2), 'b', 'b', -1 });
-                //// Two vectors plus non vector length (thus hitting slow path too), no seek char in input, expect failure
-                //data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', 'b', -1 });
+                // Two vectors, no seek char in input, expect failure
+                data.Add(new object[] { new string('a', vectorSpan * 2), 'b', 'b', -1 });
+                // Two vectors plus non vector length (thus hitting slow path too), no seek char in input, expect failure
+                data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', 'b', -1 });
 
-                //// For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
-                //for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
-                //{
-                //    // ...place the seek char at vector and input boundaries...
-                //    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
-                //    {
-                //        var input = new StringBuilder(new string('a', length));
-                //        input[i] = 'b';
+                // For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
+                for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
+                {
+                    // ...place the seek char at vector and input boundaries...
+                    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
+                    {
+                        var input = new StringBuilder(new string('a', length));
+                        input[i] = 'b';
 
-                //        // ...along with sentinel characters to seek the limit iterator to...
-                //        input[i - 1] = 'A';
-                //        if (i < length - 1) input[i + 1] = 'B';
+                        // ...along with sentinel characters to seek the limit iterator to...
+                        input[i - 1] = 'A';
+                        if (i < length - 1) input[i + 1] = 'B';
 
-                //        // ...and check that Seek() succeeds with a limit iterator at or past the seek char position...
-                //        data.Add(new object[] { input.ToString(), 'b', 'b', 'b' });
-                //        if (i < length - 1) data.Add(new object[] { input.ToString(), 'b', 'B', 'b' });
+                        // ...and check that Seek() succeeds with a limit iterator at or past the seek char position...
+                        data.Add(new object[] { input.ToString(), 'b', 'b', 'b' });
+                        if (i < length - 1) data.Add(new object[] { input.ToString(), 'b', 'B', 'b' });
 
-                //        // ...and fails with a limit iterator before the seek char position.
-                //        data.Add(new object[] { input.ToString(), 'b', 'A', -1 });
-                //    }
-                //}
+                        // ...and fails with a limit iterator before the seek char position.
+                        data.Add(new object[] { input.ToString(), 'b', 'A', -1 });
+                    }
+                }
 
                 return data;
             }

@@ -11,7 +11,6 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    [DebuggerDisplay("")]
     public readonly struct ReadableBuffer
     {
         internal readonly ReadCursor BufferStart;
@@ -63,13 +62,13 @@ namespace System.IO.Pipelines
             BufferEnd = new ReadCursor(endSegment, endIndex);
         }
 
-        internal ReadableBuffer(byte[] startSegment, int startIndex, int lenght)
+        internal ReadableBuffer(byte[] startSegment, int startIndex, int length)
         {
             BufferStart = new ReadCursor(startSegment, startIndex);
-            BufferEnd = new ReadCursor(startSegment, startIndex + lenght);
+            BufferEnd = new ReadCursor(startSegment, startIndex + length);
         }
 
-        private ReadableBuffer Clone(in ReadableBuffer buffer)
+        internal ReadableBuffer Clone(in ReadableBuffer buffer)
         {
             if (buffer.Start.Segment is BufferSegment bufferSegment)
             {
@@ -315,7 +314,7 @@ namespace System.IO.Pipelines
             }
 
             var segment = new BufferSegment();
-            segment.SetMemory(data, offset, length);
+            segment.SetMemory(data, offset, offset + length);
 
             return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End));
         }
