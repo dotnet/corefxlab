@@ -63,7 +63,7 @@ namespace System.Buffers
         /// </summary>
         private bool _disposedValue = false; // To detect redundant calls
 
-        public override OwnedMemory<byte> Rent(int size)
+        public override OwnedMemory<byte> Rent(int size = AnySize)
         {
             if (size == AnySize) size = _blockLength;
             else if (size > _blockLength)

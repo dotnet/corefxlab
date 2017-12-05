@@ -73,7 +73,7 @@ namespace System.Buffers
             _slabDeallocationCallback = deallocationCallback;
         }
 
-        public override OwnedMemory<byte> Rent(int size)
+        public override OwnedMemory<byte> Rent(int size = AnySize)
         {
             if (size == AnySize) size = _blockLength;
             else if (size > _blockLength)
