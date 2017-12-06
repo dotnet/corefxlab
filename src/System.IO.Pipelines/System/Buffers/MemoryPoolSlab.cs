@@ -20,7 +20,6 @@ namespace System.Buffers
         private byte[] _data;
 
         private bool _isActive;
-        internal Action<OwnedMemory<byte>> _deallocationCallback;
         private bool _disposedValue;
 
         public MemoryPoolSlab(byte[] data)
