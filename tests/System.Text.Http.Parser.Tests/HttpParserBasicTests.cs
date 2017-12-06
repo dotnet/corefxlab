@@ -73,7 +73,7 @@ namespace System.Text.Http.Parser.Tests
                 // headers
                 Assert.Equal(1, request.Headers.Count);
                 Assert.True(request.Headers.ContainsKey("N"));
-                Assert.Equal("V", request.Headers["N"]);              
+                Assert.Equal("V", request.Headers["N"]);
             }
         }
 

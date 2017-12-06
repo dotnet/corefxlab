@@ -37,23 +37,25 @@ namespace System.IO.Pipelines
         public long RunningLength;
 
         /// <summary>
-        /// The buffer being tracked
+        /// The buffer being tracked if segment owns the memory
         /// </summary>
-        private OwnedMemory<byte> _owned;
+        private OwnedMemory<byte> _ownedMemory;
 
-        private Memory<byte> _buffer;
+        private Memory<byte> _memory;
 
         public void SetMemory(OwnedMemory<byte> buffer)
         {
             SetMemory(buffer, 0, 0);
         }
 
-        public void SetMemory(OwnedMemory<byte> buffer, int start, int end, bool readOnly = false)
+        public void SetMemory(OwnedMemory<byte> ownedMemory, int start, int end, bool readOnly = false)
         {
-            _owned = buffer;
-            _owned.Retain();
-            _buffer = _owned.Memory;
+            _ownedMemory = ownedMemory;
+            _ownedMemory.Retain();
 
+            _memory = _ownedMemory.Memory;
+
+            ReadOnly = readOnly;
             RunningLength = 0;
             Start = start;
             End = end;
@@ -62,17 +64,18 @@ namespace System.IO.Pipelines
 
         public void ResetMemory()
         {
-            _owned.Release();
-            _owned = null;
+            _ownedMemory.Release();
+            _ownedMemory = null;
+            _memory = default;
         }
 
-        public Memory<byte> Buffer => _buffer;
+        public Memory<byte> Memory => _memory;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
         /// since this would break cloning.
         /// </summary>
-        public bool ReadOnly { get; }
+        public bool ReadOnly { get; private set; }
 
         /// <summary>
         /// The amount of readable bytes in this segment. Is is the amount of bytes between Start and End.
@@ -82,7 +85,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The amount of writable bytes in this segment. It is the amount of bytes between Length and End
         /// </summary>
-        public int WritableBytes => _buffer.Length - End;
+        public int WritableBytes => _memory.Length - End;
 
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
@@ -90,35 +93,32 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public override string ToString()
         {
-            if (_owned == null)
+            if (_memory.IsEmpty)
             {
-                return "<NO MEMORY ATTACHED>";
+                return "<EMPTY>";
             }
 
             var builder = new StringBuilder();
-            var data = _owned.Memory.Slice(Start, ReadableBytes).Span;
+            var data = _memory.Slice(Start, ReadableBytes).Span;
 
-            for (int i = 0; i < ReadableBytes; i++)
-            {
-                builder.Append((char)data[i]);
-            }
+            SpanLiteralExtensions.AppendAsLiteral(data, builder);
             return builder.ToString();
         }
 
-        public static BufferSegment Clone(ReadCursor beginBuffer, ReadCursor endBuffer, out BufferSegment lastSegment)
+        public static BufferSegment Clone(BufferSegment start, int startIndex, BufferSegment end, int endIndex, out BufferSegment lastSegment)
         {
-            var beginOrig = beginBuffer.Segment;
-            var endOrig = endBuffer.Segment;
+            var beginOrig = start;
+            var endOrig = end;
 
             if (beginOrig == endOrig)
             {
                 lastSegment = new BufferSegment();
-                lastSegment.SetMemory(beginOrig._owned, beginBuffer.Index, endBuffer.Index);
+                lastSegment.SetMemory(beginOrig._ownedMemory, startIndex, endIndex);
                 return lastSegment;
             }
 
             var beginClone = new BufferSegment();
-            beginClone.SetMemory(beginOrig._owned, beginBuffer.Index, beginOrig.End);
+            beginClone.SetMemory(beginOrig._ownedMemory, startIndex, beginOrig.End);
             var endClone = beginClone;
 
             beginOrig = beginOrig.Next;
@@ -126,7 +126,7 @@ namespace System.IO.Pipelines
             while (beginOrig != endOrig)
             {
                 var next = new BufferSegment();
-                next.SetMemory(beginOrig._owned, beginOrig.Start, beginOrig.End);
+                next.SetMemory(beginOrig._ownedMemory, beginOrig.Start, beginOrig.End);
                 endClone.SetNext(next);
 
                 endClone = endClone.Next;
@@ -134,7 +134,7 @@ namespace System.IO.Pipelines
             }
 
             lastSegment = new BufferSegment();
-            lastSegment.SetMemory(endOrig._owned, endOrig.Start, endBuffer.Index);
+            lastSegment.SetMemory(endOrig._ownedMemory, endOrig.Start, endIndex);
             endClone.SetNext(lastSegment);
 
             return beginClone;

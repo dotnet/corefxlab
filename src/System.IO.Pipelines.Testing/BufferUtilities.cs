@@ -65,10 +65,18 @@ namespace System.IO.Pipelines.Testing
 
         public static ReadableBuffer CreateBuffer(params int[] inputs)
         {
-            var buffers = new byte[inputs.Length][];
-            for (int i = 0; i < inputs.Length; i++)
+            byte[][] buffers;
+            if (inputs.Length == 0)
             {
-                buffers[i] = new byte[inputs[i]];
+                buffers = new[] { new byte[] {}};
+            }
+            else
+            {
+                buffers = new byte[inputs.Length][];
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    buffers[i] = new byte[inputs[i]];
+                }
             }
             return CreateBuffer(buffers);
         }

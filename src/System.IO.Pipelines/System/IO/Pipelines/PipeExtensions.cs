@@ -7,7 +7,7 @@ namespace System.IO.Pipelines
 {
     public static class PipelineExtensions
     {
-        private readonly static Task _completedTask = Task.FromResult(0);
+        private static readonly Task _completedTask = Task.FromResult(0);
 
         public static Task WriteAsync(this IPipeWriter output, byte[] source)
         {

@@ -4,68 +4,109 @@
 
 using System.Buffers;
 using System.IO.Pipelines.Testing;
+using System.Linq;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadableBufferFacts
+    public abstract class ReadableBufferFacts
     {
+        public class Array: ReadableBufferFacts
+        {
+            public Array() : base(TestBufferFactory.Array) { }
+        }
+
+        public class SingleSegment: ReadableBufferFacts
+        {
+            public SingleSegment() : base(TestBufferFactory.SingleSegment) { }
+        }
+
+        public class SegmentPerByte: ReadableBufferFacts
+        {
+            public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
+
+            [Fact]
+            // This test verifies that optimization for known cursors works and
+            // avoids additional walk but it's only valid for multi segmented buffers
+            public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
+            {
+                var buffer = Factory.CreateOfSize(3);
+                var buffer2 = Factory.CreateOfSize(3);
+                buffer.Start.Seek(2, buffer2.End, false);
+            }
+        }
+
+        internal TestBufferFactory Factory { get; }
+
+        internal ReadableBufferFacts(TestBufferFactory factory)
+        {
+            Factory = factory;
+        }
+
         [Fact]
         public void EmptyIsCorrect()
         {
-            var buffer = BufferUtilities.CreateBuffer(0, 0);
+            var buffer = Factory.CreateOfSize(0);
             Assert.Equal(0, buffer.Length);
             Assert.True(buffer.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(8)]
+        public void LengthIsCorrect(int length)
+        {
+            var buffer = Factory.CreateOfSize(length);
+            Assert.Equal(length, buffer.Length);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(8)]
+        public void ToArrayIsCorrect(int length)
+        {
+            var data = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
+            var buffer = Factory.CreateWithContent(data);
+            Assert.Equal(length, buffer.Length);
+            Assert.Equal(data, buffer.ToArray());
         }
 
         [Theory]
         [MemberData(nameof(OutOfRangeSliceCases))]
         public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
         {
-            foreach (var p in Size100ReadableBuffers)
-            {
-                var buffer = (ReadableBuffer) p[0];
-                var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
-            }
+            var buffer = Factory.CreateOfSize(100);
+            var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
         }
 
-        [Theory]
-        [MemberData(nameof(Size100ReadableBuffers))]
-        public void ReadableBufferMove_MovesReadCursor(ReadableBuffer buffer)
+        [Fact]
+        public void ReadableBufferMove_MovesReadCursor()
         {
+            var buffer = Factory.CreateOfSize(100);
             var cursor = buffer.Move(buffer.Start, 65);
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
-        [Theory]
-        [MemberData(nameof(Size100ReadableBuffers))]
-        public void ReadableBufferMove_ChecksBounds(ReadableBuffer buffer)
+        [Fact]
+        public void ReadableBufferMove_ChecksBounds()
         {
+            var buffer = Factory.CreateOfSize(100);
             Assert.Throws<InvalidOperationException>(() => buffer.Move(buffer.Start, 101));
         }
 
         [Fact]
         public void ReadableBufferMove_DoesNotAlowNegative()
         {
-            var data = new byte[20];
-            var buffer = ReadableBuffer.Create(data);
+            var buffer = Factory.CreateOfSize(20);
             Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
         }
 
         [Fact]
         public void ReadCursorSeekChecksEndIfNotTrustingEnd()
         {
-            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
-            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
+            var buffer = Factory.CreateOfSize(3);
+            var buffer2 = Factory.CreateOfSize(3);
             Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, true));
-        }
-
-        [Fact]
-        public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
-        {
-            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
-            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
-            buffer.Start.Seek(2, buffer2.End, false);
         }
 
         [Fact]
@@ -91,12 +132,20 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(30, sliced.Length);
         }
 
-        public static TheoryData<ReadableBuffer> Size100ReadableBuffers => new TheoryData<ReadableBuffer>
+        [Fact]
+        public void Create_WorksWithArray()
         {
-            BufferUtilities.CreateBuffer(100),
-            BufferUtilities.CreateBuffer(50, 50),
-            BufferUtilities.CreateBuffer(33, 33, 34)
-        };
+            var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
+            Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
+        }
+
+        [Fact]
+        public void Create_WorksWithOwnedMemory()
+        {
+            var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
+            var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
+            Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.Buffer.ToArray());
+        }
 
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadableBuffer>>
         {

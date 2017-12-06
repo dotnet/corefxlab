@@ -29,18 +29,5 @@ namespace System.IO.Pipelines.Performance.Tests
                 }
             }
         }
-
-        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
-        public void SegmentEnumerator()
-        {
-            for (int i = 0; i < InnerLoopCount; i++)
-            {
-                var enumerator = new SegmentEnumerator(_readableBuffer.Start, _readableBuffer.End);
-                while (enumerator.MoveNext())
-                {
-                    var segmentPart = enumerator.Current;
-                }
-            }
-        }
     }
 }

@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -60,11 +62,29 @@ namespace System.IO.Pipelines
             BufferEnd = new ReadCursor(endSegment, endIndex);
         }
 
-        private ReadableBuffer Clone(in ReadableBuffer buffer)
+        internal ReadableBuffer(byte[] startSegment, int startIndex, int length)
         {
-            var segmentHead = BufferSegment.Clone(buffer.BufferStart, buffer.BufferEnd, out var segmentTail);
+            BufferStart = new ReadCursor(startSegment, startIndex);
+            BufferEnd = new ReadCursor(startSegment, startIndex + length);
+        }
 
-            return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
+        internal ReadableBuffer Clone(in ReadableBuffer buffer)
+        {
+            if (buffer.Start.Segment is BufferSegment bufferSegment)
+            {
+                var segmentHead = BufferSegment.Clone(bufferSegment, buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
+                return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
+            }
+
+            if (buffer.Start.Segment is byte[] array)
+            {
+                var arrayClone = new byte[buffer.End.Index - buffer.Start.Index];
+                Array.Copy(array, buffer.Start.Index, arrayClone, 0, arrayClone.Length);
+                return new ReadableBuffer(arrayClone, 0, arrayClone.Length);
+            }
+
+            PipelinesThrowHelper.ThrowNotSupportedException();
+            return default;
         }
 
         /// <summary>
@@ -148,7 +168,7 @@ namespace System.IO.Pipelines
         public PreservedBuffer Preserve()
         {
             var buffer = Clone(this);
-            return new PreservedBuffer(ref buffer);
+            return new PreservedBuffer(buffer);
         }
 
         /// <summary>
@@ -201,18 +221,13 @@ namespace System.IO.Pipelines
             return new BufferEnumerator(BufferStart, BufferEnd);
         }
 
-        /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an array.
-        /// </summary>
-        public static ReadableBuffer Create(byte[] data)
+        public ReadCursor Move(ReadCursor cursor, long count)
         {
-            if (data == null)
+            if (count < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
-
-            OwnedMemory<byte> buffer = new OwnedArray<byte>(data);
-            return CreateInternal(buffer, 0, data.Length);
+            return cursor.Seek(count, BufferEnd, false);
         }
 
         /// <summary>
@@ -225,13 +240,26 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(new OwnedArray<byte>(data), offset, length);
+            return new ReadableBuffer(data, offset, length);
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an OwnedMemory.
+        /// Create a <see cref="ReadableBuffer"/> over an array.
         /// </summary>
-        public static ReadableBuffer Create(OwnedMemory<byte> data, int offset, int length)
+        public static ReadableBuffer Create(byte[] data)
+        {
+            if (data == null)
+            {
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            return new ReadableBuffer(data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// Create a <see cref="ReadableBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
+        /// </summary>
+        public static PreservedBuffer Create(OwnedMemory<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -248,24 +276,10 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            return CreateInternal(data, offset, length);
-        }
-
-        private static ReadableBuffer CreateInternal(OwnedMemory<byte> data, int offset, int length)
-        {
             var segment = new BufferSegment();
             segment.SetMemory(data, offset, offset + length);
 
-            return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
-        }
-
-        public ReadCursor Move(ReadCursor cursor, long count)
-        {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-            return cursor.Seek(count, BufferEnd, false);
+            return new PreservedBuffer(new ReadableBuffer(segment, segment.Start, segment, segment.End));
         }
     }
 }

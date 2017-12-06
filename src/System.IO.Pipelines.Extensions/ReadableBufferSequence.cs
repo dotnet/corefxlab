@@ -24,13 +24,13 @@ namespace System.IO.Pipelines
                 item = _buffer.First;
                 if (advance)
                 {
-                    if (_buffer.Start.IsEnd)
+                    if (_buffer.Start.Segment == null)
                     {
                         position = Position.End;
                     }
                     else
                     {
-                        position = Position.Create(_buffer.Start.Segment.Next);
+                        position = Position.Create(_buffer.Start.GetSegment().Next);
                     }
                 }
                 return true;
@@ -48,11 +48,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _buffer.End.Segment)
             {
-                item = currentSegment.Buffer.Slice(currentSegment.Start, _buffer.End.Index - currentSegment.Start);
+                item = currentSegment.Memory.Slice(currentSegment.Start, _buffer.End.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Buffer.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
+                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }
