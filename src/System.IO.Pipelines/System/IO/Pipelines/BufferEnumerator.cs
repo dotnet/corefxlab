@@ -50,7 +50,7 @@ namespace System.IO.Pipelines
             if (segment is IMemoryList<byte> bufferSegment)
             {
                 var start = _startIndex;
-                var end = bufferSegment.Memory.Length;
+                var end = bufferSegment.Length;
 
                 if (segment == _endSegment)
                 {

@@ -63,8 +63,8 @@ namespace System.IO.Pipelines
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
-            Debug.Assert(startSegment.Memory.Length >= startIndex);
-            Debug.Assert(endSegment.Memory.Length >= endIndex);
+            Debug.Assert(startSegment.Length >= startIndex);
+            Debug.Assert(endSegment.Length >= endIndex);
 
             BufferStart = new ReadCursor(startSegment, startIndex);
             BufferEnd = new ReadCursor(endSegment, endIndex);

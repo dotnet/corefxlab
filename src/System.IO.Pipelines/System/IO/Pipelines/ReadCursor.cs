@@ -211,7 +211,7 @@ namespace System.IO.Pipelines
                 }
                 else
                 {
-                    following = segment.Memory.Length - startIndex;
+                    following = segment.Length - startIndex;
                 }
 
                 if (following > 0)
