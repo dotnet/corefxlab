@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
             }
 
             var segment = Segment;
-            if (segment is BufferSegment bufferSegment)
+            if (segment is IMemoryList<byte> bufferSegment)
             {
                 return GetLength(bufferSegment, Index, (BufferSegment)end.Segment, end.Index);
             }
@@ -52,9 +52,9 @@ namespace System.IO.Pipelines
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static long GetLength(
-            BufferSegment start,
+            IMemoryList<byte> start,
             int startIndex,
-            BufferSegment endSegment,
+            IMemoryList<byte> endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -62,9 +62,9 @@ namespace System.IO.Pipelines
                 return endIndex - startIndex;
             }
 
-            return (endSegment.RunningLength - start.Next.RunningLength)
-                   + (start.End - startIndex)
-                   + (endIndex - endSegment.Start);
+            return (endSegment.VirtualIndex - start.Rest.VirtualIndex)
+                   + (start.Length - startIndex)
+                   + endIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -159,7 +159,7 @@ namespace System.IO.Pipelines
             var segment = Segment;
             var index = Index;
 
-            if (segment is BufferSegment bufferSegment)
+            if (segment is IMemoryList<byte> bufferSegment)
             {
                 if (end.Segment == segment)
                 {
@@ -190,7 +190,7 @@ namespace System.IO.Pipelines
             return default;
         }
 
-        private static bool TryGetBufferMultiBlock(BufferSegment start, int startIndex, BufferSegment end, int endIndex, out Memory<byte> data)
+        private static bool TryGetBufferMultiBlock(IMemoryList<byte> start, int startIndex, IMemoryList<byte> end, int endIndex, out Memory<byte> data)
         {
             var segment = start;
 
@@ -203,7 +203,7 @@ namespace System.IO.Pipelines
 
             while (true)
             {
-                var wasLastSegment = segment.Next == null || end == segment;
+                var wasLastSegment = segment.Rest == null || end == segment;
 
                 if (end == segment)
                 {
@@ -211,7 +211,7 @@ namespace System.IO.Pipelines
                 }
                 else
                 {
-                    following = segment.End - startIndex;
+                    following = segment.Memory.Length - startIndex;
                 }
 
                 if (following > 0)
@@ -226,8 +226,8 @@ namespace System.IO.Pipelines
                 }
                 else
                 {
-                    segment = segment.Next;
-                    startIndex = segment.Start;
+                    segment = segment.Rest;
+                    startIndex = 0;
                 }
             }
 
@@ -264,12 +264,12 @@ namespace System.IO.Pipelines
             return ((int)shift5 + h1) ^ h2;
         }
 
-        internal static bool GreaterOrEqual(BufferSegment start, int startIndex, BufferSegment end, int endIndex)
+        internal static bool GreaterOrEqual(IMemoryList<byte> start, int startIndex, IMemoryList<byte> end, int endIndex)
         {
             // other.Segment.RunningLength + other.Index  - other.Segment.Start <= Segment.RunningLength + Index- Segment.Start
             // fliped to avoid overflows
 
-            return end.RunningLength - startIndex - end.Start <= start.RunningLength - endIndex - start.Start;
+            return end.VirtualIndex - startIndex <= start.VirtualIndex - endIndex;
         }
 
         internal BufferSegment GetSegment()

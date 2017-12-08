@@ -52,12 +52,20 @@ namespace System.IO.Pipelines
 
         internal ReadableBuffer(ReadCursor start, ReadCursor end)
         {
+            Debug.Assert(start.Segment != null);
+            Debug.Assert(end.Segment != null);
+
             BufferStart = start;
             BufferEnd = end;
         }
 
-        internal ReadableBuffer(BufferSegment startSegment, int startIndex, BufferSegment endSegment, int endIndex)
+        internal ReadableBuffer(IMemoryList<byte> startSegment, int startIndex, IMemoryList<byte> endSegment, int endIndex)
         {
+            Debug.Assert(startSegment != null);
+            Debug.Assert(endSegment != null);
+            Debug.Assert(startSegment.Memory.Length >= startIndex);
+            Debug.Assert(endSegment.Memory.Length >= endIndex);
+
             BufferStart = new ReadCursor(startSegment, startIndex);
             BufferEnd = new ReadCursor(endSegment, endIndex);
         }
@@ -74,6 +82,11 @@ namespace System.IO.Pipelines
             {
                 var segmentHead = BufferSegment.Clone(bufferSegment, buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
                 return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
+            }
+
+            if (buffer.Start.Segment is IMemoryList<byte>)
+            {
+                throw new NotSupportedException();
             }
 
             if (buffer.Start.Segment is byte[] array)
@@ -279,7 +292,7 @@ namespace System.IO.Pipelines
             var segment = new BufferSegment();
             segment.SetMemory(data, offset, offset + length);
 
-            return new PreservedBuffer(new ReadableBuffer(segment, segment.Start, segment, segment.End));
+            return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End - segment.Start));
         }
     }
 }

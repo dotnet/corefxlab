@@ -7,21 +7,40 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    internal class BufferSegment
+    public interface IMemoryList<T>
+    {
+        Memory<T> Memory { get; }
+
+        IMemoryList<T> Rest { get; }
+
+        long VirtualIndex { get; }
+
+        int Length { get; }
+    }
+
+    internal class BufferSegment: IMemoryList<byte>
     {
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
         /// the Start is guaranteed to be equal to 0. The value of Start may be assigned anywhere between 0 and
         /// Buffer.Length, and must be equal to or less than End.
         /// </summary>
-        public int Start;
+        public int Start { get; private set; }
 
         /// <summary>
         /// The End represents the offset into Array where the range of "active" bytes ends. At the point when the block is leased
         /// the End is guaranteed to be equal to Start. The value of Start may be assigned anywhere between 0 and
         /// Buffer.Length, and must be equal to or less than End.
         /// </summary>
-        public int End;
+        public int End
+        {
+            get { return _end; }
+            set
+            {
+                Debug.Assert(Start - value <= AvailableMemory.Length);
+                _end = value;
+            }
+        }
 
         /// <summary>
         /// Reference to the next block of data when the overall "active" bytes spans multiple blocks. At the point when the block is
@@ -34,14 +53,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Combined length of all segments before this
         /// </summary>
-        public long RunningLength;
+        public long VirtualIndex { get; private set; }
 
         /// <summary>
         /// The buffer being tracked if segment owns the memory
         /// </summary>
         private OwnedMemory<byte> _ownedMemory;
 
-        private Memory<byte> _memory;
+        private int _end;
 
         public void SetMemory(OwnedMemory<byte> buffer)
         {
@@ -53,10 +72,10 @@ namespace System.IO.Pipelines
             _ownedMemory = ownedMemory;
             _ownedMemory.Retain();
 
-            _memory = _ownedMemory.Memory;
+            AvailableMemory = _ownedMemory.Memory;
 
             ReadOnly = readOnly;
-            RunningLength = 0;
+            VirtualIndex = 0;
             Start = start;
             End = end;
             Next = null;
@@ -66,10 +85,16 @@ namespace System.IO.Pipelines
         {
             _ownedMemory.Release();
             _ownedMemory = null;
-            _memory = default;
+            AvailableMemory = default;
         }
 
-        public Memory<byte> Memory => _memory;
+        public Memory<byte> AvailableMemory { get; private set; }
+
+        public Memory<byte> Memory => AvailableMemory.Slice(Start, End - Start);
+
+        public int Length => End - Start;
+
+        IMemoryList<byte> IMemoryList<byte>.Rest => Next;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -78,14 +103,9 @@ namespace System.IO.Pipelines
         public bool ReadOnly { get; private set; }
 
         /// <summary>
-        /// The amount of readable bytes in this segment. Is is the amount of bytes between Start and End.
-        /// </summary>
-        public int ReadableBytes => End - Start;
-
-        /// <summary>
         /// The amount of writable bytes in this segment. It is the amount of bytes between Length and End
         /// </summary>
-        public int WritableBytes => _memory.Length - End;
+        public int WritableBytes => AvailableMemory.Length - End;
 
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
@@ -93,15 +113,13 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public override string ToString()
         {
-            if (_memory.IsEmpty)
+            if (Memory.IsEmpty)
             {
                 return "<EMPTY>";
             }
 
             var builder = new StringBuilder();
-            var data = _memory.Slice(Start, ReadableBytes).Span;
-
-            SpanLiteralExtensions.AppendAsLiteral(data, builder);
+            SpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
             return builder.ToString();
         }
 
@@ -151,7 +169,7 @@ namespace System.IO.Pipelines
 
             while (segment.Next != null)
             {
-                segment.Next.RunningLength = segment.RunningLength + segment.ReadableBytes;
+                segment.Next.VirtualIndex = segment.VirtualIndex + segment.Length;
                 segment = segment.Next;
             }
         }

@@ -122,7 +122,7 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 50), new ReadCursor(bufferSegment2, 50));
+            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 0), new ReadCursor(bufferSegment2, 50));
 
             var c1 = readableBuffer.Move(readableBuffer.Start, 25); // segment 1 index 75
             var c2 = readableBuffer.Move(readableBuffer.Start, 55); // segment 2 index 5

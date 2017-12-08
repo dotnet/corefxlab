@@ -118,9 +118,11 @@ namespace System.IO.Pipelines.Tests
             {
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var consumed = result.Buffer.Slice(1).Start;
-                _pipe.Reader.Advance(consumed, consumed);
 
                 Assert.Equal(i + 1, result.Buffer.Length);
+
+                _pipe.Reader.Advance(consumed, consumed);
+
                 Assert.Equal(i, _pipe.Length);
             }
         }

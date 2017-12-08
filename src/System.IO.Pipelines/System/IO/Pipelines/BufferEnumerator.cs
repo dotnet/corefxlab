@@ -47,10 +47,10 @@ namespace System.IO.Pipelines
                 return false;
             }
 
-            if (segment is BufferSegment bufferSegment)
+            if (segment is IMemoryList<byte> bufferSegment)
             {
                 var start = _startIndex;
-                var end = bufferSegment.End;
+                var end = bufferSegment.Memory.Length;
 
                 if (segment == _endSegment)
                 {
@@ -59,7 +59,7 @@ namespace System.IO.Pipelines
                 }
                 else
                 {
-                    _segment = bufferSegment.Next;
+                    _segment = bufferSegment.Rest;
                     if (_segment == null)
                     {
                         if (_endSegment != null)
@@ -69,7 +69,7 @@ namespace System.IO.Pipelines
                     }
                     else
                     {
-                        _startIndex = bufferSegment.Next.Start;
+                        _startIndex = 0;
                     }
                 }
 
