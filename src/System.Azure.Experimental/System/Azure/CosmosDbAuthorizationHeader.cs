@@ -20,29 +20,32 @@ namespace System.Azure.Authentication
         public string Version;
         public DateTime Time;
 
+        static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        static TransformationFormat s_toLower = new TransformationFormat(Ascii.ToLowercase);
+
         public static bool TryWrite(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
         {
             Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
-            var writer = new SpanWriter(buffer);
+            var writer = BufferWriter.Create(buffer);
             writer.Enlarge = (minumumSize) => { return new byte[minumumSize * 2]; };
 
             // compute signature hash
-            writer.WriteLine(verb, Ascii.ToLowercase);
-            writer.WriteLine(resourceType, Ascii.ToLowercase);
-            writer.WriteLine(resourceId, Ascii.ToLowercase);
+            writer.WriteLine(verb, s_toLower);
+            writer.WriteLine(resourceType, s_toLower);
+            writer.WriteLine(resourceId, s_toLower);
             writer.WriteLine(utc, 'l');
             writer.Write('\n');
             hash.Append(writer.Written);
 
             // combine token
-            writer.Index = 0; // reuse writer and buffer
+            writer.WrittenCount = 0; // reuse writer and buffer
             writer.Write("type=");
             writer.Write(keyType);
             writer.Write("&ver=");
             writer.Write(tokenVersion);
             writer.Write("&sig=");
 
-            writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, s_toBase64);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
@@ -55,26 +58,26 @@ namespace System.Azure.Authentication
         public static bool TryWrite(Span<byte> output, Sha256 hash, Utf8Span keyType, Utf8Span verb, Utf8Span resourceId, Utf8Span resourceType, Utf8Span tokenVersion, DateTime utc, out int bytesWritten)
         {
             Span<byte> buffer = stackalloc byte[AuthenticationHeaderBufferSize];
-            var writer = new SpanWriter(buffer);
+            var writer = BufferWriter.Create(buffer);
             writer.Enlarge = (minumumSize) => { return new byte[minumumSize * 2]; };
 
             // compute signature hash
-            writer.WriteLine(verb, Ascii.ToLowercase);
-            writer.WriteLine(resourceType, Ascii.ToLowercase);
-            writer.WriteLine(resourceId, Ascii.ToLowercase);
+            writer.WriteLine(verb, s_toLower);
+            writer.WriteLine(resourceType, s_toLower);
+            writer.WriteLine(resourceId, s_toLower);
             writer.WriteLine(utc, 'l');
             writer.Write('\n');
             hash.Append(writer.Written);
 
             // combine token
-            writer.Index = 0; // reuse writer and buffer
+            writer.WrittenCount = 0; // reuse writer and buffer
             writer.Write(s_typeLiteral);
             writer.Write(keyType);
             writer.Write(s_verLiteral);
             writer.Write(tokenVersion);
             writer.Write(s_sigLiteral);
 
-            writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
+            writer.WriteBytes(hash, s_toBase64);
 
             if (UrlEncoder.Utf8.Encode(writer.Written, output, out var consumed, out bytesWritten) != OperationStatus.Done)
             {
