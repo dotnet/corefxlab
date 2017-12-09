@@ -598,13 +598,11 @@ namespace System.IO.Pipelines.Networking.Sockets
         }
 
         // unsafe+async not good friends
-        private unsafe void SetBuffer(Memory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
+        private unsafe void SetBuffer(ReadOnlyMemory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
         {
-            if (!memory.TryGetArray(out ArraySegment<byte> segment))
-            {
-                throw new InvalidOperationException("Memory is not backed by an array; oops!");
-            }
-            args.SetBuffer(segment.Array, segment.Offset + ignore, segment.Count - ignore);
+            var array = memory.ToArray();
+
+            args.SetBuffer(array, 0, args.Count);
         }
 
         private void Shutdown()

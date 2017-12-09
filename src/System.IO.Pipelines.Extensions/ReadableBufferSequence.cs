@@ -30,7 +30,7 @@ namespace System.IO.Pipelines
                     }
                     else
                     {
-                        position = Position.Create(_buffer.Start.GetSegment().Next);
+                        position = Position.Create(_buffer.Start.Get<IMemoryList<byte>>().Next);
                     }
                 }
                 return true;

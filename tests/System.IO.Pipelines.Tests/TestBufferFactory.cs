@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines.Testing;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace System.IO.Pipelines.Tests
     internal abstract class TestBufferFactory
     {
         public static TestBufferFactory Array { get; } = new ArrayTestBufferFactory();
+        public static TestBufferFactory OwnedMemory { get; } = new OwneMemoryTestBufferFactory();
         public static TestBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
         public static TestBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
 
@@ -35,6 +37,21 @@ namespace System.IO.Pipelines.Tests
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
                 return ReadableBuffer.Create(startSegment, 10, data.Length);
+            }
+        }
+
+        internal class OwneMemoryTestBufferFactory : TestBufferFactory
+        {
+            public override ReadableBuffer CreateOfSize(int size)
+            {
+                return ReadableBuffer.Create(new byte[size + 20], 10, size);
+            }
+
+            public override ReadableBuffer CreateWithContent(byte[] data)
+            {
+                var startSegment = new byte[data.Length + 20];
+                System.Array.Copy(data, 0, startSegment, 10, data.Length);
+                return ReadableBuffer.Create(new OwnedArray<byte>(data), 10, data.Length);
             }
         }
 

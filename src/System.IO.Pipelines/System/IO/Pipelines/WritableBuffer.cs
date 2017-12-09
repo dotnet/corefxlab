@@ -39,15 +39,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Appends the <see cref="ReadableBuffer"/> to the <see cref="WritableBuffer"/> in-place without copies.
-        /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
-        public void Append(ReadableBuffer buffer)
-        {
-            Pipe.Append(buffer);
-        }
-
-        /// <summary>
         /// Moves forward the underlying <see cref="IPipeWriter"/>'s write cursor but does not commit the data.
         /// </summary>
         /// <param name="bytesWritten">number of bytes to be marked as written.</param>

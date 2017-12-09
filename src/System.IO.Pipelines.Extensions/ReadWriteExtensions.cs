@@ -72,12 +72,12 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static T ReadBigEndian<[Primitive]T>(this Span<byte> buffer) where T : struct
+        static T ReadBigEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer) where T : struct
             => BitConverter.IsLittleEndian ? Reverse(ReadMachineEndian<T>(buffer)) : ReadMachineEndian<T>(buffer);
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static T ReadLittleEndian<[Primitive]T>(this Span<byte> buffer) where T : struct
+        static T ReadLittleEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer) where T : struct
             => BitConverter.IsLittleEndian ? ReadMachineEndian<T>(buffer) : Reverse(ReadMachineEndian<T>(buffer));
 
 
@@ -143,14 +143,14 @@ namespace System.IO.Pipelines
         {
             Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);
-            return localSpan.ReadBigEndian<T>();
+            return ((ReadOnlySpan<byte>)localSpan).ReadBigEndian<T>();
         }
 
         private static T ReadMultiLittle<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
         {
             Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);
-            return localSpan.ReadLittleEndian<T>();
+            return ((ReadOnlySpan<byte>)localSpan).ReadLittleEndian<T>();
         }
 
         /// <summary>

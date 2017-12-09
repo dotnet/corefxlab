@@ -54,9 +54,10 @@ namespace System.IO.Pipelines.Samples
                     }
 
                     var buffer = output.Alloc();
-
-                    buffer.Append(inputBuffer);
-
+                    foreach (var memory in inputBuffer)
+                    {
+                        buffer.Write(memory.Span);
+                    }
                     await buffer.FlushAsync();
                 }
                 finally

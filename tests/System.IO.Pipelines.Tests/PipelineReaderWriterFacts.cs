@@ -206,7 +206,10 @@ namespace System.IO.Pipelines.Tests
             buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Append the data from the other pipeline
-            buffer.Append(c2Buffer);
+            foreach (var memory in c2Buffer)
+            {
+                buffer.Write(memory.Span);
+            }
 
             // Mark it as consumed
             c2.Reader.Advance(c2Buffer.End);
@@ -336,7 +339,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(buffer.IsSingleSpan);
             var helloBuffer = buffer.Slice(blockSize - 5);
             Assert.False(helloBuffer.IsSingleSpan);
-            var memory = new List<Memory<byte>>();
+            var memory = new List<ReadOnlyMemory<byte>>();
             foreach (var m in helloBuffer)
             {
                 memory.Add(m);

@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -36,14 +38,13 @@ namespace System.IO.Pipelines
             }
 
             var segment = Segment;
-            if (segment is IMemoryList<byte> bufferSegment)
+            switch (segment)
             {
-                return GetLength(bufferSegment, Index, (BufferSegment)end.Segment, end.Index);
-            }
-
-            if (segment is byte[])
-            {
-                return end.Index - Index;
+                case IMemoryList<byte> bufferSegment:
+                    return GetLength(bufferSegment, Index, (BufferSegment)end.Segment, end.Index);
+                case byte[] _:
+                case OwnedMemory<byte> _:
+                    return end.Index - Index;
             }
 
             ThrowWrongType();
@@ -62,8 +63,8 @@ namespace System.IO.Pipelines
                 return endIndex - startIndex;
             }
 
-            return (endSegment.VirtualIndex - start.Rest.VirtualIndex)
-                   + (start.Length - startIndex)
+            return (endSegment.VirtualIndex - start.Next.VirtualIndex)
+                   + (start.Memory.Length - startIndex)
                    + endIndex;
         }
 
@@ -91,10 +92,9 @@ namespace System.IO.Pipelines
             bool foundResult = false;
 
             var enumerator = new BufferEnumerator(this, end);
-            Memory<byte> memory;
             while (enumerator.MoveNext())
             {
-                memory = enumerator.Current;
+                var memory = enumerator.Current;
                 // We need to loop up until the end to make sure start and end are connected
                 // if end is not trusted
                 if (!foundResult)
@@ -113,7 +113,6 @@ namespace System.IO.Pipelines
                         bytes -= memory.Length;
                     }
                 }
-
             }
             if (!foundResult)
             {
@@ -135,7 +134,7 @@ namespace System.IO.Pipelines
             }
             else
             {
-                if (!GreaterOrEqual(GetSegment(), Index, newCursor.GetSegment(), newCursor.Index))
+                if (!GreaterOrEqual(Get<IMemoryList<byte>>(), Index, newCursor.Get<IMemoryList<byte>>(), newCursor.Index))
                 {
                     ThrowOutOfBoundsException();
                 }
@@ -148,91 +147,80 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
+        internal bool TryGetBuffer(ReadCursor end, out ReadOnlyMemory<byte> data, out ReadCursor next)
         {
-            if (IsDefault)
-            {
-                data = Memory<byte>.Empty;
-                return false;
-            }
-
             var segment = Segment;
-            var index = Index;
 
-            if (segment is IMemoryList<byte> bufferSegment)
+            switch (segment)
             {
-                if (end.Segment == segment)
-                {
-                    var following = end.Index - index;
+                case null:
+                    data = default;
+                    next = default;
+                    return false;
 
-                    if (following > 0)
+                case IMemoryList<byte> bufferSegment:
+                    var startIndex = Index;
+                    var endIndex = bufferSegment.Memory.Length;
+
+                    if (segment == end.Segment)
                     {
-                        data = bufferSegment.Memory.Slice(index, following);
-                        return true;
+                        endIndex = end.Index;
+                        next = default;
+                    }
+                    else
+                    {
+                        var nextSegment = bufferSegment.Next;
+                        if (nextSegment == null)
+                        {
+                            if (end.Segment != null)
+                            {
+                                ThrowEndNotSeen();
+                            }
+
+                            next = default;
+                        }
+                        else
+                        {
+                            next = new ReadCursor(nextSegment, 0);
+                        }
                     }
 
-                    data = Memory<byte>.Empty;
-                    return false;
-                }
-                else
-                {
-                    return TryGetBufferMultiBlock(bufferSegment, Index, (BufferSegment)end.Segment, end.Index, out data);
-                }
+                    data = bufferSegment.Memory.Slice(startIndex, endIndex - startIndex);
+
+                    return true;
+
+
+                case OwnedMemory<byte> ownedMemory:
+                    data = ownedMemory.Memory.Slice(Index, end.Index - Index);
+
+                    if (segment != end.Segment)
+                    {
+                        ThrowEndNotSeen();
+                    }
+
+                    next = default;
+                    return true;
+
+                case byte[] array:
+                    data = new Memory<byte>(array, Index, end.Index - Index);
+
+                    if (segment != end.Segment)
+                    {
+                        ThrowEndNotSeen();
+                    }
+                    next = default;
+                    return true;
             }
 
-            if (segment is byte[] array)
-            {
-                data = new Memory<byte>(array, Index, end.Index - Index);
-                return true;
-            }
-
-            ThrowWrongType();
-            return default;
+            PipelinesThrowHelper.ThrowNotSupportedException();
+            next = default;
+            return false;
         }
 
-        private static bool TryGetBufferMultiBlock(IMemoryList<byte> start, int startIndex, IMemoryList<byte> end, int endIndex, out Memory<byte> data)
+
+        private void ThrowEndNotSeen()
         {
-            var segment = start;
-
-            // Determine if we might attempt to copy data from segment.Next before
-            // calculating "following" so we don't risk skipping data that could
-            // be added after segment.End when we decide to copy from segment.Next.
-            // segment.End will always be advanced before segment.Next is set.
-
-            int following = 0;
-
-            while (true)
-            {
-                var wasLastSegment = segment.Rest == null || end == segment;
-
-                if (end == segment)
-                {
-                    following = endIndex - startIndex;
-                }
-                else
-                {
-                    following = segment.Length - startIndex;
-                }
-
-                if (following > 0)
-                {
-                    break;
-                }
-
-                if (wasLastSegment)
-                {
-                    data = Memory<byte>.Empty;
-                    return false;
-                }
-                else
-                {
-                    segment = segment.Rest;
-                    startIndex = 0;
-                }
-            }
-
-            data = segment.Memory.Slice(startIndex, following);
-            return true;
+            throw new InvalidOperationException("Segments ended by end was never seen");
         }
 
         public static bool operator ==(ReadCursor c1, ReadCursor c2)
@@ -272,15 +260,14 @@ namespace System.IO.Pipelines
             return end.VirtualIndex - startIndex <= start.VirtualIndex - endIndex;
         }
 
-        internal BufferSegment GetSegment()
+        internal T Get<T>()
         {
-            if (Segment == null)
+            switch (Segment)
             {
-                return null;
-            }
-            if (Segment is BufferSegment bufferSegment)
-            {
-                return bufferSegment;
+                case null:
+                    return default;
+                case T segment:
+                    return segment;
             }
 
             ThrowWrongType();

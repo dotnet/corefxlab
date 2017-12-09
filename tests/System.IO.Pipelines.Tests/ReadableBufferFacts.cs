@@ -144,7 +144,7 @@ namespace System.IO.Pipelines.Tests
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
             var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
-            Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.Buffer.ToArray());
+            Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
         }
 
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadableBuffer>>

@@ -249,47 +249,6 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal void Append(ReadableBuffer buffer)
-        {
-            if (buffer.IsEmpty)
-            {
-                return; // nothing to do
-            }
-
-            EnsureAlloc();
-
-            var clonedBegin = BufferSegment.Clone(buffer.Start.GetSegment(), buffer.Start.Index, buffer.End.GetSegment(), buffer.End.Index, out BufferSegment clonedEnd);
-
-            if (_writingHead == null)
-            {
-                // No active write
-                lock (_sync)
-                {
-                    if (_commitHead == null)
-                    {
-                        // No allocated buffers yet, not locking as _readHead will be null
-                        _commitHead = clonedBegin;
-                    }
-                    else
-                    {
-                        Debug.Assert(_commitHead.Next == null);
-                        // Allocated buffer, append as next segment
-                        _commitHead.SetNext(clonedBegin);
-                    }
-                }
-            }
-            else
-            {
-                Debug.Assert(_writingHead.Next == null);
-                // Active write, append as next segment
-                _writingHead.SetNext(clonedBegin);
-            }
-
-            // Move write head to end of buffer
-            _writingHead = clonedEnd;
-            _currentWriteLength += buffer.Length;
-        }
-
         private void EnsureAlloc()
         {
             if (!_writingState.IsActive)
@@ -456,7 +415,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var consumedSegment = consumed.GetSegment();
+                    var consumedSegment = consumed.Get<BufferSegment>();
 
                     returnStart = _readHead;
                     returnEnd = consumedSegment;
@@ -479,7 +438,7 @@ namespace System.IO.Pipelines
                     if (consumed.Index == returnEnd.Length &&
                         !(_commitHead == returnEnd && _writingState.IsActive))
                     {
-                        var nextBlock = returnEnd.Next;
+                        var nextBlock = returnEnd.NextSegment;
                         if (_commitHead == returnEnd)
                         {
                             _commitHead = nextBlock;
@@ -515,7 +474,7 @@ namespace System.IO.Pipelines
                 {
                     returnStart.ResetMemory();
                     ReturnSegmentUnsynchronized(returnStart);
-                    returnStart = returnStart.Next;
+                    returnStart = returnStart.NextSegment;
                 }
             }
 
@@ -691,7 +650,7 @@ namespace System.IO.Pipelines
                 while (segment != null)
                 {
                     var returnSegment = segment;
-                    segment = segment.Next;
+                    segment = segment.NextSegment;
 
                     returnSegment.ResetMemory();
                 }

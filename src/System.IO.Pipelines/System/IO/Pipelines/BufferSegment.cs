@@ -9,13 +9,11 @@ namespace System.IO.Pipelines
 {
     public interface IMemoryList<T>
     {
-        Memory<T> Memory { get; }
+        ReadOnlyMemory<T> Memory { get; }
 
-        IMemoryList<T> Rest { get; }
+        IMemoryList<T> Next { get; }
 
         long VirtualIndex { get; }
-
-        int Length { get; }
     }
 
     internal class BufferSegment: IMemoryList<byte>
@@ -34,11 +32,13 @@ namespace System.IO.Pipelines
         /// </summary>
         public int End
         {
-            get { return _end; }
+            get => _end;
             set
             {
                 Debug.Assert(Start - value <= AvailableMemory.Length);
+
                 _end = value;
+                Memory = AvailableMemory.Slice(Start, _end - Start);
             }
         }
 
@@ -48,7 +48,7 @@ namespace System.IO.Pipelines
         /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active"
         /// memory is shrunk when bytes are consumed, Start is increased, and blocks are returned to the pool.
         /// </summary>
-        public BufferSegment Next;
+        public BufferSegment NextSegment;
 
         /// <summary>
         /// Combined length of all segments before this
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines
             VirtualIndex = 0;
             Start = start;
             End = end;
-            Next = null;
+            NextSegment = null;
         }
 
         public void ResetMemory()
@@ -90,11 +90,11 @@ namespace System.IO.Pipelines
 
         public Memory<byte> AvailableMemory { get; private set; }
 
-        public Memory<byte> Memory => AvailableMemory.Slice(Start, End - Start);
+        public ReadOnlyMemory<byte> Memory { get; private set; }
 
         public int Length => End - Start;
 
-        IMemoryList<byte> IMemoryList<byte>.Rest => Next;
+        public IMemoryList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -123,54 +123,19 @@ namespace System.IO.Pipelines
             return builder.ToString();
         }
 
-        public static BufferSegment Clone(BufferSegment start, int startIndex, BufferSegment end, int endIndex, out BufferSegment lastSegment)
-        {
-            var beginOrig = start;
-            var endOrig = end;
-
-            if (beginOrig == endOrig)
-            {
-                lastSegment = new BufferSegment();
-                lastSegment.SetMemory(beginOrig._ownedMemory, startIndex, endIndex);
-                return lastSegment;
-            }
-
-            var beginClone = new BufferSegment();
-            beginClone.SetMemory(beginOrig._ownedMemory, startIndex, beginOrig.End);
-            var endClone = beginClone;
-
-            beginOrig = beginOrig.Next;
-
-            while (beginOrig != endOrig)
-            {
-                var next = new BufferSegment();
-                next.SetMemory(beginOrig._ownedMemory, beginOrig.Start, beginOrig.End);
-                endClone.SetNext(next);
-
-                endClone = endClone.Next;
-                beginOrig = beginOrig.Next;
-            }
-
-            lastSegment = new BufferSegment();
-            lastSegment.SetMemory(endOrig._ownedMemory, endOrig.Start, endIndex);
-            endClone.SetNext(lastSegment);
-
-            return beginClone;
-        }
-
         public void SetNext(BufferSegment segment)
         {
             Debug.Assert(segment != null);
             Debug.Assert(Next == null);
 
-            Next = segment;
+            NextSegment = segment;
 
             segment = this;
 
             while (segment.Next != null)
             {
-                segment.Next.VirtualIndex = segment.VirtualIndex + segment.Length;
-                segment = segment.Next;
+                segment.NextSegment.VirtualIndex = segment.VirtualIndex + segment.Length;
+                segment = segment.NextSegment;
             }
         }
     }

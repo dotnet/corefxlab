@@ -59,19 +59,11 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static async Task WriteToStream(Stream stream, Memory<byte> memory)
+        private static async Task WriteToStream(Stream stream, ReadOnlyMemory<byte> memory)
         {
-            if (memory.TryGetArray(out ArraySegment<byte> data))
-            {
-                await stream.WriteAsync(data.Array, data.Offset, data.Count)
-                    .ConfigureAwait(continueOnCapturedContext: false);
-            }
-            else
-            {
-                // Copy required
-                var array = memory.Span.ToArray();
-                await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
-            }
+            // Copy required
+            var array = memory.Span.ToArray();
+            await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
         }
 
 
@@ -147,7 +139,7 @@ namespace System.IO.Pipelines
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var output = _writer.Alloc();
-                output.Write(new Span<byte>(buffer, offset, count));
+                output.Write(new ReadOnlySpan<byte>(buffer, offset, count));
                 await output.FlushAsync(cancellationToken);
             }
         }

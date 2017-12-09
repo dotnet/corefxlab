@@ -116,7 +116,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             return id;
         }
 
-        public unsafe RioBufferSegment GetSegmentFromMemory(Memory<byte> memory)
+        public unsafe RioBufferSegment GetSegmentFromMemory(ReadOnlyMemory<byte> memory)
         {
             // It's ok to unpin the handle here because the memory is from the pool
             // we created, which is already pinned.

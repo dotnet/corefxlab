@@ -31,11 +31,11 @@ namespace System.IO.Pipelines
         /// </summary>
         public bool IsSingleSpan => BufferStart.Segment == BufferEnd.Segment;
 
-        public Memory<byte> First
+        public ReadOnlyMemory<byte> First
         {
             get
             {
-                BufferStart.TryGetBuffer(BufferEnd, out Memory<byte> first);
+                BufferStart.TryGetBuffer(BufferEnd, out var first, out _);
                 return first;
             }
         }
@@ -63,8 +63,8 @@ namespace System.IO.Pipelines
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
-            Debug.Assert(startSegment.Length >= startIndex);
-            Debug.Assert(endSegment.Length >= endIndex);
+            Debug.Assert(startSegment.Memory.Length >= startIndex);
+            Debug.Assert(endSegment.Memory.Length >= endIndex);
 
             BufferStart = new ReadCursor(startSegment, startIndex);
             BufferEnd = new ReadCursor(endSegment, endIndex);
@@ -76,28 +76,10 @@ namespace System.IO.Pipelines
             BufferEnd = new ReadCursor(startSegment, startIndex + length);
         }
 
-        internal ReadableBuffer Clone(in ReadableBuffer buffer)
+        internal ReadableBuffer(OwnedMemory<byte> startSegment, int startIndex, int length)
         {
-            if (buffer.Start.Segment is BufferSegment bufferSegment)
-            {
-                var segmentHead = BufferSegment.Clone(bufferSegment, buffer.BufferStart.Index, buffer.BufferEnd.GetSegment(), buffer.BufferEnd.Index, out var segmentTail);
-                return new ReadableBuffer(segmentHead, segmentHead.Start, segmentTail, segmentTail.End);
-            }
-
-            if (buffer.Start.Segment is IMemoryList<byte>)
-            {
-                throw new NotSupportedException();
-            }
-
-            if (buffer.Start.Segment is byte[] array)
-            {
-                var arrayClone = new byte[buffer.End.Index - buffer.Start.Index];
-                Array.Copy(array, buffer.Start.Index, arrayClone, 0, arrayClone.Length);
-                return new ReadableBuffer(arrayClone, 0, arrayClone.Length);
-            }
-
-            PipelinesThrowHelper.ThrowNotSupportedException();
-            return default;
+            BufferStart = new ReadCursor(startSegment, startIndex);
+            BufferEnd = new ReadCursor(startSegment, startIndex + length);
         }
 
         /// <summary>
@@ -172,16 +154,6 @@ namespace System.IO.Pipelines
 
             var begin = BufferStart.Seek(start, BufferEnd, false);
             return new ReadableBuffer(begin, BufferEnd);
-        }
-
-        /// <summary>
-        /// This transfers ownership of the buffer from the <see cref="IPipeReader"/> to the caller of this method. Preserved buffers must be disposed to avoid
-        /// memory leaks.
-        /// </summary>
-        public PreservedBuffer Preserve()
-        {
-            var buffer = Clone(this);
-            return new PreservedBuffer(buffer);
         }
 
         /// <summary>
@@ -272,7 +244,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Create a <see cref="ReadableBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
         /// </summary>
-        public static PreservedBuffer Create(OwnedMemory<byte> data, int offset, int length)
+        public static ReadableBuffer Create(OwnedMemory<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -289,10 +261,7 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            var segment = new BufferSegment();
-            segment.SetMemory(data, offset, offset + length);
-
-            return new PreservedBuffer(new ReadableBuffer(segment, 0, segment, segment.End - segment.Start));
+            return new ReadableBuffer(data, offset, length);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace System.IO.Pipelines
 {
     internal class SpanLiteralExtensions
     {
-        internal static void AppendAsLiteral(Span<byte> span, StringBuilder sb)
+        internal static void AppendAsLiteral(ReadOnlySpan<byte> span, StringBuilder sb)
         {
             for (int i = 0; i < span.Length; i++)
             {

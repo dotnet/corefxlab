@@ -7,7 +7,7 @@ namespace System.IO.Pipelines
 {
     public ref struct ReadableBufferReader
     {
-        private Span<byte> _currentSpan;
+        private ReadOnlySpan<byte> _currentSpan;
         private int _index;
         private BufferEnumerator _enumerator;
         private int _consumedBytes;
@@ -33,7 +33,7 @@ namespace System.IO.Pipelines
 
         public ReadCursor Cursor => _enumerator.CreateCursor(_index);
 
-        public Span<byte> Span => _currentSpan;
+        public ReadOnlySpan<byte> Span => _currentSpan;
 
         public int ConsumedBytes => _consumedBytes;
 
