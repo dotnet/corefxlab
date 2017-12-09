@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    public class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    public class Pipe : IPipe, IPipeReader, IPipeWriter, IAwaiter<ReadResult>, IAwaiter<FlushResult>
     {
         private const int SegmentPoolSize = 16;
 
@@ -331,7 +331,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken)
+        internal Awaitable<FlushResult> FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -352,7 +352,7 @@ namespace System.IO.Pipelines
 
             TrySchedule(_readerScheduler, awaitable);
 
-            return new WritableBufferAwaitable(this);
+            return new Awaitable<FlushResult>(this);
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        ReadableBufferAwaitable IPipeReader.ReadAsync(CancellationToken token)
+        Awaitable<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
         {
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
@@ -592,7 +592,7 @@ namespace System.IO.Pipelines
                 cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
-            return new ReadableBufferAwaitable(this);
+            return new Awaitable<ReadResult>(this);
         }
 
         bool IPipeReader.TryRead(out ReadResult result)
@@ -662,9 +662,9 @@ namespace System.IO.Pipelines
 
         // IReadableBufferAwaiter members
 
-        bool IReadableBufferAwaiter.IsCompleted => _readerAwaitable.IsCompleted;
+        bool IAwaiter<ReadResult>.IsCompleted => _readerAwaitable.IsCompleted;
 
-        void IReadableBufferAwaiter.OnCompleted(Action continuation)
+        void IAwaiter<ReadResult>.OnCompleted(Action continuation)
         {
             Action awaitable;
             bool doubleCompletion;
@@ -679,7 +679,7 @@ namespace System.IO.Pipelines
             TrySchedule(_readerScheduler, awaitable);
         }
 
-        ReadResult IReadableBufferAwaiter.GetResult()
+        ReadResult IAwaiter<ReadResult>.GetResult()
         {
             if (!_readerAwaitable.IsCompleted)
             {
@@ -728,9 +728,9 @@ namespace System.IO.Pipelines
 
         // IWritableBufferAwaiter members
 
-        bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted;
+        bool IAwaiter<FlushResult>.IsCompleted => _writerAwaitable.IsCompleted;
 
-        FlushResult IWritableBufferAwaiter.GetResult()
+        FlushResult IAwaiter<FlushResult>.GetResult()
         {
             var result = new FlushResult();
             lock (_sync)
@@ -754,7 +754,7 @@ namespace System.IO.Pipelines
             return result;
         }
 
-        void IWritableBufferAwaiter.OnCompleted(Action continuation)
+        void IAwaiter<FlushResult>.OnCompleted(Action continuation)
         {
             Action awaitable;
             bool doubleCompletion;

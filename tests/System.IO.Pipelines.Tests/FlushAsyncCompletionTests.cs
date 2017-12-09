@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
-            async Task Await(WritableBufferAwaitable a) => await a;
+            async Task Await(Awaitable<FlushResult> a) => await a;
 
             var writeBuffer = Pipe.Writer.Alloc();
             writeBuffer.Write(new byte[MaximumSizeHigh]);

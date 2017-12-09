@@ -3,25 +3,25 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.IO.Pipelines
+namespace System.Threading
 {
     /// <summary>
     /// An awaitable object that represents an asynchronous read operation
     /// </summary>
-    public struct ReadableBufferAwaitable : ICriticalNotifyCompletion
+    public struct Awaitable<T> : ICriticalNotifyCompletion
     {
-        private readonly IReadableBufferAwaiter _awaiter;
+        private readonly IAwaiter<T> _awaiter;
 
-        public ReadableBufferAwaitable(IReadableBufferAwaiter awaiter)
+        public Awaitable(IAwaiter<T> awaiter)
         {
             _awaiter = awaiter;
         }
 
         public bool IsCompleted => _awaiter.IsCompleted;
 
-        public ReadResult GetResult() => _awaiter.GetResult();
+        public T GetResult() => _awaiter.GetResult();
 
-        public ReadableBufferAwaitable GetAwaiter() => this;
+        public Awaitable<T> GetAwaiter() => this;
 
         public void UnsafeOnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
 
