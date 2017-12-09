@@ -56,6 +56,11 @@ namespace System.IO.Pipelines
             throw GetObjectDisposedException(objectName);
         }
 
+        public static void ThrowCursorOutOfBoundsException()
+        {
+            throw GetCursorOutOfBoundsException();
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
         {
@@ -91,6 +96,12 @@ namespace System.IO.Pipelines
         private static ObjectDisposedException GetObjectDisposedException(string objectName)
         {
             return new ObjectDisposedException(objectName);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception GetCursorOutOfBoundsException()
+        {
+            return new InvalidOperationException("Cursor is out of bounds");
         }
 
         private static string GetArgumentName(ExceptionArgument argument)
@@ -161,6 +172,12 @@ namespace System.IO.Pipelines
                 case ExceptionResource.BufferDoesNotBelongToPool:
                     resourceString = "Can't return buffers that were not rented from this pool";
                     break;
+                case ExceptionResource.UnexpectedSegmentType:
+                    resourceString = "Unexpected segment type";
+                    break;
+                case ExceptionResource.EndCursorNotReached:
+                    resourceString = "Segment chain ended without reaching end cursor location";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -205,5 +222,7 @@ namespace System.IO.Pipelines
         AdvanceToInvalidCursor,
         ReferenceCountZero,
         BufferDoesNotBelongToPool,
+        UnexpectedSegmentType,
+        EndCursorNotReached
     }
 }

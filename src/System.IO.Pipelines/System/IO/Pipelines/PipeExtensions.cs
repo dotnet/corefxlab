@@ -15,15 +15,11 @@ namespace System.IO.Pipelines
             return WriteAsync(output, new ArraySegment<byte>(source));
         }
 
-        public static Task WriteAsync(this IPipeWriter output, ArraySegment<byte> source)
+        public static Task WriteAsync(this IPipeWriter output, ReadOnlyMemory<byte> source)
         {
             var writeBuffer = output.Alloc();
-            writeBuffer.Write(source);
-            return FlushAsync(writeBuffer);
-        }
+            writeBuffer.Write(source.Span);
 
-        private static Task FlushAsync(WritableBuffer writeBuffer)
-        {
             var awaitable = writeBuffer.FlushAsync();
             if (awaitable.IsCompleted)
             {

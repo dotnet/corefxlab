@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var buffer = Factory.CreateOfSize(3);
                 var buffer2 = Factory.CreateOfSize(3);
-                buffer.Start.Seek(2, buffer2.End, false);
+                ReadableBuffer.Seek(buffer.Start, buffer2.End, 2, false);
             }
         }
 
@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Tests
         {
             var buffer = Factory.CreateOfSize(3);
             var buffer2 = Factory.CreateOfSize(3);
-            Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, true));
+            Assert.Throws<InvalidOperationException>(() => ReadableBuffer.Seek(buffer.Start, buffer2.End, 2, true));
         }
 
         [Fact]

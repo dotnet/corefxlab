@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     {
         private ReadCursor _cursor;
         private ReadCursor _next;
-        private ReadCursor _end;
+        private readonly ReadCursor _end;
 
         private ReadOnlyMemory<byte> _current;
 
@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
 
             _cursor = _next;
 
-            return _cursor.TryGetBuffer(_end, out _current, out _next);
+            return ReadableBuffer.TryGetBuffer(_cursor, _end, out _current, out _next);
         }
 
         public BufferEnumerator GetEnumerator()
