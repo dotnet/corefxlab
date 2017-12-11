@@ -331,28 +331,25 @@ namespace System.IO.Pipelines
             {
                 // We need to loop up until the end to make sure start and end are connected
                 // if end is not trusted
-                if (foundResult) continue;
-                if (memory.Length >= bytes)
+                if (!foundResult)
                 {
                     // We would prefer to put cursor in the beginning of next segment
                     // then past the end of previous one, but only if next exists
-                    if (!begin.IsDefault && memory.Length == bytes)
+
+                    if (memory.Length > bytes ||
+                       (memory.Length == bytes && begin.IsDefault))
                     {
-                        continue;
+
+                        result = new ReadCursor(current.Segment, current.Index + (int)bytes);
+                        foundResult = true;
+                        if (!checkEndReachable)
+                        {
+                            break;
+                        }
                     }
 
-                    result = new ReadCursor(current.Segment, current.Index + (int)bytes);
-                    foundResult = true;
-                    if (!checkEndReachable)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
                     bytes -= memory.Length;
                 }
-
                 current = begin;
             }
 
