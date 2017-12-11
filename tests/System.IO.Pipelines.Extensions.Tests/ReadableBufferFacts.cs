@@ -185,9 +185,6 @@ namespace System.IO.Pipelines.Tests
                 EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
             }
             _pipe.Reader.Advance(readBuffer.End);
-
-            GC.Collect();GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         private void EqualsDetectsDeltaForAllLocations(ReadableBuffer slice, byte[] expected, int offset, int length)
@@ -302,11 +299,6 @@ namespace System.IO.Pipelines.Tests
             for (int i = 0; i < readBuffer.Length; i++)
             {
                 *addresses[i] = huntValue;
-                //*addresses[i + 1] = (byte)(huntValue + 20);
-                if (i % BlockSize == 0)
-                {
-                 //   Assert.True((byte*)handle.Pointer == addresses[i]);
-                }
                 found = readBuffer.TrySliceTo(huntValue, out slice, out cursor);
                 *addresses[i] = emptyValue;
 
@@ -314,7 +306,7 @@ namespace System.IO.Pipelines.Tests
                 var remaining = readBuffer.Slice(cursor);
                 var handle = remaining.First.Retain(pin: true);
                 Assert.True(handle.Pointer != null);
-                //if (i % BlockSize == 0)
+                if (i % BlockSize == 0)
                 {
                     Assert.True((byte*)handle.Pointer == addresses[i]);
                 }
