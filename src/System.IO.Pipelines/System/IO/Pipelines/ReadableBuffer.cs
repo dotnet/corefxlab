@@ -327,7 +327,7 @@ namespace System.IO.Pipelines
             ReadCursor result = default;
             var foundResult = false;
             var current = begin;
-            while (TryGetBuffer(current, end, out var memory, out begin))
+            while (TryGetBuffer(begin, end, out var memory, out begin))
             {
                 // We need to loop up until the end to make sure start and end are connected
                 // if end is not trusted
@@ -339,7 +339,6 @@ namespace System.IO.Pipelines
                     if (memory.Length > bytes ||
                        (memory.Length == bytes && begin.IsDefault))
                     {
-
                         result = new ReadCursor(current.Segment, current.Index + (int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)

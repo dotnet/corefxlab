@@ -138,6 +138,24 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void MovePrefersNextSegment()
+        {
+            var bufferSegment1 = new BufferSegment();
+            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 49, 99);
+
+            var bufferSegment2 = new BufferSegment();
+            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 0);
+            bufferSegment1.SetNext(bufferSegment2);
+
+            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 0), new ReadCursor(bufferSegment2, 0));
+
+            var c1 = readableBuffer.Move(readableBuffer.Start, 50);
+
+            Assert.Equal(0, c1.Index);
+            Assert.Equal(bufferSegment2, c1.Segment);
+        }
+
+        [Fact]
         public void Create_WorksWithArray()
         {
             var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
