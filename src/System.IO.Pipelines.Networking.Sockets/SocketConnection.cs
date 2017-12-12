@@ -601,7 +601,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         // unsafe+async not good friends
         private void SetBuffer(ReadOnlyMemory<byte> readOnlyMemory, SocketAsyncEventArgs args, int ignore = 0)
         {
-            var memory = Unsafe.As<ReadOnlyMemory<byte>, Memory<byte>>(ref readOnlyMemory);
+            var memory = MemoryMarshal.AsMemory(readOnlyMemory);
             if (!memory.TryGetArray(out var arraySegment))
             {
                 throw new InvalidOperationException();
