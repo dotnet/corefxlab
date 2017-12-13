@@ -11,7 +11,7 @@ namespace System.Buffers.Text
     /// <summary>
     /// Used to read text from byte buffers
     /// </summary>
-    public ref struct BytesReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
+    public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
     {
         readonly TSequence _bytes;
         Position _currentSegmentPosition;
@@ -21,7 +21,7 @@ namespace System.Buffers.Text
 
         // TODO: should there be a ctor that takes sequence + position? 
         // TODO: should there be a type that is sequence + position?
-        public BytesReader(TSequence bytes)
+        public BufferReader(TSequence bytes)
         {
             _bytes = bytes;
             _nextSegmentPosition = bytes.First;
@@ -37,7 +37,7 @@ namespace System.Buffers.Text
             _currentSpanIndex = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes)
+        public BufferReader(ReadOnlyMemory<byte> bytes)
         {
             _bytes = default;
             _nextSegmentPosition = default;
@@ -46,7 +46,7 @@ namespace System.Buffers.Text
             _currentSpanIndex = 0;
         }
 
-        public BytesReader(ReadOnlySpan<byte> bytes)
+        public BufferReader(ReadOnlySpan<byte> bytes)
         {
             _bytes = default;
             _nextSegmentPosition = default;
@@ -370,7 +370,7 @@ namespace System.Buffers.Text
             throw new NotImplementedException();
         }
 
-        static int CopyTo(BytesReader<TSequence> bytes, Span<byte> buffer)
+        static int CopyTo(BufferReader<TSequence> bytes, Span<byte> buffer)
         {
             var first = bytes.Unread;
             if (first.Length > buffer.Length)
@@ -393,9 +393,9 @@ namespace System.Buffers.Text
 
     public static class BytesReader
     {
-        public static BytesReader<T> Create<T>(T sequence) where T : ISequence<ReadOnlyMemory<byte>>
+        public static BufferReader<T> Create<T>(T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
-            return new BytesReader<T>(sequence);
+            return new BufferReader<T>(sequence);
         }
     }
 

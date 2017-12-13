@@ -6,29 +6,31 @@ using System.Buffers.Cryptography;
 using System.Text.Utf8;
 using System.Binary.Base64Experimental;
 using System.Buffers.Text;
+using System.Buffers;
 
 namespace System.Azure.Authentication
 {
     public static class StorageAccessSignature
     {
-        static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
+        private static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
+        private static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
 
         public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
             try
             {
-                var writer = new SpanWriter(output);
+                var writer = BufferWriter.Create(output);
                 writer.WriteLine(verb);
                 writer.Write("\n\n\n\n\n\n\n\n\n\n\nx-ms-date:");
                 writer.WriteLine(utc, 'R');
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
-                writer.Index = 0;
-                writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
-                bytesWritten = writer.Index;
+                writer.WrittenCount = 0;
+                writer.WriteBytes(hash, s_toBase64);
+                bytesWritten = writer.WrittenCount;
                 return true;
             }
-            catch (SpanWriter.BufferTooSmallException)
+            catch (BufferWriter.BufferTooSmallException)
             {
                 bytesWritten = 0;
                 return false;
@@ -39,18 +41,18 @@ namespace System.Azure.Authentication
         {
             try
             {
-                var writer = new SpanWriter(output);
+                var writer = BufferWriter.Create(output);
                 writer.WriteLine(verb);
                 writer.Write(s_emptyHeaders);
                 writer.WriteLine(utc, 'R');
                 writer.Write(canonicalizedResource);
                 hash.Append(writer.Written);
-                writer.Index = 0;
-                writer.WriteBytes(hash, default, Base64Experimental.BytesToUtf8Encoder);
-                bytesWritten = writer.Index;
+                writer.WrittenCount = 0;
+                writer.WriteBytes(hash, s_toBase64);
+                bytesWritten = writer.WrittenCount;
                 return true;
             }
-            catch (SpanWriter.BufferTooSmallException)
+            catch (BufferWriter.BufferTooSmallException)
             {
                 bytesWritten = 0;
                 return false;
