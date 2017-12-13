@@ -8,8 +8,8 @@ namespace System.Buffers.Text
     {
         public bool TryWrite(DateTime date, StandardFormat format)
         {
-            if (!Utf8Formatter.TryFormat(date, Free, out var bytesWritten, format)) return false;
-            _written += bytesWritten;
+            if (!Utf8Formatter.TryFormat(date, Free, out int written, format)) return false;
+            _written += written;
             return true;
         }
 
@@ -20,7 +20,7 @@ namespace System.Buffers.Text
 
         public bool TryWriteLine(DateTime date, StandardFormat format)
         {
-            if (!Utf8Formatter.TryFormat(date, Free, out var written, format)) return false;
+            if (!Utf8Formatter.TryFormat(date, Free, out int written, format)) return false;
             if (!NewLine.TryCopyTo(Free.Slice(written))) return false;
             _written += written + NewLine.Length;
             return true;

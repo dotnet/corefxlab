@@ -20,8 +20,8 @@ namespace System.Azure.Authentication
         public string Version;
         public DateTime Time;
 
-        static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
-        static TransformationFormat s_toLower = new TransformationFormat(Ascii.ToLowercase);
+        private static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        private static TransformationFormat s_toLower = new TransformationFormat(Ascii.ToLowercase);
 
         public static bool TryWrite(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
         {

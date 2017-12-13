@@ -18,6 +18,7 @@ namespace System.Buffers.Text
         static byte[] s_defaultNewline = new byte[] { (byte)'\n' };
 
         public static BufferWriter Create(Span<byte> buffer) => new BufferWriter(buffer);
+
         public static BufferWriter<TOutput> Create<TOutput>(TOutput output)
             where TOutput : IOutput 
             => new BufferWriter<TOutput>(output);
@@ -49,8 +50,9 @@ namespace System.Buffers.Text
         private void Resize(int desiredBufferSize = 0)
         {
             if (Enlarge == null) throw new BufferTooSmallException();
+            // double the size; add one to ensure that an empty buffer still resizes
             if (desiredBufferSize <= 0) desiredBufferSize = _buffer.Length * 2 + 1;
-            if (desiredBufferSize < _buffer.Length + 1) throw new ArgumentOutOfRangeException(nameof(desiredBufferSize));
+            else if (desiredBufferSize < _buffer.Length + 1) throw new ArgumentOutOfRangeException(nameof(desiredBufferSize));
             var newBuffer = Enlarge(desiredBufferSize).Span;
             if (newBuffer.Length <= _buffer.Length) throw new Exception("Enlarge delegate created too small buffer");
             Written.CopyTo(newBuffer);

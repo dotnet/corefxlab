@@ -11,7 +11,7 @@ namespace System.Buffers.Text
         #region String
         public bool TryWrite(string text)
         {
-            if (!TryWrite(text, out var written)) return false;
+            if (!TryWrite(text, out int written)) return false;
             _written += written;
             return true;
         }
@@ -23,8 +23,7 @@ namespace System.Buffers.Text
 
         public bool TryWrite(string text, TransformationFormat format)
         {
-            int written;
-            if (!TryWrite(text, out written)) return false;
+            if (!TryWrite(text, out int written)) return false;
             if (!format.TryTransform(Free, ref written)) return false;
             _written += written;
             return true;
@@ -37,7 +36,7 @@ namespace System.Buffers.Text
 
         public bool TryWriteLine(string text)
         {
-            if (!TryWriteLine(text, out var written)) return false;
+            if (!TryWriteLine(text, out int written)) return false;
             _written += written;
             return true;
         }
@@ -49,8 +48,7 @@ namespace System.Buffers.Text
 
         public bool TryWriteLine(string text, TransformationFormat format)
         {
-            int written;
-            if (!TryWriteLine(text, out written)) return false;
+            if (!TryWriteLine(text, out int written)) return false;
             if (!format.TryTransform(Free, ref written)) return false;
             _written += written;
             return true;
@@ -65,9 +63,9 @@ namespace System.Buffers.Text
         #region UTF8String
         public bool TryWrite(Utf8Span text)
         {
-            int written = text.Bytes.Length;
-            if (!text.Bytes.TryCopyTo(Free)) return false;
-            _written += written;
+            ReadOnlySpan<byte> bytes = text.Bytes;
+            if (!bytes.TryCopyTo(Free)) return false;
+            _written += bytes.Length;
             return true;
         }
 
@@ -143,6 +141,7 @@ namespace System.Buffers.Text
             }
             else
             {
+                // TODO: this needs to be optimized.
                 Span<byte> utf8Span = stackalloc byte[4];
                 Span<char> utf16Span = stackalloc char[1];
                 utf16Span[0] = character;
@@ -160,7 +159,7 @@ namespace System.Buffers.Text
 
         private bool TryWrite(string text, out int written)
         {
-            var status = Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out var consumed, out written);
+            var status = Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out _, out written);
 
             switch (status)
             {
@@ -185,14 +184,18 @@ namespace System.Buffers.Text
 
         private bool TryWriteLine(Utf8Span text, out int written)
         {
-            if (!text.Bytes.TryCopyTo(Free))
+            var free = Free;
+            if (!text.Bytes.TryCopyTo(free))
             {
                 written = 0;
                 return false;
             }
             written = text.Bytes.Length;
-            if (!NewLine.TryCopyTo(Free.Slice(written))) return false;
-
+            if (!NewLine.TryCopyTo(free.Slice(written)))
+            {
+                written = 0;
+                return false;
+            }
             written += NewLine.Length;
             return true;
         }

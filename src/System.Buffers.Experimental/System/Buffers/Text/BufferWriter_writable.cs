@@ -44,8 +44,7 @@ namespace System.Buffers.Text
         #region IWritable
         public bool TryWriteBytes<T>(T value, StandardFormat format) where T : IWritable
         {
-            int written;
-            if (!value.TryWrite(Free, out written, format))
+            if (!value.TryWrite(Free, out int written, format))
             {
                 return false;
             }
@@ -60,8 +59,7 @@ namespace System.Buffers.Text
 
         public bool TryWriteBytes<T>(T value, TransformationFormat format) where T : IWritable
         {
-            int written;
-            if(!value.TryWrite(Free, out written, format.Format))
+            if(!value.TryWrite(Free, out int written, format.Format))
             {
                 return false;
             }
@@ -99,8 +97,7 @@ namespace System.Buffers.Text
 
         public bool TryWrite<T>(T value, TransformationFormat format) where T : IBufferFormattable
         {
-            int written;
-            if (!value.TryFormat(Free, out written, format.Format, SymbolTable.InvariantUtf8))
+            if (!value.TryFormat(Free, out int written, format.Format, SymbolTable.InvariantUtf8))
             {
                 return false;
             }

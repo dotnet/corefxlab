@@ -12,8 +12,8 @@ namespace System.Azure.Authentication
 {
     public static class StorageAccessSignature
     {
-        static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
-        static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        private static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
+        private static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
 
         public static bool TryWrite(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
         {
