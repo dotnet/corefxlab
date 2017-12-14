@@ -1460,17 +1460,17 @@ namespace System.Numerics
                 int currentDimension = Dimensions[i];
                 if ((uint)range.First >= (uint)currentDimension)
                 {
-                    throw new ArgumentOutOfRangeException($"Range.Index at position '{i}' must be non-negative and less than the Dimension '{currentDimension}' at that position. The Range.Index value is '{range.First}'.", nameof(ranges));
+                    throw new ArgumentOutOfRangeException($"Range.First at position '{i}' must be non-negative and less than the Dimension '{currentDimension}' at that position. The Range.First value is '{range.First}'.", nameof(ranges));
                 }
 
                 checked
                 {
                     if (range.First + range.Length > currentDimension)
                     {
-                        throw new ArgumentOutOfRangeException($"The Range at position '{i}' targets values outside of the Dimension '{currentDimension}' at that position. The Range.Index value is '{range.First}'. The Range.Length value is '{range.Length}'.", nameof(ranges));
+                        throw new ArgumentOutOfRangeException($"The Range at position '{i}' targets values outside of the Dimension '{currentDimension}' at that position. The Range.First value is '{range.First}'. The Range.Length value is '{range.Length}'.", nameof(ranges));
                     }
 
-                    offset += (int)(range.First * strides[i]);
+                    offset += range.First * strides[i];
 
                     // only create a new dimension if the range requires it
                     if (range.Length > 1)
