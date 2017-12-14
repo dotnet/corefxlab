@@ -11,7 +11,6 @@ namespace System.Buffers.Tests
         [Fact]
         public void Basics()
         {
-
             for (int first = -10; first < 10; first++)
             {
                 for (uint length = 0; length < 20; length++)
@@ -46,7 +45,7 @@ namespace System.Buffers.Tests
         public void UnboundedLast()
         {
             var unboundedLast = Range.Construct(10, Range.UnboundedLast);
-            Assert.Equal(Range.UnboundedLength, unboundedLast.Length); // is that what we want?
+            Assert.False(unboundedLast.IsBound); 
             Assert.Equal(10, unboundedLast.First);
             Assert.Equal(Range.UnboundedLast, unboundedLast.Last);          
         }
@@ -55,16 +54,16 @@ namespace System.Buffers.Tests
         public void UnboundedFirst()
         {
             var unboundedFirst = Range.Construct(Range.UnboundedFirst, 10);
-            Assert.Equal(Range.UnboundedLength, unboundedFirst.Length); // is that what we want?
+            Assert.False(unboundedFirst.IsBound);
             Assert.Equal(Range.UnboundedFirst, unboundedFirst.First);
-            Assert.Equal(10, unboundedFirst.Last); // is that what we want?            
+            Assert.Equal(10, unboundedFirst.Last);           
         }
 
         [Fact]
         public void Unbounded()
         {
             var unbounded = Range.Construct(Range.UnboundedFirst, Range.UnboundedLast);
-            Assert.Equal(Range.UnboundedLength, unbounded.Length); // is that what we want?
+            Assert.False(unbounded.IsBound);
             Assert.Equal(Range.UnboundedFirst, unbounded.First);
             Assert.Equal(Range.UnboundedLast, unbounded.Last);
         }
@@ -97,6 +96,30 @@ namespace System.Buffers.Tests
             {
                 // MaxValue is used as a sentinel for Last, so Last cannot endup being it.
                 var tooLong = new Range(int.MaxValue, 1);
+            });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Cannot enumerate unbound
+                var unbound = Range.Construct(Range.UnboundedFirst, 1);
+                unbound.GetEnumerator();
+            });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Cannot enumerate unbound
+                var unbound = Range.Construct(1, Range.UnboundedLast);
+                unbound.GetEnumerator();
+            });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Cannot get length on unbound
+                var unbound = Range.Construct(Range.UnboundedFirst, 1);
+                var length = unbound.Length;
+            });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Cannot get length on unbound
+                var unbound = Range.Construct(1, Range.UnboundedLast);
+                var length = unbound.Length;
             });
         }
 

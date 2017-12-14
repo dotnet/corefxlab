@@ -6,12 +6,11 @@ using System.Collections.Generic;
 
 namespace System
 {
-
+    // TODO: consider allowing Last > First. Ennumeration will count down.
     public struct Range : IEnumerable<int>
     {
         public const int UnboundedFirst = Int32.MinValue;
         public const int UnboundedLast = Int32.MaxValue;
-        public const uint UnboundedLength = UInt32.MaxValue;
 
         public readonly int First;
         public readonly int Last; // Last is exclusive
@@ -19,8 +18,8 @@ namespace System
         public uint Length
         {
             get {
-                if (First == UnboundedFirst || Last == UnboundedLast) return UnboundedLength;
-                return (uint)((long)Last - (long)First);
+                if (IsBound) return (uint)((long)Last - (long)First);
+                throw new InvalidOperationException("cannot get length of unbound range");
             }
         }
 
@@ -41,6 +40,8 @@ namespace System
             Last = last;
         }
 
+        public bool IsBound => First != UnboundedFirst && Last != UnboundedLast;
+
         public void Deconstruct(out int first, out int last)
         {
             first = First;
@@ -51,32 +52,36 @@ namespace System
 
         public struct Enumerator : IEnumerator<int>
         {
-            int _first;
+            int _current;
             int _last;
 
             internal Enumerator(int first, int last)
             {
-                _first = first - 1;
+                _current = first - 1;
                 _last = last;
             }
 
             public bool MoveNext()
             {
-                _first++;
-                return _first < _last;
+                _current++;
+                return _current < _last;
             }
 
-            public int Current => _first;
+            public int Current => _current;
 
-            object IEnumerator.Current => _first;
+            object IEnumerator.Current => _current;
 
             void IDisposable.Dispose() { }
 
             void IEnumerator.Reset() => throw new NotSupportedException();
         }
 
+        // TODO: write benchmark for this
         public Enumerator GetEnumerator()
-            => new Enumerator(First, Last);
+        {
+            if(IsBound) return new Enumerator(First, Last);
+            throw new InvalidOperationException("cannot enumerate unbound range");
+        }
 
         IEnumerator<int> IEnumerable<int>.GetEnumerator()
             => GetEnumerator();
