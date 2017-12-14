@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
-            async Task Await(Awaitable<FlushResult> a) => await a;
+            async Task Await(ValueAwaiter<FlushResult> a) => await a;
 
             var writeBuffer = Pipe.Writer.Alloc();
             writeBuffer.Write(new byte[MaximumSizeHigh]);

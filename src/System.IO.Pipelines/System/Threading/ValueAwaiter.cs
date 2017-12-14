@@ -8,11 +8,11 @@ namespace System.Threading
     /// <summary>
     /// An awaitable object that represents an asynchronous read operation
     /// </summary>
-    public struct Awaitable<T> : ICriticalNotifyCompletion
+    public struct ValueAwaiter<T> : ICriticalNotifyCompletion
     {
         private readonly IAwaiter<T> _awaiter;
 
-        public Awaitable(IAwaiter<T> awaiter)
+        public ValueAwaiter(IAwaiter<T> awaiter)
         {
             _awaiter = awaiter;
         }
@@ -21,7 +21,7 @@ namespace System.Threading
 
         public T GetResult() => _awaiter.GetResult();
 
-        public Awaitable<T> GetAwaiter() => this;
+        public ValueAwaiter<T> GetAwaiter() => this;
 
         public void UnsafeOnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
 

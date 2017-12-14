@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
 {
     public interface IMemoryList<T>
     {
-        ReadOnlyMemory<T> Memory { get; }
+        Memory<T> Memory { get; }
 
         IMemoryList<T> Next { get; }
 
@@ -90,7 +90,7 @@ namespace System.IO.Pipelines
 
         public Memory<byte> AvailableMemory { get; private set; }
 
-        public ReadOnlyMemory<byte> Memory { get; private set; }
+        public Memory<byte> Memory { get; private set; }
 
         public int Length => End - Start;
 

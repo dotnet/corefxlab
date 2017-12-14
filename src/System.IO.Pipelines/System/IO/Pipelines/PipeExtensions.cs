@@ -30,7 +30,7 @@ namespace System.IO.Pipelines
             return FlushAsyncAwaited(awaitable);
         }
 
-        private static async Task FlushAsyncAwaited(Awaitable<FlushResult> awaitable)
+        private static async Task FlushAsyncAwaited(ValueAwaiter<FlushResult> awaitable)
         {
             await awaitable;
         }

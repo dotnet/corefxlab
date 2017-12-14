@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AwaitingReadAsyncAwaitableTwiceCompletesWriterWithException()
         {
-            async Task Await(Awaitable<ReadResult> a) => await a;
+            async Task Await(ValueAwaiter<ReadResult> a) => await a;
 
             var awaitable = Pipe.Reader.ReadAsync();
 

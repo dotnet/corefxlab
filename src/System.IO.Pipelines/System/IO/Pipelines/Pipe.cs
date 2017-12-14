@@ -331,7 +331,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal Awaitable<FlushResult> FlushAsync(CancellationToken cancellationToken)
+        internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -352,7 +352,7 @@ namespace System.IO.Pipelines
 
             TrySchedule(_readerScheduler, awaitable);
 
-            return new Awaitable<FlushResult>(this);
+            return new ValueAwaiter<FlushResult>(this);
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        Awaitable<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
+        ValueAwaiter<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
         {
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
@@ -592,7 +592,7 @@ namespace System.IO.Pipelines
                 cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
-            return new Awaitable<ReadResult>(this);
+            return new ValueAwaiter<ReadResult>(this);
         }
 
         bool IPipeReader.TryRead(out ReadResult result)
