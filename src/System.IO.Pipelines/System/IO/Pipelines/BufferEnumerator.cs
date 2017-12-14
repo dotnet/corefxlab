@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
 
             _cursor = _next;
 
-            return ReadableBuffer.TryGetBuffer(_cursor, _end, out _current, out _next);
+            return ReadCursorOperations.TryGetBuffer(_cursor, _end, out _current, out _next);
         }
 
         public BufferEnumerator GetEnumerator()

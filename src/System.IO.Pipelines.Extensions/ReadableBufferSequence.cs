@@ -29,7 +29,7 @@ namespace System.IO.Pipelines
             }
 
             var (segment, index) = position.Get<object>();
-            var result = ReadableBuffer.TryGetBuffer(new ReadCursor(segment, index), _buffer.End, out item, out var next);
+            var result = ReadCursorOperations.TryGetBuffer(new ReadCursor(segment, index), _buffer.End, out item, out var next);
             if (advance)
             {
                 position = Position.Create(next.Segment, next.Index);
