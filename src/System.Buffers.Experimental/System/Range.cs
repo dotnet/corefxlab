@@ -3,22 +3,23 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace System
 {
     // TODO: consider allowing Last > First. Ennumeration will count down.
-    public struct Range : IEnumerable<int>
+    public readonly struct Range : IEnumerable<int>
     {
         public const int UnboundedFirst = Int32.MinValue;
-        public const int UnboundedLast = Int32.MaxValue;
+        public const int UnboundedEnd = Int32.MaxValue;
 
         public readonly int First;
-        public readonly int Last; // Last is exclusive
+        public readonly int End; // End is exclusive
 
         public uint Length
         {
             get {
-                if (IsBound) return (uint)((long)Last - (long)First);
+                if (IsBound) return (uint)((long)End - (long)First);
                 throw new InvalidOperationException("cannot get length of unbound range");
             }
         }
@@ -29,42 +30,42 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(first));
             
             First = first;
-            Last = (int)(first + length);
+            End = (int)(first + length);
 
-            if (Last < First) throw new ArgumentOutOfRangeException(nameof(length));
+            if (End < First) throw new ArgumentOutOfRangeException(nameof(length));
         }
 
-        private Range(int first, int last)
+        private Range(int first, int end)
         {
             First = first;
-            Last = last;
+            End = end;
         }
 
-        public bool IsBound => First != UnboundedFirst && Last != UnboundedLast;
+        public bool IsBound => First != UnboundedFirst && End != UnboundedEnd;
 
-        public void Deconstruct(out int first, out int last)
+        public void Deconstruct(out int first, out int end)
         {
             first = First;
-            last = Last;
+            end = End;
         }
-        public static Range Construct(int first, int last)
-            => new Range(first, last);
+        public static Range Construct(int first, int end)
+            => new Range(first, end);
 
         public struct Enumerator : IEnumerator<int>
         {
             int _current;
-            int _last;
+            int _end;
 
-            internal Enumerator(int first, int last)
+            internal Enumerator(int first, int end)
             {
                 _current = first - 1;
-                _last = last;
+                _end = end;
             }
 
             public bool MoveNext()
             {
                 _current++;
-                return _current < _last;
+                return _current < _end;
             }
 
             public int Current => _current;
@@ -79,7 +80,7 @@ namespace System
         // TODO: write benchmark for this
         public Enumerator GetEnumerator()
         {
-            if(IsBound) return new Enumerator(First, Last);
+            if(IsBound) return new Enumerator(First, End);
             throw new InvalidOperationException("cannot enumerate unbound range");
         }
 
@@ -88,5 +89,77 @@ namespace System
 
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
+
+        public bool Contains(int value)
+        {
+            if (!IsBound) throw new InvalidOperationException("Unbound ranges cannot contain");
+            return value >= First && value < End;
+        }
+
+        /// <summary>
+        /// Returns true if this Range is a valid range for a zero based index of sspecified length.
+        /// </summary>
+        /// <param name="length">zero based length.</param>
+        /// <returns></returns>
+        public bool IsValid(int length)
+        {
+            if (First == UnboundedFirst)
+            {
+                if (End == UnboundedEnd) return true;
+                return End <= length;
+            }
+            else // First is bounded
+            {
+                if (First < 0) return false;
+                if (End == UnboundedEnd) return First <= length;
+                if (First > length) return false;
+                return End <= length;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public Range Bind(int length)
+        {
+            if (!IsValid(length)) throw new ArgumentOutOfRangeException(nameof(length));
+            if (IsBound) return this;
+
+            int first = 0;
+            if (First != UnboundedFirst) first = First;
+
+            int end;
+            if (End != UnboundedEnd) end = End;
+            else end = length;
+
+            return new Range(first, end);
+        }
+
+        /// <summary>
+        /// Binds the range possibly adjusting it to fit in the length.
+        /// </summary>
+        /// <param name="length">zero based length.</param>
+        /// <returns></returns>
+        public Range BindToValid(int length)
+        {
+            int first = First;
+            if (first < 0) first = 0;
+            if (first > length - 1) first = length;
+
+            int end = End;
+            if (end == UnboundedEnd || end > length) end = length;
+
+            return new Range(first, end);
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append('[');
+            if (First != UnboundedFirst) sb.Append(First);
+            sb.Append("..");
+            if (End != UnboundedEnd) sb.Append(End);
+            sb.Append(']');
+            return sb.ToString();
+        }
     }
 }
