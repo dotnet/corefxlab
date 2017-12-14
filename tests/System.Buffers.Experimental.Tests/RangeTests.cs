@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Xunit;
+using System.Linq;
 
 namespace System.Buffers.Tests
 {
@@ -22,11 +23,14 @@ namespace System.Buffers.Tests
                     Assert.Equal(length + first, range.Last);
 
                     long sum = 0;
+                    uint numberOfItems = 0;
                     foreach (int value in range)
                     {
+                        numberOfItems++;
                         sum += value;
                     }
 
+                    Assert.Equal(numberOfItems, range.Length);
                     Assert.Equal((range.First + (long)range.Last - 1) * range.Length / 2, sum);
 
                     (int f, int l) = range;
@@ -39,6 +43,14 @@ namespace System.Buffers.Tests
                     Assert.Equal(range.Length, constructed.Length);
                 }
             }
+        }
+
+        [Fact]
+        public void FirstIsInclusiveLastIsExclusive()
+        {
+            var range = Range.Construct(10, 15);
+            Assert.Equal(10, range.First());
+            Assert.Equal(14, range.Last());
         }
 
         [Fact]
