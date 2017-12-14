@@ -11,20 +11,34 @@ namespace System
     {
         public const int UnboundedFirst = Int32.MinValue;
         public const int UnboundedLast = Int32.MaxValue;
+        public const uint UnboundedLength = UInt32.MaxValue;
 
         public readonly int First;
-        public readonly uint Length;
-        public int Last => (int)(Length + First - 1);
+        public readonly int Last; // Last is exclusive
+
+        public uint Length
+        {
+            get {
+                if (First == UnboundedFirst || Last == UnboundedLast) return UnboundedLength;
+                return (uint)((long)Last - (long)First);
+            }
+        }
 
         public Range(int first, uint length)
         {
-            if (length < 0)
-            {
-                throw new ArgumentOutOfRangeException("Length must be non-negative.", nameof(length));
-            }
-
+            if (first == UnboundedFirst)
+                throw new ArgumentOutOfRangeException(nameof(first));
+            
             First = first;
-            Length = length;
+            Last = (int)(first + length);
+
+            if (Last < First) throw new ArgumentOutOfRangeException(nameof(length));
+        }
+
+        private Range(int first, int last)
+        {
+            First = first;
+            Last = last;
         }
 
         public void Deconstruct(out int first, out int last)
@@ -32,13 +46,8 @@ namespace System
             first = First;
             last = Last;
         }
-        public static Range Construct(int first, int last = UnboundedLast)
-        {
-            if (last == UnboundedLast) return new Range(first, (uint)((long)int.MaxValue - first));
-            long length = (long)last - first + 1;
-            if (length > uint.MaxValue || length < 0) throw new ArgumentOutOfRangeException(nameof(last));
-            return new Range(first, (uint)length);
-        }
+        public static Range Construct(int first, int last)
+            => new Range(first, last);
 
         public struct Enumerator : IEnumerator<int>
         {
@@ -54,7 +63,7 @@ namespace System
             public bool MoveNext()
             {
                 _first++;
-                return _first <= _last;
+                return _first < _last;
             }
 
             public int Current => _first;
