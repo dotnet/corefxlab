@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
@@ -97,7 +95,7 @@ namespace System.Buffers
                             break;
                         }
                         index -= m.Length;
-                        sl = sl.Rest;
+                        sl = sl.Next;
                     }
 
                     var el = sl;
@@ -116,7 +114,7 @@ namespace System.Buffers
                         {
                             return new ReadWriteBytes(sl, (int)index, el, m.Length);
                         }
-                        el = el.Rest;
+                        el = el.Next;
                     }
                 default:
                     throw new NotImplementedException();
@@ -293,7 +291,7 @@ namespace System.Buffers
                 {
                     var first = _start as IMemoryList<byte>;
                     item = first.Memory.Slice(_startIndex);
-                    if (advance) position = Position.Create(first.Rest);
+                    if (advance) position = Position.Create(first.Next);
                     if (ReferenceEquals(_end, _start))
                     {
                         item = item.Slice(0, (int)Length);
@@ -311,7 +309,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = Position.Create(node.Rest);
+                    if (advance) position = Position.Create(node.Next);
                 }
                 return true;
             }

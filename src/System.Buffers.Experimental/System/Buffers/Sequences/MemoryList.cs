@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Buffers
@@ -37,7 +35,7 @@ namespace System.Buffers
 
         public Memory<byte> Memory => _data;
 
-        public IMemoryList<byte> Rest => _next;
+        public IMemoryList<byte> Next => _next;
 
         public long VirtualIndex => _virtualIndex;
 

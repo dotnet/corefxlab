@@ -29,7 +29,7 @@ namespace Microsoft.Net
 
         public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
 
-        public IMemoryList<byte> Rest => _next;
+        public IMemoryList<byte> Next => _next;
 
         public int WrittenByteCount => _written;
 
