@@ -9,6 +9,118 @@ using System.Numerics;
 
 namespace System.Buffers
 {
+
+    public static class MemoryListExtensions
+    {
+        // span creation helpers:
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long IndexOf(this IMemoryList<byte> list, ReadOnlySpan<byte> value)
+        {
+            var first = list.Memory.Span;
+            var index = first.IndexOf(value);
+            if (index != -1) return index;
+
+            var rest = list.Next;
+            if (rest == null) return -1;
+
+            return IndexOfStraddling(first, list.Next, value);
+        }
+
+        public static int CopyTo(this IMemoryList<byte> list, Span<byte> destination)
+        {
+            var current = list.Memory.Span;
+            int copied = 0;
+
+            while (destination.Length > 0)
+            {
+                if (current.Length >= destination.Length)
+                {
+                    current.Slice(0, destination.Length).CopyTo(destination);
+                    copied += destination.Length;
+                    return copied;
+                }
+                else
+                {
+                    current.CopyTo(destination);
+                    copied += current.Length;
+                    destination = destination.Slice(current.Length);
+                }
+            }
+            return copied;
+        }
+
+        public static Position PositionOf(this IMemoryList<byte> list, byte value)
+        {
+            while (list != null)
+            {
+                var current = list.Memory.Span;
+                var index = current.IndexOf(value);
+                if (index != -1) return Position.Create(list, index);
+                list = list.Next;
+            }
+            return Position.End;
+        }
+
+        // TODO (pri 3): I am pretty sure this whole routine can be written much better
+
+        // searches values that potentially straddle between first and rest
+        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IMemoryList<byte> rest, ReadOnlySpan<byte> value)
+        {
+            Debug.Assert(first.IndexOf(value) == -1);
+            if (rest == null) return -1;
+
+            // we only need to search the end of the first buffer. More precisely, only up to value.Length - 1 bytes in the first buffer
+            // The other bytes in first, were already search and presumably did not match
+            int bytesToSkipFromFirst = 0;
+            if (first.Length > value.Length - 1)
+            {
+                bytesToSkipFromFirst = first.Length - value.Length - 1;
+            }
+
+            // now that we know how many bytes we need to skip, create slice of first buffer with bytes that need to be searched.
+            ReadOnlySpan<byte> bytesToSearchAgain;
+            if (bytesToSkipFromFirst > 0)
+            {
+                bytesToSearchAgain = first.Slice(bytesToSkipFromFirst);
+            }
+            else
+            {
+                bytesToSearchAgain = first;
+            }
+
+            long index;
+
+            // now combine the bytes from the end of the first buffer with bytes in the rest, and serarch the combined buffer
+            // this check is a small optimization: if the first byte from the value does not exist in the bytesToSearchAgain, there is no reason to combine
+            if (bytesToSearchAgain.IndexOf(value[0]) != -1)
+            {
+                var combinedBufferLength = value.Length << 1;
+                var combined = combinedBufferLength < 128 ?
+                                        stackalloc byte[combinedBufferLength] :
+                                        // TODO (pri 3): I think this could be eliminated by chunking values
+                                        new byte[combinedBufferLength];
+
+                bytesToSearchAgain.CopyTo(combined);
+                int combinedLength = bytesToSearchAgain.Length + rest.CopyTo(combined.Slice(bytesToSearchAgain.Length));
+                combined = combined.Slice(0, combinedLength);
+
+                if (combined.Length < value.Length) return -1;
+
+                index = combined.IndexOf(value);
+                if (index != -1)
+                {
+                    return index + bytesToSkipFromFirst;
+                }
+            }
+
+            // try to find the bytes in _rest
+            index = rest.IndexOf(value);
+            if (index != -1) return first.Length + index;
+
+            return -1;
+        }
+    }
+
     public static class BufferExtensions
     {
         const int stackLength = 32;
@@ -110,79 +222,6 @@ namespace System.Buffers
                 }
             }
             return;
-        }
-
-        // span creation helpers:
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long IndexOf(this IMemoryList<byte> sequence, ReadOnlySpan<byte> value)
-        {
-            var first = sequence.Memory.Span;
-            var index = first.IndexOf(value);
-            if (index != -1) return index;
-
-            var rest = sequence.Rest;
-            if (rest == null) return -1;
-
-            return IndexOfStraddling(first, sequence.Rest, value);
-        }
-
-        // TODO (pri 3): I am pretty sure this whole routine can be written much better
-
-        // searches values that potentially straddle between first and rest
-        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IMemoryList<byte> rest, ReadOnlySpan<byte> value)
-        {
-            Debug.Assert(first.IndexOf(value) == -1);
-            if (rest == null) return -1;
-
-            // we only need to search the end of the first buffer. More precisely, only up to value.Length - 1 bytes in the first buffer
-            // The other bytes in first, were already search and presumably did not match
-            int bytesToSkipFromFirst = 0; 
-            if (first.Length > value.Length - 1)
-            {
-                bytesToSkipFromFirst = first.Length - value.Length - 1;
-            }
-
-            // now that we know how many bytes we need to skip, create slice of first buffer with bytes that need to be searched.
-            ReadOnlySpan<byte> bytesToSearchAgain;
-            if (bytesToSkipFromFirst > 0)
-            {
-                bytesToSearchAgain = first.Slice(bytesToSkipFromFirst);
-            }
-            else
-            {
-                bytesToSearchAgain = first;
-            }
-
-            long index;
-
-            // now combine the bytes from the end of the first buffer with bytes in the rest, and serarch the combined buffer
-            // this check is a small optimization: if the first byte from the value does not exist in the bytesToSearchAgain, there is no reason to combine
-            if (bytesToSearchAgain.IndexOf(value[0]) != -1)
-            {
-                var combinedBufferLength = value.Length << 1;
-                var combined = combinedBufferLength < 128 ?
-                                        stackalloc byte[combinedBufferLength] :
-                                        // TODO (pri 3): I think this could be eliminated by chunking values
-                                        new byte[combinedBufferLength];
-
-                bytesToSearchAgain.CopyTo(combined);
-                int combinedLength = bytesToSearchAgain.Length + rest.CopyTo(combined.Slice(bytesToSearchAgain.Length));
-                combined = combined.Slice(0, combinedLength);
-
-                if (combined.Length < value.Length) return -1;
-
-                index = combined.IndexOf(value);
-                if (index != -1)
-                {
-                    return index + bytesToSkipFromFirst;
-                }
-            }
-
-            // try to find the bytes in _rest
-            index = rest.IndexOf(value);
-            if (index != -1) return first.Length + index;
-
-            return -1;
         }
 
         public static bool TryIndicesOf(this Span<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)

@@ -79,7 +79,7 @@ namespace System.Buffers.Tests
             {
                 var value = (byte)(i + 1);
 
-                var listPosition = Sequence.PositionOf(first, value);
+                var listPosition = MemoryListExtensions.PositionOf(first, value);
                 var (node, index) = listPosition.Get<IMemoryList<byte>>();
 
                 if (!listPosition.IsEnd)

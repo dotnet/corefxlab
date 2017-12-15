@@ -2,20 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Text;
 
 namespace System.IO.Pipelines
 {
-    public interface IMemoryList<T>
-    {
-        Memory<T> Memory { get; }
-
-        IMemoryList<T> Next { get; }
-
-        long VirtualIndex { get; }
-    }
-
     internal class BufferSegment: IMemoryList<byte>
     {
         /// <summary>

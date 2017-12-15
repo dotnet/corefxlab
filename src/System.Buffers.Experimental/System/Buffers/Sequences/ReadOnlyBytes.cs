@@ -98,7 +98,7 @@ namespace System.Buffers
                             break;
                         }
                         index -= m.Length;
-                        sl = sl.Rest;
+                        sl = sl.Next;
                     }
 
                     var el = sl;
@@ -117,7 +117,7 @@ namespace System.Buffers
                         {
                             return new ReadOnlyBytes(sl, (int)index, el, m.Length);
                         }
-                        el = el.Rest;
+                        el = el.Next;
                     }
                 default:
                     throw new NotImplementedException();
@@ -293,7 +293,7 @@ namespace System.Buffers
                 {
                     var first = _start as IMemoryList<byte>;
                     item = first.Memory.Slice(_startIndex);
-                    if (advance) position = Position.Create(first.Rest);
+                    if (advance) position = Position.Create(first.Next);
                     if (ReferenceEquals(_end, _start)){
                         item = item.Slice(0, (int)Length);
                         if (advance) position = Position.End;
@@ -310,7 +310,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = Position.Create(node.Rest);
+                    if (advance) position = Position.Create(node.Next);
                 }
                 return true;
             }
