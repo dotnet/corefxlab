@@ -141,7 +141,7 @@ namespace System.Buffers.Tests
             });
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                // MaxValue is used as a sentinel for End, so End cannot endup being it.
+                // MaxValue is used as a sentinel for End, so End cannot end up being it.
                 var tooLong = new Range(int.MaxValue, 1);
             });
             Assert.Throws<InvalidOperationException>(() =>

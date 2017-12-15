@@ -48,6 +48,7 @@ namespace System
             first = First;
             end = End;
         }
+
         public static Range Construct(int first, int end)
             => new Range(first, end);
 
@@ -97,7 +98,7 @@ namespace System
         }
 
         /// <summary>
-        /// Returns true if this Range is a valid range for a zero based index of sspecified length.
+        /// Returns true if this Range is a valid range for a zero based index of specified length.
         /// </summary>
         /// <param name="length">zero based length.</param>
         /// <returns></returns>
@@ -115,10 +116,14 @@ namespace System
                 if (First > length) return false;
                 return End <= length;
             }
-
-            throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Converts an unbound Range (IsBound == false) to a bound one (IsBound == true).
+        /// </summary>
+        /// <param name="length">zero based length of an indexable 'list' the range is being bound to.</param>
+        /// <returns>Bound Range (IsBound == true).</returns>
+        /// <remarks>The method throws ArgumentOutOfRangeException Range.IsValid(lenght) returns false.</remarks>
         public Range Bind(int length)
         {
             if (!IsValid(length)) throw new ArgumentOutOfRangeException(nameof(length));
