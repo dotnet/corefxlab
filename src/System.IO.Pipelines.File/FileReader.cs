@@ -76,7 +76,7 @@ namespace System.IO.Pipelines.File
             }
         }
 
-        private static async Task Continue(WritableBufferAwaitable awaitable, ReadOperation operation)
+        private static async Task Continue(ValueAwaiter<FlushResult> awaitable, ReadOperation operation)
         {
             // Keep reading once we get the completion
             var flushResult = await awaitable;

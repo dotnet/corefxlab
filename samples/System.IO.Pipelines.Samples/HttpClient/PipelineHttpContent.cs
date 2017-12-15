@@ -43,19 +43,7 @@ namespace System.IO.Pipelines.Samples
 
                     foreach (var memory in data)
                     {
-                        ArraySegment<byte> buffer;
-
-                        unsafe
-                        {
-                            if (!memory.TryGetArray(out buffer))
-                            {
-                                // Fall back to copies if this was native memory and we were unable to get
-                                //  something we could write
-                                buffer = new ArraySegment<byte>(memory.Span.ToArray());
-                            }
-                        }
-
-                        await stream.WriteAsync(buffer.Array, buffer.Offset, buffer.Count);
+                        await stream.WriteAsync(memory);
                     }
 
                     consumed = data.End;

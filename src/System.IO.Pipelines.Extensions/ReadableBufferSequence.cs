@@ -20,20 +20,7 @@ namespace System.IO.Pipelines
         {
             if (position == default)
             {
-                // First is already sliced
-                item = _buffer.First;
-                if (advance)
-                {
-                    if (_buffer.Start.Segment == null)
-                    {
-                        position = Position.End;
-                    }
-                    else
-                    {
-                        position = Position.Create(_buffer.Start.GetSegment().Next);
-                    }
-                }
-                return true;
+                position = First;
             }
             else if (position == Position.End)
             {
@@ -41,20 +28,13 @@ namespace System.IO.Pipelines
                 return false;
             }
 
-            var currentSegment = position.GetItem<BufferSegment>();
+            var (segment, index) = position.Get<object>();
+            var result = ReadCursorOperations.TryGetBuffer(new ReadCursor(segment, index), _buffer.End, out item, out var next);
             if (advance)
             {
-                position = Position.Create(currentSegment.Next);
+                position = Position.Create(next.Segment, next.Index);
             }
-            if (currentSegment == _buffer.End.Segment)
-            {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _buffer.End.Index - currentSegment.Start);
-            }
-            else
-            {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
-            }
-            return true;
+            return result;
         }
     }
 }

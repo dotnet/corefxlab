@@ -6,6 +6,7 @@ using System.IO.Pipelines.Networking.Sockets.Internal;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -598,13 +599,14 @@ namespace System.IO.Pipelines.Networking.Sockets
         }
 
         // unsafe+async not good friends
-        private unsafe void SetBuffer(Memory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
+        private void SetBuffer(ReadOnlyMemory<byte> readOnlyMemory, SocketAsyncEventArgs args, int ignore = 0)
         {
-            if (!memory.TryGetArray(out ArraySegment<byte> segment))
+            var memory = MemoryMarshal.AsMemory(readOnlyMemory);
+            if (!memory.TryGetArray(out var arraySegment))
             {
-                throw new InvalidOperationException("Memory is not backed by an array; oops!");
+                throw new InvalidOperationException();
             }
-            args.SetBuffer(segment.Array, segment.Offset + ignore, segment.Count - ignore);
+            args.SetBuffer(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
         }
 
         private void Shutdown()

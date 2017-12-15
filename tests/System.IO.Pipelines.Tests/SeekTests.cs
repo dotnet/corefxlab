@@ -19,6 +19,11 @@ namespace System.IO.Pipelines.Tests
             internal Array(TestBufferFactory factory) : base(factory) { }
         }
 
+        public class OwnedMemory: SingleSegment
+        {
+            public OwnedMemory() : base(TestBufferFactory.OwnedMemory) { }
+        }
+
         public class SingleSegment: SegmentPerByte
         {
             public SingleSegment() : base(TestBufferFactory.SingleSegment) { }

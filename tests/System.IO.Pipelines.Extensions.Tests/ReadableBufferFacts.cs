@@ -32,7 +32,8 @@ namespace System.IO.Pipelines.Tests
             _pipe = new Pipe(new PipeOptions(_pool));
         }
         public void Dispose()
-        {
+        {  GC.Collect();GC.Collect();
+            GC.WaitForPendingFinalizers();
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
             _pool?.Dispose();
@@ -65,26 +66,14 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(iter.MoveNext());
                 var current = iter.Current;
                 Assert.Equal("abc", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("abc", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.True(iter.MoveNext());
                 current = iter.Current;
                 Assert.Equal("def", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("def", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.True(iter.MoveNext());
                 current = iter.Current;
                 Assert.Equal("ghijk", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("ghijk", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.False(iter.MoveNext());
             }
@@ -103,26 +92,14 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(iter.MoveNext());
                 var current = iter.Current;
                 Assert.Equal("abc", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("abc", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.True(iter.MoveNext());
                 current = iter.Current;
                 Assert.Equal("def", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("def", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.True(iter.MoveNext());
                 current = iter.Current;
                 Assert.Equal("ghijk", current.GetAsciiString());
-                using (var preserved = iter.Current.Preserve())
-                {
-                    Assert.Equal("ghijk", preserved.Buffer.GetAsciiString());
-                }
 
                 Assert.False(iter.MoveNext());
             }

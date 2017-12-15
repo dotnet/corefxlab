@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Testing
                 i++;
             } while (i < inputs.Length);
 
-            return new ReadableBuffer(new ReadCursor(first, first.Start), new ReadCursor(last, last.Start + last.ReadableBytes));
+            return new ReadableBuffer(new ReadCursor(first, 0), new ReadCursor(last, last.Length));
         }
 
         public static ReadableBuffer CreateBuffer(params string[] inputs)

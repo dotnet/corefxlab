@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private Task _sendTask;
 
-        private PreservedBuffer _sendingBuffer;
+        private byte[] _sendingBuffer;
         private WritableBuffer _buffer;
 
         internal RioTcpConnection(IntPtr socket, long connectionId, IntPtr requestQueue, RioThread rioThread, RegisteredIO rio)
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
                     await PreviousSendingComplete;
 
-                    _sendingBuffer = buffer.Preserve();
+                    _sendingBuffer = buffer.ToArray();
 
                     await SendAsync(current, endOfMessage: true);
                 }
@@ -109,7 +109,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _output.Reader.Complete();
         }
 
-        private Task SendAsync(Memory<byte> memory, bool endOfMessage)
+        private Task SendAsync(ReadOnlyMemory<byte> memory, bool endOfMessage)
         {
             if (!IsReadyToSend)
             {
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             return _completedTask;
         }
 
-        private async Task SendAsyncAwaited(Memory<byte> memory, bool endOfMessage)
+        private async Task SendAsyncAwaited(ReadOnlyMemory<byte> memory, bool endOfMessage)
         {
             await ReadyToSend;
 
@@ -170,7 +170,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private void CompletePreviousSending()
         {
-            _sendingBuffer.Dispose();
+            _sendingBuffer = null;
             _previousSendsComplete.Release();
         }
 

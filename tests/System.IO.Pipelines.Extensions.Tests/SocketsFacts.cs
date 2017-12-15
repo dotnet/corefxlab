@@ -312,7 +312,10 @@ namespace System.IO.Pipelines.Tests
                 }
 
                 var response = connection.Output.Alloc();
-                response.Append(request);
+                foreach (var memory in request)
+                {
+                    response.Write(memory.Span);
+                }
                 await response.FlushAsync();
                 connection.Input.Advance(request.End);
             }

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
@@ -14,15 +15,11 @@ namespace System.IO.Pipelines
             return WriteAsync(output, new ArraySegment<byte>(source));
         }
 
-        public static Task WriteAsync(this IPipeWriter output, ArraySegment<byte> source)
+        public static Task WriteAsync(this IPipeWriter output, ReadOnlyMemory<byte> source)
         {
             var writeBuffer = output.Alloc();
-            writeBuffer.Write(source);
-            return FlushAsync(writeBuffer);
-        }
+            writeBuffer.Write(source.Span);
 
-        private static Task FlushAsync(WritableBuffer writeBuffer)
-        {
             var awaitable = writeBuffer.FlushAsync();
             if (awaitable.IsCompleted)
             {
@@ -33,7 +30,7 @@ namespace System.IO.Pipelines
             return FlushAsyncAwaited(awaitable);
         }
 
-        private static async Task FlushAsyncAwaited(WritableBufferAwaitable awaitable)
+        private static async Task FlushAsyncAwaited(ValueAwaiter<FlushResult> awaitable)
         {
             await awaitable;
         }

@@ -48,29 +48,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void LengthIncreasesAfterAppend()
-        {
-            var writableBuffer = _pipe.Writer.Alloc();
-            writableBuffer.Append(BufferUtilities.CreateBuffer(1, 2, 3));
-            Assert.Equal(0, _pipe.Length);
-            writableBuffer.Commit();
-
-            Assert.Equal(6, _pipe.Length);
-        }
-
-        [Fact]
-        public void LengthIncreasesAfterAdvanceAndAppend()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(10);
-            writableBuffer.Advance(4);
-            writableBuffer.Append(BufferUtilities.CreateBuffer(1, 2, 3));
-            Assert.Equal(0, _pipe.Length);
-            writableBuffer.Commit();
-
-            Assert.Equal(10, _pipe.Length);
-        }
-
-        [Fact]
         public void LengthDecreasedAfterReadAdvanceConsume()
         {
             var writableBuffer = _pipe.Writer.Alloc(100);
@@ -118,9 +95,11 @@ namespace System.IO.Pipelines.Tests
             {
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var consumed = result.Buffer.Slice(1).Start;
-                _pipe.Reader.Advance(consumed, consumed);
 
                 Assert.Equal(i + 1, result.Buffer.Length);
+
+                _pipe.Reader.Advance(consumed, consumed);
+
                 Assert.Equal(i, _pipe.Length);
             }
         }

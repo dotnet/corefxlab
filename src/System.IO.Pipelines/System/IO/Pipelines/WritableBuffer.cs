@@ -39,15 +39,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Appends the <see cref="ReadableBuffer"/> to the <see cref="WritableBuffer"/> in-place without copies.
-        /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
-        public void Append(ReadableBuffer buffer)
-        {
-            Pipe.Append(buffer);
-        }
-
-        /// <summary>
         /// Moves forward the underlying <see cref="IPipeWriter"/>'s write cursor but does not commit the data.
         /// </summary>
         /// <param name="bytesWritten">number of bytes to be marked as written.</param>
@@ -76,9 +67,52 @@ namespace System.IO.Pipelines
         /// Will <see cref="Commit"/> if necessary.
         /// </summary>
         /// <returns>A task that completes when the data is fully flushed.</returns>
-        public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default)
+        public ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
         {
             return Pipe.FlushAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Writes the source <see cref="ReadOnlySpan{Byte}"/> to the <see cref="WritableBuffer"/>.
+        /// </summary>
+        /// <param name="buffer">The <see cref="WritableBuffer"/></param>
+        /// <param name="source">The <see cref="ReadOnlySpan{Byte}"/> to write</param>
+        public void Write(ReadOnlySpan<byte> source)
+        {
+            if (Buffer.IsEmpty)
+            {
+                Ensure();
+            }
+
+            // Fast path, try copying to the available memory directly
+            if (source.Length <= Buffer.Length)
+            {
+                source.CopyTo(Buffer.Span);
+                Advance(source.Length);
+                return;
+            }
+
+            var remaining = source.Length;
+            var offset = 0;
+
+            while (remaining > 0)
+            {
+                var writable = Math.Min(remaining, Buffer.Length);
+
+                Ensure(writable);
+
+                if (writable == 0)
+                {
+                    continue;
+                }
+
+                source.Slice(offset, writable).CopyTo(Buffer.Span);
+
+                remaining -= writable;
+                offset += writable;
+
+                Advance(writable);
+            }
         }
     }
 }

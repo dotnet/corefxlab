@@ -11,13 +11,13 @@ namespace System.IO.Pipelines.Samples
     {
         private ParsingState _state;
 
-        private PreservedBuffer _httpVersion;
-        private PreservedBuffer _path;
-        private PreservedBuffer _method;
+        private byte[] _httpVersion;
+        private byte[] _path;
+        private byte[] _method;
 
-        public ReadableBuffer HttpVersion => _httpVersion.Buffer;
-        public ReadableBuffer Path => _path.Buffer;
-        public ReadableBuffer Method => _method.Buffer;
+        public ReadableBuffer HttpVersion => ReadableBuffer.Create(_httpVersion);
+        public ReadableBuffer Path => ReadableBuffer.Create(_path);
+        public ReadableBuffer Method => ReadableBuffer.Create(_method);
 
         public RequestHeaderDictionary RequestHeaders = new RequestHeaderDictionary();
 
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines.Samples
                     return ParseResult.BadRequest;
                 }
 
-                _method = method.Preserve();
+                _method = method.ToArray();
 
                 // Skip ' '
                 startLine = startLine.Slice(delim).Slice(1);
@@ -51,7 +51,7 @@ namespace System.IO.Pipelines.Samples
                     return ParseResult.BadRequest;
                 }
 
-                _path = path.Preserve();
+                _path = path.ToArray();
 
                 // Skip ' '
                 startLine = startLine.Slice(delim).Slice(1);
@@ -62,7 +62,7 @@ namespace System.IO.Pipelines.Samples
                     return ParseResult.BadRequest;
                 }
 
-                _httpVersion = httpVersion.Preserve();
+                _httpVersion = httpVersion.ToArray();
 
                 _state = ParsingState.Headers;
                 consumed = buffer.Start;
@@ -110,10 +110,6 @@ namespace System.IO.Pipelines.Samples
         public void Reset()
         {
             _state = ParsingState.StartLine;
-
-            _method.Dispose();
-            _path.Dispose();
-            _httpVersion.Dispose();
 
             RequestHeaders.Reset();
         }

@@ -99,7 +99,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(new PipeOptions(pool));
                 var buffer = pipe.Writer.Alloc();
-                buffer.Write(new byte[0], 0, 0);
+                buffer.Write(new byte[0]);
             }
         }
     }

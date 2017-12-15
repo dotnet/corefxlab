@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Samples.Http
             string headerKey = GetHeaderKey(ref key);
             _headers[headerKey] = new HeaderValue
             {
-                Raw = value.Preserve()
+                Raw = value.ToArray()
             };
         }
 
@@ -63,24 +63,13 @@ namespace System.IO.Pipelines.Samples.Http
         {
             if (_headers.TryGetValue(key, out HeaderValue value))
             {
-                return value.Raw.Value.Buffer;
+                return ReadableBuffer.Create(value.Raw);
             }
             return default;
         }
 
         private string GetHeaderKey(ref ReadableBuffer key)
         {
-            // Uppercase the things
-            foreach (var memory in key)
-            {
-                var data = memory.Span;
-                for (int i = 0; i < memory.Length; i++)
-                {
-                    var mask = IsAlpha(data[i]) ? 0xdf : 0xff;
-                    data[i] = (byte)(data[i] & mask);
-                }
-            }
-
             if (EqualsIgnoreCase(ref key, AcceptBytes))
             {
                 return "Accept";
@@ -180,11 +169,6 @@ namespace System.IO.Pipelines.Samples.Http
 
         public void Reset()
         {
-            foreach (var pair in _headers)
-            {
-                pair.Value.Raw?.Dispose();
-            }
-
             _headers.Clear();
         }
 
@@ -221,19 +205,19 @@ namespace System.IO.Pipelines.Samples.Http
 
         private struct HeaderValue
         {
-            public PreservedBuffer? Raw;
+            public byte[] Raw;
             public StringValues? Value;
 
             public StringValues GetValue()
             {
                 if (!Value.HasValue)
                 {
-                    if (!Raw.HasValue)
+                    if (Raw == null)
                     {
                         return StringValues.Empty;
                     }
 
-                    Value = Raw.Value.Buffer.GetAsciiString();
+                    Value = Encoding.ASCII.GetString(Raw);
                 }
 
                 return Value.Value;

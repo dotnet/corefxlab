@@ -1,13 +1,13 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.IO.Pipelines
+namespace System.Threading
 {
-    public interface IWritableBufferAwaiter
+    public interface IAwaiter<out T>
     {
         bool IsCompleted { get; }
 
-        FlushResult GetResult();
+        T GetResult();
 
         void OnCompleted(Action continuation);
     }
