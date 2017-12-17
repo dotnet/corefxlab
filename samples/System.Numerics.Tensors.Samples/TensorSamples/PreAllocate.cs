@@ -33,7 +33,7 @@ namespace TensorSamples
 
             var result = new DenseTensor<double>(dimensions);
             
-            fixed (double* dataPtr = &result.Buffer.Span.DangerousGetPinnableReference())
+            fixed (double* dataPtr = &MemoryMarshal.GetReference(result.Buffer.Span))
             {
                 GetMultTablePreAllocated(maxNumber, dataPtr, result.Buffer.Length);
             }
@@ -43,7 +43,7 @@ namespace TensorSamples
 
         public static unsafe double GetRowSum(DenseTensor<double> tensor, int row)
         {
-            fixed(double* dataPtr = &tensor.Buffer.Span.DangerousGetPinnableReference())
+            fixed(double* dataPtr = &MemoryMarshal.GetReference(tensor.Buffer.Span))
             {
                 return GetRowSum(dataPtr, tensor.Dimensions.ToArray(), tensor.Rank, row);
             }
