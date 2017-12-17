@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.File
             public unsafe void Read()
             {
                 var buffer = Writer.Alloc(2048);
-                fixed (byte* source = &buffer.Buffer.Span.DangerousGetPinnableReference())
+                fixed (byte* source = &MemoryMarshal.GetReference(buffer.Buffer.Span))
                 {
                     var count = buffer.Buffer.Length;
 

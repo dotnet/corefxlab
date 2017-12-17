@@ -3,6 +3,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Parsing;
 using System.Text.Utf8;
 
@@ -132,7 +133,7 @@ namespace System.IO.Pipelines.Text.Primitives
             var asciiString = new string('\0', len);
 
             fixed (char* destination = asciiString)
-            fixed (byte* source = &span.DangerousGetPinnableReference()) {
+            fixed (byte* source = &MemoryMarshal.GetReference(span)) {
                 if (!AsciiUtilities.TryGetAsciiString(source, destination, len)) {
                     ThrowInvalidOperation();
                 }
@@ -166,7 +167,7 @@ namespace System.IO.Pipelines.Text.Primitives
 
                 foreach (var memory in buffer)
                 {
-                    fixed (byte* source = &memory.Span.DangerousGetPinnableReference())
+                    fixed (byte* source = &MemoryMarshal.GetReference(memory.Span))
                     {
                         if (!AsciiUtilities.TryGetAsciiString(source, output + offset, memory.Length))
                         {

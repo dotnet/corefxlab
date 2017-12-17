@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
 namespace System.Buffers.Text
@@ -34,7 +35,7 @@ namespace System.Buffers.Text
             if (bytes.Length > 0 && free.Length >= bytes.Length)
             {
                 ref byte pSource = ref bytes[0];
-                ref byte pDest = ref free.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(free);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)bytes.Length);
 
@@ -63,7 +64,7 @@ namespace System.Buffers.Text
             if (length > 0 && free.Length >= length)
             {
                 ref byte pSource = ref bytes[index];
-                ref byte pDest = ref free.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(free);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
 
@@ -189,7 +190,7 @@ namespace System.Buffers.Text
                 var chunkLength = Math.Min(length, free.Length);
 
                 ref byte pSource = ref bytes[index];
-                ref byte pDest = ref free.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(free);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)chunkLength);
 

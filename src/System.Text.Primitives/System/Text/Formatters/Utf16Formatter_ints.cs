@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -29,7 +30,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             int idx = 0;
 
             if (value < 0)
@@ -87,7 +88,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             FormattingHelpers.WriteDigits(lastDigit, 1, ref utf16Bytes, 0);
             bytesWritten += sizeof(char);
             return true;
@@ -118,7 +119,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             long v = value;
 
             if (v < 0)
@@ -193,7 +194,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             var idx = 0;
 
             // Write the last group
@@ -248,7 +249,7 @@ namespace System.Buffers.Text
             }
 
             string hexTable = useLower ? HexTableLower : HexTableUpper;
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             int idx = charsNeeded;
 
             for (v = value; digits-- > 0; v >>= 4)

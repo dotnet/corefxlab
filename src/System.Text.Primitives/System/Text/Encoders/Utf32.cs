@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -51,7 +52,7 @@ namespace System.Buffers.Text
             {
                 bytesNeeded = 0;
 
-                ref uint utf32 = ref Unsafe.As<byte, uint>(ref source.DangerousGetPinnableReference());
+                ref uint utf32 = ref Unsafe.As<byte, uint>(ref MemoryMarshal.GetReference(source));
                 int utf32Length = source.Length >> 2; // byte => uint count
 
                 for (int i = 0; i < utf32Length; i++)
@@ -88,10 +89,10 @@ namespace System.Buffers.Text
                 bytesConsumed = 0;
                 bytesWritten = 0;
 
-                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
                 int srcLength = source.Length;
 
-                ref byte dst = ref destination.DangerousGetPinnableReference();
+                ref byte dst = ref MemoryMarshal.GetReference(destination);
                 int dstLength = destination.Length;
 
                 while (srcLength - bytesConsumed >= sizeof(uint))
@@ -183,7 +184,7 @@ namespace System.Buffers.Text
             {
                 int index = 0;
                 int length = source.Length;
-                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
 
                 bytesNeeded = 0;
 
@@ -217,8 +218,8 @@ namespace System.Buffers.Text
             /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
             public static OperationStatus ToUtf16(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                ref byte src = ref source.DangerousGetPinnableReference();
-                ref byte dst = ref destination.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
+                ref byte dst = ref MemoryMarshal.GetReference(destination);
                 int srcLength = source.Length;
                 int dstLength = destination.Length;
 

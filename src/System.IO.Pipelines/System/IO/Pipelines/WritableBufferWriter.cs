@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.IO.Pipelines
 {
@@ -31,7 +32,7 @@ namespace System.IO.Pipelines
             if (source.Length > 0 && _span.Length >= source.Length)
             {
                 ref byte pSource = ref source[0];
-                ref byte pDest = ref _span.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
 
@@ -58,7 +59,7 @@ namespace System.IO.Pipelines
             if (length > 0 && _span.Length >= length)
             {
                 ref byte pSource = ref source[offset];
-                ref byte pDest = ref _span.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
 
@@ -84,7 +85,7 @@ namespace System.IO.Pipelines
                 var writable = Math.Min(remaining, _span.Length);
 
                 ref byte pSource = ref source[offset];
-                ref byte pDest = ref _span.DangerousGetPinnableReference();
+                ref byte pDest = ref MemoryMarshal.GetReference(_span);
 
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
 

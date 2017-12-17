@@ -6,6 +6,7 @@ using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
@@ -233,7 +234,7 @@ namespace System.Buffers
                 return false;
             }
 
-            return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
+            return TryIndicesOf(ref MemoryMarshal.GetReference(buffer), value, length, indices, out numberOfIndices);
         }
 
         public static bool TryIndicesOf(this ReadOnlySpan<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
@@ -245,7 +246,7 @@ namespace System.Buffers
                 return false;
             }
 
-            return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
+            return TryIndicesOf(ref MemoryMarshal.GetReference(buffer), value, length, indices, out numberOfIndices);
         }
 
         private unsafe static bool TryIndicesOf(ref byte searchSpace, byte value, int length, Span<int> indices, out int numberOfIndices)

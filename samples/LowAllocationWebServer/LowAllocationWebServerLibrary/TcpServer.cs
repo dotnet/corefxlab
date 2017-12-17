@@ -4,6 +4,7 @@
 
 using Microsoft.Net.Interop;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Sockets
 {
@@ -163,7 +164,7 @@ namespace Microsoft.Net.Sockets
         public unsafe int Send(ReadOnlySpan<byte> buffer)
         {
             // TODO: This can work with Span<byte> because it's synchronous but we need async pinning support
-            fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
+            fixed (byte* bytes = &MemoryMarshal.GetReference(buffer))
             {
                 IntPtr pointer = new IntPtr(bytes);
                 return SendPinned(pointer, buffer.Length);
@@ -193,7 +194,7 @@ namespace Microsoft.Net.Sockets
         public unsafe int Receive(Span<byte> buffer)
         {
             // TODO: This can work with Span<byte> because it's synchronous but we need async pinning support
-            fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
+            fixed (byte* bytes = &MemoryMarshal.GetReference(buffer))
             {
                 IntPtr pointer = new IntPtr(bytes);
                 return ReceivePinned(pointer, buffer.Length);

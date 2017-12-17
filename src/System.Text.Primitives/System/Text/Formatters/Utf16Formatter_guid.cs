@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -34,7 +35,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
             byte* bytes = (byte*)&value;
             int idx = 0;
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -98,7 +99,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             FormattingHelpers.WriteDigits(value.Month, 2, ref utf16Bytes, 0);
             Unsafe.Add(ref utf16Bytes, 2) = Slash;
@@ -173,7 +174,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 0);
             Unsafe.Add(ref utf16Bytes, 4) = Minus;
@@ -232,7 +233,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             var dayAbbrev = DayAbbreviations[(int)value.DayOfWeek];
             Unsafe.Add(ref utf16Bytes, 0) = dayAbbrev[0];
@@ -281,7 +282,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             var dayAbbrev = DayAbbreviationsLowercase[(int)value.DayOfWeek];
             Unsafe.Add(ref utf16Bytes, 0) = dayAbbrev[0];
@@ -364,7 +365,7 @@ namespace System.Buffers.Text
             }
 
             Span<char> dst = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
             int idx = 0;
 
             if (showSign)

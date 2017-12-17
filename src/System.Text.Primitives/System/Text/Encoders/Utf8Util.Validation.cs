@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 //
 // This file contains workhorse methods for performing validation of UTF-8 byte sequences.
@@ -95,7 +96,7 @@ namespace System.Buffers.Text
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int GetIndexOfFirstInvalidUtf8Sequence(ReadOnlySpan<byte> input, out int scalarCount, out int surrogatePairCount)
-            => GetIndexOfFirstInvalidUtf8Sequence(ref input.DangerousGetPinnableReference(), input.Length, out scalarCount, out surrogatePairCount);
+            => GetIndexOfFirstInvalidUtf8Sequence(ref MemoryMarshal.GetReference(input), input.Length, out scalarCount, out surrogatePairCount);
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int GetIndexOfFirstInvalidUtf8Sequence(ref byte inputBuffer, int inputLength, out int scalarCount, out int surrogatePairCount)

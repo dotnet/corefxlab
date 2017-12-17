@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -24,7 +25,7 @@ namespace System.Buffers.Text
                 unsafe
                 {
                     fixed (char* destination = result)
-                    fixed (byte* source = &bytes.DangerousGetPinnableReference())
+                    fixed (byte* source = &MemoryMarshal.GetReference(bytes))
                     {
                         if (!TryGetAsciiString(source, destination, len))
                         {
@@ -50,7 +51,7 @@ namespace System.Buffers.Text
                 unsafe
                 {
                     fixed (char* destination = result)
-                    fixed (byte* source = &bytes.DangerousGetPinnableReference())
+                    fixed (byte* source = &MemoryMarshal.GetReference(bytes))
                     {
                         if (!TryGetAsciiString(source, destination, len))
                         {
