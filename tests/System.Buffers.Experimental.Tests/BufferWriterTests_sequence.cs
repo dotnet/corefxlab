@@ -48,7 +48,7 @@ namespace System.Buffers.Tests
         byte[] _current = new byte[0];
         List<byte[]> _commited = new List<byte[]>();
 
-        public Span<byte> Buffer => _current;
+        public Span<byte> GetSpan() => _current;
 
         public void Advance(int bytes)
         {

@@ -34,12 +34,8 @@ namespace System.Text.Formatting
             _previousWrittenBytes = -1;
         }
 
-        Span<byte> IOutput.Buffer
-        {
-            get {
-                return Current.Span.Slice(_currentWrittenBytes);
-            }
-        }
+        Span<byte> IOutput.GetSpan()
+            => Current.Span.Slice(_currentWrittenBytes);
 
         private Memory<byte> Current {
             get {

@@ -344,7 +344,7 @@ namespace System.Text.Json
             }
             else
             {
-                var buffer = _output.Buffer;
+                var buffer = _output.GetSpan();
                 int written;
                 while (!_output.SymbolTable.TryEncode(value, buffer, out written))
                     buffer = EnsureBuffer();
@@ -365,7 +365,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumber(long value)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
@@ -376,7 +376,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumber(ulong value)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
@@ -387,7 +387,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTime(DateTime value)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
@@ -398,7 +398,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTimeOffset(DateTimeOffset value)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
@@ -409,7 +409,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteGuid(Guid value)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.GuidFormat, _output.SymbolTable))
                 buffer = EnsureBuffer();
@@ -424,7 +424,7 @@ namespace System.Text.Json
 
             if (UseFastUtf8)
             {
-                Span<byte> destination = _output.Buffer;
+                Span<byte> destination = _output.GetSpan();
 
                 while (true)
                 {
@@ -453,7 +453,7 @@ namespace System.Text.Json
             }
             else
             {
-                Span<byte> destination = _output.Buffer;
+                Span<byte> destination = _output.GetSpan();
                 if (!_output.SymbolTable.TryEncode(source, destination, out int consumed, out int written))
                     destination = EnsureBuffer();
 
@@ -464,7 +464,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteJsonValue(ReadOnlySpan<byte> values)
         {
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             int written;
             while (!_output.SymbolTable.TryEncode(values, buffer, out int consumed, out written))
                 buffer = EnsureBuffer();
@@ -571,13 +571,13 @@ namespace System.Text.Json
             // larger than we are likely to need.
             const int BufferEnlargeCount = 1024;
 
-            var buffer = _output.Buffer;
+            var buffer = _output.GetSpan();
             var currentSize = buffer.Length;
             if (currentSize >= needed)
                 return buffer;
 
             _output.Enlarge(BufferEnlargeCount);
-            buffer = _output.Buffer;
+            buffer = _output.GetSpan();
 
             int newSize = buffer.Length;
             if (newSize < needed || newSize <= currentSize)

@@ -128,12 +128,12 @@ namespace System.Text.Formatting
         // TODO: this should be removed and an ability to append substrings should be added
         static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : ITextOutput
         {
-            var buffer = formatter.Buffer;
+            var buffer = formatter.GetSpan();
             var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
             while(buffer.Length < maxBytes)
             {
                 formatter.Enlarge(maxBytes);
-                buffer = formatter.Buffer;
+                buffer = formatter.GetSpan();
             }
 
             // this should be optimized using fixed pointer to substring, but I will wait with this till we design proper substring

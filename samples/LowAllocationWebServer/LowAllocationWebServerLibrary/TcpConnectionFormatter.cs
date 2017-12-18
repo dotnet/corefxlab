@@ -30,12 +30,10 @@ namespace Microsoft.Net
 
         public SymbolTable SymbolTable => SymbolTable.InvariantUtf8;
 
-        public Span<byte> Buffer {
-            get {
-                var buffer = _buffer.AsSpan().Slice(ChunkPrefixSize + _written);
-                if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
-                return Span<byte>.Empty;
-            }
+        public Span<byte> GetSpan() {
+            var buffer = _buffer.AsSpan().Slice(ChunkPrefixSize + _written);
+            if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
+            return Span<byte>.Empty;
         }
 
         public void Advance(int bytes)

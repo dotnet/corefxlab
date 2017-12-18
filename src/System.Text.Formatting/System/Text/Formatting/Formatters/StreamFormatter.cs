@@ -30,16 +30,13 @@ namespace System.Text.Formatting
             _stream = stream;
         }
 
-        Span<byte> IOutput.Buffer
+        Span<byte> IOutput.GetSpan()
         {
-            get
+            if (_buffer == null)
             {
-                if (_buffer == null)
-                {
-                    _buffer = _pool.Rent(256);
-                }
-                return new Span<byte>(_buffer);
+                _buffer = _pool.Rent(256);
             }
+            return new Span<byte>(_buffer);
         }
 
         void IOutput.Enlarge(int desiredBufferLength)
