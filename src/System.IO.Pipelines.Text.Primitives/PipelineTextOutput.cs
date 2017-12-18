@@ -21,14 +21,10 @@ namespace System.IO.Pipelines.Text.Primitives
 
         public SymbolTable SymbolTable { get; }
 
-        public Span<byte> Buffer
+        public Span<byte> GetSpan()
         {
-            get
-            {
-                EnsureBuffer();
-
-                return _writableBuffer.Buffer.Span;
-            }
+            EnsureBuffer();
+            return _writableBuffer.Buffer.Span;
         }
 
         public void Advance(int bytes)

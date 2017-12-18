@@ -18,7 +18,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, SymbolTable symbolTable, StandardFormat format = default) where T : IBufferFormattable where TFormatter : IOutput
         {
-            if (!value.TryFormat(formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!value.TryFormat(formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -65,7 +65,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            var result = symbolTable.TryEncode(value, formatter.Buffer, out int consumed, out int written);
+            var result = symbolTable.TryEncode(value, formatter.GetSpan(), out int consumed, out int written);
             if (result)
                 formatter.Advance(written);
 
@@ -97,7 +97,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8Span value, SymbolTable symbolTable) where TFormatter : IOutput
         {
-            if (!symbolTable.TryEncode(value, formatter.Buffer, out int consumed, out int bytesWritten))
+            if (!symbolTable.TryEncode(value, formatter.GetSpan(), out int consumed, out int bytesWritten))
             {
                 return false;
             }
@@ -114,7 +114,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {   
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -131,7 +131,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -148,7 +148,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -165,7 +165,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -182,7 +182,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -199,7 +199,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -216,7 +216,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -233,7 +233,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -250,7 +250,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -267,7 +267,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -284,7 +284,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -301,7 +301,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -318,7 +318,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }
@@ -335,7 +335,7 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, SymbolTable symbolTable, StandardFormat format = default) where TFormatter : IOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.Buffer, out int bytesWritten, format, symbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, symbolTable))
             {
                 return false;
             }

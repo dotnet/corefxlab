@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
             _writer = writer;
         }
 
-        public Span<byte> Buffer => _writer.Buffer.Span;
+        public Span<byte> GetSpan() => _writer.Buffer.Span;
 
         public void Advance(int bytes)
         {
@@ -29,7 +29,8 @@ namespace System.IO.Pipelines
         private int ComputeActualSize(int desiredBufferLength)
         {
             if (desiredBufferLength < 256) desiredBufferLength = 256;
-            if (desiredBufferLength < Buffer.Length) desiredBufferLength = Buffer.Length * 2;
+            var length = GetSpan().Length;
+            if (desiredBufferLength < length) desiredBufferLength = length * 2;
             return desiredBufferLength;
         }
     }

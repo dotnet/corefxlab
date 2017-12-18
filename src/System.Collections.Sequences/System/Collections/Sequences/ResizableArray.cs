@@ -116,7 +116,7 @@ namespace System.Collections.Sequences
             }
 
             item = default;
-            position = Position.End;
+            position = default;
             return false;
         }
 

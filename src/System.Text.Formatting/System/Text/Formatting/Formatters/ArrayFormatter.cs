@@ -32,7 +32,7 @@ namespace System.Text.Formatting
 
         public SymbolTable SymbolTable => _symbolTable;
 
-        public Span<byte> Buffer => Free.AsSpan();
+        public Span<byte> GetSpan() => Free.AsSpan();
 
         public void Enlarge(int desiredBufferLength = 0)
         {

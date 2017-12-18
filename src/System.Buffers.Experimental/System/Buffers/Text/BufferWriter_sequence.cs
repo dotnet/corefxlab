@@ -17,14 +17,14 @@ namespace System.Buffers.Text
         public BufferWriter(TOutput output)
         {
             _output = output;
-            _buffer = _output.Buffer;
+            _buffer = _output.GetSpan();
             _written = 0;
         }
 
         public void Flush()
         {
             _output.Advance(_written);
-            _buffer = _output.Buffer;
+            _buffer = _output.GetSpan();
             _written = 0;
         }
 
@@ -219,7 +219,7 @@ namespace System.Buffers.Text
             if (_buffer.Length > before) return _buffer;
 
             _output.Enlarge(desiredBufferSize);
-            _buffer = _output.Buffer;
+            _buffer = _output.GetSpan();
             Debug.Assert(_written == 0); // ensure still 0
             return _buffer;
         }

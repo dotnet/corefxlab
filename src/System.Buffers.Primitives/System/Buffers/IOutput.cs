@@ -5,7 +5,7 @@ namespace System.Buffers
 {
     public interface IOutput
     {
-        Span<byte> Buffer { get; }
+        Span<byte> GetSpan();
         void Advance(int bytes);
 
         /// <summary>desiredBufferLength == 0 means "i don't care"</summary>

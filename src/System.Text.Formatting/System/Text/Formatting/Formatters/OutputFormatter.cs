@@ -22,7 +22,7 @@ namespace System.Text.Formatting
         {
         }
 
-        public Span<byte> Buffer => _output.Buffer;
+        public Span<byte> GetSpan() => _output.GetSpan();
 
         public SymbolTable SymbolTable => _symbolTable;
 

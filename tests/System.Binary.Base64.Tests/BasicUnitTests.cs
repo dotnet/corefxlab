@@ -96,7 +96,7 @@ namespace System.Binary.Base64Experimental.Tests
 
         public Span<byte> GetBuffer => _buffer;
 
-        public Span<byte> Buffer => _buffer.AsSpan().Slice(_written);
+        public Span<byte> GetSpan() => _buffer.AsSpan().Slice(_written);
 
         public void Advance(int bytes)
         {
