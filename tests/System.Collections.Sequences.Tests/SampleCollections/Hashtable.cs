@@ -93,15 +93,15 @@ namespace System.Collections.Sequences
         {
             item = default;
 
-            if (_count == 0 | position == Position.End) {
-                position = Position.End;
+            if (_count == 0 | position == default) {
+                position = default;
                 return false;
             }
 
             if (position == default) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {
-                    position = Position.End;
+                    position = default;
                     return false;
                 }
 
@@ -118,7 +118,7 @@ namespace System.Collections.Sequences
                 var first = FindFirstStartingAt(index + 1);
                 position = first;
                 if (first == -1) {
-                    position = Position.End;
+                    position = default;
                 }
             }
 

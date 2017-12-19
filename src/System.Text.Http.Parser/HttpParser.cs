@@ -368,9 +368,14 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Position position = default;
+            Position position = buffer.First;
 
-            ReadOnlySpan<byte> currentSpan = buffer.Memory.Span;
+            if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
+            {
+                consumedBytes = 0;
+                return false;
+            }
+            ReadOnlySpan<byte> currentSpan = currentMemory.Span;
             var remaining = currentSpan.Length;
 
             while (true)
@@ -453,16 +458,6 @@ namespace System.Text.Http.Parser
                         index += length;
                         consumedBytes += length;
                         remaining -= length;
-                    }
-                }
-
-                // This is just to get the position to be at the second segment
-                if (position == default)
-                {
-                    if (!buffer.TryGet(ref position, out ReadOnlyMemory<byte> current))
-                    {
-                        consumedBytes = 0;
-                        return false;
                     }
                 }
 

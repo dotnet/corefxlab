@@ -87,7 +87,7 @@ namespace System.Buffers.Text
         public bool TryReadBytes(out ReadOnlyBytes bytes, byte delimiter)
         {
             var range = ReadRange(delimiter);
-            if(range.Start.IsEnd || range.End.IsEnd)
+            if(range.Start == default || range.End == default)
             {
                 bytes = default;
                 return false;
@@ -108,7 +108,7 @@ namespace System.Buffers.Text
         public bool TryReadBytes(out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
         {
             var range = ReadRange(delimiter);
-            if (range.Start.IsEnd || range.End.IsEnd)
+            if (range.Start == default || range.End == default)
             {
                 bytes = default;
                 return false;
@@ -118,12 +118,12 @@ namespace System.Buffers.Text
         }
 
         PositionRange ReadRange(byte delimiter)
-            => new PositionRange(Position, AdvanceToDelimiter(delimiter));
+            => new PositionRange(Position, AdvanceToDelimiter(delimiter).GetValueOrDefault());
 
         PositionRange ReadRange(ReadOnlySpan<byte> delimiter)
         {
-            var range = new PositionRange(Position, PositionOf(delimiter));
-            if (!range.End.IsEnd)
+            var range = new PositionRange(Position, PositionOf(delimiter).GetValueOrDefault());
+            if (range.End != default)
             {
                 Advance(range.End);
                 Advance(delimiter.Length);
@@ -311,7 +311,7 @@ namespace System.Buffers.Text
             }
         }
 
-        Position AdvanceToDelimiter(byte value)
+        Position? AdvanceToDelimiter(byte value)
         {
             var unread = Unread;
             var index = unread.IndexOf(value);
@@ -342,10 +342,10 @@ namespace System.Buffers.Text
 
             _nextSegmentPosition = nextPosition;
             _currentSegmentPosition = currentPosition;
-            return Position.End;
+            return null;
         }
 
-        Position PositionOf(ReadOnlySpan<byte> value)
+        Position? PositionOf(ReadOnlySpan<byte> value)
         {
             var unread = Unread;
             var index = unread.IndexOf(value);
@@ -359,13 +359,13 @@ namespace System.Buffers.Text
             {
                 Span<byte> temp = stackalloc byte[value.Length];
                 int copied = Sequence.Copy(_bytes, _currentSegmentPosition + _currentSpanIndex + index, temp);
-                if (copied < value.Length) return Position.End;
+                if (copied < value.Length) return null;
 
                 if (temp.SequenceEqual(value)) return _currentSegmentPosition + _currentSpanIndex + index;
                 else throw new NotImplementedException(); // need to check farther in this span
             }
 
-            if (unread.Length == 0) return Position.End;
+            if (unread.Length == 0) return null;
 
             throw new NotImplementedException();
         }

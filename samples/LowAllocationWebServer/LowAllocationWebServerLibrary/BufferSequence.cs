@@ -51,11 +51,9 @@ namespace Microsoft.Net
         public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
             if (position == default) {
-                item = Memory.Slice(0, _written);
-                if (advance) { position = Position.Create(_next); }
-                return true;
+                item = default;
+                return false;
             }
-            else if (position.IsEnd) { item = default; return false; }
 
             var sequence = position.GetItem<BufferSequence>();
             item = sequence.Memory.Slice(0, sequence._written);
@@ -67,11 +65,9 @@ namespace Microsoft.Net
         {
             if (position == default)
             {
-                item = Memory.Slice(0, _written);
-                if (advance) { position = Position.Create(_next); }
-                return true;
+                item = default;
+                return false;
             }
-            else if (position.IsEnd) { item = default; return false; }
 
             var sequence = position.GetItem<BufferSequence>();
             item = sequence.WrittenMemory;

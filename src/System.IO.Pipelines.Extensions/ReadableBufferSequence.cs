@@ -20,10 +20,6 @@ namespace System.IO.Pipelines
         {
             if (position == default)
             {
-                position = First;
-            }
-            else if (position == Position.End)
-            {
                 item = default;
                 return false;
             }

@@ -32,7 +32,9 @@ namespace System.IO.Pipelines.Tests
             _pipe = new Pipe(new PipeOptions(_pool));
         }
         public void Dispose()
-        {  GC.Collect();GC.Collect();
+        {
+            GC.Collect();
+            GC.Collect();
             GC.WaitForPendingFinalizers();
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
@@ -43,7 +45,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferSequenceWorks()
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
-            Position position = default;
+            Position position = readable.First;
             int spanCount = 0;
             while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {

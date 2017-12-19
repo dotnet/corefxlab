@@ -42,7 +42,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
 
-            for (int pivot = 24; pivot < requestText.Length; pivot++) {
+            for (int pivot = 26; pivot < requestText.Length; pivot++) {
                 var front = requestText.Substring(0, pivot);
                 var back = requestText.Substring(pivot);
 
@@ -58,7 +58,8 @@ namespace System.Text.Http.Parser.Tests
                     Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
                     Assert.Equal(25, consumed);
 
-                    Assert.True(parser.ParseHeaders(ref request, buffer.Slice(consumed), out consumed));
+                    var unconsumed = buffer.Slice(consumed);
+                    Assert.True(parser.ParseHeaders(ref request, unconsumed, out consumed));
                     Assert.Equal(8, consumed);
                 }
                 catch {

@@ -71,7 +71,7 @@ namespace System.Buffers.Tests
             var reader = BytesReader.Create(bytes);
 
             Assert.True(reader.TryReadBytes(out var ab, (byte)' '));
-            Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
+            Assert.Equal("AB", ab.Utf8ToString());
 
             Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
             Assert.Equal("CD", cd.Utf8ToString());
@@ -172,7 +172,7 @@ namespace System.Buffers.Tests
             var sb = new StringBuilder();
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                Position position = default;
+                Position position = bytes.First;
                 while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     sb.Append(new Utf8Span(segment.Span).ToString());
@@ -189,7 +189,7 @@ namespace System.Buffers.Tests
         {
             var sb = new StringBuilder();
 
-            Position position = default;
+            Position position = bytes.First;
             while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
             {
                 sb.Append(new Utf8Span(segment.Span).ToString());

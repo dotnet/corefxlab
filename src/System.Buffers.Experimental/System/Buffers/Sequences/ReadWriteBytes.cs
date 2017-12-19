@@ -269,7 +269,7 @@ namespace System.Buffers
 
         public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
-            if (position.IsEnd)
+            if (position == default)
             {
                 item = default;
                 return false;
@@ -281,31 +281,18 @@ namespace System.Buffers
                 var start = _startIndex + position.Index;
                 var length = _endIndex - _startIndex - position.Index;
                 item = new Memory<byte>(array, start, length);
-                if (advance) position = Position.End;
+                if (advance) position = default;
                 return true;
             }
 
             if (Kind == Type.MemoryList)
             {
-                if (position == default)
-                {
-                    var first = _start as IMemoryList<byte>;
-                    item = first.Memory.Slice(_startIndex);
-                    if (advance) position = Position.Create(first.Next);
-                    if (ReferenceEquals(_end, _start))
-                    {
-                        item = item.Slice(0, (int)Length);
-                        if (advance) position = Position.End;
-                    }
-                    return true;
-                }
-
                 var (node, index) = position.Get<IMemoryList<byte>>();
                 item = node.Memory.Slice(index);
                 if (ReferenceEquals(node, _end))
                 {
                     item = item.Slice(0, _endIndex - index);
-                    if (advance) position = Position.End;
+                    if (advance) position = default;
                 }
                 else
                 {

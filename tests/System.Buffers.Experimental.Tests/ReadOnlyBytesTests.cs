@@ -83,8 +83,8 @@ namespace System.Buffers.Tests
             ReadOnlyBytes allBytesSlice2 = allBytes.Slice(2);
             ReadOnlyBytes allBytesSlice3 = allBytes.Slice(3);
 
-            var positionOf3 = allBytes.PositionOf(3);
-            var positionOf1 = allBytes.PositionOf(1);
+            var positionOf3 = allBytes.PositionOf(3).GetValueOrDefault();
+            var positionOf1 = allBytes.PositionOf(1).GetValueOrDefault();
 
             // all bytes
             {
@@ -147,8 +147,8 @@ namespace System.Buffers.Tests
 
             ReadOnlyBytes allBytesSlice = allBytes.Slice(1);
 
-            var positionOf3 = allBytes.PositionOf(3);
-            var positionOf1 = allBytes.PositionOf(1);
+            var positionOf3 = allBytes.PositionOf(3).GetValueOrDefault();
+            var positionOf1 = allBytes.PositionOf(1).GetValueOrDefault();
 
             // all bytes
             {
@@ -183,7 +183,7 @@ namespace System.Buffers.Tests
             // single segment
             {
                 var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-                var c = rob.PositionOf(5);
+                var c = rob.PositionOf(5).GetValueOrDefault();
 
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
@@ -196,7 +196,7 @@ namespace System.Buffers.Tests
             // multi segment
             {
                 var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
-                var c = rob.PositionOf(5);
+                var c = rob.PositionOf(5).GetValueOrDefault();
 
                 var slice1 = rob.Slice(2).Slice(c);
                 var slice2 = rob.Slice(c).Slice(2);
@@ -213,8 +213,8 @@ namespace System.Buffers.Tests
             // single segment
             {
                 var rob = new ReadOnlyBytes(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-                var c2 = rob.PositionOf(2);
-                var c5 = rob.PositionOf(5);
+                var c2 = rob.PositionOf(2).GetValueOrDefault();
+                var c5 = rob.PositionOf(5).GetValueOrDefault();
 
                 var slice = rob.Slice(c2, c5);
 
@@ -225,8 +225,8 @@ namespace System.Buffers.Tests
             // multi segment
             {
                 var rob = ListHelper.CreateRob(new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6, 7, 8 });
-                var c2 = rob.PositionOf(2);
-                var c5 = rob.PositionOf(5);
+                var c2 = rob.PositionOf(2).GetValueOrDefault();
+                var c5 = rob.PositionOf(5).GetValueOrDefault();
 
                 var slice = rob.Slice(c2, c5);
 
@@ -357,7 +357,7 @@ namespace System.Buffers.Tests
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
-            Position position = default;
+            Position position = bytes.First;
             int length = 0;
             ReadOnlyMemory<byte> segment;
             while (bytes.TryGet(ref position, out segment))
@@ -367,7 +367,7 @@ namespace System.Buffers.Tests
             Assert.Equal(buffer.Length, length);
 
             var multibytes = Parse("A|CD|EFG");
-            position = default;
+            position = multibytes.First;
             length = 0;
             while (multibytes.TryGet(ref position, out segment))
             {
@@ -401,7 +401,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(i);
 
                 {
-                    Position position = default;
+                    Position position = multibytes.First;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {
@@ -429,7 +429,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(0, i);
 
                 {
-                    Position position = default;
+                    Position position = multibytes.First;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {

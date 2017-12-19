@@ -3,6 +3,7 @@
 
 using System.Collections.Sequences;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace System.Buffers
 {
@@ -271,7 +272,7 @@ namespace System.Buffers
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if(position.IsEnd)
+            if(position == default)
             {
                 item = default;
                 return false;
@@ -280,33 +281,21 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + position.Index;
-                var length = _endIndex - _startIndex - position.Index;
+                var start = position.Index;
+                var length = _endIndex - position.Index;
                 item = new ReadOnlyMemory<byte>(array, start, length);
-                if (advance) position = Position.End;
+                if (advance) position = default;
                 return true;
             }
 
             if (Kind == Type.MemoryList)
             {
-                if(position == default)
-                {
-                    var first = _start as IMemoryList<byte>;
-                    item = first.Memory.Slice(_startIndex);
-                    if (advance) position = Position.Create(first.Next);
-                    if (ReferenceEquals(_end, _start)){
-                        item = item.Slice(0, (int)Length);
-                        if (advance) position = Position.End;
-                    }
-                    return true;
-                }
-
                 var (node, index) = position.Get<IMemoryList<byte>>();
                 item = node.Memory.Slice(index);
                 if (ReferenceEquals(node, _end))
                 {
                     item = item.Slice(0, _endIndex - index);
-                    if (advance) position = Position.End;
+                    if (advance) position = default;
                 }
                 else
                 {
@@ -323,6 +312,13 @@ namespace System.Buffers
             Array,
             OwnedMemory,
             MemoryList,
+        }
+
+        public override string ToString()
+        {
+            var buffer = ToSpan().ToArray();
+            return Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+
         }
     }
 }
