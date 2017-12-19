@@ -12,7 +12,7 @@ namespace System.Collections.Sequences
         readonly int _index;
 
         public static Position Create<T>(T item, int index = 0) where T : class
-            => item == null ? End : new Position(index, item);
+            => item == null ? default : new Position(index, item);
 
         public static implicit operator Position(int index) => new Position(index, null);
 
@@ -21,14 +21,10 @@ namespace System.Collections.Sequences
         public int Index => _index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetItem<T>() => _item == null || IsEnd ? default : (T)_item;
+        public T GetItem<T>() => _item == null ? default : (T)_item;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T item, int index) Get<T>() => (GetItem<T>(), (int)this);
-
-        public static readonly Position End = new Position(int.MaxValue, new object());
-
-        public bool IsEnd => this == End;
 
         public static bool operator ==(Position left, Position right) => left.Index == right.Index && left._item == right._item;
         public static bool operator !=(Position left, Position right) => left.Index != right.Index || left._item != right._item;
@@ -48,7 +44,7 @@ namespace System.Collections.Sequences
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string ToString() =>
-            IsEnd ? "END" : _item == null ? $"{Index}" : $"{Index}, {_item}";
+            this==default ? "(default)" : _item == null ? $"{Index}" : $"{Index}, {_item}";
 
         private Position(int index, object item)
         {

@@ -73,16 +73,16 @@ namespace System.Buffers.Tests
             Assert.Equal(4, bytes.Length);
 
             // Static method call to avoid calling instance methods
-            Assert.Equal(Position.End, Sequence.PositionOf(bytes, 0));
+            Assert.False(Sequence.PositionOf(bytes, 0).HasValue);
 
             for (int i = 0; i < bytes.Length; i++)
             {
                 var value = (byte)(i + 1);
 
-                var listPosition = MemoryListExtensions.PositionOf(first, value);
+                var listPosition = MemoryListExtensions.PositionOf(first, value).GetValueOrDefault();
                 var (node, index) = listPosition.Get<IMemoryList<byte>>();
 
-                if (!listPosition.IsEnd)
+                if (listPosition != default)
                 {
                     Assert.Equal(value, node.Memory.Span[index]);
                 }
@@ -105,11 +105,11 @@ namespace System.Buffers.Tests
                 }
                 else
                 {
-                    Assert.Equal(Position.End, robPosition);
-                    Assert.Equal(Position.End, robSequencePosition);
+                    Assert.False(robPosition.HasValue);
+                    Assert.False(robSequencePosition.HasValue);
                 }
 
-                if (listPosition != Position.End)
+                if (listPosition != default)
                 {
                     robSlice = bytes.Slice(listPosition);
                     Assert.Equal(value, robSlice.Memory.Span[0]);

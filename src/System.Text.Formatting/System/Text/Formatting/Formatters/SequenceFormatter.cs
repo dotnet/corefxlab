@@ -23,7 +23,7 @@ namespace System.Text.Formatting
 
         Position _currentPosition = default;
         int _currentWrittenBytes;
-        Position _previousPosition = Position.End;
+        Position _previousPosition = default;
         int _previousWrittenBytes;
         int _totalWritten;
 
@@ -31,6 +31,7 @@ namespace System.Text.Formatting
         {
             _symbolTable = symbolTable;
             _buffers = buffers;
+            _currentPosition = _buffers.First;
             _previousWrittenBytes = -1;
         }
 

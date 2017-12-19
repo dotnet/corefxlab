@@ -11,7 +11,7 @@ namespace System.Buffers
     {
         public static ReadOnlySpan<byte> ToSpan<T>(this T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
-            Position position = default;
+            Position position = sequence.First;
             ResizableArray<byte> array = new ResizableArray<byte>(1024);
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
@@ -26,7 +26,7 @@ namespace System.Buffers
         // be used as a type parameter.
         public static long IndexOf<TSequence>(TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            Position position = default;
+            Position position = sequence.First;
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
@@ -39,7 +39,7 @@ namespace System.Buffers
 
         public static long IndexOf<TSequence>(TSequence sequence, byte v1, byte v2) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            Position position = default;
+            Position position = sequence.First;
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
@@ -68,9 +68,9 @@ namespace System.Buffers
             return -1;
         }
 
-        public static Position PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static Position? PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            if (sequence == null) return Position.End;
+            if (sequence == null) return null;
 
             Position position = sequence.First;
             Position result = position;
@@ -84,12 +84,12 @@ namespace System.Buffers
                 }
                 result = position;
             }
-            return Position.End;
+            return null;
         }
 
-        public static Position PositionAt<TSequence>(this TSequence sequence, long index) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static Position? PositionAt<TSequence>(this TSequence sequence, long index) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            if (sequence == null) return Position.End;
+            if (sequence == null) return null;
 
             Position position = sequence.First;
             Position result = position;
@@ -105,7 +105,7 @@ namespace System.Buffers
                 result = position;
             }
 
-            return Position.End;
+            return null;
         }
 
         public static int Copy<TSequence>(TSequence sequence, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
@@ -170,7 +170,7 @@ namespace System.Buffers
                 return false;
             }
 
-            consumed = sequence.PositionAt(consumedBytes);
+            consumed = sequence.PositionAt(consumedBytes).GetValueOrDefault();
             return true;
         }
     }

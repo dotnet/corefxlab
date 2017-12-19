@@ -30,23 +30,16 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
-            if(_count == 0)
+            if(_count == 0 || position == default)
             {
                 item = default;
                 return false;
             }
 
-            if (position == default)
-            {
-                item = _head._item;
-                if (advance) position = Position.Create(_head._next);
-                return _count > 0;
-            }
-
             var node = position.GetItem<Node>();
             if (node == null) {
                 item = default;
-                position = Position.End;
+                position = default;
                 return false;
             }
 

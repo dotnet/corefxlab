@@ -49,7 +49,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static Position PositionOf(this IMemoryList<byte> list, byte value)
+        public static Position? PositionOf(this IMemoryList<byte> list, byte value)
         {
             while (list != null)
             {
@@ -58,7 +58,7 @@ namespace System.Buffers
                 if (index != -1) return Position.Create(list, index);
                 list = list.Next;
             }
-            return Position.End;
+            return null;
         }
 
         // TODO (pri 3): I am pretty sure this whole routine can be written much better

@@ -75,15 +75,6 @@ namespace System.Buffers
         {
             if (position == default)
             {
-                item = _data;
-                if (advance)
-                {
-                    position = Position.Create(_next);
-                }
-                return (!_data.IsEmpty || _next != null);
-            }
-            else if (position.IsEnd)
-            {
                 item = default;
                 return false;
             }

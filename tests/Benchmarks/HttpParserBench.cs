@@ -355,11 +355,11 @@ static class HttpParserExtensions
     {
         if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
         {
-            consumed = buffer.PositionAt(consumedBytes);
+            consumed = buffer.PositionAt(consumedBytes).GetValueOrDefault();
             examined = consumed;
             return true;
         }
-        consumed = buffer.PositionAt(0);
+        consumed = buffer.PositionAt(0).GetValueOrDefault();
         examined = default;
         return false;
     }
@@ -368,11 +368,11 @@ static class HttpParserExtensions
     {
         if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
         {
-            consumed = buffer.PositionAt(consumedBytes);
+            consumed = buffer.PositionAt(consumedBytes).GetValueOrDefault();
             examined = consumed;
             return true;
         }
-        consumed = buffer.PositionAt(0);
+        consumed = buffer.PositionAt(0).GetValueOrDefault();
         examined = default;
         return false;
     }
@@ -384,13 +384,13 @@ static class HttpParserExtensions
             parser.ParseHeaders(ref handler, buffer.Slice(consumedRLBytes), out var consumedHDBytes)
         )
         {
-            consumed = buffer.PositionAt(consumedRLBytes + consumedHDBytes);
+            consumed = buffer.PositionAt(consumedRLBytes + consumedHDBytes).GetValueOrDefault();
             examined = consumed;
             return true;
         }
         else
         {
-            consumed = buffer.PositionAt(0);
+            consumed = buffer.PositionAt(0).GetValueOrDefault();
             examined = default;
             return false;
         }
