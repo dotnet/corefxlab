@@ -237,8 +237,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new ReadableBufferReader(buffer);
-            var start = default(ReadableBufferReader);
+            var reader = new ReadOnlyBufferReader(buffer);
+            var start = default(ReadOnlyBufferReader);
             var done = false;
 
             try

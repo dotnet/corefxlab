@@ -5,15 +5,15 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public ref struct ReadableBufferReader
+    public ref struct ReadOnlyBufferReader
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private ReadOnlyBuffer.BufferEnumerator _enumerator;
+        private ReadOnlyBuffer.Enumerator _enumerator;
         private int _consumedBytes;
         private bool _end;
 
-        public ReadableBufferReader(ReadOnlyBuffer buffer)
+        public ReadOnlyBufferReader(ReadOnlyBuffer buffer)
         {
             _end = false;
             _index = 0;

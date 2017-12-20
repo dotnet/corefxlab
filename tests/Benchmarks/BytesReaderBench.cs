@@ -80,7 +80,7 @@ public class BytesReaderBench
         foreach (var iteration in Benchmark.Iterations)
         {
             var buffer = new ReadOnlyBuffer(s_data);
-            var reader = new ReadableBufferReader(buffer);
+            var reader = new ReadOnlyBufferReader(buffer);
 
             using (iteration.StartMeasurement())
             {

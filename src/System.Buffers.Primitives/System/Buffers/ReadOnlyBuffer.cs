@@ -228,9 +228,9 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Returns an enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        public BufferEnumerator GetEnumerator()
+        public Enumerator GetEnumerator()
         {
-            return new BufferEnumerator(this);
+            return new Enumerator(this);
         }
 
         public Position Move(Position cursor, long count)
@@ -256,7 +256,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// An enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        public struct BufferEnumerator
+        public struct Enumerator
         {
             private readonly ReadOnlyBuffer _readOnlyBuffer;
             private Position _next;
@@ -267,7 +267,7 @@ namespace System.IO.Pipelines
             /// <summary>
             ///
             /// </summary>
-            public BufferEnumerator(ReadOnlyBuffer readOnlyBuffer)
+            public Enumerator(ReadOnlyBuffer readOnlyBuffer)
             {
                 _readOnlyBuffer = readOnlyBuffer;
                 _currentMemory = default;
@@ -300,7 +300,7 @@ namespace System.IO.Pipelines
                 return _readOnlyBuffer.TryGet(ref _next, out _currentMemory);
             }
 
-            public BufferEnumerator GetEnumerator()
+            public Enumerator GetEnumerator()
             {
                 return this;
             }

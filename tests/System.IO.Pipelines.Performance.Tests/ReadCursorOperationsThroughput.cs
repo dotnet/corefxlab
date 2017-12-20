@@ -107,7 +107,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
         private static void FindAllNewLinesReadableBufferReader(ReadOnlyBuffer buffer)
         {
-            var reader = new ReadableBufferReader(buffer);
+            var reader = new ReadOnlyBufferReader(buffer);
             var end = buffer.End;
 
             while (!reader.End)
