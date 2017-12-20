@@ -28,6 +28,16 @@ namespace System.IO.Pipelines
         /// Moves forward the pipeline's read cursor to after the consumed data.
         /// </summary>
         /// <param name="consumed">Marks the extent of the data that has been succesfully proceesed.</param>
+        /// <remarks>
+        /// The memory for the consumed data will be released and no longer available.
+        /// The examined data communicates to the pipeline when it should signal more data is available.
+        /// </remarks>
+        void Advance(ReadCursor consumed);
+
+        /// <summary>
+        /// Moves forward the pipeline's read cursor to after the consumed data.
+        /// </summary>
+        /// <param name="consumed">Marks the extent of the data that has been succesfully proceesed.</param>
         /// <param name="examined">Marks the extent of the data that has been read and examined.</param>
         /// <remarks>
         /// The memory for the consumed data will be released and no longer available.

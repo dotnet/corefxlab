@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading;
 
 namespace System.IO.Pipelines
@@ -8,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can write a sequential series of bytes.
     /// </summary>
-    public struct WritableBuffer
+    public struct WritableBuffer: IOutput
     {
         internal Pipe Pipe { get; }
 
@@ -49,6 +50,7 @@ namespace System.IO.Pipelines
         {
             Pipe.Advance(bytesWritten);
         }
+
 
         /// <summary>
         /// Commits all outstanding written data to the underlying <see cref="IPipeWriter"/> so they can be read
@@ -114,5 +116,9 @@ namespace System.IO.Pipelines
                 Advance(writable);
             }
         }
+
+        void IOutput.Enlarge(int desiredBufferLength) => Pipe.Ensure(desiredBufferLength);
+
+        Span<byte> IOutput.GetSpan() => Buffer.Span;
     }
 }

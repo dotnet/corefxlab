@@ -203,7 +203,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public BufferEnumerator GetEnumerator()
         {
-            return new BufferEnumerator(BufferStart, BufferEnd);
+            return new BufferEnumerator(this);
         }
 
         public ReadCursor Move(ReadCursor cursor, long count)
@@ -213,6 +213,17 @@ namespace System.IO.Pipelines
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
             return ReadCursorOperations.Seek(cursor, BufferEnd, count, false);
+        }
+
+        public bool TryGet(ref ReadCursor cursor, out ReadOnlyMemory<byte> data, bool advance = true)
+        {
+            var result = ReadCursorOperations.TryGetBuffer(cursor, End, out data, out var next);
+            if (advance)
+            {
+                cursor = next;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -262,6 +273,69 @@ namespace System.IO.Pipelines
             }
 
             return new ReadableBuffer(data, offset, length);
+        }
+
+        /// <summary>
+        /// An enumerator over the <see cref="ReadableBuffer"/>
+        /// </summary>
+        public struct BufferEnumerator
+        {
+            private readonly ReadableBuffer _readableBuffer;
+            private ReadCursor _next;
+            private ReadCursor _current;
+
+            private ReadOnlyMemory<byte> _currentMemory;
+
+            /// <summary>
+            ///
+            /// </summary>
+            public BufferEnumerator(ReadableBuffer readableBuffer)
+            {
+                _readableBuffer = readableBuffer;
+                _currentMemory = default;
+                _current = default;
+                _next = readableBuffer.Start;
+            }
+
+            /// <summary>
+            /// The current <see cref="Buffer{Byte}"/>
+            /// </summary>
+            public ReadOnlyMemory<byte> Current
+            {
+                get => _currentMemory;
+                set => _currentMemory = value;
+            }
+
+            /// <summary>
+            /// Moves to the next <see cref="Buffer{Byte}"/> in the <see cref="ReadableBuffer"/>
+            /// </summary>
+            /// <returns></returns>
+            public bool MoveNext()
+            {
+                if (_next.IsDefault)
+                {
+                    return false;
+                }
+
+                _current = _next;
+
+                return _readableBuffer.TryGet(ref _next, out _currentMemory);
+            }
+
+            public BufferEnumerator GetEnumerator()
+            {
+                return this;
+            }
+
+            public void Reset()
+            {
+                PipelinesThrowHelper.ThrowNotSupportedException();
+            }
+
+            public ReadCursor CreateCursor(int index)
+            {
+                return _readableBuffer.Move(_current, index);
+            }
         }
     }
 }

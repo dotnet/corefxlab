@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Tests
             var start = new ReadCursor(first, first.Start);
             var end = new ReadCursor(last, last.Start);
 
-            var reader = new ReadableBufferReader(start, end);
+            var reader = new ReadableBufferReader(new ReadableBuffer(start, end));
             reader.Take();
             reader.Take();
             reader.Take();

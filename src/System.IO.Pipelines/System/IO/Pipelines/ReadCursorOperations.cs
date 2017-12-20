@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     {
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadableBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
@@ -31,7 +31,7 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadableBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadableBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;

@@ -9,23 +9,20 @@ namespace System.IO.Pipelines
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private BufferEnumerator _enumerator;
+        private ReadableBuffer.BufferEnumerator _enumerator;
         private int _consumedBytes;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
-        {
-        }
-
-        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
+        public ReadableBufferReader(ReadableBuffer buffer)
         {
             _end = false;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = new BufferEnumerator(start, end);
+            _enumerator = buffer.GetEnumerator();
             _currentSpan = default;
             MoveNext();
         }
+        
 
         public bool End => _end;
 
