@@ -158,7 +158,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void Create_WorksWithArray()
         {
-            var readableBuffer = ReadOnlyBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
+            var readableBuffer = new ReadOnlyBuffer(new byte[] {1, 2, 3, 4, 5}, 2, 3);
             Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
         }
 
@@ -166,7 +166,7 @@ namespace System.IO.Pipelines.Tests
         public void Create_WorksWithOwnedMemory()
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
-            var readableBuffer = ReadOnlyBuffer.Create(memory, 2, 3);
+            var readableBuffer = new ReadOnlyBuffer(memory, 2, 3);
             Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
         }
 

@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public ICollection<StringValues> Values => _headers.Values.Select(v => v.GetValue()).ToList();
 
-        public void SetHeader(ref ReadableBuffer key, ref ReadableBuffer value)
+        public void SetHeader(ref ReadOnlyBuffer key, ref ReadOnlyBuffer value)
         {
             string headerKey = GetHeaderKey(ref key);
             _headers[headerKey] = new HeaderValue
@@ -59,16 +59,16 @@ namespace System.IO.Pipelines.Samples.Http
             };
         }
 
-        public ReadableBuffer GetHeaderRaw(string key)
+        public ReadOnlyBuffer GetHeaderRaw(string key)
         {
             if (_headers.TryGetValue(key, out HeaderValue value))
             {
-                return ReadableBuffer.Create(value.Raw);
+                return new ReadOnlyBuffer(value.Raw);
             }
             return default;
         }
 
-        private string GetHeaderKey(ref ReadableBuffer key)
+        private string GetHeaderKey(ref ReadOnlyBuffer key)
         {
             if (EqualsIgnoreCase(ref key, AcceptBytes))
             {
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Samples.Http
             return key.GetAsciiString();
         }
 
-        private bool EqualsIgnoreCase(ref ReadableBuffer key, byte[] buffer)
+        private bool EqualsIgnoreCase(ref ReadOnlyBuffer key, byte[] buffer)
         {
             if (key.Length != buffer.Length)
             {

@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -50,7 +51,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public Position End => BufferEnd;
 
-        internal ReadOnlyBuffer(Position start, Position end)
+        public ReadOnlyBuffer(Position start, Position end)
         {
             Debug.Assert(start.Segment != null);
             Debug.Assert(end.Segment != null);
@@ -59,27 +60,53 @@ namespace System.IO.Pipelines
             BufferEnd = end;
         }
 
-        internal ReadOnlyBuffer(IMemoryList<byte> startSegment, int startIndex, IMemoryList<byte> endSegment, int endIndex)
+        public ReadOnlyBuffer(IMemoryList<byte> startSegment, int offset, IMemoryList<byte> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
-            Debug.Assert(startSegment.Memory.Length >= startIndex);
+            Debug.Assert(startSegment.Memory.Length >= offset);
             Debug.Assert(endSegment.Memory.Length >= endIndex);
 
-            BufferStart = new Position(startSegment, startIndex);
+            BufferStart = new Position(startSegment, offset);
             BufferEnd = new Position(endSegment, endIndex);
         }
 
-        internal ReadOnlyBuffer(byte[] startSegment, int startIndex, int length)
+        public ReadOnlyBuffer(byte[] data) : this(data, 0, data.Length)
         {
-            BufferStart = new Position(startSegment, startIndex);
-            BufferEnd = new Position(startSegment, startIndex + length);
         }
 
-        internal ReadOnlyBuffer(OwnedMemory<byte> startSegment, int startIndex, int length)
+        public ReadOnlyBuffer(byte[] data, int offset, int length)
         {
-            BufferStart = new Position(startSegment, startIndex);
-            BufferEnd = new Position(startSegment, startIndex + length);
+            if (data == null)
+            {
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            BufferStart = new Position(data, offset);
+            BufferEnd = new Position(data, offset + length);
+        }
+
+        public ReadOnlyBuffer(OwnedMemory<byte> data, int offset, int length)
+        {
+            
+            if (data == null)
+            {
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            if (offset < 0)
+            {
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
+            }
+
+            if (length < 0 || length > data.Length - offset)
+            {
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+
+            BufferStart = new Position(data, offset);
+            BufferEnd = new Position(data, offset + length);
         }
 
         /// <summary>
@@ -225,56 +252,7 @@ namespace System.IO.Pipelines
 
             return result;
         }
-
-        /// <summary>
-        /// Create a <see cref="ReadOnlyBuffer"/> over an array.
-        /// </summary>
-        public static ReadOnlyBuffer Create(byte[] data, int offset, int length)
-        {
-            if (data == null)
-            {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            return new ReadOnlyBuffer(data, offset, length);
-        }
-
-        /// <summary>
-        /// Create a <see cref="ReadOnlyBuffer"/> over an array.
-        /// </summary>
-        public static ReadOnlyBuffer Create(byte[] data)
-        {
-            if (data == null)
-            {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            return new ReadOnlyBuffer(data, 0, data.Length);
-        }
-
-        /// <summary>
-        /// Create a <see cref="ReadOnlyBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
-        /// </summary>
-        public static ReadOnlyBuffer Create(OwnedMemory<byte> data, int offset, int length)
-        {
-            if (data == null)
-            {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            if (offset < 0)
-            {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
-            }
-
-            if (length < 0 || length > data.Length - offset)
-            {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
-
-            return new ReadOnlyBuffer(data, offset, length);
-        }
-
+        
         /// <summary>
         /// An enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>

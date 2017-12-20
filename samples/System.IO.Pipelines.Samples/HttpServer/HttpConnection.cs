@@ -23,9 +23,9 @@ namespace System.IO.Pipelines.Samples.Http
         public RequestHeaderDictionary RequestHeaders => _parser.RequestHeaders;
         public ResponseHeaderDictionary ResponseHeaders { get; } = new ResponseHeaderDictionary();
 
-        public ReadableBuffer HttpVersion => _parser.HttpVersion;
-        public ReadableBuffer Path => _parser.Path;
-        public ReadableBuffer Method => _parser.Method;
+        public ReadOnlyBuffer HttpVersion => _parser.HttpVersion;
+        public ReadOnlyBuffer Path => _parser.Path;
+        public ReadOnlyBuffer Method => _parser.Method;
 
         // TODO: Check the http version
         public bool KeepAlive => true; //RequestHeaders.ContainsKey("Connection") && string.Equals(RequestHeaders["Connection"], "keep-alive");

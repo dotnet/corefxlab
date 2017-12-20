@@ -1,27 +1,24 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace System.IO.Pipelines
 {
     [DebuggerDisplay("{Segment}[{Index}]")]
     public readonly struct Position : IEquatable<Position>
     {
-        internal readonly object Segment;
-        internal readonly int Index;
+        public object Segment { get; }
+        public int Index { get; }
 
-        internal Position(object segment, int index)
+        public Position(object segment, int index)
         {
             Segment = segment;
             Index = index;
         }
 
-        internal bool IsDefault => Segment == null;
+        public bool IsDefault => Segment == null;
 
         public static bool operator ==(Position c1, Position c2)
         {
@@ -52,7 +49,7 @@ namespace System.IO.Pipelines
             return ((int)shift5 + h1) ^ h2;
         }
 
-        internal T Get<T>()
+        public T Get<T>()
         {
             switch (Segment)
             {
@@ -62,7 +59,7 @@ namespace System.IO.Pipelines
                     return segment;
             }
 
-            PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+             PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
     }

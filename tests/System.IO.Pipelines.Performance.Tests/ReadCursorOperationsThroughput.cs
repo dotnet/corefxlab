@@ -34,9 +34,9 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);
             var pipelinedRequests = string.Concat(Enumerable.Repeat(plaintextRequest, 16));
-            _plainTextPipelinedBuffer = ReadOnlyBuffer.Create(Encoding.UTF8.GetBytes(pipelinedRequests));
-            _plainTextBuffer = ReadOnlyBuffer.Create(Encoding.UTF8.GetBytes(plaintextRequest));
-            _liveAspNetBuffer = ReadOnlyBuffer.Create(liveaspnetRequestBytes);
+            _plainTextPipelinedBuffer = new ReadOnlyBuffer(Encoding.UTF8.GetBytes(pipelinedRequests));
+            _plainTextBuffer = new ReadOnlyBuffer(Encoding.UTF8.GetBytes(plaintextRequest));
+            _liveAspNetBuffer = new ReadOnlyBuffer(liveaspnetRequestBytes);
 
             // Split the liveaspnetRequest across 3 byte[]
             var remaining = liveaspnetRequestBytes.Length;

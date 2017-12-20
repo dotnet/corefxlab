@@ -114,9 +114,9 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public class LineDecoder : IFrameDecoder<Line>
     {
-        public bool TryDecode(ref ReadableBuffer input, out Line frame)
+        public bool TryDecode(ref ReadOnlyBuffer input, out Line frame)
         {
-            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer slice, out ReadCursor cursor))
+            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer slice, out Position cursor))
             {
                 frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);
@@ -130,7 +130,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public interface IFrameDecoder<TInput>
     {
-        bool TryDecode(ref ReadableBuffer input, out TInput frame);
+        bool TryDecode(ref ReadOnlyBuffer input, out TInput frame);
     }
 
     public interface IFrameHandler<TInput>

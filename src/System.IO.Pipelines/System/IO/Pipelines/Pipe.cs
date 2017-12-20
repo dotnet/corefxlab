@@ -425,7 +425,7 @@ namespace System.IO.Pipelines
                     returnEnd = consumedSegment;
 
                     // Check if we crossed _maximumSizeLow and complete backpressure
-                    var consumedBytes = ReadCursorOperations.GetLength(returnStart, _readHeadIndex, consumedSegment, consumed.Index);
+                    var consumedBytes = new ReadOnlyBuffer(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
                     var oldLength = _length;
                     _length -= consumedBytes;
 

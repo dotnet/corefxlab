@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseArrayBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = ReadOnlyBuffer.Create(data, 3, data.Length - 7);
+            var buffer = new ReadOnlyBuffer(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = ReadOnlyBuffer.Create(data, 3, data.Length - 7);
+            var buffer = new ReadOnlyBuffer(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());

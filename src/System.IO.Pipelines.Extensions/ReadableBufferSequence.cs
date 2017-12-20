@@ -14,22 +14,17 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_buffer.BufferStart.Segment, _buffer.BufferStart.Index);
+        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_buffer.Start.Segment, _buffer.Start.Index);
 
         public bool TryGet(ref Collections.Sequences.Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position == default)
-            {
-                item = default;
-                return false;
-            }
-
-            var (segment, index) = position.Get<object>();
-            var result = ReadCursorOperations.TryGetBuffer(new Position(segment, index), _buffer.End, out item, out var next);
+            var p = new System.IO.Pipelines.Position(position.GetItem<object>(), position.Index);
+            var result =  _buffer.TryGet(ref p, out item);
             if (advance)
             {
-                position = Collections.Sequences.Position.Create(next.Segment, next.Index);
+                position = Collections.Sequences.Position.Create(p.Segment, p.Index);
             }
+
             return result;
         }
     }

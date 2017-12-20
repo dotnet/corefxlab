@@ -29,14 +29,14 @@ namespace System.IO.Pipelines.Tests
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {
-                return ReadOnlyBuffer.Create(new byte[size + 20], 10, size);
+                return new ReadOnlyBuffer(new byte[size + 20], 10, size);
             }
 
             public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return ReadOnlyBuffer.Create(startSegment, 10, data.Length);
+                return new ReadOnlyBuffer(startSegment, 10, data.Length);
             }
         }
 
@@ -44,14 +44,14 @@ namespace System.IO.Pipelines.Tests
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {
-                return ReadOnlyBuffer.Create(new OwnedArray<byte>(size + 20), 10, size);
+                return new ReadOnlyBuffer(new OwnedArray<byte>(size + 20), 10, size);
             }
 
             public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return ReadOnlyBuffer.Create(new OwnedArray<byte>(startSegment), 10, data.Length);
+                return new ReadOnlyBuffer(new OwnedArray<byte>(startSegment), 10, data.Length);
             }
         }
 
