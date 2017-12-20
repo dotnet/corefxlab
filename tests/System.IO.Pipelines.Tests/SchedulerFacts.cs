@@ -167,7 +167,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class ThreadScheduler : IScheduler, IDisposable
+        private class ThreadScheduler : Scheduler, IDisposable
         {
             private BlockingCollection<Action> _work = new BlockingCollection<Action>();
 
@@ -179,7 +179,7 @@ namespace System.IO.Pipelines.Tests
                 Thread.Start();
             }
 
-            public void Schedule(Action<object> action, object state)
+            public override void Schedule(Action<object> action, object state)
             {
                 _work.Add(() => action(state));
             }

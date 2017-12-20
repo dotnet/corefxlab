@@ -9,7 +9,7 @@ using System.IO.Pipelines.Networking.Libuv.Internal;
 namespace System.IO.Pipelines.Networking.Libuv
 {
     // This class needs a bunch of work to make sure it's thread safe
-    public class UvThread : IDisposable, IScheduler
+    public class UvThread : Scheduler, IDisposable
     {
         private readonly Thread _thread = new Thread(OnStart)
         {
@@ -139,7 +139,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             Pool.Dispose();
         }
 
-        public void Schedule(Action<object> action, object state)
+        public override void Schedule(Action<object> action, object state)
         {
             // REVIEW: Should we inline actions if we're already on the libuv thread?
             Post(action, state);

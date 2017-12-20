@@ -31,8 +31,8 @@ namespace System.IO.Pipelines
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private readonly IScheduler _readerScheduler;
-        private readonly IScheduler _writerScheduler;
+        private readonly Scheduler _readerScheduler;
+        private readonly Scheduler _writerScheduler;
 
         private long _length;
         private long _currentWriteLength;
@@ -96,8 +96,8 @@ namespace System.IO.Pipelines
             _pool = options.Pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
-            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
+            _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
@@ -623,7 +623,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static void TrySchedule(IScheduler scheduler, Action action)
+        private static void TrySchedule(Scheduler scheduler, Action action)
         {
             if (action != null)
             {
@@ -631,7 +631,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static void TrySchedule(IScheduler scheduler, Action<object> action, object state)
+        private static void TrySchedule(Scheduler scheduler, Action<object> action, object state)
         {
             if (action != null)
             {

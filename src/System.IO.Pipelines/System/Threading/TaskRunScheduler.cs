@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace System.Threading
 {
-    public class TaskRunScheduler : IScheduler
+    internal class TaskRunScheduler : Scheduler
     {
-        public static TaskRunScheduler Default = new TaskRunScheduler();
-
-        public void Schedule(Action<object> action, object state)
+        public override void Schedule(Action<object> action, object state)
         {
             Task.Factory.StartNew(action, state);
         }

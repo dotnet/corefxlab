@@ -11,8 +11,8 @@ namespace System.IO.Pipelines
     {
         public PipeOptions(
             MemoryPool<byte> pool,
-            IScheduler readerScheduler = null,
-            IScheduler writerScheduler = null,
+            Scheduler readerScheduler = null,
+            Scheduler writerScheduler = null,
             long maximumSizeHigh = 0,
             long maximumSizeLow = 0)
         {
@@ -27,9 +27,9 @@ namespace System.IO.Pipelines
 
         public long MaximumSizeLow { get; }
 
-        public IScheduler WriterScheduler { get; }
+        public Scheduler WriterScheduler { get; }
 
-        public IScheduler ReaderScheduler { get; }
+        public Scheduler ReaderScheduler { get; }
 
         public MemoryPool<byte> Pool { get; }
     }

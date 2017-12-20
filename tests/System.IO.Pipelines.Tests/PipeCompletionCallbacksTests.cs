@@ -476,13 +476,13 @@ namespace System.IO.Pipelines.Tests
             Assert.True(callbackRan);
         }
 
-        private class TestScheduler : IScheduler
+        private class TestScheduler : Scheduler
         {
             public int CallCount { get; set; }
 
             public Exception LastException { get; set; }
 
-            public void Schedule(Action<object> action, object state)
+            public override void Schedule(Action<object> action, object state)
             {
                 CallCount++;
                 try
