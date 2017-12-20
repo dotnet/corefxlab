@@ -60,7 +60,7 @@ namespace System.Buffers
                     return segment;
             }
 
-             PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+             ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
     }

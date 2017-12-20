@@ -85,7 +85,7 @@ namespace System.IO.Pipelines
                     return end.Index - begin.Index;
             }
 
-            PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
 
@@ -156,7 +156,7 @@ namespace System.IO.Pipelines
 
             if (!foundResult)
             {
-                PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                ThrowHelper.ThrowCursorOutOfBoundsException();
             }
 
             return result;
@@ -171,17 +171,17 @@ namespace System.IO.Pipelines
                 case OwnedMemory<byte> _ :
                     if (newCursor.Index > end.Index)
                     {
-                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 case IMemoryList<byte> memoryList:
                     if (!GreaterOrEqual(memoryList, end.Index, newCursor.Get<IMemoryList<byte>>(), newCursor.Index))
                     {
-                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 default:
-                    PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                    ThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
         }
@@ -214,7 +214,7 @@ namespace System.IO.Pipelines
                         {
                             if (end.Segment != null)
                             {
-                                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                             }
 
                             next = default;
@@ -235,7 +235,7 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                         ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
 
                     next = default;
@@ -246,13 +246,13 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
                     next = default;
                     return true;
             }
 
-            PipelinesThrowHelper.ThrowNotSupportedException();
+            ThrowHelper.ThrowNotSupportedException();
             next = default;
             return false;
         }

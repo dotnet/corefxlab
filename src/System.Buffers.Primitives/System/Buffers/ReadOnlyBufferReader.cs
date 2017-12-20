@@ -88,7 +88,7 @@ namespace System.IO.Pipelines
         {
             if (length < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
             _consumedBytes += length;
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines
 
             if (length > 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
         }
     }

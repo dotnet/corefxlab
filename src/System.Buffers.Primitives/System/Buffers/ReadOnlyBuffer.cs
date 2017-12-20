@@ -79,7 +79,7 @@ namespace System.Buffers
         {
             if (data == null)
             {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
             BufferStart = new Position(data, offset);
@@ -91,17 +91,17 @@ namespace System.Buffers
             
             if (data == null)
             {
-                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
             if (offset < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
             }
 
             if (length < 0 || length > data.Length - offset)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
 
@@ -191,7 +191,7 @@ namespace System.Buffers
         {
             if (Length > destination.Length)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.destination);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.destination);
             }
 
             foreach (var buffer in this)
@@ -307,7 +307,7 @@ namespace System.Buffers
 
             public void Reset()
             {
-                PipelinesThrowHelper.ThrowNotSupportedException();
+                ThrowHelper.ThrowNotSupportedException();
             }
 
             public Position CreateCursor(int index)
