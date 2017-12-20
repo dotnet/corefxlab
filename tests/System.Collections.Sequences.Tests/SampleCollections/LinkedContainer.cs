@@ -36,8 +36,8 @@ namespace System.Collections.Sequences
                 return false;
             }
 
-            var node = position.GetItem<Node>();
-            if (node == null) {
+            var (node, index) = position.Get<Node>();
+            if (node == null || index != 0) {
                 item = default;
                 position = default;
                 return false;

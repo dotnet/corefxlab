@@ -111,7 +111,7 @@ namespace System.Collections.Sequences
             int index = (int)position;
             if (index < _count) {
                 item = _array[index];
-                if (advance) { position += 1; }
+                if (advance) { position +=1; }
                 return true;
             }
 

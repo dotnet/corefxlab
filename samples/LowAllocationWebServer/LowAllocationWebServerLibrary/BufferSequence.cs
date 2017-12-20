@@ -56,9 +56,9 @@ namespace Microsoft.Net
                 return false;
             }
 
-            var sequence = position.GetItem<BufferSequence>();
-            item = sequence.Memory.Slice(0, sequence._written);
-            if (advance) { position = Position.Create(sequence._next); }
+            var (buffer, index) = position.Get<BufferSequence>();
+            item = buffer.Memory.Slice(index, buffer._written - index);
+            if (advance) { position = Position.Create(buffer._next); }
             return true;
         }
 
@@ -70,9 +70,9 @@ namespace Microsoft.Net
                 return false;
             }
 
-            var sequence = position.GetItem<BufferSequence>();
-            item = sequence.WrittenMemory;
-            if (advance) { position = Position.Create(sequence._next); }
+            var (buffer, index) = position.Get<BufferSequence>();
+            item = buffer.WrittenMemory.Slice(index);
+            if (advance) { position = Position.Create(buffer._next); }
             return true;
         }
 

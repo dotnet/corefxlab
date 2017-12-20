@@ -78,10 +78,10 @@ namespace System.Buffers
                 item = default;
                 return false;
             }
-
-            var sequence = position.GetItem<MemoryList>();
-            item = sequence._data;
-            if (advance) { position = Collections.Sequences.Position.Create(sequence._next); }
+            
+            var (list, index) = position.Get<MemoryList>();
+            item = list._data.Slice(index);
+            if (advance) { position = Collections.Sequences.Position.Create(list._next); }
             return true;
         }
 
