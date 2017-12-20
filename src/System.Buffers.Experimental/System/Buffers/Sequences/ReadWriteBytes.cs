@@ -136,8 +136,8 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                    var array = position.GetItem<byte[]>();
-                    return new ReadWriteBytes(array, position.Index, array.Length - position.Index);
+                    var (array, index) = position.Get<byte[]>();
+                    return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
                     return Slice(position, Position.Create((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
@@ -150,12 +150,12 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                    var startArray = start.GetItem<byte[]>();
-                    return new ReadWriteBytes(startArray, start.Index, end.Index - start.Index);
+                    var (array, index) = start.Get<byte[]>();
+                    return new ReadWriteBytes(array, index, (int)end - index);
                 case Type.MemoryList:
-                    var startList = start.GetItem<IMemoryList<byte>>();
-                    var endList = end.GetItem<IMemoryList<byte>>();
-                    return new ReadWriteBytes(startList, start.Index, endList, end.Index);
+                    var (startList, startIndex) = start.Get<IMemoryList<byte>>();
+                    var (endList, endIndex) = end.Get<IMemoryList<byte>>();
+                    return new ReadWriteBytes(startList, startIndex, endList, endIndex);
                 default:
                     throw new NotImplementedException();
             }
@@ -278,8 +278,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + position.Index;
-                var length = _endIndex - _startIndex - position.Index;
+                var start = _startIndex + (int)position;
+                var length = _endIndex - _startIndex - (int)position;
                 item = new Memory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;

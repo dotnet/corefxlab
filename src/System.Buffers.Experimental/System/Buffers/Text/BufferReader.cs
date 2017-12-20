@@ -93,8 +93,8 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            var startObj = range.Start.GetItem<object>();
-            var endObj = range.End.GetItem<object>();
+            var (startObj, startIndex) = range.Start.Get<object>();
+            var (endObj, endIndex) = range.End.Get<object>();
             // TODO: this is a hack. Once we move this to System.Memory, we should remove
             if (startObj == null || endObj == null)
             {
@@ -302,14 +302,7 @@ namespace System.Buffers.Text
 
         ReadOnlySpan<byte> Unread => _currentSpan.Slice(_currentSpanIndex);
 
-        Position Position
-        {
-            get {
-                var result = _currentSegmentPosition;
-                result += _currentSpanIndex;
-                return result;
-            }
-        }
+        Position Position =>_currentSegmentPosition + _currentSpanIndex;      
 
         Position? AdvanceToDelimiter(byte value)
         {
@@ -358,10 +351,10 @@ namespace System.Buffers.Text
             if(index != -1 && unread.Length - index < value.Length)
             {
                 Span<byte> temp = stackalloc byte[value.Length];
-                int copied = Sequence.Copy(_bytes, _currentSegmentPosition + _currentSpanIndex + index, temp);
+                int copied = Sequence.Copy(_bytes, _currentSegmentPosition + (_currentSpanIndex + index), temp);
                 if (copied < value.Length) return null;
 
-                if (temp.SequenceEqual(value)) return _currentSegmentPosition + _currentSpanIndex + index;
+                if (temp.SequenceEqual(value)) return _currentSegmentPosition + (_currentSpanIndex + index);
                 else throw new NotImplementedException(); // need to check farther in this span
             }
 
