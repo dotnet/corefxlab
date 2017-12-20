@@ -140,8 +140,8 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                    var array = position.GetItem<byte[]>();
-                    return new ReadOnlyBytes(array, position.Index, array.Length - position.Index);
+                    var (array, index) = position.Get<byte[]>();
+                    return new ReadOnlyBytes(array, index, array.Length - index);
                 case Type.MemoryList:
                     return Slice(position, Position.Create((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
@@ -154,12 +154,12 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                    var startArray = start.GetItem<byte[]>();
-                    return new ReadOnlyBytes(startArray, start.Index, end.Index - start.Index);
+                    var (array, index) = start.Get<byte[]>();
+                    return new ReadOnlyBytes(array, index, (int)end - index);
                 case Type.MemoryList:
-                    var startList = start.GetItem<IMemoryList<byte>>();
-                    var endList = end.GetItem<IMemoryList<byte>>();
-                    return new ReadOnlyBytes(startList, start.Index, endList, end.Index);
+                    var (startList, startIndex) = start.Get<IMemoryList<byte>>();
+                    var (endList, endIndex) = end.Get<IMemoryList<byte>>();
+                    return new ReadOnlyBytes(startList, startIndex, endList, endIndex);
                 default:
                     throw new NotImplementedException();
             }
@@ -281,8 +281,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = position.Index;
-                var length = _endIndex - position.Index;
+                var start = (int)position;
+                var length = _endIndex - (int)position;
                 item = new ReadOnlyMemory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;

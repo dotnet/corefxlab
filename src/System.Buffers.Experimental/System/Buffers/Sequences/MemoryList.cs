@@ -79,9 +79,9 @@ namespace System.Buffers
                 return false;
             }
 
-            var sequence = position.GetItem<MemoryList>();
-            item = sequence._data;
-            if (advance) { position = Position.Create(sequence._next); }
+            var (list, index) = position.Get<MemoryList>();
+            item = list._data.Slice(index);
+            if (advance) { position = Position.Create(list._next); }
             return true;
         }
 
