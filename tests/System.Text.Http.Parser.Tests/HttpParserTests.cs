@@ -280,7 +280,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseHeadersThrowsOnInvalidRequestHeadersRb(string rawHeaders, string expectedExceptionMessage)
         {
             var parser = new HttpParser();
-            var buffer = ReadableBuffer.Create(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = ReadOnlyBuffer.Create(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -310,10 +310,10 @@ namespace System.Text.Http.Parser.Tests
         {
             HttpParser parser = new HttpParser();
 
-            ReadableBuffer buffer = BufferUtilities.CreateBuffer("GET ", "/");
+            ReadOnlyBuffer buffer = BufferUtilities.CreateBuffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
-            bool result = parser.ParseRequestLine(requestHandler, buffer, out ReadCursor consumed, out ReadCursor examined);
+            bool result = parser.ParseRequestLine(requestHandler, buffer, out Position consumed, out Position examined);
             Assert.False(result);
             Assert.Equal(buffer.Start, consumed);
             Assert.Equal(buffer.End, examined);
@@ -364,7 +364,7 @@ namespace System.Text.Http.Parser.Tests
             string expectedHeaderValue)
         {
             var parser = new HttpParser();
-            var buffer = ReadableBuffer.Create(Encoding.ASCII.GetBytes($"{headerName}:{rawHeaderValue}\r\n"));
+            var buffer = ReadOnlyBuffer.Create(Encoding.ASCII.GetBytes($"{headerName}:{rawHeaderValue}\r\n"));
 
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes);
@@ -382,7 +382,7 @@ namespace System.Text.Http.Parser.Tests
             Assert.True(expectedHeaderNames.Count() == expectedHeaderValues.Count(), $"{nameof(expectedHeaderNames)} and {nameof(expectedHeaderValues)} sizes must match");
 
             var parser = new HttpParser();
-            var buffer = ReadableBuffer.Create(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = ReadOnlyBuffer.Create(Encoding.ASCII.GetBytes(rawHeaders));
 
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes);

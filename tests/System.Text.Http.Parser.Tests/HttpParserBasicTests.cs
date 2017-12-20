@@ -111,7 +111,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadableBuffer buffer = ReadableBuffer.Create(_plaintextTechEmpowerRequestBytes);
+            ReadOnlyBuffer buffer = ReadOnlyBuffer.Create(_plaintextTechEmpowerRequestBytes);
 
             Assert.True(parser.ParseRequestLine(request, buffer, out var consumed, out var read));
             Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out var examined, out var consumedBytes));

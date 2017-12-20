@@ -9,15 +9,15 @@ namespace System.IO.Pipelines.Text.Primitives
     /// <summary>
     /// Exposes the enumerator, which supports a simple iteration over a collection of a specified type.
     /// </summary>
-    public struct SplitEnumerable : IEnumerable<ReadableBuffer>
+    public struct SplitEnumerable : IEnumerable<ReadOnlyBuffer>
     {
-        private ReadableBuffer _buffer;
+        private ReadOnlyBuffer _buffer;
 
         private int _count;
 
         private byte _delimiter;
 
-        internal SplitEnumerable(ReadableBuffer buffer, byte delimiter)
+        internal SplitEnumerable(ReadOnlyBuffer buffer, byte delimiter)
         {
             _buffer = buffer;
             _delimiter = delimiter;
@@ -36,7 +36,7 @@ namespace System.IO.Pipelines.Text.Primitives
 
             int count = 1;
             var current = _buffer;
-            while (current.TrySliceTo(_delimiter, out ReadableBuffer ignore, out ReadCursor cursor))
+            while (current.TrySliceTo(_delimiter, out ReadOnlyBuffer ignore, out Position cursor))
             {
                 current = current.Slice(cursor).Slice(1);
                 count++;
@@ -52,7 +52,7 @@ namespace System.IO.Pipelines.Text.Primitives
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        IEnumerator<ReadableBuffer> IEnumerable<ReadableBuffer>.GetEnumerator()
+        IEnumerator<ReadOnlyBuffer> IEnumerable<ReadOnlyBuffer>.GetEnumerator()
                     => GetEnumerator();
     }
 }

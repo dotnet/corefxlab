@@ -97,7 +97,7 @@ namespace System.IO.Pipelines
             WriteMachineEndian(buffer, ref value);
         }
 
-        public static async Task<ReadableBuffer> ReadToEndAsync(this IPipeReader input)
+        public static async Task<ReadOnlyBuffer> ReadToEndAsync(this IPipeReader input)
         {
             while (true)
             {
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines
         /// Reads a structure of type <typeparamref name="T"/> out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadBigEndian<[Primitive]T>(this ReadableBuffer buffer) where T : struct
+        public static T ReadBigEndian<[Primitive]T>(this ReadOnlyBuffer buffer) where T : struct
         {
             var memory = buffer.First;
             int len = Unsafe.SizeOf<T>();
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines
         /// Reads a structure of type <typeparamref name="T"/> out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T ReadLittleEndian<[Primitive]T>(this ReadableBuffer buffer) where T : struct
+        public static T ReadLittleEndian<[Primitive]T>(this ReadOnlyBuffer buffer) where T : struct
         {
             var memory = buffer.First;
             int len = Unsafe.SizeOf<T>();
@@ -139,14 +139,14 @@ namespace System.IO.Pipelines
             return value;
         }
 
-        private static T ReadMultiBig<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
+        private static T ReadMultiBig<[Primitive]T>(ReadOnlyBuffer buffer, int len) where T : struct
         {
             Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);
             return ((ReadOnlySpan<byte>)localSpan).ReadBigEndian<T>();
         }
 
-        private static T ReadMultiLittle<[Primitive]T>(ReadableBuffer buffer, int len) where T : struct
+        private static T ReadMultiLittle<[Primitive]T>(ReadOnlyBuffer buffer, int len) where T : struct
         {
             Span<byte> localSpan = stackalloc byte[len];
             buffer.Slice(0, len).CopyTo(localSpan);

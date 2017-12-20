@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Samples
                 {
                     // Wait for data
                     var result = await connection.Input.ReadAsync();
-                    ReadableBuffer input = result.Buffer;
+                    ReadOnlyBuffer input = result.Buffer;
 
                     try
                     {

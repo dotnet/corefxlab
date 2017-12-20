@@ -37,12 +37,12 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Copies a <see cref="ReadableBuffer"/> to a <see cref="Stream"/> asynchronously
+        /// Copies a <see cref="ReadOnlyBuffer"/> to a <see cref="Stream"/> asynchronously
         /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to copy</param>
+        /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to copy</param>
         /// <param name="stream">The target <see cref="Stream"/></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this ReadableBuffer buffer, Stream stream)
+        public static Task CopyToAsync(this ReadOnlyBuffer buffer, Stream stream)
         {
             if (buffer.IsSingleSpan)
             {
@@ -52,7 +52,7 @@ namespace System.IO.Pipelines
             return CopyMultipleToStreamAsync(buffer, stream);
         }
 
-        private static async Task CopyMultipleToStreamAsync(this ReadableBuffer buffer, Stream stream)
+        private static async Task CopyMultipleToStreamAsync(this ReadOnlyBuffer buffer, Stream stream)
         {
             foreach (var memory in buffer)
             {

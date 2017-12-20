@@ -391,12 +391,12 @@ namespace System.IO.Pipelines
         }
 
         // Reading
-        void IPipeReader.Advance(ReadCursor consumed)
+        void IPipeReader.Advance(Position consumed)
         {
             ((IPipeReader)this).Advance(consumed, consumed);
         }
 
-        void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
+        void IPipeReader.Advance(Position consumed, Position examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -717,7 +717,7 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer = new ReadableBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+                result.ResultBuffer = new ReadOnlyBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
             }
 
             if (isCancelled)

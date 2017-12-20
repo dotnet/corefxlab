@@ -14,11 +14,11 @@ namespace System.IO.Pipelines.Text.Primitives
     public static class ReadableBufferExtensions
     {
         /// <summary>
-        /// Trim whitespace starting from the specified <see cref="ReadableBuffer"/>.
+        /// Trim whitespace starting from the specified <see cref="ReadOnlyBuffer"/>.
         /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to trim</param>
-        /// <returns>A new <see cref="ReadableBuffer"/> with the starting whitespace trimmed.</returns>
-        public static ReadableBuffer TrimStart(this ReadableBuffer buffer)
+        /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to trim</param>
+        /// <returns>A new <see cref="ReadOnlyBuffer"/> with the starting whitespace trimmed.</returns>
+        public static ReadOnlyBuffer TrimStart(this ReadOnlyBuffer buffer)
         {
             int start = 0;
             foreach (var memory in buffer)
@@ -39,11 +39,11 @@ namespace System.IO.Pipelines.Text.Primitives
         }
 
         /// <summary>
-        /// Trim whitespace starting from the specified <see cref="ReadableBuffer"/>.
+        /// Trim whitespace starting from the specified <see cref="ReadOnlyBuffer"/>.
         /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to trim</param>
-        /// <returns>A new <see cref="ReadableBuffer"/> with the starting whitespace trimmed.</returns>
-        public static ReadableBuffer TrimEnd(this ReadableBuffer buffer)
+        /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to trim</param>
+        /// <returns>A new <see cref="ReadOnlyBuffer"/> with the starting whitespace trimmed.</returns>
+        public static ReadOnlyBuffer TrimEnd(this ReadOnlyBuffer buffer)
         {
             var end = -1;
             var i = 0;
@@ -76,10 +76,10 @@ namespace System.IO.Pipelines.Text.Primitives
         }
 
         /// <summary>
-        /// Parses a <see cref="uint"/> from the specified <see cref="ReadableBuffer"/>
+        /// Parses a <see cref="uint"/> from the specified <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to parse</param>
-        public static uint GetUInt32(this ReadableBuffer buffer)
+        /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to parse</param>
+        public static uint GetUInt32(this ReadOnlyBuffer buffer)
         {
             if (!buffer.AsSequence().TryParseUInt32(out uint value, out int consumed))
             {
@@ -89,10 +89,10 @@ namespace System.IO.Pipelines.Text.Primitives
         }
 
         /// <summary>
-        /// Parses a <see cref="ulong"/> from the specified <see cref="ReadableBuffer"/>
+        /// Parses a <see cref="ulong"/> from the specified <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to parse</param>
-        public static ulong GetUInt64(this ReadableBuffer buffer)
+        /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to parse</param>
+        public static ulong GetUInt64(this ReadOnlyBuffer buffer)
         {
             if (Utf8Parser.TryParse(buffer.First.Span, out ulong value, out _))
             {
@@ -147,10 +147,10 @@ namespace System.IO.Pipelines.Text.Primitives
         }
 
         /// <summary>
-        /// Decodes the ASCII encoded bytes in the <see cref="ReadableBuffer"/> into a <see cref="string"/>
+        /// Decodes the ASCII encoded bytes in the <see cref="ReadOnlyBuffer"/> into a <see cref="string"/>
         /// </summary>
         /// <param name="buffer">The buffer to decode</param>
-        public unsafe static string GetAsciiString(this ReadableBuffer buffer)
+        public unsafe static string GetAsciiString(this ReadOnlyBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -182,10 +182,10 @@ namespace System.IO.Pipelines.Text.Primitives
         }
 
         /// <summary>
-        /// Decodes the utf8 encoded bytes in the <see cref="ReadableBuffer"/> into a <see cref="string"/>
+        /// Decodes the utf8 encoded bytes in the <see cref="ReadOnlyBuffer"/> into a <see cref="string"/>
         /// </summary>
         /// <param name="buffer">The buffer to decode</param>
-        public static string GetUtf8Span(this ReadableBuffer buffer)
+        public static string GetUtf8Span(this ReadOnlyBuffer buffer)
         {
             if (buffer.IsEmpty)
             {
@@ -220,7 +220,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// <summary>
         /// Split a buffer into a sequence of tokens using a delimiter
         /// </summary>
-        public static SplitEnumerable Split(this ReadableBuffer buffer, byte delimiter)
+        public static SplitEnumerable Split(this ReadOnlyBuffer buffer, byte delimiter)
             => new SplitEnumerable(buffer, delimiter);
     }
 }

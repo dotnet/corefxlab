@@ -11,23 +11,23 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public readonly struct ReadableBuffer
+    public readonly struct ReadOnlyBuffer
     {
-        internal readonly ReadCursor BufferStart;
-        internal readonly ReadCursor BufferEnd;
+        internal readonly Position BufferStart;
+        internal readonly Position BufferEnd;
 
         /// <summary>
-        /// Length of the <see cref="ReadableBuffer"/> in bytes.
+        /// Length of the <see cref="ReadOnlyBuffer"/> in bytes.
         /// </summary>
         public long Length => ReadCursorOperations.GetLength(BufferStart, BufferEnd);
 
         /// <summary>
-        /// Determines if the <see cref="ReadableBuffer"/> is empty.
+        /// Determines if the <see cref="ReadOnlyBuffer"/> is empty.
         /// </summary>
         public bool IsEmpty => Length == 0;
 
         /// <summary>
-        /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
+        /// Determins if the <see cref="ReadOnlyBuffer"/> is a single <see cref="Memory{Byte}"/>.
         /// </summary>
         public bool IsSingleSpan => BufferStart.Segment == BufferEnd.Segment;
 
@@ -41,16 +41,16 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// A cursor to the start of the <see cref="ReadableBuffer"/>.
+        /// A cursor to the start of the <see cref="ReadOnlyBuffer"/>.
         /// </summary>
-        public ReadCursor Start => BufferStart;
+        public Position Start => BufferStart;
 
         /// <summary>
-        /// A cursor to the end of the <see cref="ReadableBuffer"/>
+        /// A cursor to the end of the <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        public ReadCursor End => BufferEnd;
+        public Position End => BufferEnd;
 
-        internal ReadableBuffer(ReadCursor start, ReadCursor end)
+        internal ReadOnlyBuffer(Position start, Position end)
         {
             Debug.Assert(start.Segment != null);
             Debug.Assert(end.Segment != null);
@@ -59,105 +59,105 @@ namespace System.IO.Pipelines
             BufferEnd = end;
         }
 
-        internal ReadableBuffer(IMemoryList<byte> startSegment, int startIndex, IMemoryList<byte> endSegment, int endIndex)
+        internal ReadOnlyBuffer(IMemoryList<byte> startSegment, int startIndex, IMemoryList<byte> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
             Debug.Assert(startSegment.Memory.Length >= startIndex);
             Debug.Assert(endSegment.Memory.Length >= endIndex);
 
-            BufferStart = new ReadCursor(startSegment, startIndex);
-            BufferEnd = new ReadCursor(endSegment, endIndex);
+            BufferStart = new Position(startSegment, startIndex);
+            BufferEnd = new Position(endSegment, endIndex);
         }
 
-        internal ReadableBuffer(byte[] startSegment, int startIndex, int length)
+        internal ReadOnlyBuffer(byte[] startSegment, int startIndex, int length)
         {
-            BufferStart = new ReadCursor(startSegment, startIndex);
-            BufferEnd = new ReadCursor(startSegment, startIndex + length);
+            BufferStart = new Position(startSegment, startIndex);
+            BufferEnd = new Position(startSegment, startIndex + length);
         }
 
-        internal ReadableBuffer(OwnedMemory<byte> startSegment, int startIndex, int length)
+        internal ReadOnlyBuffer(OwnedMemory<byte> startSegment, int startIndex, int length)
         {
-            BufferStart = new ReadCursor(startSegment, startIndex);
-            BufferEnd = new ReadCursor(startSegment, startIndex + length);
+            BufferStart = new Position(startSegment, startIndex);
+            BufferEnd = new Position(startSegment, startIndex + length);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadableBuffer Slice(long start, long length)
+        public ReadOnlyBuffer Slice(long start, long length)
         {
             var begin = ReadCursorOperations.Seek(BufferStart, BufferEnd, start, false);
             var end = ReadCursorOperations.Seek(begin, BufferEnd, length, false);
-            return new ReadableBuffer(begin, end);
+            return new ReadOnlyBuffer(begin, end);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadableBuffer Slice(long start, ReadCursor end)
+        public ReadOnlyBuffer Slice(long start, Position end)
         {
             ReadCursorOperations.BoundsCheck(BufferEnd, end);
             var begin = ReadCursorOperations.Seek(BufferStart, end, start);
-            return new ReadableBuffer(begin, end);
+            return new ReadOnlyBuffer(begin, end);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="ReadCursor"/> at which to begin this slice.</param>
-        /// <param name="end">The ending (inclusive) <see cref="ReadCursor"/> of the slice</param>
-        public ReadableBuffer Slice(ReadCursor start, ReadCursor end)
+        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
+        /// <param name="end">The ending (inclusive) <see cref="Position"/> of the slice</param>
+        public ReadOnlyBuffer Slice(Position start, Position end)
         {
             ReadCursorOperations.BoundsCheck(BufferEnd, end);
             ReadCursorOperations.BoundsCheck(end, start);
 
-            return new ReadableBuffer(start, end);
+            return new ReadOnlyBuffer(start, end);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="ReadCursor"/> at which to begin this slice.</param>
+        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadableBuffer Slice(ReadCursor start, long length)
+        public ReadOnlyBuffer Slice(Position start, long length)
         {
             ReadCursorOperations.BoundsCheck(BufferEnd, start);
 
             var end = ReadCursorOperations.Seek(start, BufferEnd, length, false);
 
-            return new ReadableBuffer(start, end);
+            return new ReadOnlyBuffer(start, end);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadableBuffer"/>'s end.
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="ReadCursor"/> at which to begin this slice.</param>
-        public ReadableBuffer Slice(ReadCursor start)
+        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
+        public ReadOnlyBuffer Slice(Position start)
         {
             ReadCursorOperations.BoundsCheck(BufferEnd, start);
 
-            return new ReadableBuffer(start, BufferEnd);
+            return new ReadOnlyBuffer(start, BufferEnd);
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadableBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadableBuffer"/>'s end.
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
         /// <param name="start">The start index at which to begin this slice.</param>
-        public ReadableBuffer Slice(long start)
+        public ReadOnlyBuffer Slice(long start)
         {
             if (start == 0) return this;
 
             var begin = ReadCursorOperations.Seek(BufferStart, BufferEnd, start, false);
-            return new ReadableBuffer(begin, BufferEnd);
+            return new ReadOnlyBuffer(begin, BufferEnd);
         }
 
         /// <summary>
-        /// Copy the <see cref="ReadableBuffer"/> to the specified <see cref="Span{Byte}"/>.
+        /// Copy the <see cref="ReadOnlyBuffer"/> to the specified <see cref="Span{Byte}"/>.
         /// </summary>
         /// <param name="destination">The destination <see cref="Span{Byte}"/>.</param>
         public void CopyTo(Span<byte> destination)
@@ -175,7 +175,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Converts the <see cref="ReadableBuffer"/> to a <see cref="T:byte[]"/>
+        /// Converts the <see cref="ReadOnlyBuffer"/> to a <see cref="T:byte[]"/>
         /// </summary>
         public byte[] ToArray()
         {
@@ -199,14 +199,14 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Returns an enumerator over the <see cref="ReadableBuffer"/>
+        /// Returns an enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
         public BufferEnumerator GetEnumerator()
         {
             return new BufferEnumerator(this);
         }
 
-        public ReadCursor Move(ReadCursor cursor, long count)
+        public Position Move(Position cursor, long count)
         {
             if (count < 0)
             {
@@ -215,7 +215,7 @@ namespace System.IO.Pipelines
             return ReadCursorOperations.Seek(cursor, BufferEnd, count, false);
         }
 
-        public bool TryGet(ref ReadCursor cursor, out ReadOnlyMemory<byte> data, bool advance = true)
+        public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
         {
             var result = ReadCursorOperations.TryGetBuffer(cursor, End, out data, out var next);
             if (advance)
@@ -227,35 +227,35 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an array.
+        /// Create a <see cref="ReadOnlyBuffer"/> over an array.
         /// </summary>
-        public static ReadableBuffer Create(byte[] data, int offset, int length)
+        public static ReadOnlyBuffer Create(byte[] data, int offset, int length)
         {
             if (data == null)
             {
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return new ReadableBuffer(data, offset, length);
+            return new ReadOnlyBuffer(data, offset, length);
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an array.
+        /// Create a <see cref="ReadOnlyBuffer"/> over an array.
         /// </summary>
-        public static ReadableBuffer Create(byte[] data)
+        public static ReadOnlyBuffer Create(byte[] data)
         {
             if (data == null)
             {
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return new ReadableBuffer(data, 0, data.Length);
+            return new ReadOnlyBuffer(data, 0, data.Length);
         }
 
         /// <summary>
-        /// Create a <see cref="ReadableBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
+        /// Create a <see cref="ReadOnlyBuffer"/> over an <see cref="OwnedMemory{Byte}"/>.
         /// </summary>
-        public static ReadableBuffer Create(OwnedMemory<byte> data, int offset, int length)
+        public static ReadOnlyBuffer Create(OwnedMemory<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -272,29 +272,29 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            return new ReadableBuffer(data, offset, length);
+            return new ReadOnlyBuffer(data, offset, length);
         }
 
         /// <summary>
-        /// An enumerator over the <see cref="ReadableBuffer"/>
+        /// An enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
         public struct BufferEnumerator
         {
-            private readonly ReadableBuffer _readableBuffer;
-            private ReadCursor _next;
-            private ReadCursor _current;
+            private readonly ReadOnlyBuffer _readOnlyBuffer;
+            private Position _next;
+            private Position _current;
 
             private ReadOnlyMemory<byte> _currentMemory;
 
             /// <summary>
             ///
             /// </summary>
-            public BufferEnumerator(ReadableBuffer readableBuffer)
+            public BufferEnumerator(ReadOnlyBuffer readOnlyBuffer)
             {
-                _readableBuffer = readableBuffer;
+                _readOnlyBuffer = readOnlyBuffer;
                 _currentMemory = default;
                 _current = default;
-                _next = readableBuffer.Start;
+                _next = readOnlyBuffer.Start;
             }
 
             /// <summary>
@@ -307,7 +307,7 @@ namespace System.IO.Pipelines
             }
 
             /// <summary>
-            /// Moves to the next <see cref="Buffer{Byte}"/> in the <see cref="ReadableBuffer"/>
+            /// Moves to the next <see cref="Buffer{Byte}"/> in the <see cref="ReadOnlyBuffer"/>
             /// </summary>
             /// <returns></returns>
             public bool MoveNext()
@@ -319,7 +319,7 @@ namespace System.IO.Pipelines
 
                 _current = _next;
 
-                return _readableBuffer.TryGet(ref _next, out _currentMemory);
+                return _readOnlyBuffer.TryGet(ref _next, out _currentMemory);
             }
 
             public BufferEnumerator GetEnumerator()
@@ -332,9 +332,9 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowNotSupportedException();
             }
 
-            public ReadCursor CreateCursor(int index)
+            public Position CreateCursor(int index)
             {
-                return _readableBuffer.Move(_current, index);
+                return _readOnlyBuffer.Move(_current, index);
             }
         }
     }

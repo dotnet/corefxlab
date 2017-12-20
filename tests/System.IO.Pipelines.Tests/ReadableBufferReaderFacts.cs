@@ -94,10 +94,10 @@ namespace System.IO.Pipelines.Tests
             first.SetMemory(new OwnedArray<byte>(new byte[] { 1, 2 }), 0, 2);
             first.SetNext(last);
 
-            var start = new ReadCursor(first, first.Start);
-            var end = new ReadCursor(last, last.Start);
+            var start = new Position(first, first.Start);
+            var end = new Position(last, last.Start);
 
-            var reader = new ReadableBufferReader(new ReadableBuffer(start, end));
+            var reader = new ReadableBufferReader(new ReadOnlyBuffer(start, end));
             reader.Take();
             reader.Take();
             reader.Take();

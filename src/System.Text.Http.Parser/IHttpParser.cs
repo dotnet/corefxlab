@@ -7,9 +7,9 @@ namespace System.Text.Http.Parser
 {
     public interface IHttpParser
     {
-        bool ParseRequestLine<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler;
+        bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler;
 
-        bool ParseHeaders<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler;
+        bool ParseHeaders<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler;
 
         void Reset();
     }

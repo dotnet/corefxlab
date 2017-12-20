@@ -9,11 +9,11 @@ namespace System.IO.Pipelines.Text.Primitives
     /// <summary>
     /// Supports a simple iteration over a sequence of buffers from a Split operation.
     /// </summary>
-    public struct SplitEnumerator : IEnumerator<ReadableBuffer>
+    public struct SplitEnumerator : IEnumerator<ReadOnlyBuffer>
     {
         private readonly byte _delimiter;
-        private ReadableBuffer _current, _remainder;
-        internal SplitEnumerator(ReadableBuffer remainder, byte delimiter)
+        private ReadOnlyBuffer _current, _remainder;
+        internal SplitEnumerator(ReadOnlyBuffer remainder, byte delimiter)
         {
             _current = default;
             _remainder = remainder;
@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// <summary>
         /// Gets the element in the collection at the current position of the enumerator.
         /// </summary>
-        public ReadableBuffer Current => _current;
+        public ReadOnlyBuffer Current => _current;
 
         object IEnumerator.Current => _current;
 
@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// </summary>
         public bool MoveNext()
         {
-            if (_remainder.TrySliceTo(_delimiter, out _current, out ReadCursor cursor))
+            if (_remainder.TrySliceTo(_delimiter, out _current, out Position cursor))
             {
                 _remainder = _remainder.Slice(cursor).Slice(1);
                 return true;

@@ -17,52 +17,52 @@ namespace System.IO.Pipelines.Tests
         public static TestBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
         public static TestBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
 
-        public abstract ReadableBuffer CreateOfSize(int size);
-        public abstract ReadableBuffer CreateWithContent(byte[] data);
+        public abstract ReadOnlyBuffer CreateOfSize(int size);
+        public abstract ReadOnlyBuffer CreateWithContent(byte[] data);
 
-        public ReadableBuffer CreateWithContent(string data)
+        public ReadOnlyBuffer CreateWithContent(string data)
         {
             return CreateWithContent(Encoding.ASCII.GetBytes(data));
         }
 
         internal class ArrayTestBufferFactory : TestBufferFactory
         {
-            public override ReadableBuffer CreateOfSize(int size)
+            public override ReadOnlyBuffer CreateOfSize(int size)
             {
-                return ReadableBuffer.Create(new byte[size + 20], 10, size);
+                return ReadOnlyBuffer.Create(new byte[size + 20], 10, size);
             }
 
-            public override ReadableBuffer CreateWithContent(byte[] data)
+            public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return ReadableBuffer.Create(startSegment, 10, data.Length);
+                return ReadOnlyBuffer.Create(startSegment, 10, data.Length);
             }
         }
 
         internal class OwnedMemoryTestBufferFactory : TestBufferFactory
         {
-            public override ReadableBuffer CreateOfSize(int size)
+            public override ReadOnlyBuffer CreateOfSize(int size)
             {
-                return ReadableBuffer.Create(new OwnedArray<byte>(size + 20), 10, size);
+                return ReadOnlyBuffer.Create(new OwnedArray<byte>(size + 20), 10, size);
             }
 
-            public override ReadableBuffer CreateWithContent(byte[] data)
+            public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return ReadableBuffer.Create(new OwnedArray<byte>(startSegment), 10, data.Length);
+                return ReadOnlyBuffer.Create(new OwnedArray<byte>(startSegment), 10, data.Length);
             }
         }
 
         internal class SingleSegmentTestBufferFactory: TestBufferFactory
         {
-            public override ReadableBuffer CreateOfSize(int size)
+            public override ReadOnlyBuffer CreateOfSize(int size)
             {
                 return BufferUtilities.CreateBuffer(size);
             }
 
-            public override ReadableBuffer CreateWithContent(byte[] data)
+            public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 return BufferUtilities.CreateBuffer(data);
             }
@@ -70,12 +70,12 @@ namespace System.IO.Pipelines.Tests
 
         internal class BytePerSegmentTestBufferFactory: TestBufferFactory
         {
-            public override ReadableBuffer CreateOfSize(int size)
+            public override ReadOnlyBuffer CreateOfSize(int size)
             {
                 return CreateWithContent(new byte[size]);
             }
 
-            public override ReadableBuffer CreateWithContent(byte[] data)
+            public override ReadOnlyBuffer CreateWithContent(byte[] data)
             {
                 var segments = new List<byte[]>();
 

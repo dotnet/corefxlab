@@ -9,11 +9,11 @@ namespace System.IO.Pipelines
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private ReadableBuffer.BufferEnumerator _enumerator;
+        private ReadOnlyBuffer.BufferEnumerator _enumerator;
         private int _consumedBytes;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer)
+        public ReadableBufferReader(ReadOnlyBuffer buffer)
         {
             _end = false;
             _index = 0;
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
 
         public int Index => _index;
 
-        public ReadCursor Cursor => _enumerator.CreateCursor(_index);
+        public Position Cursor => _enumerator.CreateCursor(_index);
 
         public ReadOnlySpan<byte> Span => _currentSpan;
 

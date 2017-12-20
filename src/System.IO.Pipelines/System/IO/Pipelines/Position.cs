@@ -10,12 +10,12 @@ using System.Text;
 namespace System.IO.Pipelines
 {
     [DebuggerDisplay("{Segment}[{Index}]")]
-    public readonly struct ReadCursor : IEquatable<ReadCursor>
+    public readonly struct Position : IEquatable<Position>
     {
         internal readonly object Segment;
         internal readonly int Index;
 
-        internal ReadCursor(object segment, int index)
+        internal Position(object segment, int index)
         {
             Segment = segment;
             Index = index;
@@ -23,24 +23,24 @@ namespace System.IO.Pipelines
 
         internal bool IsDefault => Segment == null;
 
-        public static bool operator ==(ReadCursor c1, ReadCursor c2)
+        public static bool operator ==(Position c1, Position c2)
         {
             return c1.Equals(c2);
         }
 
-        public static bool operator !=(ReadCursor c1, ReadCursor c2)
+        public static bool operator !=(Position c1, Position c2)
         {
             return !c1.Equals(c2);
         }
 
-        public bool Equals(ReadCursor other)
+        public bool Equals(Position other)
         {
             return other.Segment == Segment && other.Index == Index;
         }
 
         public override bool Equals(object obj)
         {
-            return Equals((ReadCursor)obj);
+            return Equals((Position)obj);
         }
 
         public override int GetHashCode()

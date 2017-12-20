@@ -78,7 +78,7 @@ namespace System.IO.Pipelines.Tests
 
         [Theory]
         [MemberData(nameof(OutOfRangeSliceCases))]
-        public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
+        public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadOnlyBuffer> fail)
         {
             var buffer = Factory.CreateOfSize(100);
             var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
@@ -127,7 +127,7 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 0), new ReadCursor(bufferSegment2, 50));
+            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 50));
 
             var c1 = readableBuffer.Move(readableBuffer.Start, 25); // segment 1 index 75
             var c2 = readableBuffer.Move(readableBuffer.Start, 55); // segment 2 index 5
@@ -147,7 +147,7 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 0);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadableBuffer(new ReadCursor(bufferSegment1, 0), new ReadCursor(bufferSegment2, 0));
+            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 0));
 
             var c1 = readableBuffer.Move(readableBuffer.Start, 50);
 
@@ -158,7 +158,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void Create_WorksWithArray()
         {
-            var readableBuffer = ReadableBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
+            var readableBuffer = ReadOnlyBuffer.Create(new byte[] {1, 2, 3, 4, 5}, 2, 3);
             Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
         }
 
@@ -166,11 +166,11 @@ namespace System.IO.Pipelines.Tests
         public void Create_WorksWithOwnedMemory()
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
-            var readableBuffer = ReadableBuffer.Create(memory, 2, 3);
+            var readableBuffer = ReadOnlyBuffer.Create(memory, 2, 3);
             Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
         }
 
-        public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadableBuffer>>
+        public static TheoryData<Action<ReadOnlyBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadOnlyBuffer>>
         {
             b => b.Slice(101),
             b => b.Slice(0, 101),

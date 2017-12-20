@@ -32,7 +32,7 @@ namespace System.IO.Pipelines
         /// The memory for the consumed data will be released and no longer available.
         /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
-        void Advance(ReadCursor consumed);
+        void Advance(Position consumed);
 
         /// <summary>
         /// Moves forward the pipeline's read cursor to after the consumed data.
@@ -43,7 +43,7 @@ namespace System.IO.Pipelines
         /// The memory for the consumed data will be released and no longer available.
         /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
-        void Advance(ReadCursor consumed, ReadCursor examined);
+        void Advance(Position consumed, Position examined);
 
         /// <summary>
         /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.

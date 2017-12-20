@@ -66,9 +66,9 @@ namespace System.IO.Pipelines.Tests
         public void MemorySeek(string raw, string search, char expectResult, int expectIndex)
         {
             var cursors = Factory.CreateWithContent(raw);
-            ReadCursor start = cursors.Start;
-            ReadCursor end = cursors.End;
-            ReadCursor result = default;
+            Position start = cursors.Start;
+            Position end = cursors.End;
+            Position result = default;
 
             var searchFor = search.ToCharArray();
 
@@ -103,7 +103,7 @@ namespace System.IO.Pipelines.Tests
 
             // Act
             var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out ReadCursor result, (byte)seek);
+            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out Position result, (byte)seek);
             var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
             var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 
