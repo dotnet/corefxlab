@@ -7,7 +7,7 @@ using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Http.Parser.Internal;
-using Position = System.IO.Pipelines.Position;
+using Position = System.Buffers.Position;
 
 namespace System.Text.Http.Parser
 {

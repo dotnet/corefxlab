@@ -6,6 +6,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>Slice Span Slices Spans</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Buffers" Version="$(CoreFxStableVersion)" />

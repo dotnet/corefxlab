@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using Position = System.Buffers.Position;
 
 namespace System.IO.Pipelines.Tests
 {

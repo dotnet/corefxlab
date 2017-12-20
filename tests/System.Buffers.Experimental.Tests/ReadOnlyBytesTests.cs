@@ -357,7 +357,7 @@ namespace System.Buffers.Tests
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
-            Position position = bytes.First;
+            Collections.Sequences.Position position = bytes.First;
             int length = 0;
             ReadOnlyMemory<byte> segment;
             while (bytes.TryGet(ref position, out segment))
@@ -401,7 +401,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(i);
 
                 {
-                    Position position = multibytes.First;
+                    Collections.Sequences.Position position = multibytes.First;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {
@@ -429,7 +429,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(0, i);
 
                 {
-                    Position position = multibytes.First;
+                    Collections.Sequences.Position position = multibytes.First;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {

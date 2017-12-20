@@ -54,7 +54,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadOnlyBytes(Position first, Position last)
+        public ReadOnlyBytes(Collections.Sequences.Position first, Collections.Sequences.Position last)
         {
             (_start, _startIndex) = first.Get<object>();
             (_end, _endIndex) = last.Get<object>();
@@ -134,7 +134,7 @@ namespace System.Buffers
         public ReadOnlyBytes Slice(int index)
             => Slice((long)index);
 
-        public ReadOnlyBytes Slice(Position position)
+        public ReadOnlyBytes Slice(Collections.Sequences.Position position)
         {
             var kind = Kind;
             switch (kind)
@@ -143,12 +143,12 @@ namespace System.Buffers
                     var array = position.GetItem<byte[]>();
                     return new ReadOnlyBytes(array, position.Index, array.Length - position.Index);
                 case Type.MemoryList:
-                    return Slice(position, Position.Create((IMemoryList<byte>)_end, _endIndex));
+                    return Slice(position, Collections.Sequences.Position.Create((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
 
-        public ReadOnlyBytes Slice(Position start, Position end)
+        public ReadOnlyBytes Slice(Collections.Sequences.Position start, Collections.Sequences.Position end)
         {
             var kind = Kind;
             switch (kind)
@@ -236,7 +236,7 @@ namespace System.Buffers
             }
         }
 
-        public Position First => Position.Create(_start, _startIndex);
+        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -270,7 +270,7 @@ namespace System.Buffers
             return array;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref Collections.Sequences.Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             if(position == default)
             {
@@ -299,7 +299,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = Position.Create(node.Next);
+                    if (advance) position = Collections.Sequences.Position.Create(node.Next);
                 }
                 return true;
             }

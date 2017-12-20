@@ -14,8 +14,8 @@ namespace System.Buffers.Text
     public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
     {
         readonly TSequence _bytes;
-        Position _currentSegmentPosition;
-        Position _nextSegmentPosition;
+        Collections.Sequences.Position _currentSegmentPosition;
+        Collections.Sequences.Position _nextSegmentPosition;
         ReadOnlySpan<byte> _currentSpan;
         int _currentSpanIndex;
 
@@ -62,7 +62,7 @@ namespace System.Buffers.Text
                     return false;
                 }
 
-                Position position = _nextSegmentPosition;
+                Collections.Sequences.Position position = _nextSegmentPosition;
                 while (_bytes.TryGet(ref position, out ReadOnlyMemory<byte> next))
                 {
                     if (!next.IsEmpty) return false;
@@ -175,7 +175,7 @@ namespace System.Buffers.Text
             Advance(count - currentSegmentUnread);
         }
 
-        public void Advance(Position position)
+        public void Advance(Collections.Sequences.Position position)
         {
             _currentSegmentPosition = position;
             _nextSegmentPosition = position;
@@ -302,7 +302,7 @@ namespace System.Buffers.Text
 
         ReadOnlySpan<byte> Unread => _currentSpan.Slice(_currentSpanIndex);
 
-        Position Position
+        Collections.Sequences.Position Position
         {
             get {
                 var result = _currentSegmentPosition;
@@ -311,7 +311,7 @@ namespace System.Buffers.Text
             }
         }
 
-        Position? AdvanceToDelimiter(byte value)
+        Collections.Sequences.Position? AdvanceToDelimiter(byte value)
         {
             var unread = Unread;
             var index = unread.IndexOf(value);
@@ -345,7 +345,7 @@ namespace System.Buffers.Text
             return null;
         }
 
-        Position? PositionOf(ReadOnlySpan<byte> value)
+        Collections.Sequences.Position? PositionOf(ReadOnlySpan<byte> value)
         {
             var unread = Unread;
             var index = unread.IndexOf(value);
@@ -401,10 +401,10 @@ namespace System.Buffers.Text
 
     struct PositionRange
     {
-        public readonly Position Start;
-        public readonly Position End;
+        public readonly Collections.Sequences.Position Start;
+        public readonly Collections.Sequences.Position End;
 
-        public PositionRange(Position start, Position end)
+        public PositionRange(Collections.Sequences.Position start, Collections.Sequences.Position end)
         {
             Start = start;
             End = end;

@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Collections.Sequences;
+using Position = System.Buffers.Position;
 
 namespace System.IO.Pipelines
 {
@@ -18,7 +20,7 @@ namespace System.IO.Pipelines
 
         public bool TryGet(ref Collections.Sequences.Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            var p = new System.IO.Pipelines.Position(position.GetItem<object>(), position.Index);
+            var p = new Position(position.GetItem<object>(), position.Index);
             var result =  _buffer.TryGet(ref p, out item);
             if (advance)
             {

@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Collections.Sequences;
 using System.Diagnostics;
+using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.

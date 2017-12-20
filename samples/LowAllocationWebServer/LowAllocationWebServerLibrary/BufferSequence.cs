@@ -5,6 +5,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
+using Position = System.Collections.Sequences.Position;
 
 namespace Microsoft.Net
 {

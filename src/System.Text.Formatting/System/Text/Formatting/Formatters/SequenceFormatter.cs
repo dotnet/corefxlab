@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Sequences;
+using Position = System.Collections.Sequences.Position;
 
 namespace System.Text.Formatting
 {

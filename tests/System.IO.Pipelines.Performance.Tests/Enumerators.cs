@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.IO.Pipelines.Testing;
 using System.Linq;
 using BenchmarkDotNet.Attributes;

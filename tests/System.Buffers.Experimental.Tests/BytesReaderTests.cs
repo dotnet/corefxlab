@@ -172,7 +172,7 @@ namespace System.Buffers.Tests
             var sb = new StringBuilder();
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
-                Position position = bytes.First;
+                Collections.Sequences.Position position = bytes.First;
                 while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                 {
                     sb.Append(new Utf8Span(segment.Span).ToString());
@@ -189,7 +189,7 @@ namespace System.Buffers.Tests
         {
             var sb = new StringBuilder();
 
-            Position position = bytes.First;
+            Collections.Sequences.Position position = bytes.First;
             while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
             {
                 sb.Append(new Utf8Span(segment.Span).ToString());
