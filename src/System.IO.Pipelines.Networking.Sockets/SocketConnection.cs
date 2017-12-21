@@ -86,8 +86,8 @@ namespace System.IO.Pipelines.Networking.Sockets
 
             // TODO: Make this configurable
             // Dispatch to avoid deadlocks
-            _input = new Pipe(new PipeOptions(pool, TaskRunScheduler.Default, TaskRunScheduler.Default));
-            _output = new Pipe(new PipeOptions(pool, TaskRunScheduler.Default, TaskRunScheduler.Default));
+            _input = new Pipe(new PipeOptions(pool, Scheduler.TaskRun, Scheduler.TaskRun));
+            _output = new Pipe(new PipeOptions(pool, Scheduler.TaskRun, Scheduler.TaskRun));
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();

@@ -31,8 +31,8 @@ namespace System.IO.Pipelines
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private readonly IScheduler _readerScheduler;
-        private readonly IScheduler _writerScheduler;
+        private readonly Scheduler _readerScheduler;
+        private readonly Scheduler _writerScheduler;
 
         private long _length;
         private long _currentWriteLength;
@@ -96,8 +96,8 @@ namespace System.IO.Pipelines
             _pool = options.Pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
-            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
+            _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
@@ -391,8 +391,12 @@ namespace System.IO.Pipelines
         }
 
         // Reading
+        void IPipeReader.Advance(Position consumed)
+        {
+            ((IPipeReader)this).Advance(consumed, consumed);
+        }
 
-        void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
+        void IPipeReader.Advance(Position consumed, Position examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -421,7 +425,7 @@ namespace System.IO.Pipelines
                     returnEnd = consumedSegment;
 
                     // Check if we crossed _maximumSizeLow and complete backpressure
-                    var consumedBytes = ReadCursorOperations.GetLength(returnStart, _readHeadIndex, consumedSegment, consumed.Index);
+                    var consumedBytes = new ReadOnlyBuffer(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
                     var oldLength = _length;
                     _length -= consumedBytes;
 
@@ -619,7 +623,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static void TrySchedule(IScheduler scheduler, Action action)
+        private static void TrySchedule(Scheduler scheduler, Action action)
         {
             if (action != null)
             {
@@ -627,7 +631,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static void TrySchedule(IScheduler scheduler, Action<object> action, object state)
+        private static void TrySchedule(Scheduler scheduler, Action<object> action, object state)
         {
             if (action != null)
             {
@@ -713,7 +717,7 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer = new ReadableBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+                result.ResultBuffer = new ReadOnlyBuffer(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
             }
 
             if (isCancelled)

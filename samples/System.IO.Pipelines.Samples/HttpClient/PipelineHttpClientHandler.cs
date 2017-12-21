@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
@@ -104,14 +105,14 @@ namespace System.IO.Pipelines.Samples
                     {
                         break;
                     }
-                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadableBuffer responseLine, out ReadCursor delim))
+                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer responseLine, out Position delim))
                     {
                         continue;
                     }
 
                     responseBuffer = responseBuffer.Slice(delim).Slice(2);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer httpVersion, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer httpVersion, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -121,7 +122,7 @@ namespace System.IO.Pipelines.Samples
 
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer statusCode, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer statusCode, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -130,7 +131,7 @@ namespace System.IO.Pipelines.Samples
                     response.StatusCode = (HttpStatusCode)statusCode.GetUInt32();
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadableBuffer remaining, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer remaining, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -169,7 +170,7 @@ namespace System.IO.Pipelines.Samples
 
                         // End of the header
                         // \n
-                        if (!responseBuffer.TrySliceTo((byte)'\n', out ReadableBuffer headerPair, out delim))
+                        if (!responseBuffer.TrySliceTo((byte)'\n', out ReadOnlyBuffer headerPair, out delim))
                         {
                             break;
                         }
@@ -177,7 +178,7 @@ namespace System.IO.Pipelines.Samples
                         responseBuffer = responseBuffer.Slice(delim).Slice(1);
 
                         // :
-                        if (!headerPair.TrySliceTo((byte)':', out ReadableBuffer headerName, out delim))
+                        if (!headerPair.TrySliceTo((byte)':', out ReadOnlyBuffer headerName, out delim))
                         {
                             throw new Exception();
                         }
@@ -186,7 +187,7 @@ namespace System.IO.Pipelines.Samples
                         headerPair = headerPair.Slice(headerName.End).Slice(1);
 
                         // \r
-                        if (!headerPair.TrySliceTo((byte)'\r', out ReadableBuffer headerValue, out delim))
+                        if (!headerPair.TrySliceTo((byte)'\r', out ReadOnlyBuffer headerValue, out delim))
                         {
                             // Bad request
                             throw new Exception();
@@ -283,7 +284,7 @@ namespace System.IO.Pipelines.Samples
         {
             public Task<IPipeConnection> ConnectionTask { get; set; }
             public int PreviousContentLength { get; set; }
-            public ReadCursor Consumed { get; set; }
+            public Position Consumed { get; set; }
         }
     }
 }

@@ -11,6 +11,7 @@ using System.IO.Pipelines;
 using System.Text;
 using System.Text.Http;
 using System.Text.Http.Parser;
+using Position = System.Buffers.Position;
 
 public class HttpParserBench
 {
@@ -36,11 +37,11 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool RequestLineRb()
     {
-        ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerRequestBytes);
+        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
         var parser = new HttpParser();
         var request = new Request();
-        ReadCursor consumed = default;
-        ReadCursor read;
+        Position consumed = default;
+        Position read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -73,8 +74,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
-        Position consumed = default;
-        Position read;
+        System.Collections.Sequences.Position consumed = default;
+        System.Collections.Sequences.Position read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -136,11 +137,11 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool HeadersRb()
     {
-        ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerHeadersBytes);
+        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        ReadCursor consumed;
-        ReadCursor examined;
+        Position consumed;
+        Position examined;
         int consumedBytes;
         bool success = true;
 
@@ -170,8 +171,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        Position consumed = default;
-        Position examined;
+        System.Collections.Sequences.Position consumed = default;
+        System.Collections.Sequences.Position examined;
         int consumedBytes;
         bool success = true;
 
@@ -259,12 +260,12 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool FullRequestRb()
     {
-        ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerRequestBytes);
+        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
         int consumedBytes  = 0;
-        ReadCursor examined;
-        ReadCursor consumed = buffer.Start;
+        Position examined;
+        Position consumed = buffer.Start;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations) {
@@ -326,8 +327,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new RequestStruct();
-        Position consumed = default;
-        Position examined;
+        System.Collections.Sequences.Position consumed = default;
+        System.Collections.Sequences.Position examined;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -351,7 +352,7 @@ public class HttpParserBench
 
 static class HttpParserExtensions
 {
-    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
+    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined) where T : IHttpRequestLineHandler
     {
         if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
         {
@@ -364,7 +365,7 @@ static class HttpParserExtensions
         return false;
     }
 
-    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined, out int consumedBytes) where T : IHttpHeadersHandler
     {
         if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
         {
@@ -377,7 +378,7 @@ static class HttpParserExtensions
         return false;
     }
 
-    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
+    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
     {
         if (
             parser.ParseRequestLine(ref handler, buffer, out var consumedRLBytes) &&

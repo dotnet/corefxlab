@@ -9,7 +9,7 @@ namespace System.IO.Pipelines.Testing
 {
     public class BufferUtilities
     {
-        public static ReadableBuffer CreateBuffer(params byte[][] inputs)
+        public static ReadOnlyBuffer CreateBuffer(params byte[][] inputs)
         {
             if (inputs == null || inputs.Length == 0)
             {
@@ -50,10 +50,10 @@ namespace System.IO.Pipelines.Testing
                 i++;
             } while (i < inputs.Length);
 
-            return new ReadableBuffer(new ReadCursor(first, 0), new ReadCursor(last, last.Length));
+            return new ReadOnlyBuffer(new Position(first, 0), new Position(last, last.Length));
         }
 
-        public static ReadableBuffer CreateBuffer(params string[] inputs)
+        public static ReadOnlyBuffer CreateBuffer(params string[] inputs)
         {
             var buffers = new byte[inputs.Length][];
             for (int i = 0; i < inputs.Length; i++)
@@ -63,7 +63,7 @@ namespace System.IO.Pipelines.Testing
             return CreateBuffer(buffers);
         }
 
-        public static ReadableBuffer CreateBuffer(params int[] inputs)
+        public static ReadOnlyBuffer CreateBuffer(params int[] inputs)
         {
             byte[][] buffers;
             if (inputs.Length == 0)

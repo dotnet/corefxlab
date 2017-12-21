@@ -36,7 +36,7 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
 
-            Assert.False(buffer.TrySliceTo(10, out ReadableBuffer slice, out ReadCursor cursor));
+            Assert.False(buffer.TrySliceTo(10, out ReadOnlyBuffer slice, out Position cursor));
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.TrySliceTo((byte)'R', out ReadableBuffer slice, out ReadCursor cursor));
+            Assert.False(buffer.TrySliceTo((byte)'R', out ReadOnlyBuffer slice, out Position cursor));
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
@@ -77,7 +77,7 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
             Assert.False(buffer.IsSingleSpan);
-            Assert.True(buffer.TrySliceTo((byte)' ', out ReadableBuffer slice, out ReadCursor cursor));
+            Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer slice, out Position cursor));
 
             slice = buffer.Slice(cursor).Slice(1);
             var array = slice.ToArray();

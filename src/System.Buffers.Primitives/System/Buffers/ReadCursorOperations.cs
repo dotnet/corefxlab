@@ -10,9 +10,9 @@ namespace System.IO.Pipelines
 {
     public static class ReadCursorOperations
     {
-        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
+        public static int Seek(Position begin, Position end, out Position result, byte byte0)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
@@ -29,9 +29,9 @@ namespace System.IO.Pipelines
             return -1;
         }
 
-        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
+        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
@@ -48,9 +48,9 @@ namespace System.IO.Pipelines
             return -1;
         }
 
-        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
+        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1, byte byte2)
         {
-            var enumerator = new BufferEnumerator(begin, end);
+            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static long GetLength(ReadCursor begin, ReadCursor end)
+        internal static long GetLength(Position begin, Position end)
         {
             if (begin.IsDefault)
             {
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines
                     return end.Index - begin.Index;
             }
 
-            PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
 
@@ -107,13 +107,13 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ReadCursor Seek(ReadCursor begin, ReadCursor end, long bytes, bool checkEndReachable = true)
+        internal static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
         {
-            ReadCursor cursor;
+            Position cursor;
             if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
             {
                 // end.Index >= bytes + Index and end.Index is int
-                cursor = new ReadCursor(begin.Segment, begin.Index + (int)bytes);
+                cursor = new Position(begin.Segment, begin.Index + (int)bytes);
             }
             else
             {
@@ -124,9 +124,9 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ReadCursor SeekMultiSegment(ReadCursor begin, ReadCursor end, long bytes,  bool checkEndReachable)
+        private static Position SeekMultiSegment(Position begin, Position end, long bytes,  bool checkEndReachable)
         {
-            ReadCursor result = default;
+            Position result = default;
             var foundResult = false;
             var current = begin;
             while (TryGetBuffer(begin, end, out var memory, out begin))
@@ -141,7 +141,7 @@ namespace System.IO.Pipelines
                     if (memory.Length > bytes ||
                        (memory.Length == bytes && begin.IsDefault))
                     {
-                        result = new ReadCursor(current.Segment, current.Index + (int)bytes);
+                        result = new Position(current.Segment, current.Index + (int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)
                         {
@@ -156,14 +156,14 @@ namespace System.IO.Pipelines
 
             if (!foundResult)
             {
-                PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                ThrowHelper.ThrowCursorOutOfBoundsException();
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void BoundsCheck(ReadCursor end, ReadCursor newCursor)
+        internal static void BoundsCheck(Position end, Position newCursor)
         {
             switch (end.Segment)
             {
@@ -171,23 +171,23 @@ namespace System.IO.Pipelines
                 case OwnedMemory<byte> _ :
                     if (newCursor.Index > end.Index)
                     {
-                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 case IMemoryList<byte> memoryList:
                     if (!GreaterOrEqual(memoryList, end.Index, newCursor.Get<IMemoryList<byte>>(), newCursor.Index))
                     {
-                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 default:
-                    PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
+                    ThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetBuffer(ReadCursor begin, ReadCursor end, out ReadOnlyMemory<byte> data, out ReadCursor next)
+        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
         {
             var segment = begin.Segment;
 
@@ -214,14 +214,14 @@ namespace System.IO.Pipelines
                         {
                             if (end.Segment != null)
                             {
-                                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                             }
 
                             next = default;
                         }
                         else
                         {
-                            next = new ReadCursor(nextSegment, 0);
+                            next = new Position(nextSegment, 0);
                         }
                     }
 
@@ -235,7 +235,7 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                         ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
 
                     next = default;
@@ -246,13 +246,13 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
                     next = default;
                     return true;
             }
 
-            PipelinesThrowHelper.ThrowNotSupportedException();
+            ThrowHelper.ThrowNotSupportedException();
             next = default;
             return false;
         }

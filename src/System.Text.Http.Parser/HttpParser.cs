@@ -7,6 +7,7 @@ using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Http.Parser.Internal;
+using Position = System.Buffers.Position;
 
 namespace System.Text.Http.Parser
 {
@@ -36,7 +37,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -55,7 +56,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                if (TryGetNewLineSpan(buffer, out ReadCursor found))
+                if (TryGetNewLineSpan(buffer, out Position found))
                 {
                     span = buffer.Slice(consumed, found).ToSpan();
                     consumed = found;
@@ -228,7 +229,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -236,8 +237,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new ReadableBufferReader(buffer);
-            var start = default(ReadableBufferReader);
+            var reader = new ReadOnlyBufferReader(buffer);
+            var start = default(ReadOnlyBufferReader);
             var done = false;
 
             try
@@ -368,7 +369,7 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Position position = buffer.First;
+            Collections.Sequences.Position position = buffer.First;
 
             if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {
@@ -636,7 +637,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadableBuffer buffer, out ReadCursor found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
         {
             var start = buffer.Start;
             if (ReadCursorOperations.Seek(start, buffer.End, out found, ByteLF) != -1)

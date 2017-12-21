@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines.Text.Primitives;
 using Microsoft.Extensions.Primitives;
@@ -20,7 +21,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public Dictionary<string, StringValues> FormValues => _data;
 
-        public bool TryParse(ref ReadableBuffer buffer)
+        public bool TryParse(ref ReadOnlyBuffer buffer)
         {
             if (buffer.IsEmpty || !_contentLength.HasValue)
             {
@@ -30,14 +31,14 @@ namespace System.IO.Pipelines.Samples.Http
             while (!buffer.IsEmpty && _contentLength > 0)
             {
                 var next = buffer;
-                if (!next.TrySliceTo((byte)'=', out ReadableBuffer key, out ReadCursor delim))
+                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer key, out Position delim))
                 {
                     break;
                 }
 
                 next = next.Slice(delim).Slice(1);
 
-                if (next.TrySliceTo((byte)'&', out ReadableBuffer value, out delim))
+                if (next.TrySliceTo((byte)'&', out ReadOnlyBuffer value, out delim))
                 {
                     next = next.Slice(delim).Slice(1);
                 }

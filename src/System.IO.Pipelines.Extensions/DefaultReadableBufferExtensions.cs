@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Buffers;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using static System.Buffers.Binary.BinaryPrimitives;
@@ -10,15 +11,15 @@ namespace System.IO.Pipelines
         private static readonly int VectorWidth = Vector<byte>.Count;
 
         /// <summary>
-        /// Searches for 2 sequential bytes in the <see cref="ReadableBuffer"/> and returns a sliced <see cref="ReadableBuffer"/> that
-        /// contains all data up to and excluding the first byte, and a <see cref="ReadCursor"/> that points to the second byte.
+        /// Searches for 2 sequential bytes in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
+        /// contains all data up to and excluding the first byte, and a <see cref="Position"/> that points to the second byte.
         /// </summary>
         /// <param name="b1">The first byte to search for</param>
         /// <param name="b2">The second byte to search for</param>
-        /// <param name="slice">A <see cref="ReadableBuffer"/> slice that contains all data up to and excluding the first byte.</param>
-        /// <param name="cursor">A <see cref="ReadCursor"/> that points to the second byte</param>
+        /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
+        /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static unsafe bool TrySliceTo(this ReadableBuffer buffer, byte b1, byte b2, out ReadableBuffer slice, out ReadCursor cursor)
+        public static unsafe bool TrySliceTo(this ReadOnlyBuffer buffer, byte b1, byte b2, out ReadOnlyBuffer slice, out Position cursor)
         {
             // use address of ushort rather than stackalloc as the inliner won't inline functions with stackalloc
             ushort twoBytes;
@@ -29,14 +30,14 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Searches for a span of bytes in the <see cref="ReadableBuffer"/> and returns a sliced <see cref="ReadableBuffer"/> that
-        /// contains all data up to and excluding the first byte of the span, and a <see cref="ReadCursor"/> that points to the last byte of the span.
+        /// Searches for a span of bytes in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
+        /// contains all data up to and excluding the first byte of the span, and a <see cref="Position"/> that points to the last byte of the span.
         /// </summary>
         /// <param name="span">The <see cref="Span{Byte}"/> byte to search for</param>
-        /// <param name="slice">A <see cref="ReadableBuffer"/> that matches all data up to and excluding the first byte</param>
-        /// <param name="cursor">A <see cref="ReadCursor"/> that points to the second byte</param>
+        /// <param name="slice">A <see cref="ReadOnlyBuffer"/> that matches all data up to and excluding the first byte</param>
+        /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadableBuffer buffer, Span<byte> span, out ReadableBuffer slice, out ReadCursor cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer buffer, Span<byte> span, out ReadOnlyBuffer slice, out Position cursor)
         {
             var result = false;
             var subBuffer = buffer;
@@ -67,14 +68,14 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Searches for a byte in the <see cref="ReadableBuffer"/> and returns a sliced <see cref="ReadableBuffer"/> that
-        /// contains all data up to and excluding the byte, and a <see cref="ReadCursor"/> that points to the byte.
+        /// Searches for a byte in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
+        /// contains all data up to and excluding the byte, and a <see cref="Position"/> that points to the byte.
         /// </summary>
         /// <param name="b1">The first byte to search for</param>
-        /// <param name="slice">A <see cref="ReadableBuffer"/> slice that contains all data up to and excluding the first byte.</param>
-        /// <param name="cursor">A <see cref="ReadCursor"/> that points to the second byte</param>
+        /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
+        /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadableBuffer buffer, byte b1, out ReadableBuffer slice, out ReadCursor cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer buffer, byte b1, out ReadOnlyBuffer slice, out Position cursor)
         {
             if (buffer.IsEmpty)
             {
@@ -208,11 +209,11 @@ namespace System.IO.Pipelines
 
 
         /// <summary>
-        /// Checks to see if the <see cref="ReadableBuffer"/> starts with the specified <see cref="Span{Byte}"/>.
+        /// Checks to see if the <see cref="ReadOnlyBuffer"/> starts with the specified <see cref="Span{Byte}"/>.
         /// </summary>
         /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
         /// <returns>True if the bytes StartsWith, false if not</returns>
-        public static bool StartsWith(this ReadableBuffer buffer, Span<byte> value)
+        public static bool StartsWith(this ReadOnlyBuffer buffer, Span<byte> value)
         {
             if (buffer.Length < value.Length)
             {
@@ -224,11 +225,11 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Checks to see if the <see cref="ReadableBuffer"/> is Equal to the specified <see cref="Span{Byte}"/>.
+        /// Checks to see if the <see cref="ReadOnlyBuffer"/> is Equal to the specified <see cref="Span{Byte}"/>.
         /// </summary>
         /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
         /// <returns>True if the bytes are equal, false if not</returns>
-        public static bool EqualsTo(this ReadableBuffer buffer, Span<byte> value)
+        public static bool EqualsTo(this ReadOnlyBuffer buffer, Span<byte> value)
         {
             if (value.Length != buffer.Length)
             {

@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.IO.Pipelines.Testing;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
@@ -9,12 +10,12 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         private const int InnerLoopCount = 512;
 
-        private ReadableBuffer _readableBuffer;
+        private ReadOnlyBuffer _readOnlyBuffer;
 
         [GlobalSetup]
         public void Setup()
         {
-            _readableBuffer = BufferUtilities.CreateBuffer(Enumerable.Range(100, 200).ToArray());
+            _readOnlyBuffer = BufferUtilities.CreateBuffer(Enumerable.Range(100, 200).ToArray());
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -22,7 +23,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var enumerator = new BufferEnumerator(_readableBuffer.Start, _readableBuffer.End);
+                var enumerator = _readOnlyBuffer.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
                     var memory = enumerator.Current;

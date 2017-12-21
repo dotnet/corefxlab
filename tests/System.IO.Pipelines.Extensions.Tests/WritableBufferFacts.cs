@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Tests
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
                     offset += input.Length;
-                    pipe.Advance(input.End);
+                    pipe.Reader.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Tests
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
                     offset += input.Length;
-                    pipe.Advance(input.End);
+                    pipe.Reader.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }

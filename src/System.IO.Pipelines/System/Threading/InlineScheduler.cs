@@ -4,11 +4,9 @@
 
 namespace System.Threading
 {
-    public class InlineScheduler : IScheduler
+    internal class InlineScheduler : Scheduler
     {
-        public static readonly InlineScheduler Default = new InlineScheduler();
-
-        public void Schedule(Action<object> action, object state)
+        public override void Schedule(Action<object> action, object state)
         {
             action(state);
         }

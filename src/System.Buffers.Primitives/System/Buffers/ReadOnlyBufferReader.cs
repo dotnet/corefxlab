@@ -1,37 +1,35 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public ref struct ReadableBufferReader
+    public ref struct ReadOnlyBufferReader
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private BufferEnumerator _enumerator;
+        private ReadOnlyBuffer.Enumerator _enumerator;
         private int _consumedBytes;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
-        {
-        }
-
-        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
+        public ReadOnlyBufferReader(ReadOnlyBuffer buffer)
         {
             _end = false;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = new BufferEnumerator(start, end);
+            _enumerator = buffer.GetEnumerator();
             _currentSpan = default;
             MoveNext();
         }
+        
 
         public bool End => _end;
 
         public int Index => _index;
 
-        public ReadCursor Cursor => _enumerator.CreateCursor(_index);
+        public Position Cursor => _enumerator.CreateCursor(_index);
 
         public ReadOnlySpan<byte> Span => _currentSpan;
 
@@ -90,7 +88,7 @@ namespace System.IO.Pipelines
         {
             if (length < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
             _consumedBytes += length;
@@ -114,7 +112,7 @@ namespace System.IO.Pipelines
 
             if (length > 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
         }
     }
