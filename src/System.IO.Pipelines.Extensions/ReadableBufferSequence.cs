@@ -20,7 +20,8 @@ namespace System.IO.Pipelines
 
         public bool TryGet(ref Collections.Sequences.Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            var p = new Position(position.GetItem<object>(), position.Index);
+            var (data, index) = position.Get<object>();
+            var p = new Position(data, index);
             var result =  _buffer.TryGet(ref p, out item);
             if (advance)
             {
