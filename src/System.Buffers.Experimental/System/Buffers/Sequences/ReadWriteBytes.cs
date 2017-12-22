@@ -139,7 +139,7 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, Collections.Sequences.Position.Create((IMemoryList<byte>)_end, _endIndex));
+                    return Slice(position, new Collections.Sequences.Position((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
@@ -233,7 +233,7 @@ namespace System.Buffers
             }
         }
 
-        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_start, _startIndex);
+        public Collections.Sequences.Position Start => new Collections.Sequences.Position(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -246,7 +246,7 @@ namespace System.Buffers
                 return length;
             }
 
-            var position = First;
+            var position = Start;
             int copied = 0;
             while (TryGet(ref position, out var memory) && buffer.Length > 0)
             {
@@ -296,7 +296,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = Collections.Sequences.Position.Create(node.Next);
+                    if (advance) position = new Collections.Sequences.Position(node.Next, 0);
                 }
                 return true;
             }

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public static class ReadCursorOperations
+    public static class PositionOperations
     {
         public static int Seek(Position begin, Position end, out Position result, byte byte0)
         {
@@ -70,7 +70,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static long GetLength(Position begin, Position end)
         {
-            if (begin.IsDefault)
+            if (begin.Segment == null)
             {
                 return 0;
             }
@@ -79,13 +79,13 @@ namespace System.IO.Pipelines
             switch (segment)
             {
                 case IMemoryList<byte> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.Get<IMemoryList<byte>>(), end.Index);
+                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IMemoryList<byte>>(), end.Index);
                 case byte[] _:
                 case OwnedMemory<byte> _:
                     return end.Index - begin.Index;
             }
 
-            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+            PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
 
@@ -139,7 +139,7 @@ namespace System.IO.Pipelines
                     // then past the end of previous one, but only if next exists
 
                     if (memory.Length > bytes ||
-                       (memory.Length == bytes && begin.IsDefault))
+                       (memory.Length == bytes && begin.Segment == null))
                     {
                         result = new Position(current.Segment, current.Index + (int)bytes);
                         foundResult = true;
@@ -156,7 +156,7 @@ namespace System.IO.Pipelines
 
             if (!foundResult)
             {
-                ThrowHelper.ThrowCursorOutOfBoundsException();
+                PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
             }
 
             return result;
@@ -171,17 +171,17 @@ namespace System.IO.Pipelines
                 case OwnedMemory<byte> _ :
                     if (newCursor.Index > end.Index)
                     {
-                        ThrowHelper.ThrowCursorOutOfBoundsException();
+                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 case IMemoryList<byte> memoryList:
-                    if (!GreaterOrEqual(memoryList, end.Index, newCursor.Get<IMemoryList<byte>>(), newCursor.Index))
+                    if (!GreaterOrEqual(memoryList, end.Index, newCursor.GetSegment<IMemoryList<byte>>(), newCursor.Index))
                     {
-                        ThrowHelper.ThrowCursorOutOfBoundsException();
+                        PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
                 default:
-                    ThrowHelper.ThrowCursorOutOfBoundsException();
+                    PipelinesThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
         }
@@ -214,7 +214,7 @@ namespace System.IO.Pipelines
                         {
                             if (end.Segment != null)
                             {
-                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                             }
 
                             next = default;
@@ -235,7 +235,7 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                         ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
 
                     next = default;
@@ -246,13 +246,13 @@ namespace System.IO.Pipelines
 
                     if (segment != end.Segment)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
                     }
                     next = default;
                     return true;
             }
 
-            ThrowHelper.ThrowNotSupportedException();
+            PipelinesThrowHelper.ThrowNotSupportedException();
             next = default;
             return false;
         }

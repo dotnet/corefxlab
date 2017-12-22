@@ -24,7 +24,7 @@ namespace System.Buffers.Text
         public BufferReader(TSequence bytes)
         {
             _bytes = bytes;
-            _nextSegmentPosition = bytes.First;
+            _nextSegmentPosition = bytes.Start;
             _currentSegmentPosition = _nextSegmentPosition;
             if(_bytes.TryGet(ref _nextSegmentPosition, out ReadOnlyMemory<byte> memory))
             {
@@ -41,7 +41,7 @@ namespace System.Buffers.Text
         {
             _bytes = default;
             _nextSegmentPosition = default;
-            _currentSegmentPosition = 0;
+            _currentSegmentPosition = default;
             _currentSpan = bytes.Span;
             _currentSpanIndex = 0;
         }
@@ -50,7 +50,7 @@ namespace System.Buffers.Text
         {
             _bytes = default;
             _nextSegmentPosition = default;
-            _currentSegmentPosition = 0;
+            _currentSegmentPosition = default;
             _currentSpan = bytes;
             _currentSpanIndex = 0;
         }

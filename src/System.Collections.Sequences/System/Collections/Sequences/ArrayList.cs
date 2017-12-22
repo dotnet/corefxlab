@@ -15,7 +15,7 @@ namespace System.Collections.Sequences
 
         public int Length => _items.Count;
 
-        public Position First => default;
+        public Position Start => default;
 
         public T this[int index] => _items[index];
 

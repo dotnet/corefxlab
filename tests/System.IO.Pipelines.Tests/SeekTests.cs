@@ -9,6 +9,7 @@ using System.Text;
 using System.IO.Pipelines.Testing;
 using System.Numerics;
 using Xunit;
+using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -76,15 +77,15 @@ namespace System.IO.Pipelines.Tests
             int found = -1;
             if (searchFor.Length == 1)
             {
-                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0]);
+                found = PositionOperations.Seek(start, end, out result, (byte)searchFor[0]);
             }
             else if (searchFor.Length == 2)
             {
-                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
+                found = PositionOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
             }
             else if (searchFor.Length == 3)
             {
-                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
+                found = PositionOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
             }
             else
             {
@@ -104,9 +105,9 @@ namespace System.IO.Pipelines.Tests
 
             // Act
             var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out Position result, (byte)seek);
-            var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
-            var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
+            var returnValue = PositionOperations.Seek(buffer.Start, end, out Position result, (byte)seek);
+            var returnValue_1 = PositionOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
+            var returnValue_2 = PositionOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 
             // Assert
             Assert.Equal(expectedReturnValue, returnValue);
@@ -140,17 +141,17 @@ namespace System.IO.Pipelines.Tests
             var end = buffer.End;
 
             // Act
-            var endReturnValue = ReadCursorOperations.Seek(start, veryEnd, out end, (byte)limitAfter);
+            var endReturnValue = PositionOperations.Seek(start, veryEnd, out end, (byte)limitAfter);
             if (endReturnValue != -1)
             {
                 end = buffer.Slice(end, 1).End;
             }
-            var returnValue1 = ReadCursorOperations.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = ReadCursorOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = ReadCursorOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = ReadCursorOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = ReadCursorOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = ReadCursorOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+            var returnValue1 = PositionOperations.Seek(start, end, out scan1, (byte)seek);
+            var returnValue2_1 = PositionOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = PositionOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = PositionOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = PositionOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = PositionOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
 
 
             // Assert

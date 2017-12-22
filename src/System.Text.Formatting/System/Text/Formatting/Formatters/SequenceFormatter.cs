@@ -32,7 +32,7 @@ namespace System.Text.Formatting
         {
             _symbolTable = symbolTable;
             _buffers = buffers;
-            _currentPosition = _buffers.First;
+            _currentPosition = _buffers.Start;
             _previousWrittenBytes = -1;
         }
 

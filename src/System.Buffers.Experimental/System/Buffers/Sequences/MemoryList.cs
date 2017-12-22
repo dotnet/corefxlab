@@ -39,7 +39,7 @@ namespace System.Buffers
 
         public long VirtualIndex => _virtualIndex;
 
-        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(this);
+        public Collections.Sequences.Position First => new Collections.Sequences.Position(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -81,7 +81,7 @@ namespace System.Buffers
             
             var (list, index) = position.Get<MemoryList>();
             item = list._data.Slice(index);
-            if (advance) { position = Collections.Sequences.Position.Create(list._next); }
+            if (advance) { position = new Collections.Sequences.Position(list._next, 0); }
             return true;
         }
 

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -29,7 +30,7 @@ namespace System.IO.Pipelines.Tests
             [Fact]
             public void SkipSingleBufferSkipsBytes()
             {
-                var reader = new ReadOnlyBufferReader(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
+                var reader = new BufferReader(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
                 reader.Skip(2);
                 Assert.Equal(2, reader.Index);
                 Assert.Equal(3, reader.Span[reader.Index]);
@@ -43,7 +44,7 @@ namespace System.IO.Pipelines.Tests
             [Fact]
             public void TakeReturnsByteAndMoves()
             {
-                var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
+                var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
                 Assert.Equal(0, reader.Index);
                 Assert.Equal(1, reader.Span[reader.Index]);
                 Assert.Equal(1, reader.Take());
@@ -70,7 +71,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void PeekReturnsByteWithoutMoving()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
             Assert.Equal(1, reader.Peek());
             Assert.Equal(1, reader.Peek());
         }
@@ -78,7 +79,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CursorIsCorrectAtEnd()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
             reader.Take();
             reader.Take();
             Assert.True(reader.End);
@@ -97,7 +98,7 @@ namespace System.IO.Pipelines.Tests
             var start = new Position(first, first.Start);
             var end = new Position(last, last.Start);
 
-            var reader = new ReadOnlyBufferReader(new ReadOnlyBuffer(start, end));
+            var reader = new BufferReader(new ReadOnlyBuffer(start, end));
             reader.Take();
             reader.Take();
             reader.Take();
@@ -109,7 +110,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void PeekReturnsMinuOneByteInTheEnd()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2 }));
             Assert.Equal(1, reader.Take());
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -118,7 +119,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void SkipToEndThenPeekReturnsMinusOne()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
             reader.Skip(5);
             Assert.True(reader.End);
             Assert.Equal(-1, reader.Peek());
@@ -127,7 +128,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void SkippingPastLengthThrows()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
             try
             {
                 reader.Skip(6);
@@ -143,7 +144,7 @@ namespace System.IO.Pipelines.Tests
         public void CtorFindsFirstNonEmptySegment()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(1, reader.Peek());
         }
@@ -152,7 +153,7 @@ namespace System.IO.Pipelines.Tests
         public void EmptySegmentsAreSkippedOnMoveNext()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(1, reader.Peek());
             reader.Skip(1);
@@ -163,7 +164,7 @@ namespace System.IO.Pipelines.Tests
         public void PeekGoesToEndIfAllEmptySegments()
         {
             var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { }, new byte[] { }, new byte[] { }, new byte[] { } });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(-1, reader.Peek());
             Assert.True(reader.End);
@@ -173,7 +174,7 @@ namespace System.IO.Pipelines.Tests
         public void SkipTraversesSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             reader.Skip(2);
             Assert.Equal(3, reader.Span[reader.Index]);
@@ -184,7 +185,7 @@ namespace System.IO.Pipelines.Tests
         public void SkipThrowsPastLengthMultipleSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             try
             {
@@ -201,7 +202,7 @@ namespace System.IO.Pipelines.Tests
         public void TakeTraversesSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(1, reader.Take());
             Assert.Equal(2, reader.Take());
@@ -213,7 +214,7 @@ namespace System.IO.Pipelines.Tests
         public void PeekTraversesSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(1, reader.Span[reader.Index]);
             Assert.Equal(1, reader.Take());
@@ -229,7 +230,7 @@ namespace System.IO.Pipelines.Tests
         public void PeekWorkesWithEmptySegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             Assert.Equal(0, reader.Index);
             Assert.Equal(1, reader.Span.Length);
@@ -242,7 +243,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void WorkesWithEmptyBuffer()
         {
-            var reader = new ReadOnlyBufferReader(Factory.CreateWithContent(new byte[] { }));
+            var reader = new BufferReader(Factory.CreateWithContent(new byte[] { }));
 
             Assert.Equal(0, reader.Index);
             Assert.Equal(0, reader.Span.Length);
@@ -260,13 +261,13 @@ namespace System.IO.Pipelines.Tests
         public void ReturnsCorrectCursor(int takes, bool end)
         {
             var readableBuffer = Factory.CreateWithContent(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            var reader = new ReadOnlyBufferReader(readableBuffer);
+            var reader = new BufferReader(readableBuffer);
             for (int i = 0; i < takes; i++)
             {
                 reader.Take();
             }
 
-            var expected = end ?  new byte[] {} : readableBuffer.Slice(takes).ToArray();
+            var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
             Assert.Equal(expected, readableBuffer.Slice(reader.Cursor).ToArray());
         }
 
@@ -274,9 +275,9 @@ namespace System.IO.Pipelines.Tests
         public void SlicingBufferReturnsCorrectCursor()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            var sliced = buffer.Slice(2);
+            var sliced = buffer.Slice(2L);
 
-            var reader = new ReadOnlyBufferReader(sliced);
+            var reader = new BufferReader(sliced);
             Assert.Equal(sliced.ToArray(), buffer.Slice(reader.Cursor).ToArray());
             Assert.Equal(2, reader.Peek());
             Assert.Equal(0, reader.Index);
@@ -286,7 +287,7 @@ namespace System.IO.Pipelines.Tests
         public void ReaderIndexIsCorrect()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-            var reader = new ReadOnlyBufferReader(buffer);
+            var reader = new BufferReader(buffer);
 
             var counter = 1;
             while (!reader.End)

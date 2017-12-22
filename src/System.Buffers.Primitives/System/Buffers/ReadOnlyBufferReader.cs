@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
+using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
-    public ref struct ReadOnlyBufferReader
+    public ref struct BufferReader
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
         private int _consumedBytes;
         private bool _end;
 
-        public ReadOnlyBufferReader(ReadOnlyBuffer buffer)
+        public BufferReader(ReadOnlyBuffer buffer)
         {
             _end = false;
             _index = 0;
@@ -23,7 +23,6 @@ namespace System.IO.Pipelines
             _currentSpan = default;
             MoveNext();
         }
-        
 
         public bool End => _end;
 

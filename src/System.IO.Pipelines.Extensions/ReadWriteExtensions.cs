@@ -179,3 +179,11 @@ namespace System.IO.Pipelines
         }
     }
 }
+
+namespace System.Runtime
+{
+    [AttributeUsage(AttributeTargets.GenericParameter)]
+    public sealed class PrimitiveAttribute : Attribute
+    {
+    }
+}

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -411,7 +412,7 @@ namespace System.IO.Pipelines
                     examinedEverything = _commitHead != null ? examined.Index == _commitHeadIndex - _commitHead.Start : examined.Index == 0;
                 }
 
-                if (!consumed.IsDefault)
+                if (consumed.Segment != null)
                 {
                     if (_readHead == null)
                     {
@@ -419,7 +420,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var consumedSegment = consumed.Get<BufferSegment>();
+                    var consumedSegment = consumed.GetSegment<BufferSegment>();
 
                     returnStart = _readHead;
                     returnEnd = consumedSegment;

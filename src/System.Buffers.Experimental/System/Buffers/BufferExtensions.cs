@@ -56,7 +56,7 @@ namespace System.Buffers
             {
                 var current = list.Memory.Span;
                 var index = current.IndexOf(value);
-                if (index != -1) return Collections.Sequences.Position.Create(list, index);
+                if (index != -1) return new Collections.Sequences.Position(list, index);
                 list = list.Next;
             }
             return null;
@@ -223,6 +223,33 @@ namespace System.Buffers
                 }
             }
             return;
+        }
+
+        public static bool SequenceEqual<T>(this Memory<T> first, Memory<T> second) where T : struct, IEquatable<T>
+        {
+            return first.Span.SequenceEqual(second.Span);
+        }
+
+        public static bool SequenceEqual<T>(this ReadOnlyMemory<T> first, ReadOnlyMemory<T> second) where T : struct, IEquatable<T>
+        {
+            return first.Span.SequenceEqual(second.Span);
+        }
+
+        public static int SequenceCompareTo(this Span<byte> left, ReadOnlySpan<byte> right)
+        {
+            return SequenceCompareTo((ReadOnlySpan<byte>)left, right);
+        }
+
+        public static int SequenceCompareTo(this ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
+        {
+            var minLength = left.Length;
+            if (minLength > right.Length) minLength = right.Length;
+            for (int i = 0; i < minLength; i++)
+            {
+                var result = left[i].CompareTo(right[i]);
+                if (result != 0) return result;
+            }
+            return left.Length.CompareTo(right.Length);
         }
 
         public static bool TryIndicesOf(this Span<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)

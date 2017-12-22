@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;

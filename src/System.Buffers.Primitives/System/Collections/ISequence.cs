@@ -15,6 +15,6 @@ namespace System.Collections.Sequences
         /// <remarks></remarks>
         bool TryGet(ref Position position, out T item, bool advance = true);
 
-        Position First { get; }
+        Position Start { get; }
     }
 }

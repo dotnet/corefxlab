@@ -7,11 +7,8 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Sequences;
-using System.IO.Pipelines;
 using System.Text;
-using System.Text.Http;
 using System.Text.Http.Parser;
-using Position = System.Buffers.Position;
 
 public class HttpParserBench
 {

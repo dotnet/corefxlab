@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.Sequences;
 using System.IO.Pipelines.Text.Primitives;
 using Microsoft.Extensions.Primitives;
 
