@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var buffer = Factory.CreateOfSize(3);
                 var buffer2 = Factory.CreateOfSize(3);
-                Seek(buffer.Start, buffer2.End, 2, false);
+                ReadOnlyBuffer.Seek(buffer.Start, buffer2.End, 2, false);
             }
         }
 
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
         {
             var buffer = Factory.CreateOfSize(3);
             var buffer2 = Factory.CreateOfSize(3);
-            Assert.Throws<InvalidOperationException>(() => Seek(buffer.Start, buffer2.End, 2, true));
+            Assert.Throws<InvalidOperationException>(() => ReadOnlyBuffer.Seek(buffer.Start, buffer2.End, 2, true));
         }
 
         [Fact]
@@ -181,129 +181,5 @@ namespace System.IO.Pipelines.Tests
             b => b.Slice(0, 70).Slice(0, b.End),
             b => b.Slice(70, b.Start)
         };
-
-        static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
-        {
-            var segment = begin.Segment;
-
-            switch (segment)
-            {
-                case null:
-                    data = default;
-                    next = default;
-                    return false;
-
-                case IMemoryList<byte> bufferSegment:
-                    var startIndex = begin.Index;
-                    var endIndex = bufferSegment.Memory.Length;
-
-                    if (segment == end.Segment)
-                    {
-                        endIndex = end.Index;
-                        next = default;
-                    }
-                    else
-                    {
-                        var nextSegment = bufferSegment.Next;
-                        if (nextSegment == null)
-                        {
-                            if (end.Segment != null)
-                            {
-                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
-                            }
-
-                            next = default;
-                        }
-                        else
-                        {
-                            next = new Position(nextSegment, 0);
-                        }
-                    }
-
-                    data = bufferSegment.Memory.Slice(startIndex, endIndex - startIndex);
-
-                    return true;
-
-
-                case OwnedMemory<byte> ownedMemory:
-                    data = ownedMemory.Memory.Slice(begin.Index, end.Index - begin.Index);
-
-                    if (segment != end.Segment)
-                    {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
-                    }
-
-                    next = default;
-                    return true;
-
-                case byte[] array:
-                    data = new Memory<byte>(array, begin.Index, end.Index - begin.Index);
-
-                    if (segment != end.Segment)
-                    {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
-                    }
-                    next = default;
-                    return true;
-            }
-
-            ThrowHelper.ThrowNotSupportedException();
-            next = default;
-            return false;
-        }
-
-        static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
-        {
-            Position cursor;
-            if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
-            {
-                // end.Index >= bytes + Index and end.Index is int
-                cursor = new Position(begin.Segment, begin.Index + (int)bytes);
-            }
-            else
-            {
-                cursor = SeekMultiSegment(begin, end, bytes, checkEndReachable);
-            }
-
-            return cursor;
-        }
-
-        static Position SeekMultiSegment(Position begin, Position end, long bytes, bool checkEndReachable)
-        {
-            Position result = default;
-            var foundResult = false;
-            var current = begin;
-            while (TryGetBuffer(begin, end, out var memory, out begin))
-            {
-                // We need to loop up until the end to make sure start and end are connected
-                // if end is not trusted
-                if (!foundResult)
-                {
-                    // We would prefer to put cursor in the beginning of next segment
-                    // then past the end of previous one, but only if next exists
-
-                    if (memory.Length > bytes ||
-                       (memory.Length == bytes && begin.Segment == null))
-                    {
-                        result = new Position(current.Segment, current.Index + (int)bytes);
-                        foundResult = true;
-                        if (!checkEndReachable)
-                        {
-                            break;
-                        }
-                    }
-
-                    bytes -= memory.Length;
-                }
-                current = begin;
-            }
-
-            if (!foundResult)
-            {
-                ThrowHelper.ThrowCursorOutOfBoundsException();
-            }
-
-            return result;
-        }
     }
 }

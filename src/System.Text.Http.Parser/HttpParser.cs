@@ -322,7 +322,7 @@ namespace System.Text.Http.Parser
                                 var current = reader.Cursor;
 
                                 // Split buffers
-                                if (PositionOperations.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
+                                if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
                                 {
                                     // Not there
                                     return false;
@@ -640,7 +640,7 @@ namespace System.Text.Http.Parser
         private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
         {
             var start = buffer.Start;
-            if (PositionOperations.Seek(start, buffer.End, out found, ByteLF) != -1)
+            if (ReadOnlyBuffer.Seek(start, buffer.End, out found, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
                 found = buffer.Move(found, 1);

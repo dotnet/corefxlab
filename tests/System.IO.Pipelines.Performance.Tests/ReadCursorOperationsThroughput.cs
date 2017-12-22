@@ -130,7 +130,7 @@ namespace System.IO.Pipelines.Performance.Tests
                     {
                         var current = reader.Cursor;
 
-                        if (PositionOperations.Seek(current, end, out var found, (byte)'\n') == -1)
+                        if (ReadOnlyBuffer.Seek(current, end, out var found, (byte)'\n') == -1)
                         {
                             // We're done
                             return;
@@ -158,7 +158,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
             while (true)
             {
-                if (PositionOperations.Seek(start, end, out var found, (byte)'\n') == -1)
+                if (ReadOnlyBuffer.Seek(start, end, out var found, (byte)'\n') == -1)
                 {
                     break;
                 }
