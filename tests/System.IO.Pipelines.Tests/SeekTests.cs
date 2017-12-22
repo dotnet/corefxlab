@@ -17,30 +17,30 @@ namespace System.IO.Pipelines.Tests
     {
         public class Array: SingleSegment
         {
-            public Array() : base(TestBufferFactory.Array) { }
-            internal Array(TestBufferFactory factory) : base(factory) { }
+            public Array() : base(ReadOnlyBufferFactory.Array) { }
+            internal Array(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
         public class OwnedMemory: SingleSegment
         {
-            public OwnedMemory() : base(TestBufferFactory.OwnedMemory) { }
+            public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
         }
 
         public class SingleSegment: SegmentPerByte
         {
-            public SingleSegment() : base(TestBufferFactory.SingleSegment) { }
-            internal SingleSegment(TestBufferFactory factory) : base(factory) { }
+            public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
+            internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
         public class SegmentPerByte: SeekTests
         {
-            public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
-            internal SegmentPerByte(TestBufferFactory factory) : base(factory) { }
+            public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
+            internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
-        internal TestBufferFactory Factory { get; }
+        internal ReadOnlyBufferFactory Factory { get; }
 
-        internal SeekTests(TestBufferFactory factory)
+        internal SeekTests(ReadOnlyBufferFactory factory)
         {
             Factory = factory;
         }

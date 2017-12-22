@@ -10,12 +10,12 @@ using System.Text;
 
 namespace System.IO.Pipelines.Tests
 {
-    internal abstract class TestBufferFactory
+    public abstract class ReadOnlyBufferFactory
     {
-        public static TestBufferFactory Array { get; } = new ArrayTestBufferFactory();
-        public static TestBufferFactory OwnedMemory { get; } = new OwnedMemoryTestBufferFactory();
-        public static TestBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
-        public static TestBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
+        public static ReadOnlyBufferFactory Array { get; } = new ArrayTestBufferFactory();
+        public static ReadOnlyBufferFactory OwnedMemory { get; } = new OwnedMemoryTestBufferFactory();
+        public static ReadOnlyBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
+        public static ReadOnlyBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
 
         public abstract ReadOnlyBuffer CreateOfSize(int size);
         public abstract ReadOnlyBuffer CreateWithContent(byte[] data);
@@ -25,7 +25,7 @@ namespace System.IO.Pipelines.Tests
             return CreateWithContent(Encoding.ASCII.GetBytes(data));
         }
 
-        internal class ArrayTestBufferFactory : TestBufferFactory
+        internal class ArrayTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {
@@ -40,7 +40,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class OwnedMemoryTestBufferFactory : TestBufferFactory
+        internal class OwnedMemoryTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class SingleSegmentTestBufferFactory: TestBufferFactory
+        internal class SingleSegmentTestBufferFactory: ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class BytePerSegmentTestBufferFactory: TestBufferFactory
+        internal class BytePerSegmentTestBufferFactory: ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
             {

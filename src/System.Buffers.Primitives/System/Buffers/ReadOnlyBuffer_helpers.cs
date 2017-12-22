@@ -11,7 +11,7 @@ namespace System.Buffers
     public readonly partial struct ReadOnlyBuffer 
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
+        private static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
         {
             var segment = begin.Segment;
 
@@ -82,7 +82,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
+        private static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
         {
             Position cursor;
             if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
@@ -99,7 +99,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static Position SeekMultiSegment(Position begin, Position end, long bytes, bool checkEndReachable)
+        private static Position SeekMultiSegment(Position begin, Position end, long bytes, bool checkEndReachable)
         {
             Position result = default;
             var foundResult = false;
@@ -138,7 +138,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static long GetLength(Position begin, Position end)
+        private static long GetLength(Position begin, Position end)
         {
             if (begin.Segment == null)
             {
@@ -160,7 +160,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static long GetLength(
+        private static long GetLength(
             IMemoryList<byte> start,
             int startIndex,
             IMemoryList<byte> endSegment,
@@ -177,7 +177,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void BoundsCheck(Position end, Position newCursor)
+        private static void BoundsCheck(Position end, Position newCursor)
         {
             switch (end.Segment)
             {

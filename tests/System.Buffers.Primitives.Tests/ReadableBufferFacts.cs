@@ -14,22 +14,22 @@ namespace System.IO.Pipelines.Tests
     {
         public class Array: ReadableBufferFacts
         {
-            public Array() : base(TestBufferFactory.Array) { }
+            public Array() : base(ReadOnlyBufferFactory.Array) { }
         }
 
         public class OwnedMemory: ReadableBufferFacts
         {
-            public OwnedMemory() : base(TestBufferFactory.OwnedMemory) { }
+            public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
         }
 
         public class SingleSegment: ReadableBufferFacts
         {
-            public SingleSegment() : base(TestBufferFactory.SingleSegment) { }
+            public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
         }
 
         public class SegmentPerByte: ReadableBufferFacts
         {
-            public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
+            public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
 
             [Fact]
             // This test verifies that optimization for known cursors works and
@@ -42,9 +42,9 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal TestBufferFactory Factory { get; }
+        internal ReadOnlyBufferFactory Factory { get; }
 
-        internal ReadableBufferFacts(TestBufferFactory factory)
+        internal ReadableBufferFacts(ReadOnlyBufferFactory factory)
         {
             Factory = factory;
         }
