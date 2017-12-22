@@ -369,7 +369,7 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Collections.Sequences.Position position = buffer.Start;
+            Position position = buffer.Start;
 
             if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {

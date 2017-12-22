@@ -50,13 +50,13 @@ namespace System.Buffers
             return copied;
         }
 
-        public static Collections.Sequences.Position? PositionOf(this IMemoryList<byte> list, byte value)
+        public static Position? PositionOf(this IMemoryList<byte> list, byte value)
         {
             while (list != null)
             {
                 var current = list.Memory.Span;
                 var index = current.IndexOf(value);
-                if (index != -1) return new Collections.Sequences.Position(list, index);
+                if (index != -1) return new Position(list, index);
                 list = list.Next;
             }
             return null;
@@ -135,7 +135,7 @@ namespace System.Buffers
             ReadOnlySpan<byte> remainder = stackalloc byte[0];
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
-            Collections.Sequences.Position poisition = default;
+            Position poisition = default;
             while (source.TryGet(ref poisition, out var sourceBuffer))
             {
                 Span<byte> outputSpan = destination.GetSpan();

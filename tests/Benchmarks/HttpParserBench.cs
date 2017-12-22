@@ -71,8 +71,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
-        System.Collections.Sequences.Position consumed = default;
-        System.Collections.Sequences.Position read;
+        Position consumed = default;
+        Position read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -168,8 +168,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        System.Collections.Sequences.Position consumed = default;
-        System.Collections.Sequences.Position examined;
+        Position consumed = default;
+        Position examined;
         int consumedBytes;
         bool success = true;
 
@@ -324,8 +324,8 @@ public class HttpParserBench
         var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new RequestStruct();
-        System.Collections.Sequences.Position consumed = default;
-        System.Collections.Sequences.Position examined;
+        Position consumed = default;
+        Position examined;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -349,7 +349,7 @@ public class HttpParserBench
 
 static class HttpParserExtensions
 {
-    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined) where T : IHttpRequestLineHandler
+    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
     {
         if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
         {
@@ -362,7 +362,7 @@ static class HttpParserExtensions
         return false;
     }
 
-    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
     {
         if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
         {
@@ -375,7 +375,7 @@ static class HttpParserExtensions
         return false;
     }
 
-    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out System.Collections.Sequences.Position consumed, out System.Collections.Sequences.Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
+    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
     {
         if (
             parser.ParseRequestLine(ref handler, buffer, out var consumedRLBytes) &&
