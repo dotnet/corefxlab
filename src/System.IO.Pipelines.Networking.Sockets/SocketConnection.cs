@@ -179,13 +179,19 @@ namespace System.IO.Pipelines.Networking.Sockets
                 _stopping = true;
                 _output.Reader.CancelPendingRead();
 
-                await Task.WhenAll(_sendTask, _receiveTask);
+                // the send task is shut down via _stopping
+                await _sendTask;
 
                 _output.Writer.Complete();
                 _input.Reader.Complete();
 
                 _socket?.Dispose();
                 _socket = null;
+
+                // the receive task might be in a pending receive, so the receive
+                // task will exit *at the latest* after the dispose aborts the receive
+                await _receiveTask;
+
                 if (_ownsPool) { _pool?.Dispose(); }
                 _pool = null;
             }
