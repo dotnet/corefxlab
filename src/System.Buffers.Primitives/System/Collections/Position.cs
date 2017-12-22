@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -47,7 +48,7 @@ namespace System.Collections.Sequences
                     return segment;
             }
 
-            //ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
             return default;
         }
 
