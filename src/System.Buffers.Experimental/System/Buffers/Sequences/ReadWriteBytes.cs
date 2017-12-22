@@ -50,7 +50,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadWriteBytes(Collections.Sequences.Position first, Collections.Sequences.Position last)
+        public ReadWriteBytes(Position first, Position last)
         {
             (_start, _startIndex) = first.Get<object>();
             (_end, _endIndex) = last.Get<object>();
@@ -130,7 +130,7 @@ namespace System.Buffers
         public ReadWriteBytes Slice(int index)
             => Slice((long)index);
 
-        public ReadWriteBytes Slice(Collections.Sequences.Position position)
+        public ReadWriteBytes Slice(Position position)
         {
             var kind = Kind;
             switch (kind)
@@ -139,12 +139,12 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, Collections.Sequences.Position.Create((IMemoryList<byte>)_end, _endIndex));
+                    return Slice(position, new Position((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
 
-        public ReadWriteBytes Slice(Collections.Sequences.Position start, Collections.Sequences.Position end)
+        public ReadWriteBytes Slice(Position start, Position end)
         {
             var kind = Kind;
             switch (kind)
@@ -233,7 +233,7 @@ namespace System.Buffers
             }
         }
 
-        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_start, _startIndex);
+        public Position Start => new Position(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -246,7 +246,7 @@ namespace System.Buffers
                 return length;
             }
 
-            var position = First;
+            var position = Start;
             int copied = 0;
             while (TryGet(ref position, out var memory) && buffer.Length > 0)
             {
@@ -267,7 +267,7 @@ namespace System.Buffers
             return array;
         }
 
-        public bool TryGet(ref Collections.Sequences.Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
             if (position == default)
             {
@@ -296,7 +296,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = Collections.Sequences.Position.Create(node.Next);
+                    if (advance) position = new Position(node.Next, 0);
                 }
                 return true;
             }

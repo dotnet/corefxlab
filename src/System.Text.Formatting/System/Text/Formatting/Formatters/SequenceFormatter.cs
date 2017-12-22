@@ -5,7 +5,6 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Sequences;
-using Position = System.Collections.Sequences.Position;
 
 namespace System.Text.Formatting
 {
@@ -32,7 +31,7 @@ namespace System.Text.Formatting
         {
             _symbolTable = symbolTable;
             _buffers = buffers;
-            _currentPosition = _buffers.First;
+            _currentPosition = _buffers.Start;
             _previousWrittenBytes = -1;
         }
 

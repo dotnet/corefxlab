@@ -12,7 +12,7 @@ namespace System.Buffers
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public readonly struct ReadOnlyBuffer
+    public readonly partial struct ReadOnlyBuffer : ISequence<ReadOnlyMemory<byte>>
     {
         internal readonly Position BufferStart;
         internal readonly Position BufferEnd;
@@ -20,7 +20,7 @@ namespace System.Buffers
         /// <summary>
         /// Length of the <see cref="ReadOnlyBuffer"/> in bytes.
         /// </summary>
-        public long Length => ReadCursorOperations.GetLength(BufferStart, BufferEnd);
+        public long Length => GetLength(BufferStart, BufferEnd);
 
         /// <summary>
         /// Determines if the <see cref="ReadOnlyBuffer"/> is empty.
@@ -36,7 +36,7 @@ namespace System.Buffers
         {
             get
             {
-                ReadCursorOperations.TryGetBuffer(BufferStart, BufferEnd, out var first, out _);
+                TryGetBuffer(BufferStart, BufferEnd, out var first, out _);
                 return first;
             }
         }
@@ -116,8 +116,8 @@ namespace System.Buffers
         /// <param name="length">The length of the slice</param>
         public ReadOnlyBuffer Slice(long start, long length)
         {
-            var begin = ReadCursorOperations.Seek(BufferStart, BufferEnd, start, false);
-            var end = ReadCursorOperations.Seek(begin, BufferEnd, length, false);
+            var begin = Seek(BufferStart, BufferEnd, start, false);
+            var end = Seek(begin, BufferEnd, length, false);
             return new ReadOnlyBuffer(begin, end);
         }
 
@@ -128,8 +128,8 @@ namespace System.Buffers
         /// <param name="end">The end (inclusive) of the slice</param>
         public ReadOnlyBuffer Slice(long start, Position end)
         {
-            ReadCursorOperations.BoundsCheck(BufferEnd, end);
-            var begin = ReadCursorOperations.Seek(BufferStart, end, start);
+            BoundsCheck(BufferEnd, end);
+            var begin = Seek(BufferStart, end, start);
             return new ReadOnlyBuffer(begin, end);
         }
 
@@ -140,8 +140,8 @@ namespace System.Buffers
         /// <param name="end">The ending (inclusive) <see cref="Position"/> of the slice</param>
         public ReadOnlyBuffer Slice(Position start, Position end)
         {
-            ReadCursorOperations.BoundsCheck(BufferEnd, end);
-            ReadCursorOperations.BoundsCheck(end, start);
+            BoundsCheck(BufferEnd, end);
+            BoundsCheck(end, start);
 
             return new ReadOnlyBuffer(start, end);
         }
@@ -153,9 +153,9 @@ namespace System.Buffers
         /// <param name="length">The length of the slice</param>
         public ReadOnlyBuffer Slice(Position start, long length)
         {
-            ReadCursorOperations.BoundsCheck(BufferEnd, start);
+            BoundsCheck(BufferEnd, start);
 
-            var end = ReadCursorOperations.Seek(start, BufferEnd, length, false);
+            var end = Seek(start, BufferEnd, length, false);
 
             return new ReadOnlyBuffer(start, end);
         }
@@ -166,7 +166,7 @@ namespace System.Buffers
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         public ReadOnlyBuffer Slice(Position start)
         {
-            ReadCursorOperations.BoundsCheck(BufferEnd, start);
+            BoundsCheck(BufferEnd, start);
 
             return new ReadOnlyBuffer(start, BufferEnd);
         }
@@ -179,7 +179,7 @@ namespace System.Buffers
         {
             if (start == 0) return this;
 
-            var begin = ReadCursorOperations.Seek(BufferStart, BufferEnd, start, false);
+            var begin = Seek(BufferStart, BufferEnd, start, false);
             return new ReadOnlyBuffer(begin, BufferEnd);
         }
 
@@ -239,12 +239,12 @@ namespace System.Buffers
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            return ReadCursorOperations.Seek(cursor, BufferEnd, count, false);
+            return Seek(cursor, BufferEnd, count, false);
         }
 
         public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
         {
-            var result = ReadCursorOperations.TryGetBuffer(cursor, End, out data, out var next);
+            var result = TryGetBuffer(cursor, End, out data, out var next);
             if (advance)
             {
                 cursor = next;
@@ -290,7 +290,7 @@ namespace System.Buffers
             /// <returns></returns>
             public bool MoveNext()
             {
-                if (_next.IsDefault)
+                if (_next.Segment == null)
                 {
                     return false;
                 }

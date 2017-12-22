@@ -8,7 +8,6 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Http.Parser.Internal;
-using Position = System.Buffers.Position;
 
 namespace System.Text.Http.Parser
 {
@@ -238,8 +237,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new ReadOnlyBufferReader(buffer);
-            var start = default(ReadOnlyBufferReader);
+            var reader = new BufferReader(buffer);
+            var start = default(BufferReader);
             var done = false;
 
             try
@@ -323,7 +322,7 @@ namespace System.Text.Http.Parser
                                 var current = reader.Cursor;
 
                                 // Split buffers
-                                if (ReadCursorOperations.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
+                                if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
                                 {
                                     // Not there
                                     return false;
@@ -370,7 +369,7 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Collections.Sequences.Position position = buffer.First;
+            Position position = buffer.Start;
 
             if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {
@@ -641,7 +640,7 @@ namespace System.Text.Http.Parser
         private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
         {
             var start = buffer.Start;
-            if (ReadCursorOperations.Seek(start, buffer.End, out found, ByteLF) != -1)
+            if (ReadOnlyBuffer.Seek(start, buffer.End, out found, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
                 found = buffer.Move(found, 1);

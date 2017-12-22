@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
 using System.Linq;
 using Xunit;
@@ -13,22 +14,22 @@ namespace System.IO.Pipelines.Tests
     {
         public class Array: ReadableBufferFacts
         {
-            public Array() : base(TestBufferFactory.Array) { }
+            public Array() : base(ReadOnlyBufferFactory.Array) { }
         }
 
         public class OwnedMemory: ReadableBufferFacts
         {
-            public OwnedMemory() : base(TestBufferFactory.OwnedMemory) { }
+            public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
         }
 
         public class SingleSegment: ReadableBufferFacts
         {
-            public SingleSegment() : base(TestBufferFactory.SingleSegment) { }
+            public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
         }
 
         public class SegmentPerByte: ReadableBufferFacts
         {
-            public SegmentPerByte() : base(TestBufferFactory.SegmentPerByte) { }
+            public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
 
             [Fact]
             // This test verifies that optimization for known cursors works and
@@ -37,13 +38,13 @@ namespace System.IO.Pipelines.Tests
             {
                 var buffer = Factory.CreateOfSize(3);
                 var buffer2 = Factory.CreateOfSize(3);
-                ReadCursorOperations.Seek(buffer.Start, buffer2.End, 2, false);
+                ReadOnlyBuffer.Seek(buffer.Start, buffer2.End, 2, false);
             }
         }
 
-        internal TestBufferFactory Factory { get; }
+        internal ReadOnlyBufferFactory Factory { get; }
 
-        internal ReadableBufferFacts(TestBufferFactory factory)
+        internal ReadableBufferFacts(ReadOnlyBufferFactory factory)
         {
             Factory = factory;
         }
@@ -111,7 +112,7 @@ namespace System.IO.Pipelines.Tests
         {
             var buffer = Factory.CreateOfSize(3);
             var buffer2 = Factory.CreateOfSize(3);
-            Assert.Throws<InvalidOperationException>(() => ReadCursorOperations.Seek(buffer.Start, buffer2.End, 2, true));
+            Assert.Throws<InvalidOperationException>(() => ReadOnlyBuffer.Seek(buffer.Start, buffer2.End, 2, true));
         }
 
         [Fact]

@@ -357,7 +357,7 @@ namespace System.Buffers.Tests
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
-            Collections.Sequences.Position position = bytes.First;
+            Position position = bytes.Start;
             int length = 0;
             ReadOnlyMemory<byte> segment;
             while (bytes.TryGet(ref position, out segment))
@@ -367,7 +367,7 @@ namespace System.Buffers.Tests
             Assert.Equal(buffer.Length, length);
 
             var multibytes = Parse("A|CD|EFG");
-            position = multibytes.First;
+            position = multibytes.Start;
             length = 0;
             while (multibytes.TryGet(ref position, out segment))
             {
@@ -401,7 +401,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(i);
 
                 {
-                    Collections.Sequences.Position position = multibytes.First;
+                    Position position = multibytes.Start;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {
@@ -429,7 +429,7 @@ namespace System.Buffers.Tests
                 multibytes = multibytes.Slice(0, i);
 
                 {
-                    Collections.Sequences.Position position = multibytes.First;
+                    Position position = multibytes.Start;
                     var length = 0;
                     while (multibytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
                     {

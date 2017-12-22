@@ -162,7 +162,7 @@ namespace System.Text.Utf8
 
         public static bool operator !=(string left, Utf8Span right) => !right.Equals(left);
 
-        public int CompareTo(Utf8Span other) => Bytes.SequenceCompareTo(other.Bytes);
+        public int CompareTo(Utf8Span other) => SequenceCompareTo(Bytes, other.Bytes);
 
         public int CompareTo(Utf8String other) => CompareTo(other.Span);
 
@@ -455,5 +455,17 @@ namespace System.Text.Utf8
             return StringNotFound;
         }
         #endregion
+
+        static int SequenceCompareTo(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
+        {
+            var minLength = left.Length;
+            if (minLength > right.Length) minLength = right.Length;
+            for (int i = 0; i < minLength; i++)
+            {
+                var result = left[i].CompareTo(right[i]);
+                if (result != 0) return result;
+            }
+            return left.Length.CompareTo(right.Length);
+        }
     }
 }

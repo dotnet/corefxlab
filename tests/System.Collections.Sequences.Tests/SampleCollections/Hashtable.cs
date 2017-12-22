@@ -87,7 +87,7 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        public Position First => default;
+        public Position Start => default;
 
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
         {
@@ -105,7 +105,7 @@ namespace System.Collections.Sequences
                     return false;
                 }
 
-                position = firstOccupiedSlot;
+                position = new Position(null, firstOccupiedSlot);
             }
 
             var index = (int)position;
@@ -116,7 +116,7 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position = first;
+                position = new Position(null, first);
                 if (first == -1) {
                     position = default;
                 }

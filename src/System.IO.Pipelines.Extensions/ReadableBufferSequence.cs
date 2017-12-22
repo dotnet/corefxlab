@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Collections.Sequences;
-using Position = System.Buffers.Position;
 
 namespace System.IO.Pipelines
 {
@@ -16,16 +15,16 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-        public Collections.Sequences.Position First => Collections.Sequences.Position.Create(_buffer.Start.Segment, _buffer.Start.Index);
+        public Position Start => new Position(_buffer.Start.Segment, _buffer.Start.Index);
 
-        public bool TryGet(ref Collections.Sequences.Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             var (data, index) = position.Get<object>();
             var p = new Position(data, index);
             var result =  _buffer.TryGet(ref p, out item);
             if (advance)
             {
-                position = Collections.Sequences.Position.Create(p.Segment, p.Index);
+                position = new Position(p.Segment, p.Index);
             }
 
             return result;

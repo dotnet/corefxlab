@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
-using Position = System.Collections.Sequences.Position;
 
 namespace Microsoft.Net
 {
@@ -36,7 +35,7 @@ namespace Microsoft.Net
 
         public long VirtualIndex => throw new NotImplementedException();
 
-        public Position First => Position.Create(this);
+        public Position First => new Position(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -58,7 +57,7 @@ namespace Microsoft.Net
 
             var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.Memory.Slice(index, buffer._written - index);
-            if (advance) { position = Position.Create(buffer._next); }
+            if (advance) { position = new Position(buffer._next, 0); }
             return true;
         }
 
@@ -72,7 +71,7 @@ namespace Microsoft.Net
 
             var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.WrittenMemory.Slice(index);
-            if (advance) { position = Position.Create(buffer._next); }
+            if (advance) { position = new Position(buffer._next, 0); }
             return true;
         }
 

@@ -11,7 +11,7 @@ namespace System.Buffers
     {
         public static ReadOnlySpan<byte> ToSpan<T>(this T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
-            Collections.Sequences.Position position = sequence.First;
+            Position position = sequence.Start;
             ResizableArray<byte> array = new ResizableArray<byte>(1024);
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
             {
@@ -26,7 +26,7 @@ namespace System.Buffers
         // be used as a type parameter.
         public static long IndexOf<TSequence>(TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            Collections.Sequences.Position position = sequence.First;
+            Position position = sequence.Start;
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
@@ -39,7 +39,7 @@ namespace System.Buffers
 
         public static long IndexOf<TSequence>(TSequence sequence, byte v1, byte v2) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            Collections.Sequences.Position position = sequence.First;
+            Position position = sequence.Start;
             int totalIndex = 0;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
@@ -68,12 +68,12 @@ namespace System.Buffers
             return -1;
         }
 
-        public static Collections.Sequences.Position? PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static Position? PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             if (sequence == null) return null;
 
-            Collections.Sequences.Position position = sequence.First;
-            Collections.Sequences.Position result = position;
+            Position position = sequence.Start;
+            Position result = position;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 var index = MemoryExtensions.IndexOf(memory.Span, value);
@@ -87,12 +87,12 @@ namespace System.Buffers
             return null;
         }
 
-        public static Collections.Sequences.Position? PositionAt<TSequence>(this TSequence sequence, long index) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static Position? PositionAt<TSequence>(this TSequence sequence, long index) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             if (sequence == null) return null;
 
-            Collections.Sequences.Position position = sequence.First;
-            Collections.Sequences.Position result = position;
+            Position position = sequence.Start;
+            Position result = position;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 var span = memory.Span;
@@ -111,7 +111,7 @@ namespace System.Buffers
         public static int Copy<TSequence>(TSequence sequence, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             int copied = 0;
-            var position = sequence.First;
+            var position = sequence.Start;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory, true))
             {
                 var span = memory.Span;
@@ -123,7 +123,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static int Copy<TSequence>(TSequence sequence, Collections.Sequences.Position from, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static int Copy<TSequence>(TSequence sequence, Position from, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             int copied = 0;
             while (sequence.TryGet(ref from, out ReadOnlyMemory<byte> memory, true))
@@ -139,7 +139,7 @@ namespace System.Buffers
 
         public static bool TryParse<TSequence>(TSequence sequence, out int value, out int consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            var position = sequence.First;
+            var position = sequence.Start;
             if(sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 var span = memory.Span;
@@ -162,7 +162,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(TSequence sequence, out int value, out Collections.Sequences.Position consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse<TSequence>(TSequence sequence, out int value, out Position consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             if(!TryParse(sequence, out value, out int consumedBytes))
             {

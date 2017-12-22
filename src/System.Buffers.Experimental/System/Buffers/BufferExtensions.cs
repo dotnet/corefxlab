@@ -50,13 +50,13 @@ namespace System.Buffers
             return copied;
         }
 
-        public static Collections.Sequences.Position? PositionOf(this IMemoryList<byte> list, byte value)
+        public static Position? PositionOf(this IMemoryList<byte> list, byte value)
         {
             while (list != null)
             {
                 var current = list.Memory.Span;
                 var index = current.IndexOf(value);
-                if (index != -1) return Collections.Sequences.Position.Create(list, index);
+                if (index != -1) return new Position(list, index);
                 list = list.Next;
             }
             return null;
@@ -135,7 +135,7 @@ namespace System.Buffers
             ReadOnlySpan<byte> remainder = stackalloc byte[0];
             Span<byte> stackSpan = stackalloc byte[stackLength];
 
-            Collections.Sequences.Position poisition = default;
+            Position poisition = default;
             while (source.TryGet(ref poisition, out var sourceBuffer))
             {
                 Span<byte> outputSpan = destination.GetSpan();
@@ -223,6 +223,33 @@ namespace System.Buffers
                 }
             }
             return;
+        }
+
+        public static bool SequenceEqual<T>(this Memory<T> first, Memory<T> second) where T : struct, IEquatable<T>
+        {
+            return first.Span.SequenceEqual(second.Span);
+        }
+
+        public static bool SequenceEqual<T>(this ReadOnlyMemory<T> first, ReadOnlyMemory<T> second) where T : struct, IEquatable<T>
+        {
+            return first.Span.SequenceEqual(second.Span);
+        }
+
+        public static int SequenceCompareTo(this Span<byte> left, ReadOnlySpan<byte> right)
+        {
+            return SequenceCompareTo((ReadOnlySpan<byte>)left, right);
+        }
+
+        public static int SequenceCompareTo(this ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
+        {
+            var minLength = left.Length;
+            if (minLength > right.Length) minLength = right.Length;
+            for (int i = 0; i < minLength; i++)
+            {
+                var result = left[i].CompareTo(right[i]);
+                if (result != 0) return result;
+            }
+            return left.Length.CompareTo(right.Length);
         }
 
         public static bool TryIndicesOf(this Span<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
