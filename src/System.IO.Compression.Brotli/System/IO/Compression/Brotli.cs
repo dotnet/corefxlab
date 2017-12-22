@@ -3,12 +3,13 @@
 // See the LICENSE file in the project root for more information.
 using System.Buffers;
 using System.IO.Compression.Resources;
+using System.Runtime.InteropServices;
 
 #if BIT64
     using nuint = System.UInt64;
 #else
     using nuint = System.UInt32;
-#endif 
+#endif
 
 namespace System.IO.Compression
 {
@@ -152,8 +153,8 @@ namespace System.IO.Compression
             unsafe
             {
                 IntPtr bufIn, bufOut;
-                fixed (byte* inBytes = &source.DangerousGetPinnableReference())
-                fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
+                fixed (byte* inBytes = &MemoryMarshal.GetReference(source))
+                fixed (byte* outBytes = &MemoryMarshal.GetReference(destination))
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);
@@ -186,8 +187,8 @@ namespace System.IO.Compression
                 IntPtr bufIn, bufOut;
                 while (bytesConsumed > 0)
                 {
-                    fixed (byte* inBytes = &source.DangerousGetPinnableReference())
-                    fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
+                    fixed (byte* inBytes = &MemoryMarshal.GetReference(source))
+                    fixed (byte* outBytes = &MemoryMarshal.GetReference(destination))
                     {
                         bufIn = new IntPtr(inBytes);
                         bufOut = new IntPtr(outBytes);
@@ -218,8 +219,8 @@ namespace System.IO.Compression
             unsafe
             {
                 IntPtr bufIn, bufOut;
-                fixed (byte* inBytes = &source.DangerousGetPinnableReference())
-                fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
+                fixed (byte* inBytes = &MemoryMarshal.GetReference(source))
+                fixed (byte* outBytes = &MemoryMarshal.GetReference(destination))
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);

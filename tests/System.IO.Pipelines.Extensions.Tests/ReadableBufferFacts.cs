@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO.Pipelines.Testing;
 using System.IO.Pipelines.Text.Primitives;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
 using System.Threading.Tasks;
@@ -370,7 +371,7 @@ namespace System.IO.Pipelines.Tests
 
         private unsafe void TestValue(ref ReadOnlyBuffer readBuffer, ulong value)
         {
-            fixed (byte* ptr = &readBuffer.First.Span.DangerousGetPinnableReference())
+            fixed (byte* ptr = &MemoryMarshal.GetReference(readBuffer.First.Span))
             {
                 string s = value.ToString(CultureInfo.InvariantCulture);
                 int written;

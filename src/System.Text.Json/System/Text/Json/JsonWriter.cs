@@ -3,6 +3,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Formatting;
 
 namespace System.Text.Json
@@ -333,13 +334,13 @@ namespace System.Text.Json
         {
             if (UseFastUtf8)
             {
-                EnsureBuffer(1).DangerousGetPinnableReference() = value;
+                MemoryMarshal.GetReference(EnsureBuffer(1)) = value;
                 _output.Advance(1);
             }
             else if (UseFastUtf16)
             {
                 var buffer = EnsureBuffer(2);
-                Unsafe.As<byte, char>(ref buffer.DangerousGetPinnableReference()) = (char)value;
+                Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(buffer)) = (char)value;
                 _output.Advance(2);
             }
             else
@@ -518,7 +519,7 @@ namespace System.Text.Json
             bytesNeeded += (indent + 1) * 2;
 
             var buffer = EnsureBuffer(bytesNeeded);
-            ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
+            ref byte utf8Bytes = ref MemoryMarshal.GetReference(buffer);
             int idx = 0;
 
             if (newline)
@@ -546,7 +547,7 @@ namespace System.Text.Json
 
             var buffer = EnsureBuffer(bytesNeeded);
             var span = buffer.NonPortableCast<byte, char>();
-            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             int idx = 0;
 
             if (newline)

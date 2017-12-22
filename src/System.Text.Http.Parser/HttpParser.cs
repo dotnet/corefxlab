@@ -6,6 +6,7 @@ using System.Collections.Sequences;
 using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Http.Parser.Internal;
 using Position = System.Buffers.Position;
 
@@ -69,7 +70,7 @@ namespace System.Text.Http.Parser
             }
 
             // Fix and parse the span
-            fixed (byte* data = &span.DangerousGetPinnableReference())
+            fixed (byte* data = &MemoryMarshal.GetReference(span))
             {
                 ParseRequestLine(ref handler, data, span.Length);
             }
@@ -102,7 +103,7 @@ namespace System.Text.Http.Parser
             }
 
             // Fix and parse the span
-            fixed (byte* data = &span.DangerousGetPinnableReference())
+            fixed (byte* data = &MemoryMarshal.GetReference(span))
             {
                 ParseRequestLine(ref handler, data, span.Length);
             }
@@ -248,7 +249,7 @@ namespace System.Text.Http.Parser
                     var span = reader.Span;
                     var remaining = span.Length - reader.Index;
 
-                    fixed (byte* pBuffer = &span.DangerousGetPinnableReference())
+                    fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))
                     {
                         while (remaining > 0)
                         {
@@ -333,7 +334,7 @@ namespace System.Text.Http.Parser
                                 var headerSpan = buffer.Slice(current, lineEnd).ToSpan();
                                 length = headerSpan.Length;
 
-                                fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference())
+                                fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
                                 {
                                     TakeSingleHeader(pHeader, length, ref handler);
                                 }
@@ -381,7 +382,7 @@ namespace System.Text.Http.Parser
 
             while (true)
             {
-                fixed (byte* pBuffer = &currentSpan.DangerousGetPinnableReference())
+                fixed (byte* pBuffer = &MemoryMarshal.GetReference(currentSpan))
                 {
                     while (remaining > 0)
                     {
@@ -449,7 +450,7 @@ namespace System.Text.Http.Parser
                             var headerSpan = buffer.Slice(index, end - index + 1).ToSpan();
                             length = headerSpan.Length;
 
-                            fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference())
+                            fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
                             {
                                 TakeSingleHeader(pHeader, length, ref handler);
                             }

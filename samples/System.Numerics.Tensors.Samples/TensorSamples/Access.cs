@@ -59,10 +59,10 @@ namespace TensorSamples
         
         public static unsafe void DumpContentsSparse(CompressedSparseTensor<double> tensor)
         {
-            fixed (double* valuesPtr = &tensor.Values.Span.DangerousGetPinnableReference())
-            fixed (int* compressedCountsPtr = &tensor.CompressedCounts.Span.DangerousGetPinnableReference())
-            fixed (int* indicesPtr = &tensor.Indices.Span.DangerousGetPinnableReference())
-            fixed (int* stridesPtr = &tensor.Strides.DangerousGetPinnableReference())
+            fixed (double* valuesPtr = &MemoryMarshal.GetReference(tensor.Values.Span))
+            fixed (int* compressedCountsPtr = &MemoryMarshal.GetReference(tensor.CompressedCounts.Span))
+            fixed (int* indicesPtr = &MemoryMarshal.GetReference(tensor.Indices.Span))
+            fixed (int* stridesPtr = &MemoryMarshal.GetReference(tensor.Strides))
             {
                 DumpContentsSparse(valuesPtr, compressedCountsPtr, indicesPtr, stridesPtr, tensor.Rank, tensor.NonZeroCount);
             }
@@ -70,8 +70,8 @@ namespace TensorSamples
 
         public static unsafe void DumpContentsDense(DenseTensor<double> tensor)
         {
-            fixed (double* valuesPtr = &tensor.Buffer.Span.DangerousGetPinnableReference())
-            fixed (int* stridesPtr = &tensor.Strides.DangerousGetPinnableReference())
+            fixed (double* valuesPtr = &MemoryMarshal.GetReference(tensor.Buffer.Span))
+            fixed (int* stridesPtr = &MemoryMarshal.GetReference(tensor.Strides))
             {
                 DumpContentsDense(valuesPtr, stridesPtr, tensor.Rank, (int)tensor.Length);
             }

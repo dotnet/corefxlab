@@ -87,7 +87,7 @@ namespace System.Net.Libuv
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
 
-            fixed (byte* source = &data.DangerousGetPinnableReference())
+            fixed (byte* source = &MemoryMarshal.GetReference(data))
             {
                 var length = data.Length;
 
@@ -109,7 +109,7 @@ namespace System.Net.Libuv
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
             
-            fixed (byte* source = &data.Span.DangerousGetPinnableReference())
+            fixed (byte* source = &MemoryMarshal.GetReference(data.Span))
             {
                 var length = data.Length;
                 

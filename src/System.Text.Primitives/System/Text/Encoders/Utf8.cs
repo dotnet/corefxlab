@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -91,8 +92,8 @@ namespace System.Buffers.Text
             /// <returns>A <see cref="OperationStatus"/> value representing the state of the conversion.</returns>
             public unsafe static OperationStatus ToUtf16(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                fixed (byte* pUtf8 = &source.DangerousGetPinnableReference())
-                fixed (byte* pUtf16 = &destination.DangerousGetPinnableReference())
+                fixed (byte* pUtf8 = &MemoryMarshal.GetReference(source))
+                fixed (byte* pUtf16 = &MemoryMarshal.GetReference(destination))
                 {
                     byte* pSrc = pUtf8;
                     byte* pSrcEnd = pSrc + source.Length;
@@ -541,8 +542,8 @@ namespace System.Buffers.Text
 
                 int srcLength = source.Length;
                 int dstLength = destination.Length;
-                ref byte src = ref source.DangerousGetPinnableReference();
-                ref byte dst = ref destination.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
+                ref byte dst = ref MemoryMarshal.GetReference(destination);
 
                 while (bytesConsumed < srcLength && bytesWritten < dstLength)
                 {

@@ -41,7 +41,7 @@ namespace TensorSamples
 
         public static unsafe double GetRowSum(DenseTensor<double> tensor, int row)
         {
-            fixed(double* dataPtr = &tensor.Buffer.Span.DangerousGetPinnableReference())
+            fixed(double* dataPtr = &MemoryMarshal.GetReference(tensor.Buffer.Span))
             {
                 return GetRowSum(dataPtr, tensor.Dimensions.ToArray(), tensor.Rank, row);
             }

@@ -33,9 +33,9 @@ namespace TensorSamples
 
         public static unsafe double ScalarPowerSparse(CompressedSparseTensor<double> tensor, int exponent)
         {
-            fixed (double* valuesPtr = &tensor.Values.Span.DangerousGetPinnableReference())
-            fixed (int* compressedCountsPtr = &tensor.CompressedCounts.Span.DangerousGetPinnableReference())
-            fixed (int* indicesPtr = &tensor.Indices.Span.DangerousGetPinnableReference())
+            fixed (double* valuesPtr = &MemoryMarshal.GetReference(tensor.Values.Span))
+            fixed (int* compressedCountsPtr = &MemoryMarshal.GetReference(tensor.CompressedCounts.Span))
+            fixed (int* indicesPtr = &MemoryMarshal.GetReference(tensor.Indices.Span))
             {
                 return ScalarPowerSparse(valuesPtr, compressedCountsPtr, indicesPtr, tensor.Dimensions.ToArray(), tensor.Rank, tensor.NonZeroCount, exponent);
             }

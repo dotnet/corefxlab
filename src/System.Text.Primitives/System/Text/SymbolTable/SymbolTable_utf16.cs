@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -41,7 +42,7 @@ namespace System.Buffers.Text
                 if (utf8 > 0x7F)
                     goto ExitFailed;
 
-                Unsafe.As<byte, char>(ref destination.DangerousGetPinnableReference()) = (char)utf8;
+                Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(destination)) = (char)utf8;
                 bytesWritten = 2;
                 return true;
 
@@ -67,7 +68,7 @@ namespace System.Buffers.Text
                 if (source.Length < 2)
                     goto ExitFailed;
 
-                ref char value = ref Unsafe.As<byte, char>(ref source.DangerousGetPinnableReference());
+                ref char value = ref Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(source));
                 if (value > 0x7F)
                     goto ExitFailed;
 

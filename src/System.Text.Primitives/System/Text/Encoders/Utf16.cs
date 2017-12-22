@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -57,7 +58,7 @@ namespace System.Buffers.Text
                 // running all the tests twice per code-point
                 try
                 {
-                    ref char utf16 = ref Unsafe.As<byte, char>(ref source.DangerousGetPinnableReference());
+                    ref char utf16 = ref Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(source));
                     int utf16Length = source.Length >> 1; // byte => char count
 
                     for (int i = 0; i < utf16Length; i++)
@@ -110,8 +111,8 @@ namespace System.Buffers.Text
                 // KEEP THIS IMPLEMENTATION IN SYNC WITH https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/src/System/Text/UTF8Encoding.cs
                 //
                 //
-                fixed (byte* chars = &source.DangerousGetPinnableReference())
-                fixed (byte* bytes = &destination.DangerousGetPinnableReference())
+                fixed (byte* chars = &MemoryMarshal.GetReference(source))
+                fixed (byte* bytes = &MemoryMarshal.GetReference(destination))
                 {
                     char* pSrc = (char*)chars;
                     byte* pTarget = bytes;
@@ -439,7 +440,7 @@ namespace System.Buffers.Text
             {
                 bytesNeeded = 0;
 
-                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
                 int srcLength = source.Length;
                 int srcIndex = 0;
 
@@ -487,10 +488,10 @@ namespace System.Buffers.Text
                 bytesConsumed = 0;
                 bytesWritten = 0;
 
-                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte src = ref MemoryMarshal.GetReference(source);
                 int srcLength = source.Length;
 
-                ref byte dst = ref destination.DangerousGetPinnableReference();
+                ref byte dst = ref MemoryMarshal.GetReference(destination);
                 int dstLength = destination.Length;
 
                 while (srcLength - bytesConsumed >= sizeof(char))

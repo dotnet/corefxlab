@@ -3,6 +3,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Json
 {
@@ -91,7 +92,7 @@ namespace System.Text.Json
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            ref byte bytes = ref _buffer.DangerousGetPinnableReference();
+            ref byte bytes = ref MemoryMarshal.GetReference(_buffer);
             int length = _buffer.Length;
             int skip = SkipWhiteSpace(ref bytes, length);
 
@@ -313,7 +314,7 @@ namespace System.Text.Json
                 }
 
                 // Calculate the real start of the number based on our current buffer location.
-                int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
+                int startIndex = (int)Unsafe.ByteOffset(ref MemoryMarshal.GetReference(_buffer), ref src);
 
                 Value = _buffer.Slice(startIndex, idx);
                 ValueType = JsonValueType.Number;
@@ -335,7 +336,7 @@ namespace System.Text.Json
                 }
 
                 // Calculate the real start of the number based on our current buffer location.
-                int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
+                int startIndex = (int)Unsafe.ByteOffset(ref MemoryMarshal.GetReference(_buffer), ref src);
 
                 // consumed is in characters, but our buffer is in bytes, so we need to double it for buffer slicing.
                 int bytesConsumed = idx << 1;
@@ -669,7 +670,7 @@ namespace System.Text.Json
 
             // Calculate the real start of the property name based on our current buffer location.
             // Also, skip the opening JSON quote character.
-            int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src) + 1;
+            int startIndex = (int)Unsafe.ByteOffset(ref MemoryMarshal.GetReference(_buffer), ref src) + 1;
 
             Value = _buffer.Slice(startIndex, idx - 2); // -2 to exclude the quote characters.
             ValueType = JsonValueType.String;
@@ -695,7 +696,7 @@ namespace System.Text.Json
 
             // Calculate the real start of the property name based on our current buffer location.
             // Also, skip the opening JSON quote character.
-            int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src) + 2;
+            int startIndex = (int)Unsafe.ByteOffset(ref MemoryMarshal.GetReference(_buffer), ref src) + 2;
 
             // idx is in characters, but our buffer is in bytes, so we need to double it for buffer slicing.
             // Also, remove the quote characters as well.

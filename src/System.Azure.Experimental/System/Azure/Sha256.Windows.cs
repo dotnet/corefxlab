@@ -29,7 +29,7 @@ namespace System.Buffers.Cryptography
         public int OutputSize => 256 / 8; // Sha256 length in bytes
         public unsafe void Append(ReadOnlySpan<byte> input)
         {
-            fixed (byte* pInput = &input.DangerousGetPinnableReference())
+            fixed (byte* pInput = &MemoryMarshal.GetReference(input))
             {
                 var result = BCryptHashData(_hash, pInput, input.Length, 0);
                 if (result != 0) throw new Exception();
@@ -43,7 +43,7 @@ namespace System.Buffers.Cryptography
 
             unsafe
             {
-                fixed (byte* pOutput = &buffer.DangerousGetPinnableReference())
+                fixed (byte* pOutput = &MemoryMarshal.GetReference(buffer))
                 {
                     var result = BCryptFinishHash(_hash, pOutput, OutputSize, 0);
                     if (result != 0) throw new Exception();
