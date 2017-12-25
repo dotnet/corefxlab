@@ -5,9 +5,13 @@ namespace System.Threading
 {
     public abstract class Scheduler
     {
+        private protected static readonly Action<object> ScheduleAction = o => ((Action)o)();
+
         public static Scheduler TaskRun { get; } = new TaskRunScheduler();
         public static Scheduler Inline { get; } = new InlineScheduler();
 
         public abstract void Schedule(Action<object> action, object state);
+
+        public virtual void Schedule(Action action) => Schedule(ScheduleAction, action);
     }
 }

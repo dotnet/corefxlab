@@ -4,8 +4,11 @@
 
 namespace System.Threading
 {
-    internal class InlineScheduler : Scheduler
+    internal sealed class InlineScheduler : Scheduler
     {
+        // Override and seal class to ensure a devirtualised call through to Schedule
+        public override void Schedule(Action action) => Schedule(ScheduleAction, action);
+
         public override void Schedule(Action<object> action, object state)
         {
             action(state);

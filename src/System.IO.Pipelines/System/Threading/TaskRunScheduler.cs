@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace System.Threading
 {
-    internal class TaskRunScheduler : Scheduler
+    internal sealed class TaskRunScheduler : Scheduler
     {
+        // Override and seal class to ensure a devirtualised call through to Schedule
+        public override void Schedule(Action action) => Schedule(ScheduleAction, action);
+
         public override void Schedule(Action<object> action, object state)
         {
             Task.Factory.StartNew(action, state);
