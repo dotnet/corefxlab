@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Sockets
@@ -14,21 +15,28 @@ namespace System.IO.Pipelines.Networking.Sockets
     public class SocketListener : IDisposable
     {
         private readonly bool _ownsPool;
+        private readonly PipeOptions _pipeOptions;
         private Socket _socket;
         private Socket Socket => _socket;
         private MemoryPool<byte> _pool;
-        private MemoryPool<byte> PipePool => _pool;
         private Func<SocketConnection, Task> Callback { get; set; }
         static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
         /// <summary>
         /// Creates a new SocketListener instance
         /// </summary>
-        /// <param name="pool">Optionally allows the underlying <see cref="PipePool"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipePool"/> will be instantiated and owned by the listener</param>
-        public SocketListener(MemoryPool<byte> pool = null)
+        /// <param name="pipeOptions">Optionally configures the Pipe <see cref="Pipe"/> with the sepecified options; if none is provided, a <see cref="PipeOptions"/> with <see cref="MemoryPool.Default"/> and <see cref="Scheduler.TaskRun"/> will be used </param>
+        public SocketListener(PipeOptions pipeOptions = null)
         {
-            _ownsPool = pool == null;
-            _pool = pool ?? new MemoryPool();
+            pipeOptions = pipeOptions ?? new PipeOptions(MemoryPool.Default, Scheduler.TaskRun, Scheduler.TaskRun);
+            _pipeOptions = pipeOptions;
+            var pool = pipeOptions.Pool;
+            if (pool == null)
+            {
+                _ownsPool = true;
+                pool = new MemoryPool();
+            }
+            _pool = pool;
         }
 
         /// <summary>
@@ -128,7 +136,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (e.SocketError == SocketError.Success)
             {
-                var conn = new SocketConnection(e.AcceptSocket, PipePool);
+                var conn = new SocketConnection(e.AcceptSocket, _pipeOptions);
                 e.AcceptSocket = null;
                 ExecuteConnection(conn);
             }

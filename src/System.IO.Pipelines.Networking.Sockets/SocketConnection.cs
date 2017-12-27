@@ -37,6 +37,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
 
         private readonly bool _ownsPool;
+        private readonly PipeOptions _pipeOptions;
         private MemoryPool<byte> _pool;
         private IPipe _input, _output;
         private Socket _socket;
@@ -73,10 +74,12 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        internal SocketConnection(Socket socket, MemoryPool<byte> pool)
+        internal SocketConnection(Socket socket, PipeOptions pipeOptions)
         {
             socket.NoDelay = true;
             _socket = socket;
+            _pipeOptions = pipeOptions;
+            var pool = pipeOptions.Pool;
             if (pool == null)
             {
                 _ownsPool = true;
@@ -84,10 +87,9 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             _pool = pool;
 
-            // TODO: Make this configurable
-            // Dispatch to avoid deadlocks
-            _input = new Pipe(new PipeOptions(pool, Scheduler.TaskRun, Scheduler.TaskRun));
-            _output = new Pipe(new PipeOptions(pool, Scheduler.TaskRun, Scheduler.TaskRun));
+            // TODO: Dispatch to avoid deadlocks
+            _input = new Pipe(pipeOptions);
+            _output = new Pipe(pipeOptions);
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -111,13 +113,15 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// Begins an asynchronous connect operation to the designated endpoint
         /// </summary>
         /// <param name="endPoint">The endpoint to which to connect</param>
-        /// <param name="pool">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the connection</param>
-        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, MemoryPool<byte> pool = null)
+        /// <param name="pipeOptions">Optionally configures the Pipe <see cref="Pipe"/> with the sepecified options; if none is provided, a <see cref="PipeOptions"/> with <see cref="MemoryPool.Default"/> and <see cref="Scheduler.TaskRun"/> will be used </param>
+        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipeOptions pipeOptions = null)
         {
+            pipeOptions = pipeOptions ?? new PipeOptions(MemoryPool.Default, Scheduler.TaskRun, Scheduler.TaskRun);
+
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
             args.Completed += _asyncCompleted;
-            var tcs = new TaskCompletionSource<SocketConnection>(pool);
+            var tcs = new TaskCompletionSource<SocketConnection>(pipeOptions);
             args.UserToken = tcs;
             if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, args))
             {
@@ -230,7 +234,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (MemoryPool<byte>)tcs.Task.AsyncState));
+                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (PipeOptions)tcs.Task.AsyncState));
                 }
                 else
                 {
