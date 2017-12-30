@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Text.Formatting;
 using System.Buffers.Text;
+using System.Linq;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -319,6 +320,29 @@ namespace System.IO.Pipelines.Tests
                 await response.FlushAsync();
                 connection.Input.Advance(request.End);
             }
+        }
+
+        [Fact]
+        public async Task IdiomaticDisposeWorksCleanly()
+        {
+            var ip = (await Dns.GetHostAddressesAsync("microsoft.com")).First();
+
+            Stopwatch timer = null;
+            try
+            { /// we're going to deliberately fail
+                using (var conn = await SocketConnection.ConnectAsync(new IPEndPoint(ip, 443)))
+                {
+                    timer = Stopwatch.StartNew();
+                    // pretty common scenario, really
+                    throw new InvalidOperationException("something went terribly wrong");
+                } // it is the *dispose* that we're worried about here
+            }
+            catch
+            {
+                timer.Stop();
+            }
+
+            Assert.True(timer.ElapsedMilliseconds <= 100);
         }
     }
 }
