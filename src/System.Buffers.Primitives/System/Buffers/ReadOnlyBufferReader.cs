@@ -6,20 +6,32 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public ref struct BufferReader
+    public class BufferReader
+    {
+        public static BufferReader<TSequence> Create<TSequence>(TSequence buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        {
+            return new BufferReader<TSequence>(buffer);
+        }
+    }
+
+    public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private ReadOnlyBuffer.Enumerator _enumerator;
+        private TSequence _sequence;
+        private Position _currentPosition;
+        private Position _nextPosition;
         private int _consumedBytes;
         private bool _end;
 
-        public BufferReader(ReadOnlyBuffer buffer)
+        public BufferReader(TSequence buffer)
         {
             _end = false;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = buffer.GetEnumerator();
+            _sequence = buffer;
+            _currentPosition = _sequence.Start;
+            _nextPosition = _currentPosition;
             _currentSpan = default;
             MoveNext();
         }
@@ -28,7 +40,7 @@ namespace System.Buffers
 
         public int Index => _index;
 
-        public Position Cursor => _enumerator.CreateCursor(_index);
+        public Position Position => _currentPosition + _index;
 
         public ReadOnlySpan<byte> Span => _currentSpan;
 
@@ -68,18 +80,17 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void MoveNext()
         {
-            while (_enumerator.MoveNext())
+            var previous = _nextPosition;
+            while(_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
+                _currentPosition = previous;
+                _currentSpan = memory.Span;
                 _index = 0;
-                var memory = _enumerator.Current;
-                var length = memory.Length;
-                if (length != 0)
+                if (_currentSpan.Length > 0)
                 {
-                    _currentSpan = memory.Span;
                     return;
                 }
             }
-
             _end = true;
         }
 
