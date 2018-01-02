@@ -108,7 +108,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
         private static void FindAllNewLinesReadableBufferReader(ReadOnlyBuffer buffer)
         {
-            var reader = new BufferReader(buffer);
+            var reader = BufferReader.Create(buffer);
             var end = buffer.End;
 
             while (!reader.End)
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                     if (length == -1)
                     {
-                        var current = reader.Cursor;
+                        var current = reader.Position;
 
                         if (ReadOnlyBuffer.Seek(current, end, out var found, (byte)'\n') == -1)
                         {

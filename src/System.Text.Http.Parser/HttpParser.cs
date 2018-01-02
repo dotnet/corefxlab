@@ -237,8 +237,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new BufferReader(buffer);
-            var start = default(BufferReader);
+            var reader = BufferReader.Create(buffer);
+            var start = default(BufferReader<ReadOnlyBuffer>);
             var done = false;
 
             try
@@ -319,7 +319,7 @@ namespace System.Text.Http.Parser
                             }
                             else
                             {
-                                var current = reader.Cursor;
+                                var current = reader.Position;
 
                                 // Split buffers
                                 if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
@@ -355,7 +355,7 @@ namespace System.Text.Http.Parser
             }
             finally
             {
-                consumed = reader.Cursor;
+                consumed = reader.Position;
                 consumedBytes = reader.ConsumedBytes;
 
                 if (done)
