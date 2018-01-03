@@ -245,7 +245,7 @@ namespace System.Text.Http.Parser
             {
                 while (!reader.End)
                 {
-                    var span = reader.Span;
+                    var span = reader.CurrentSegment;
                     var remaining = span.Length - reader.Index;
 
                     fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))

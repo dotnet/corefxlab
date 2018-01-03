@@ -18,9 +18,11 @@ namespace System.Buffers
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
+
         private TSequence _sequence;
         private Position _currentPosition;
         private Position _nextPosition;
+               
         private int _consumedBytes;
         private bool _end;
 
@@ -42,7 +44,9 @@ namespace System.Buffers
 
         public Position Position => _currentPosition + _index;
 
-        public ReadOnlySpan<byte> Span => _currentSpan;
+        public ReadOnlySpan<byte> CurrentSegment => _currentSpan;
+
+        public ReadOnlySpan<byte> UnreadSegment => _currentSpan.Slice(_index);
 
         public int ConsumedBytes => _consumedBytes;
 
@@ -81,7 +85,7 @@ namespace System.Buffers
         private void MoveNext()
         {
             var previous = _nextPosition;
-            while(_sequence.TryGet(ref _nextPosition, out var memory, true))
+            while (_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
                 _currentPosition = previous;
                 _currentSpan = memory.Span;
@@ -94,36 +98,143 @@ namespace System.Buffers
             _end = true;
         }
 
-        public void Skip(int length)
+        public void Skip(int byteCount)
         {
-            if (length < 0)
+            if (byteCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            _consumedBytes += length;
+            _consumedBytes += byteCount;
 
-            while (!_end && length > 0)
+            while (!_end && byteCount > 0)
             {
-                if ((_index + length) < _currentSpan.Length)
+                if ((_index + byteCount) < _currentSpan.Length)
                 {
-                    _index += length;
-                    length = 0;
+                    _index += byteCount;
+                    byteCount = 0;
                     break;
                 }
 
                 var remaining = (_currentSpan.Length - _index);
 
                 _index += remaining;
-                length -= remaining;
+                byteCount -= remaining;
 
                 MoveNext();
             }
 
-            if (length > 0)
+            if (byteCount > 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
+        }
+
+        public void SkipTo(Position position)
+        {
+            _currentPosition = position;
+            _nextPosition = position;
+            if (_sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory))
+            {
+                _currentSpan = memory.Span;
+            }
+            else
+            {
+                _currentSpan = default;
+            }
+            _index = 0;
+        }
+      
+        public Position? PositionOf(byte value)
+        {
+            var unread = UnreadSegment;
+            var index = unread.IndexOf(value);
+            if (index != -1) return _currentPosition + (_index + index);
+
+            var nextSegmentPosition = _nextPosition;
+            var currentSegmentPosition = _nextPosition;
+            while (_sequence.TryGet(ref nextSegmentPosition, out var memory, true))
+            {
+                var segment = memory.Span;
+                index = segment.IndexOf(value);
+                if (index != -1) return currentSegmentPosition + index;
+                currentSegmentPosition = nextSegmentPosition;
+            }
+            return default;
+        }
+
+        public Position? PositionOf(ReadOnlySpan<byte> value)
+        {
+            var unread = UnreadSegment;
+            var index = unread.IndexOf(value);
+            if (index != -1) return _currentPosition + (_index + index);
+            if (value.Length == 0) return default;
+
+            Span<byte> temp = stackalloc byte[(value.Length - 1) * 2];
+            var currentSegmentPosition = _currentPosition;
+            var nextSegmentPosition = _nextPosition;
+            var currentSegmentConsumedBytes = _index;
+
+            while (true)
+            {
+                // Try Stitched Match
+                int tempStartIndex = unread.Length - Math.Min(unread.Length, value.Length - 1);
+                var candidatePosition = currentSegmentPosition + (currentSegmentConsumedBytes + tempStartIndex);
+                int copied = CopyFromPosition(_sequence, candidatePosition, temp);
+                if (copied < value.Length) return null;
+
+                index = temp.Slice(0, copied).IndexOf(value);
+                if (index < value.Length)
+                {
+                    if (index != -1) return candidatePosition + index;
+                }
+
+                currentSegmentPosition = nextSegmentPosition;
+                // Try Next Segment
+                if (!_sequence.TryGet(ref nextSegmentPosition, out var memory, true))
+                {
+                    return default;
+                }
+                currentSegmentConsumedBytes = 0;
+                unread = memory.Span;
+
+                index = unread.IndexOf(value);
+                if (index != -1) return currentSegmentPosition + index;
+            }
+        }
+
+        public static int CopyTo(BufferReader<TSequence> bytes, Span<byte> buffer)
+        {
+            var first = bytes.UnreadSegment;
+            if (first.Length > buffer.Length)
+            {
+                first.Slice(0, buffer.Length).CopyTo(buffer);
+                return buffer.Length;
+            }
+            else if (first.Length == buffer.Length)
+            {
+                first.CopyTo(buffer);
+                return buffer.Length;
+            }
+            else
+            {
+                first.CopyTo(buffer);
+                return first.Length + CopyFromPosition(bytes._sequence, bytes._nextPosition, buffer.Slice(first.Length));
+            }
+        }
+
+        private static int CopyFromPosition(TSequence sequence, Position from, Span<byte> buffer)
+        {
+            int copied = 0;
+            while (sequence.TryGet(ref from, out ReadOnlyMemory<byte> memory, true))
+            {
+                var span = memory.Span;
+                var toCopy = Math.Min(span.Length, buffer.Length - copied);
+                span.Slice(0, toCopy).CopyTo(buffer.Slice(copied));
+                copied += toCopy;
+                if (copied >= buffer.Length) break;
+            }
+            return copied;
         }
     }
 }

@@ -33,12 +33,12 @@ namespace System.IO.Pipelines.Tests
                 var reader = BufferReader.Create(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
                 reader.Skip(2);
                 Assert.Equal(2, reader.Index);
-                Assert.Equal(3, reader.Span[reader.Index]);
+                Assert.Equal(3, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(3, reader.Peek());
                 reader.Skip(2);
                 Assert.Equal(5, reader.Peek());
                 Assert.Equal(4, reader.Index);
-                Assert.Equal(5, reader.Span[reader.Index]);
+                Assert.Equal(5, reader.CurrentSegment[reader.Index]);
             }
 
             [Fact]
@@ -46,10 +46,10 @@ namespace System.IO.Pipelines.Tests
             {
                 var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
                 Assert.Equal(0, reader.Index);
-                Assert.Equal(1, reader.Span[reader.Index]);
+                Assert.Equal(1, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(1, reader.Take());
                 Assert.Equal(1, reader.Index);
-                Assert.Equal(2, reader.Span[reader.Index]);
+                Assert.Equal(2, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(2, reader.Take());
                 Assert.Equal(-1, reader.Take());
             }
@@ -177,7 +177,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             reader.Skip(2);
-            Assert.Equal(3, reader.Span[reader.Index]);
+            Assert.Equal(3, reader.CurrentSegment[reader.Index]);
             Assert.Equal(3, reader.Take());
         }
 
@@ -216,10 +216,10 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2 });
             var reader = BufferReader.Create(buffer);
 
-            Assert.Equal(1, reader.Span[reader.Index]);
+            Assert.Equal(1, reader.CurrentSegment[reader.Index]);
             Assert.Equal(1, reader.Take());
 
-            Assert.Equal(2, reader.Span[reader.Index]);
+            Assert.Equal(2, reader.CurrentSegment[reader.Index]);
             Assert.Equal(2, reader.Peek());
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -233,7 +233,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             Assert.Equal(0, reader.Index);
-            Assert.Equal(1, reader.Span.Length);
+            Assert.Equal(1, reader.CurrentSegment.Length);
             Assert.Equal(1, reader.Peek());
             Assert.Equal(1, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -246,7 +246,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { }));
 
             Assert.Equal(0, reader.Index);
-            Assert.Equal(0, reader.Span.Length);
+            Assert.Equal(0, reader.CurrentSegment.Length);
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Take());
         }
@@ -292,10 +292,10 @@ namespace System.IO.Pipelines.Tests
             var counter = 1;
             while (!reader.End)
             {
-                var span = reader.Span;
+                var span = reader.CurrentSegment;
                 for (int i = reader.Index; i < span.Length; i++)
                 {
-                    Assert.Equal(counter++, reader.Span[i]);
+                    Assert.Equal(counter++, reader.CurrentSegment[i]);
                 }
                 reader.Skip(span.Length);
             }
