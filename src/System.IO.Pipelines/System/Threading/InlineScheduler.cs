@@ -6,6 +6,11 @@ namespace System.Threading
 {
     internal class InlineScheduler : Scheduler
     {
+        public override void Schedule(Action action)
+        {
+            action();
+        }
+
         public override void Schedule(Action<object> action, object state)
         {
             action(state);
