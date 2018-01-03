@@ -32,11 +32,11 @@ public class BytesReaderBench
     static void ParseInt32BytesReader()
     {
         foreach (var iteration in Benchmark.Iterations) {
-            var reader = BytesReader.Create(s_readOnlyBytes);
+            var reader = BufferReader.Create(s_readOnlyBytes);
 
             using (iteration.StartMeasurement()) {
                 while(reader.TryParse(out int value)) {
-                    reader.Advance(1);
+                    reader.Skip(1);
                 }
             }
         }
@@ -46,11 +46,11 @@ public class BytesReaderBench
     static void ParseInt32BytesRangeReader()
     {
         foreach (var iteration in Benchmark.Iterations) {
-            var reader = BytesReader.Create(s_bytesRange);
+            var reader = BufferReader.Create(s_bytesRange);
 
             using (iteration.StartMeasurement()) {
                 while (reader.TryParse(out int value)) {
-                    reader.Advance(1);
+                    reader.Skip(1);
                 }
             }
         }
@@ -84,7 +84,7 @@ public class BytesReaderBench
 
             using (iteration.StartMeasurement())
             {
-                while(Utf8Parser.TryParse(reader.Span.Slice(reader.ConsumedBytes), out int value, out int consumed)){
+                while(Utf8Parser.TryParse(reader.CurrentSegment.Slice(reader.ConsumedBytes), out int value, out int consumed)){
                     reader.Skip(consumed + 1);
                 }
             }

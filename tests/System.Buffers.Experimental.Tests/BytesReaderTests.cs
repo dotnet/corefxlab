@@ -14,15 +14,15 @@ namespace System.Buffers.Tests
         public void SingleSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Create("AB CD#EF&&");
-            var reader = BytesReader.Create(bytes);
+            var reader = BufferReader.Create(bytes);
 
-            Assert.True(reader.TryReadBytes(out var ab, (byte)' '));
+            Assert.True(reader.TryReadUntill(out var ab, (byte)' '));
             Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
 
-            Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
+            Assert.True(reader.TryReadUntill(out var cd, (byte)'#'));
             Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
 
-            Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
+            Assert.True(reader.TryReadUntill(out var ef, new byte[] { (byte)'&', (byte)'&' }));
             Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
         }
 
@@ -40,19 +40,19 @@ namespace System.Buffers.Tests
                 new byte[] { 1, 2, 3, 4 },
             });
 
-            var reader = BytesReader.Create(bytes);
+            var reader = BufferReader.Create(bytes);
 
-            Assert.True(reader.TryReadBytes(out var bytesValue, 2));
+            Assert.True(reader.TryReadUntill(out var bytesValue, 2));
             var span = bytesValue.ToSpan();
             Assert.Equal(0, span[0]);
             Assert.Equal(1, span[1]);
 
-            Assert.True(reader.TryReadBytes(out bytesValue, 5));
+            Assert.True(reader.TryReadUntill(out bytesValue, 5));
             span = bytesValue.ToSpan();
             Assert.Equal(3, span[0]);
             Assert.Equal(4, span[1]);
 
-            Assert.True(reader.TryReadBytes(out bytesValue, new byte[] { 8, 8 }));
+            Assert.True(reader.TryReadUntill(out bytesValue, new byte[] { 8, 8 }));
             span = bytesValue.ToSpan();
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
@@ -68,12 +68,12 @@ namespace System.Buffers.Tests
         public void MultiSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Parse("A|B |CD|#EF&|&");
-            var reader = BytesReader.Create(bytes);
+            var reader = BufferReader.Create(bytes);
 
-            Assert.True(reader.TryReadBytes(out var ab, (byte)' '));
+            Assert.True(reader.TryReadUntill(out var ab, (byte)' '));
             Assert.Equal("AB", ab.Utf8ToString());
 
-            Assert.True(reader.TryReadBytes(out var cd, (byte)'#'));
+            Assert.True(reader.TryReadUntill(out var cd, (byte)'#'));
             Assert.Equal("CD", cd.Utf8ToString());
 
             //Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
@@ -84,19 +84,19 @@ namespace System.Buffers.Tests
         public void EmptyBytesReader()
         {
             ReadOnlyBytes bytes = Create("");
-            var reader = BytesReader.Create(bytes);
-            Assert.False(reader.TryReadBytes(out var range, (byte)' '));
+            var reader = BufferReader.Create(bytes);
+            Assert.False(reader.TryReadUntill(out var range, (byte)' '));
 
             bytes = Parse("|");
-            reader = BytesReader.Create(bytes);
-            Assert.False(reader.TryReadBytes(out range, (byte)' '));
+            reader = BufferReader.Create(bytes);
+            Assert.False(reader.TryReadUntill(out range, (byte)' '));
         }
 
         [Fact]
         public void BytesReaderParse()
         {
             ReadOnlyBytes bytes = Parse("12|3Tr|ue|456Tr|ue7|89False|");
-            var reader = BytesReader.Create(bytes);
+            var reader = BufferReader.Create(bytes);
 
             Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
@@ -133,21 +133,21 @@ namespace System.Buffers.Tests
             var readOnlyBytes = new ReadOnlyBytes(data);
             var bytesRange = new ReadOnlyBytes(data);
 
-            var robReader = BytesReader.Create(readOnlyBytes);
+            var robReader = BufferReader.Create(readOnlyBytes);
 
             long robSum = 0;
             while (robReader.TryParse(out int value))
             {
                 robSum += value;
-                robReader.Advance(1);
+                robReader.Skip(1);
             }
 
-            var brReader = BytesReader.Create(bytesRange);
+            var brReader = BufferReader.Create(bytesRange);
             long brSum = 0;
             while (brReader.TryParse(out int value))
             {
                 brSum += value;
-                brReader.Advance(1);
+                brReader.Skip(1);
             }
 
             Assert.Equal(robSum, brSum);

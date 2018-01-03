@@ -113,12 +113,12 @@ namespace System.IO.Pipelines.Performance.Tests
 
             while (!reader.End)
             {
-                var span = reader.Span;
+                var span = reader.CurrentSegment;
 
                 // Trim the start if we have an index
-                if (reader.Index > 0)
+                if (reader.CurrentSegmentIndex > 0)
                 {
-                    span = span.Slice(reader.Index);
+                    span = span.Slice(reader.CurrentSegmentIndex);
                 }
 
                 while (span.Length > 0)
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                     if (length == -1)
                     {
-                        var current = reader.Position;
+                        var current = reader.CurrentPosition;
 
                         if (ReadOnlyBuffer.Seek(current, end, out var found, (byte)'\n') == -1)
                         {
