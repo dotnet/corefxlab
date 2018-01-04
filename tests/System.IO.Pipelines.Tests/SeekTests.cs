@@ -99,10 +99,10 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            var buffer = Factory.CreateWithContent(input);
+            var originalBuffer = Factory.CreateWithContent(input);
 
             // Act
-            buffer = limit > input.Length ? buffer : buffer.Slice(0, limit);
+            var buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
 
             var returnValue = buffer.Seek(out Position result, (byte)seek);
             var returnValue_1 = buffer.Seek(out result, (byte)seek, (byte)seek);
@@ -115,7 +115,7 @@ namespace System.IO.Pipelines.Tests
 
             if (expectedReturnValue != -1)
             {
-                Assert.Equal(buffer.Slice(result).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)));
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)), originalBuffer.Slice(result).ToArray());
             }
         }
 
@@ -127,23 +127,21 @@ namespace System.IO.Pipelines.Tests
             // Arrange
             var afterSeek = (byte)'B';
 
-            var buffer = Factory.CreateWithContent(input);
+            var originalBuffer = Factory.CreateWithContent(input);
 
-            var start = buffer.Start;
-            var scan1 = buffer.Start;
-            var veryEnd = buffer.End;
+            var scan1 = originalBuffer.Start;
             var scan2_1 = scan1;
             var scan2_2 = scan1;
             var scan3_1 = scan1;
             var scan3_2 = scan1;
             var scan3_3 = scan1;
-            var end = buffer.End;
+            var buffer = originalBuffer;
 
             // Act
-            var endReturnValue = buffer.Seek(out end, (byte)limitAfter);
+            var endReturnValue = originalBuffer.Seek(out var end, (byte)limitAfter);
             if (endReturnValue != -1)
             {
-                buffer = buffer.Slice(end, 1);
+                buffer = originalBuffer.Slice(end).Slice(1);
             }
 
             var returnValue1 = buffer.Seek(out scan1, (byte)seek);
@@ -167,12 +165,12 @@ namespace System.IO.Pipelines.Tests
             {
                 var expectedEndIndex = input.IndexOf(seek);
 
-                Assert.Equal(buffer.Slice(scan1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan2_1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan2_2).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_2).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_3).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan1).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan2_1).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan2_2).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan3_1).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan3_2).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan3_3).ToArray());
             }
         }
 
