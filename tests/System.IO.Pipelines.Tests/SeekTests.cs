@@ -141,7 +141,7 @@ namespace System.IO.Pipelines.Tests
             var endReturnValue = originalBuffer.Seek(out var end, (byte)limitAfter);
             if (endReturnValue != -1)
             {
-                buffer = originalBuffer.Slice(end).Slice(1);
+                buffer = originalBuffer.Slice(buffer.Start, buffer.Move(end, 1));
             }
 
             var returnValue1 = buffer.Seek(out scan1, (byte)seek);
