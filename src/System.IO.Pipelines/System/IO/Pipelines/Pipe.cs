@@ -20,7 +20,6 @@ namespace System.IO.Pipelines
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
         private static readonly Action<object> _invokeCompletionCallbacks = state => ((PipeCompletionCallbacks)state).Execute();
-        private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
         // This sync objects protects the following state:
         // 1. _commitHead & _commitHeadIndex
@@ -628,7 +627,7 @@ namespace System.IO.Pipelines
         {
             if (action != null)
             {
-                scheduler.Schedule(_scheduleContinuation, action);
+                scheduler.Schedule(action);
             }
         }
 
