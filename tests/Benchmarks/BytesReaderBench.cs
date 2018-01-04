@@ -84,7 +84,7 @@ public class BytesReaderBench
 
             using (iteration.StartMeasurement())
             {
-                while(Utf8Parser.TryParse(reader.Span.Slice(reader.ConsumedBytes), out int value, out int consumed)){
+                while(Utf8Parser.TryParse(reader.Span.Slice((int)reader.ConsumedBytes), out int value, out int consumed)){
                     reader.Skip(consumed + 1);
                 }
             }
