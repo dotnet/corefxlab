@@ -320,17 +320,17 @@ namespace System.Text.Http.Parser
                             else
                             {
                                 var current = reader.Position;
-
+                                var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
-                                if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
+                                if (subBuffer.Seek(out var lineEnd, ByteLF) == -1)
                                 {
                                     // Not there
                                     return false;
                                 }
 
                                 // Make sure LF is included in lineEnd
-                                lineEnd = buffer.Move(lineEnd, 1);
-                                var headerSpan = buffer.Slice(current, lineEnd).ToSpan();
+                                lineEnd = subBuffer.Move(lineEnd, 1);
+                                var headerSpan = subBuffer.Slice(current, lineEnd).ToSpan();
                                 length = headerSpan.Length;
 
                                 fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -639,8 +639,7 @@ namespace System.Text.Http.Parser
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
         {
-            var start = buffer.Start;
-            if (ReadOnlyBuffer.Seek(start, buffer.End, out found, ByteLF) != -1)
+            if (buffer.Seek(out found, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
                 found = buffer.Move(found, 1);

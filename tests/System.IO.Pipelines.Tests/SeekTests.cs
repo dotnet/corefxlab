@@ -68,8 +68,6 @@ namespace System.IO.Pipelines.Tests
         public void MemorySeek(string raw, string search, char expectResult, int expectIndex)
         {
             var cursors = Factory.CreateWithContent(raw);
-            Position start = cursors.Start;
-            Position end = cursors.End;
             Position result = default;
 
             var searchFor = search.ToCharArray();
@@ -77,15 +75,15 @@ namespace System.IO.Pipelines.Tests
             int found = -1;
             if (searchFor.Length == 1)
             {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0]);
+                found = cursors.Seek(out result, (byte)searchFor[0]);
             }
             else if (searchFor.Length == 2)
             {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
+                found = cursors.Seek(out result, (byte)searchFor[0], (byte)searchFor[1]);
             }
             else if (searchFor.Length == 3)
             {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
+                found = cursors.Seek(out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
             }
             else
             {
@@ -104,10 +102,11 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(input);
 
             // Act
-            var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadOnlyBuffer.Seek(buffer.Start, end, out Position result, (byte)seek);
-            var returnValue_1 = ReadOnlyBuffer.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
-            var returnValue_2 = ReadOnlyBuffer.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
+            buffer = limit > input.Length ? buffer : buffer.Slice(0, limit);
+
+            var returnValue = buffer.Seek(out Position result, (byte)seek);
+            var returnValue_1 = buffer.Seek(out result, (byte)seek, (byte)seek);
+            var returnValue_2 = buffer.Seek(out result, (byte)seek, (byte)seek, (byte)seek);
 
             // Assert
             Assert.Equal(expectedReturnValue, returnValue);
@@ -141,17 +140,18 @@ namespace System.IO.Pipelines.Tests
             var end = buffer.End;
 
             // Act
-            var endReturnValue = ReadOnlyBuffer.Seek(start, veryEnd, out end, (byte)limitAfter);
+            var endReturnValue = buffer.Seek(out end, (byte)limitAfter);
             if (endReturnValue != -1)
             {
-                end = buffer.Slice(end, 1).End;
+                buffer = buffer.Slice(end, 1);
             }
-            var returnValue1 = ReadOnlyBuffer.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = ReadOnlyBuffer.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = ReadOnlyBuffer.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = ReadOnlyBuffer.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = ReadOnlyBuffer.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = ReadOnlyBuffer.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+
+            var returnValue1 = buffer.Seek(out scan1, (byte)seek);
+            var returnValue2_1 = buffer.Seek(out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = buffer.Seek(out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = buffer.Seek(out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = buffer.Seek(out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = buffer.Seek(out scan3_3, afterSeek, afterSeek, (byte)seek);
 
 
             // Assert

@@ -128,16 +128,15 @@ namespace System.IO.Pipelines.Performance.Tests
 
                     if (length == -1)
                     {
-                        var current = reader.Position;
-
-                        if (ReadOnlyBuffer.Seek(current, end, out var found, (byte)'\n') == -1)
+                        var subBuffer = buffer.Slice(reader.Position);
+                        if (subBuffer.Seek(out var found, (byte)'\n') == -1)
                         {
                             // We're done
                             return;
                         }
 
                         length = span.Length;
-                        skip = (int)buffer.Slice(current, found).Length + 1;
+                        skip = (int)subBuffer.Slice(0, found).Length + 1;
                     }
                     else
                     {
@@ -153,17 +152,14 @@ namespace System.IO.Pipelines.Performance.Tests
 
         private static void FindAllNewLines(ReadOnlyBuffer buffer)
         {
-            var start = buffer.Start;
-            var end = buffer.End;
-
             while (true)
             {
-                if (ReadOnlyBuffer.Seek(start, end, out var found, (byte)'\n') == -1)
+                if (buffer.Seek(out var found, (byte)'\n') == -1)
                 {
                     break;
                 }
 
-                start = buffer.Move(found, 1);
+                buffer = buffer.Slice(found).Slice(1);
             }
         }
     }

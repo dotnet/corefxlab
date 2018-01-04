@@ -10,63 +10,6 @@ namespace System.Buffers
 {
     public readonly partial struct ReadOnlyBuffer 
     {
-        public static int Seek(Position begin, Position end, out Position result, byte byte0)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-
-                int index = span.IndexOf(byte0);
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1, byte byte2)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1, byte2);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
         {

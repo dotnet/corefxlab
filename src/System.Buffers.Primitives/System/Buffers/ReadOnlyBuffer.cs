@@ -252,7 +252,64 @@ namespace System.Buffers
 
             return result;
         }
-        
+
+        public int Seek(out Position result, byte byte0)
+        {
+            var enumerator = GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var span = enumerator.Current.Span;
+
+                int index = span.IndexOf(byte0);
+                if (index != -1)
+                {
+                    result = enumerator.CreateCursor(index);
+                    return span[index];
+                }
+            }
+
+            result = End;
+            return -1;
+        }
+
+        public int Seek(out Position result, byte byte0, byte byte1)
+        {
+            var enumerator = GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var span = enumerator.Current.Span;
+                int index = span.IndexOfAny(byte0, byte1);
+
+                if (index != -1)
+                {
+                    result = enumerator.CreateCursor(index);
+                    return span[index];
+                }
+            }
+
+            result = End;
+            return -1;
+        }
+
+        public int Seek(out Position result, byte byte0, byte byte1, byte byte2)
+        {
+            var enumerator = GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var span = enumerator.Current.Span;
+                int index = span.IndexOfAny(byte0, byte1, byte2);
+
+                if (index != -1)
+                {
+                    result = enumerator.CreateCursor(index);
+                    return span[index];
+                }
+            }
+
+            result = End;
+            return -1;
+        }
+
         /// <summary>
         /// An enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
