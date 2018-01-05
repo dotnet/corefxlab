@@ -18,19 +18,20 @@ namespace System.Buffers
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
-        private TSequence _sequence;
         private Position _currentPosition;
         private Position _nextPosition;
-        private int _consumedBytes;
         private bool _end;
+       
+        public TSequence Sequence { get; }
+        public long ConsumedBytes { get; private set; }
 
         public BufferReader(TSequence buffer)
         {
             _end = false;
             _index = 0;
-            _consumedBytes = 0;
-            _sequence = buffer;
-            _currentPosition = _sequence.Start;
+            ConsumedBytes = 0;
+            Sequence = buffer;
+            _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
             _currentSpan = default;
             MoveNext();
@@ -44,7 +45,6 @@ namespace System.Buffers
 
         public ReadOnlySpan<byte> Span => _currentSpan;
 
-        public int ConsumedBytes => _consumedBytes;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
@@ -67,7 +67,7 @@ namespace System.Buffers
             var value = _currentSpan[_index];
 
             _index++;
-            _consumedBytes++;
+            ConsumedBytes++;
 
             if (_index >= _currentSpan.Length)
             {
@@ -81,7 +81,7 @@ namespace System.Buffers
         private void MoveNext()
         {
             var previous = _nextPosition;
-            while(_sequence.TryGet(ref _nextPosition, out var memory, true))
+            while (Sequence.TryGet(ref _nextPosition, out var memory, true))
             {
                 _currentPosition = previous;
                 _currentSpan = memory.Span;
@@ -101,7 +101,7 @@ namespace System.Buffers
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            _consumedBytes += length;
+            ConsumedBytes += length;
 
             while (!_end && length > 0)
             {

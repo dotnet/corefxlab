@@ -84,6 +84,34 @@ namespace System.IO.Pipelines.Tests
             reader.Take();
             Assert.True(reader.End);
         }
+        
+        [Fact]
+        public void SliceAftereWorks()
+        {
+            var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
+            var b1 = reader.Take();
+            var b2 = reader.Take();
+            var b3 = reader.Take();
+
+            Assert.Equal(1, b1);
+            Assert.Equal(2, b2);
+            Assert.Equal(3, b3);
+            Assert.Equal(new byte[] { 4, 5 }, reader.SliceAfter().ToArray());
+        }
+
+        [Fact]
+        public void SliceBeforeWorks()
+        {
+            var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
+            var b1 = reader.Take();
+            var b2 = reader.Take();
+            var b3 = reader.Take();
+
+            Assert.Equal(1, b1);
+            Assert.Equal(2, b2);
+            Assert.Equal(3, b3);
+            Assert.Equal(new byte[] { 1, 2, 3 }, reader.SliceBefore().ToArray());
+        }
 
         [Fact]
         public void CursorIsCorrectWithEmptyLastBlock()
