@@ -5,36 +5,59 @@ using System.Collections.Sequences;
 
 namespace System.Buffers
 {
+    // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
         public static bool TryReadUntill<TSequence>(ref this BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, byte delimiter)
             where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            var position = reader.PositionOf(delimiter);
-            if (position == null)
-            {
-                bytes = default;
-                return false;
+            var copy = reader;
+            var start = reader.Position;
+            while (!reader.End) {
+                Position end = reader.Position;
+                if(reader.Take() == delimiter)
+                {
+                    bytes = new ReadOnlyBuffer(start, end);
+                    return true;
+                }
             }
-            bytes = new ReadOnlyBuffer(reader.Position, position.Value);
-            reader.SkipTo(position.Value);
-            reader.Skip(1);
-            return true;
+            reader = copy;
+            bytes = default;
+            return false;
         }
 
         public static bool TryReadUntill<TSequence>(ref this BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, ReadOnlySpan<byte> delimiter)
             where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            var position = reader.PositionOf(delimiter);
-            if(position == null)
+            if (delimiter.Length == 0)
             {
-                bytes = default;
-                return false;
+                bytes = ReadOnlyBuffer.Empty;
+                return true;
             }
-            bytes = new ReadOnlyBuffer(reader.Position, position.Value);
-            reader.SkipTo(position.Value);
-            reader.Skip(delimiter.Length);
-            return true;
+
+            int matched = 0;
+            var copy = reader;
+            var start = reader.Position;
+            var end = reader.Position;
+            while (!reader.End)
+            {
+                if (reader.Take() == delimiter[matched]) {
+                    matched++;
+                }
+                else
+                {
+                    end = reader.Position;
+                    matched = 0;
+                }
+                if(matched >= delimiter.Length)
+                {
+                    bytes = new ReadOnlyBuffer(start, end);
+                    return true;
+                }
+            }
+            reader = copy;
+            bytes = default;
+            return false;
         }
     }
 }

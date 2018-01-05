@@ -144,97 +144,35 @@ namespace System.Buffers
             }
             _index = 0;
         }
-      
-        public Position? PositionOf(byte value)
-        {
-            var unread = UnreadSegment;
-            var index = unread.IndexOf(value);
-            if (index != -1) return _currentPosition + (_index + index);
 
-            var nextSegmentPosition = _nextPosition;
-            var currentSegmentPosition = _nextPosition;
-            while (_sequence.TryGet(ref nextSegmentPosition, out var memory, true))
-            {
-                var segment = memory.Span;
-                index = segment.IndexOf(value);
-                if (index != -1) return currentSegmentPosition + index;
-                currentSegmentPosition = nextSegmentPosition;
-            }
-            return default;
-        }
-
-        public Position? PositionOf(ReadOnlySpan<byte> value)
-        {
-            var unread = UnreadSegment;
-            var index = unread.IndexOf(value);
-            if (index != -1) return _currentPosition + (_index + index);
-            if (value.Length == 0) return default;
-
-            Span<byte> temp = stackalloc byte[(value.Length - 1) * 2];
-            var currentSegmentPosition = _currentPosition;
-            var nextSegmentPosition = _nextPosition;
-            var currentSegmentConsumedBytes = _index;
-
-            while (true)
-            {
-                // Try Stitched Match
-                int tempStartIndex = unread.Length - Math.Min(unread.Length, value.Length - 1);
-                var candidatePosition = currentSegmentPosition + (currentSegmentConsumedBytes + tempStartIndex);
-                int copied = CopyFromPosition(_sequence, candidatePosition, temp);
-                if (copied < value.Length) return null;
-
-                index = temp.Slice(0, copied).IndexOf(value);
-                if (index < value.Length)
-                {
-                    if (index != -1) return candidatePosition + index;
-                }
-
-                currentSegmentPosition = nextSegmentPosition;
-                // Try Next Segment
-                if (!_sequence.TryGet(ref nextSegmentPosition, out var memory, true))
-                {
-                    return default;
-                }
-                currentSegmentConsumedBytes = 0;
-                unread = memory.Span;
-
-                index = unread.IndexOf(value);
-                if (index != -1) return currentSegmentPosition + index;
-            }
-        }
-
-        public static int CopyTo(BufferReader<TSequence> bytes, Span<byte> buffer)
+        public static int CopyTo(BufferReader<TSequence> bytes, Span<byte> destination)
         {
             var first = bytes.UnreadSegment;
-            if (first.Length > buffer.Length)
+            if (first.Length > destination.Length)
             {
-                first.Slice(0, buffer.Length).CopyTo(buffer);
-                return buffer.Length;
+                first.Slice(0, destination.Length).CopyTo(destination);
+                return destination.Length;
             }
-            else if (first.Length == buffer.Length)
+            else if (first.Length == destination.Length)
             {
-                first.CopyTo(buffer);
-                return buffer.Length;
+                first.CopyTo(destination);
+                return destination.Length;
             }
             else
             {
-                first.CopyTo(buffer);
-                return first.Length + CopyFromPosition(bytes._sequence, bytes._nextPosition, buffer.Slice(first.Length));
+                first.CopyTo(destination);
+                var next = bytes._nextPosition;
+                int copied = first.Length;
+                while (bytes._sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+                {
+                    var nextSpan = nextSegment.Span;
+                    var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
+                    nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
+                    copied += toCopy;
+                    if (copied >= destination.Length) break;
+                }
+                return copied;
             }
-        }
-
-        private static int CopyFromPosition(TSequence sequence, Position from, Span<byte> buffer)
-        {
-            int copied = 0;
-            while (sequence.TryGet(ref from, out ReadOnlyMemory<byte> memory, true))
-            {
-                var span = memory.Span;
-                var toCopy = Math.Min(span.Length, buffer.Length - copied);
-                span.Slice(0, toCopy).CopyTo(buffer.Slice(copied));
-                copied += toCopy;
-                if (copied >= buffer.Length) break;
-            }
-            return copied;
         }
     }
 }
