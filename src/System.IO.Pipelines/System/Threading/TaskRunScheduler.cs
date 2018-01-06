@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System.Threading
 {
-    internal class TaskRunScheduler : Scheduler
+    internal sealed class TaskRunScheduler : Scheduler
     {
         public override void Schedule(Action action)
         {

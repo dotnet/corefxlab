@@ -5,8 +5,11 @@ namespace System.Threading
 {
     public abstract class Scheduler
     {
-        public static Scheduler TaskRun { get; } = new TaskRunScheduler();
-        public static Scheduler Inline { get; } = new InlineScheduler();
+        private static TaskRunScheduler _taskRunScheduler = new TaskRunScheduler();
+        private static InlineScheduler _inlineScheduler = new InlineScheduler();
+
+        public static Scheduler TaskRun => _taskRunScheduler;
+        public static Scheduler Inline => _inlineScheduler;
         
         public abstract void Schedule(Action action);
         public abstract void Schedule(Action<object> action, object state);
