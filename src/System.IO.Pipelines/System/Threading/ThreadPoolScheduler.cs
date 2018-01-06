@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace System.Threading
 {
-    internal sealed class TaskRunScheduler : Scheduler
+    internal sealed class ThreadPoolScheduler : Scheduler
     {
         public override void Schedule(Action action)
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            ThreadPool.QueueUserWorkItem(_actionAsTask, action, preferLocal: true);
+            Threading.ThreadPool.QueueUserWorkItem(_actionAsTask, action, preferLocal: true);
 #elif NETSTANDARD2_0
-            ThreadPool.QueueUserWorkItem(_actionAsTask, action);
+            Threading.ThreadPool.QueueUserWorkItem(_actionAsTask, action);
 #else
             Task.Factory.StartNew(action);
 #endif
@@ -24,9 +24,9 @@ namespace System.Threading
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state), preferLocal: true);
+            Threading.ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state), preferLocal: true);
 #elif NETSTANDARD2_0
-            ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state));
+            Threading.ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state));
 #else
             Task.Factory.StartNew(action, state);
 #endif

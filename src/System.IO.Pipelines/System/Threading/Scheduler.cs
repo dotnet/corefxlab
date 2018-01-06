@@ -5,10 +5,10 @@ namespace System.Threading
 {
     public abstract class Scheduler
     {
-        private static TaskRunScheduler _taskRunScheduler = new TaskRunScheduler();
+        private static ThreadPoolScheduler _threadPoolScheduler = new ThreadPoolScheduler();
         private static InlineScheduler _inlineScheduler = new InlineScheduler();
 
-        public static Scheduler TaskRun => _taskRunScheduler;
+        public static Scheduler ThreadPool => _threadPoolScheduler;
         public static Scheduler Inline => _inlineScheduler;
         
         public abstract void Schedule(Action action);
