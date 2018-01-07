@@ -51,7 +51,7 @@ namespace System.Buffers
         /// </summary>
         public Position End => BufferEnd;
 
-        public ReadOnlyBuffer(Position start, Position end)
+        private ReadOnlyBuffer(Position start, Position end)
         {
             Debug.Assert(start.Segment != null);
             Debug.Assert(end.Segment != null);
@@ -233,13 +233,13 @@ namespace System.Buffers
             return new Enumerator(this);
         }
 
-        public Position Move(Position cursor, long count)
+        public Position Seek(Position position, long count)
         {
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            return Seek(cursor, BufferEnd, count, false);
+            return Seek(position, BufferEnd, count, false);
         }
 
         public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
@@ -253,7 +253,7 @@ namespace System.Buffers
             return result;
         }
 
-        public int Seek(out Position result, byte byte0)
+        public Position? PositionOf(byte byte0)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -263,51 +263,11 @@ namespace System.Buffers
                 int index = span.IndexOf(byte0);
                 if (index != -1)
                 {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
+                    return enumerator.CreateCursor(index);
                 }
             }
 
-            result = End;
-            return -1;
-        }
-
-        public int Seek(out Position result, byte byte0, byte byte1)
-        {
-            var enumerator = GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = End;
-            return -1;
-        }
-
-        public int Seek(out Position result, byte byte0, byte byte1, byte byte2)
-        {
-            var enumerator = GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1, byte2);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = End;
-            return -1;
+            return null;
         }
 
         /// <summary>
@@ -369,7 +329,7 @@ namespace System.Buffers
 
             public Position CreateCursor(int index)
             {
-                return _readOnlyBuffer.Move(_current, index);
+                return _readOnlyBuffer.Seek(_current, index);
             }
         }
     }

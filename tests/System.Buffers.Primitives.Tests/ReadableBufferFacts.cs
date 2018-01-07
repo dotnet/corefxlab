@@ -89,7 +89,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferMove_MovesReadCursor()
         {
             var buffer = Factory.CreateOfSize(100);
-            var cursor = buffer.Move(buffer.Start, 65);
+            var cursor = buffer.Seek(buffer.Start, 65);
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
@@ -97,14 +97,14 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferMove_ChecksBounds()
         {
             var buffer = Factory.CreateOfSize(100);
-            Assert.Throws<InvalidOperationException>(() => buffer.Move(buffer.Start, 101));
+            Assert.Throws<InvalidOperationException>(() => buffer.Seek(buffer.Start, 101));
         }
 
         [Fact]
         public void ReadableBufferMove_DoesNotAlowNegative()
         {
             var buffer = Factory.CreateOfSize(20);
-            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Seek(buffer.Start, -1));
         }
 
         [Fact]
@@ -128,10 +128,10 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 50));
+            var readableBuffer = new ReadOnlyBuffer(bufferSegment1, 0, bufferSegment2, 50);
 
-            var c1 = readableBuffer.Move(readableBuffer.Start, 25); // segment 1 index 75
-            var c2 = readableBuffer.Move(readableBuffer.Start, 55); // segment 2 index 5
+            var c1 = readableBuffer.Seek(readableBuffer.Start, 25); // segment 1 index 75
+            var c2 = readableBuffer.Seek(readableBuffer.Start, 55); // segment 2 index 5
 
             var sliced = readableBuffer.Slice(c1, c2);
 
@@ -148,9 +148,9 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 0);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 0));
+            var readableBuffer = new ReadOnlyBuffer(bufferSegment1, 0, bufferSegment2, 0);
 
-            var c1 = readableBuffer.Move(readableBuffer.Start, 50);
+            var c1 = readableBuffer.Seek(readableBuffer.Start, 50);
 
             Assert.Equal(0, c1.Index);
             Assert.Equal(bufferSegment2, c1.Segment);

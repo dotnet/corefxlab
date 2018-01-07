@@ -129,14 +129,15 @@ namespace System.IO.Pipelines.Performance.Tests
                     if (length == -1)
                     {
                         var subBuffer = buffer.Slice(reader.Position);
-                        if (subBuffer.Seek(out var found, (byte)'\n') == -1)
+                        var position = subBuffer.PositionOf((byte)'\n');
+                        if (position == null)
                         {
                             // We're done
                             return;
                         }
 
                         length = span.Length;
-                        skip = (int)subBuffer.Slice(0, found).Length + 1;
+                        skip = (int)subBuffer.Slice(0, position.Value).Length + 1;
                     }
                     else
                     {
@@ -154,12 +155,13 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             while (true)
             {
-                if (buffer.Seek(out var found, (byte)'\n') == -1)
+                var position = buffer.PositionOf((byte)'\n');
+                if (position == null)
                 {
                     break;
                 }
 
-                buffer = buffer.Slice(found).Slice(1);
+                buffer = buffer.Slice(position.Value).Slice(1);
             }
         }
     }
