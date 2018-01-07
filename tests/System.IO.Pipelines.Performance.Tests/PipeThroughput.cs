@@ -144,7 +144,7 @@ namespace System.IO.Pipelines.Performance.Tests
             for (int i = 0; i < InnerLoopCount; i++)
             {
                 var writableBuffer = _pipe.Writer.Alloc(1);
-                var writer = new WritableBufferWriter(writableBuffer);
+                var writer = OutputWriter.Create(writableBuffer);
 
                 foreach (var write in _plaintextWrites)
                 {

@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
         public void ExposesSpan()
         {
             _buffer = _pipe.Writer.Alloc(1);
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
             Assert.Equal(_buffer.Buffer.Length, writer.Span.Length);
             Assert.Equal(new byte[] { }, Read());
         }
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
             _buffer = _pipe.Writer.Alloc(1);
             var initialLength = _buffer.Buffer.Length;
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
 
             writer.Write(new byte[] { 1, 2, 3 });
 
@@ -71,7 +71,7 @@ namespace System.IO.Pipelines.Tests
             _buffer = _pipe.Writer.Alloc(1);
             var initialLength = _buffer.Buffer.Length;
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
             var array = new byte[arrayLength];
             for (int i = 0; i < array.Length; i++)
             {
@@ -108,7 +108,7 @@ namespace System.IO.Pipelines.Tests
         {
             _buffer = _pipe.Writer.Alloc(alloc);
 
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
             var array = new byte[] { 1, 2, 3 };
 
             writer.Write(array, offset, length);
@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Tests
         public void CanWriteIntoHeadlessBuffer()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
 
             writer.Write(new byte[] { 1, 2, 3 });
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
@@ -130,7 +130,7 @@ namespace System.IO.Pipelines.Tests
         public void CanWriteMultipleTimes()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
 
             writer.Write(new byte[] { 1 });
             writer.Write(new byte[] { 2 });
@@ -143,7 +143,7 @@ namespace System.IO.Pipelines.Tests
         public void CanWriteEmpty()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
             var array = new byte[] { };
 
             writer.Write(array);
@@ -156,7 +156,7 @@ namespace System.IO.Pipelines.Tests
         public void CanWriteOverTheBlockLength()
         {
             _buffer = _pipe.Writer.Alloc(1);
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
 
             var source = Enumerable.Range(0, _buffer.Buffer.Length).Select(i => (byte)i);
             var expectedBytes = source.Concat(source).Concat(source).ToArray();
@@ -170,7 +170,7 @@ namespace System.IO.Pipelines.Tests
         public void EnsureAllocatesSpan()
         {
             _buffer = _pipe.Writer.Alloc();
-            var writer = new WritableBufferWriter(_buffer);
+            var writer = new OutputWriter<>(_buffer);
             writer.Ensure(10);
 
             Assert.True(writer.Span.Length > 10);
