@@ -199,5 +199,12 @@ namespace System.Buffers
                     return;
             }
         }
+
+        private class ReadOnlyBufferSegment: IMemoryList<byte>
+        {
+            public Memory<byte> Memory { get; set; }
+            public IMemoryList<byte> Next { get; set; }
+            public long VirtualIndex { get; set; }
+        }
     }
 }

@@ -123,7 +123,7 @@ namespace System.IO.Pipelines.Tests
                 var expectedEndIndex = input.IndexOf(seek);
 
                 Assert.NotNull(returnValue1);
-                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(scan1).ToArray());
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(returnValue1.Value).ToArray());
             }
         }
 

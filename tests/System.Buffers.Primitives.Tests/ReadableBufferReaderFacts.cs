@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Tests
             public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
             internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
         }
-
+        
         internal ReadOnlyBufferFactory Factory { get; }
 
         internal ReadableBufferReaderFacts(ReadOnlyBufferFactory factory)

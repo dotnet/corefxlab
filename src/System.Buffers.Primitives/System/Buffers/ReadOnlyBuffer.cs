@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.IO.Pipelines;
@@ -107,6 +108,39 @@ namespace System.Buffers
 
             BufferStart = new Position(data, offset);
             BufferEnd = new Position(data, offset + length);
+        }
+
+        public ReadOnlyBuffer(IEnumerable<Memory<byte>> buffers)
+        {
+            ReadOnlyBufferSegment segment = null;
+            ReadOnlyBufferSegment first = null;
+            foreach (var buffer in buffers)
+            {
+                var newSegment = new ReadOnlyBufferSegment()
+                {
+                    Memory =  buffer,
+                    VirtualIndex = segment?.VirtualIndex ?? 0
+                };
+
+                if (segment != null)
+                {
+                    segment.Next = newSegment;
+                }
+                else
+                {
+                    first = newSegment;
+                }
+
+                segment = newSegment;
+            }
+
+            if (first == null)
+            {
+                first = segment = new ReadOnlyBufferSegment();
+            }
+
+            BufferStart = new Position(first, 0);
+            BufferEnd = new Position(segment, segment.Memory.Length);
         }
 
         /// <summary>

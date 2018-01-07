@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
 using System.Linq;
@@ -162,13 +163,22 @@ namespace System.IO.Pipelines.Tests
             var readableBuffer = new ReadOnlyBuffer(new byte[] {1, 2, 3, 4, 5}, 2, 3);
             Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
         }
-
+        
         [Fact]
         public void Create_WorksWithOwnedMemory()
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
             var readableBuffer = new ReadOnlyBuffer(memory, 2, 3);
             Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
+        }
+
+        [Fact]
+        public void Create_WorksWithIEnumerableOfMemory()
+        {
+            var memories = new Memory<byte>[] { new byte[] {1, 2, 3}, new byte[] {4, 5, 6}};
+            var readableBuffer = new ReadOnlyBuffer(memories);
+
+            Assert.Equal(new byte[] {1, 2, 3, 4, 5}, readableBuffer.ToArray());
         }
 
         public static TheoryData<Action<ReadOnlyBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadOnlyBuffer>>
