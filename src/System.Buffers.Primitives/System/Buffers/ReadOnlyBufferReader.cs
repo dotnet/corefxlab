@@ -171,13 +171,5 @@ namespace System.Buffers
                 return copied;
             }
         }
-
-        public override string ToString()
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendFormat("_consumedBytes: {0}, ", _consumedBytes);
-            sb.AppendFormat("_index: {0}", _index);
-            return sb.ToString();
-        }
     }
 }
