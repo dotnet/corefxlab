@@ -130,8 +130,8 @@ namespace System.Buffers.Tests
             }
             var data = Encoding.UTF8.GetBytes(sb.ToString());
 
-            var readOnlyBytes = new ReadOnlyBytes(data);
-            var bytesRange = new ReadOnlyBytes(data);
+            var readOnlyBytes = new ReadOnlyBuffer(data);
+            var bytesRange = new ReadOnlyBuffer(data);
 
             var robReader = BufferReader.Create(readOnlyBytes);
 
