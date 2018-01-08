@@ -143,7 +143,7 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadOnlyBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, new Position((IBufferList)_end, _endIndex));
+                    return Slice(position, new Position(_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
