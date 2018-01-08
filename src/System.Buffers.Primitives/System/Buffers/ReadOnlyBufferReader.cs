@@ -136,7 +136,6 @@ namespace System.Buffers
 
         internal static int CopyTo(BufferReader<TSequence> bytes, Span<byte> destination)
         {
-            if (destination.Length == 0) return 0;
             var first = bytes.UnreadSegment;
             if (first.Length > destination.Length)
             {
@@ -150,10 +149,7 @@ namespace System.Buffers
             }
             else
             {
-                if (first.Length > 0)
-                {
-                    first.CopyTo(destination);
-                }
+                first.CopyTo(destination);
                 int copied = first.Length;
 
                 var next = bytes._nextPosition;
