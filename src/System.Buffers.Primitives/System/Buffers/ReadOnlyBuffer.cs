@@ -287,20 +287,19 @@ namespace System.Buffers
             return result;
         }
 
-        public Position? PositionOf(byte byte0)
+        public Position? PositionOf(byte value)
         {
-            var enumerator = GetEnumerator();
-            while (enumerator.MoveNext())
+            Position position = Start;
+            Position result = position;
+            while (TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
-                var span = enumerator.Current.Span;
-
-                int index = span.IndexOf(byte0);
+                var index = memory.Span.IndexOf( value);
                 if (index != -1)
                 {
-                    return enumerator.CreateCursor(index);
+                    return Seek(result, index);
                 }
+                result = position;
             }
-
             return null;
         }
 
@@ -359,11 +358,6 @@ namespace System.Buffers
             public void Reset()
             {
                 ThrowHelper.ThrowNotSupportedException();
-            }
-
-            public Position CreateCursor(int index)
-            {
-                return _readOnlyBuffer.Seek(_current, index);
             }
         }
     }
