@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// <param name="buffer">The <see cref="ReadOnlyBuffer"/> to parse</param>
         public static uint GetUInt32(this ReadOnlyBuffer buffer)
         {
-            if (!buffer.AsSequence().TryParseUInt32(out uint value, out int consumed))
+            if (!buffer.TryParseUInt32(out uint value, out int consumed))
             {
                 throw new InvalidOperationException("could not parse uint");
             }

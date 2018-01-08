@@ -88,6 +88,10 @@ namespace System.Collections.Sequences
         public int Length => _count;
 
         public Position Start => default;
+        public Position Seek(Position offset, long count)
+        {
+            return new Position(offset.Segment, offset.Index + (int)count);
+        }
 
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
         {
@@ -108,7 +112,7 @@ namespace System.Collections.Sequences
                 position = new Position(null, firstOccupiedSlot);
             }
 
-            var index = (int)position;
+            var index = position.Index;
             var entry = _entries[index];
             if (entry.IsEmpty) {
                 throw new InvalidOperationException();

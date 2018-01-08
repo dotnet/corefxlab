@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
+
 namespace System.Collections.Sequences
 {
     // This type is illustrating how to implement the new enumerable on linked node datastructure
@@ -27,6 +29,10 @@ namespace System.Collections.Sequences
         public int Length => _count;
 
         public Position Start => new Position(_head, 0);
+        public Position Seek(Position offset, long count)
+        {
+            return offset.Add((int) count);
+        }
 
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {

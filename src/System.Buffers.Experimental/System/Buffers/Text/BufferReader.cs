@@ -19,7 +19,7 @@ namespace System.Buffers.Text
         ReadOnlySpan<byte> _currentSpan;
         int _currentSpanIndex;
 
-        // TODO: should there be a ctor that takes sequence + position? 
+        // TODO: should there be a ctor that takes sequence + position?
         // TODO: should there be a type that is sequence + position?
         public BufferReader(TSequence bytes)
         {
@@ -280,7 +280,7 @@ namespace System.Buffers.Text
             else if (BinaryPrimitives.TryReadInt32BigEndian(unread, out value)) {
                 Advance(sizeof(int));
                 return true;
-            }           
+            }
 
             Span<byte> span = stackalloc byte[4];
             var copied = CopyTo(this, span);
@@ -302,7 +302,7 @@ namespace System.Buffers.Text
 
         ReadOnlySpan<byte> Unread => _currentSpan.Slice(_currentSpanIndex);
 
-        Position Position =>_currentSegmentPosition + _currentSpanIndex;      
+        Position Position =>_currentSegmentPosition.Add(_currentSpanIndex);
 
         Position? AdvanceToDelimiter(byte value)
         {
@@ -311,7 +311,7 @@ namespace System.Buffers.Text
             if (index != -1)
             {
                 _currentSpanIndex += index;
-                var result = _currentSegmentPosition + _currentSpanIndex;
+                var result = _currentSegmentPosition.Add(_currentSpanIndex);
                 _currentSpanIndex++; // skip delimiter
                 return result;
             }
@@ -328,7 +328,7 @@ namespace System.Buffers.Text
                     _currentSegmentPosition = previousPosition;
                     _currentSpan = span;
                     _currentSpanIndex = index + 1;
-                    return _currentSegmentPosition + index;
+                    return _currentSegmentPosition.Add(index);
                 }
                 previousPosition = _nextSegmentPosition;
             }
@@ -344,17 +344,17 @@ namespace System.Buffers.Text
             var index = unread.IndexOf(value);
             if (index != -1)
             {
-                return _currentSegmentPosition + (index + _currentSpanIndex);
+                return _currentSegmentPosition.Add(index + _currentSpanIndex);
             }
 
             index = unread.IndexOf(value[0]);
             if(index != -1 && unread.Length - index < value.Length)
             {
                 Span<byte> temp = stackalloc byte[value.Length];
-                int copied = Sequence.Copy(_bytes, _currentSegmentPosition + (_currentSpanIndex + index), temp);
+                int copied = Sequence.Copy(_bytes, _currentSegmentPosition.Add(_currentSpanIndex + index), temp);
                 if (copied < value.Length) return null;
 
-                if (temp.SequenceEqual(value)) return _currentSegmentPosition + (_currentSpanIndex + index);
+                if (temp.SequenceEqual(value)) return _currentSegmentPosition.Add(_currentSpanIndex + index);
                 else throw new NotImplementedException(); // need to check farther in this span
             }
 
