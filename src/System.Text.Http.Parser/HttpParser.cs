@@ -47,7 +47,7 @@ namespace System.Text.Http.Parser
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
-                consumed = buffer.Move(consumed, lineIndex + 1);
+                consumed = buffer.Seek(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
             else if (buffer.IsSingleSpan)
@@ -320,17 +320,18 @@ namespace System.Text.Http.Parser
                             else
                             {
                                 var current = reader.Position;
-
+                                var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
-                                if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
+                                var lineEnd = subBuffer.PositionOf(ByteLF);
+                                if (!lineEnd.HasValue)
                                 {
                                     // Not there
                                     return false;
                                 }
 
                                 // Make sure LF is included in lineEnd
-                                lineEnd = buffer.Move(lineEnd, 1);
-                                var headerSpan = buffer.Slice(current, lineEnd).ToSpan();
+                                lineEnd = subBuffer.Seek(lineEnd.Value, 1);
+                                var headerSpan = subBuffer.Slice(current, lineEnd.Value).ToSpan();
                                 length = headerSpan.Length;
 
                                 fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -639,14 +640,15 @@ namespace System.Text.Http.Parser
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
         {
-            var start = buffer.Start;
-            if (ReadOnlyBuffer.Seek(start, buffer.End, out found, ByteLF) != -1)
+            var position = buffer.PositionOf(ByteLF);
+            if (position.HasValue)
             {
                 // Move 1 byte past the \n
-                found = buffer.Move(found, 1);
+                found = buffer.Seek(position.Value, 1);
                 return true;
             }
 
+            found = default;
             return false;
         }
 

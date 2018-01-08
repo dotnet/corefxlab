@@ -64,7 +64,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequencePositionOfMultiSegment()
         {
-            var (first, last) = MemoryList.Create(
+            var (first, last) = BufferList.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
@@ -80,7 +80,7 @@ namespace System.Buffers.Tests
                 var value = (byte)(i + 1);
 
                 var listPosition = MemoryListExtensions.PositionOf(first, value).GetValueOrDefault();
-                var (node, index) = listPosition.Get<IMemoryList<byte>>();
+                var (node, index) = listPosition.Get<IBufferList>();
 
                 if (listPosition != default)
                 {
@@ -131,7 +131,7 @@ namespace System.Buffers.Tests
             {
                 var front = memory.Slice(0, pivot);
                 var back = memory.Slice(pivot);
-                var first = new MemoryList(front);
+                var first = new BufferList(front);
                 var last = first.Append(back);
 
                 var bytes = new ReadOnlyBytes(first, last);

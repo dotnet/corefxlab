@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.IO.Pipelines;
@@ -51,7 +52,7 @@ namespace System.Buffers
         /// </summary>
         public Position End => BufferEnd;
 
-        public ReadOnlyBuffer(Position start, Position end)
+        private ReadOnlyBuffer(Position start, Position end)
         {
             Debug.Assert(start.Segment != null);
             Debug.Assert(end.Segment != null);
@@ -60,7 +61,7 @@ namespace System.Buffers
             BufferEnd = end;
         }
 
-        public ReadOnlyBuffer(IMemoryList<byte> startSegment, int offset, IMemoryList<byte> endSegment, int endIndex)
+        public ReadOnlyBuffer(IBufferList startSegment, int offset, IBufferList endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
@@ -107,6 +108,39 @@ namespace System.Buffers
 
             BufferStart = new Position(data, offset);
             BufferEnd = new Position(data, offset + length);
+        }
+
+        public ReadOnlyBuffer(IEnumerable<Memory<byte>> buffers)
+        {
+            ReadOnlyBufferSegment segment = null;
+            ReadOnlyBufferSegment first = null;
+            foreach (var buffer in buffers)
+            {
+                var newSegment = new ReadOnlyBufferSegment()
+                {
+                    Memory =  buffer,
+                    VirtualIndex = segment?.VirtualIndex ?? 0
+                };
+
+                if (segment != null)
+                {
+                    segment.Next = newSegment;
+                }
+                else
+                {
+                    first = newSegment;
+                }
+
+                segment = newSegment;
+            }
+
+            if (first == null)
+            {
+                first = segment = new ReadOnlyBufferSegment();
+            }
+
+            BufferStart = new Position(first, 0);
+            BufferEnd = new Position(segment, segment.Memory.Length);
         }
 
         /// <summary>
@@ -233,13 +267,13 @@ namespace System.Buffers
             return new Enumerator(this);
         }
 
-        public Position Move(Position cursor, long count)
+        public Position Seek(Position position, long count)
         {
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            return Seek(cursor, BufferEnd, count, false);
+            return Seek(position, BufferEnd, count, false);
         }
 
         public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
@@ -252,7 +286,23 @@ namespace System.Buffers
 
             return result;
         }
-        
+
+        public Position? PositionOf(byte value)
+        {
+            Position position = Start;
+            Position result = position;
+            while (TryGet(ref position, out ReadOnlyMemory<byte> memory))
+            {
+                var index = memory.Span.IndexOf( value);
+                if (index != -1)
+                {
+                    return Seek(result, index);
+                }
+                result = position;
+            }
+            return null;
+        }
+
         /// <summary>
         /// An enumerator over the <see cref="ReadOnlyBuffer"/>
         /// </summary>
@@ -308,11 +358,6 @@ namespace System.Buffers
             public void Reset()
             {
                 ThrowHelper.ThrowNotSupportedException();
-            }
-
-            public Position CreateCursor(int index)
-            {
-                return _readOnlyBuffer.Move(_current, index);
             }
         }
     }

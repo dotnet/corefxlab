@@ -51,7 +51,7 @@ namespace System.IO.Pipelines.Testing
                 i++;
             } while (i < inputs.Length);
 
-            return new ReadOnlyBuffer(new Position(first, 0), new Position(last, last.Length));
+            return new ReadOnlyBuffer(first, 0, last, last.Length);
         }
 
         public static ReadOnlyBuffer CreateBuffer(params string[] inputs)

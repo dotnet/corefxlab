@@ -46,54 +46,26 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Theory]
-        [InlineData("a", "a", 'a', 0)]
-        [InlineData("ab", "a", 'a', 0)]
-        [InlineData("aab", "a", 'a', 0)]
-        [InlineData("acab", "a", 'a', 0)]
-        [InlineData("acab", "c", 'c', 1)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "lo", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "ol", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "ll", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "lmr", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "rml", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", "mlr", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "lmr", 'l', 11)]
-        [InlineData("aaaaaaaaaaalmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "lmr", 'l', 11)]
-        [InlineData("aaaaaaaaaaacmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "lmr", 'm', 12)]
-        [InlineData("aaaaaaaaaaarmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", "lmr", 'r', 11)]
-        [InlineData("/localhost:5000/PATH/%2FPATH2/ HTTP/1.1", " %?", '%', 21)]
-        [InlineData("/localhost:5000/PATH/%2FPATH2/?key=value HTTP/1.1", " %?", '%', 21)]
-        [InlineData("/localhost:5000/PATH/PATH2/?key=value HTTP/1.1", " %?", '?', 27)]
-        [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", " %?", ' ', 27)]
-        public void MemorySeek(string raw, string search, char expectResult, int expectIndex)
+        [InlineData("a", 'a', 0)]
+        [InlineData("ab", 'a', 0)]
+        [InlineData("aab", 'a', 0)]
+        [InlineData("acab", 'a', 0)]
+        [InlineData("acab", 'c', 1)]
+        [InlineData("abcdefghijklmnopqrstuvwxyz", 'l', 11)]
+        [InlineData("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'l', 11)]
+        [InlineData("aaaaaaaaaaacmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'm', 12)]
+        [InlineData("aaaaaaaaaaarmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'r', 11)]
+        [InlineData("/localhost:5000/PATH/%2FPATH2/ HTTP/1.1", '%', 21)]
+        [InlineData("/localhost:5000/PATH/%2FPATH2/?key=value HTTP/1.1", '%', 21)]
+        [InlineData("/localhost:5000/PATH/PATH2/?key=value HTTP/1.1", '?', 27)]
+        [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", ' ', 27)]
+        public void MemorySeek(string raw, char searchFor, int expectIndex)
         {
             var cursors = Factory.CreateWithContent(raw);
-            Position start = cursors.Start;
-            Position end = cursors.End;
-            Position result = default;
-
-            var searchFor = search.ToCharArray();
-
-            int found = -1;
-            if (searchFor.Length == 1)
-            {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0]);
-            }
-            else if (searchFor.Length == 2)
-            {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
-            }
-            else if (searchFor.Length == 3)
-            {
-                found = ReadOnlyBuffer.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
-            }
-            else
-            {
-                Assert.False(true, "Invalid test sample.");
-            }
-
-            Assert.Equal(expectResult, found);
-            Assert.Equal(cursors.Slice(result).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
+            var result = cursors.PositionOf((byte)searchFor);
+            
+            Assert.NotNull(result);
+            Assert.Equal(cursors.Slice(result.Value).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
         }
 
         [Theory]
@@ -101,22 +73,26 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            var buffer = Factory.CreateWithContent(input);
+            var originalBuffer = Factory.CreateWithContent(input);
 
             // Act
-            var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
-            var returnValue = ReadOnlyBuffer.Seek(buffer.Start, end, out Position result, (byte)seek);
-            var returnValue_1 = ReadOnlyBuffer.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
-            var returnValue_2 = ReadOnlyBuffer.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
+            var buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
+
+            var result = buffer.PositionOf((byte) seek);
 
             // Assert
-            Assert.Equal(expectedReturnValue, returnValue);
-            Assert.Equal(expectedReturnValue, returnValue_1);
-            Assert.Equal(expectedReturnValue, returnValue_2);
+            if (expectedReturnValue == -1)
+            {
+                Assert.Null(result);
+            }
+            else
+            {
+                Assert.NotNull(result);
+            }
 
             if (expectedReturnValue != -1)
             {
-                Assert.Equal(buffer.Slice(result).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)));
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)), originalBuffer.Slice(result.Value).ToArray());
             }
         }
 
@@ -124,55 +100,30 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
+            var originalBuffer = Factory.CreateWithContent(input);
 
-            // Arrange
-            var afterSeek = (byte)'B';
-
-            var buffer = Factory.CreateWithContent(input);
-
-            var start = buffer.Start;
-            var scan1 = buffer.Start;
-            var veryEnd = buffer.End;
-            var scan2_1 = scan1;
-            var scan2_2 = scan1;
-            var scan3_1 = scan1;
-            var scan3_2 = scan1;
-            var scan3_3 = scan1;
-            var end = buffer.End;
+            var scan1 = originalBuffer.Start;
+            var buffer = originalBuffer;
 
             // Act
-            var endReturnValue = ReadOnlyBuffer.Seek(start, veryEnd, out end, (byte)limitAfter);
-            if (endReturnValue != -1)
+            var end = originalBuffer.PositionOf((byte)limitAfter);
+            if (end.HasValue)
             {
-                end = buffer.Slice(end, 1).End;
+                buffer = originalBuffer.Slice(buffer.Start, buffer.Seek(end.Value, 1));
             }
-            var returnValue1 = ReadOnlyBuffer.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = ReadOnlyBuffer.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = ReadOnlyBuffer.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = ReadOnlyBuffer.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = ReadOnlyBuffer.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = ReadOnlyBuffer.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+
+            var returnValue1 = buffer.PositionOf((byte)seek);
 
 
             // Assert
-            Assert.Equal(input.Contains(limitAfter) ? limitAfter : -1, endReturnValue);
-            Assert.Equal(expectedReturnValue, returnValue1);
-            Assert.Equal(expectedReturnValue, returnValue2_1);
-            Assert.Equal(expectedReturnValue, returnValue2_2);
-            Assert.Equal(expectedReturnValue, returnValue3_1);
-            Assert.Equal(expectedReturnValue, returnValue3_2);
-            Assert.Equal(expectedReturnValue, returnValue3_3);
-
+            Assert.Equal(input.Contains(limitAfter), end.HasValue);
+            
             if (expectedReturnValue != -1)
             {
                 var expectedEndIndex = input.IndexOf(seek);
 
-                Assert.Equal(buffer.Slice(scan1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan2_1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan2_2).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_1).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_2).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
-                Assert.Equal(buffer.Slice(scan3_3).ToArray(), Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)));
+                Assert.NotNull(returnValue1);
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(returnValue1.Value).ToArray());
             }
         }
 
