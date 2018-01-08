@@ -130,21 +130,6 @@ namespace System.Buffers
             }
         }
 
-        public void SkipTo(Position position)
-        {
-            _currentPosition = position;
-            _nextPosition = position;
-            if (_sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory))
-            {
-                _currentSpan = memory.Span;
-            }
-            else
-            {
-                _currentSpan = default;
-            }
-            _index = 0;
-        }
-
         public static int CopyTo(BufferReader<TSequence> bytes, Span<byte> destination)
         {
             var first = bytes.UnreadSegment;
