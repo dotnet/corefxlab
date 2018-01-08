@@ -14,18 +14,22 @@ namespace System.IO.Pipelines
             Scheduler readerScheduler = null,
             Scheduler writerScheduler = null,
             long maximumSizeHigh = 0,
-            long maximumSizeLow = 0)
+            long maximumSizeLow = 0,
+            int minimumSegmentSize = 2048)
         {
             Pool = pool;
             ReaderScheduler = readerScheduler;
             WriterScheduler = writerScheduler;
             MaximumSizeHigh = maximumSizeHigh;
             MaximumSizeLow = maximumSizeLow;
+            MinimumSegmentSize = minimumSegmentSize;
         }
 
         public long MaximumSizeHigh { get; }
 
         public long MaximumSizeLow { get; }
+
+        public int MinimumSegmentSize { get; }
 
         public Scheduler WriterScheduler { get; }
 

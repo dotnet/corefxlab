@@ -28,6 +28,7 @@ namespace System.IO.Pipelines
         private readonly object _sync = new object();
 
         private readonly MemoryPool<byte> _pool;
+        private readonly int _minimumSegmentSize;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
@@ -94,6 +95,7 @@ namespace System.IO.Pipelines
             _bufferSegmentPool = new BufferSegment[SegmentPoolSize];
 
             _pool = options.Pool;
+            _minimumSegmentSize = options.MinimumSegmentSize;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? Scheduler.Inline;
@@ -180,7 +182,7 @@ namespace System.IO.Pipelines
                     nextSegment = CreateSegmentUnsynchronized();
                 }
 
-                nextSegment.SetMemory(_pool.Rent(count));
+                nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, count)));
 
                 segment.SetNext(nextSegment);
 
@@ -208,7 +210,7 @@ namespace System.IO.Pipelines
             {
                 // No free tail space, allocate a new segment
                 segment = CreateSegmentUnsynchronized();
-                segment.SetMemory(_pool.Rent(count));
+                segment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, count)));
             }
 
             if (_commitHead == null)
