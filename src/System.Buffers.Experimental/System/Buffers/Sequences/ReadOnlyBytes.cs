@@ -232,7 +232,7 @@ namespace System.Buffers
                 if (_start is byte[]) return Type.Array;
                 if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
                 if (_start is IMemoryList<byte>) return Type.MemoryList;
-                throw new NotSupportedException();
+                throw new NotSupportedException(_start.GetType().ToString());
             }
         }
 
