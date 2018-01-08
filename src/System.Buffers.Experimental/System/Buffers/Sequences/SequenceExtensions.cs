@@ -79,8 +79,7 @@ namespace System.Buffers
                 var index = MemoryExtensions.IndexOf(memory.Span, value);
                 if (index != -1)
                 {
-                    result += index;
-                    return result;
+                    return result.Add(index);
                 }
                 result = position;
             }
@@ -98,8 +97,7 @@ namespace System.Buffers
                 var span = memory.Span;
                 if(span.Length > index)
                 {
-                    result += (int)index;
-                    return result;
+                    return result.Add((int)index);
                 }
                 index -= span.Length;
                 result = position;
@@ -154,7 +152,7 @@ namespace System.Buffers
                 if (Utf8Parser.TryParse(temp.Slice(0, copied), out value, out consumed))
                 {
                     return true;
-                }      
+                }
             }
 
             value = default;

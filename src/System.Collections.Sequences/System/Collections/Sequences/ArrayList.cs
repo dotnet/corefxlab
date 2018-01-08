@@ -16,6 +16,10 @@ namespace System.Collections.Sequences
         public int Length => _items.Count;
 
         public Position Start => default;
+        public Position Seek(Position offset, long count)
+        {
+            return new Position(offset.Segment, offset.Index + (int)count);
+        }
 
         public T this[int index] => _items[index];
 

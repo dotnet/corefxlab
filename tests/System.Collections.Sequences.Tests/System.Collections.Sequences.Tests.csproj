@@ -23,6 +23,7 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
+    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

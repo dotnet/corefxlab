@@ -40,7 +40,7 @@ namespace System.Buffers
 
         public int Index => _index;
 
-        public Position Position => _currentPosition + _index;
+        public Position Position => _sequence.Seek(_currentPosition, _index);
 
         public ReadOnlySpan<byte> Span => _currentSpan;
 
