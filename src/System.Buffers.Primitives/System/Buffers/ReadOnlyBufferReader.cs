@@ -38,7 +38,7 @@ namespace System.Buffers
             _sequence = buffer;
             _currentPosition = _sequence.Start;
             _nextPosition = _currentPosition;
-            _currentSpan = default;
+            _currentSpan = ReadOnlySpan<byte>.Empty;
             MoveNext();
         }
 
