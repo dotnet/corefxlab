@@ -419,7 +419,11 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var consumedSegment = consumed.GetSegment<BufferSegment>();
+                    var consumedSegment = consumed.Segment as BufferSegment;
+                    if (consumedSegment == null && consumed.Segment != null)
+                    {
+                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+                    }
 
                     returnStart = _readHead;
                     returnEnd = consumedSegment;

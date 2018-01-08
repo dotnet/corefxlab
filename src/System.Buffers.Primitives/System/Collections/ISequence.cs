@@ -7,7 +7,7 @@ namespace System.Collections.Sequences
     public interface ISequence<T>
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="position"></param>
         /// <param name="advance"></param>
@@ -16,5 +16,7 @@ namespace System.Collections.Sequences
         bool TryGet(ref Position position, out T item, bool advance = true);
 
         Position Start { get; }
+
+        Position Seek(Position offset, long count);
     }
 }

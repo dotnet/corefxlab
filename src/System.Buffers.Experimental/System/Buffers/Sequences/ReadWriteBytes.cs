@@ -151,7 +151,7 @@ namespace System.Buffers
             {
                 case Type.Array:
                     var (array, index) = start.Get<byte[]>();
-                    return new ReadWriteBytes(array, index, (int)end - index);
+                    return new ReadWriteBytes(array, index, end.Index - index);
                 case Type.MemoryList:
                     var (startList, startIndex) = start.Get<IBufferList>();
                     var (endList, endIndex) = end.Get<IBufferList>();
@@ -235,6 +235,12 @@ namespace System.Buffers
 
         public Position Start => new Position(_start, _startIndex);
 
+        public Position Seek(Position offset, long count)
+        {
+            //NOTE: this is not correct going over segment boundary
+            return offset.Add((int)count);
+        }
+
         public int CopyTo(Span<byte> buffer)
         {
             var array = _start as byte[];
@@ -278,8 +284,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + (int)position;
-                var length = _endIndex - _startIndex - (int)position;
+                var start = _startIndex + position.Index;
+                var length = _endIndex - _startIndex - position.Index;
                 item = new Memory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;

@@ -26,44 +26,17 @@ namespace System.Collections.Sequences
         }
 
         public object Segment => _segment;
+
         public int Index => _index;
-
-        public static explicit operator int(Position position) => position._index;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (T segment, int index) Get<T>()
-        {
-            var segment = _segment == null ? default : (T)_segment;
-            return (segment, _index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetSegment<T>()
-        {
-            switch (Segment)
-            {
-                case null:
-                    return default;
-                case T segment:
-                    return segment;
-            }
-
-            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
-            return default;
-        }
 
         public static bool operator ==(Position left, Position right) => left._index == right._index && left._segment == right._segment;
         public static bool operator !=(Position left, Position right) => left._index != right._index || left._segment != right._segment;
-
-        public static Position operator +(Position value, int index)
-            => new Position(value._segment, value._index + index);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(Position position) => this == position;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) =>
-            obj is Position ? this == (Position)obj : false;
+        public override bool Equals(object obj) => obj is Position ? this == (Position)obj : false;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()

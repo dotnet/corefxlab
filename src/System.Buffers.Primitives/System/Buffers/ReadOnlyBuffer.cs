@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.IO.Pipelines;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Buffers
@@ -89,7 +88,6 @@ namespace System.Buffers
 
         public ReadOnlyBuffer(OwnedMemory<byte> data, int offset, int length)
         {
-            
             if (data == null)
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);

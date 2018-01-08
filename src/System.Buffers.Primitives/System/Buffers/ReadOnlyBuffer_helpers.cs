@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public readonly partial struct ReadOnlyBuffer 
+    public readonly partial struct ReadOnlyBuffer
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
@@ -149,7 +149,7 @@ namespace System.Buffers
             switch (segment)
             {
                 case IBufferList bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IBufferList>(), end.Index);
+                    return GetLength(bufferSegment, begin.Index, GetSegment<IBufferList>(end), end.Index);
                 case byte[] _:
                 case OwnedMemory<byte> _:
                     return end.Index - begin.Index;
@@ -189,7 +189,7 @@ namespace System.Buffers
                     }
                     return;
                 case IBufferList memoryList:
-                    if(newCursor.GetSegment<IBufferList>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                    if(GetSegment<IBufferList>(newCursor).VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -198,6 +198,20 @@ namespace System.Buffers
                     ThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
+        }
+
+        private static T GetSegment<T>(Position position)
+        {
+            switch (position.Segment)
+            {
+                case T t:
+                    return t;
+                case null:
+                    return default;
+            }
+
+            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
+            return default;
         }
 
         private class ReadOnlyBufferSegment: IBufferList

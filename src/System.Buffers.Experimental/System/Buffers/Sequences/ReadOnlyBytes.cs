@@ -43,7 +43,7 @@ namespace System.Buffers
             Validate();
         }
 
-        // TODO: Hide this ctor and force users to pass Positions. This will let us hide Position.Object 
+        // TODO: Hide this ctor and force users to pass Positions. This will let us hide Position.Object
         public ReadOnlyBytes(IBufferList first, IBufferList last)
         {
             _start = first;
@@ -155,7 +155,7 @@ namespace System.Buffers
             {
                 case Type.Array:
                     var (array, index) = start.Get<byte[]>();
-                    return new ReadOnlyBytes(array, index, (int)end - index);
+                    return new ReadOnlyBytes(array, index, end.Index - index);
                 case Type.MemoryList:
                     var (startList, startIndex) = start.Get<IBufferList>();
                     var (endList, endIndex) = end.Get<IBufferList>();
@@ -183,7 +183,7 @@ namespace System.Buffers
                         }
                         else
                         {
-                            return list.Memory.Slice(_startIndex); 
+                            return list.Memory.Slice(_startIndex);
                         }
                     default:
                         throw new NotImplementedException();
@@ -216,7 +216,7 @@ namespace System.Buffers
             {
                 case Type.Array:
                 case Type.OwnedMemory:
-                    if(!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }              
+                    if(!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }
                     break;
                 case Type.MemoryList:
                     // assume it's good?
@@ -237,6 +237,12 @@ namespace System.Buffers
         }
 
         public Position Start => new Position(_start, _startIndex);
+
+        public Position Seek(Position offset, long count)
+        {
+            //NOTE: this is not correct going over segment boundary
+            return offset.Add((int)count);
+        }
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -281,8 +287,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = (int)position;
-                var length = _endIndex - (int)position;
+                var start = position.Index;
+                var length = _endIndex - position.Index;
                 item = new ReadOnlyMemory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;
