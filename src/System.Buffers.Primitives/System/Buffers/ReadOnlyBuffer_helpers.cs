@@ -22,7 +22,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IMemoryList<byte> bufferSegment:
+                case IBufferList bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -148,8 +148,8 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IMemoryList<byte> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IMemoryList<byte>>(), end.Index);
+                case IBufferList bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IBufferList>(), end.Index);
                 case byte[] _:
                 case OwnedMemory<byte> _:
                     return end.Index - begin.Index;
@@ -161,9 +161,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IMemoryList<byte> start,
+            IBufferList start,
             int startIndex,
-            IMemoryList<byte> endSegment,
+            IBufferList endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -188,8 +188,8 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IMemoryList<byte> memoryList:
-                    if(newCursor.GetSegment<IMemoryList<byte>>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                case IBufferList memoryList:
+                    if(newCursor.GetSegment<IBufferList>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -200,10 +200,10 @@ namespace System.Buffers
             }
         }
 
-        private class ReadOnlyBufferSegment: IMemoryList<byte>
+        private class ReadOnlyBufferSegment: IBufferList
         {
             public Memory<byte> Memory { get; set; }
-            public IMemoryList<byte> Next { get; set; }
+            public IBufferList Next { get; set; }
             public long VirtualIndex { get; set; }
         }
     }

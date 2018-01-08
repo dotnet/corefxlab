@@ -160,7 +160,7 @@ namespace System.Buffers.Tests
         public static ReadOnlyBytes CreateRob(params byte[][] buffers)
         {
             if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
-            var (first, last) = MemoryList.Create(buffers);
+            var (first, last) = BufferList.Create(buffers);
             return new ReadOnlyBytes(first, last);
         }
     }
