@@ -313,7 +313,7 @@ namespace System.IO.Pipelines.Tests
             // this loop skips more and more items in the reader
             for (int i = 0; i < content.Length; i++) {       
                 
-                int copied = BufferReader.CopyTo(reader, buffer);
+                int copied = BufferReader.Peek(reader, buffer);
                 Assert.Equal(content.Length - i, copied);
                 Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
 
@@ -344,7 +344,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     var bufferSlice = buffer.Slice(0, j);
                     bufferSlice.Clear();
-                    int copied = BufferReader.CopyTo(reader, bufferSlice);
+                    int copied = BufferReader.Peek(reader, bufferSlice);
                     Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), copied);
 
                     Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i, j)));

@@ -27,7 +27,7 @@ namespace System.Buffers
             }
 
             Span<byte> tempSpan = stackalloc byte[4];
-            var copied = BufferReader.CopyTo(reader, tempSpan);
+            var copied = BufferReader.Peek(reader, tempSpan);
             if (copied < 4)
             {
                 value = default;
