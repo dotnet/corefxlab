@@ -119,7 +119,7 @@ namespace System.Buffers.Tests
 
         static byte[] s_eol = new byte[] { (byte)'\r', (byte)'\n' };
 
-        [Fact]
+        [Fact(Skip = "this needs to be redone; given we are unifying ROBs and readers")]
         static void BytesReaderBenchmarkBaseline()
         {
             int sections = 10;
