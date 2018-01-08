@@ -93,11 +93,33 @@ namespace System.IO.Pipelines.Tests
             await pipe.Writer.WriteAsync(new byte[writeSize]);
         }
 
+        [Fact]
+        public async Task RentsMinimumSegmentSize()
+        {
+            var pool = new DisposeTrackingBufferPool();
+            var writeSize = 512;
+
+            var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
+
+            var buffer = pipe.Writer.Alloc(writeSize);
+            var allocatedSize = buffer.Buffer.Length;
+            buffer.Advance(buffer.Buffer.Length);
+            buffer.Ensure(1);
+            var ensuredSize = buffer.Buffer.Length;
+            await buffer.FlushAsync();
+
+            pipe.Reader.Complete();
+            pipe.Writer.Complete();
+
+            Assert.Equal(2020, ensuredSize);
+            Assert.Equal(2020, allocatedSize);
+        }
+
         private class DisposeTrackingBufferPool : MemoryPool
         {
             public override OwnedMemory<byte> Rent(int size)
             {
-                return new DisposeTrackingOwnedMemory(new byte[2048], this);
+                return new DisposeTrackingOwnedMemory(new byte[size], this);
             }
 
             public int ReturnedBlocks { get; set; }
