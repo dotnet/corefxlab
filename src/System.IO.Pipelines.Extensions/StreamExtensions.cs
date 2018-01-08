@@ -45,7 +45,7 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public static Task CopyToAsync(this ReadOnlyBuffer buffer, Stream stream)
         {
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 return WriteToStream(stream, buffer.First);
             }

@@ -57,7 +57,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
             try
             {
                 int nBuffers = 0;
-                if (buffer.IsSingleSpan)
+                if (buffer.IsSingleSegment)
                 {
                     nBuffers = 1;
                 }

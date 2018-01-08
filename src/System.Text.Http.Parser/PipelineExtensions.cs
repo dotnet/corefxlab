@@ -12,7 +12,7 @@ namespace System.Text.Http.Parser.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer buffer)
         {
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 return buffer.First.Span;
             }

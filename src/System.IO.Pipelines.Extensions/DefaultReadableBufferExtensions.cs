@@ -237,7 +237,7 @@ namespace System.IO.Pipelines
                 return false;
             }
 
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 return buffer.First.Span.SequenceEqual(value);
             }

@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 return value;
             }
 
-            if (buffer.IsSingleSpan) // no more data to parse
+            if (buffer.IsSingleSegment) // no more data to parse
             {
                 throw new InvalidOperationException();
             }
@@ -198,7 +198,7 @@ namespace System.IO.Pipelines.Text.Primitives
             // The default classification is "returnable, not referring to stack", we want the opposite in this case.
             ReadOnlySpan<byte> textSpan = stackalloc byte[0];
 
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 textSpan = buffer.First.Span;
             }
