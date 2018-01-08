@@ -22,7 +22,7 @@ namespace System.Buffers
             }
 
             Span<byte> tempSpan = stackalloc byte[5];
-            var copied = BufferReader<TSequence>.CopyTo(reader, tempSpan);
+            var copied = BufferReader.CopyTo(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
                 reader.Skip(consumed);
@@ -46,7 +46,7 @@ namespace System.Buffers
             }
 
             Span<byte> tempSpan = stackalloc byte[15];
-            var copied = BufferReader<TSequence>.CopyTo(reader, tempSpan);
+            var copied = BufferReader.CopyTo(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
                 reader.Skip(consumed);
@@ -70,7 +70,7 @@ namespace System.Buffers
             }
 
             Span<byte> tempSpan = stackalloc byte[30];
-            var copied = BufferReader<TSequence>.CopyTo(reader, tempSpan);
+            var copied = BufferReader.CopyTo(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
                 reader.Skip(consumed);

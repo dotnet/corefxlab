@@ -6,12 +6,16 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public class BufferReader
+    public static class BufferReader
     {
         public static BufferReader<TSequence> Create<TSequence>(TSequence buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             return new BufferReader<TSequence>(buffer);
         }
+
+        public static int CopyTo<TSequence>(BufferReader<TSequence> reader, Span<byte> destination)
+            where TSequence : ISequence<ReadOnlyMemory<byte>>
+            => BufferReader<TSequence>.CopyTo(reader, destination);
     }
 
     public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
@@ -130,8 +134,9 @@ namespace System.Buffers
             }
         }
 
-        public static int CopyTo(BufferReader<TSequence> bytes, Span<byte> destination)
+        internal static int CopyTo(BufferReader<TSequence> bytes, Span<byte> destination)
         {
+            if (destination.Length == 0) return 0;
             var first = bytes.UnreadSegment;
             if (first.Length > destination.Length)
             {
@@ -145,19 +150,34 @@ namespace System.Buffers
             }
             else
             {
-                first.CopyTo(destination);
-                var next = bytes._nextPosition;
+                if (first.Length > 0)
+                {
+                    first.CopyTo(destination);
+                }
                 int copied = first.Length;
+
+                var next = bytes._nextPosition;
                 while (bytes._sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
                 {
                     var nextSpan = nextSegment.Span;
-                    var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
-                    nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
-                    copied += toCopy;
-                    if (copied >= destination.Length) break;
+                    if (nextSpan.Length > 0)
+                    {
+                        var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
+                        nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
+                        copied += toCopy;
+                        if (copied >= destination.Length) break;
+                    }
                 }
                 return copied;
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendFormat("_consumedBytes: {0}, ", _consumedBytes);
+            sb.AppendFormat("_index: {0}", _index);
+            return sb.ToString();
         }
     }
 }

@@ -301,6 +301,58 @@ namespace System.IO.Pipelines.Tests
             }
             Assert.Equal(buffer.Length, reader.ConsumedBytes);
         }
+
+        [Fact]
+        public void CopyToLargerBufferWorks()
+        {
+            var content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            Span<byte> buffer = new byte[content.Length + 1];
+            var reader = BufferReader.Create(Factory.CreateWithContent(content));
+
+            // this loop skips more and more items in the reader
+            for (int i = 0; i < content.Length; i++) {       
+                
+                int copied = BufferReader.CopyTo(reader, buffer);
+                Assert.Equal(content.Length - i, copied);
+                Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
+
+                // make sure that nothing more got written, i.e. tail is empty
+                for (int r = copied; r < buffer.Length; r++)
+                {
+                    Assert.Equal(0, buffer[r]);
+                }
+
+                reader.Skip(1);
+                buffer.Clear();
+            }
+        }
+
+        [Fact]
+        public void CopyToSmallerBufferWorks()
+        {
+            var content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            Span<byte> buffer = new byte[content.Length];
+            var reader = BufferReader.Create(Factory.CreateWithContent(content));
+
+            // this loop skips more and more items in the reader
+            for (int i = 0; i < content.Length; i++)
+            {
+                // this loop makes the destination buffer smaller and smaller
+                for (int j = 0; j < buffer.Length - i; j++)
+                {
+                    var bufferSlice = buffer.Slice(0, j);
+                    bufferSlice.Clear();
+                    int copied = BufferReader.CopyTo(reader, bufferSlice);
+                    Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), copied);
+
+                    Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i, j)));
+                }
+
+                reader.Skip(1);
+            }
+        }
     }
 
 }
