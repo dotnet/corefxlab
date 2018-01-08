@@ -8,8 +8,7 @@ namespace System.Buffers
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
-        public static bool TryReadUntill<TSequence>(ref this BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, byte delimiter)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryReadUntill(ref this BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, byte delimiter)
         {
             var copy = reader;
             var start = reader.Position;
@@ -17,7 +16,7 @@ namespace System.Buffers
                 Position end = reader.Position;
                 if(reader.Take() == delimiter)
                 {
-                    bytes = new ReadOnlyBuffer(start, end);
+                    bytes = new ReadOnlyBytes(start, end);
                     return true;
                 }
             }
@@ -26,12 +25,11 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryReadUntill<TSequence>(ref this BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, ReadOnlySpan<byte> delimiter)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryReadUntill(ref this BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
         {
             if (delimiter.Length == 0)
             {
-                bytes = ReadOnlyBuffer.Empty;
+                bytes = ReadOnlyBytes.Empty;
                 return true;
             }
 
@@ -51,7 +49,7 @@ namespace System.Buffers
                 }
                 if(matched >= delimiter.Length)
                 {
-                    bytes = new ReadOnlyBuffer(start, end);
+                    bytes = new ReadOnlyBytes(start, end);
                     return true;
                 }
             }
