@@ -148,7 +148,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 foreach (var write in _plaintextWrites)
                 {
-                    writer.Write(write, 0, write.Length);
+                    writer.Write(write);
                 }
 
                 writableBuffer.FlushAsync().GetResult();
