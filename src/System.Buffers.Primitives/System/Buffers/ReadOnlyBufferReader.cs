@@ -72,7 +72,15 @@ namespace System.Buffers
                 return -1;
             }
 
-            var value = _currentSpan[_index];
+            byte value;
+            try
+            {
+                value = _currentSpan[_index];
+            }
+            catch
+            {
+                throw new Exception(String.Format("{0}, {1}", _currentSpan.Length, _index));
+            }
 
             _index++;
             _consumedBytes++;
