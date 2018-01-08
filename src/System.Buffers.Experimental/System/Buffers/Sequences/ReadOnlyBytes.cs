@@ -283,7 +283,14 @@ namespace System.Buffers
             {
                 var start = (int)position;
                 var length = _endIndex - (int)position;
-                item = new ReadOnlyMemory<byte>(array, start, length);
+                if (length == 0)
+                {
+                    item = ReadOnlyMemory<byte>.Empty;
+                }
+                else
+                {
+                    item = new ReadOnlyMemory<byte>(array, start, length);
+                }
                 if (advance) position = default;
                 return true;
             }
