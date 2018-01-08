@@ -304,6 +304,16 @@ namespace System.Buffers
                 return true;
             }
 
+            var om = _start as OwnedMemory<byte>;
+            if (om != null)
+            {
+                var start = (int)position;
+                var length = _endIndex - (int)position;
+                item = om.Memory.Slice(start, length);
+                if (advance) position = default;
+                return true;
+            }
+
             throw new NotImplementedException();
         }
 
