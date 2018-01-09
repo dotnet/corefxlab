@@ -8,7 +8,7 @@ namespace System.Buffers
 {
     public static partial class BufferReaderExtensions 
     {
-        public static bool TryParse<TSequence>(ref this BufferReader<TSequence> reader, out bool value) 
+        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out bool value) 
             where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             var unread = reader.UnreadSegment;
@@ -32,7 +32,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(ref this BufferReader<TSequence> reader, out int value)
+        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out int value)
             where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             var unread = reader.UnreadSegment;
@@ -56,7 +56,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(ref this BufferReader<TSequence> reader, out ulong value)
+        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out ulong value)
             where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             var unread = reader.UnreadSegment;

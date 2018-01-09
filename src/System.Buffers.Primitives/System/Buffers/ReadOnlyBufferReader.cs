@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public static class BufferReader
+    public class BufferReader
     {
         public static BufferReader<TSequence> Create<TSequence>(TSequence buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
@@ -88,20 +88,16 @@ namespace System.Buffers
         private void MoveNext()
         {
             var previous = _nextPosition;
-            _index = 0;
             while (_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
+                _currentPosition = previous;
                 _currentSpan = memory.Span;
+                _index = 0;
                 if (_currentSpan.Length > 0)
                 {
-                    _currentPosition = previous;
                     return;
                 }
-                previous = _nextPosition;
             }
-            _currentPosition = _sequence.Start;
-            _nextPosition = _currentPosition;
-            _currentSpan = ReadOnlySpan<byte>.Empty;
             _end = true;
         }
 
