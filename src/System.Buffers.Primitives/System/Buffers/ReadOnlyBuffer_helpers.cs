@@ -149,7 +149,7 @@ namespace System.Buffers
             switch (segment)
             {
                 case IBufferList bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IBufferList>(), end.Index);
+                    return GetLength(bufferSegment, begin.Index, (IBufferList)end.Segment, end.Index);
                 case byte[] _:
                 case OwnedMemory<byte> _:
                     return end.Index - begin.Index;
@@ -189,7 +189,8 @@ namespace System.Buffers
                     }
                     return;
                 case IBufferList memoryList:
-                    if(newCursor.GetSegment<IBufferList>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                    var segment = (IBufferList)newCursor.Segment;
+                    if(segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }

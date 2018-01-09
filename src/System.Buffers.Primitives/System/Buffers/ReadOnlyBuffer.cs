@@ -269,13 +269,13 @@ namespace System.Buffers
             return new Enumerator(this);
         }
 
-        public Position Seek(Position position, long count)
+        public Position Seek(Position origin, long offset)
         {
-            if (count < 0)
+            if (offset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
-            return Seek(position, BufferEnd, count, false);
+            return Seek(origin, BufferEnd, offset, false);
         }
 
         public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
