@@ -8,7 +8,7 @@ namespace System.Buffers
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
-        public static bool TryReadUntill(ref this BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, byte delimiter)
+        public static bool TryReadUntill(ref BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, byte delimiter)
         {
             var copy = reader;
             var start = reader.Position;
@@ -25,7 +25,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryReadUntill(ref this BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
+        public static bool TryReadUntill(ref BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
         {
             if (delimiter.Length == 0)
             {

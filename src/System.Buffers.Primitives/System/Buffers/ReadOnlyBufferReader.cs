@@ -72,16 +72,7 @@ namespace System.Buffers
                 return -1;
             }
 
-            byte value;
-            try
-            {
-                value = _currentSpan[_index];
-            }
-            catch
-            {
-                throw new Exception(String.Format("{0}, {1}", _currentSpan.Length, _index));
-            }
-
+            var value = _currentSpan[_index];  
             _index++;
             _consumedBytes++;
 
@@ -97,13 +88,13 @@ namespace System.Buffers
         private void MoveNext()
         {
             var previous = _nextPosition;
+            _index = 0;
             while (_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
                 _currentSpan = memory.Span;
                 if (_currentSpan.Length > 0)
                 {
                     _currentPosition = previous;
-                    _index = 0;
                     return;
                 }
                 previous = _nextPosition;
@@ -111,7 +102,6 @@ namespace System.Buffers
             _currentPosition = _sequence.Start;
             _nextPosition = _currentPosition;
             _currentSpan = ReadOnlySpan<byte>.Empty;
-            _index = 0;
             _end = true;
         }
 

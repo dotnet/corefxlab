@@ -85,11 +85,11 @@ namespace System.Buffers.Tests
         {
             ReadOnlyBytes bytes = Create("");
             var reader = BufferReader.Create(bytes);
-            Assert.False(reader.TryReadUntill(out var range, (byte)' '));
+            Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out var range, (byte)' '));
 
             bytes = Parse("|");
             reader = BufferReader.Create(bytes);
-            Assert.False(reader.TryReadUntill(out range, (byte)' '));
+            Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out range, (byte)' '));
         }
 
         [Fact]
