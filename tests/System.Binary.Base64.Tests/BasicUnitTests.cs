@@ -76,7 +76,7 @@ namespace System.Binary.Base64Experimental.Tests
             }
             Assert.Equal(1000, sum);
 
-            var (first, last) = MemoryList.Create(input);
+            var (first, last) = BufferList.Create(input);
            
             var output = new TestOutput();
             Base64Experimental.Utf8ToBytesDecoder.Pipe(new ReadOnlyBytes(first, last), output);

@@ -24,7 +24,7 @@ namespace System.IO.Pipelines.Tests
         {
             return CreateWithContent(Encoding.ASCII.GetBytes(data));
         }
-
+        
         internal class ArrayTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Tests
                 return new ReadOnlyBuffer(new OwnedArray<byte>(startSegment), 10, data.Length);
             }
         }
-
+ 
         internal class SingleSegmentTestBufferFactory: ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer CreateOfSize(int size)

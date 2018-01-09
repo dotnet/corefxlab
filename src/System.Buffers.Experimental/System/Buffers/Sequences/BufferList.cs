@@ -6,36 +6,36 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public class MemoryList : IMemoryList<byte>
+    public class BufferList : IBufferList
     {
         private Memory<byte> _data;
-        private MemoryList _next;
+        private BufferList _next;
         private long _virtualIndex;
 
-        public MemoryList(Memory<byte> bytes)
+        public BufferList(Memory<byte> bytes)
         {
             _data = bytes;
             _next = null;
             _virtualIndex = 0;
         }
 
-        private MemoryList(Memory<byte> bytes, long virtualIndex)
+        private BufferList(Memory<byte> bytes, long virtualIndex)
         {
             _data = bytes;
             _virtualIndex = virtualIndex;
         }
 
-        public MemoryList Append(Memory<byte> bytes)
+        public BufferList Append(Memory<byte> bytes)
         {
             if (_next != null) throw new InvalidOperationException("Node cannot be appended");
-            var node = new MemoryList(bytes, _virtualIndex + _data.Length);
+            var node = new BufferList(bytes, _virtualIndex + _data.Length);
             _next = node;
             return node;
         }
 
         public Memory<byte> Memory => _data;
 
-        public IMemoryList<byte> Next => _next;
+        public IBufferList Next => _next;
 
         public long VirtualIndex => _virtualIndex;
 
@@ -79,21 +79,21 @@ namespace System.Buffers
                 return false;
             }
             
-            var (list, index) = position.Get<MemoryList>();
+            var (list, index) = position.Get<BufferList>();
             item = list._data.Slice(index);
             if (advance) { position = new Position(list._next, 0); }
             return true;
         }
 
-        public static (MemoryList first, MemoryList last) Create(params byte[][] buffers)
+        public static (BufferList first, BufferList last) Create(params byte[][] buffers)
         {
             if(buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
             {
-                var list = new MemoryList(Memory<byte>.Empty);
+                var list = new BufferList(Memory<byte>.Empty);
                 return (list, list);
             }
 
-            MemoryList first = new MemoryList(buffers[0]);
+            BufferList first = new BufferList(buffers[0]);
             var last = first;
             for (int i = 1; i < buffers.Length; i++)
             {

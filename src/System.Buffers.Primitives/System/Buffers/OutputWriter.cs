@@ -5,17 +5,25 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
-    public ref struct WritableBufferWriter
+    public static class OutputWriter
     {
-        private WritableBuffer _writableBuffer;
+        public static OutputWriter<T> Create<T>(T output) where T:IOutput
+        {
+            return new OutputWriter<T>(output);
+        }
+    }
+
+    public ref struct OutputWriter<T> where T: IOutput
+    {
+        private T _output;
         private Span<byte> _span;
 
-        public WritableBufferWriter(WritableBuffer writableBuffer)
+        public OutputWriter(T output)
         {
-            _writableBuffer = writableBuffer;
-            _span = writableBuffer.Buffer.Span;
+            _output = output;
+            _span = output.GetSpan();
         }
 
         public Span<byte> Span => _span;
@@ -24,7 +32,7 @@ namespace System.IO.Pipelines
         public void Advance(int count)
         {
             _span = _span.Slice(count);
-            _writableBuffer.Advance(count);
+            _output.Advance(count);
         }
 
         public void Write(byte[] source)
@@ -52,8 +60,7 @@ namespace System.IO.Pipelines
             // https://github.com/dotnet/coreclr/pull/9773
             if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
             {
-                // Only need to pass in array length and offset for ThrowHelper to determine which test failed
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
             }
 
             if (length > 0 && _span.Length >= length)
@@ -99,8 +106,8 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void Ensure(int count = 1)
         {
-            _writableBuffer.Ensure(count);
-            _span = _writableBuffer.Buffer.Span;
+            _output.Enlarge(count);
+            _span = _output.GetSpan();
         }
     }
 }

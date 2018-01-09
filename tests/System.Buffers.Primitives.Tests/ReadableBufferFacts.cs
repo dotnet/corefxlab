@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferMove_MovesReadCursor()
         {
             var buffer = Factory.CreateOfSize(100);
-            var cursor = buffer.Move(buffer.Start, 65);
+            var cursor = buffer.Seek(buffer.Start, 65);
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
@@ -97,14 +98,14 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferMove_ChecksBounds()
         {
             var buffer = Factory.CreateOfSize(100);
-            Assert.Throws<InvalidOperationException>(() => buffer.Move(buffer.Start, 101));
+            Assert.Throws<InvalidOperationException>(() => buffer.Seek(buffer.Start, 101));
         }
 
         [Fact]
         public void ReadableBufferMove_DoesNotAlowNegative()
         {
             var buffer = Factory.CreateOfSize(20);
-            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Seek(buffer.Start, -1));
         }
 
         [Fact]
@@ -128,10 +129,10 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 50);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 50));
+            var readableBuffer = new ReadOnlyBuffer(bufferSegment1, 0, bufferSegment2, 50);
 
-            var c1 = readableBuffer.Move(readableBuffer.Start, 25); // segment 1 index 75
-            var c2 = readableBuffer.Move(readableBuffer.Start, 55); // segment 2 index 5
+            var c1 = readableBuffer.Seek(readableBuffer.Start, 25); // segment 1 index 75
+            var c2 = readableBuffer.Seek(readableBuffer.Start, 55); // segment 2 index 5
 
             var sliced = readableBuffer.Slice(c1, c2);
 
@@ -148,9 +149,9 @@ namespace System.IO.Pipelines.Tests
             bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 0);
             bufferSegment1.SetNext(bufferSegment2);
 
-            var readableBuffer = new ReadOnlyBuffer(new Position(bufferSegment1, 0), new Position(bufferSegment2, 0));
+            var readableBuffer = new ReadOnlyBuffer(bufferSegment1, 0, bufferSegment2, 0);
 
-            var c1 = readableBuffer.Move(readableBuffer.Start, 50);
+            var c1 = readableBuffer.Seek(readableBuffer.Start, 50);
 
             Assert.Equal(0, c1.Index);
             Assert.Equal(bufferSegment2, c1.Segment);
@@ -162,13 +163,22 @@ namespace System.IO.Pipelines.Tests
             var readableBuffer = new ReadOnlyBuffer(new byte[] {1, 2, 3, 4, 5}, 2, 3);
             Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
         }
-
+        
         [Fact]
         public void Create_WorksWithOwnedMemory()
         {
             var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
             var readableBuffer = new ReadOnlyBuffer(memory, 2, 3);
             Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
+        }
+
+        [Fact]
+        public void Create_WorksWithIEnumerableOfMemory()
+        {
+            var memories = new Memory<byte>[] { new byte[] {1, 2, 3}, new byte[] {4, 5, 6}};
+            var readableBuffer = new ReadOnlyBuffer(memories);
+
+            Assert.Equal(new byte[] {1, 2, 3, 4, 5, 6}, readableBuffer.ToArray());
         }
 
         public static TheoryData<Action<ReadOnlyBuffer>> OutOfRangeSliceCases => new TheoryData<Action<ReadOnlyBuffer>>

@@ -132,7 +132,7 @@ namespace System.IO.Pipelines
 
                 if (found)
                 {
-                    cursor = buffer.Move(buffer.Start, seek);
+                    cursor = buffer.Seek(buffer.Start, seek);
                     slice = buffer.Slice(buffer.Start, cursor);
                     return true;
                 }

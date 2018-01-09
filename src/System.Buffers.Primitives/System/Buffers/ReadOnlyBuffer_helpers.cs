@@ -10,63 +10,6 @@ namespace System.Buffers
 {
     public readonly partial struct ReadOnlyBuffer 
     {
-        public static int Seek(Position begin, Position end, out Position result, byte byte0)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-
-                int index = span.IndexOf(byte0);
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1, byte byte2)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1, byte2);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
         {
@@ -79,7 +22,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IMemoryList<byte> bufferSegment:
+                case IBufferList bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -205,8 +148,8 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IMemoryList<byte> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IMemoryList<byte>>(), end.Index);
+                case IBufferList bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IBufferList>(), end.Index);
                 case byte[] _:
                 case OwnedMemory<byte> _:
                     return end.Index - begin.Index;
@@ -218,9 +161,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IMemoryList<byte> start,
+            IBufferList start,
             int startIndex,
-            IMemoryList<byte> endSegment,
+            IBufferList endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -245,8 +188,8 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IMemoryList<byte> memoryList:
-                    if(newCursor.GetSegment<IMemoryList<byte>>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                case IBufferList memoryList:
+                    if(newCursor.GetSegment<IBufferList>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -255,6 +198,13 @@ namespace System.Buffers
                     ThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
+        }
+
+        private class ReadOnlyBufferSegment: IBufferList
+        {
+            public Memory<byte> Memory { get; set; }
+            public IBufferList Next { get; set; }
+            public long VirtualIndex { get; set; }
         }
     }
 }
