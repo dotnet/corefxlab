@@ -35,71 +35,17 @@ namespace System.Buffers
             _output.Advance(count);
         }
 
-        public void Write(byte[] source)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(ReadOnlySpan<byte> source)
         {
-            if (source.Length > 0 && _span.Length >= source.Length)
+            if (_span.Length >= source.Length)
             {
-                ref byte pSource = ref source[0];
-                ref byte pDest = ref MemoryMarshal.GetReference(_span);
-
-                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
-
+                source.CopyTo(_span);
                 Advance(source.Length);
             }
             else
             {
-                WriteMultiBuffer(source, 0, source.Length);
-            }
-        }
-
-        public void Write(byte[] source, int offset, int length)
-        {
-            // If offset or length is negative the cast to uint will make them larger than int.MaxValue
-            // so each test both tests for negative values and greater than values. This pattern wil also
-            // elide the second bounds check that would occur at source[offset]; as is pre-checked
-            // https://github.com/dotnet/coreclr/pull/9773
-            if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
-            }
-
-            if (length > 0 && _span.Length >= length)
-            {
-                ref byte pSource = ref source[offset];
-                ref byte pDest = ref MemoryMarshal.GetReference(_span);
-
-                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
-
-                Advance(length);
-            }
-            else
-            {
-                WriteMultiBuffer(source, offset, length);
-            }
-        }
-
-        private void WriteMultiBuffer(byte[] source, int offset, int length)
-        {
-            var remaining = length;
-
-            while (remaining > 0)
-            {
-                if (_span.Length == 0)
-                {
-                    Ensure();
-                }
-
-                var writable = Math.Min(remaining, _span.Length);
-
-                ref byte pSource = ref source[offset];
-                ref byte pDest = ref MemoryMarshal.GetReference(_span);
-
-                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
-
-                Advance(writable);
-
-                remaining -= writable;
-                offset += writable;
+                WriteMultiBuffer(source);
             }
         }
 
@@ -109,5 +55,22 @@ namespace System.Buffers
             _output.Enlarge(count);
             _span = _output.GetSpan();
         }
+
+        private void WriteMultiBuffer(ReadOnlySpan<byte> source)
+        {
+            while (source.Length > 0)
+            {
+                if (_span.Length == 0)
+                {
+                    Ensure();
+                }
+
+                var writable = Math.Min(source.Length, _span.Length);
+                source.Slice(0, writable).CopyTo(_span);
+                source = source.Slice(writable);
+                Advance(writable);
+            }
+        }
+
     }
 }

@@ -78,12 +78,12 @@ namespace System.IO.Pipelines.Tests
                 array[i] = (byte)(i + 1);
             }
 
-            writer.Write(array, 0, 0);
-            writer.Write(array, array.Length, 0);
+            writer.Write(new Span<byte>(array, 0, 0));
+            writer.Write(new Span<byte>(array, array.Length, 0));
 
             try
             {
-                writer.Write(array, offset, length);
+                writer.Write(new Span<byte>(array, offset, length));
                 Assert.True(false);
             }
             catch(Exception ex)
@@ -91,7 +91,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(ex is ArgumentOutOfRangeException);
             }
 
-            writer.Write(array, 0, array.Length);
+            writer.Write(new Span<byte>(array, 0, array.Length));
             Assert.Equal(array, Read());
         }
 
@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Tests
             var writer = OutputWriter.Create(_buffer);
             var array = new byte[] { 1, 2, 3 };
 
-            writer.Write(array, offset, length);
+            writer.Write(new Span<byte>(array, offset, length));
 
             Assert.Equal(array.Skip(offset).Take(length).ToArray(), Read());
         }
@@ -147,7 +147,7 @@ namespace System.IO.Pipelines.Tests
             var array = new byte[] { };
 
             writer.Write(array);
-            writer.Write(array, 0, array.Length);
+            writer.Write(new Span<byte>(array, 0, array.Length));
 
             Assert.Equal(array, Read());
         }
