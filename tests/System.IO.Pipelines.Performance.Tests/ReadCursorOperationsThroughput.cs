@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
             while (!reader.End)
             {
-                var span = reader.Span;
+                var span = reader.CurrentSegment;
 
                 // Trim the start if we have an index
                 if (reader.Index > 0)

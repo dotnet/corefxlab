@@ -283,7 +283,14 @@ namespace System.Buffers
             {
                 var start = (int)position;
                 var length = _endIndex - (int)position;
-                item = new ReadOnlyMemory<byte>(array, start, length);
+                if (length == 0)
+                {
+                    item = ReadOnlyMemory<byte>.Empty;
+                }
+                else
+                {
+                    item = new ReadOnlyMemory<byte>(array, start, length);
+                }
                 if (advance) position = default;
                 return true;
             }
@@ -301,6 +308,16 @@ namespace System.Buffers
                 {
                     if (advance) position = new Position(node.Next, 0);
                 }
+                return true;
+            }
+
+            var om = _start as OwnedMemory<byte>;
+            if (om != null)
+            {
+                var start = (int)position;
+                var length = _endIndex - (int)position;
+                item = om.Memory.Slice(start, length);
+                if (advance) position = default;
                 return true;
             }
 

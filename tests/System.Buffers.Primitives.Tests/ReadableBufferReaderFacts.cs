@@ -33,12 +33,12 @@ namespace System.IO.Pipelines.Tests
                 var reader = BufferReader.Create(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
                 reader.Skip(2);
                 Assert.Equal(2, reader.Index);
-                Assert.Equal(3, reader.Span[reader.Index]);
+                Assert.Equal(3, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(3, reader.Peek());
                 reader.Skip(2);
                 Assert.Equal(5, reader.Peek());
                 Assert.Equal(4, reader.Index);
-                Assert.Equal(5, reader.Span[reader.Index]);
+                Assert.Equal(5, reader.CurrentSegment[reader.Index]);
             }
 
             [Fact]
@@ -46,10 +46,10 @@ namespace System.IO.Pipelines.Tests
             {
                 var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
                 Assert.Equal(0, reader.Index);
-                Assert.Equal(1, reader.Span[reader.Index]);
+                Assert.Equal(1, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(1, reader.Take());
                 Assert.Equal(1, reader.Index);
-                Assert.Equal(2, reader.Span[reader.Index]);
+                Assert.Equal(2, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(2, reader.Take());
                 Assert.Equal(-1, reader.Take());
             }
@@ -174,7 +174,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             reader.Skip(2);
-            Assert.Equal(3, reader.Span[reader.Index]);
+            Assert.Equal(3, reader.CurrentSegment[reader.Index]);
             Assert.Equal(3, reader.Take());
         }
 
@@ -213,10 +213,10 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2 });
             var reader = BufferReader.Create(buffer);
 
-            Assert.Equal(1, reader.Span[reader.Index]);
+            Assert.Equal(1, reader.CurrentSegment[reader.Index]);
             Assert.Equal(1, reader.Take());
 
-            Assert.Equal(2, reader.Span[reader.Index]);
+            Assert.Equal(2, reader.CurrentSegment[reader.Index]);
             Assert.Equal(2, reader.Peek());
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -230,7 +230,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             Assert.Equal(0, reader.Index);
-            Assert.Equal(1, reader.Span.Length);
+            Assert.Equal(1, reader.CurrentSegment.Length);
             Assert.Equal(1, reader.Peek());
             Assert.Equal(1, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -243,7 +243,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { }));
 
             Assert.Equal(0, reader.Index);
-            Assert.Equal(0, reader.Span.Length);
+            Assert.Equal(0, reader.CurrentSegment.Length);
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Take());
         }
@@ -289,14 +289,66 @@ namespace System.IO.Pipelines.Tests
             var counter = 1;
             while (!reader.End)
             {
-                var span = reader.Span;
+                var span = reader.CurrentSegment;
                 for (int i = reader.Index; i < span.Length; i++)
                 {
-                    Assert.Equal(counter++, reader.Span[i]);
+                    Assert.Equal(counter++, reader.CurrentSegment[i]);
                 }
                 reader.Skip(span.Length);
             }
             Assert.Equal(buffer.Length, reader.ConsumedBytes);
+        }
+
+        [Fact]
+        public void CopyToLargerBufferWorks()
+        {
+            var content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            Span<byte> buffer = new byte[content.Length + 1];
+            var reader = BufferReader.Create(Factory.CreateWithContent(content));
+
+            // this loop skips more and more items in the reader
+            for (int i = 0; i < content.Length; i++) {       
+                
+                int copied = BufferReader.Peek(reader, buffer);
+                Assert.Equal(content.Length - i, copied);
+                Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
+
+                // make sure that nothing more got written, i.e. tail is empty
+                for (int r = copied; r < buffer.Length; r++)
+                {
+                    Assert.Equal(0, buffer[r]);
+                }
+
+                reader.Skip(1);
+                buffer.Clear();
+            }
+        }
+
+        [Fact]
+        public void CopyToSmallerBufferWorks()
+        {
+            var content = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            Span<byte> buffer = new byte[content.Length];
+            var reader = BufferReader.Create(Factory.CreateWithContent(content));
+
+            // this loop skips more and more items in the reader
+            for (int i = 0; i < content.Length; i++)
+            {
+                // this loop makes the destination buffer smaller and smaller
+                for (int j = 0; j < buffer.Length - i; j++)
+                {
+                    var bufferSlice = buffer.Slice(0, j);
+                    bufferSlice.Clear();
+                    int copied = BufferReader.Peek(reader, bufferSlice);
+                    Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), copied);
+
+                    Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i, j)));
+                }
+
+                reader.Skip(1);
+            }
         }
     }
 

@@ -18,6 +18,8 @@ namespace System.Buffers
         internal readonly Position BufferStart;
         internal readonly Position BufferEnd;
 
+        public static readonly ReadOnlyBuffer Empty = new ReadOnlyBuffer(new byte[0]);
+
         /// <summary>
         /// Length of the <see cref="ReadOnlyBuffer"/> in bytes.
         /// </summary>
