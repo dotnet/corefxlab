@@ -324,6 +324,28 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
 
+        public Position Seek(Position origin, long offset)
+        {
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+
+            var previous = origin;
+            while (TryGet(ref origin, out var memory))
+            {
+                var length = memory.Length;
+                if (length < offset)
+                {
+                    offset -= length;
+                    previous = origin;
+                }
+                else
+                {
+                    var (segment, index) = origin.Get<IBufferList>();
+                    return new Position(segment, (int)(index + offset));
+                }
+            }
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        }
+
         enum Type : byte
         {
             Array,

@@ -141,5 +141,13 @@ namespace System.Collections.Sequences
         {
             return new SequenceEnumerator<KeyValuePair<K, V>>(this);
         }
+
+        public Position Seek(Position origin, long offset)
+        {
+            if (offset<0) throw new ArgumentOutOfRangeException(nameof(offset));
+            while (offset-- > 0 && TryGet(ref origin, out _));
+            if (offset == 0) return origin;
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        }
     }
 }

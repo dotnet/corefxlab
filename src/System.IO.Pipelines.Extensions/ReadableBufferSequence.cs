@@ -15,19 +15,12 @@ namespace System.IO.Pipelines
             _buffer = buffer;
         }
 
-        public Position Start => new Position(_buffer.Start.Segment, _buffer.Start.Index);
+        public Position Start => _buffer.Start;
+
+        public Position Seek(Position origin, long offset)
+            => _buffer.Seek(origin, offset);
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
-        {
-            var (data, index) = position.Get<object>();
-            var p = new Position(data, index);
-            var result =  _buffer.TryGet(ref p, out item);
-            if (advance)
-            {
-                position = new Position(p.Segment, p.Index);
-            }
-
-            return result;
-        }
+            => _buffer.TryGet(ref position, out item, advance);
     }
 }
