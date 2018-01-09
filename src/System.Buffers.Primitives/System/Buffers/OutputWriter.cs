@@ -36,7 +36,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(Span<byte> source)
+        public void Write(ReadOnlySpan<byte> source)
         {
             if (_span.Length >= source.Length)
             {
@@ -56,7 +56,7 @@ namespace System.Buffers
             _span = _output.GetSpan();
         }
 
-        private void WriteMultiBuffer(Span<byte> source)
+        private void WriteMultiBuffer(ReadOnlySpan<byte> source)
         {
             while (source.Length > 0)
             {
