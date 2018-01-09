@@ -79,7 +79,7 @@ namespace System.Buffers
                 var index = MemoryExtensions.IndexOf(memory.Span, value);
                 if (index != -1)
                 {
-                    result += index;
+                    result = sequence.Seek(result, index);
                     return result;
                 }
                 result = position;
@@ -98,7 +98,7 @@ namespace System.Buffers
                 var span = memory.Span;
                 if(span.Length > index)
                 {
-                    result += (int)index;
+                    result = sequence.Seek(result, index);
                     return result;
                 }
                 index -= span.Length;

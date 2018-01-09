@@ -421,7 +421,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var consumedSegment = consumed.GetSegment<BufferSegment>();
+                    var consumedSegment = (BufferSegment)consumed.Segment;
 
                     returnStart = _readHead;
                     returnEnd = consumedSegment;

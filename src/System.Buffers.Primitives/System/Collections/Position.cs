@@ -37,26 +37,8 @@ namespace System.Collections.Sequences
             return (segment, _index);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetSegment<T>()
-        {
-            switch (Segment)
-            {
-                case null:
-                    return default;
-                case T segment:
-                    return segment;
-            }
-
-            ThrowHelper.ThrowInvalidOperationException(ExceptionResource.UnexpectedSegmentType);
-            return default;
-        }
-
         public static bool operator ==(Position left, Position right) => left._index == right._index && left._segment == right._segment;
         public static bool operator !=(Position left, Position right) => left._index != right._index || left._segment != right._segment;
-
-        public static Position operator +(Position value, int index)
-            => new Position(value._segment, value._index + index);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(Position position) => this == position;
