@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
@@ -29,13 +27,6 @@ namespace System.Collections.Sequences
         public int Index => _index;
 
         public static explicit operator int(Position position) => position._index;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (T segment, int index) Get<T>()
-        {
-            var segment = _segment == null ? default : (T)_segment;
-            return (segment, _index);
-        }
 
         public static bool operator ==(Position left, Position right) => left._index == right._index && left._segment == right._segment;
         public static bool operator !=(Position left, Position right) => left._index != right._index || left._segment != right._segment;
