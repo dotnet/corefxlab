@@ -16,7 +16,7 @@ namespace System.Buffers
             {
                 if (unread.Length > consumed)
                 {
-                    reader.Skip(consumed);
+                    reader.Advance(consumed);
                     return true;
                 }
             }
@@ -25,7 +25,7 @@ namespace System.Buffers
             var copied = BufferReader.Peek(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
-                reader.Skip(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
@@ -40,7 +40,7 @@ namespace System.Buffers
             {
                 if (unread.Length > consumed)
                 {
-                    reader.Skip(consumed);
+                    reader.Advance(consumed);
                     return true;
                 }
             }
@@ -49,7 +49,7 @@ namespace System.Buffers
             var copied = BufferReader.Peek(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
-                reader.Skip(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
@@ -64,7 +64,7 @@ namespace System.Buffers
             {
                 if (unread.Length > consumed)
                 {
-                    reader.Skip(consumed);
+                    reader.Advance(consumed);
                     return true;
                 }
             }
@@ -73,7 +73,7 @@ namespace System.Buffers
             var copied = BufferReader.Peek(reader, tempSpan);
             if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
             {
-                reader.Skip(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 

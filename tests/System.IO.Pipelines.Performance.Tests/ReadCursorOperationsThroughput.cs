@@ -146,7 +146,7 @@ namespace System.IO.Pipelines.Performance.Tests
                     }
 
                     span = span.Slice(length);
-                    reader.Skip(skip);
+                    reader.Advance(skip);
                 }
             }
         }

@@ -16,13 +16,13 @@ namespace System.Buffers
             {
                 if (BinaryPrimitives.TryReadInt32LittleEndian(unread, out value))
                 {
-                    reader.Skip(sizeof(int));
+                    reader.Advance(sizeof(int));
                     return true;
                 }
             }
             else if (BinaryPrimitives.TryReadInt32BigEndian(unread, out value))
             {
-                reader.Skip(sizeof(int));
+                reader.Advance(sizeof(int));
                 return true;
             }
 
@@ -42,7 +42,7 @@ namespace System.Buffers
             {
                 value = BinaryPrimitives.ReadInt32BigEndian(tempSpan);
             }
-            reader.Skip(sizeof(int));
+            reader.Advance(sizeof(int));
             return true;
         }
     }

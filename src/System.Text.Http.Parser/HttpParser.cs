@@ -288,7 +288,7 @@ namespace System.Text.Http.Parser
                                     // the reader's state matches what we expect
                                     if (index == reader.Index)
                                     {
-                                        reader.Skip(2);
+                                        reader.Advance(2);
                                     }
 
                                     done = true;
@@ -346,7 +346,7 @@ namespace System.Text.Http.Parser
                             }
 
                             // Skip the reader forward past the header line
-                            reader.Skip(length);
+                            reader.Advance(length);
                             remaining -= length;
                         }
                     }

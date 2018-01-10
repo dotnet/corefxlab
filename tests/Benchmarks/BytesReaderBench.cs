@@ -36,7 +36,7 @@ public class BytesReaderBench
 
             using (iteration.StartMeasurement()) {
                 while(BufferReaderExtensions.TryParse(ref reader, out int value)) {
-                    reader.Skip(1);
+                    reader.Advance(1);
                 }
             }
         }
@@ -50,7 +50,7 @@ public class BytesReaderBench
 
             using (iteration.StartMeasurement()) {
                 while (BufferReaderExtensions.TryParse(ref reader, out int value)) {
-                    reader.Skip(1);
+                    reader.Advance(1);
                 }
             }
         }
@@ -85,7 +85,7 @@ public class BytesReaderBench
             using (iteration.StartMeasurement())
             {
                 while(Utf8Parser.TryParse(reader.CurrentSegment.Slice(reader.ConsumedBytes), out int value, out int consumed)){
-                    reader.Skip(consumed + 1);
+                    reader.Advance(consumed + 1);
                 }
             }
         }
