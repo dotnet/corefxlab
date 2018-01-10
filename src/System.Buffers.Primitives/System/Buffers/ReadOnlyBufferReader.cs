@@ -101,7 +101,7 @@ namespace System.Buffers
             _end = true;
         }
 
-        public void Skip(int byteCount)
+        public void Advance(int byteCount)
         {
             if (byteCount < 0)
             {

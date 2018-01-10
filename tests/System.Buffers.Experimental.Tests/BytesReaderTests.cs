@@ -139,7 +139,7 @@ namespace System.Buffers.Tests
             while (BufferReaderExtensions.TryParse(ref robReader, out int value))
             {
                 robSum += value;
-                robReader.Skip(1);
+                robReader.Advance(1);
             }
 
             var brReader = BufferReader.Create(bytesRange);
@@ -147,7 +147,7 @@ namespace System.Buffers.Tests
             while (BufferReaderExtensions.TryParse(ref brReader, out int value))
             {
                 brSum += value;
-                brReader.Skip(1);
+                brReader.Advance(1);
             }
 
             Assert.Equal(robSum, brSum);

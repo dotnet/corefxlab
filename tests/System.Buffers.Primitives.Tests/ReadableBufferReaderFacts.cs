@@ -28,14 +28,14 @@ namespace System.IO.Pipelines.Tests
             internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory) { }
 
             [Fact]
-            public void SkipSingleBufferSkipsBytes()
+            public void AdvanceSingleBufferSkipsBytes()
             {
                 var reader = BufferReader.Create(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
-                reader.Skip(2);
+                reader.Advance(2);
                 Assert.Equal(2, reader.Index);
                 Assert.Equal(3, reader.CurrentSegment[reader.Index]);
                 Assert.Equal(3, reader.Peek());
-                reader.Skip(2);
+                reader.Advance(2);
                 Assert.Equal(5, reader.Peek());
                 Assert.Equal(4, reader.Index);
                 Assert.Equal(5, reader.CurrentSegment[reader.Index]);
@@ -114,21 +114,21 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void SkipToEndThenPeekReturnsMinusOne()
+        public void AdvanceToEndThenPeekReturnsMinusOne()
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
-            reader.Skip(5);
+            reader.Advance(5);
             Assert.True(reader.End);
             Assert.Equal(-1, reader.Peek());
         }
 
         [Fact]
-        public void SkippingPastLengthThrows()
+        public void AdvancingPastLengthThrows()
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2, 3, 4, 5 }));
             try
             {
-                reader.Skip(6);
+                reader.Advance(6);
                 Assert.True(false);
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             Assert.Equal(1, reader.Peek());
-            reader.Skip(1);
+            reader.Advance(1);
             Assert.Equal(2, reader.Peek());
         }
 
@@ -168,25 +168,25 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void SkipTraversesSegments()
+        public void AdvanceTraversesSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
             var reader = BufferReader.Create(buffer);
 
-            reader.Skip(2);
+            reader.Advance(2);
             Assert.Equal(3, reader.CurrentSegment[reader.Index]);
             Assert.Equal(3, reader.Take());
         }
 
         [Fact]
-        public void SkipThrowsPastLengthMultipleSegments()
+        public void AdvanceThrowsPastLengthMultipleSegments()
         {
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
             var reader = BufferReader.Create(buffer);
 
             try
             {
-                reader.Skip(4);
+                reader.Advance(4);
                 Assert.True(false);
             }
             catch (Exception ex)
@@ -294,7 +294,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     Assert.Equal(counter++, reader.CurrentSegment[i]);
                 }
-                reader.Skip(span.Length);
+                reader.Advance(span.Length);
             }
             Assert.Equal(buffer.Length, reader.ConsumedBytes);
         }
@@ -320,7 +320,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal(0, buffer[r]);
                 }
 
-                reader.Skip(1);
+                reader.Advance(1);
                 buffer.Clear();
             }
         }
@@ -347,7 +347,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i, j)));
                 }
 
-                reader.Skip(1);
+                reader.Advance(1);
             }
         }
     }
