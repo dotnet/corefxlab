@@ -146,7 +146,7 @@ namespace System.IO.Pipelines.Tests
             // now read it back
             var result = await _pipe.Reader.ReadAsync();
             var readBuffer = result.Buffer;
-            Assert.False(readBuffer.IsSingleSpan);
+            Assert.False(readBuffer.IsSingleSegment);
             Assert.Equal(totalBytes, readBuffer.Length);
             TestIndexOfWorksForAllLocations(ref readBuffer, 42);
             _pipe.Reader.Advance(readBuffer.End);
@@ -168,7 +168,7 @@ namespace System.IO.Pipelines.Tests
             // now read it back
             var result = await _pipe.Reader.ReadAsync();
             var readBuffer = result.Buffer;
-            Assert.False(readBuffer.IsSingleSpan);
+            Assert.False(readBuffer.IsSingleSegment);
             Assert.Equal(data.Length, readBuffer.Length);
 
             // check the entire buffer
@@ -344,7 +344,7 @@ namespace System.IO.Pipelines.Tests
 
         private unsafe void ReadUInt64GivesExpectedValues(ref ReadOnlyBuffer readBuffer)
         {
-            Assert.True(readBuffer.IsSingleSpan);
+            Assert.True(readBuffer.IsSingleSegment);
 
             for (ulong i = 0; i < 1024; i++)
             {
@@ -426,7 +426,7 @@ namespace System.IO.Pipelines.Tests
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
             var span = readable.First.Span;
-            Assert.True(readable.IsSingleSpan);
+            Assert.True(readable.IsSingleSegment);
             Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
             Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
             Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
@@ -452,7 +452,7 @@ namespace System.IO.Pipelines.Tests
             }
             Assert.Equal(3, spanCount);
 
-            Assert.False(readable.IsSingleSpan);
+            Assert.False(readable.IsSingleSegment);
             Span<byte> span = readable.ToArray();
 
             Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());

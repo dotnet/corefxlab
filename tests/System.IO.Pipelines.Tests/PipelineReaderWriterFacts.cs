@@ -248,7 +248,7 @@ namespace System.IO.Pipelines.Tests
             var buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
@@ -266,7 +266,7 @@ namespace System.IO.Pipelines.Tests
             var buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
+            Assert.True(buffer.IsSingleSegment);
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
@@ -336,9 +336,9 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.IsSingleSpan);
+            Assert.False(buffer.IsSingleSegment);
             var helloBuffer = buffer.Slice(blockSize - 5);
-            Assert.False(helloBuffer.IsSingleSpan);
+            Assert.False(helloBuffer.IsSingleSegment);
             var memory = new List<ReadOnlyMemory<byte>>();
             foreach (var m in helloBuffer)
             {

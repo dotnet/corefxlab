@@ -77,7 +77,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.IsSingleSpan);
+            Assert.False(buffer.IsSingleSegment);
             Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer slice, out Position cursor));
 
             slice = buffer.Slice(cursor).Slice(1);

@@ -14,7 +14,7 @@ namespace System.Buffers.Tests
             var readable = BufferUtilities.CreateBuffer(data);
             var span = readable.AsSequence().ToSpan();
 
-            Assert.True(readable.IsSingleSpan);
+            Assert.True(readable.IsSingleSegment);
             Assert.Equal(span.Length, data.Length);
         }
 
@@ -28,7 +28,7 @@ namespace System.Buffers.Tests
             var readable = BufferUtilities.CreateBuffer(data1, data2, data3);
             var span = readable.AsSequence().ToSpan();
 
-            Assert.False(readable.IsSingleSpan);
+            Assert.False(readable.IsSingleSegment);
             Assert.Equal(span.Length, data1.Length + data2.Length + data3.Length);
         }
     }

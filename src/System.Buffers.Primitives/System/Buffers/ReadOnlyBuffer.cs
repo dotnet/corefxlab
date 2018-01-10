@@ -33,7 +33,7 @@ namespace System.Buffers
         /// <summary>
         /// Determins if the <see cref="ReadOnlyBuffer"/> is a single <see cref="Memory{Byte}"/>.
         /// </summary>
-        public bool IsSingleSpan => BufferStart.Segment == BufferEnd.Segment;
+        public bool IsSingleSegment => BufferStart.Segment == BufferEnd.Segment;
 
         public ReadOnlyMemory<byte> First
         {
@@ -91,7 +91,7 @@ namespace System.Buffers
 
         public ReadOnlyBuffer(OwnedMemory<byte> data, int offset, int length)
         {
-            
+
             if (data == null)
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);

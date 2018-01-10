@@ -50,7 +50,7 @@ namespace System.Text.Http.Parser
                 consumed = buffer.Seek(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
-            else if (buffer.IsSingleSpan)
+            else if (buffer.IsSingleSegment)
             {
                 return false;
             }
