@@ -26,7 +26,7 @@ namespace System.Buffers
         private TSequence _sequence;
         private Position _currentPosition;
         private Position _nextPosition;
-               
+
         private int _consumedBytes;
         private bool _end;
 
@@ -74,7 +74,7 @@ namespace System.Buffers
                 return -1;
             }
 
-            var value = _currentSpan[_index];  
+            var value = _currentSpan[_index];
             _index++;
             _consumedBytes++;
 

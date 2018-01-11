@@ -10,7 +10,7 @@ namespace System.Text.Http.Parser.Internal
     internal static class PipelineExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer buffer)
+        public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer<byte> buffer)
         {
             if (buffer.IsSingleSegment)
             {

@@ -4,8 +4,6 @@
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Diagnostics;
-using System.IO.Pipelines;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Buffers
@@ -13,12 +11,12 @@ namespace System.Buffers
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public readonly partial struct ReadOnlyBuffer : ISequence<ReadOnlyMemory<byte>>
+    public readonly partial struct ReadOnlyBuffer<T> : ISequence<ReadOnlyMemory<T>> where T : IEquatable<T>
     {
         internal readonly Position BufferStart;
         internal readonly Position BufferEnd;
 
-        public static readonly ReadOnlyBuffer Empty = new ReadOnlyBuffer(new byte[0]);
+        public static readonly ReadOnlyBuffer<T> Empty = new ReadOnlyBuffer<T>(new T[0]);
 
         /// <summary>
         /// Length of the <see cref="ReadOnlyBuffer"/> in bytes.
@@ -35,7 +33,7 @@ namespace System.Buffers
         /// </summary>
         public bool IsSingleSegment => BufferStart.Segment == BufferEnd.Segment;
 
-        public ReadOnlyMemory<byte> First
+        public ReadOnlyMemory<T> First
         {
             get
             {
@@ -63,7 +61,7 @@ namespace System.Buffers
             BufferEnd = end;
         }
 
-        public ReadOnlyBuffer(IBufferList startSegment, int offset, IBufferList endSegment, int endIndex)
+        public ReadOnlyBuffer(IBufferList<T> startSegment, int offset, IBufferList<T> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
@@ -74,11 +72,11 @@ namespace System.Buffers
             BufferEnd = new Position(endSegment, endIndex);
         }
 
-        public ReadOnlyBuffer(byte[] data) : this(data, 0, data.Length)
+        public ReadOnlyBuffer(T[] data) : this(data, 0, data.Length)
         {
         }
 
-        public ReadOnlyBuffer(byte[] data, int offset, int length)
+        public ReadOnlyBuffer(T[] data, int offset, int length)
         {
             if (data == null)
             {
@@ -89,7 +87,7 @@ namespace System.Buffers
             BufferEnd = new Position(data, offset + length);
         }
 
-        public ReadOnlyBuffer(OwnedMemory<byte> data, int offset, int length)
+        public ReadOnlyBuffer(OwnedMemory<T> data, int offset, int length)
         {
 
             if (data == null)
@@ -112,7 +110,7 @@ namespace System.Buffers
             BufferEnd = new Position(data, offset + length);
         }
 
-        public ReadOnlyBuffer(IEnumerable<Memory<byte>> buffers)
+        public ReadOnlyBuffer(IEnumerable<Memory<T>> buffers)
         {
             ReadOnlyBufferSegment segment = null;
             ReadOnlyBufferSegment first = null;
@@ -120,7 +118,7 @@ namespace System.Buffers
             {
                 var newSegment = new ReadOnlyBufferSegment()
                 {
-                    Memory =  buffer,
+                    Memory = buffer,
                     VirtualIndex = segment?.VirtualIndex ?? 0
                 };
 
@@ -150,11 +148,11 @@ namespace System.Buffers
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer Slice(long start, long length)
+        public ReadOnlyBuffer<T> Slice(long start, long length)
         {
             var begin = Seek(BufferStart, BufferEnd, start, false);
             var end = Seek(begin, BufferEnd, length, false);
-            return new ReadOnlyBuffer(begin, end);
+            return new ReadOnlyBuffer<T>(begin, end);
         }
 
         /// <summary>
@@ -162,11 +160,11 @@ namespace System.Buffers
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadOnlyBuffer Slice(long start, Position end)
+        public ReadOnlyBuffer<T> Slice(long start, Position end)
         {
             BoundsCheck(BufferEnd, end);
             var begin = Seek(BufferStart, end, start);
-            return new ReadOnlyBuffer(begin, end);
+            return new ReadOnlyBuffer<T>(begin, end);
         }
 
         /// <summary>
@@ -174,12 +172,12 @@ namespace System.Buffers
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="end">The ending (inclusive) <see cref="Position"/> of the slice</param>
-        public ReadOnlyBuffer Slice(Position start, Position end)
+        public ReadOnlyBuffer<T> Slice(Position start, Position end)
         {
             BoundsCheck(BufferEnd, end);
             BoundsCheck(end, start);
 
-            return new ReadOnlyBuffer(start, end);
+            return new ReadOnlyBuffer<T>(start, end);
         }
 
         /// <summary>
@@ -187,43 +185,43 @@ namespace System.Buffers
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer Slice(Position start, long length)
+        public ReadOnlyBuffer<T> Slice(Position start, long length)
         {
             BoundsCheck(BufferEnd, start);
 
             var end = Seek(start, BufferEnd, length, false);
 
-            return new ReadOnlyBuffer(start, end);
+            return new ReadOnlyBuffer<T>(start, end);
         }
 
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
-        public ReadOnlyBuffer Slice(Position start)
+        public ReadOnlyBuffer<T> Slice(Position start)
         {
             BoundsCheck(BufferEnd, start);
 
-            return new ReadOnlyBuffer(start, BufferEnd);
+            return new ReadOnlyBuffer<T>(start, BufferEnd);
         }
 
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
         /// <param name="start">The start index at which to begin this slice.</param>
-        public ReadOnlyBuffer Slice(long start)
+        public ReadOnlyBuffer<T> Slice(long start)
         {
             if (start == 0) return this;
 
             var begin = Seek(BufferStart, BufferEnd, start, false);
-            return new ReadOnlyBuffer(begin, BufferEnd);
+            return new ReadOnlyBuffer<T>(begin, BufferEnd);
         }
 
         /// <summary>
         /// Copy the <see cref="ReadOnlyBuffer"/> to the specified <see cref="Span{Byte}"/>.
         /// </summary>
         /// <param name="destination">The destination <see cref="Span{Byte}"/>.</param>
-        public void CopyTo(Span<byte> destination)
+        public void CopyTo(Span<T> destination)
         {
             if (Length > destination.Length)
             {
@@ -238,28 +236,32 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Converts the <see cref="ReadOnlyBuffer"/> to a <see cref="T:byte[]"/>
+        /// Converts the <see cref="ReadOnlyBuffer"/> to a <see cref="T[]"/>
         /// </summary>
-        public byte[] ToArray()
+        public T[] ToArray()
         {
-            var buffer = new byte[Length];
+            var buffer = new T[Length];
             CopyTo(buffer);
             return buffer;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
-            var sb = new StringBuilder();
-            foreach (var buffer in this)
+            if (typeof(T) == typeof(byte))
             {
-                SpanLiteralExtensions.AppendAsLiteral(buffer.Span, sb);
+                if (this is ReadOnlyBuffer<byte> bytes)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var buffer in bytes)
+                    {
+                        SpanLiteralExtensions.AppendAsLiteral(buffer.Span, sb);
+                    }
+                    return sb.ToString();
+                }
             }
-            return sb.ToString();
+            return base.ToString();
         }
+
 
         /// <summary>
         /// Returns an enumerator over the <see cref="ReadOnlyBuffer"/>
@@ -278,7 +280,7 @@ namespace System.Buffers
             return Seek(origin, BufferEnd, offset, false);
         }
 
-        public bool TryGet(ref Position cursor, out ReadOnlyMemory<byte> data, bool advance = true)
+        public bool TryGet(ref Position cursor, out ReadOnlyMemory<T> data, bool advance = true)
         {
             var result = TryGetBuffer(cursor, End, out data, out var next);
             if (advance)
@@ -289,13 +291,13 @@ namespace System.Buffers
             return result;
         }
 
-        public Position? PositionOf(byte value)
+        public Position? PositionOf(T value)
         {
             Position position = Start;
             Position result = position;
-            while (TryGet(ref position, out ReadOnlyMemory<byte> memory))
+            while (TryGet(ref position, out var memory))
             {
-                var index = memory.Span.IndexOf( value);
+                var index = memory.Span.IndexOf(value);
                 if (index != -1)
                 {
                     return Seek(result, index);
@@ -310,16 +312,16 @@ namespace System.Buffers
         /// </summary>
         public struct Enumerator
         {
-            private readonly ReadOnlyBuffer _readOnlyBuffer;
+            private readonly ReadOnlyBuffer<T> _readOnlyBuffer;
             private Position _next;
             private Position _current;
 
-            private ReadOnlyMemory<byte> _currentMemory;
+            private ReadOnlyMemory<T> _currentMemory;
 
             /// <summary>
             ///
             /// </summary>
-            public Enumerator(ReadOnlyBuffer readOnlyBuffer)
+            public Enumerator(ReadOnlyBuffer<T> readOnlyBuffer)
             {
                 _readOnlyBuffer = readOnlyBuffer;
                 _currentMemory = default;
@@ -330,7 +332,7 @@ namespace System.Buffers
             /// <summary>
             /// The current <see cref="Buffer{Byte}"/>
             /// </summary>
-            public ReadOnlyMemory<byte> Current
+            public ReadOnlyMemory<T> Current
             {
                 get => _currentMemory;
                 set => _currentMemory = value;

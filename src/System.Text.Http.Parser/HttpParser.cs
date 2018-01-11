@@ -37,7 +37,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -79,7 +79,7 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
             var span = buffer.First.Span;
@@ -229,7 +229,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -238,7 +238,7 @@ namespace System.Text.Http.Parser
             var bufferEnd = buffer.End;
 
             var reader = BufferReader.Create(buffer);
-            var start = default(BufferReader<ReadOnlyBuffer>);
+            var start = default(BufferReader<ReadOnlyBuffer<byte>>);
             var done = false;
 
             try
@@ -366,7 +366,7 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBuffer buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
             var index = 0;
             consumedBytes = 0;
@@ -478,7 +478,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ReadTwoChars(ReadOnlyBuffer buffer, int consumedBytes, out int ch1, out int ch2)
+        private static void ReadTwoChars(ReadOnlyBuffer<byte> buffer, int consumedBytes, out int ch1, out int ch2)
         {
             var first = buffer.First.Span;
             if(first.Length - consumedBytes > 1)
@@ -647,7 +647,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out Position found)
         {
             var position = buffer.PositionOf(ByteLF);
             if (position.HasValue)

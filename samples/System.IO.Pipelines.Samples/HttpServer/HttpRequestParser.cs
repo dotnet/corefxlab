@@ -17,20 +17,20 @@ namespace System.IO.Pipelines.Samples
         private byte[] _path;
         private byte[] _method;
 
-        public ReadOnlyBuffer HttpVersion => new ReadOnlyBuffer(_httpVersion);
-        public ReadOnlyBuffer Path => new ReadOnlyBuffer(_path);
-        public ReadOnlyBuffer Method => new ReadOnlyBuffer(_method);
+        public ReadOnlyBuffer<byte> HttpVersion => new ReadOnlyBuffer<byte>(_httpVersion);
+        public ReadOnlyBuffer<byte> Path => new ReadOnlyBuffer<byte>(_path);
+        public ReadOnlyBuffer<byte> Method => new ReadOnlyBuffer<byte>(_method);
 
         public RequestHeaderDictionary RequestHeaders = new RequestHeaderDictionary();
 
-        public ParseResult ParseRequest(ReadOnlyBuffer buffer, out Position consumed, out Position examined)
+        public ParseResult ParseRequest(ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
         {
             consumed = buffer.Start;
             examined = buffer.Start;
 
             if (_state == ParsingState.StartLine)
             {
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer startLine, out Position delim))
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> startLine, out Position delim))
                 {
                     return ParseResult.Incomplete;
                 }
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Samples
                 // Move the buffer to the rest
                 buffer = buffer.Slice(delim).Slice(2);
 
-                if (!startLine.TrySliceTo((byte)' ', out ReadOnlyBuffer method, out delim))
+                if (!startLine.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> method, out delim))
                 {
                     return ParseResult.BadRequest;
                 }
@@ -48,7 +48,7 @@ namespace System.IO.Pipelines.Samples
                 // Skip ' '
                 startLine = startLine.Slice(delim).Slice(1);
 
-                if (!startLine.TrySliceTo((byte)' ', out ReadOnlyBuffer path, out delim))
+                if (!startLine.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> path, out delim))
                 {
                     return ParseResult.BadRequest;
                 }
@@ -76,8 +76,8 @@ namespace System.IO.Pipelines.Samples
 
             while (!buffer.IsEmpty)
             {
-                var headerValue = default(ReadOnlyBuffer);
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer headerPair, out Position delim))
+                var headerValue = default(ReadOnlyBuffer<byte>);
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> headerPair, out Position delim))
                 {
                     return ParseResult.Incomplete;
                 }
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Samples
                 }
 
                 // :
-                if (!headerPair.TrySliceTo((byte)':', out ReadOnlyBuffer headerName, out delim))
+                if (!headerPair.TrySliceTo((byte)':', out ReadOnlyBuffer<byte> headerName, out delim))
                 {
                     return ParseResult.BadRequest;
                 }

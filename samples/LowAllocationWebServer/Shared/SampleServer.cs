@@ -34,7 +34,7 @@ namespace LowAllocationWebServer
             : base(cancellation, log, port, address1, address2, address3, address4)
         { }
 
-        static void WriteResponseForHelloWorld(HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response)
+        static void WriteResponseForHelloWorld(HttpRequest request, ReadOnlyBuffer<byte> body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -44,7 +44,7 @@ namespace LowAllocationWebServer
             response.Append("Hello, World");
         }
 
-        static void WriteResponseForGetTime(HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response)
+        static void WriteResponseForGetTime(HttpRequest request, ReadOnlyBuffer<byte> body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -54,7 +54,7 @@ namespace LowAllocationWebServer
             response.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
         }
 
-        static void WriteResponseForGetJson(HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response)
+        static void WriteResponseForGetJson(HttpRequest request, ReadOnlyBuffer<byte> body, TcpConnectionFormatter response)
         {
             WriteCommonHeaders(ref response, Http.Version.Http11, 200, "OK");
 
@@ -73,7 +73,7 @@ namespace LowAllocationWebServer
             jsonWriter.WriteObjectEnd();
         }
 
-        static void WriteResponseForPostJson(HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response)
+        static void WriteResponseForPostJson(HttpRequest request, ReadOnlyBuffer<byte> body, TcpConnectionFormatter response)
         {
             // read request json
             int requestedCount;

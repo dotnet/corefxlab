@@ -11,7 +11,7 @@ using System.Text;
 public class BytesReaderBench
 {
     static byte[] s_data;
-    static ReadOnlyBuffer s_buffer;
+    static ReadOnlyBuffer<byte> s_buffer;
 
     static BytesReaderBench()
     {
@@ -22,7 +22,7 @@ public class BytesReaderBench
             sb.Append("1234 ");
         }
         s_data = Encoding.UTF8.GetBytes(sb.ToString());
-        s_buffer = new ReadOnlyBuffer(s_data);
+        s_buffer = new ReadOnlyBuffer<byte>(s_data);
     }
 
     [Benchmark]
@@ -63,7 +63,7 @@ public class BytesReaderBench
     {
         foreach (var iteration in Benchmark.Iterations)
         {
-            var buffer = new ReadOnlyBuffer(s_data);
+            var buffer = new ReadOnlyBuffer<byte>(s_data);
             var reader = BufferReader.Create(buffer);
 
             using (iteration.StartMeasurement())

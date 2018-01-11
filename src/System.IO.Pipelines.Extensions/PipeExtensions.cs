@@ -11,10 +11,5 @@ namespace System.IO.Pipelines
         {
             return new WritableBufferOutput(buffer);
         }
-
-        public static ReadableBufferSequence AsSequence(this ReadOnlyBuffer buffer)
-        {
-            return new ReadableBufferSequence(buffer);
-        }
     }
 }

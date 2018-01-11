@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         private const int InnerLoopCount = 512;
 
-        private ReadOnlyBuffer _readOnlyBuffer;
+        private ReadOnlyBuffer<byte> _readOnlyBuffer;
 
         [GlobalSetup]
         public void Setup()
