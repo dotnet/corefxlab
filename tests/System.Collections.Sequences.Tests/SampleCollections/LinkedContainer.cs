@@ -71,14 +71,4 @@ namespace System.Collections.Sequences
             return new Position(node, 0);
         }
     }
-
-    public static class PositionExtensions
-    {
-        public static (T segment, int index) Get<T>(this Position position)
-        {
-            var segment = position.Segment;
-            var index = position.Index;
-            return ((T)segment, index);
-        }
-    }
 }
