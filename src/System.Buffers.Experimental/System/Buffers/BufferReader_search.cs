@@ -5,18 +5,25 @@ using System.Collections.Sequences;
 
 namespace System.Buffers
 {
+    public interface ISlicable
+    {
+        ReadOnlyBuffer Slice(Position start, Position end);
+    }
+
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
-        public static bool TryReadUntill(ref BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, byte delimiter)
+        public static bool TryReadUntill<TSequence>(ref BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, byte delimiter)
+            where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
         {
             var copy = reader;
             var start = reader.Position;
-            while (!reader.End) {
+            while (!reader.End)
+            {
                 Position end = reader.Position;
-                if(reader.Take() == delimiter)
+                if (reader.Take() == delimiter)
                 {
-                    bytes = new ReadOnlyBytes(start, end);
+                    bytes = reader.Sequence.Slice(start, end);
                     return true;
                 }
             }
@@ -25,11 +32,12 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryReadUntill(ref BufferReader<ReadOnlyBytes> reader, out ReadOnlyBytes bytes, ReadOnlySpan<byte> delimiter)
+        public static bool TryReadUntill<TSequence>(ref BufferReader<TSequence> reader, out ReadOnlyBuffer bytes, ReadOnlySpan<byte> delimiter)
+            where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
         {
             if (delimiter.Length == 0)
             {
-                bytes = ReadOnlyBytes.Empty;
+                bytes = default;
                 return true;
             }
 
@@ -39,7 +47,8 @@ namespace System.Buffers
             var end = reader.Position;
             while (!reader.End)
             {
-                if (reader.Take() == delimiter[matched]) {
+                if (reader.Take() == delimiter[matched])
+                {
                     matched++;
                 }
                 else
@@ -47,9 +56,9 @@ namespace System.Buffers
                     end = reader.Position;
                     matched = 0;
                 }
-                if(matched >= delimiter.Length)
+                if (matched >= delimiter.Length)
                 {
-                    bytes = new ReadOnlyBytes(start, end);
+                    bytes = reader.Sequence.Slice(start, end);
                     return true;
                 }
             }

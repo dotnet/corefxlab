@@ -79,10 +79,10 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
-            var span = buffer.Memory.Span;
+            var span = buffer.First.Span;
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
@@ -366,7 +366,7 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBuffer buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
             var index = 0;
             consumedBytes = 0;
@@ -478,16 +478,25 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ReadTwoChars(ReadOnlyBytes buffer, int consumedBytes, out int ch1, out int ch2)
+        private static void ReadTwoChars(ReadOnlyBuffer buffer, int consumedBytes, out int ch1, out int ch2)
         {
-            Span<byte> temp = stackalloc byte[2];
-            if (buffer.Slice(consumedBytes).CopyTo(temp) < 2)
+            var first = buffer.First.Span;
+            if(first.Length - consumedBytes > 1)
+            {
+                ch1 = first[consumedBytes];
+                ch2 = first[consumedBytes + 1];
+            }
+
+            if (buffer.Length < consumedBytes + 2)
             {
                 ch1 = -1;
                 ch2 = -1;
             }
             else
             {
+                buffer = buffer.Slice(consumedBytes, 2);
+                Span<byte> temp = stackalloc byte[2];
+                buffer.CopyTo(temp);
                 ch1 = temp[0];
                 ch2 = temp[1];
             }

@@ -32,7 +32,7 @@ public class HttpParserBench
     const int Itterations = 10000;
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static bool RequestLineRb()
+    static bool RequestLine()
     {
         ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
         var parser = new HttpParser();
@@ -66,73 +66,7 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static bool RequestLineRobCursors()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        var parser = new HttpParser();
-        var request = new Request();
-        Position consumed = default;
-        Position read;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed, out read);
-
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool RequestLineRob()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        var parser = new HttpParser();
-        var request = new RequestStruct();
-        int consumed = 0;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumed);
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool HeadersRb()
+    static bool Headers()
     {
         ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
@@ -163,99 +97,7 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static bool HeadersRobCursors()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
-        var parser = new HttpParser();
-        var request = new Request();
-        Position consumed = default;
-        Position examined;
-        int consumedBytes;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed, out examined, out consumedBytes);
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool HeadersRobRef()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
-        var parser = new HttpParser();
-        var request = new RequestStruct();
-        int consumed;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool HeadersRob()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
-        var parser = new HttpParser();
-        var request = new Request();
-        int consumed;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                    success = success && parser.ParseHeaders(ref request, buffer, out consumed);
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool FullRequestRb()
+    static bool FullRequest()
     {
         ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
@@ -287,111 +129,6 @@ public class HttpParserBench
         }
 
         return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool FullRequestRob()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        var parser = new HttpParser();
-        var request = new RequestStruct();
-        int consumedBytes = 0;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer.Slice(consumedBytes), out consumedBytes);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer.Slice(consumedBytes), out consumedBytes);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer.Slice(consumedBytes), out consumedBytes);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer.Slice(consumedBytes), out consumedBytes);
-                    success = success && parser.ParseRequestLine(ref request, buffer, out consumedBytes);
-                    success = success && parser.ParseHeaders(ref request, buffer.Slice(consumedBytes), out consumedBytes);
-                }
-            }
-        }
-
-        return success;
-    }
-
-    [Benchmark(InnerIterationCount = Itterations)]
-    static bool FullRequestRobCursors()
-    {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
-        var parser = new HttpParser();
-        var request = new RequestStruct();
-        Position consumed = default;
-        Position examined;
-        bool success = true;
-
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
-                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
-                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
-                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
-                    success = success && parser.ParseRequest(ref request, buffer, out consumed, out examined);
-                }
-            }
-        }
-
-        return success;
-    }
-}
-
-static class HttpParserExtensions
-{
-    public static bool ParseRequestLine<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
-    {
-        if(parser.ParseRequestLine(ref handler, buffer, out int consumedBytes))
-        {
-            consumed = buffer.PositionAt(consumedBytes).GetValueOrDefault();
-            examined = consumed;
-            return true;
-        }
-        consumed = buffer.PositionAt(0).GetValueOrDefault();
-        examined = default;
-        return false;
-    }
-
-    public static bool ParseHeaders<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
-    {
-        if (parser.ParseHeaders(ref handler, buffer, out consumedBytes))
-        {
-            consumed = buffer.PositionAt(consumedBytes).GetValueOrDefault();
-            examined = consumed;
-            return true;
-        }
-        consumed = buffer.PositionAt(0).GetValueOrDefault();
-        examined = default;
-        return false;
-    }
-
-    public static bool ParseRequest<T>(this HttpParser parser, ref T handler, in ReadOnlyBytes buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler, IHttpHeadersHandler
-    {
-        if (
-            parser.ParseRequestLine(ref handler, buffer, out var consumedRLBytes) &&
-            parser.ParseHeaders(ref handler, buffer.Slice(consumedRLBytes), out var consumedHDBytes)
-        )
-        {
-            consumed = buffer.PositionAt(consumedRLBytes + consumedHDBytes).GetValueOrDefault();
-            examined = consumed;
-            return true;
-        }
-        else
-        {
-            consumed = buffer.PositionAt(0).GetValueOrDefault();
-            examined = default;
-            return false;
-        }
     }
 }
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Xunit;
-using System.IO.Pipelines;
 using System.Collections.Generic;
 using System.Buffers;
 using System.Buffers.Text;
@@ -17,7 +16,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBytes buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestText));
+            ReadOnlyBuffer buffer = new ReadOnlyBuffer(Encoding.ASCII.GetBytes(requestText));
 
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
@@ -50,7 +49,7 @@ namespace System.Text.Http.Parser.Tests
                 var endBytes = Encoding.ASCII.GetBytes(back);
 
                 var (first, last) = BufferList.Create(frontBytes, endBytes);
-                ReadOnlyBytes buffer = new ReadOnlyBytes(first, last);
+                var buffer = new ReadOnlyBuffer(first, 0, last, last.Memory.Length);
 
                 var request = new Request();
 
@@ -83,7 +82,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBytes buffer = new ReadOnlyBytes(_plaintextTechEmpowerRequestBytes);
+            ReadOnlyBuffer buffer = new ReadOnlyBuffer(_plaintextTechEmpowerRequestBytes);
 
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);

@@ -46,6 +46,8 @@ namespace System.Buffers
 
         public int Index => _index;
 
+        public TSequence Sequence => _sequence;
+
         public Position Position => _sequence.Seek(_currentPosition, _index);
 
         public ReadOnlySpan<byte> CurrentSegment => _currentSpan;

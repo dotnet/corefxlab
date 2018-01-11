@@ -79,7 +79,7 @@ namespace System.Binary.Base64Experimental.Tests
             var (first, last) = BufferList.Create(input);
            
             var output = new TestOutput();
-            Base64Experimental.Utf8ToBytesDecoder.Pipe(new ReadOnlyBytes(first, last), output);
+            Base64Experimental.Utf8ToBytesDecoder.Pipe(new ReadOnlyBuffer(first, 0, last, last.Memory.Length), output);
 
             var expectedArray = expected.ToArray();
             var array = output.GetBuffer.ToArray();

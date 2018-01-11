@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System.Buffers.Text;
+
+using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -13,23 +13,24 @@ namespace System.Buffers.Tests
         [Fact]
         public void SingleSegmentBytesReader()
         {
-            ReadOnlyBytes bytes = Create("AB CD#EF&&");
+            var bytes = new ReadOnlyBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }).AsSlicable();
             var reader = BufferReader.Create(bytes);
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, (byte)' '));
-            Assert.Equal("AB", ab.ToString(SymbolTable.InvariantUtf8));
+            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, 3));
+            Assert.True(ab.First.SequenceEqual(new byte[] { 1, 2 }));
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var cd, (byte)'#'));
-            Assert.Equal("CD", cd.ToString(SymbolTable.InvariantUtf8));
+            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var cd, 6));
+            Assert.True(cd.First.SequenceEqual(new byte[] { 4, 5 }));
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ef, new byte[] { (byte)'&', (byte)'&' }));
-            Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
+            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ef, new byte[] { 8, 9 }));
+            Assert.True(ef.First.SequenceEqual(new byte[] { 7 }));
         }
 
         [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
-            ReadOnlyBytes bytes = ListHelper.CreateRob(new byte[][] {
+
+            var bytes = BufferFactory.Create(new byte[][] {
                 new byte[] { 0          },
                 new byte[] { 1, 2       },
                 new byte[] { 3, 4       },
@@ -38,7 +39,7 @@ namespace System.Buffers.Tests
                 new byte[] { 1,         },
                 new byte[] { 0, 2,      },
                 new byte[] { 1, 2, 3, 4 },
-            });
+            }).AsSlicable();
 
             var reader = BufferReader.Create(bytes);
 
@@ -65,37 +66,17 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public void MultiSegmentBytesReader()
-        {
-            ReadOnlyBytes bytes = Parse("A|B |CD|#EF&|&");
-            var reader = BufferReader.Create(bytes);
-
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, (byte)' '));
-            Assert.Equal("AB", ab.Utf8ToString());
-
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var cd, (byte)'#'));
-            Assert.Equal("CD", cd.Utf8ToString());
-
-            //Assert.True(reader.TryReadBytes(out var ef, new byte[] { (byte)'&', (byte)'&' }));
-            //Assert.Equal("EF", ef.ToString(SymbolTable.InvariantUtf8));
-        }
-
-        [Fact]
         public void EmptyBytesReader()
         {
-            ReadOnlyBytes bytes = Create("");
+            var bytes = ReadOnlyBuffer.Empty.AsSlicable();
             var reader = BufferReader.Create(bytes);
             Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out var range, (byte)' '));
-
-            bytes = Parse("|");
-            reader = BufferReader.Create(bytes);
-            Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out range, (byte)' '));
         }
 
         [Fact]
         public void BytesReaderParse()
         {
-            ReadOnlyBytes bytes = Parse("12|3Tr|ue|456Tr|ue7|89False|");
+            ReadOnlyBuffer bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BufferReader.Create(bytes);
 
             Assert.True(BufferReaderExtensions.TryParse(ref reader, out ulong u64));
@@ -155,46 +136,48 @@ namespace System.Buffers.Tests
         }
     }
 
-    static class ListHelper
+    static class BufferFactory
     {
-        public static ReadOnlyBytes CreateRob(params byte[][] buffers)
+        public static ReadOnlyBuffer Create(params byte[][] buffers)
         {
-            if (buffers.Length == 1) return new ReadOnlyBytes(buffers[0]);
-            var (first, last) = BufferList.Create(buffers);
-            return new ReadOnlyBytes(first, last);
+            if (buffers.Length == 1) return new ReadOnlyBuffer(buffers[0]);
+            var list = new List<Memory<byte>>();
+            foreach (var b in buffers) list.Add(b);
+            return new ReadOnlyBuffer(list);
         }
+
+        public static ReadOnlyBuffer Parse(string text)
+        {
+            var segments = text.Split('|');
+            var buffers = new List<Memory<byte>>();
+            foreach (var segment in segments)
+            {
+                buffers.Add(Encoding.UTF8.GetBytes(segment));
+            }
+            return new ReadOnlyBuffer(buffers.ToArray());
+        }
+
+        public static ReadOnlyBufferToSlicableSequenceAdapter AsSlicable(this ReadOnlyBuffer buffer)
+            => new ReadOnlyBufferToSlicableSequenceAdapter(buffer);
     }
 
-    public static class ReadOnlyBytesTextExtensions
+    struct ReadOnlyBufferToSlicableSequenceAdapter : ISequence<ReadOnlyMemory<byte>>, ISlicable
     {
-        public static string ToString<TSequence>(this TSequence bytes, SymbolTable symbolTable) where TSequence: ISequence<ReadOnlyMemory<byte>>
+        ReadOnlyBuffer _buffer;
+        public ReadOnlyBufferToSlicableSequenceAdapter(ReadOnlyBuffer buffer)
         {
-            var sb = new StringBuilder();
-            if (symbolTable == SymbolTable.InvariantUtf8)
-            {
-                Position position = bytes.Start;
-                while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
-                {
-                    sb.Append(new Utf8Span(segment.Span).ToString());
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-            return sb.ToString();
+            _buffer = buffer;
         }
 
-        public static string Utf8ToString<TSequence>(this TSequence bytes) where TSequence : ISequence<ReadOnlyMemory<byte>>
-        {
-            var sb = new StringBuilder();
+        public Position Start => _buffer.Start;
 
-            Position position = bytes.Start;
-            while (bytes.TryGet(ref position, out ReadOnlyMemory<byte> segment))
-            {
-                sb.Append(new Utf8Span(segment.Span).ToString());
-            }
-            return sb.ToString();
-        }
+        public Position Seek(Position origin, long offset)
+            => _buffer.Seek(origin, offset);
+
+        public ReadOnlyBuffer Slice(Position start, Position end)
+            => _buffer.Slice(start, end);
+
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+            => _buffer.TryGet(ref position, out item, advance);
     }
 }

@@ -80,7 +80,7 @@ namespace Microsoft.Net
                     }
                 }
 
-                var requestBytes = new ReadOnlyBytes(rootBuffer, requestBuffer);
+                var requestBytes = new ReadOnlyBuffer(rootBuffer, 0, requestBuffer, requestBuffer.Memory.Length);
 
                 var request = new HttpRequest();
                 if(!s_parser.ParseRequestLine(ref request, requestBytes, out int consumed))
@@ -137,7 +137,7 @@ namespace Microsoft.Net
             formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
-        protected abstract void WriteResponse(ref HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response);
+        protected abstract void WriteResponse(ref HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response);
     }
 
     public abstract class RoutingServer<T> : HttpServer
@@ -148,7 +148,7 @@ namespace Microsoft.Net
         {
         }
 
-        protected override void WriteResponse(ref HttpRequest request, ReadOnlyBytes body, TcpConnectionFormatter response)
+        protected override void WriteResponse(ref HttpRequest request, ReadOnlyBuffer body, TcpConnectionFormatter response)
         {
             if (!Apis.TryHandle(request, body, response)) {
                 WriteResponseFor404(ref request, response);
