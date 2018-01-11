@@ -12,9 +12,9 @@ namespace System.Threading
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            Threading.ThreadPool.QueueUserWorkItem(_actionAsTask, action, preferLocal: true);
+            Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action, preferLocal: true);
 #elif NETSTANDARD2_0
-            Threading.ThreadPool.QueueUserWorkItem(_actionAsTask, action);
+            Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action);
 #else
             Task.Factory.StartNew(action);
 #endif
@@ -24,59 +24,31 @@ namespace System.Threading
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            Threading.ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state), preferLocal: true);
+            Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state), preferLocal: true);
 #elif NETSTANDARD2_0
-            Threading.ThreadPool.QueueUserWorkItem(_actionObjectAsTask, new ActionObjectAsTask(action, state));
+            Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state));
 #else
             Task.Factory.StartNew(action, state);
 #endif
         }
 
 #if NETCOREAPP2_1 || NETSTANDARD2_0
-        // Catches only the exception into a failed Task, so the fire-and-forget action 
-        // can be queued directly to the ThreadPool without the extra overhead of as Task
-        private readonly static WaitCallback _actionAsTask = state =>
-        {
-            try
-            {
-                ((Action)state)();
-            }
-            catch (Exception ex)
-            {
-                // Create faulted Task for the TaskScheulder to handle exception
-                // rather than letting it escape onto the ThreadPool and crashing the process
-                Task.FromException(ex);
-            }
-        };
+        private readonly static WaitCallback _actionWaitCallback = state => ((Action)state)();
 
-        private readonly static WaitCallback _actionObjectAsTask = state => ((ActionObjectAsTask)state).Run();
+        private readonly static WaitCallback _actionObjectWaitCallback = state => ((ActionObjectAsWaitCallback)state).Run();
 
-        private sealed class ActionObjectAsTask
+        private sealed class ActionObjectAsWaitCallback
         {
             private Action<object> _action;
             private object _state;
 
-            public ActionObjectAsTask(Action<object> action, object state)
+            public ActionObjectAsWaitCallback(Action<object> action, object state)
             {
                 _action = action;
                 _state = state;
             }
 
-            // Catches only the exception into a failed Task, so the fire-and-forget action 
-            // can be queued directly to the ThreadPool without the extra overhead of as Task
-            public void Run()
-            {
-                try
-                {
-                    _action(_state);
-                }
-                catch (Exception ex)
-                {
-                    // Create faulted Task for the TaskScheulder to handle exception
-                    // rather than letting it escape onto the ThreadPool and crashing the process
-                    Task.FromException(ex);
-                }
-            }
+            public void Run() => _action(_state);
         }
 #endif
     }
