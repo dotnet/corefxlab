@@ -60,16 +60,18 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Span<byte> IOutput.GetSpan() => _buffer.Free.AsSpan();
-
-        void IOutput.Enlarge(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
         {
             if (desiredBufferLength < 1) desiredBufferLength = 1;
-            var doubleCount = _buffer.Free.Count * 2;
-            int newSize = desiredBufferLength > doubleCount ? desiredBufferLength : doubleCount;
-            var newArray = _pool.Rent(newSize + _buffer.Count);
-            var oldArray = _buffer.Resize(newArray);
-            _pool.Return(oldArray);
+            if (_buffer.Free.Count < desiredBufferLength)
+            {
+                var doubleCount = _buffer.Free.Count * 2;
+                int newSize = desiredBufferLength > doubleCount ? desiredBufferLength : doubleCount;
+                var newArray = _pool.Rent(newSize + _buffer.Count);
+                var oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            return _buffer.Free;
         }
 
         void IOutput.Advance(int bytes)

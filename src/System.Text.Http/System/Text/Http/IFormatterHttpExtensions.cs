@@ -110,10 +110,9 @@ namespace System.Text.Http.Formatter
 
         public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
         {
-            var buffer = formatter.GetSpan();
+            var buffer = formatter.GetMemory().Span;
             while(buffer.Length < 2) {
-                formatter.Enlarge(2);
-                buffer = formatter.GetSpan();
+                buffer = formatter.GetMemory(2).Span;
             }
             buffer[0] = 13;
             buffer[1] = 10;
@@ -124,10 +123,10 @@ namespace System.Text.Http.Formatter
         {
             while (true)
             {
-                var buffer = formatter.GetSpan();
+                var buffer = formatter.GetMemory().Span;
                 if (bytes.Length > buffer.Length)
                 {
-                    formatter.Enlarge(bytes.Length);
+                    formatter.GetMemory(bytes.Length);
                 }
                 else
                 {

@@ -117,8 +117,10 @@ namespace System.IO.Pipelines
             }
         }
 
-        void IOutput.Enlarge(int desiredBufferLength) => Pipe.Ensure(desiredBufferLength);
-
-        Span<byte> IOutput.GetSpan() => Buffer.Span;
+        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
+        {
+            Pipe.Ensure(desiredBufferLength);
+            return Buffer;
+        }
     }
 }

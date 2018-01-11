@@ -12,13 +12,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter, T>(this TFormatter formatter, T value, StandardFormat format = default) where T : IBufferFormattable where TFormatter : ITextOutput
         {
             while(!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, StandardFormat format = default) where T : IBufferFormattable where TFormatter : ITextOutput
         {
-            if (!value.TryFormat(formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!value.TryFormat(formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -29,13 +29,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, byte value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -46,13 +46,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, sbyte value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -63,13 +63,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, ushort value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -80,13 +80,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, short value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -97,13 +97,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, uint value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -114,13 +114,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, int value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -131,13 +131,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, ulong value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -148,13 +148,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, long value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -165,7 +165,7 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, char value) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
@@ -177,7 +177,7 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
@@ -189,7 +189,7 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, string value) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
@@ -201,13 +201,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, Utf8Span value) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8Span value) where TFormatter : ITextOutput
         {
-            if (!formatter.SymbolTable.TryEncode(value, formatter.GetSpan(), out int consumed, out int bytesWritten))
+            if (!formatter.SymbolTable.TryEncode(value, formatter.GetMemory().Span, out int consumed, out int bytesWritten))
             {
                 return false;
             }
@@ -218,13 +218,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, Guid value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -235,13 +235,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, DateTime value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -252,13 +252,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -269,13 +269,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -286,13 +286,13 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, float value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
@@ -303,18 +303,23 @@ namespace System.Text.Formatting
         public static void Append<TFormatter>(this TFormatter formatter, double value, StandardFormat format = default) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.Enlarge();
+                formatter.GetMoreMemory();
             }
         }
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, StandardFormat format = default) where TFormatter : ITextOutput
         {
-            if (!CustomFormatter.TryFormat(value, formatter.GetSpan(), out int bytesWritten, format, formatter.SymbolTable))
+            if (!CustomFormatter.TryFormat(value, formatter.GetMemory().Span, out int bytesWritten, format, formatter.SymbolTable))
             {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
+        }
+
+        private static void GetMoreMemory<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
+        {
+            formatter.GetMemory(formatter.GetMemory().Length * 2);
         }
     }
 }

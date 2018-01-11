@@ -29,17 +29,7 @@ namespace System.Text.Formatting
             _symbolTable = symbolTable;
             _stream = stream;
         }
-
-        Span<byte> IOutput.GetSpan()
-        {
-            if (_buffer == null)
-            {
-                _buffer = _pool.Rent(256);
-            }
-            return new Span<byte>(_buffer);
-        }
-
-        void IOutput.Enlarge(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
         {
             var newSize = _buffer.Length * 2;
             if(desiredBufferLength != 0){
@@ -48,6 +38,9 @@ namespace System.Text.Formatting
             var temp = _buffer;
             _buffer = _pool.Rent(newSize);
             _pool.Return(temp);
+
+
+            return _buffer;
         }
 
         // ISSUE

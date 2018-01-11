@@ -7,11 +7,6 @@ namespace System.IO.Pipelines
 {
     public static class PipeSequencesExtensions
     {
-        public static WritableBufferOutput AsOutput(this WritableBuffer buffer)
-        {
-            return new WritableBufferOutput(buffer);
-        }
-
         public static ReadableBufferSequence AsSequence(this ReadOnlyBuffer buffer)
         {
             return new ReadableBufferSequence(buffer);

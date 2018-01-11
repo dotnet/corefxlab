@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
         public async Task CopyToAsyncNativeMemory()
         {
             var output = _pipe.Writer.Alloc();
-            output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
+            output.Append("Hello World", SymbolTable.InvariantUtf8);
             await output.FlushAsync();
             var ms = new MemoryStream();
             var result = await _pipe.Reader.ReadAsync();
@@ -394,7 +394,7 @@ namespace System.IO.Pipelines.Tests
             // note: different expectation to string.Split; empty has 0 outputs
             var expected = input == "" ? new string[0] : input.Split(delimiter);
             var output = _pipe.Writer.Alloc();
-            output.AsOutput().Append(input, SymbolTable.InvariantUtf8);
+            output.Append(input, SymbolTable.InvariantUtf8);
 
             var readable = BufferUtilities.CreateBuffer(input);
 
@@ -474,7 +474,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = new Pipe(new PipeOptions(pool));
                 var output = readerWriter.Writer.Alloc();
-                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
+                output.Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();

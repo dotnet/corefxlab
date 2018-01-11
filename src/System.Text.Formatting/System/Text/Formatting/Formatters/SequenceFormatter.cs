@@ -35,9 +35,6 @@ namespace System.Text.Formatting
             _previousWrittenBytes = -1;
         }
 
-        Span<byte> IOutput.GetSpan()
-            => Current.Span.Slice(_currentWrittenBytes);
-
         private Memory<byte> Current {
             get {
                 if (!_buffers.TryGet(ref _currentPosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
@@ -57,18 +54,23 @@ namespace System.Text.Formatting
 
         public int TotalWritten => _totalWritten;
 
-        void IOutput.Enlarge(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
         {
-            if (NeedShift) throw new NotImplementedException("need to allocate temp array");
-
-            _previousPosition = _currentPosition;
-            _previousWrittenBytes = _currentWrittenBytes;
-
-            if (!_buffers.TryGet(ref _currentPosition, out Memory<byte> span))
+            if (desiredBufferLength == 0) desiredBufferLength = 1;
+            if (desiredBufferLength > Current.Length - _currentWrittenBytes)
             {
-                throw new InvalidOperationException();
+                if (NeedShift) throw new NotImplementedException("need to allocate temp array");
+
+                _previousPosition = _currentPosition;
+                _previousWrittenBytes = _currentWrittenBytes;
+
+                if (!_buffers.TryGet(ref _currentPosition, out Memory<byte> span))
+                {
+                    throw new InvalidOperationException();
+                }
+                _currentWrittenBytes = 0;
             }
-            _currentWrittenBytes = 0;
+            return Current.Slice(_currentWrittenBytes);
         }
 
         void IOutput.Advance(int bytes)

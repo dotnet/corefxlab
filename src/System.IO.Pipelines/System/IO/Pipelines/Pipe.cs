@@ -199,7 +199,7 @@ namespace System.IO.Pipelines
                 // Try to return the tail so the calling code can append to it
                 int remaining = _commitHead.WritableBytes;
 
-                if (count <= remaining)
+                if (count <= remaining && remaining > 0)
                 {
                     // Free tail space of the right amount, use that
                     segment = _commitHead;

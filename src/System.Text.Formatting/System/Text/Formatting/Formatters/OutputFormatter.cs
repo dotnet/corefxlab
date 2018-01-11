@@ -22,12 +22,13 @@ namespace System.Text.Formatting
         {
         }
 
-        public Span<byte> GetSpan() => _output.GetSpan();
-
         public SymbolTable SymbolTable => _symbolTable;
 
         public void Advance(int bytes) => _output.Advance(bytes);
 
-        public void Enlarge(int desiredBufferLength = 0) => _output.Enlarge(desiredBufferLength);
+        public Memory<byte> GetMemory(int desiredBufferLength = 0)
+        {
+            return _output.GetMemory(desiredBufferLength);
+        }
     }
 }

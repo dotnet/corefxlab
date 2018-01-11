@@ -77,7 +77,7 @@ namespace System.Binary.Base64Experimental.Tests
             Assert.Equal(1000, sum);
 
             var (first, last) = BufferList.Create(input);
-           
+
             var output = new TestOutput();
             Base64Experimental.Utf8ToBytesDecoder.Pipe(new ReadOnlyBuffer(first, 0, last, last.Memory.Length), output);
 
@@ -96,15 +96,14 @@ namespace System.Binary.Base64Experimental.Tests
 
         public Span<byte> GetBuffer => _buffer;
 
-        public Span<byte> GetSpan() => _buffer.AsSpan().Slice(_written);
-
         public void Advance(int bytes)
         {
             _written += bytes;
         }
 
-        public void Enlarge(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int desiredBufferLength = 0)
         {
+            return ((Memory<byte>)_buffer).Slice(_written);
         }
     }
 }
