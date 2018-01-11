@@ -8,7 +8,7 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    internal class BufferSegment: IBufferList
+    internal class BufferSegment : IBufferList<byte>
     {
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
@@ -86,7 +86,7 @@ namespace System.IO.Pipelines
 
         public int Length => End - Start;
 
-        public IBufferList Next => NextSegment;
+        public IBufferList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified

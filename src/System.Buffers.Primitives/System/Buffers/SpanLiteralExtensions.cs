@@ -4,7 +4,7 @@
 
 using System.Text;
 
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
     internal class SpanLiteralExtensions
     {

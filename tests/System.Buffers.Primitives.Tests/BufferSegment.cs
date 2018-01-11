@@ -5,10 +5,10 @@ using System.Text;
 
 namespace System.IO.Pipelines.Testing
 {
-    internal class BufferSegment: IBufferList
+    internal class BufferSegment : IBufferList<byte>
     {
         public int Start { get; private set; }
-        
+
         public int End
         {
             get => _end;
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Testing
 
         public int Length => End - Start;
 
-        public IBufferList Next => NextSegment;
+        public IBufferList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified

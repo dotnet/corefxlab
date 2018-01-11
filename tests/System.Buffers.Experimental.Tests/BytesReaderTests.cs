@@ -13,7 +13,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SingleSegmentBytesReader()
         {
-            var bytes = new ReadOnlyBuffer(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }).AsSlicable();
+            var bytes = new ReadOnlyBuffer<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }).AsSlicable();
             var reader = BufferReader.Create(bytes);
 
             Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, 3));
@@ -68,7 +68,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void EmptyBytesReader()
         {
-            var bytes = ReadOnlyBuffer.Empty.AsSlicable();
+            var bytes = ReadOnlyBuffer<byte>.Empty.AsSlicable();
             var reader = BufferReader.Create(bytes);
             Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out var range, (byte)' '));
         }
@@ -76,7 +76,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void BytesReaderParse()
         {
-            ReadOnlyBuffer bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
+            ReadOnlyBuffer<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BufferReader.Create(bytes);
 
             Assert.True(BufferReaderExtensions.TryParse(ref reader, out ulong u64));
@@ -111,8 +111,8 @@ namespace System.Buffers.Tests
             }
             var data = Encoding.UTF8.GetBytes(sb.ToString());
 
-            var readOnlyBytes = new ReadOnlyBuffer(data);
-            var bytesRange = new ReadOnlyBuffer(data);
+            var readOnlyBytes = new ReadOnlyBuffer<byte>(data);
+            var bytesRange = new ReadOnlyBuffer<byte>(data);
 
             var robReader = BufferReader.Create(readOnlyBytes);
 
@@ -138,15 +138,15 @@ namespace System.Buffers.Tests
 
     static class BufferFactory
     {
-        public static ReadOnlyBuffer Create(params byte[][] buffers)
+        public static ReadOnlyBuffer<byte> Create(params byte[][] buffers)
         {
-            if (buffers.Length == 1) return new ReadOnlyBuffer(buffers[0]);
+            if (buffers.Length == 1) return new ReadOnlyBuffer<byte>(buffers[0]);
             var list = new List<Memory<byte>>();
             foreach (var b in buffers) list.Add(b);
-            return new ReadOnlyBuffer(list);
+            return new ReadOnlyBuffer<byte>(list);
         }
 
-        public static ReadOnlyBuffer Parse(string text)
+        public static ReadOnlyBuffer<byte> Parse(string text)
         {
             var segments = text.Split('|');
             var buffers = new List<Memory<byte>>();
@@ -154,17 +154,17 @@ namespace System.Buffers.Tests
             {
                 buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-            return new ReadOnlyBuffer(buffers.ToArray());
+            return new ReadOnlyBuffer<byte>(buffers.ToArray());
         }
 
-        public static ReadOnlyBufferToSlicableSequenceAdapter AsSlicable(this ReadOnlyBuffer buffer)
+        public static ReadOnlyBufferToSlicableSequenceAdapter AsSlicable(this ReadOnlyBuffer<byte> buffer)
             => new ReadOnlyBufferToSlicableSequenceAdapter(buffer);
     }
 
     struct ReadOnlyBufferToSlicableSequenceAdapter : ISequence<ReadOnlyMemory<byte>>, ISlicable
     {
-        ReadOnlyBuffer _buffer;
-        public ReadOnlyBufferToSlicableSequenceAdapter(ReadOnlyBuffer buffer)
+        ReadOnlyBuffer<byte> _buffer;
+        public ReadOnlyBufferToSlicableSequenceAdapter(ReadOnlyBuffer<byte> buffer)
         {
             _buffer = buffer;
         }
@@ -174,7 +174,7 @@ namespace System.Buffers.Tests
         public Position Seek(Position origin, long offset)
             => _buffer.Seek(origin, offset);
 
-        public ReadOnlyBuffer Slice(Position start, Position end)
+        public ReadOnlyBuffer<byte> Slice(Position start, Position end)
             => _buffer.Slice(start, end);
 
         public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
