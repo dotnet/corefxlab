@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Non-allocating Base64 encoder and decoded</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PackageTags>.NET non-allocating Base64 encoder and decoder</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>

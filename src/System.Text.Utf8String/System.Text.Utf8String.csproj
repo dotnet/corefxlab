@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Efficient UTF-8 String Manipulation and Storage.</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET UTF-8 String</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
