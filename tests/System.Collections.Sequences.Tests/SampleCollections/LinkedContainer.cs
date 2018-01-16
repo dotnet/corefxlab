@@ -53,7 +53,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<T>(this);
         }
 
-        public Position Seek(Position origin, long offset)
+        public Position GetPosition(Position origin, long offset)
         {
             if (offset < 0) throw new InvalidOperationException("cannot seek backwards");
             var (node, index) = origin.Get<Node>();

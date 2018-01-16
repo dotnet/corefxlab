@@ -142,7 +142,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<KeyValuePair<K, V>>(this);
         }
 
-        public Position Seek(Position origin, long offset)
+        public Position GetPosition(Position origin, long offset)
         {
             if (offset<0) throw new ArgumentOutOfRangeException(nameof(offset));
             while (offset-- > 0 && TryGet(ref origin, out _));

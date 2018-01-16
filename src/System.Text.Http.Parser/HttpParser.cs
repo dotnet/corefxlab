@@ -47,7 +47,7 @@ namespace System.Text.Http.Parser
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
-                consumed = buffer.Seek(consumed, lineIndex + 1);
+                consumed = buffer.GetPosition(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
             else if (buffer.IsSingleSegment)
@@ -330,7 +330,7 @@ namespace System.Text.Http.Parser
                                 }
 
                                 // Make sure LF is included in lineEnd
-                                lineEnd = subBuffer.Seek(lineEnd.Value, 1);
+                                lineEnd = subBuffer.GetPosition(lineEnd.Value, 1);
                                 var headerSpan = subBuffer.Slice(current, lineEnd.Value).ToSpan();
                                 length = headerSpan.Length;
 
@@ -653,7 +653,7 @@ namespace System.Text.Http.Parser
             if (position.HasValue)
             {
                 // Move 1 byte past the \n
-                found = buffer.Seek(position.Value, 1);
+                found = buffer.GetPosition(position.Value, 1);
                 return true;
             }
 

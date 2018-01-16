@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Seek(result.Buffer.Start, 33);
+            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
             _pipe.Reader.Advance(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
@@ -74,7 +74,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Seek(result.Buffer.Start, 32);
+            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 32);
             _pipe.Reader.Advance(consumed, consumed);
 
             Assert.False(flushAsync.IsCompleted);
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Seek(result.Buffer.Start, 33);
+            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
             _pipe.Reader.Advance(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Seek(result.Buffer.Start, 31);
+            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 31);
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(consumed, result.Buffer.End));
 
             _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);

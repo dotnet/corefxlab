@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public class BufferList : IBufferList<byte>
+    public class BufferList : IMemoryListNode<byte>
     {
         private Memory<byte> _data;
         private BufferList _next;
@@ -35,7 +35,7 @@ namespace System.Buffers
 
         public Memory<byte> Memory => _data;
 
-        public IBufferList<byte> Next => _next;
+        public IMemoryListNode<byte> Next => _next;
 
         public long VirtualIndex => _virtualIndex;
 
@@ -78,7 +78,7 @@ namespace System.Buffers
                 item = default;
                 return false;
             }
-            
+
             var (list, index) = position.Get<BufferList>();
             item = list._data.Slice(index);
             if (advance) { position = new Position(list._next, 0); }
@@ -112,7 +112,7 @@ namespace System.Buffers
             {
                 if (!first) { builder.Append(", "); }
                 first = false;
-                builder.Append(_data.Span[i]);        
+                builder.Append(_data.Span[i]);
             }
             if(_data.Length > 5 || _next != null)
             {

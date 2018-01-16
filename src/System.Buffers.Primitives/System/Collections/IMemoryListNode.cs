@@ -3,11 +3,11 @@
 
 namespace System.Collections.Sequences
 {
-    public interface IBufferList<T>
+    public interface IMemoryListNode<T>
     {
         Memory<T> Memory { get; }
 
-        IBufferList<T> Next { get; }
+        IMemoryListNode<T> Next { get; }
 
         long VirtualIndex { get; }
     }

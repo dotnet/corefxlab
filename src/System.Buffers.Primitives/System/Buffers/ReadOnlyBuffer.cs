@@ -61,7 +61,7 @@ namespace System.Buffers
             BufferEnd = end;
         }
 
-        public ReadOnlyBuffer(IBufferList<T> startSegment, int offset, IBufferList<T> endSegment, int endIndex)
+        public ReadOnlyBuffer(IMemoryListNode<T> startSegment, int offset, IMemoryListNode<T> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
@@ -271,7 +271,7 @@ namespace System.Buffers
             return new Enumerator(this);
         }
 
-        public Position Seek(Position origin, long offset)
+        public Position GetPosition(Position origin, long offset)
         {
             if (offset < 0)
             {
@@ -280,12 +280,12 @@ namespace System.Buffers
             return Seek(origin, BufferEnd, offset, false);
         }
 
-        public bool TryGet(ref Position cursor, out ReadOnlyMemory<T> data, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<T> data, bool advance = true)
         {
-            var result = TryGetBuffer(cursor, End, out data, out var next);
+            var result = TryGetBuffer(position, End, out data, out var next);
             if (advance)
             {
-                cursor = next;
+                position = next;
             }
 
             return result;
@@ -300,7 +300,7 @@ namespace System.Buffers
                 var index = memory.Span.IndexOf(value);
                 if (index != -1)
                 {
-                    return Seek(result, index);
+                    return GetPosition(result, index);
                 }
                 result = position;
             }
