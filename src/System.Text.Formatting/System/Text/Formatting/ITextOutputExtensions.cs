@@ -319,7 +319,7 @@ namespace System.Text.Formatting
 
         private static void GetMoreMemory<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
         {
-            formatter.GetMemory(formatter.GetMemory().Length * 2);
+            formatter.GetSpan(formatter.GetSpan().Length * 2);
         }
     }
 }
