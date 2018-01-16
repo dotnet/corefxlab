@@ -123,6 +123,6 @@ namespace System.IO.Pipelines
             return Buffer;
         }
 
-        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetSpan(minimumLength);
+        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetMemory(minimumLength).Span;
     }
 }

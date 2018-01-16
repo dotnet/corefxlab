@@ -31,15 +31,16 @@ namespace System.Text.Formatting
         }
         Memory<byte> IOutput.GetMemory(int minimumLength)
         {
-            var newSize = _buffer.Length * 2;
-            if(minimumLength != 0){
-                newSize = minimumLength;
+            if (minimumLength > _buffer.Length)
+            {
+                var newSize = _buffer.Length * 2;
+                if(minimumLength != 0){
+                    newSize = minimumLength;
+                }
+                var temp = _buffer;
+                _buffer = _pool.Rent(newSize);
+                _pool.Return(temp);
             }
-            var temp = _buffer;
-            _buffer = _pool.Rent(newSize);
-            _pool.Return(temp);
-
-
             return _buffer;
         }
 
