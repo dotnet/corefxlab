@@ -43,12 +43,12 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// A cursor to the start of the <see cref="ReadOnlyBuffer"/>.
+        /// A position to the start of the <see cref="ReadOnlyBuffer"/>.
         /// </summary>
         public Position Start => BufferStart;
 
         /// <summary>
-        /// A cursor to the end of the <see cref="ReadOnlyBuffer"/>
+        /// A position to the end of the <see cref="ReadOnlyBuffer"/>
         /// </summary>
         public Position End => BufferEnd;
 
@@ -87,27 +87,14 @@ namespace System.Buffers
             BufferEnd = new Position(data, offset + length);
         }
 
-        public ReadOnlyBuffer(OwnedMemory<T> data, int offset, int length)
+        public ReadOnlyBuffer(Memory<T> data)
         {
-
-            if (data == null)
+            var segment = new ReadOnlyBufferSegment
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
-            }
-
-            if (offset < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
-            }
-
-            if (length < 0 || length > data.Length - offset)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
-
-
-            BufferStart = new Position(data, offset);
-            BufferEnd = new Position(data, offset + length);
+                Memory = data
+            };
+            BufferStart = new Position(segment, 0);
+            BufferEnd = new Position(segment, data.Length);
         }
 
         public ReadOnlyBuffer(IEnumerable<Memory<T>> buffers)

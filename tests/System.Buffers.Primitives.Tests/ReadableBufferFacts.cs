@@ -163,12 +163,12 @@ namespace System.IO.Pipelines.Tests
             var readableBuffer = new ReadOnlyBuffer<byte>(new byte[] {1, 2, 3, 4, 5}, 2, 3);
             Assert.Equal(readableBuffer.ToArray(), new byte[] {3, 4, 5});
         }
-        
+
         [Fact]
-        public void Create_WorksWithOwnedMemory()
+        public void Create_WorksWithMemory()
         {
-            var memory = new OwnedArray<byte>(new byte[] {1, 2, 3, 4, 5});
-            var readableBuffer = new ReadOnlyBuffer<byte>(memory, 2, 3);
+            var memory = new Memory<byte>(new byte[] {1, 2, 3, 4, 5});
+            var readableBuffer = new ReadOnlyBuffer<byte>(memory.Slice(2, 3));
             Assert.Equal(new byte[] {3, 4, 5}, readableBuffer.ToArray());
         }
 
