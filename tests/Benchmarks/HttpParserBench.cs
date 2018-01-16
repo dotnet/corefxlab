@@ -34,7 +34,7 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool RequestLine()
     {
-        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
+        ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
         var parser = new HttpParser();
         var request = new Request();
         Position consumed = default;
@@ -68,7 +68,7 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool Headers()
     {
-        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerHeadersBytes);
+        ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
         Position consumed;
@@ -99,7 +99,7 @@ public class HttpParserBench
     [Benchmark(InnerIterationCount = Itterations)]
     static bool FullRequest()
     {
-        ReadOnlyBuffer buffer = new ReadOnlyBuffer(s_plaintextTechEmpowerRequestBytes);
+        ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
         int consumedBytes  = 0;

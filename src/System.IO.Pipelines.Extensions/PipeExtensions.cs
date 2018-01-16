@@ -7,9 +7,6 @@ namespace System.IO.Pipelines
 {
     public static class PipeSequencesExtensions
     {
-        public static ReadableBufferSequence AsSequence(this ReadOnlyBuffer buffer)
-        {
-            return new ReadableBufferSequence(buffer);
-        }
+
     }
 }

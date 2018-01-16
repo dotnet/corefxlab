@@ -10,7 +10,7 @@ namespace System.Buffers.Tests
         public void SequenceIndexOfSingleSegment()
         {
             var array = new byte[] { 1, 2, 3, 4, 5 };
-            var bytes = new ReadOnlyBuffer(array);
+            var bytes = new ReadOnlyBuffer<byte>(array);
             Assert.Equal(array.Length, bytes.Length);
 
             // Static method call to avoid calling ReadOnlyBytes.IndexOf
@@ -25,7 +25,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegment()
         {
-            ReadOnlyBuffer bytes = BufferFactory.Create(
+            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2},
                 new byte[] { 3, 4 }
             );
@@ -44,7 +44,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegmentSliced()
         {
-            ReadOnlyBuffer bytes = BufferFactory.Create(
+            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
@@ -68,7 +68,7 @@ namespace System.Buffers.Tests
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
-            var bytes = new ReadOnlyBuffer(first, 0, last, last.Memory.Length);
+            var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
 
             Assert.Equal(4, bytes.Length);
 
@@ -80,7 +80,7 @@ namespace System.Buffers.Tests
                 var value = (byte)(i + 1);
 
                 var listPosition = MemoryListExtensions.PositionOf(first, value).GetValueOrDefault();
-                var (node, index) = listPosition.Get<IBufferList>();
+                var (node, index) = listPosition.Get<IBufferList<byte>>();
 
                 if (listPosition != default)
                 {
@@ -134,7 +134,7 @@ namespace System.Buffers.Tests
                 var first = new BufferList(front);
                 var last = first.Append(back);
 
-                var bytes = new ReadOnlyBuffer(first, 0, last, last.Memory.Length);
+                var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
 
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);

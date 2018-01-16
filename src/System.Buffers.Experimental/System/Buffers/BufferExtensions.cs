@@ -15,7 +15,7 @@ namespace System.Buffers
     {
         // span creation helpers:
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long IndexOf(this IBufferList list, ReadOnlySpan<byte> value)
+        public static long IndexOf(this IBufferList<byte> list, ReadOnlySpan<byte> value)
         {
             var first = list.Memory.Span;
             var index = first.IndexOf(value);
@@ -27,7 +27,7 @@ namespace System.Buffers
             return IndexOfStraddling(first, list.Next, value);
         }
 
-        public static int CopyTo(this IBufferList list, Span<byte> destination)
+        public static int CopyTo(this IBufferList<byte> list, Span<byte> destination)
         {
             var current = list.Memory.Span;
             int copied = 0;
@@ -50,7 +50,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static Position? PositionOf(this IBufferList list, byte value)
+        public static Position? PositionOf(this IBufferList<byte> list, byte value)
         {
             while (list != null)
             {
@@ -65,7 +65,7 @@ namespace System.Buffers
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest
-        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IBufferList rest, ReadOnlySpan<byte> value)
+        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IBufferList<byte> rest, ReadOnlySpan<byte> value)
         {
             Debug.Assert(first.IndexOf(value) == -1);
             if (rest == null) return -1;
@@ -126,7 +126,7 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this IBufferOperation transformation, ReadOnlyBuffer source, IOutput destination)
+        public static void Pipe(this IBufferOperation transformation, ReadOnlyBuffer<byte> source, IOutput destination)
         {
             int afterMergeSlice = 0;
 

@@ -85,7 +85,7 @@ namespace System.Diagnostics
 
     public static class HttpLogExtensions
     {
-        public static void LogRequest(this Log log, HttpRequest request, ReadOnlyBuffer body)
+        public static void LogRequest(this Log log, HttpRequest request, ReadOnlyBuffer<byte> body)
         {
             if (log.IsVerbose)
             {

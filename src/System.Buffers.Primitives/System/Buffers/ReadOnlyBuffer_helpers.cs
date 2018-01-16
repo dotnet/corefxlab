@@ -8,10 +8,10 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public readonly partial struct ReadOnlyBuffer 
+    public readonly partial struct ReadOnlyBuffer<T>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
+        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<T> data, out Position next)
         {
             var segment = begin.Segment;
 
@@ -22,7 +22,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IBufferList bufferSegment:
+                case IBufferList<T> bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -54,7 +54,7 @@ namespace System.Buffers
                     return true;
 
 
-                case OwnedMemory<byte> ownedMemory:
+                case OwnedMemory<T> ownedMemory:
                     data = ownedMemory.Memory.Slice(begin.Index, end.Index - begin.Index);
 
                     if (segment != end.Segment)
@@ -65,8 +65,8 @@ namespace System.Buffers
                     next = default;
                     return true;
 
-                case byte[] array:
-                    data = new Memory<byte>(array, begin.Index, end.Index - begin.Index);
+                case T[] array:
+                    data = new Memory<T>(array, begin.Index, end.Index - begin.Index);
 
                     if (segment != end.Segment)
                     {
@@ -148,10 +148,10 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IBufferList bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, (IBufferList)end.Segment, end.Index);
-                case byte[] _:
-                case OwnedMemory<byte> _:
+                case IBufferList<T> bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, (IBufferList<T>)end.Segment, end.Index);
+                case T[] _:
+                case OwnedMemory<T> _:
                     return end.Index - begin.Index;
             }
 
@@ -161,9 +161,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IBufferList start,
+            IBufferList<T> start,
             int startIndex,
-            IBufferList endSegment,
+            IBufferList<T> endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -188,9 +188,9 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IBufferList memoryList:
-                    var segment = (IBufferList)newCursor.Segment;
-                    if(segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                case IBufferList<T> memoryList:
+                    var segment = (IBufferList<T>)newCursor.Segment;
+                    if (segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -201,10 +201,10 @@ namespace System.Buffers
             }
         }
 
-        private class ReadOnlyBufferSegment: IBufferList
+        private class ReadOnlyBufferSegment : IBufferList<T>
         {
-            public Memory<byte> Memory { get; set; }
-            public IBufferList Next { get; set; }
+            public Memory<T> Memory { get; set; }
+            public IBufferList<T> Next { get; set; }
             public long VirtualIndex { get; set; }
         }
     }
