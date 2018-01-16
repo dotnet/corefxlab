@@ -32,19 +32,21 @@ namespace System.Text.Formatting
 
         public SymbolTable SymbolTable => _symbolTable;
 
-        public Memory<byte> GetMemory(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
-            if (desiredBufferLength < 1) desiredBufferLength = 1;
-            if (desiredBufferLength > _buffer.Free.Count)
+            if (minimumLength < 1) minimumLength = 1;
+            if (minimumLength > _buffer.Free.Count)
             {
                 var doubleCount = _buffer.Free.Count * 2;
-                int newSize = desiredBufferLength>doubleCount?desiredBufferLength:doubleCount;
+                int newSize = minimumLength>doubleCount?minimumLength:doubleCount;
                 var newArray = _pool.Rent(newSize + _buffer.Count);
                 var oldArray = _buffer.Resize(newArray);
                 _pool.Return(oldArray);
             }
             return _buffer.Free;
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
         public void Advance(int bytes)
         {

@@ -26,9 +26,11 @@ namespace System.Text.Formatting
 
         public void Advance(int bytes) => _output.Advance(bytes);
 
-        public Memory<byte> GetMemory(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
-            return _output.GetMemory(desiredBufferLength);
+            return _output.GetMemory(minimumLength);
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
     }
 }

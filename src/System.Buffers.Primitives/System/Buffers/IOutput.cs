@@ -6,8 +6,9 @@ namespace System.Buffers
     public interface IOutput
     {
         void Advance(int bytes);
-
         /// <summary>desiredBufferLength == 0 means "i don't care"</summary>
-        Memory<byte> GetMemory(int desiredBufferLength = 0);
+        Memory<byte> GetMemory(int minimumLength = 0);
+        /// <summary>desiredBufferLength == 0 means "i don't care"</summary>
+        Span<byte> GetSpan(int minimumLength = 0);
     }
 }

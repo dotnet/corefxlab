@@ -101,9 +101,11 @@ namespace System.Binary.Base64Experimental.Tests
             _written += bytes;
         }
 
-        public Memory<byte> GetMemory(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
             return ((Memory<byte>)_buffer).Slice(_written);
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
     }
 }

@@ -23,7 +23,7 @@ namespace System.Buffers
         public OutputWriter(T output)
         {
             _output = output;
-            _span = output.GetMemory().Span;
+            _span = output.GetSpan();
         }
 
         public Span<byte> Span => _span;
@@ -53,7 +53,7 @@ namespace System.Buffers
         public void Ensure(int count = 1)
         {
             _output.GetMemory(count);
-            _span = _output.GetMemory().Span;
+            _span = _output.GetSpan();
         }
 
         private void WriteMultiBuffer(ReadOnlySpan<byte> source)

@@ -26,11 +26,13 @@ namespace System.IO.Pipelines.Text.Primitives
             _writableBuffer.Advance(bytes);
         }
 
-        public Memory<byte> GetMemory(int desiredFreeBytesHint = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
-            _writableBuffer.Ensure(desiredFreeBytesHint == 0 ? 2048 : desiredFreeBytesHint);
+            _writableBuffer.Ensure(minimumLength == 0 ? 2048 : minimumLength);
             return _writableBuffer.Buffer;
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
         public void Write(Span<byte> data)
         {

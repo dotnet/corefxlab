@@ -36,7 +36,7 @@ namespace Microsoft.Net
             if (_written >= _buffer.Length) throw new InvalidOperationException();
         }
 
-        public Memory<byte> GetMemory(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
             if (_written < 1) throw new NotImplementedException();
             Send();
@@ -46,6 +46,8 @@ namespace Microsoft.Net
             if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
             return Memory<byte>.Empty;
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
         private void Send()
         {

@@ -54,10 +54,10 @@ namespace System.Text.Formatting
 
         public int TotalWritten => _totalWritten;
 
-        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int minimumLength)
         {
-            if (desiredBufferLength == 0) desiredBufferLength = 1;
-            if (desiredBufferLength > Current.Length - _currentWrittenBytes)
+            if (minimumLength == 0) minimumLength = 1;
+            if (minimumLength > Current.Length - _currentWrittenBytes)
             {
                 if (NeedShift) throw new NotImplementedException("need to allocate temp array");
 
@@ -72,6 +72,8 @@ namespace System.Text.Formatting
             }
             return Current.Slice(_currentWrittenBytes);
         }
+
+        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetMemory(minimumLength).Span;
 
         void IOutput.Advance(int bytes)
         {

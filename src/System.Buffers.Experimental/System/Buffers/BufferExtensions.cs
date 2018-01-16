@@ -138,7 +138,7 @@ namespace System.Buffers
             Position poisition = default;
             while (source.TryGet(ref poisition, out var sourceBuffer))
             {
-                Span<byte> outputSpan = destination.GetMemory().Span;
+                Span<byte> outputSpan = destination.GetSpan();
                 ReadOnlySpan<byte> sourceSpan = sourceBuffer.Span;
 
                 if (!remainder.IsEmpty)
@@ -160,7 +160,7 @@ namespace System.Buffers
 
                         if (status == OperationStatus.DestinationTooSmall)
                         {
-                            outputSpan = destination.GetMemory().Span;
+                            outputSpan = destination.GetSpan();
 
                             if (outputSpan.Length - bytesWritten < 3)
                             {
@@ -186,7 +186,7 @@ namespace System.Buffers
                         afterMergeSlice = bytesConsumed - remainder.Length;
                         remainder = Span<byte>.Empty;
                         destination.Advance(bytesWritten);
-                        outputSpan = destination.GetMemory().Span;
+                        outputSpan = destination.GetSpan();
                     }
                 }
 
@@ -202,7 +202,7 @@ namespace System.Buffers
                 if (result == OperationStatus.DestinationTooSmall)
                 {
                     destination.GetMemory();  // output buffer is too small
-                    outputSpan = destination.GetMemory().Span;
+                    outputSpan = destination.GetSpan();
                     if (outputSpan.Length - written < 3)
                     {
                         return; // no more output space, user decides what to do.

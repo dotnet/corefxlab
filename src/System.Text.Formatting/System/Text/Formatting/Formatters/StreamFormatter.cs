@@ -29,11 +29,11 @@ namespace System.Text.Formatting
             _symbolTable = symbolTable;
             _stream = stream;
         }
-        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int minimumLength)
         {
             var newSize = _buffer.Length * 2;
-            if(desiredBufferLength != 0){
-                newSize = desiredBufferLength;
+            if(minimumLength != 0){
+                newSize = minimumLength;
             }
             var temp = _buffer;
             _buffer = _pool.Rent(newSize);
@@ -42,6 +42,8 @@ namespace System.Text.Formatting
 
             return _buffer;
         }
+
+        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetMemory(minimumLength).Span;
 
         // ISSUE
         // I would like to lazy write to the stream, but unfortunatelly this seems to be exclusive with this type being a struct.

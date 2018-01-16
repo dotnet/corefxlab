@@ -117,10 +117,12 @@ namespace System.IO.Pipelines
             }
         }
 
-        Memory<byte> IOutput.GetMemory(int desiredBufferLength)
+        Memory<byte> IOutput.GetMemory(int minimumLength)
         {
-            Pipe.Ensure(desiredBufferLength);
+            Pipe.Ensure(minimumLength);
             return Buffer;
         }
+
+        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetSpan(minimumLength);
     }
 }
