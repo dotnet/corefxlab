@@ -199,7 +199,7 @@ namespace System.Buffers
                     case Type.MemoryList:
                         var sl = (IMemoryListNode<byte>)_start;
                         var el = (IMemoryListNode<byte>)_end;
-                        return (el.VirtualIndex + _endIndex) - (sl.VirtualIndex + _startIndex);
+                        return (el.RunningLength + _endIndex) - (sl.RunningLength + _startIndex);
                     default:
                         throw new NotImplementedException();
                 }

@@ -119,7 +119,7 @@ namespace System.Buffers
                 var newSegment = new ReadOnlyBufferSegment()
                 {
                     Memory = buffer,
-                    VirtualIndex = segment?.VirtualIndex ?? 0
+                    RunningLength = segment?.RunningLength ?? 0
                 };
 
                 if (segment != null)

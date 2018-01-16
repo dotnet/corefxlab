@@ -37,7 +37,7 @@ namespace System.Buffers
 
         public IMemoryListNode<byte> Next => _next;
 
-        public long VirtualIndex => _virtualIndex;
+        public long RunningLength => _virtualIndex;
 
         public Position First => new Position(this, 0);
 

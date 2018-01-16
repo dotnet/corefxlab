@@ -170,7 +170,7 @@ namespace System.Buffers
                 return endIndex - startIndex;
             }
 
-            return (endSegment.VirtualIndex - start.Next.VirtualIndex)
+            return (endSegment.RunningLength - start.Next.RunningLength)
                    + (start.Memory.Length - startIndex)
                    + endIndex;
         }
@@ -189,7 +189,7 @@ namespace System.Buffers
                     return;
                 case IMemoryListNode<T> memoryList:
                     var segment = (IMemoryListNode<T>)newCursor.Segment;
-                    if (segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                    if (segment.RunningLength - end.Index > memoryList.RunningLength - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -204,7 +204,7 @@ namespace System.Buffers
         {
             public Memory<T> Memory { get; set; }
             public IMemoryListNode<T> Next { get; set; }
-            public long VirtualIndex { get; set; }
+            public long RunningLength { get; set; }
         }
     }
 }
