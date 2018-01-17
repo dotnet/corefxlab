@@ -44,7 +44,7 @@ namespace System.IO.Pipelines.Text.Primitives
         /// </summary>
         public bool MoveNext()
         {
-            if (_remainder.TrySliceTo(_delimiter, out _current, out Position cursor))
+            if (_remainder.TrySliceTo(_delimiter, out _current, out SequencePosition cursor))
             {
                 _remainder = _remainder.Slice(cursor).Slice(1);
                 return true;

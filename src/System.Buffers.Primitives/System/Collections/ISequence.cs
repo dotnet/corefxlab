@@ -13,10 +13,10 @@ namespace System.Collections.Sequences
         /// <param name="advance"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        bool TryGet(ref Position position, out T item, bool advance = true);
+        bool TryGet(ref SequencePosition position, out T item, bool advance = true);
 
-        Position Seek(Position origin, long offset);
+        SequencePosition Seek(SequencePosition origin, long offset);
 
-        Position Start { get; }
+        SequencePosition Start { get; }
     }
 }

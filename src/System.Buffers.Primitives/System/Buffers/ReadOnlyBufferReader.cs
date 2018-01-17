@@ -24,8 +24,8 @@ namespace System.Buffers
         private int _index;
 
         private TSequence _sequence;
-        private Position _currentPosition;
-        private Position _nextPosition;
+        private SequencePosition _currentPosition;
+        private SequencePosition _nextPosition;
 
         private int _consumedBytes;
         private bool _end;
@@ -48,7 +48,7 @@ namespace System.Buffers
 
         public TSequence Sequence => _sequence;
 
-        public Position Position => _sequence.Seek(_currentPosition, _index);
+        public SequencePosition Position => _sequence.Seek(_currentPosition, _index);
 
         public ReadOnlySpan<byte> CurrentSegment => _currentSpan;
 

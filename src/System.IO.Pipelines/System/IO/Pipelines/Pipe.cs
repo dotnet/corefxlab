@@ -393,12 +393,12 @@ namespace System.IO.Pipelines
         }
 
         // Reading
-        void IPipeReader.Advance(Position consumed)
+        void IPipeReader.Advance(SequencePosition consumed)
         {
             ((IPipeReader)this).Advance(consumed, consumed);
         }
 
-        void IPipeReader.Advance(Position consumed, Position examined)
+        void IPipeReader.Advance(SequencePosition consumed, SequencePosition examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;

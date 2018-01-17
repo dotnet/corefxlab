@@ -106,12 +106,12 @@ namespace System.Collections.Sequences
             return oldArray;
         }
 
-        public bool TryGet(ref Position position, out T item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out T item, bool advance = true)
         {
             int index = (int)position;
             if (index < _count) {
                 item = _array[index];
-                if (advance) { position = new Position(null, index+1); }
+                if (advance) { position = new SequencePosition(null, index+1); }
                 return true;
             }
 

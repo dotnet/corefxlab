@@ -33,9 +33,9 @@ namespace Microsoft.Net
 
         public int WrittenByteCount => _written;
 
-        public long VirtualIndex => throw new NotImplementedException();
+        public long RunningIndex => throw new NotImplementedException();
 
-        public Position First => new Position(this, 0);
+        public SequencePosition First => new SequencePosition(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -48,7 +48,7 @@ namespace Microsoft.Net
             return buffer.Length;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
             if (position == default) {
                 item = default;
@@ -57,11 +57,11 @@ namespace Microsoft.Net
 
             var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.Memory.Slice(index, buffer._written - index);
-            if (advance) { position = new Position(buffer._next, 0); }
+            if (advance) { position = new SequencePosition(buffer._next, 0); }
             return true;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             if (position == default)
             {
@@ -71,7 +71,7 @@ namespace Microsoft.Net
 
             var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.WrittenMemory.Slice(index);
-            if (advance) { position = new Position(buffer._next, 0); }
+            if (advance) { position = new SequencePosition(buffer._next, 0); }
             return true;
         }
 

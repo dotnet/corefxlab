@@ -313,7 +313,7 @@ namespace System.Text.Http.Parser.Tests
             ReadOnlyBuffer<byte> buffer = BufferUtilities.CreateBuffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
-            bool result = parser.ParseRequestLine(requestHandler, buffer, out Position consumed, out Position examined);
+            bool result = parser.ParseRequestLine(requestHandler, buffer, out SequencePosition consumed, out SequencePosition examined);
             Assert.False(result);
             Assert.Equal(buffer.Start, consumed);
             Assert.Equal(buffer.End, examined);

@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferSequenceWorks()
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 });
-            Position position = readable.Start;
+            SequencePosition position = readable.Start;
             int spanCount = 0;
             while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
@@ -281,7 +281,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out Position cursor));
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor));
             Assert.Equal(expected, slice.GetUtf8Span());
 
             _pipe.Reader.Advance(buffer.End);
@@ -295,7 +295,7 @@ namespace System.IO.Pipelines.Tests
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
-            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out Position cursor);
+            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor);
             Assert.False(found);
 
             // correctness test all values

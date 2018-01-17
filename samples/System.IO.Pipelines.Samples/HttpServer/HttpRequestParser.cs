@@ -23,14 +23,14 @@ namespace System.IO.Pipelines.Samples
 
         public RequestHeaderDictionary RequestHeaders = new RequestHeaderDictionary();
 
-        public ParseResult ParseRequest(ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
+        public ParseResult ParseRequest(ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined)
         {
             consumed = buffer.Start;
             examined = buffer.Start;
 
             if (_state == ParsingState.StartLine)
             {
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> startLine, out Position delim))
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> startLine, out SequencePosition delim))
                 {
                     return ParseResult.Incomplete;
                 }
@@ -77,7 +77,7 @@ namespace System.IO.Pipelines.Samples
             while (!buffer.IsEmpty)
             {
                 var headerValue = default(ReadOnlyBuffer<byte>);
-                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> headerPair, out Position delim))
+                if (!buffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> headerPair, out SequencePosition delim))
                 {
                     return ParseResult.Incomplete;
                 }
