@@ -61,7 +61,7 @@ namespace System.Buffers
             BufferEnd = end;
         }
 
-        public ReadOnlyBuffer(IMemoryListNode<T> startSegment, int offset, IMemoryListNode<T> endSegment, int endIndex)
+        public ReadOnlyBuffer(IBufferList<T> startSegment, int offset, IBufferList<T> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);

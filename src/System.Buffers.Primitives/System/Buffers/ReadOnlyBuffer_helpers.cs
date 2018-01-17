@@ -21,7 +21,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IMemoryListNode<T> bufferSegment:
+                case IBufferList<T> bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -163,8 +163,8 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IMemoryListNode<T> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, (IMemoryListNode<T>)end.Segment, end.Index);
+                case IBufferList<T> bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, (IBufferList<T>)end.Segment, end.Index);
                 case T[] _:
                 case OwnedMemory<T> _:
                     return end.Index - begin.Index;
@@ -176,9 +176,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IMemoryListNode<T> start,
+            IBufferList<T> start,
             int startIndex,
-            IMemoryListNode<T> endSegment,
+            IBufferList<T> endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -203,8 +203,8 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IMemoryListNode<T> memoryList:
-                    var segment = (IMemoryListNode<T>)newCursor.Segment;
+                case IBufferList<T> memoryList:
+                    var segment = (IBufferList<T>)newCursor.Segment;
                     if (segment.RunningLength - end.Index > memoryList.RunningLength - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
@@ -216,10 +216,10 @@ namespace System.Buffers
             }
         }
 
-        private class ReadOnlyBufferSegment : IMemoryListNode<T>
+        private class ReadOnlyBufferSegment : IBufferList<T>
         {
             public Memory<T> Memory { get; set; }
-            public IMemoryListNode<T> Next { get; set; }
+            public IBufferList<T> Next { get; set; }
             public long RunningLength { get; set; }
         }
     }
