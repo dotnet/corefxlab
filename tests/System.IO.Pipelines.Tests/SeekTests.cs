@@ -109,7 +109,7 @@ namespace System.IO.Pipelines.Tests
             var end = originalBuffer.PositionOf((byte)limitAfter);
             if (end.HasValue)
             {
-                buffer = originalBuffer.Slice(buffer.Start, buffer.Seek(end.Value, 1));
+                buffer = originalBuffer.Slice(buffer.Start, buffer.GetPosition(end.Value, 1));
             }
 
             var returnValue1 = buffer.PositionOf((byte)seek);

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
@@ -79,6 +78,22 @@ namespace System.Buffers
             ThrowHelper.ThrowNotSupportedException();
             next = default;
             return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Position Seek(Position begin, Position end, int bytes, bool checkEndReachable = true)
+        {
+            Position cursor;
+            if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
+            {
+                cursor = new Position(begin.Segment, begin.Index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(begin, end, bytes, checkEndReachable);
+            }
+
+            return cursor;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -171,7 +186,7 @@ namespace System.Buffers
                 return endIndex - startIndex;
             }
 
-            return (endSegment.VirtualIndex - start.Next.VirtualIndex)
+            return (endSegment.RunningLength - start.Next.RunningLength)
                    + (start.Memory.Length - startIndex)
                    + endIndex;
         }
@@ -190,7 +205,7 @@ namespace System.Buffers
                     return;
                 case IBufferList<T> memoryList:
                     var segment = (IBufferList<T>)newCursor.Segment;
-                    if (segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                    if (segment.RunningLength - end.Index > memoryList.RunningLength - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -205,7 +220,7 @@ namespace System.Buffers
         {
             public Memory<T> Memory { get; set; }
             public IBufferList<T> Next { get; set; }
-            public long VirtualIndex { get; set; }
+            public long RunningLength { get; set; }
         }
     }
 }

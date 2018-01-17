@@ -9,6 +9,6 @@ namespace System.Collections.Sequences
 
         IBufferList<T> Next { get; }
 
-        long VirtualIndex { get; }
+        long RunningLength { get; }
     }
 }

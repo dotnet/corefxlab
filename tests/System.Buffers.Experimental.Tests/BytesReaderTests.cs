@@ -171,8 +171,8 @@ namespace System.Buffers.Tests
 
         public Position Start => _buffer.Start;
 
-        public Position Seek(Position origin, long offset)
-            => _buffer.Seek(origin, offset);
+        public Position GetPosition(Position origin, long offset)
+            => _buffer.GetPosition(origin, offset);
 
         public ReadOnlyBuffer<byte> Slice(Position start, Position end)
             => _buffer.Slice(start, end);

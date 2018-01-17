@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Testing
         /// <summary>
         /// Combined length of all segments before this
         /// </summary>
-        public long VirtualIndex { get; private set; }
+        public long RunningLength { get; private set; }
 
         /// <summary>
         /// The buffer being tracked if segment owns the memory
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Testing
             AvailableMemory = _ownedMemory.Memory;
 
             ReadOnly = readOnly;
-            VirtualIndex = 0;
+            RunningLength = 0;
             Start = start;
             End = end;
             NextSegment = null;
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Testing
 
             while (segment.Next != null)
             {
-                segment.NextSegment.VirtualIndex = segment.VirtualIndex + segment.Length;
+                segment.NextSegment.RunningLength = segment.RunningLength + segment.Length;
                 segment = segment.NextSegment;
             }
         }

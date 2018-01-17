@@ -199,7 +199,7 @@ namespace System.Buffers
                     case Type.MemoryList:
                         var sl = (IBufferList<byte>)_start;
                         var el = (IBufferList<byte>)_end;
-                        return (el.VirtualIndex + _endIndex) - (sl.VirtualIndex + _startIndex);
+                        return (el.RunningLength + _endIndex) - (sl.RunningLength + _startIndex);
                     default:
                         throw new NotImplementedException();
                 }
@@ -304,7 +304,7 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
 
-        public Position Seek(Position origin, long offset)
+        public Position GetPosition(Position origin, long offset)
         {
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
 

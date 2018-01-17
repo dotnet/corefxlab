@@ -13,7 +13,7 @@ namespace System.IO.Pipelines.Tests
     public abstract class ReadOnlyBufferFactory
     {
         public static ReadOnlyBufferFactory Array { get; } = new ArrayTestBufferFactory();
-        public static ReadOnlyBufferFactory OwnedMemory { get; } = new OwnedMemoryTestBufferFactory();
+        public static ReadOnlyBufferFactory OwnedMemory { get; } = new MemoryTestBufferFactory();
         public static ReadOnlyBufferFactory SingleSegment { get; } = new SingleSegmentTestBufferFactory();
         public static ReadOnlyBufferFactory SegmentPerByte { get; } = new BytePerSegmentTestBufferFactory();
 
@@ -24,7 +24,7 @@ namespace System.IO.Pipelines.Tests
         {
             return CreateWithContent(Encoding.ASCII.GetBytes(data));
         }
-        
+
         internal class ArrayTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
@@ -40,21 +40,21 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class OwnedMemoryTestBufferFactory : ReadOnlyBufferFactory
+        internal class MemoryTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
             {
-                return new ReadOnlyBuffer<byte>(new OwnedArray<byte>(size + 20), 10, size);
+                return CreateWithContent(new byte[size]);
             }
 
             public override ReadOnlyBuffer<byte> CreateWithContent(byte[] data)
             {
                 var startSegment = new byte[data.Length + 20];
                 System.Array.Copy(data, 0, startSegment, 10, data.Length);
-                return new ReadOnlyBuffer<byte>(new OwnedArray<byte>(startSegment), 10, data.Length);
+                return new ReadOnlyBuffer<byte>(new Memory<byte>(startSegment, 10, data.Length));
             }
         }
- 
+
         internal class SingleSegmentTestBufferFactory: ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
