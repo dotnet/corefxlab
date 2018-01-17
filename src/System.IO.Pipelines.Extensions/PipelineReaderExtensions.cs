@@ -57,7 +57,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var buffer = output.Alloc();
+                    var buffer = output;
 
                     foreach (var memory in inputBuffer)
                     {

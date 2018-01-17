@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Samples
 
             while (true)
             {
-                var buffer = connection.Output.Alloc();
+                var buffer = connection.Output;
                 var output = buffer;
 
                 output.Append("GET / HTTP/1.1", SymbolTable.InvariantUtf8);
@@ -53,7 +53,7 @@ namespace System.IO.Pipelines.Samples
                         return;
                     }
 
-                    var buffer = output.Alloc();
+                    var buffer = output;
                     foreach (var memory in inputBuffer)
                     {
                         buffer.Write(memory.Span);

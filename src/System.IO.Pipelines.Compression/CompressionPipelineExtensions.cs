@@ -119,7 +119,7 @@ namespace System.IO.Pipelines.Compression
                         continue;
                     }
 
-                    var writerBuffer = writer.Alloc();
+                    var writerBuffer = writer;
                     var buffer = inputBuffer.First;
 
                     unsafe
@@ -133,10 +133,10 @@ namespace System.IO.Pipelines.Compression
                     {
                         unsafe
                         {
-                            writerBuffer.Ensure();
-                            var handle = writerBuffer.Buffer.Retain(pin: true);
+                            var wbuffer = writerBuffer.GetMemory();
+                            var handle = wbuffer.Retain(pin: true);
                             handles.Add(handle);
-                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.Pointer, writerBuffer.Buffer.Length);
+                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.Pointer, wbuffer.Length);
                             writerBuffer.Advance(written);
                         }
                     }
@@ -154,12 +154,11 @@ namespace System.IO.Pipelines.Compression
                 do
                 {
                     // Need to do more stuff here
-                    var writerBuffer = writer.Alloc();
+                    var writerBuffer = writer;
 
                     unsafe
                     {
-                        writerBuffer.Ensure();
-                        var memory = writerBuffer.Buffer;
+                        var memory = writerBuffer.GetMemory();
                         var handle = memory.Retain(pin: true);
                         handles.Add(handle);
                         flushed = _deflater.Flush((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
@@ -174,12 +173,11 @@ namespace System.IO.Pipelines.Compression
                 do
                 {
                     // Need to do more stuff here
-                    var writerBuffer = writer.Alloc();
+                    var writerBuffer = writer;
 
                     unsafe
                     {
-                        writerBuffer.Ensure();
-                        var memory = writerBuffer.Buffer;
+                        var memory = writerBuffer.GetMemory();
                         var handle = memory.Retain(pin: true);
                         handles.Add(handle);
                         finished = _deflater.Finish((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
@@ -232,7 +230,7 @@ namespace System.IO.Pipelines.Compression
                         continue;
                     }
 
-                    var writerBuffer = writer.Alloc();
+                    var writerBuffer = writer;
                     var buffer = inputBuffer.First;
                     if (buffer.Length > 0)
                     {
@@ -242,10 +240,10 @@ namespace System.IO.Pipelines.Compression
                             handles.Add(handle);
                             _inflater.SetInput((IntPtr)handle.Pointer, buffer.Length);
 
-                            writerBuffer.Ensure();
-                            handle = writerBuffer.Buffer.Retain(pin: true);
+                            var wbuffer = writerBuffer.GetMemory();
+                            handle = wbuffer.Retain(pin: true);
                             handles.Add(handle);
-                            int written = _inflater.Inflate((IntPtr)handle.Pointer, writerBuffer.Buffer.Length);
+                            int written = _inflater.Inflate((IntPtr)handle.Pointer, wbuffer.Length);
                             writerBuffer.Advance(written);
 
                             var consumed = buffer.Length - _inflater.AvailableInput;

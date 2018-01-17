@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     try
                     {
-                        var output = client.Output.Alloc();
+                        var output = client.Output;
                         output.Append(MessageToSend, SymbolTable.InvariantUtf8);
                         await output.FlushAsync();
                         client.Output.Complete();
@@ -311,7 +311,7 @@ namespace System.IO.Pipelines.Tests
                     break;
                 }
 
-                var response = connection.Output.Alloc();
+                var response = connection.Output;
                 foreach (var memory in request)
                 {
                     response.Write(memory.Span);

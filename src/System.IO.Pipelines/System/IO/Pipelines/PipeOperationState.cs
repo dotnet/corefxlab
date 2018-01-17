@@ -59,7 +59,7 @@ namespace System.IO.Pipelines
         }
 
         public bool IsActive => _state == State.Active;
-
+        public bool IsStarted => _state > State.Inactive;
         public string Location
         {
             get

@@ -125,7 +125,7 @@ namespace System.IO.Pipelines
                     resourceString = "Already writing.";
                     break;
                 case ExceptionResource.NotWritingNoAlloc:
-                    resourceString = "No writing operation. Make sure Alloc() was called.";
+                    resourceString = "No writing operation. Make sure GetMemory() was called.";
                     break;
                 case ExceptionResource.NoWriteToComplete:
                     resourceString = "No writing operation to complete.";

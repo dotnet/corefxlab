@@ -29,8 +29,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCompletedTaskWhenSizeLessThenLimit()
         {
-            var writableBuffer = _pipe.Writer.Alloc(32);
-            writableBuffer.Advance(32);
+            var writableBuffer = _pipe.Writer.WriteEmpty(32);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.True(flushAsync.IsCompleted);
             var flushResult = flushAsync.GetResult();
@@ -40,8 +39,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsNonCompletedSizeWhenCommitOverTheLimit()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
         }
@@ -49,8 +47,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncAwaitableCompletesWhenReaderAdvancesUnderLow()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -67,8 +64,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncAwaitableDoesNotCompletesWhenReaderAdvancesUnderHight()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -85,8 +81,7 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Reader.Complete(new InvalidOperationException("Reader failed"));
 
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
             Assert.Equal("Reader failed", invalidOperationException.Message);
             invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
@@ -96,8 +91,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCompletedIfReaderCompletes()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -112,8 +106,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncAwaitableResetsOnCommit()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -126,8 +119,7 @@ namespace System.IO.Pipelines.Tests
             var flushResult = flushAsync.GetResult();
             Assert.False(flushResult.IsCompleted);
 
-            writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            writableBuffer = _pipe.Writer.WriteEmpty(64);
             flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -136,8 +128,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AdvanceThrowsIfFlushActiveAndNotConsumedPastThreshold()
         {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
+            var writableBuffer = _pipe.Writer.WriteEmpty(64);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
 

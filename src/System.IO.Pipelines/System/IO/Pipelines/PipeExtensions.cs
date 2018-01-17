@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
 
         public static Task WriteAsync(this IPipeWriter output, ReadOnlyMemory<byte> source)
         {
-            var writeBuffer = output.Alloc();
+            var writeBuffer = output;
             writeBuffer.Write(source.Span);
 
             var awaitable = writeBuffer.FlushAsync();

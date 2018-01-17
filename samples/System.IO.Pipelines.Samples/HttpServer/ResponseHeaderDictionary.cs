@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -95,7 +96,7 @@ namespace System.IO.Pipelines.Samples.Http
             return GetEnumerator();
         }
 
-        public void CopyTo(bool chunk, WritableBuffer buffer)
+        public void CopyTo(bool chunk, IOutput buffer)
         {
             foreach (var header in _headers)
             {

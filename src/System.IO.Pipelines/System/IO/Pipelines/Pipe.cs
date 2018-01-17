@@ -120,7 +120,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-        WritableBuffer IPipeWriter.Alloc(int minimumSize)
+        Memory<byte> IOutput.GetMemory(int minimumSize)
         {
             if (_writerCompletion.IsCompleted)
             {
@@ -132,16 +132,17 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            lock (_sync)
+            var segment = _writingHead;
+            if (segment == null)
             {
-                // CompareExchange not required as its setting to current value if test fails
-                _writingState.Begin(ExceptionResource.AlreadyWriting);
-
-                if (minimumSize > 0)
+                lock (_sync)
                 {
+                    // CompareExchange not required as its setting to current value if test fails
+                    _writingState.BeginTentative(ExceptionResource.AlreadyWriting);
+
                     try
                     {
-                        AllocateWriteHeadUnsynchronized(minimumSize);
+                        segment = AllocateWriteHeadUnsynchronized(minimumSize);
                     }
                     catch (Exception)
                     {
@@ -149,32 +150,14 @@ namespace System.IO.Pipelines
                         _writingState.End(ExceptionResource.NoWriteToComplete);
                         throw;
                     }
-                }
 
-                _currentWriteLength = 0;
-            }
-
-            return new WritableBuffer(this);
-        }
-
-        internal void Ensure(int count)
-        {
-            EnsureAlloc();
-
-            var segment = _writingHead;
-            if (segment == null)
-            {
-                // Changing commit head shared with Reader
-                lock (_sync)
-                {
-                    segment = AllocateWriteHeadUnsynchronized(count);
                 }
             }
 
             var bytesLeftInBuffer = segment.WritableBytes;
 
             // If inadequate bytes left or if the segment is readonly
-            if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < count || segment.ReadOnly)
+            if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
             {
                 BufferSegment nextSegment;
                 lock (_sync)
@@ -182,13 +165,17 @@ namespace System.IO.Pipelines
                     nextSegment = CreateSegmentUnsynchronized();
                 }
 
-                nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, count)));
+                nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
 
                 segment.SetNext(nextSegment);
 
                 _writingHead = nextSegment;
             }
+
+            return Buffer;
         }
+
+        Span<byte> IOutput.GetSpan(int minimumSize) => ((IOutput)this).GetMemory(minimumSize).Span;
 
         private BufferSegment AllocateWriteHeadUnsynchronized(int count)
         {
@@ -253,13 +240,13 @@ namespace System.IO.Pipelines
 
         private void EnsureAlloc()
         {
-            if (!_writingState.IsActive)
+            if (!_writingState.IsStarted)
             {
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
             }
         }
 
-        internal void Commit()
+        void IPipeWriter.Commit()
         {
             // Changing commit head shared with Reader
             lock (_sync)
@@ -300,19 +287,15 @@ namespace System.IO.Pipelines
             }
             // Clear the writing state
             _writingHead = null;
+            _currentWriteLength = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Advance(int bytesWritten)
+        void IOutput.Advance(int bytesWritten)
         {
             EnsureAlloc();
             if (bytesWritten > 0)
             {
-                if (_writingHead == null)
-                {
-                    PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
-                }
-
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
@@ -333,13 +316,13 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
+        ValueAwaiter<FlushResult> IPipeWriter.FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
             lock (_sync)
             {
-                if (_writingState.IsActive)
+                if (_writingState.IsStarted)
                 {
                     // Commit the data as not already committed
                     CommitUnsynchronized();
@@ -363,7 +346,7 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeWriter.Complete(Exception exception)
         {
-            if (_writingState.IsActive)
+            if (_writingState.IsStarted && _currentWriteLength > 0)
             {
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
             }
@@ -442,7 +425,7 @@ namespace System.IO.Pipelines
                     // we need to check that there is no writing operation that
                     // might be using tailspace
                     if (consumed.Index == returnEnd.Length &&
-                        !(_commitHead == returnEnd && _writingState.IsActive))
+                        !(_commitHead == returnEnd && _writingState.IsStarted))
                     {
                         var nextBlock = returnEnd.NextSegment;
                         if (_commitHead == returnEnd)

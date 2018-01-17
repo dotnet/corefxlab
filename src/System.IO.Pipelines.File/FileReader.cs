@@ -53,10 +53,8 @@ namespace System.IO.Pipelines.File
 
             operation.Offset += (int)numBytes;
 
-            var buffer = operation.BoxedBuffer.Value;
-
-            buffer.Advance((int)numBytes);
-            var awaitable = buffer.FlushAsync();
+            operation.Writer.Advance((int)numBytes);
+            var awaitable = operation.Writer.FlushAsync();
 
             if (numBytes == 0)
             {
@@ -105,23 +103,21 @@ namespace System.IO.Pipelines.File
 
             public IPipeWriter Writer { get; set; }
 
-            public StrongBox<WritableBuffer> BoxedBuffer { get; set; }
 
             public int Offset { get; set; }
 
             public unsafe void Read()
             {
-                var buffer = Writer.Alloc(2048);
-                fixed (byte* source = &MemoryMarshal.GetReference(buffer.Buffer.Span))
+                var buffer = Writer.GetMemory(2048);
+                fixed (byte* source = &MemoryMarshal.GetReference(buffer.Span))
                 {
-                    var count = buffer.Buffer.Length;
+                    var count = buffer.Length;
 
                     var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
                     overlapped->OffsetLow = Offset;
 
                     Overlapped = overlapped;
 
-                    BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
 
                     int r = ReadFile(FileHandle, (IntPtr)source, count, IntPtr.Zero, overlapped);
 

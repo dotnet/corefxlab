@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Samples
 {
     public static class RawInMemoryHttpServer
     {
-        public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<object, WritableBuffer> writeResponse)
+        public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<object, IPipeWriter> writeResponse)
         {
             var memoryPool = new MemoryPool();
             var listener = new FakeListener(memoryPool, concurrentConnections);
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines.Samples
                         object parsedRequest = null;
 
                         // Writing directly to pooled buffers
-                        var output = connection.Output.Alloc();
+                        var output = connection.Output;
                         writeResponse(parsedRequest, output);
                         await output.FlushAsync();
                     }

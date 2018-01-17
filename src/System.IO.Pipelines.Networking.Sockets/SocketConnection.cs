@@ -267,7 +267,6 @@ namespace System.IO.Pipelines.Networking.Sockets
                 while (!_stopping)
                 {
                     bool haveWriteBuffer = false;
-                    WritableBuffer buffer = default;
                     var initialSegment = default(ArraySegment<byte>);
 
                     try
@@ -351,8 +350,6 @@ namespace System.IO.Pipelines.Networking.Sockets
                         // certainly want to coalesce the initial buffer (from the speculative receive) with the initial
                         // data, but we probably don't want to buffer indefinitely; for now, it will buffer up to 4 pages
                         // before flushing (entirely arbitrarily) - might want to make this configurable later
-                        buffer = _input.Writer.Alloc(SmallBufferSize * 2);
-                        haveWriteBuffer = true;
 
                         int FlushInputEveryBytes = 4 * Pool.MaxBufferSize;
 
@@ -361,7 +358,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                             // need to account for anything that we got in the speculative receive
                             if (bytesFromInitialDataBuffer != 0)
                             {
-                                buffer.Write(new Span<byte>(initialSegment.Array, initialSegment.Offset, bytesFromInitialDataBuffer));
+                                _input.Writer.Write(new Span<byte>(initialSegment.Array, initialSegment.Offset, bytesFromInitialDataBuffer));
                             }
                             // make the small buffer available to other consumers
                             RecycleSmallBuffer(ref initialSegment);
@@ -371,8 +368,9 @@ namespace System.IO.Pipelines.Networking.Sockets
                         var bytesWritten = bytesFromInitialDataBuffer;
                         while (Socket.Available != 0 && bytesWritten < FlushInputEveryBytes)
                         {
-                            buffer.Ensure(); // ask for *something*, then use whatever is available (usually much much more)
-                            SetBuffer(buffer.Buffer, args);
+                            var buffer = _input.Writer.GetMemory(); // ask for *something*, then use whatever is available (usually much much more)
+                            haveWriteBuffer = true;
+                            SetBuffer(buffer, args);
                             // await async for the io work to be completed
                             await Socket.ReceiveSignalAsync(args);
 
@@ -390,7 +388,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                             }
 
                             // record what data we filled into the buffer
-                            buffer.Advance(len);
+                            _input.Writer.Advance(len);
                             bytesWritten += len;
                         }
                         if (isEOF)
@@ -403,7 +401,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         RecycleSmallBuffer(ref initialSegment);
                         if (haveWriteBuffer)
                         {
-                            _stopping = (await buffer.FlushAsync()).IsCompleted;
+                            _stopping = (await _input.Writer.FlushAsync()).IsCompleted;
                         }
                     }
                 }

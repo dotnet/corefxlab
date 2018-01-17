@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Tests
         {
             async Task Await(ValueAwaiter<FlushResult> a) => await a;
 
-            var writeBuffer = Pipe.Writer.Alloc();
+            var writeBuffer = Pipe.Writer;
             writeBuffer.Write(new byte[MaximumSizeHigh]);
             var awaitable = writeBuffer.FlushAsync();
 

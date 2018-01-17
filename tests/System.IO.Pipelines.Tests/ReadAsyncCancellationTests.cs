@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Tests
         public async Task CancellingPendingAfterReadAsync()
         {
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = Pipe.Writer.Alloc();
+            var output = Pipe.Writer;
             output.Write(bytes);
 
             Func<Task> taskFunc = async () =>
@@ -148,7 +148,7 @@ namespace System.IO.Pipelines.Tests
         public async Task WriteAndCancellingPendingReadBeforeReadAsync()
         {
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = Pipe.Writer.Alloc();
+            var output = Pipe.Writer;
             output.Write(bytes);
             await output.FlushAsync();
 
@@ -181,7 +181,7 @@ namespace System.IO.Pipelines.Tests
             Assert.True(buffer.IsEmpty);
 
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = Pipe.Writer.Alloc();
+            var output = Pipe.Writer;
             output.Write(bytes);
             await output.FlushAsync();
 
@@ -202,7 +202,7 @@ namespace System.IO.Pipelines.Tests
         public async Task CancellingBeforeAdvance()
         {
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = Pipe.Writer.Alloc();
+            var output = Pipe.Writer;
             output.Write(bytes);
             await output.FlushAsync();
 

@@ -21,7 +21,6 @@ namespace System.IO.Pipelines.Networking.Libuv
         private volatile bool _stopping;
 
         private Task _sendingTask;
-        private WritableBuffer? _inputBuffer;
         private MemoryHandle _inputBufferPin;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
@@ -149,8 +148,6 @@ namespace System.IO.Pipelines.Networking.Libuv
                 // A zero status does not indicate an error or connection end. It indicates
                 // there is no data to be read right now.
                 // See the note at http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb.
-                _inputBuffer?.Commit();
-                _inputBuffer = null;
                 UnpinInputBuffer();
 
                 return;
@@ -172,7 +169,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                 handle.Libuv.Check(status, out Exception uvError);
                 error = new IOException(uvError.Message, uvError);
 
-                _inputBuffer?.Commit();
+                _input.Writer.Commit();
                 UnpinInputBuffer();
 
                 // REVIEW: Should we treat ECONNRESET as an error?
@@ -181,18 +178,15 @@ namespace System.IO.Pipelines.Networking.Libuv
             }
             else
             {
-                var inputBuffer = _inputBuffer.Value;
 
-                _inputBuffer = null;
-
-                inputBuffer.Advance(readCount);
-                inputBuffer.Commit();
+                _input.Writer.Advance(readCount);
+                _input.Writer.Commit();
                 UnpinInputBuffer();
 
                 // Flush if there was data
                 if (readCount > 0)
                 {
-                    var awaitable = inputBuffer.FlushAsync();
+                    var awaitable = _input.Writer.FlushAsync();
 
                     if (!awaitable.IsCompleted)
                     {
@@ -232,13 +226,12 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
-            var inputBuffer = _input.Writer.Alloc(2048);
-            _inputBuffer = inputBuffer;
+            var inputBuffer = _input.Writer.GetMemory(2048);
 
-            var pinnedHandle = inputBuffer.Buffer.Retain(pin: true);
+            var pinnedHandle = inputBuffer.Retain(pin: true);
             _inputBufferPin = pinnedHandle;
 
-            return handle.Libuv.buf_init((IntPtr)pinnedHandle.Pointer, inputBuffer.Buffer.Length);
+            return handle.Libuv.buf_init((IntPtr)pinnedHandle.Pointer, inputBuffer.Length);
         }
     }
 }
