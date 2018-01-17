@@ -577,8 +577,7 @@ namespace System.Text.Json
             if (currentSize >= needed)
                 return buffer;
 
-            _output.Enlarge(BufferEnlargeCount);
-            buffer = _output.GetSpan();
+            buffer = _output.GetSpan(BufferEnlargeCount);
 
             int newSize = buffer.Length;
             if (newSize < needed || newSize <= currentSize)

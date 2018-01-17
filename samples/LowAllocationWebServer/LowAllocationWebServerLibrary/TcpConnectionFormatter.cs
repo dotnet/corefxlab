@@ -30,24 +30,24 @@ namespace Microsoft.Net
 
         public SymbolTable SymbolTable => SymbolTable.InvariantUtf8;
 
-        public Span<byte> GetSpan() {
-            var buffer = _buffer.AsSpan().Slice(ChunkPrefixSize + _written);
-            if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
-            return Span<byte>.Empty;
-        }
-
         public void Advance(int bytes)
         {
             _written += bytes;
             if (_written >= _buffer.Length) throw new InvalidOperationException();
         }
 
-        public void Enlarge(int desiredBufferLength = 0)
+        public Memory<byte> GetMemory(int minimumLength = 0)
         {
             if (_written < 1) throw new NotImplementedException();
             Send();
             _written = 0;
+
+            var buffer = ((Memory<byte>)_buffer).Slice(ChunkPrefixSize + _written);
+            if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
+            return Memory<byte>.Empty;
         }
+
+        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
         private void Send()
         {

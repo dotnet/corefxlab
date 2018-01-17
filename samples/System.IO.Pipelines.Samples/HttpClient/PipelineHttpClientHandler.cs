@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Samples
             var connection = await state.ConnectionTask;
 
             var requestBuffer = connection.Output.Alloc();
-            var output = requestBuffer.AsOutput();
+            var output = requestBuffer;
             output.Append($"{request.Method} {path} HTTP/1.1", SymbolTable.InvariantUtf8);
             WriteHeaders(request.Headers, ref output);
 
@@ -243,7 +243,7 @@ namespace System.IO.Pipelines.Samples
             }
         }
 
-        private static void WriteHeaders(HttpHeaders headers, ref WritableBufferOutput buffer)
+        private static void WriteHeaders(HttpHeaders headers, ref WritableBuffer buffer)
         {
             foreach (var header in headers)
             {

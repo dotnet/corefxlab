@@ -138,7 +138,7 @@ namespace System.Buffers.Text
                 if(free.Length == 0)
                 {
                     free = Enlarge();
-                } 
+                }
                 var status = Encodings.Utf16.ToUtf8(utf16Bytes, free, out var consumed, out int written);
                 switch (status)
                 {
@@ -219,7 +219,7 @@ namespace System.Buffers.Text
             Debug.Assert(_written == 0);
             if (_buffer.Length > before) return _buffer;
 
-            _output.Enlarge(desiredBufferSize);
+            _output.GetMemory(desiredBufferSize);
             _buffer = _output.GetSpan();
             Debug.Assert(_written == 0); // ensure still 0
             return _buffer;

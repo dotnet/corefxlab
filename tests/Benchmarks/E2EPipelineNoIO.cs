@@ -32,7 +32,7 @@ public partial class E2EPipelineTests
             using (iteration.StartMeasurement())
             {
                 RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
-                    var formatter = new OutputFormatter<WritableBufferOutput>(response.AsOutput(), SymbolTable.InvariantUtf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(response, SymbolTable.InvariantUtf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 13");
                     formatter.Append("\r\nContent-Type: text/plain");
@@ -56,7 +56,7 @@ public partial class E2EPipelineTests
             using (iteration.StartMeasurement())
             {
                 RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
-                    var formatter = new OutputFormatter<WritableBufferOutput>(response.AsOutput(), SymbolTable.InvariantUtf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(response, SymbolTable.InvariantUtf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 25");
                     formatter.Append("\r\nContent-Type: application/json");

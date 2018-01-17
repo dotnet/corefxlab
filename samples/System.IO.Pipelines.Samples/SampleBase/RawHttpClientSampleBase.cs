@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Samples
             while (true)
             {
                 var buffer = connection.Output.Alloc();
-                var output = buffer.AsOutput();
+                var output = buffer;
 
                 output.Append("GET / HTTP/1.1", SymbolTable.InvariantUtf8);
                 output.Append("\r\n\r\n", SymbolTable.InvariantUtf8);

@@ -112,8 +112,7 @@ namespace System.Text.Http.Formatter
         {
             var buffer = formatter.GetSpan();
             while(buffer.Length < 2) {
-                formatter.Enlarge(2);
-                buffer = formatter.GetSpan();
+                buffer = formatter.GetSpan(2);
             }
             buffer[0] = 13;
             buffer[1] = 10;
@@ -127,7 +126,7 @@ namespace System.Text.Http.Formatter
                 var buffer = formatter.GetSpan();
                 if (bytes.Length > buffer.Length)
                 {
-                    formatter.Enlarge(bytes.Length);
+                    formatter.GetSpan(bytes.Length);
                 }
                 else
                 {

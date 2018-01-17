@@ -52,7 +52,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void Ensure(int count = 1)
         {
-            _output.Enlarge(count);
+            _output.GetMemory(count);
             _span = _output.GetSpan();
         }
 
