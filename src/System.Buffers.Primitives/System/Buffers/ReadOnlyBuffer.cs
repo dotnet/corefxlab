@@ -131,7 +131,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="offset"/>, and is at most <see cref="length"/> bytes
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
@@ -143,7 +143,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="offset"/>, ending at <see cref="end"/> (inclusive).
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
@@ -155,7 +155,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, and is at most <see cref="length"/> bytes
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
@@ -169,7 +169,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="offset"/>, and is at most <see cref="length"/> bytes
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
@@ -181,7 +181,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="offset"/>, ending at <see cref="end"/> (inclusive).
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
@@ -193,7 +193,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at '<see cref="start"/>, and is at most <see cref="length"/> bytes
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
@@ -207,7 +207,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, ending at <see cref="end"/> (inclusive).
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="end">The ending (inclusive) <see cref="Position"/> of the slice</param>
@@ -220,7 +220,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         public ReadOnlyBuffer<T> Slice(Position start)
@@ -231,7 +231,7 @@ namespace System.Buffers
         }
 
         /// <summary>
-        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
+        /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="offset"/>, ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
         /// <param name="offset">The start index at which to begin this slice.</param>
         public ReadOnlyBuffer<T> Slice(long offset)
