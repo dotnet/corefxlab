@@ -5,8 +5,8 @@ namespace System.Threading
 {
     public abstract class Scheduler
     {
-        private static ThreadPoolScheduler _threadPoolScheduler = new ThreadPoolScheduler();
-        private static InlineScheduler _inlineScheduler = new InlineScheduler();
+        private static readonly ThreadPoolScheduler _threadPoolScheduler = new ThreadPoolScheduler();
+        private static readonly InlineScheduler _inlineScheduler = new InlineScheduler();
 
         public static Scheduler ThreadPool => _threadPoolScheduler;
         public static Scheduler Inline => _inlineScheduler;
