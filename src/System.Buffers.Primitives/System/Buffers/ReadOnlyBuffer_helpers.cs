@@ -81,6 +81,22 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Position Seek(Position begin, Position end, int bytes, bool checkEndReachable = true)
+        {
+            Position cursor;
+            if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
+            {
+                cursor = new Position(begin.Segment, begin.Index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(begin, end, bytes, checkEndReachable);
+            }
+
+            return cursor;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
         {
             Position cursor;

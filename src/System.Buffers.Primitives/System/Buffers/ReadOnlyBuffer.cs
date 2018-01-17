@@ -173,21 +173,38 @@ namespace System.Buffers
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer<T> Slice(int offset, int length) => Slice((long)offset, length);
+        public ReadOnlyBuffer<T> Slice(int offset, int length)
+        {
+            var begin = Seek(BufferStart, BufferEnd, offset, false);
+            var end = Seek(begin, BufferEnd, length, false);
+            return new ReadOnlyBuffer<T>(begin, end);
+        }
 
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadOnlyBuffer<T> Slice(int offset, Position end) => Slice((long)offset, end);
+        public ReadOnlyBuffer<T> Slice(int offset, Position end)
+        {
+            BoundsCheck(BufferEnd, end);
+            var begin = Seek(BufferStart, end, offset);
+            return new ReadOnlyBuffer<T>(begin, end);
+        }
 
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', and is at most length bytes
         /// </summary>
         /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer<T> Slice(Position start, int length) => Slice(start, (long)length);
+        public ReadOnlyBuffer<T> Slice(Position start, int length)
+        {
+            BoundsCheck(BufferEnd, start);
+
+            var end = Seek(start, BufferEnd, length, false);
+
+            return new ReadOnlyBuffer<T>(start, end);
+        }
 
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at 'start', ending at 'end' (inclusive).
