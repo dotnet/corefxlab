@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Samples
                     {
                         break;
                     }
-                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> responseLine, out Position delim))
+                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> responseLine, out SequencePosition delim))
                     {
                         continue;
                     }
@@ -285,7 +285,7 @@ namespace System.IO.Pipelines.Samples
         {
             public Task<IPipeConnection> ConnectionTask { get; set; }
             public int PreviousContentLength { get; set; }
-            public Position Consumed { get; set; }
+            public SequencePosition Consumed { get; set; }
         }
     }
 }

@@ -50,7 +50,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadWriteBytes(Position first, Position last)
+        public ReadWriteBytes(SequencePosition first, SequencePosition last)
         {
             (_start, _startIndex) = first.Get<object>();
             (_end, _endIndex) = last.Get<object>();
@@ -130,7 +130,7 @@ namespace System.Buffers
         public ReadWriteBytes Slice(int index)
             => Slice((long)index);
 
-        public ReadWriteBytes Slice(Position position)
+        public ReadWriteBytes Slice(SequencePosition position)
         {
             var kind = Kind;
             switch (kind)
@@ -139,12 +139,12 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, new Position((IBufferList<byte>)_end, _endIndex));
+                    return Slice(position, new SequencePosition((IBufferList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
 
-        public ReadWriteBytes Slice(Position start, Position end)
+        public ReadWriteBytes Slice(SequencePosition start, SequencePosition end)
         {
             var kind = Kind;
             switch (kind)
@@ -199,7 +199,7 @@ namespace System.Buffers
                     case Type.MemoryList:
                         var sl = (IBufferList<byte>)_start;
                         var el = (IBufferList<byte>)_end;
-                        return (el.VirtualIndex + _endIndex) - (sl.VirtualIndex + _startIndex);
+                        return (el.RunningIndex + _endIndex) - (sl.RunningIndex + _startIndex);
                     default:
                         throw new NotImplementedException();
                 }
@@ -233,7 +233,7 @@ namespace System.Buffers
             }
         }
 
-        public Position Start => new Position(_start, _startIndex);
+        public SequencePosition Start => new SequencePosition(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -267,7 +267,7 @@ namespace System.Buffers
             return array;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
             if (position == default)
             {
@@ -296,7 +296,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (advance) position = new Position(node.Next, 0);
+                    if (advance) position = new SequencePosition(node.Next, 0);
                 }
                 return true;
             }
@@ -304,7 +304,7 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
 
-        public Position Seek(Position origin, long offset)
+        public SequencePosition Seek(SequencePosition origin, long offset)
         {
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
 
@@ -320,7 +320,7 @@ namespace System.Buffers
                 else
                 {
                     var (segment, index) = origin.Get<IBufferList<byte>>();
-                    return new Position(segment, (int)(index + offset));
+                    return new SequencePosition(segment, (int)(index + offset));
                 }
             }
             throw new ArgumentOutOfRangeException(nameof(offset));

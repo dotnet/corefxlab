@@ -15,7 +15,7 @@ namespace System.Collections.Sequences
 
         public int Length => _items.Count;
 
-        public Position Start => default;
+        public SequencePosition Start => default;
 
         public T this[int index] => _items[index];
 
@@ -23,14 +23,14 @@ namespace System.Collections.Sequences
 
         public SequenceEnumerator<T> GetEnumerator() => new SequenceEnumerator<T>(this);
 
-        public bool TryGet(ref Position position, out T item, bool advance = true) =>
+        public bool TryGet(ref SequencePosition position, out T item, bool advance = true) =>
             _items.TryGet(ref position, out item, advance);
 
-        public Position Seek(Position origin, long offset)
+        public SequencePosition Seek(SequencePosition origin, long offset)
         {
             long index = (int)origin + offset;
             if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(offset));
-            return new Position(null, (int)index);
+            return new SequencePosition(null, (int)index);
         }
     }
 }

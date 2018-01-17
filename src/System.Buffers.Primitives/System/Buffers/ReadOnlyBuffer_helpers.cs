@@ -11,7 +11,7 @@ namespace System.Buffers
     public readonly partial struct ReadOnlyBuffer<T>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<T> data, out Position next)
+        internal static bool TryGetBuffer(SequencePosition begin, SequencePosition end, out ReadOnlyMemory<T> data, out SequencePosition next)
         {
             var segment = begin.Segment;
 
@@ -38,14 +38,14 @@ namespace System.Buffers
                         {
                             if (end.Segment != null)
                             {
-                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndPositionNotReached);
                             }
 
                             next = default;
                         }
                         else
                         {
-                            next = new Position(nextSegment, 0);
+                            next = new SequencePosition(nextSegment, 0);
                         }
                     }
 
@@ -59,7 +59,7 @@ namespace System.Buffers
 
                     if (segment != end.Segment)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndPositionNotReached);
                     }
 
                     next = default;
@@ -70,7 +70,7 @@ namespace System.Buffers
 
                     if (segment != end.Segment)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndCursorNotReached);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.EndPositionNotReached);
                     }
                     next = default;
                     return true;
@@ -82,26 +82,26 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Position Seek(Position begin, Position end, long bytes, bool checkEndReachable = true)
+        internal static SequencePosition Seek(SequencePosition begin, SequencePosition end, long bytes, bool checkEndReachable = true)
         {
-            Position cursor;
+            SequencePosition position;
             if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
             {
                 // end.Index >= bytes + Index and end.Index is int
-                cursor = new Position(begin.Segment, begin.Index + (int)bytes);
+                position = new SequencePosition(begin.Segment, begin.Index + (int)bytes);
             }
             else
             {
-                cursor = SeekMultiSegment(begin, end, bytes, checkEndReachable);
+                position = SeekMultiSegment(begin, end, bytes, checkEndReachable);
             }
 
-            return cursor;
+            return position;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Position SeekMultiSegment(Position begin, Position end, long bytes, bool checkEndReachable)
+        private static SequencePosition SeekMultiSegment(SequencePosition begin, SequencePosition end, long bytes, bool checkEndReachable)
         {
-            Position result = default;
+            SequencePosition result = default;
             var foundResult = false;
             var current = begin;
             while (TryGetBuffer(begin, end, out var memory, out begin))
@@ -110,13 +110,13 @@ namespace System.Buffers
                 // if end is not trusted
                 if (!foundResult)
                 {
-                    // We would prefer to put cursor in the beginning of next segment
+                    // We would prefer to put position in the beginning of next segment
                     // then past the end of previous one, but only if next exists
 
                     if (memory.Length > bytes ||
                        (memory.Length == bytes && begin.Segment == null))
                     {
-                        result = new Position(current.Segment, current.Index + (int)bytes);
+                        result = new SequencePosition(current.Segment, current.Index + (int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)
                         {
@@ -131,14 +131,14 @@ namespace System.Buffers
 
             if (!foundResult)
             {
-                ThrowHelper.ThrowCursorOutOfBoundsException();
+                ThrowHelper.ThrowPositionOutOfBoundsException();
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static long GetLength(Position begin, Position end)
+        private static long GetLength(SequencePosition begin, SequencePosition end)
         {
             if (begin.Segment == null)
             {
@@ -171,32 +171,32 @@ namespace System.Buffers
                 return endIndex - startIndex;
             }
 
-            return (endSegment.VirtualIndex - start.Next.VirtualIndex)
+            return (endSegment.RunningIndex - start.Next.RunningIndex)
                    + (start.Memory.Length - startIndex)
                    + endIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void BoundsCheck(Position end, Position newCursor)
+        private static void BoundsCheck(SequencePosition end, SequencePosition newPosition)
         {
             switch (end.Segment)
             {
                 case byte[] _:
                 case OwnedMemory<byte> _:
-                    if (newCursor.Index > end.Index)
+                    if (newPosition.Index > end.Index)
                     {
-                        ThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowPositionOutOfBoundsException();
                     }
                     return;
                 case IBufferList<T> memoryList:
-                    var segment = (IBufferList<T>)newCursor.Segment;
-                    if (segment.VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                    var segment = (IBufferList<T>)newPosition.Segment;
+                    if (segment.RunningIndex - end.Index > memoryList.RunningIndex - newPosition.Index)
                     {
-                        ThrowHelper.ThrowCursorOutOfBoundsException();
+                        ThrowHelper.ThrowPositionOutOfBoundsException();
                     }
                     return;
                 default:
-                    ThrowHelper.ThrowCursorOutOfBoundsException();
+                    ThrowHelper.ThrowPositionOutOfBoundsException();
                     return;
             }
         }
@@ -205,7 +205,7 @@ namespace System.Buffers
         {
             public Memory<T> Memory { get; set; }
             public IBufferList<T> Next { get; set; }
-            public long VirtualIndex { get; set; }
+            public long RunningIndex { get; set; }
         }
     }
 }

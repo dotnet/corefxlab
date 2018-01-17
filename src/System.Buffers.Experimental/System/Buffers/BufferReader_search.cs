@@ -7,7 +7,7 @@ namespace System.Buffers
 {
     public interface ISlicable
     {
-        ReadOnlyBuffer<byte> Slice(Position start, Position end);
+        ReadOnlyBuffer<byte> Slice(SequencePosition start, SequencePosition end);
     }
 
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
@@ -20,7 +20,7 @@ namespace System.Buffers
             var start = reader.Position;
             while (!reader.End)
             {
-                Position end = reader.Position;
+                SequencePosition end = reader.Position;
                 if (reader.Take() == delimiter)
                 {
                     bytes = reader.Sequence.Slice(start, end);

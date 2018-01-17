@@ -118,7 +118,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         public bool TryDecode(ref ReadOnlyBuffer<byte> input, out Line frame)
         {
-            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out Position cursor))
+            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out SequencePosition cursor))
             {
                 frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);

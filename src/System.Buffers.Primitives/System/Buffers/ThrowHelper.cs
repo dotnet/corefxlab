@@ -28,9 +28,9 @@ namespace System.Buffers
             throw GetNotSupportedException();
         }
         
-        public static void ThrowCursorOutOfBoundsException()
+        public static void ThrowPositionOutOfBoundsException()
         {
-            throw GetCursorOutOfBoundsException();
+            throw GetPositionOutOfBoundsException();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -58,9 +58,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Exception GetCursorOutOfBoundsException()
+        private static Exception GetPositionOutOfBoundsException()
         {
-            return new InvalidOperationException("Cursor is out of bounds");
+            return new InvalidOperationException("Position is out of bounds");
         }
 
         private static string GetArgumentName(ExceptionArgument argument)
@@ -83,8 +83,8 @@ namespace System.Buffers
                 case ExceptionResource.UnexpectedSegmentType:
                     resourceString = "Unexpected segment type";
                     break;
-                case ExceptionResource.EndCursorNotReached:
-                    resourceString = "Segment chain ended without reaching end cursor location";
+                case ExceptionResource.EndPositionNotReached:
+                    resourceString = "Segment chain ended without reaching end position location";
                     break;
             }
 
@@ -106,6 +106,6 @@ namespace System.Buffers
     internal enum ExceptionResource
     {
         UnexpectedSegmentType,
-        EndCursorNotReached
+        EndPositionNotReached
     }
 }
