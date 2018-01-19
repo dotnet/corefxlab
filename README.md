@@ -67,9 +67,6 @@ design decisions as well as introductions to usage can be found in the old blog 
 * **System.CommandLine**.
 The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](src/System.CommandLine/README.md) for more information.
 
-* **System.IO.Compression.Brotli** 
-Brotli is a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling, with a compression ratio comparable to the best currently available general-purpose compression methods. It is similar in speed with deflate but offers more dense compression. This library provides Brotli Compress/Decompress methods and ```BrotliStream``` class for compress/decompress data in stream. See the [README.md](src/System.IO.Compression.Brotli/README.md) for details.
-
 More libraries are coming soon. Stay tuned!
 
 [blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
