@@ -92,13 +92,14 @@ namespace System.Buffers
             var previous = _nextPosition;
             while (_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
-                _currentPosition = previous;
                 _currentSpan = memory.Span;
-                _index = 0;
                 if (_currentSpan.Length > 0)
                 {
+                    _index = 0;
+                    _currentPosition = previous;
                     return;
                 }
+                previous = _nextPosition;
             }
             _end = true;
         }
