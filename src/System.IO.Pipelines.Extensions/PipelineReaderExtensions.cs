@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,7 +58,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var buffer = output.Alloc();
+                    var buffer = output;
 
                     foreach (var memory in inputBuffer)
                     {

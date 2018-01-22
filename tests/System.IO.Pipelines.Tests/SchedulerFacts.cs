@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
 
                     var reading = doRead();
 
-                    var buffer = pipe.Writer.Alloc();
+                    var buffer = pipe.Writer;
                     buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                     await buffer.FlushAsync();
 
@@ -60,8 +60,7 @@ namespace System.IO.Pipelines.Tests
                         maximumSizeHigh: 64,
                         writerScheduler: scheduler));
 
-                    var writableBuffer = pipe.Writer.Alloc(64);
-                    writableBuffer.Advance(64);
+                    var writableBuffer = pipe.Writer.WriteEmpty(64);
                     var flushAsync = writableBuffer.FlushAsync();
 
                     Assert.False(flushAsync.IsCompleted);
@@ -116,7 +115,7 @@ namespace System.IO.Pipelines.Tests
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                var buffer = pipe.Writer.Alloc();
+                var buffer = pipe.Writer;
                 buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                 await buffer.FlushAsync();
 
@@ -136,8 +135,7 @@ namespace System.IO.Pipelines.Tests
                     maximumSizeHigh: 64
                 ));
 
-                var writableBuffer = pipe.Writer.Alloc(64);
-                writableBuffer.Advance(64);
+                var writableBuffer = pipe.Writer.WriteEmpty(64);
                 var flushAsync = writableBuffer.FlushAsync();
 
                 Assert.False(flushAsync.IsCompleted);

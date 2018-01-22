@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Networking.Sockets;
 using System.IO.Pipelines.Text.Primitives;
@@ -61,7 +62,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     try
                     {
-                        var output = client.Output.Alloc();
+                        var output = client.Output;
                         output.Append(MessageToSend, SymbolTable.InvariantUtf8);
                         await output.FlushAsync();
                         client.Output.Complete();
@@ -311,7 +312,7 @@ namespace System.IO.Pipelines.Tests
                     break;
                 }
 
-                var response = connection.Output.Alloc();
+                var response = connection.Output;
                 foreach (var memory in request)
                 {
                     response.Write(memory.Span);

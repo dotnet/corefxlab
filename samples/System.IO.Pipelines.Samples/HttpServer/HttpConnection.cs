@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         private async Task EndResponse()
         {
-            var buffer = _output.Alloc();
+            var buffer = _output;
 
             if (!HasStarted)
             {
@@ -172,7 +172,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public Task WriteAsync(Span<byte> data)
         {
-            var buffer = _output.Alloc();
+            var buffer = _output;
 
             if (!HasStarted)
             {
@@ -194,12 +194,12 @@ namespace System.IO.Pipelines.Samples.Http
             return FlushAsync(buffer);
         }
 
-        public async Task FlushAsync(WritableBuffer buffer)
+        public async Task FlushAsync(IPipeWriter buffer)
         {
             await buffer.FlushAsync();
         }
 
-        private void WriteBeginResponseHeaders(WritableBuffer buffer)
+        private void WriteBeginResponseHeaders(IPipeWriter buffer)
         {
             if (HasStarted)
             {
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Samples.Http
             ResponseHeaders.CopyTo(_autoChunk, buffer);
         }
 
-        private void WriteEndResponse(WritableBuffer buffer)
+        private void WriteEndResponse(IPipeWriter buffer)
         {
             buffer.Write(_chunkedEndBytes);
         }

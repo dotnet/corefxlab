@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -14,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             async Task Await(ValueAwaiter<FlushResult> a) => await a;
 
-            var writeBuffer = Pipe.Writer.Alloc();
+            var writeBuffer = Pipe.Writer;
             writeBuffer.Write(new byte[MaximumSizeHigh]);
             var awaitable = writeBuffer.FlushAsync();
 

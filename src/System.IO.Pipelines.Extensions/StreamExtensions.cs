@@ -148,7 +148,7 @@ namespace System.IO.Pipelines
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var output = _writer.Alloc();
+                var output = _writer;
                 output.Write(new ReadOnlySpan<byte>(buffer, offset, count));
                 await output.FlushAsync(cancellationToken);
             }

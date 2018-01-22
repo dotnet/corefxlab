@@ -29,9 +29,9 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(new PipeOptions(memoryPool));
 
-                var output = pipe.Writer.Alloc();
+                var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
-                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -66,9 +66,9 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(new PipeOptions(memoryPool));
 
-                var output = pipe.Writer.Alloc();
+                var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
-                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer.Alloc();
+                var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8);
                 await buffer.FlushAsync();
 
@@ -143,7 +143,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer.Alloc();
+                var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
                 await buffer.FlushAsync();
                 var result = await pipe.Reader.ReadAsync();

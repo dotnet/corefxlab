@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
     {
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
-        /// </summary> 
+        /// </summary>
         private static unsafe T Reverse<[Primitive]T>(T value) where T : struct
         {
             // note: relying on JIT goodness here!
@@ -158,11 +158,10 @@ namespace System.IO.Pipelines
         /// Reads a structure of type T out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteBigEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
+        public static void WriteBigEndian<[Primitive]T>(this IPipeWriter buffer, T value) where T : struct
         {
             int len = Unsafe.SizeOf<T>();
-            buffer.Ensure(len);
-            buffer.Buffer.Span.WriteBigEndian(value);
+            buffer.GetMemory(len).Span.WriteBigEndian(value);
             buffer.Advance(len);
         }
 
@@ -170,11 +169,10 @@ namespace System.IO.Pipelines
         /// Reads a structure of type T out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteLittleEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
+        public static void WriteLittleEndian<[Primitive]T>(this IPipeWriter buffer, T value) where T : struct
         {
             int len = Unsafe.SizeOf<T>();
-            buffer.Ensure(len);
-            buffer.Buffer.Span.WriteLittleEndian(value);
+            buffer.GetMemory(len).Span.WriteLittleEndian(value);
             buffer.Advance(len);
         }
     }

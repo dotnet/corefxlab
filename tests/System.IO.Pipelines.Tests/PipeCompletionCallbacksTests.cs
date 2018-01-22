@@ -421,8 +421,7 @@ namespace System.IO.Pipelines.Tests
                 callbackRan = true;
             }, null);
 
-            var buffer = pipe.Writer.Alloc(10);
-            buffer.Advance(10);
+            var buffer = pipe.Writer.WriteEmpty(10);
             var awaiter = buffer.FlushAsync();
 
             Assert.False(awaiter.IsCompleted);
