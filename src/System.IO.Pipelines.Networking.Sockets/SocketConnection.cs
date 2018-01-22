@@ -351,6 +351,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         // data, but we probably don't want to buffer indefinitely; for now, it will buffer up to 4 pages
                         // before flushing (entirely arbitrarily) - might want to make this configurable later
 
+                        haveWriteBuffer = true;
                         int FlushInputEveryBytes = 4 * Pool.MaxBufferSize;
 
                         if (initialSegment.Array != null)
@@ -369,7 +370,6 @@ namespace System.IO.Pipelines.Networking.Sockets
                         while (Socket.Available != 0 && bytesWritten < FlushInputEveryBytes)
                         {
                             var buffer = _input.Writer.GetMemory(); // ask for *something*, then use whatever is available (usually much much more)
-                            haveWriteBuffer = true;
                             SetBuffer(buffer, args);
                             // await async for the io work to be completed
                             await Socket.ReceiveSignalAsync(args);
