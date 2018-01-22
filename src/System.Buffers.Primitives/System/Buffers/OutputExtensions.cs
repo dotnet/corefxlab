@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
-using System.Threading;
-
-namespace System.IO.Pipelines
+namespace System.Buffers
 {
-    public static class PipeOutputExtensions
+    public static class OutputExtensions
     {
         public static void Write(this IOutput output, ReadOnlySpan<byte> source)
         {
