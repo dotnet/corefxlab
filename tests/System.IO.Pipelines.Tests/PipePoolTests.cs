@@ -37,8 +37,7 @@ namespace System.IO.Pipelines.Tests
             var pipe = new Pipe(new PipeOptions(pool));
             while (pool.CurrentlyRentedBlocks != 3)
             {
-                var writableBuffer = pipe.Writer.Alloc(writeSize);
-                writableBuffer.Advance(writeSize);
+                var writableBuffer = pipe.Writer.WriteEmpty(writeSize);
                 await writableBuffer.FlushAsync();
             }
 
@@ -58,11 +57,11 @@ namespace System.IO.Pipelines.Tests
             var pipe = new Pipe(new PipeOptions(pool));
             await pipe.Writer.WriteAsync(new byte[writeSize]);
 
-            var buffer = pipe.Writer.Alloc(writeSize);
+            pipe.Writer.GetMemory(writeSize);
             var readResult = await pipe.Reader.ReadAsync();
             pipe.Reader.Advance(readResult.Buffer.End);
-            buffer.Write(new byte[writeSize]);
-            buffer.Commit();
+            pipe.Writer.Write(new byte[writeSize]);
+            pipe.Writer.Commit();
 
             Assert.Equal(1, pool.CurrentlyRentedBlocks);
         }
@@ -77,11 +76,11 @@ namespace System.IO.Pipelines.Tests
             var pipe = new Pipe(new PipeOptions(pool));
 
             // Write two blocks
-            var buffer = pipe.Writer.Alloc(writeSize);
-            buffer.Advance(buffer.Buffer.Length);
-            buffer.Ensure(buffer.Buffer.Length);
-            buffer.Advance(writeSize);
-            await buffer.FlushAsync();
+            var buffer = pipe.Writer.GetMemory(writeSize);
+            pipe.Writer.Advance(buffer.Length);
+            pipe.Writer.GetMemory(buffer.Length);
+            pipe.Writer.Advance(writeSize);
+            await pipe.Writer.FlushAsync();
 
             Assert.Equal(2, pool.CurrentlyRentedBlocks);
 
@@ -101,12 +100,12 @@ namespace System.IO.Pipelines.Tests
 
             var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
 
-            var buffer = pipe.Writer.Alloc(writeSize);
-            var allocatedSize = buffer.Buffer.Length;
-            buffer.Advance(buffer.Buffer.Length);
-            buffer.Ensure(1);
-            var ensuredSize = buffer.Buffer.Length;
-            await buffer.FlushAsync();
+            var buffer = pipe.Writer.GetMemory(writeSize);
+            var allocatedSize = buffer.Length;
+            pipe.Writer.Advance(buffer.Length);
+            buffer = pipe.Writer.GetMemory(1);
+            var ensuredSize = buffer.Length;
+            await pipe.Writer.FlushAsync();
 
             pipe.Reader.Complete();
             pipe.Writer.Complete();

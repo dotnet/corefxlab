@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsyncNativeMemory()
         {
-            var output = _pipe.Writer.Alloc();
+            var output = _pipe.Writer;
             output.Append("Hello World", SymbolTable.InvariantUtf8);
             await output.FlushAsync();
             var ms = new MemoryStream();
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Tests
             byte[] data = new byte[512];
             for (int i = 0; i < data.Length; i++) data[i] = 42;
             int totalBytes = 0;
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             for (int i = 0; i < Size / data.Length; i++)
             {
                 writeBuffer.Write(data);
@@ -161,7 +161,7 @@ namespace System.IO.Pipelines.Tests
             var rand = new Random(12345);
             rand.NextBytes(data);
 
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(data);
             await writeBuffer.FlushAsync();
 
@@ -206,8 +206,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task GetUInt64GivesExpectedValues()
         {
-            var writeBuffer = _pipe.Writer.Alloc();
-            writeBuffer.Ensure(50);
+            var writeBuffer = _pipe.Writer;
+            writeBuffer.GetMemory(50);
             writeBuffer.Advance(50); // not even going to pretend to write data here - we're going to cheat
             await writeBuffer.FlushAsync(); // by overwriting the buffer in-situ
 
@@ -228,7 +228,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData("\thell o ", "hell o ")]
         public async Task TrimStartTrimsWhitespaceAtStart(string input, string expected)
         {
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.ASCII.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(" hell o\t", " hell o")]
         public async Task TrimEndTrimsWhitespaceAtEnd(string input, string expected)
         {
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.ASCII.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -274,7 +274,7 @@ namespace System.IO.Pipelines.Tests
         {
             var sliceToBytes = Encoding.UTF8.GetBytes(sliceTo);
 
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.UTF8.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -393,7 +393,7 @@ namespace System.IO.Pipelines.Tests
         {
             // note: different expectation to string.Split; empty has 0 outputs
             var expected = input == "" ? new string[0] : input.Split(delimiter);
-            var output = _pipe.Writer.Alloc();
+            var output = _pipe.Writer;
             output.Append(input, SymbolTable.InvariantUtf8);
 
             var readable = BufferUtilities.CreateBuffer(input);
@@ -473,7 +473,7 @@ namespace System.IO.Pipelines.Tests
             using (var pool = new MemoryPool())
             {
                 var readerWriter = new Pipe(new PipeOptions(pool));
-                var output = readerWriter.Writer.Alloc();
+                var output = readerWriter.Writer;
                 output.Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();

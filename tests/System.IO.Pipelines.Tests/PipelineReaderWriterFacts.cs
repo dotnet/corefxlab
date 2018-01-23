@@ -33,25 +33,24 @@ namespace System.IO.Pipelines.Tests
         public async Task ReaderShouldNotGetUnflushedBytesWhenOverflowingSegments()
         {
             // Fill the block with stuff leaving 5 bytes at the end
-            var buffer = _pipe.Writer.Alloc(1);
+            var buffer = _pipe.Writer.GetMemory();
 
-            var len = buffer.Buffer.Length;
+            var len = buffer.Length;
             // Fill the buffer with garbage
             //     block 1       ->    block2
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', len - 5).ToArray();
-            buffer.Write(paddingBytes);
-            await buffer.FlushAsync();
+            _pipe.Writer.Write(paddingBytes);
+            await _pipe.Writer.FlushAsync();
 
             // Write 10 and flush
-            buffer = _pipe.Writer.Alloc();
-            buffer.Write(new byte[] { 0, 0, 0, 10});
+            _pipe.Writer.Write(new byte[] { 0, 0, 0, 10});
 
             // Write 9
-            buffer.Write(new byte[] { 0, 0, 0, 9 });
+            _pipe.Writer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Write 8
-            buffer.Write(new byte[] { 0, 0, 0, 8 });
+            _pipe.Writer.Write(new byte[] { 0, 0, 0, 8 });
 
             // Make sure we don't see it yet
             var result = await _pipe.Reader.ReadAsync();
@@ -63,7 +62,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(reader.End);
 
             // Now flush
-            await buffer.FlushAsync();
+            await _pipe.Writer.FlushAsync();
 
             reader = (await _pipe.Reader.ReadAsync()).Buffer;
 
@@ -127,7 +126,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task SyncReadThenAsyncRead()
         {
-            var buffer = _pipe.Writer.Alloc();
+            var buffer = _pipe.Writer;
             buffer.Write(Encoding.ASCII.GetBytes("Hello World"));
             await buffer.FlushAsync();
 
@@ -149,12 +148,12 @@ namespace System.IO.Pipelines.Tests
         public async Task ReaderShouldNotGetUnflushedBytes()
         {
             // Write 10 and flush
-            var buffer = _pipe.Writer.Alloc();
+            var buffer = _pipe.Writer;
             buffer.Write(new byte[] { 0, 0, 0, 10 });
             await buffer.FlushAsync();
 
             // Write 9
-            buffer = _pipe.Writer.Alloc();
+            buffer = _pipe.Writer;
             buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Write 8
@@ -187,7 +186,7 @@ namespace System.IO.Pipelines.Tests
         public async Task ReaderShouldNotGetUnflushedBytesWithAppend()
         {
             // Write 10 and flush
-            var buffer = _pipe.Writer.Alloc();
+            var buffer = _pipe.Writer;
             buffer.Write(new byte[] { 0, 0, 0, 10 });
             await buffer.FlushAsync();
 
@@ -202,7 +201,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(bytes.Length, c2Buffer.Length);
 
             // Write 9 to the buffer
-            buffer = _pipe.Writer.Alloc();
+            buffer = _pipe.Writer;
             buffer.Write(new byte[] { 0, 0, 0, 9 });
 
             // Append the data from the other pipeline
@@ -329,7 +328,7 @@ namespace System.IO.Pipelines.Tests
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -359,7 +358,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AllocMoreThanPoolBlockSizeThrows()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _pipe.Writer.Alloc(8192));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _pipe.Writer.GetMemory(8192));
         }
 
         [Fact]
@@ -375,7 +374,7 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Writer.Complete();
 
-            Assert.Throws<InvalidOperationException>(() => _pipe.Writer.Alloc());
+            Assert.Throws<InvalidOperationException>(() => _pipe.Writer.GetMemory());
         }
 
         [Fact]
@@ -388,16 +387,6 @@ namespace System.IO.Pipelines.Tests
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Complete());
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
-        }
-
-        [Fact]
-        public void CompleteWriterThrowsIfWriteInProgress()
-        {
-            var buffer = _pipe.Writer.Alloc();
-
-            Assert.Throws<InvalidOperationException>(() => _pipe.Writer.Complete());
-
-            buffer.Commit();
         }
 
         [Fact]
@@ -444,12 +433,12 @@ namespace System.IO.Pipelines.Tests
 
             ThrowTestException();
 
-            var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.Alloc().FlushAsync());
+            var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.FlushAsync());
 
             Assert.Equal("Reader exception", invalidOperationException.Message);
             Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
 
-            invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.Alloc().FlushAsync());
+            invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.Writer.FlushAsync());
             Assert.Equal("Reader exception", invalidOperationException.Message);
             Assert.Contains("ThrowTestException", invalidOperationException.StackTrace);
         }
@@ -457,13 +446,11 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsync_ReturnsCompletedTaskWhenMaxSizeIfZero()
         {
-            var writableBuffer = _pipe.Writer.Alloc(1);
-            writableBuffer.Advance(1);
+            var writableBuffer = _pipe.Writer.WriteEmpty(1);
             var flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
 
-            writableBuffer = _pipe.Writer.Alloc(1);
-            writableBuffer.Advance(1);
+            writableBuffer = _pipe.Writer.WriteEmpty(1);
             flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
         }
@@ -488,39 +475,39 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task EmptyBufferStartCrossingSegmentBoundaryIsTreatedLikeAndEnd()
         {
+            var memory = _pipe.Writer.GetMemory();
             // Append one full segment to a pipe
-            var buffer = _pipe.Writer.Alloc(1);
-            buffer.Advance(buffer.Buffer.Length);
-            buffer.Commit();
-            await buffer.FlushAsync();
+            _pipe.Writer.Write(memory.Span);
+            _pipe.Writer.Commit();
+            await _pipe.Writer.FlushAsync();
 
             // Consume entire segment
             var result = await _pipe.Reader.ReadAsync();
             _pipe.Reader.Advance(result.Buffer.End);
 
             // Append empty segment
-            buffer = _pipe.Writer.Alloc(1);
-            buffer.Commit();
-            await buffer.FlushAsync();
+            _pipe.Writer.GetMemory(1);
+            _pipe.Writer.Commit();
+            await _pipe.Writer.FlushAsync();
 
             result = await _pipe.Reader.ReadAsync();
 
             Assert.True(result.Buffer.IsEmpty);
             Assert.Equal(result.Buffer.Start, result.Buffer.End);
 
-            buffer = _pipe.Writer.Alloc();
+            _pipe.Writer.GetMemory();
             _pipe.Reader.Advance(result.Buffer.Start);
             var awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
-            buffer.Commit();
+            _pipe.Writer.Commit();
         }
 
         [Fact]
         public async Task AdvanceResetsCommitHeadIndex()
         {
-            var buffer = _pipe.Writer.Alloc(1);
-            buffer.Advance(100);
-            await buffer.FlushAsync();
+            _pipe.Writer.GetMemory(1);
+            _pipe.Writer.Advance(100);
+            await _pipe.Writer.FlushAsync();
 
             // Advance to the end
             var readResult = await _pipe.Reader.ReadAsync();
@@ -531,8 +518,8 @@ namespace System.IO.Pipelines.Tests
             Assert.False(awaitable.IsCompleted);
 
             // Unblock without writing anything
-            buffer = _pipe.Writer.Alloc();
-            await buffer.FlushAsync();
+            _pipe.Writer.GetMemory();
+            await _pipe.Writer.FlushAsync();
 
             Assert.True(awaitable.IsCompleted);
 

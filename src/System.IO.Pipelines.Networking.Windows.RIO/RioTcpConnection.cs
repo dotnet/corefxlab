@@ -36,7 +36,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private Task _sendTask;
 
         private byte[] _sendingBuffer;
-        private WritableBuffer _buffer;
 
         internal RioTcpConnection(IntPtr socket, long connectionId, IntPtr requestQueue, RioThread rioThread, RegisteredIO rio)
         {
@@ -61,8 +60,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private void ProcessReceives()
         {
-            _buffer = _input.Writer.Alloc(2048);
-            var receiveBufferSeg = _rioThread.GetSegmentFromMemory(_buffer.Buffer);
+            var buffer = _input.Writer.GetMemory(2048);
+            var receiveBufferSeg = _rioThread.GetSegmentFromMemory(buffer);
 
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
             {
@@ -205,8 +204,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             }
             else
             {
-                _buffer.Advance((int)bytesTransferred);
-                _buffer.Commit();
+                _input.Writer.Advance((int)bytesTransferred);
+                _input.Writer.Commit();
 
                 ProcessReceives();
             }
@@ -214,7 +213,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         public void ReceiveEndComplete()
         {
-            _buffer.FlushAsync();
+            _input.Writer.FlushAsync();
         }
 
         private static void ThrowError(ErrorType type)

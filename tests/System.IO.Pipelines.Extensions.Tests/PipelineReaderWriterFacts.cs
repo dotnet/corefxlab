@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -70,7 +70,7 @@ namespace System.IO.Pipelines.Tests
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();

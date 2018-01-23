@@ -29,8 +29,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthCorrectAfterAllocAdvanceCommit()
         {
-            var writableBuffer = _pipe.Writer.Alloc(100);
-            writableBuffer.Advance(10);
+            var writableBuffer = _pipe.Writer.WriteEmpty(10);
             writableBuffer.Commit();
 
             Assert.Equal(10, _pipe.Length);
@@ -39,10 +38,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthCorrectAfterAlloc0AdvanceCommit()
         {
-            var writableBuffer = _pipe.Writer.Alloc();
-            writableBuffer.Ensure(10);
-            writableBuffer.Advance(10);
-            writableBuffer.Commit();
+            _pipe.Writer.GetMemory(0);
+            _pipe.Writer.WriteEmpty(10);
+            _pipe.Writer.Commit();
 
             Assert.Equal(10, _pipe.Length);
         }
@@ -50,10 +48,10 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthDecreasedAfterReadAdvanceConsume()
         {
-            var writableBuffer = _pipe.Writer.Alloc(100);
-            writableBuffer.Advance(10);
-            writableBuffer.Commit();
-            writableBuffer.FlushAsync();
+            _pipe.Writer.GetMemory(100);
+            _pipe.Writer.Advance(10);
+            _pipe.Writer.Commit();
+            _pipe.Writer.FlushAsync();
 
             var result = _pipe.Reader.ReadAsync().GetResult();
             var consumed = result.Buffer.Slice(5).Start;
@@ -65,8 +63,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthNotChangeAfterReadAdvanceExamine()
         {
-            var writableBuffer = _pipe.Writer.Alloc(100);
-            writableBuffer.Advance(10);
+            var writableBuffer = _pipe.Writer.WriteEmpty(10);
             writableBuffer.Commit();
             writableBuffer.FlushAsync();
 
@@ -79,17 +76,17 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ByteByByteTest()
         {
-            WritableBuffer writableBuffer = default;
+
             for (int i = 1; i <= 1024 * 1024; i++)
             {
-                writableBuffer = _pipe.Writer.Alloc(100);
-                writableBuffer.Advance(1);
-                writableBuffer.Commit();
+                _pipe.Writer.GetMemory(100);
+                _pipe.Writer.Advance(1);
+                _pipe.Writer.Commit();
 
                 Assert.Equal(i, _pipe.Length);
             }
 
-            writableBuffer.FlushAsync();
+            _pipe.Writer.FlushAsync();
 
             for (int i = 1024 * 1024 - 1; i >= 0; i--)
             {
