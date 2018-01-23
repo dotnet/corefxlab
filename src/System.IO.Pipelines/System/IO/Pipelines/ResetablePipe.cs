@@ -32,9 +32,6 @@ namespace System.IO.Pipelines
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private readonly PipeReader _pipeReader;
-        private readonly PipeWriter _pipeWriter;
-
         private readonly Scheduler _readerScheduler;
         private readonly Scheduler _writerScheduler;
 
@@ -105,8 +102,8 @@ namespace System.IO.Pipelines
             _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
-            _pipeReader = new ResetablePipeReader(this);
-            _pipeWriter = new ResetablePipeWriter(this);
+            Reader = new ResetablePipeReader(this);
+            Writer = new ResetablePipeWriter(this);
         }
 
         private void ResetState()
@@ -783,8 +780,9 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, action);
         }
 
-        public override PipeReader Reader => _pipeReader;
-        public override PipeWriter Writer => _pipeWriter;
+        public override PipeReader Reader { get; }
+
+        public override PipeWriter Writer { get; }
 
         public void Reset()
         {
