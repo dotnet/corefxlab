@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Tests
             public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
             internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
         }
-        
+
         internal ReadOnlyBufferFactory Factory { get; }
 
         internal ReadableBufferReaderFacts(ReadOnlyBufferFactory factory)
@@ -264,7 +264,7 @@ namespace System.IO.Pipelines.Tests
                 reader.Read();
             }
 
-            var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
+            var expected = end ?  new byte[] {} : readableBuffer.Slice(takes).ToArray();
             Assert.Equal(expected, readableBuffer.Slice(reader.Position).ToArray());
         }
 
@@ -308,8 +308,8 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(Factory.CreateWithContent(content));
 
             // this loop skips more and more items in the reader
-            for (int i = 0; i < content.Length; i++) {       
-                
+            for (int i = 0; i < content.Length; i++) {
+
                 int copied = BufferReader.Peek(reader, buffer);
                 Assert.Equal(content.Length - i, copied);
                 Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
