@@ -25,14 +25,14 @@ namespace System.IO.Pipelines.Performance.Tests
             new byte[] { 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33}, // Hello, World!
         };
 
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool _memoryPool;
 
         [GlobalSetup]
         public void Setup()
         {
             _memoryPool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_memoryPool));
+            _pipe = new ResetablePipe(new PipeOptions(_memoryPool));
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]

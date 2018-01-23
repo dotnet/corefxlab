@@ -14,13 +14,13 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipelineReaderWriterFacts : IDisposable
     {
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool _pool;
 
         public PipelineReaderWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new ResetablePipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -193,7 +193,7 @@ namespace System.IO.Pipelines.Tests
             // Write Hello to another pipeline and get the buffer
             var bytes = Encoding.ASCII.GetBytes("Hello");
 
-            var c2 = new Pipe(new PipeOptions(_pool));
+            var c2 = new ResetablePipe(new PipeOptions(_pool));
             await c2.Writer.WriteAsync(bytes);
             var result = await c2.Reader.ReadAsync();
             var c2Buffer = result.Buffer;

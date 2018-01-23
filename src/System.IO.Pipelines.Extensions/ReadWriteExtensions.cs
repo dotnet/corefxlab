@@ -98,7 +98,7 @@ namespace System.IO.Pipelines
             WriteMachineEndian(buffer, ref value);
         }
 
-        public static async Task<ReadOnlyBuffer<byte>> ReadToEndAsync(this IPipeReader input)
+        public static async Task<ReadOnlyBuffer<byte>> ReadToEndAsync(this PipeReader input)
         {
             while (true)
             {
@@ -158,7 +158,7 @@ namespace System.IO.Pipelines
         /// Reads a structure of type T out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteBigEndian<[Primitive]T>(this IPipeWriter buffer, T value) where T : struct
+        public static void WriteBigEndian<[Primitive]T>(this PipeWriter buffer, T value) where T : struct
         {
             int len = Unsafe.SizeOf<T>();
             buffer.GetMemory(len).Span.WriteBigEndian(value);
@@ -169,7 +169,7 @@ namespace System.IO.Pipelines
         /// Reads a structure of type T out of a buffer of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteLittleEndian<[Primitive]T>(this IPipeWriter buffer, T value) where T : struct
+        public static void WriteLittleEndian<[Primitive]T>(this PipeWriter buffer, T value) where T : struct
         {
             int len = Unsafe.SizeOf<T>();
             buffer.GetMemory(len).Span.WriteLittleEndian(value);

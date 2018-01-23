@@ -11,7 +11,7 @@ namespace System.IO.Pipelines
     {
         private static readonly Task _completedTask = Task.FromResult(0);
 
-        public static Task WriteAsync(this IPipeWriter output, ReadOnlyMemory<byte> source)
+        public static Task WriteAsync(this PipeWriter output, ReadOnlyMemory<byte> source)
         {
             var writeBuffer = output;
             writeBuffer.Write(source.Span);

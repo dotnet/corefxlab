@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8);
                 await buffer.FlushAsync();
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
                 await buffer.FlushAsync();

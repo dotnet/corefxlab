@@ -14,8 +14,8 @@ namespace System.IO.Pipelines.Networking.Libuv
         private static readonly Action<UvStreamHandle, int, object> _readCallback = ReadCallback;
         private static readonly Func<UvStreamHandle, int, object, Uv.uv_buf_t> _allocCallback = AllocCallback;
 
-        protected readonly IPipe _input;
-        protected readonly IPipe _output;
+        protected readonly Pipe _input;
+        protected readonly Pipe _output;
         private readonly UvThread _thread;
         private readonly UvTcpHandle _handle;
         private volatile bool _stopping;
@@ -28,11 +28,11 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = new Pipe(new PipeOptions(thread.Pool,
+            _input = new ResetablePipe(new PipeOptions(thread.Pool,
                 // resume from back pressure on the uv thread
                 writerScheduler: thread));
 
-            _output = new Pipe(new PipeOptions(thread.Pool,
+            _output = new ResetablePipe(new PipeOptions(thread.Pool,
                 // user code will dispatch back to the uv thread for writes,
                 readerScheduler: thread));
 
@@ -70,9 +70,9 @@ namespace System.IO.Pipelines.Networking.Libuv
             DisposeAsync().GetAwaiter().GetResult();
         }
 
-        public IPipeWriter Output => _output.Writer;
+        public PipeWriter Output => _output.Writer;
 
-        public IPipeReader Input => _input.Reader;
+        public PipeReader Input => _input.Reader;
 
         private async Task ProcessWrites()
         {

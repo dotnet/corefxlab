@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Tests
 {
     public static class TestWriterExtensions
     {
-        public static IPipeWriter WriteEmpty(this IPipeWriter writer, int count)
+        public static PipeWriter WriteEmpty(this PipeWriter writer, int count)
         {
             writer.GetMemory(count);
             writer.Advance(count);

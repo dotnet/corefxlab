@@ -11,19 +11,19 @@ namespace System.IO.Pipelines
     public static class StreamExtensions
     {
         /// <summary>
-        /// Copies the content of a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
+        /// Copies the content of a <see cref="Stream"/> into a <see cref="PipeWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="writer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default)
+        public static Task CopyToAsync(this Stream stream, PipeWriter writer, CancellationToken cancellationToken = default)
         {
             // 81920 is the default bufferSize, there is not stream.CopyToAsync overload that takes only a cancellationToken
             return stream.CopyToAsync(new PipelineWriterStream(writer), bufferSize: 81920, cancellationToken: cancellationToken);
         }
 
-        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer, CancellationToken cancellationToken = default)
+        public static async Task CopyToEndAsync(this Stream stream, PipeWriter writer, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -77,12 +77,12 @@ namespace System.IO.Pipelines
             }
         }
 
-        public static Task CopyToEndAsync(this IPipeReader input, Stream stream)
+        public static Task CopyToEndAsync(this PipeReader input, Stream stream)
         {
             return input.CopyToEndAsync(stream, 4096, CancellationToken.None);
         }
 
-        public static async Task CopyToEndAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        public static async Task CopyToEndAsync(this PipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
         {
             try
             {
@@ -98,9 +98,9 @@ namespace System.IO.Pipelines
 
         private class PipelineWriterStream : Stream
         {
-            private readonly IPipeWriter _writer;
+            private readonly PipeWriter _writer;
 
-            public PipelineWriterStream(IPipeWriter writer)
+            public PipelineWriterStream(PipeWriter writer)
             {
                 _writer = writer;
             }

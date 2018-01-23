@@ -8,16 +8,16 @@ namespace System.IO.Pipelines
     {
         public PipeConnection(PipeOptions pipeOptions)
         {
-            Input = new Pipe(pipeOptions);
-            Output = new Pipe(pipeOptions);
+            Input = new ResetablePipe(pipeOptions);
+            Output = new ResetablePipe(pipeOptions);
         }
 
-        IPipeReader IPipeConnection.Input => Input.Reader;
-        IPipeWriter IPipeConnection.Output => Output.Writer;
+        PipeReader IPipeConnection.Input => Input.Reader;
+        PipeWriter IPipeConnection.Output => Output.Writer;
 
-        public IPipe Input { get; }
+        public Pipe Input { get; }
 
-        public IPipe Output { get; }
+        public Pipe Output { get; }
 
         public void Dispose()
         {

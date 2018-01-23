@@ -9,13 +9,13 @@ namespace System.IO.Pipelines
     public interface IPipeConnection : IDisposable
     {
         /// <summary>
-        /// Gets the <see cref="IPipeReader"/> half of the duplex connection.
+        /// Gets the <see cref="PipeReader"/> half of the duplex connection.
         /// </summary>
-        IPipeReader Input { get; }
+        PipeReader Input { get; }
 
         /// <summary>
-        /// Gets the <see cref="IPipeWriter"/> half of the duplex connection.
+        /// Gets the <see cref="PipeWriter"/> half of the duplex connection.
         /// </summary>
-        IPipeWriter Output { get; }
+        PipeWriter Output { get; }
     }
 }

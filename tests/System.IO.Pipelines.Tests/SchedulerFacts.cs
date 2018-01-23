@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
+                    var pipe = new ResetablePipe(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool,
+                    var pipe = new ResetablePipe(new PipeOptions(pool,
                         maximumSizeLow: 32,
                         maximumSizeHigh: 64,
                         writerScheduler: scheduler));
@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool));
+                var pipe = new ResetablePipe(new PipeOptions(pool));
 
                 var id = 0;
 
@@ -130,7 +130,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool,
+                var pipe = new ResetablePipe(new PipeOptions(pool,
                     maximumSizeLow: 32,
                     maximumSizeHigh: 64
                 ));

@@ -17,8 +17,8 @@ namespace System.IO.Pipelines.Samples.Http
         private static readonly byte[] _chunkedEndBytes = Encoding.UTF8.GetBytes("0\r\n\r\n");
         private static readonly byte[] _endChunkBytes = Encoding.ASCII.GetBytes("\r\n");
 
-        private readonly IPipeReader _input;
-        private readonly IPipeWriter _output;
+        private readonly PipeReader _input;
+        private readonly PipeWriter _output;
         private readonly IHttpApplication<TContext> _application;
 
         public RequestHeaderDictionary RequestHeaders => _parser.RequestHeaders;
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         private HttpRequestParser _parser = new HttpRequestParser();
 
-        public HttpConnection(IHttpApplication<TContext> application, IPipeReader input, IPipeWriter output)
+        public HttpConnection(IHttpApplication<TContext> application, PipeReader input, PipeWriter output)
         {
             _application = application;
             _input = input;
@@ -50,9 +50,9 @@ namespace System.IO.Pipelines.Samples.Http
             _responseBody = new HttpResponseStream<TContext>(this);
         }
 
-        public IPipeReader Input => _input;
+        public PipeReader Input => _input;
 
-        public IPipeWriter Output => _output;
+        public PipeWriter Output => _output;
 
         public HttpRequestStream<TContext> RequestBody { get; set; }
 
@@ -194,12 +194,12 @@ namespace System.IO.Pipelines.Samples.Http
             return FlushAsync(buffer);
         }
 
-        public async Task FlushAsync(IPipeWriter buffer)
+        public async Task FlushAsync(PipeWriter buffer)
         {
             await buffer.FlushAsync();
         }
 
-        private void WriteBeginResponseHeaders(IPipeWriter buffer)
+        private void WriteBeginResponseHeaders(PipeWriter buffer)
         {
             if (HasStarted)
             {
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Samples.Http
             ResponseHeaders.CopyTo(_autoChunk, buffer);
         }
 
-        private void WriteEndResponse(IPipeWriter buffer)
+        private void WriteEndResponse(PipeWriter buffer)
         {
             buffer.Write(_chunkedEndBytes);
         }

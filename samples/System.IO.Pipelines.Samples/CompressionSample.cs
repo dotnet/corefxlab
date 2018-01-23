@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Samples
 
                 // Wrap the console in a pipeline writer
 
-                var outputPipe = new Pipe(options);
+                var outputPipe = new ResetablePipe(options);
                 outputPipe.Reader.CopyToEndAsync(Console.OpenStandardOutput());
 
                 // Copy from the file reader to the console writer

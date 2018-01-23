@@ -9,13 +9,13 @@ namespace System.IO.Pipelines.Tests
     {
         protected const int MaximumSizeHigh = 65;
 
-        protected IPipe Pipe;
+        protected Pipe Pipe;
         private readonly MemoryPool _pool;
 
         protected PipeTest()
         {
             _pool = new MemoryPool();
-            Pipe = new Pipe(new PipeOptions(_pool,
+            Pipe = new ResetablePipe(new PipeOptions(_pool,
                 maximumSizeHigh: 65,
                 maximumSizeLow: 6
             ));
