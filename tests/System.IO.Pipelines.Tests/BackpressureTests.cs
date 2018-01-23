@@ -11,12 +11,12 @@ namespace System.IO.Pipelines.Tests
     public class BackpressureTests : IDisposable
     {
         private MemoryPool _pool;
-        private Pipe _pipe;
+        private ResetablePipe _pipe;
 
         public BackpressureTests()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool, maximumSizeLow: 32, maximumSizeHigh: 64));
+            _pipe = new ResetablePipe(new PipeOptions(_pool, maximumSizeLow: 32, maximumSizeHigh: 64));
         }
 
         public void Dispose()

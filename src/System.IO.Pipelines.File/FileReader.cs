@@ -11,9 +11,9 @@ namespace System.IO.Pipelines.File
 {
     public class FileReader
     {
-        private readonly IPipeWriter _writer;
+        private readonly PipeWriter _writer;
 
-        public FileReader(IPipeWriter writer)
+        public FileReader(PipeWriter writer)
         {
             _writer = writer;
         }
@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.File
 
             public unsafe NativeOverlapped* Overlapped { get; set; }
 
-            public IPipeWriter Writer { get; set; }
+            public PipeWriter Writer { get; set; }
 
 
             public int Offset { get; set; }

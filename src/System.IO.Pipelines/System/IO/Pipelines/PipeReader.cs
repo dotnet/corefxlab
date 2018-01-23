@@ -10,10 +10,10 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline from which data can be read.
     /// </summary>
-    public abstract class IPipeReader
+    public abstract class PipeReader
     {
         /// <summary>
-        /// Attempt to synchronously read data the <see cref="IPipeReader"/>.
+        /// Attempt to synchronously read data the <see cref="PipeReader"/>.
         /// </summary>
         /// <param name="result">The <see cref="ReadResult"/></param>
         /// <returns>True if data was available, or if the call was cancelled or the writer completed with an error.</returns>
@@ -21,7 +21,7 @@ namespace System.IO.Pipelines
         public abstract bool TryRead(out ReadResult result);
 
         /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
+        /// Asynchronously reads a sequence of bytes from the current <see cref="PipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
         public abstract ValueAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default);
@@ -48,7 +48,7 @@ namespace System.IO.Pipelines
         public abstract void Advance(Position consumed, Position examined);
 
         /// <summary>
-        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="PipeReader"/>.
         /// </summary>
         public abstract void CancelPendingRead();
 

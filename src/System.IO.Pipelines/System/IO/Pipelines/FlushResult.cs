@@ -13,7 +13,7 @@ namespace System.IO.Pipelines
         public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) != 0;
 
         /// <summary>
-        /// True if the <see cref="IPipeWriter"/> is complete
+        /// True if the <see cref="PipeWriter"/> is complete
         /// </summary>
         public bool IsCompleted => (ResultFlags & ResultFlags.Completed) != 0;
     }

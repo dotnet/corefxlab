@@ -10,12 +10,12 @@ namespace System.IO.Pipelines.Tests
     public class WritableBufferWriterFacts : IDisposable
     {
         private MemoryPool _pool;
-        private Pipe _pipe;
+        private ResetablePipe _pipe;
 
         public WritableBufferWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new ResetablePipe(new PipeOptions(_pool));
         }
 
         public void Dispose()

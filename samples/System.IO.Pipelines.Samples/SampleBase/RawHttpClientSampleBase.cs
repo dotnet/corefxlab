@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Samples
 
         protected abstract Task<IPipeConnection> GetConnection();
 
-        private async Task CopyCompletedAsync(IPipeReader input, IPipeWriter output)
+        private async Task CopyCompletedAsync(PipeReader input, PipeWriter output)
         {
             var result = await input.ReadAsync();
             var inputBuffer = result.Buffer;

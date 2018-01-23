@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public abstract class IPipeWriter: IOutput
+    public abstract class PipeWriter: IOutput
     {
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
         public abstract void Complete(Exception exception = null);
 
         /// <summary>
-        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="PipeReader"/>.
         /// </summary>
         public abstract void CancelPendingFlush();
 

@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Samples
 {
     public static class RawInMemoryHttpServer
     {
-        public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<object, IPipeWriter> writeResponse)
+        public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<object, PipeWriter> writeResponse)
         {
             var memoryPool = new MemoryPool();
             var listener = new FakeListener(memoryPool, concurrentConnections);
