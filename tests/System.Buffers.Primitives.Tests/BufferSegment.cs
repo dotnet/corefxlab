@@ -5,7 +5,7 @@ using System.Text;
 
 namespace System.IO.Pipelines.Testing
 {
-    internal class BufferSegment : IBufferList<byte>
+    internal class BufferSegment : IMemoryList<byte>
     {
         public int Start { get; private set; }
 
@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Testing
         /// <summary>
         /// Combined length of all segments before this
         /// </summary>
-        public long RunningLength { get; private set; }
+        public long RunningIndex { get; private set; }
 
         /// <summary>
         /// The buffer being tracked if segment owns the memory
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Testing
             AvailableMemory = _ownedMemory.Memory;
 
             ReadOnly = readOnly;
-            RunningLength = 0;
+            RunningIndex = 0;
             Start = start;
             End = end;
             NextSegment = null;
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Testing
 
         public int Length => End - Start;
 
-        public IBufferList<byte> Next => NextSegment;
+        public IMemoryList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Testing
 
             while (segment.Next != null)
             {
-                segment.NextSegment.RunningLength = segment.RunningLength + segment.Length;
+                segment.NextSegment.RunningIndex = segment.RunningIndex + segment.Length;
                 segment = segment.NextSegment;
             }
         }

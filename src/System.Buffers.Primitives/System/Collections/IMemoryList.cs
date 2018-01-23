@@ -3,12 +3,12 @@
 
 namespace System.Collections.Sequences
 {
-    public interface IBufferList<T>
+    public interface IMemoryList<T>
     {
         Memory<T> Memory { get; }
 
-        IBufferList<T> Next { get; }
+        IMemoryList<T> Next { get; }
 
-        long RunningLength { get; }
+        long RunningIndex { get; }
     }
 }

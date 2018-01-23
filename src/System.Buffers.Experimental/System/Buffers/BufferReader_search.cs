@@ -21,7 +21,7 @@ namespace System.Buffers
             while (!reader.End)
             {
                 Position end = reader.Position;
-                if (reader.Take() == delimiter)
+                if (reader.Read() == delimiter)
                 {
                     bytes = reader.Sequence.Slice(start, end);
                     return true;
@@ -47,7 +47,7 @@ namespace System.Buffers
             var end = reader.Position;
             while (!reader.End)
             {
-                if (reader.Take() == delimiter[matched])
+                if (reader.Read() == delimiter[matched])
                 {
                     matched++;
                 }

@@ -21,7 +21,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IBufferList<T> bufferSegment:
+                case IMemoryList<T> bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -163,8 +163,8 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IBufferList<T> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, (IBufferList<T>)end.Segment, end.Index);
+                case IMemoryList<T> bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, (IMemoryList<T>)end.Segment, end.Index);
                 case T[] _:
                 case OwnedMemory<T> _:
                     return end.Index - begin.Index;
@@ -176,9 +176,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IBufferList<T> start,
+            IMemoryList<T> start,
             int startIndex,
-            IBufferList<T> endSegment,
+            IMemoryList<T> endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -186,7 +186,7 @@ namespace System.Buffers
                 return endIndex - startIndex;
             }
 
-            return (endSegment.RunningLength - start.Next.RunningLength)
+            return (endSegment.RunningIndex - start.Next.RunningIndex)
                    + (start.Memory.Length - startIndex)
                    + endIndex;
         }
@@ -203,9 +203,9 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IBufferList<T> memoryList:
-                    var segment = (IBufferList<T>)newCursor.Segment;
-                    if (segment.RunningLength - end.Index > memoryList.RunningLength - newCursor.Index)
+                case IMemoryList<T> memoryList:
+                    var segment = (IMemoryList<T>)newCursor.Segment;
+                    if (segment.RunningIndex - end.Index > memoryList.RunningIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -216,11 +216,11 @@ namespace System.Buffers
             }
         }
 
-        private class ReadOnlyBufferSegment : IBufferList<T>
+        private class ReadOnlyBufferSegment : IMemoryList<T>
         {
             public Memory<T> Memory { get; set; }
-            public IBufferList<T> Next { get; set; }
-            public long RunningLength { get; set; }
+            public IMemoryList<T> Next { get; set; }
+            public long RunningIndex { get; set; }
         }
     }
 }

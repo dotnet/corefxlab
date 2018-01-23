@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public class BufferList : IBufferList<byte>
+    public class BufferList : IMemoryList<byte>
     {
         private Memory<byte> _data;
         private BufferList _next;
@@ -35,9 +35,9 @@ namespace System.Buffers
 
         public Memory<byte> Memory => _data;
 
-        public IBufferList<byte> Next => _next;
+        public IMemoryList<byte> Next => _next;
 
-        public long RunningLength => _virtualIndex;
+        public long RunningIndex => _virtualIndex;
 
         public Position First => new Position(this, 0);
 

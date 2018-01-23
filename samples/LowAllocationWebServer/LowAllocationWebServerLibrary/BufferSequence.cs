@@ -8,7 +8,7 @@ using System.Collections.Sequences;
 
 namespace Microsoft.Net
 {
-    class BufferSequence : IBufferList<byte>, IDisposable
+    class BufferSequence : IMemoryList<byte>, IDisposable
     {
         public const int DefaultBufferSize = 1024;
 
@@ -29,11 +29,11 @@ namespace Microsoft.Net
 
         public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
 
-        public IBufferList<byte> Next => _next;
+        public IMemoryList<byte> Next => _next;
 
         public int WrittenByteCount => _written;
 
-        public long RunningLength => throw new NotImplementedException();
+        public long RunningIndex => throw new NotImplementedException();
 
         public Position First => new Position(this, 0);
 
