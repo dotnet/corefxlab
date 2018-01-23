@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline from which data can be read.
     /// </summary>
-    public interface IPipeReader
+    public abstract class IPipeReader
     {
         /// <summary>
         /// Attempt to synchronously read data the <see cref="IPipeReader"/>.
@@ -18,13 +18,13 @@ namespace System.IO.Pipelines
         /// <param name="result">The <see cref="ReadResult"/></param>
         /// <returns>True if data was available, or if the call was cancelled or the writer completed with an error.</returns>
         /// <remarks>If the pipe returns false, there's no need to call Advance.</remarks>
-        bool TryRead(out ReadResult result);
+        public abstract bool TryRead(out ReadResult result);
 
         /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
-        ValueAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default);
+        public abstract ValueAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Moves forward the pipeline's read cursor to after the consumed data.
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines
         /// The memory for the consumed data will be released and no longer available.
         /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
-        void Advance(Position consumed);
+        public abstract void Advance(Position consumed);
 
         /// <summary>
         /// Moves forward the pipeline's read cursor to after the consumed data.
@@ -45,22 +45,22 @@ namespace System.IO.Pipelines
         /// The memory for the consumed data will be released and no longer available.
         /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
-        void Advance(Position consumed, Position examined);
+        public abstract void Advance(Position consumed, Position examined);
 
         /// <summary>
         /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
         /// </summary>
-        void CancelPendingRead();
+        public abstract void CancelPendingRead();
 
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void Complete(Exception exception = null);
+        public abstract void Complete(Exception exception = null);
 
         /// <summary>
         /// Registers callback that gets executed when writer side of pipe completes.
         /// </summary>
-        void OnWriterCompleted(Action<Exception, object> callback, object state);
+        public abstract void OnWriterCompleted(Action<Exception, object> callback, object state);
     }
 }

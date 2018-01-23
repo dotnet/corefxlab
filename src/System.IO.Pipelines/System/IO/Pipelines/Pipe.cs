@@ -10,10 +10,106 @@ using System.Threading;
 
 namespace System.IO.Pipelines
 {
+    public class PipeReader : IPipeReader
+    {
+        private readonly Pipe _pipe;
+
+        public PipeReader(Pipe pipe)
+        {
+            _pipe = pipe;
+        }
+
+        public override bool TryRead(out ReadResult result)
+        {
+            return _pipe.TryRead(out result);
+        }
+
+        public override ValueAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default)
+        {
+            return _pipe.ReadAsync(cancellationToken);
+        }
+
+        public override void Advance(Position consumed)
+        {
+            _pipe.Advance(consumed);
+        }
+
+        public override void Advance(Position consumed, Position examined)
+        {
+            _pipe.Advance(consumed, examined);
+        }
+
+        public override void CancelPendingRead()
+        {
+            _pipe.CancelPendingRead();
+        }
+
+        public override void Complete(Exception exception = null)
+        {
+            _pipe.CompleteReader(exception);
+        }
+
+        public override void OnWriterCompleted(Action<Exception, object> callback, object state)
+        {
+            _pipe.OnWriterCompleted(callback, state);
+        }
+    }
+
+    public class PipeWriter : IPipeWriter
+    {
+        private Pipe _pipe;
+
+        public PipeWriter(Pipe pipe)
+        {
+            _pipe = pipe;
+        }
+
+        public override void Complete(Exception exception = null)
+        {
+            _pipe.Complete(exception);
+        }
+
+        public override void CancelPendingFlush()
+        {
+            _pipe.CancelPendingFlush();
+        }
+
+        public override void OnReaderCompleted(Action<Exception, object> callback, object state)
+        {
+            _pipe.OnReaderCompleted(callback, state);
+        }
+
+        public override ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
+        {
+            return _pipe.FlushAsync(cancellationToken);
+        }
+
+        public override void Commit()
+        {
+            _pipe.Commit();
+        }
+
+        public override void Advance(int bytes)
+        {
+            _pipe.Advance(bytes);
+        }
+
+        public override Memory<byte> GetMemory(int minimumLength = 0)
+        {
+            return _pipe.GetMemory(minimumLength);
+        }
+
+        public override Span<byte> GetSpan(int minimumLength = 0)
+        {
+            return _pipe.GetSpan(minimumLength);
+        }
+    }
+
+
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    public class Pipe : IPipe, IPipeReader, IPipeWriter, IAwaiter<ReadResult>, IAwaiter<FlushResult>
+    public class Pipe : IPipe, IAwaiter<ReadResult>, IAwaiter<FlushResult>
     {
         private const int SegmentPoolSize = 16;
 
@@ -31,6 +127,9 @@ namespace System.IO.Pipelines
         private readonly int _minimumSegmentSize;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
+
+        private readonly IPipeReader _pipeReader;
+        private readonly IPipeWriter _pipeWriter;
 
         private readonly Scheduler _readerScheduler;
         private readonly Scheduler _writerScheduler;
@@ -102,6 +201,8 @@ namespace System.IO.Pipelines
             _writerScheduler = options.WriterScheduler ?? Scheduler.Inline;
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
+            _pipeReader = new PipeReader(this);
+            _pipeWriter = new PipeWriter(this);
         }
 
         private void ResetState()
@@ -120,7 +221,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-        Memory<byte> IOutput.GetMemory(int minimumSize)
+        internal Memory<byte> GetMemory(int minimumSize)
         {
             if (_writerCompletion.IsCompleted)
             {
@@ -175,7 +276,7 @@ namespace System.IO.Pipelines
             return Buffer;
         }
 
-        Span<byte> IOutput.GetSpan(int minimumSize) => ((IOutput)this).GetMemory(minimumSize).Span;
+        internal Span<byte> GetSpan(int minimumSize) => GetMemory(minimumSize).Span;
 
         private BufferSegment AllocateWriteHeadUnsynchronized(int count)
         {
@@ -246,7 +347,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        void IPipeWriter.Commit()
+        internal void Commit()
         {
             // Changing commit head shared with Reader
             lock (_sync)
@@ -291,7 +392,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void IOutput.Advance(int bytesWritten)
+        internal void Advance(int bytesWritten)
         {
             EnsureAlloc();
             if (bytesWritten > 0)
@@ -316,7 +417,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        ValueAwaiter<FlushResult> IPipeWriter.FlushAsync(CancellationToken cancellationToken)
+        internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -344,7 +445,7 @@ namespace System.IO.Pipelines
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void IPipeWriter.Complete(Exception exception)
+        internal void Complete(Exception exception)
         {
             if (_writingState.IsStarted && _currentWriteLength > 0)
             {
@@ -376,12 +477,12 @@ namespace System.IO.Pipelines
         }
 
         // Reading
-        void IPipeReader.Advance(Position consumed)
+        internal void Advance(Position consumed)
         {
-            ((IPipeReader)this).Advance(consumed, consumed);
+            Advance(consumed, consumed);
         }
 
-        void IPipeReader.Advance(Position consumed, Position examined)
+        internal void Advance(Position consumed, Position examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -474,7 +575,7 @@ namespace System.IO.Pipelines
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void IPipeReader.Complete(Exception exception)
+        internal void CompleteReader(Exception exception)
         {
             if (_readingState.IsActive)
             {
@@ -505,7 +606,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        void IPipeReader.OnWriterCompleted(Action<Exception, object> callback, object state)
+        internal void OnWriterCompleted(Action<Exception, object> callback, object state)
         {
             if (callback == null)
             {
@@ -527,7 +628,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipeReader"/>.
         /// </summary>
-        void IPipeReader.CancelPendingRead()
+        internal void CancelPendingRead()
         {
             Action awaitable;
             lock (_sync)
@@ -540,7 +641,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Cancel to currently pending call to <see cref="WritableBuffer.FlushAsync"/> without completing the <see cref="IPipeWriter"/>.
         /// </summary>
-        void IPipeWriter.CancelPendingFlush()
+        internal void CancelPendingFlush()
         {
             Action awaitable;
             lock (_sync)
@@ -550,7 +651,7 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, awaitable);
         }
 
-        void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
+        internal void OnReaderCompleted(Action<Exception, object> callback, object state)
         {
             if (callback == null)
             {
@@ -569,7 +670,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        ValueAwaiter<ReadResult> IPipeReader.ReadAsync(CancellationToken token)
+        internal ValueAwaiter<ReadResult> ReadAsync(CancellationToken token)
         {
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
@@ -584,7 +685,7 @@ namespace System.IO.Pipelines
             return new ValueAwaiter<ReadResult>(this);
         }
 
-        bool IPipeReader.TryRead(out ReadResult result)
+        internal bool TryRead(out ReadResult result)
         {
             lock (_sync)
             {
@@ -778,8 +879,8 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, action);
         }
 
-        public IPipeReader Reader => this;
-        public IPipeWriter Writer => this;
+        public override IPipeReader Reader => _pipeReader;
+        public override IPipeWriter Writer => _pipeWriter;
 
         public void Reset()
         {

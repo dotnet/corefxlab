@@ -4,9 +4,9 @@
 
 namespace System.IO.Pipelines
 {
-    public interface IPipe
+    public abstract class IPipe
     {
-        IPipeReader Reader { get; }
-        IPipeWriter Writer { get; }
+        public abstract IPipeReader Reader { get; }
+        public abstract IPipeWriter Writer { get; }
     }
 }
