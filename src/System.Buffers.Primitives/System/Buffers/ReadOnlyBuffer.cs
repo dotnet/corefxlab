@@ -61,7 +61,7 @@ namespace System.Buffers
             BufferEnd = end;
         }
 
-        public ReadOnlyBuffer(IBufferList<T> startSegment, int offset, IBufferList<T> endSegment, int endIndex)
+        public ReadOnlyBuffer(IMemoryList<T> startSegment, int offset, IMemoryList<T> endSegment, int endIndex)
         {
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
@@ -106,7 +106,7 @@ namespace System.Buffers
                 var newSegment = new ReadOnlyBufferSegment()
                 {
                     Memory = buffer,
-                    RunningLength = segment?.RunningLength ?? 0
+                    RunningIndex = segment?.RunningIndex ?? 0
                 };
 
                 if (segment != null)

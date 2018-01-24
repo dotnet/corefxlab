@@ -32,26 +32,26 @@ namespace System.IO.Pipelines.Tests
             {
                 var reader = BufferReader.Create(BufferUtilities.CreateBuffer(new byte[] { 1, 2, 3, 4, 5 }));
                 reader.Advance(2);
-                Assert.Equal(2, reader.Index);
-                Assert.Equal(3, reader.CurrentSegment[reader.Index]);
+                Assert.Equal(2, reader.CurrentSegmentIndex);
+                Assert.Equal(3, reader.CurrentSegment[reader.CurrentSegmentIndex]);
                 Assert.Equal(3, reader.Peek());
                 reader.Advance(2);
                 Assert.Equal(5, reader.Peek());
-                Assert.Equal(4, reader.Index);
-                Assert.Equal(5, reader.CurrentSegment[reader.Index]);
+                Assert.Equal(4, reader.CurrentSegmentIndex);
+                Assert.Equal(5, reader.CurrentSegment[reader.CurrentSegmentIndex]);
             }
 
             [Fact]
             public void TakeReturnsByteAndMoves()
             {
                 var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
-                Assert.Equal(0, reader.Index);
-                Assert.Equal(1, reader.CurrentSegment[reader.Index]);
-                Assert.Equal(1, reader.Take());
-                Assert.Equal(1, reader.Index);
-                Assert.Equal(2, reader.CurrentSegment[reader.Index]);
-                Assert.Equal(2, reader.Take());
-                Assert.Equal(-1, reader.Take());
+                Assert.Equal(0, reader.CurrentSegmentIndex);
+                Assert.Equal(1, reader.CurrentSegment[reader.CurrentSegmentIndex]);
+                Assert.Equal(1, reader.Read());
+                Assert.Equal(1, reader.CurrentSegmentIndex);
+                Assert.Equal(2, reader.CurrentSegment[reader.CurrentSegmentIndex]);
+                Assert.Equal(2, reader.Read());
+                Assert.Equal(-1, reader.Read());
             }
         }
 
@@ -80,8 +80,8 @@ namespace System.IO.Pipelines.Tests
         public void CursorIsCorrectAtEnd()
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
-            reader.Take();
-            reader.Take();
+            reader.Read();
+            reader.Read();
             Assert.True(reader.End);
         }
 
@@ -96,9 +96,9 @@ namespace System.IO.Pipelines.Tests
             first.SetNext(last);
 
             var reader = BufferReader.Create(new ReadOnlyBuffer<byte>(first, first.Start, last, last.Start));
-            reader.Take();
-            reader.Take();
-            reader.Take();
+            reader.Read();
+            reader.Read();
+            reader.Read();
             Assert.Same(last, reader.Position.Segment);
             Assert.Equal(0, reader.Position.Index);
             Assert.True(reader.End);
@@ -108,8 +108,8 @@ namespace System.IO.Pipelines.Tests
         public void PeekReturnsMinuOneByteInTheEnd()
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
-            Assert.Equal(1, reader.Take());
-            Assert.Equal(2, reader.Take());
+            Assert.Equal(1, reader.Read());
+            Assert.Equal(2, reader.Read());
             Assert.Equal(-1, reader.Peek());
         }
 
@@ -174,8 +174,8 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(buffer);
 
             reader.Advance(2);
-            Assert.Equal(3, reader.CurrentSegment[reader.Index]);
-            Assert.Equal(3, reader.Take());
+            Assert.Equal(3, reader.CurrentSegment[reader.CurrentSegmentIndex]);
+            Assert.Equal(3, reader.Read());
         }
 
         [Fact]
@@ -201,10 +201,10 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2, 3 });
             var reader = BufferReader.Create(buffer);
 
-            Assert.Equal(1, reader.Take());
-            Assert.Equal(2, reader.Take());
-            Assert.Equal(3, reader.Take());
-            Assert.Equal(-1, reader.Take());
+            Assert.Equal(1, reader.Read());
+            Assert.Equal(2, reader.Read());
+            Assert.Equal(3, reader.Read());
+            Assert.Equal(-1, reader.Read());
         }
 
         [Fact]
@@ -213,14 +213,14 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(new byte[] { 1, 2 });
             var reader = BufferReader.Create(buffer);
 
-            Assert.Equal(1, reader.CurrentSegment[reader.Index]);
-            Assert.Equal(1, reader.Take());
+            Assert.Equal(1, reader.CurrentSegment[reader.CurrentSegmentIndex]);
+            Assert.Equal(1, reader.Read());
 
-            Assert.Equal(2, reader.CurrentSegment[reader.Index]);
+            Assert.Equal(2, reader.CurrentSegment[reader.CurrentSegmentIndex]);
             Assert.Equal(2, reader.Peek());
-            Assert.Equal(2, reader.Take());
+            Assert.Equal(2, reader.Read());
             Assert.Equal(-1, reader.Peek());
-            Assert.Equal(-1, reader.Take());
+            Assert.Equal(-1, reader.Read());
         }
 
         [Fact]
@@ -229,12 +229,12 @@ namespace System.IO.Pipelines.Tests
             var buffer = Factory.CreateWithContent(new byte[] { 1 });
             var reader = BufferReader.Create(buffer);
 
-            Assert.Equal(0, reader.Index);
+            Assert.Equal(0, reader.CurrentSegmentIndex);
             Assert.Equal(1, reader.CurrentSegment.Length);
             Assert.Equal(1, reader.Peek());
-            Assert.Equal(1, reader.Take());
+            Assert.Equal(1, reader.Read());
             Assert.Equal(-1, reader.Peek());
-            Assert.Equal(-1, reader.Take());
+            Assert.Equal(-1, reader.Read());
         }
 
         [Fact]
@@ -242,10 +242,10 @@ namespace System.IO.Pipelines.Tests
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { }));
 
-            Assert.Equal(0, reader.Index);
+            Assert.Equal(0, reader.CurrentSegmentIndex);
             Assert.Equal(0, reader.CurrentSegment.Length);
             Assert.Equal(-1, reader.Peek());
-            Assert.Equal(-1, reader.Take());
+            Assert.Equal(-1, reader.Read());
         }
 
         [Theory]
@@ -261,7 +261,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(readableBuffer);
             for (int i = 0; i < takes; i++)
             {
-                reader.Take();
+                reader.Read();
             }
 
             var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
@@ -277,7 +277,7 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(sliced);
             Assert.Equal(sliced.ToArray(), buffer.Slice(reader.Position).ToArray());
             Assert.Equal(2, reader.Peek());
-            Assert.Equal(0, reader.Index);
+            Assert.Equal(0, reader.CurrentSegmentIndex);
         }
 
         [Fact]
@@ -290,7 +290,7 @@ namespace System.IO.Pipelines.Tests
             while (!reader.End)
             {
                 var span = reader.CurrentSegment;
-                for (int i = reader.Index; i < span.Length; i++)
+                for (int i = reader.CurrentSegmentIndex; i < span.Length; i++)
                 {
                     Assert.Equal(counter++, reader.CurrentSegment[i]);
                 }
