@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Native;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Native
 {
@@ -41,10 +42,11 @@ namespace System.Buffers.Native
                 return false;
             }
 
-            public override MemoryHandle Pin()
+            public override MemoryHandle Pin(int byteOffset = 0)
             {
                 Retain();
-                return new MemoryHandle(this, _pointer.ToPointer());
+                if (byteOffset < 0 || byteOffset > _length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
             }
 
             private readonly NativeMemoryPool _pool;

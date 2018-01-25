@@ -44,12 +44,14 @@ namespace System.Numerics.Tensors.Tests
 
         protected override bool IsRetained => refCount > 0;
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
             unsafe
             {
                 Retain();
-                return new MemoryHandle(this, (void*)memory);
+                if (byteOffset < 0 || (byteOffset / Marshal.SizeOf<T>()) > length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                void* pointer = (void*)((byte*)memory + byteOffset);
+                return new MemoryHandle(this, pointer);
             }
         }
 

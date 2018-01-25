@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers.Native;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,8 +13,9 @@ namespace System.Buffers.Tests
     {
         [Fact]
         public void SimpleTests()
-        {            
-            using(var owned = new OwnedNativeBuffer(1024)) {
+        {
+            using (var owned = new OwnedNativeBuffer(1024))
+            {
                 var span = owned.Span;
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
@@ -28,7 +30,8 @@ namespace System.Buffers.Tests
                 Assert.Equal(10, copy[0]);
             }
 
-            using (OwnedPinnedBuffer<byte> owned = new byte[1024]) {
+            using (OwnedPinnedBuffer<byte> owned = new byte[1024])
+            {
                 var span = owned.Span;
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
@@ -57,33 +60,40 @@ namespace System.Buffers.Tests
         public unsafe void PinnedArrayMemoryLifetime()
         {
             var bytes = new byte[1024];
-            fixed (byte* pBytes = bytes) {
+            fixed (byte* pBytes = bytes)
+            {
                 var owner = new OwnedPinnedBuffer<byte>(bytes, pBytes);
-                TestLifetime(owner);            
+                TestLifetime(owner);
             }
         }
 
         static void TestLifetime(OwnedMemory<byte> owned)
         {
             Memory<byte> copyStoredForLater;
-            try {
+            try
+            {
                 Memory<byte> memory = owned.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Retain();
-                try {
-                    Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
+                try
+                {
+                    Assert.Throws<InvalidOperationException>(() =>
+                    { // memory is reserved; premature dispose check fires
                         owned.Dispose();
                     });
                 }
-                finally {
+                finally
+                {
                     r.Dispose(); // release reservation
                 }
             }
-            finally {
+            finally
+            {
                 owned.Dispose(); // can finish dispose with no exception
             }
-            Assert.Throws<ObjectDisposedException>(() => {
+            Assert.Throws<ObjectDisposedException>(() =>
+            {
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
@@ -110,7 +120,7 @@ namespace System.Buffers.Tests
             var owned = new CustomBuffer<byte>(255);
             var memory = owned.Memory;
             Assert.Equal(0, owned.OnNoRefencesCalledCount);
-            
+
             using (memory.Retain())
             {
                 Assert.Equal(0, owned.OnNoRefencesCalledCount);
@@ -136,7 +146,8 @@ namespace System.Buffers.Tests
                     memories[i] = owners[i].Memory;
                 }
 
-                var dispose_task = Task.Run(() => {
+                var dispose_task = Task.Run(() =>
+                {
                     for (int i = 0; i < owners.Length; i++)
                     {
                         try
@@ -151,7 +162,8 @@ namespace System.Buffers.Tests
                     }
                 });
 
-                var reserve_task = Task.Run(() => {
+                var reserve_task = Task.Run(() =>
+                {
                     for (int i = owners.Length - 1; i >= 0; i--)
                     {
                         try
@@ -205,13 +217,15 @@ namespace System.Buffers.Tests
             }
         }
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
             unsafe
             {
                 Retain();
+                if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
+                return new MemoryHandle(this, pointer, handle);
             }
         }
 
@@ -240,8 +254,8 @@ namespace System.Buffers.Tests
             if (newRefCount < 0) throw new InvalidOperationException();
             if (newRefCount == 0)
             {
-               _noReferencesCalledCount++;
-               return false;
+                _noReferencesCalledCount++;
+                return false;
             }
             return true;
         }
@@ -283,13 +297,15 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
             unsafe
             {
                 Retain();
+                if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
+                return new MemoryHandle(this, pointer, handle);
             }
         }
 
