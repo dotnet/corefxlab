@@ -115,8 +115,6 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        internal Memory<byte> Buffer => _writingHead?.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
-
         /// <summary>
         /// Allocates memory from the pipeline to write into.
         /// </summary>
@@ -134,14 +132,16 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            var segment = _writingHead;
-            if (segment == null)
+            BufferSegment segment;
+            lock (_sync)
             {
-                lock (_sync)
-                {
-                    // CompareExchange not required as its setting to current value if test fails
-                    _writingState.BeginTentative(ExceptionResource.AlreadyWriting);
+                // CompareExchange not required as its setting to current value if test fails
+                _writingState.BeginTentative(ExceptionResource.AlreadyWriting);
 
+                segment = _writingHead;
+
+                if (segment == null)
+                {
                     try
                     {
                         segment = AllocateWriteHeadUnsynchronized(minimumSize);
@@ -152,29 +152,24 @@ namespace System.IO.Pipelines
                         _writingState.End(ExceptionResource.NoWriteToComplete);
                         throw;
                     }
-
                 }
-            }
 
-            var bytesLeftInBuffer = segment.WritableBytes;
+                var bytesLeftInBuffer = segment.WritableBytes;
 
-            // If inadequate bytes left or if the segment is readonly
-            if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
-            {
-                BufferSegment nextSegment;
-                lock (_sync)
+                // If inadequate bytes left or if the segment is readonly
+                if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
                 {
-                    nextSegment = CreateSegmentUnsynchronized();
+                    var nextSegment = CreateSegmentUnsynchronized();
+
+                    nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
+
+                    segment.SetNext(nextSegment);
+
+                    _writingHead = nextSegment;
                 }
-
-                nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
-
-                segment.SetNext(nextSegment);
-
-                _writingHead = nextSegment;
             }
 
-            return Buffer;
+            return _writingHead.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes);
         }
 
         internal Span<byte> GetSpan(int minimumSize) => GetMemory(minimumSize).Span;
