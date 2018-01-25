@@ -20,7 +20,7 @@ namespace System.Buffers
 
         public OwnedArray(T[] array)
         {
-            if (array == null) ThrowArgumentNullException(nameof(array)); 
+            if (array == null) ThrowArgumentNullException(nameof(array));
             _array = array;
         }
 
@@ -37,13 +37,15 @@ namespace System.Buffers
             }
         }
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
             unsafe
             {
                 Retain();
+                if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
+                return new MemoryHandle(this, pointer, handle);
             }
         }
 
@@ -68,7 +70,7 @@ namespace System.Buffers
         public override bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
-            if (newRefCount < 0)  ThrowInvalidOperationException();
+            if (newRefCount < 0) ThrowInvalidOperationException();
             if (newRefCount == 0)
             {
                 OnNoReferences();

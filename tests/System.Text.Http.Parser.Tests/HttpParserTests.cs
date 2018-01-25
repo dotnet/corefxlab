@@ -26,7 +26,7 @@ namespace System.Text.Http.Parser.Tests
             string expectedVersion)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             Assert.True(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
@@ -43,7 +43,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseRequestLineReturnsFalseWhenGivenIncompleteRequestLines(string requestLine)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             Assert.False(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
@@ -54,7 +54,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseRequestLineDoesNotConsumeIncompleteRequestLine(string requestLine)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             Assert.False(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
@@ -65,7 +65,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseRequestLineThrowsOnInvalidRequestLine(string requestLine)
         {            
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -82,7 +82,7 @@ namespace System.Text.Http.Parser.Tests
             var requestLine = $"{method} / HTTP/1.1\r\n";
 
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -99,7 +99,7 @@ namespace System.Text.Http.Parser.Tests
             var requestLine = $"GET / {httpVersion}\r\n";
 
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -150,7 +150,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
 
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
             Assert.False(parser.ParseHeaders(ref requestHandler, buffer, out var consumed));
         }
@@ -175,7 +175,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
 
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(ref requestHandler, buffer, out var consumed);
 
@@ -263,13 +263,13 @@ namespace System.Text.Http.Parser.Tests
             var parser = new HttpParser();
 
             const string headerLine = "Header: value\r\n\r";
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(headerLine));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(headerLine));
             var requestHandler = new RequestHandler();
             Assert.False(parser.ParseHeaders(ref requestHandler, buffer, out var consumed));
 
             Assert.Equal(headerLine.Length - 1, consumed);
 
-            var buffer2 = new ReadOnlyBytes(Encoding.ASCII.GetBytes("\r\n"));
+            var buffer2 = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes("\r\n"));
             Assert.True(parser.ParseHeaders(ref requestHandler, buffer2, out consumed));
 
             Assert.Equal(2, consumed);
@@ -280,7 +280,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseHeadersThrowsOnInvalidRequestHeadersRb(string rawHeaders, string expectedExceptionMessage)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBuffer(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -295,7 +295,7 @@ namespace System.Text.Http.Parser.Tests
         public void ParseHeadersThrowsOnInvalidRequestHeaders(string rawHeaders, string expectedExceptionMessage)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(rawHeaders));
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
@@ -310,7 +310,7 @@ namespace System.Text.Http.Parser.Tests
         {
             HttpParser parser = new HttpParser();
 
-            ReadOnlyBuffer buffer = BufferUtilities.CreateBuffer("GET ", "/");
+            ReadOnlyBuffer<byte> buffer = BufferUtilities.CreateBuffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
             bool result = parser.ParseRequestLine(requestHandler, buffer, out Position consumed, out Position examined);
@@ -364,7 +364,7 @@ namespace System.Text.Http.Parser.Tests
             string expectedHeaderValue)
         {
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBuffer(Encoding.ASCII.GetBytes($"{headerName}:{rawHeaderValue}\r\n"));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes($"{headerName}:{rawHeaderValue}\r\n"));
 
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes);
@@ -382,7 +382,7 @@ namespace System.Text.Http.Parser.Tests
             Assert.True(expectedHeaderNames.Count() == expectedHeaderValues.Count(), $"{nameof(expectedHeaderNames)} and {nameof(expectedHeaderValues)} sizes must match");
 
             var parser = new HttpParser();
-            var buffer = new ReadOnlyBuffer(Encoding.ASCII.GetBytes(rawHeaders));
+            var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(rawHeaders));
 
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes);

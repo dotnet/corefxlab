@@ -10,7 +10,7 @@ namespace System.Buffers.Tests
         public void SequenceIndexOfSingleSegment()
         {
             var array = new byte[] { 1, 2, 3, 4, 5 };
-            var bytes = new ReadOnlyBytes(array);
+            var bytes = new ReadOnlyBuffer<byte>(array);
             Assert.Equal(array.Length, bytes.Length);
 
             // Static method call to avoid calling ReadOnlyBytes.IndexOf
@@ -25,7 +25,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegment()
         {
-            ReadOnlyBytes bytes = ListHelper.CreateRob(
+            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2},
                 new byte[] { 3, 4 }
             );
@@ -44,7 +44,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegmentSliced()
         {
-            ReadOnlyBytes bytes = ListHelper.CreateRob(
+            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
@@ -64,11 +64,11 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequencePositionOfMultiSegment()
         {
-            var (first, last) = MemoryList.Create(
+            var (first, last) = BufferList.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
-            var bytes = new ReadOnlyBytes(first, last);
+            var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
 
             Assert.Equal(4, bytes.Length);
 
@@ -112,7 +112,7 @@ namespace System.Buffers.Tests
                 if (listPosition != default)
                 {
                     robSlice = bytes.Slice(listPosition);
-                    Assert.Equal(value, robSlice.Memory.Span[0]);
+                    Assert.Equal(value, robSlice.First.Span[0]);
                 }
             }
         }
@@ -131,10 +131,10 @@ namespace System.Buffers.Tests
             {
                 var front = memory.Slice(0, pivot);
                 var back = memory.Slice(pivot);
-                var first = new MemoryList(front);
+                var first = new BufferList(front);
                 var last = first.Append(back);
 
-                var bytes = new ReadOnlyBytes(first, last);
+                var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
 
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);
@@ -143,7 +143,7 @@ namespace System.Buffers.Tests
                 Assert.Equal(expected, value);
 
                 var afterValue = bytes.Slice(consumedPosition);
-                Assert.Equal((byte)'#', afterValue.Memory.Span[0]);
+                Assert.Equal((byte)'#', afterValue.First.Span[0]);
             }
         }
     }

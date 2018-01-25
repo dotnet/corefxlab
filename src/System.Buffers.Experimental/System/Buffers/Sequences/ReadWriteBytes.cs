@@ -199,7 +199,7 @@ namespace System.Buffers
                     case Type.MemoryList:
                         var sl = (IMemoryList<byte>)_start;
                         var el = (IMemoryList<byte>)_end;
-                        return (el.VirtualIndex + _endIndex) - (sl.VirtualIndex + _startIndex);
+                        return (el.RunningIndex + _endIndex) - (sl.RunningIndex + _startIndex);
                     default:
                         throw new NotImplementedException();
                 }
@@ -302,6 +302,28 @@ namespace System.Buffers
             }
 
             throw new NotImplementedException();
+        }
+
+        public Position GetPosition(Position origin, long offset)
+        {
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+
+            var previous = origin;
+            while(TryGet(ref origin, out var memory))
+            {
+                var length = memory.Length;
+                if(length < offset)
+                {
+                    offset -= length;
+                    previous = origin;
+                }
+                else
+                {
+                    var (segment, index) = origin.Get<IMemoryList<byte>>();
+                    return new Position(segment, (int)(index + offset));
+                }
+            }
+            throw new ArgumentOutOfRangeException(nameof(offset));
         }
 
         enum Type : byte

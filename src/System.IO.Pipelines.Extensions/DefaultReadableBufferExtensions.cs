@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
         /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static unsafe bool TrySliceTo(this ReadOnlyBuffer buffer, byte b1, byte b2, out ReadOnlyBuffer slice, out Position cursor)
+        public static unsafe bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, byte b2, out ReadOnlyBuffer<byte> slice, out Position cursor)
         {
             // use address of ushort rather than stackalloc as the inliner won't inline functions with stackalloc
             ushort twoBytes;
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> that matches all data up to and excluding the first byte</param>
         /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadOnlyBuffer buffer, Span<byte> span, out ReadOnlyBuffer slice, out Position cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, Span<byte> span, out ReadOnlyBuffer<byte> slice, out Position cursor)
         {
             var result = false;
             var subBuffer = buffer;
@@ -76,7 +76,7 @@ namespace System.IO.Pipelines
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
         /// <param name="cursor">A <see cref="Position"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadOnlyBuffer buffer, byte b1, out ReadOnlyBuffer slice, out Position cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, out ReadOnlyBuffer<byte> slice, out Position cursor)
         {
             if (buffer.IsEmpty)
             {
@@ -132,7 +132,7 @@ namespace System.IO.Pipelines
 
                 if (found)
                 {
-                    cursor = buffer.Move(buffer.Start, seek);
+                    cursor = buffer.GetPosition(buffer.Start, seek);
                     slice = buffer.Slice(buffer.Start, cursor);
                     return true;
                 }
@@ -214,7 +214,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
         /// <returns>True if the bytes StartsWith, false if not</returns>
-        public static bool StartsWith(this ReadOnlyBuffer buffer, Span<byte> value)
+        public static bool StartsWith(this ReadOnlyBuffer<byte> buffer, Span<byte> value)
         {
             if (buffer.Length < value.Length)
             {
@@ -230,14 +230,14 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
         /// <returns>True if the bytes are equal, false if not</returns>
-        public static bool EqualsTo(this ReadOnlyBuffer buffer, Span<byte> value)
+        public static bool EqualsTo(this ReadOnlyBuffer<byte> buffer, Span<byte> value)
         {
             if (value.Length != buffer.Length)
             {
                 return false;
             }
 
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 return buffer.First.Span.SequenceEqual(value);
             }

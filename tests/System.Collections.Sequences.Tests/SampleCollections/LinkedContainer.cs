@@ -52,5 +52,23 @@ namespace System.Collections.Sequences
         {
             return new SequenceEnumerator<T>(this);
         }
+
+        public Position GetPosition(Position origin, long offset)
+        {
+            if (offset < 0) throw new InvalidOperationException("cannot seek backwards");
+            var (node, index) = origin.Get<Node>();
+            while(offset-- > 0)
+            {
+                if (node != null)
+                {
+                    node = node._next;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(offset));
+                }
+            }
+            return new Position(node, 0);
+        }
     }
 }

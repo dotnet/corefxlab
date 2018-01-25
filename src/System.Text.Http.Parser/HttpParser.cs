@@ -37,7 +37,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -47,10 +47,10 @@ namespace System.Text.Http.Parser
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
-                consumed = buffer.Move(consumed, lineIndex + 1);
+                consumed = buffer.GetPosition(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
-            else if (buffer.IsSingleSpan)
+            else if (buffer.IsSingleSegment)
             {
                 return false;
             }
@@ -79,10 +79,10 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
-            var span = buffer.Memory.Span;
+            var span = buffer.First.Span;
             var lineIndex = span.IndexOf(ByteLF);
             if (lineIndex >= 0)
             {
@@ -229,7 +229,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -237,22 +237,22 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new BufferReader(buffer);
-            var start = default(BufferReader);
+            var reader = BufferReader.Create(buffer);
+            var start = default(BufferReader<ReadOnlyBuffer<byte>>);
             var done = false;
 
             try
             {
                 while (!reader.End)
                 {
-                    var span = reader.Span;
-                    var remaining = span.Length - reader.Index;
+                    var span = reader.CurrentSegment;
+                    var remaining = span.Length - reader.CurrentSegmentIndex;
 
                     fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))
                     {
                         while (remaining > 0)
                         {
-                            var index = reader.Index;
+                            var index = reader.CurrentSegmentIndex;
                             int ch1;
                             int ch2;
 
@@ -269,8 +269,8 @@ namespace System.Text.Http.Parser
                                 start = reader;
 
                                 // Possibly split across spans
-                                ch1 = reader.Take();
-                                ch2 = reader.Take();
+                                ch1 = reader.Read();
+                                ch2 = reader.Read();
                             }
 
                             if (ch1 == ByteCR)
@@ -286,9 +286,9 @@ namespace System.Text.Http.Parser
                                 {
                                     // If we got 2 bytes from the span directly so skip ahead 2 so that
                                     // the reader's state matches what we expect
-                                    if (index == reader.Index)
+                                    if (index == reader.CurrentSegmentIndex)
                                     {
-                                        reader.Skip(2);
+                                        reader.Advance(2);
                                     }
 
                                     done = true;
@@ -301,10 +301,10 @@ namespace System.Text.Http.Parser
 
                             // We moved the reader so look ahead 2 bytes so reset both the reader
                             // and the index
-                            if (index != reader.Index)
+                            if (index != reader.CurrentSegmentIndex)
                             {
                                 reader = start;
-                                index = reader.Index;
+                                index = reader.CurrentSegmentIndex;
                             }
 
                             var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
@@ -319,18 +319,19 @@ namespace System.Text.Http.Parser
                             }
                             else
                             {
-                                var current = reader.Cursor;
-
+                                var current = reader.Position;
+                                var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
-                                if (ReadOnlyBuffer.Seek(current, bufferEnd, out var lineEnd, ByteLF) == -1)
+                                var lineEnd = subBuffer.PositionOf(ByteLF);
+                                if (!lineEnd.HasValue)
                                 {
                                     // Not there
                                     return false;
                                 }
 
                                 // Make sure LF is included in lineEnd
-                                lineEnd = buffer.Move(lineEnd, 1);
-                                var headerSpan = buffer.Slice(current, lineEnd).ToSpan();
+                                lineEnd = subBuffer.GetPosition(lineEnd.Value, 1);
+                                var headerSpan = subBuffer.Slice(current, lineEnd.Value).ToSpan();
                                 length = headerSpan.Length;
 
                                 fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -345,7 +346,7 @@ namespace System.Text.Http.Parser
                             }
 
                             // Skip the reader forward past the header line
-                            reader.Skip(length);
+                            reader.Advance(length);
                             remaining -= length;
                         }
                     }
@@ -355,7 +356,7 @@ namespace System.Text.Http.Parser
             }
             finally
             {
-                consumed = reader.Cursor;
+                consumed = reader.Position;
                 consumedBytes = reader.ConsumedBytes;
 
                 if (done)
@@ -365,7 +366,7 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
             var index = 0;
             consumedBytes = 0;
@@ -477,16 +478,25 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ReadTwoChars(ReadOnlyBytes buffer, int consumedBytes, out int ch1, out int ch2)
+        private static void ReadTwoChars(ReadOnlyBuffer<byte> buffer, int consumedBytes, out int ch1, out int ch2)
         {
-            Span<byte> temp = stackalloc byte[2];
-            if (buffer.Slice(consumedBytes).CopyTo(temp) < 2)
+            var first = buffer.First.Span;
+            if(first.Length - consumedBytes > 1)
+            {
+                ch1 = first[consumedBytes];
+                ch2 = first[consumedBytes + 1];
+            }
+
+            if (buffer.Length < consumedBytes + 2)
             {
                 ch1 = -1;
                 ch2 = -1;
             }
             else
             {
+                buffer = buffer.Slice(consumedBytes, 2);
+                Span<byte> temp = stackalloc byte[2];
+                buffer.CopyTo(temp);
                 ch1 = temp[0];
                 ch2 = temp[1];
             }
@@ -637,16 +647,17 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer buffer, out Position found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out Position found)
         {
-            var start = buffer.Start;
-            if (ReadOnlyBuffer.Seek(start, buffer.End, out found, ByteLF) != -1)
+            var position = buffer.PositionOf(ByteLF);
+            if (position.HasValue)
             {
                 // Move 1 byte past the \n
-                found = buffer.Move(found, 1);
+                found = buffer.GetPosition(position.Value, 1);
                 return true;
             }
 
+            found = default;
             return false;
         }
 

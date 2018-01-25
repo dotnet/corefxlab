@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
 
         public unsafe LibuvAwaitable<UvWriteReq> WriteAsync(
             UvStreamHandle handle,
-            ReadOnlyBuffer buffer)
+            ReadOnlyBuffer<byte> buffer)
         {
             Write(handle, buffer, LibuvAwaitable<UvWriteReq>.Callback, _awaitable);
             return _awaitable;
@@ -50,14 +50,14 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
 
         private unsafe void Write(
             UvStreamHandle handle,
-            ReadOnlyBuffer buffer,
+            ReadOnlyBuffer<byte> buffer,
             Action<UvWriteReq, int, object> callback,
             object state)
         {
             try
             {
                 int nBuffers = 0;
-                if (buffer.IsSingleSpan)
+                if (buffer.IsSingleSegment)
                 {
                     nBuffers = 1;
                 }

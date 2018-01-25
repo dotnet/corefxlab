@@ -5,9 +5,9 @@ namespace System.IO.Pipelines.File
 {
     public static class ReadableFilePipelineFactoryExtensions
     {
-        public static IPipeReader ReadFile(PipeOptions options, string path)
+        public static PipeReader ReadFile(PipeOptions options, string path)
         {
-            var pipe = new Pipe(options);
+            var pipe = new ResetablePipe(options);
             var file = new FileReader(pipe.Writer);
             file.OpenReadFile(path);
             return pipe.Reader;

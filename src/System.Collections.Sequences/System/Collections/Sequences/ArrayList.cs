@@ -25,5 +25,12 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = true) =>
             _items.TryGet(ref position, out item, advance);
+
+        public Position GetPosition(Position origin, long offset)
+        {
+            long index = (int)origin + offset;
+            if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(offset));
+            return new Position(null, (int)index);
+        }
     }
 }

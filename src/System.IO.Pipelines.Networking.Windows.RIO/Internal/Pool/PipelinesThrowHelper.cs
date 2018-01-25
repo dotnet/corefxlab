@@ -7,12 +7,30 @@ using System.Runtime.CompilerServices;
 namespace System.IO.Pipelines
 {
     internal class RioPipelinesThrowHelper
-    {    
+    {
+        public static void ThrowArgumentOutOfRangeException(int sourceLength, int offset)
+        {
+            throw GetArgumentOutOfRangeException(sourceLength, offset);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset)
+        {
+            if ((uint)offset > (uint)sourceLength)
+            {
+                // Offset is negative or less than array length
+                return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset));
+            }
+
+            // The third parameter (not passed) length must be out of range
+            return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
+        }
+
         public static void ThrowInvalidOperationException(ExceptionResource resource, string location = null)
         {
             throw GetInvalidOperationException(resource, location);
         }
- 
+
         public static void ThrowArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
         {
             throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
@@ -28,7 +46,7 @@ namespace System.IO.Pipelines
         {
             return new InvalidOperationException(GetResourceString(resource, location));
         }
-     
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
         {

@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
+                    var pipe = new ResetablePipe(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
 
                     var reading = doRead();
 
-                    var buffer = pipe.Writer.Alloc();
+                    var buffer = pipe.Writer;
                     buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                     await buffer.FlushAsync();
 
@@ -55,13 +55,12 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool,
+                    var pipe = new ResetablePipe(new PipeOptions(pool,
                         maximumSizeLow: 32,
                         maximumSizeHigh: 64,
                         writerScheduler: scheduler));
 
-                    var writableBuffer = pipe.Writer.Alloc(64);
-                    writableBuffer.Advance(64);
+                    var writableBuffer = pipe.Writer.WriteEmpty(64);
                     var flushAsync = writableBuffer.FlushAsync();
 
                     Assert.False(flushAsync.IsCompleted);
@@ -97,7 +96,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool));
+                var pipe = new ResetablePipe(new PipeOptions(pool));
 
                 var id = 0;
 
@@ -116,7 +115,7 @@ namespace System.IO.Pipelines.Tests
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                var buffer = pipe.Writer.Alloc();
+                var buffer = pipe.Writer;
                 buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                 await buffer.FlushAsync();
 
@@ -131,13 +130,12 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool,
+                var pipe = new ResetablePipe(new PipeOptions(pool,
                     maximumSizeLow: 32,
                     maximumSizeHigh: 64
                 ));
 
-                var writableBuffer = pipe.Writer.Alloc(64);
-                writableBuffer.Advance(64);
+                var writableBuffer = pipe.Writer.WriteEmpty(64);
                 var flushAsync = writableBuffer.FlushAsync();
 
                 Assert.False(flushAsync.IsCompleted);
@@ -177,6 +175,11 @@ namespace System.IO.Pipelines.Tests
             {
                 Thread = new Thread(Work) { IsBackground = true };
                 Thread.Start();
+            }
+
+            public override void Schedule(Action action)
+            {
+                Schedule(o => ((Action)o)(), action);
             }
 
             public override void Schedule(Action<object> action, object state)

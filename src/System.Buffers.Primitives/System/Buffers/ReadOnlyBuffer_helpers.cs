@@ -2,73 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public readonly partial struct ReadOnlyBuffer 
+    public readonly partial struct ReadOnlyBuffer<T>
     {
-        public static int Seek(Position begin, Position end, out Position result, byte byte0)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-
-                int index = span.IndexOf(byte0);
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
-        public static int Seek(Position begin, Position end, out Position result, byte byte0, byte byte1, byte byte2)
-        {
-            var enumerator = new ReadOnlyBuffer(begin, end).GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var span = enumerator.Current.Span;
-                int index = span.IndexOfAny(byte0, byte1, byte2);
-
-                if (index != -1)
-                {
-                    result = enumerator.CreateCursor(index);
-                    return span[index];
-                }
-            }
-
-            result = end;
-            return -1;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<byte> data, out Position next)
+        internal static bool TryGetBuffer(Position begin, Position end, out ReadOnlyMemory<T> data, out Position next)
         {
             var segment = begin.Segment;
 
@@ -79,7 +21,7 @@ namespace System.Buffers
                     next = default;
                     return false;
 
-                case IMemoryList<byte> bufferSegment:
+                case IMemoryList<T> bufferSegment:
                     var startIndex = begin.Index;
                     var endIndex = bufferSegment.Memory.Length;
 
@@ -111,7 +53,7 @@ namespace System.Buffers
                     return true;
 
 
-                case OwnedMemory<byte> ownedMemory:
+                case OwnedMemory<T> ownedMemory:
                     data = ownedMemory.Memory.Slice(begin.Index, end.Index - begin.Index);
 
                     if (segment != end.Segment)
@@ -122,8 +64,8 @@ namespace System.Buffers
                     next = default;
                     return true;
 
-                case byte[] array:
-                    data = new Memory<byte>(array, begin.Index, end.Index - begin.Index);
+                case T[] array:
+                    data = new Memory<T>(array, begin.Index, end.Index - begin.Index);
 
                     if (segment != end.Segment)
                     {
@@ -136,6 +78,22 @@ namespace System.Buffers
             ThrowHelper.ThrowNotSupportedException();
             next = default;
             return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Position Seek(Position begin, Position end, int bytes, bool checkEndReachable = true)
+        {
+            Position cursor;
+            if (begin.Segment == end.Segment && end.Index - begin.Index >= bytes)
+            {
+                cursor = new Position(begin.Segment, begin.Index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(begin, end, bytes, checkEndReachable);
+            }
+
+            return cursor;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -205,10 +163,10 @@ namespace System.Buffers
             var segment = begin.Segment;
             switch (segment)
             {
-                case IMemoryList<byte> bufferSegment:
-                    return GetLength(bufferSegment, begin.Index, end.GetSegment<IMemoryList<byte>>(), end.Index);
-                case byte[] _:
-                case OwnedMemory<byte> _:
+                case IMemoryList<T> bufferSegment:
+                    return GetLength(bufferSegment, begin.Index, (IMemoryList<T>)end.Segment, end.Index);
+                case T[] _:
+                case OwnedMemory<T> _:
                     return end.Index - begin.Index;
             }
 
@@ -218,9 +176,9 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long GetLength(
-            IMemoryList<byte> start,
+            IMemoryList<T> start,
             int startIndex,
-            IMemoryList<byte> endSegment,
+            IMemoryList<T> endSegment,
             int endIndex)
         {
             if (start == endSegment)
@@ -228,7 +186,7 @@ namespace System.Buffers
                 return endIndex - startIndex;
             }
 
-            return (endSegment.VirtualIndex - start.Next.VirtualIndex)
+            return (endSegment.RunningIndex - start.Next.RunningIndex)
                    + (start.Memory.Length - startIndex)
                    + endIndex;
         }
@@ -245,8 +203,9 @@ namespace System.Buffers
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
                     return;
-                case IMemoryList<byte> memoryList:
-                    if(newCursor.GetSegment<IMemoryList<byte>>().VirtualIndex - end.Index > memoryList.VirtualIndex - newCursor.Index)
+                case IMemoryList<T> memoryList:
+                    var segment = (IMemoryList<T>)newCursor.Segment;
+                    if (segment.RunningIndex - end.Index > memoryList.RunningIndex - newCursor.Index)
                     {
                         ThrowHelper.ThrowCursorOutOfBoundsException();
                     }
@@ -255,6 +214,13 @@ namespace System.Buffers
                     ThrowHelper.ThrowCursorOutOfBoundsException();
                     return;
             }
+        }
+
+        private class ReadOnlyBufferSegment : IMemoryList<T>
+        {
+            public Memory<T> Memory { get; set; }
+            public IMemoryList<T> Next { get; set; }
+            public long RunningIndex { get; set; }
         }
     }
 }

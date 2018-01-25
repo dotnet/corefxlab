@@ -33,7 +33,7 @@ namespace Microsoft.Net
 
         public int WrittenByteCount => _written;
 
-        public long VirtualIndex => throw new NotImplementedException();
+        public long RunningIndex => throw new NotImplementedException();
 
         public Position First => new Position(this, 0);
 

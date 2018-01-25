@@ -15,8 +15,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer.Alloc();
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var buffer = pipe.Writer;
+                buffer.GetMemory(0);
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
             }
@@ -27,10 +28,10 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer.Alloc();
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var buffer = pipe.Writer;
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
-                Assert.Equal("Can't advance without buffer allocated", exception.Message);
+                Assert.Equal("No writing operation. Make sure GetMemory() was called.", exception.Message);
             }
         }
 
@@ -39,9 +40,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer.Alloc(1);
-                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var buffer = pipe.Writer.GetMemory(1);
+                var exception = Assert.Throws<InvalidOperationException>(() => pipe.Writer.Advance(buffer.Length + 1));
                 Assert.Equal("Can't advance past buffer size", exception.Message);
             }
         }
@@ -58,11 +59,10 @@ namespace System.IO.Pipelines.Tests
             new Random(length).NextBytes(data);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
 
-                var output = pipe.Writer.Alloc();
+                var output = pipe.Writer;
                 output.Write(data);
-                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -86,9 +86,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool));
-                var buffer = pipe.Writer.Alloc();
-                Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
+                var pipe = new ResetablePipe(new PipeOptions(pool));
+                var buffer = pipe.Writer;
+                Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetMemory(8192));
             }
         }
 
@@ -97,8 +97,8 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool));
-                var buffer = pipe.Writer.Alloc();
+                var pipe = new ResetablePipe(new PipeOptions(pool));
+                var buffer = pipe.Writer;
                 buffer.Write(new byte[0]);
             }
         }

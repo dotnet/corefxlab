@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers.Native
@@ -36,12 +37,13 @@ namespace System.Buffers.Native
             _pointer = IntPtr.Zero;
         }
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
             Retain();
+            if (byteOffset < 0 || byteOffset > _length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
             unsafe
             {
-                return new MemoryHandle(this, _pointer.ToPointer());
+                return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
             }
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)

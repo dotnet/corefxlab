@@ -33,7 +33,7 @@ namespace System.Buffers.Internal
             T[] _array;
             bool _disposed;
             int _referenceCount;
-            
+
             public ArrayPoolMemory(int size)
             {
                 _array = ArrayPool<T>.Shared.Rent(size);
@@ -57,7 +57,8 @@ namespace System.Buffers.Internal
             protected override void Dispose(bool disposing)
             {
                 var array = Interlocked.Exchange(ref _array, null);
-                if (array != null)  {
+                if (array != null)
+                {
                     _disposed = true;
                     ArrayPool<T>.Shared.Return(array);
                 }
@@ -70,13 +71,15 @@ namespace System.Buffers.Internal
                 return true;
             }
 
-            public override MemoryHandle Pin()
+            public override MemoryHandle Pin(int byteOffset = 0)
             {
                 unsafe
                 {
                     Retain(); // this checks IsDisposed
+                    if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                     var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                    return new MemoryHandle(this, (void*)handle.AddrOfPinnedObject(), handle);
+                    void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
+                    return new MemoryHandle(this, pointer, handle);
                 }
             }
 
@@ -90,7 +93,7 @@ namespace System.Buffers.Internal
             {
                 int newRefCount = Interlocked.Decrement(ref _referenceCount);
                 if (newRefCount < 0) throw new InvalidOperationException();
-                if (newRefCount == 0) 
+                if (newRefCount == 0)
                 {
                     Dispose();
                     return false;

@@ -9,6 +9,6 @@ namespace System.Collections.Sequences
 
         IMemoryList<T> Next { get; }
 
-        long VirtualIndex { get; }
+        long RunningIndex { get; }
     }
 }

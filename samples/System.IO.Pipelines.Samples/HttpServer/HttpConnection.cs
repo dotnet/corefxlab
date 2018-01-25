@@ -17,16 +17,16 @@ namespace System.IO.Pipelines.Samples.Http
         private static readonly byte[] _chunkedEndBytes = Encoding.UTF8.GetBytes("0\r\n\r\n");
         private static readonly byte[] _endChunkBytes = Encoding.ASCII.GetBytes("\r\n");
 
-        private readonly IPipeReader _input;
-        private readonly IPipeWriter _output;
+        private readonly PipeReader _input;
+        private readonly PipeWriter _output;
         private readonly IHttpApplication<TContext> _application;
 
         public RequestHeaderDictionary RequestHeaders => _parser.RequestHeaders;
         public ResponseHeaderDictionary ResponseHeaders { get; } = new ResponseHeaderDictionary();
 
-        public ReadOnlyBuffer HttpVersion => _parser.HttpVersion;
-        public ReadOnlyBuffer Path => _parser.Path;
-        public ReadOnlyBuffer Method => _parser.Method;
+        public ReadOnlyBuffer<byte> HttpVersion => _parser.HttpVersion;
+        public ReadOnlyBuffer<byte> Path => _parser.Path;
+        public ReadOnlyBuffer<byte> Method => _parser.Method;
 
         // TODO: Check the http version
         public bool KeepAlive => true; //RequestHeaders.ContainsKey("Connection") && string.Equals(RequestHeaders["Connection"], "keep-alive");
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         private HttpRequestParser _parser = new HttpRequestParser();
 
-        public HttpConnection(IHttpApplication<TContext> application, IPipeReader input, IPipeWriter output)
+        public HttpConnection(IHttpApplication<TContext> application, PipeReader input, PipeWriter output)
         {
             _application = application;
             _input = input;
@@ -50,9 +50,9 @@ namespace System.IO.Pipelines.Samples.Http
             _responseBody = new HttpResponseStream<TContext>(this);
         }
 
-        public IPipeReader Input => _input;
+        public PipeReader Input => _input;
 
-        public IPipeWriter Output => _output;
+        public PipeWriter Output => _output;
 
         public HttpRequestStream<TContext> RequestBody { get; set; }
 
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         private async Task EndResponse()
         {
-            var buffer = _output.Alloc();
+            var buffer = _output;
 
             if (!HasStarted)
             {
@@ -172,7 +172,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public Task WriteAsync(Span<byte> data)
         {
-            var buffer = _output.Alloc();
+            var buffer = _output;
 
             if (!HasStarted)
             {
@@ -181,7 +181,7 @@ namespace System.IO.Pipelines.Samples.Http
 
             if (_autoChunk)
             {
-                buffer.AsOutput().Append(data.Length, SymbolTable.InvariantUtf8, 'x');
+                buffer.Append(data.Length, SymbolTable.InvariantUtf8, 'x');
                 buffer.Write(_endChunkBytes);
                 buffer.Write(data);
                 buffer.Write(_endChunkBytes);
@@ -194,12 +194,12 @@ namespace System.IO.Pipelines.Samples.Http
             return FlushAsync(buffer);
         }
 
-        public async Task FlushAsync(WritableBuffer buffer)
+        public async Task FlushAsync(PipeWriter buffer)
         {
             await buffer.FlushAsync();
         }
 
-        private void WriteBeginResponseHeaders(WritableBuffer buffer)
+        private void WriteBeginResponseHeaders(PipeWriter buffer)
         {
             if (HasStarted)
             {
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Samples.Http
             ResponseHeaders.CopyTo(_autoChunk, buffer);
         }
 
-        private void WriteEndResponse(WritableBuffer buffer)
+        private void WriteEndResponse(PipeWriter buffer)
         {
             buffer.Write(_chunkedEndBytes);
         }

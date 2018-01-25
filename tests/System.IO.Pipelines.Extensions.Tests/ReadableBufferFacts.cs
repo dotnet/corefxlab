@@ -24,13 +24,13 @@ namespace System.IO.Pipelines.Tests
     {
         const int BlockSize = 4032;
 
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool<byte> _pool;
 
         public ReadableBufferFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new ResetablePipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadableBufferSequenceWorks()
         {
-            var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }).AsSequence();
+            var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 });
             Position position = readable.Start;
             int spanCount = 0;
             while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseArrayBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = new ReadOnlyBuffer(data, 3, data.Length - 7);
+            var buffer = new ReadOnlyBuffer<byte>(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -86,7 +86,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = new ReadOnlyBuffer(data, 3, data.Length - 7);
+            var buffer = new ReadOnlyBuffer<byte>(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -111,8 +111,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsyncNativeMemory()
         {
-            var output = _pipe.Writer.Alloc();
-            output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
+            var output = _pipe.Writer;
+            output.Append("Hello World", SymbolTable.InvariantUtf8);
             await output.FlushAsync();
             var ms = new MemoryStream();
             var result = await _pipe.Reader.ReadAsync();
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Tests
             byte[] data = new byte[512];
             for (int i = 0; i < data.Length; i++) data[i] = 42;
             int totalBytes = 0;
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             for (int i = 0; i < Size / data.Length; i++)
             {
                 writeBuffer.Write(data);
@@ -146,7 +146,7 @@ namespace System.IO.Pipelines.Tests
             // now read it back
             var result = await _pipe.Reader.ReadAsync();
             var readBuffer = result.Buffer;
-            Assert.False(readBuffer.IsSingleSpan);
+            Assert.False(readBuffer.IsSingleSegment);
             Assert.Equal(totalBytes, readBuffer.Length);
             TestIndexOfWorksForAllLocations(ref readBuffer, 42);
             _pipe.Reader.Advance(readBuffer.End);
@@ -161,14 +161,14 @@ namespace System.IO.Pipelines.Tests
             var rand = new Random(12345);
             rand.NextBytes(data);
 
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(data);
             await writeBuffer.FlushAsync();
 
             // now read it back
             var result = await _pipe.Reader.ReadAsync();
             var readBuffer = result.Buffer;
-            Assert.False(readBuffer.IsSingleSpan);
+            Assert.False(readBuffer.IsSingleSegment);
             Assert.Equal(data.Length, readBuffer.Length);
 
             // check the entire buffer
@@ -190,7 +190,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(readBuffer.End);
         }
 
-        private void EqualsDetectsDeltaForAllLocations(ReadOnlyBuffer slice, byte[] expected, int offset, int length)
+        private void EqualsDetectsDeltaForAllLocations(ReadOnlyBuffer<byte> slice, byte[] expected, int offset, int length)
         {
             Assert.Equal(length, slice.Length);
             Assert.True(slice.EqualsTo(new Span<byte>(expected, offset, length)));
@@ -206,8 +206,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task GetUInt64GivesExpectedValues()
         {
-            var writeBuffer = _pipe.Writer.Alloc();
-            writeBuffer.Ensure(50);
+            var writeBuffer = _pipe.Writer;
+            writeBuffer.GetMemory(50);
             writeBuffer.Advance(50); // not even going to pretend to write data here - we're going to cheat
             await writeBuffer.FlushAsync(); // by overwriting the buffer in-situ
 
@@ -228,7 +228,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData("\thell o ", "hell o ")]
         public async Task TrimStartTrimsWhitespaceAtStart(string input, string expected)
         {
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.ASCII.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(" hell o\t", " hell o")]
         public async Task TrimEndTrimsWhitespaceAtEnd(string input, string expected)
         {
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.ASCII.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
@@ -274,20 +274,20 @@ namespace System.IO.Pipelines.Tests
         {
             var sliceToBytes = Encoding.UTF8.GetBytes(sliceTo);
 
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             var bytes = Encoding.UTF8.GetBytes(input);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer slice, out Position cursor));
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out Position cursor));
             Assert.Equal(expected, slice.GetUtf8Span());
 
             _pipe.Reader.Advance(buffer.End);
         }
 
-        private unsafe void TestIndexOfWorksForAllLocations(ref ReadOnlyBuffer readBuffer, byte emptyValue)
+        private unsafe void TestIndexOfWorksForAllLocations(ref ReadOnlyBuffer<byte> readBuffer, byte emptyValue)
         {
             byte huntValue = (byte)~emptyValue;
 
@@ -295,7 +295,7 @@ namespace System.IO.Pipelines.Tests
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
-            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer slice, out Position cursor);
+            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out Position cursor);
             Assert.False(found);
 
             // correctness test all values
@@ -324,7 +324,7 @@ namespace System.IO.Pipelines.Tests
             handles.Clear();
         }
 
-        private static unsafe byte*[] BuildPointerIndex(ref ReadOnlyBuffer readBuffer, List<MemoryHandle> handles)
+        private static unsafe byte*[] BuildPointerIndex(ref ReadOnlyBuffer<byte> readBuffer, List<MemoryHandle> handles)
         {
 
             byte*[] addresses = new byte*[readBuffer.Length];
@@ -342,9 +342,9 @@ namespace System.IO.Pipelines.Tests
             return addresses;
         }
 
-        private unsafe void ReadUInt64GivesExpectedValues(ref ReadOnlyBuffer readBuffer)
+        private unsafe void ReadUInt64GivesExpectedValues(ref ReadOnlyBuffer<byte> readBuffer)
         {
-            Assert.True(readBuffer.IsSingleSpan);
+            Assert.True(readBuffer.IsSingleSegment);
 
             for (ulong i = 0; i < 1024; i++)
             {
@@ -368,7 +368,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private unsafe void TestValue(ref ReadOnlyBuffer readBuffer, ulong value)
+        private unsafe void TestValue(ref ReadOnlyBuffer<byte> readBuffer, ulong value)
         {
             fixed (byte* ptr = &MemoryMarshal.GetReference(readBuffer.First.Span))
             {
@@ -393,8 +393,8 @@ namespace System.IO.Pipelines.Tests
         {
             // note: different expectation to string.Split; empty has 0 outputs
             var expected = input == "" ? new string[0] : input.Split(delimiter);
-            var output = _pipe.Writer.Alloc();
-            output.AsOutput().Append(input, SymbolTable.InvariantUtf8);
+            var output = _pipe.Writer;
+            output.Append(input, SymbolTable.InvariantUtf8);
 
             var readable = BufferUtilities.CreateBuffer(input);
 
@@ -409,7 +409,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(expected.Length, i);
 
             // via objects/LINQ etc
-            IEnumerable<ReadOnlyBuffer> asObject = iter;
+            IEnumerable<ReadOnlyBuffer<byte>> asObject = iter;
             Assert.Equal(expected.Length, asObject.Count());
             i = 0;
             foreach (var item in asObject)
@@ -426,7 +426,7 @@ namespace System.IO.Pipelines.Tests
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
             var span = readable.First.Span;
-            Assert.True(readable.IsSingleSpan);
+            Assert.True(readable.IsSingleSegment);
             Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
             Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
             Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
@@ -452,7 +452,7 @@ namespace System.IO.Pipelines.Tests
             }
             Assert.Equal(3, spanCount);
 
-            Assert.False(readable.IsSingleSpan);
+            Assert.False(readable.IsSingleSegment);
             Span<byte> span = readable.ToArray();
 
             Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
@@ -472,9 +472,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var readerWriter = new Pipe(new PipeOptions(pool));
-                var output = readerWriter.Writer.Alloc();
-                output.AsOutput().Append("Hello World", SymbolTable.InvariantUtf8);
+                var readerWriter = new ResetablePipe(new PipeOptions(pool));
+                var output = readerWriter.Writer;
+                output.Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();

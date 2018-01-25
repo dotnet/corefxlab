@@ -25,14 +25,14 @@ namespace System.IO.Pipelines.Performance.Tests
             new byte[] { 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33}, // Hello, World!
         };
 
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool _memoryPool;
 
         [GlobalSetup]
         public void Setup()
         {
             _memoryPool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_memoryPool));
+            _pipe = new ResetablePipe(new PipeOptions(_memoryPool));
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 for (int i = 0; i < InnerLoopCount; i++)
                 {
-                    var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                    var writableBuffer = _pipe.Writer;
                     writableBuffer.Advance(WriteLength);
                     await writableBuffer.FlushAsync();
                 }
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                var writableBuffer = _pipe.Writer;
                 writableBuffer.Advance(WriteLength);
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
@@ -85,9 +85,9 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 for (int j = 0; j < 15; j++)
                 {
-                    var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                    var writableBuffer = _pipe.Writer;
+                    writableBuffer.GetMemory(WriteLength);
                     writableBuffer.Advance(WriteLength);
-                    writableBuffer.Commit();
                     if (j == 14)
                     {
                         writableBuffer.FlushAsync().GetResult();
@@ -105,7 +105,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(1);
+                var writableBuffer = _pipe.Writer;
 
                 foreach (var write in _plaintextWrites)
                 {
@@ -124,7 +124,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(1);
+                var writableBuffer = _pipe.Writer;
 
                 foreach (var write in _plaintextWrites)
                 {
@@ -143,12 +143,12 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(1);
-                var writer = new WritableBufferWriter(writableBuffer);
+                var writableBuffer = _pipe.Writer;
+                var writer = OutputWriter.Create(writableBuffer);
 
                 foreach (var write in _plaintextWrites)
                 {
-                    writer.Write(write, 0, write.Length);
+                    writer.Write(write);
                 }
 
                 writableBuffer.FlushAsync().GetResult();

@@ -13,13 +13,13 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipelineReaderWriterFacts : IDisposable
     {
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool<byte> _pool;
 
         public PipelineReaderWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new ResetablePipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
 
-            Assert.False(buffer.TrySliceTo(10, out ReadOnlyBuffer slice, out Position cursor));
+            Assert.False(buffer.TrySliceTo(10, out ReadOnlyBuffer<byte> slice, out Position cursor));
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
@@ -50,14 +50,14 @@ namespace System.IO.Pipelines.Tests
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.TrySliceTo((byte)'R', out ReadOnlyBuffer slice, out Position cursor));
+            Assert.False(buffer.TrySliceTo((byte)'R', out ReadOnlyBuffer<byte> slice, out Position cursor));
 
             _pipe.Reader.Advance(buffer.Start, buffer.Start);
         }
@@ -70,15 +70,15 @@ namespace System.IO.Pipelines.Tests
             // [padding..hello]  ->  [  world   ]
             var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var writeBuffer = _pipe.Writer.Alloc();
+            var writeBuffer = _pipe.Writer;
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.IsSingleSpan);
-            Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer slice, out Position cursor));
+            Assert.False(buffer.IsSingleSegment);
+            Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> slice, out Position cursor));
 
             slice = buffer.Slice(cursor).Slice(1);
             var array = slice.ToArray();

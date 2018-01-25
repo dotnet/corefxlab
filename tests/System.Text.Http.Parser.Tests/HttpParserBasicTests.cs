@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Xunit;
-using System.IO.Pipelines;
 using System.Collections.Generic;
 using System.Buffers;
 using System.Buffers.Text;
@@ -17,7 +16,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBytes buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestText));
+            ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestText));
 
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
@@ -49,8 +48,8 @@ namespace System.Text.Http.Parser.Tests
                 var frontBytes = Encoding.ASCII.GetBytes(front);
                 var endBytes = Encoding.ASCII.GetBytes(back);
 
-                var (first, last) = MemoryList.Create(frontBytes, endBytes);
-                ReadOnlyBytes buffer = new ReadOnlyBytes(first, last);
+                var (first, last) = BufferList.Create(frontBytes, endBytes);
+                var buffer = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
 
                 var request = new Request();
 
@@ -83,7 +82,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBytes buffer = new ReadOnlyBytes(_plaintextTechEmpowerRequestBytes);
+            ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(_plaintextTechEmpowerRequestBytes);
 
             Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
@@ -111,7 +110,7 @@ namespace System.Text.Http.Parser.Tests
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBuffer buffer = new ReadOnlyBuffer(_plaintextTechEmpowerRequestBytes);
+            ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(_plaintextTechEmpowerRequestBytes);
 
             Assert.True(parser.ParseRequestLine(request, buffer, out var consumed, out var read));
             Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out var examined, out var consumedBytes));

@@ -25,19 +25,19 @@ namespace System.IO.Pipelines.Performance.Tests
             "Accept-Language: en-US,en;q=0.8\r\n" +
             "Cookie: __unam=7a67379-1s65dc575c4-6d778abe-1; omniID=9519gfde_3347_4762_8762_df51458c8ec2\r\n\r\n";
 
-        private ReadOnlyBuffer _plainTextBuffer;
-        private ReadOnlyBuffer _plainTextPipelinedBuffer;
-        private ReadOnlyBuffer _liveAspNetBuffer;
-        private ReadOnlyBuffer _liveAspNetMultiBuffer;
+        private ReadOnlyBuffer<byte> _plainTextBuffer;
+        private ReadOnlyBuffer<byte> _plainTextPipelinedBuffer;
+        private ReadOnlyBuffer<byte> _liveAspNetBuffer;
+        private ReadOnlyBuffer<byte> _liveAspNetMultiBuffer;
 
         [GlobalSetup]
         public void Setup()
         {
             var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);
             var pipelinedRequests = string.Concat(Enumerable.Repeat(plaintextRequest, 16));
-            _plainTextPipelinedBuffer = new ReadOnlyBuffer(Encoding.UTF8.GetBytes(pipelinedRequests));
-            _plainTextBuffer = new ReadOnlyBuffer(Encoding.UTF8.GetBytes(plaintextRequest));
-            _liveAspNetBuffer = new ReadOnlyBuffer(liveaspnetRequestBytes);
+            _plainTextPipelinedBuffer = new ReadOnlyBuffer<byte>(Encoding.UTF8.GetBytes(pipelinedRequests));
+            _plainTextBuffer = new ReadOnlyBuffer<byte>(Encoding.UTF8.GetBytes(plaintextRequest));
+            _liveAspNetBuffer = new ReadOnlyBuffer<byte>(liveaspnetRequestBytes);
 
             // Split the liveaspnetRequest across 3 byte[]
             var remaining = liveaspnetRequestBytes.Length;
@@ -106,19 +106,19 @@ namespace System.IO.Pipelines.Performance.Tests
             FindAllNewLinesReadableBufferReader(_liveAspNetMultiBuffer);
         }
 
-        private static void FindAllNewLinesReadableBufferReader(ReadOnlyBuffer buffer)
+        private static void FindAllNewLinesReadableBufferReader(ReadOnlyBuffer<byte> buffer)
         {
-            var reader = new BufferReader(buffer);
+            var reader = BufferReader.Create(buffer);
             var end = buffer.End;
 
             while (!reader.End)
             {
-                var span = reader.Span;
+                var span = reader.CurrentSegment;
 
                 // Trim the start if we have an index
-                if (reader.Index > 0)
+                if (reader.CurrentSegmentIndex > 0)
                 {
-                    span = span.Slice(reader.Index);
+                    span = span.Slice(reader.CurrentSegmentIndex);
                 }
 
                 while (span.Length > 0)
@@ -128,16 +128,16 @@ namespace System.IO.Pipelines.Performance.Tests
 
                     if (length == -1)
                     {
-                        var current = reader.Cursor;
-
-                        if (ReadOnlyBuffer.Seek(current, end, out var found, (byte)'\n') == -1)
+                        var subBuffer = buffer.Slice(reader.Position);
+                        var position = subBuffer.PositionOf((byte)'\n');
+                        if (position == null)
                         {
                             // We're done
                             return;
                         }
 
                         length = span.Length;
-                        skip = (int)buffer.Slice(current, found).Length + 1;
+                        skip = (int)subBuffer.Slice(0, position.Value).Length + 1;
                     }
                     else
                     {
@@ -146,24 +146,22 @@ namespace System.IO.Pipelines.Performance.Tests
                     }
 
                     span = span.Slice(length);
-                    reader.Skip(skip);
+                    reader.Advance(skip);
                 }
             }
         }
 
-        private static void FindAllNewLines(ReadOnlyBuffer buffer)
+        private static void FindAllNewLines(ReadOnlyBuffer<byte> buffer)
         {
-            var start = buffer.Start;
-            var end = buffer.End;
-
             while (true)
             {
-                if (ReadOnlyBuffer.Seek(start, end, out var found, (byte)'\n') == -1)
+                var position = buffer.PositionOf((byte)'\n');
+                if (position == null)
                 {
                     break;
                 }
 
-                start = buffer.Move(found, 1);
+                buffer = buffer.Slice(position.Value).Slice(1);
             }
         }
     }

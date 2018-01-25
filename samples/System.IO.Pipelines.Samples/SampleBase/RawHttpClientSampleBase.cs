@@ -21,8 +21,8 @@ namespace System.IO.Pipelines.Samples
 
             while (true)
             {
-                var buffer = connection.Output.Alloc();
-                var output = buffer.AsOutput();
+                var buffer = connection.Output;
+                var output = buffer;
 
                 output.Append("GET / HTTP/1.1", SymbolTable.InvariantUtf8);
                 output.Append("\r\n\r\n", SymbolTable.InvariantUtf8);
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Samples
 
         protected abstract Task<IPipeConnection> GetConnection();
 
-        private async Task CopyCompletedAsync(IPipeReader input, IPipeWriter output)
+        private async Task CopyCompletedAsync(PipeReader input, PipeWriter output)
         {
             var result = await input.ReadAsync();
             var inputBuffer = result.Buffer;
@@ -53,7 +53,7 @@ namespace System.IO.Pipelines.Samples
                         return;
                     }
 
-                    var buffer = output.Alloc();
+                    var buffer = output;
                     foreach (var memory in inputBuffer)
                     {
                         buffer.Write(memory.Span);

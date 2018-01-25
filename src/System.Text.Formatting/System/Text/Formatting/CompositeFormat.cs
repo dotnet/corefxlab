@@ -132,8 +132,7 @@ namespace System.Text.Formatting
             var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
             while(buffer.Length < maxBytes)
             {
-                formatter.Enlarge(maxBytes);
-                buffer = formatter.GetSpan();
+                buffer = formatter.GetSpan(maxBytes);
             }
 
             // this should be optimized using fixed pointer to substring, but I will wait with this till we design proper substring

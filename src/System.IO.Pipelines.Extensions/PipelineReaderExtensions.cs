@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace System.IO.Pipelines
 {
     public static class PipelineReaderExtensions
     {
-        public static ValueTask<int> ReadAsync(this IPipeReader input, ArraySegment<byte> destination)
+        public static ValueTask<int> ReadAsync(this PipeReader input, ArraySegment<byte> destination)
         {
             while (true)
             {
@@ -43,7 +44,7 @@ namespace System.IO.Pipelines
             return new ValueTask<int>(input.ReadAsyncAwaited(destination));
         }
 
-        public static async Task CopyToAsync(this IPipeReader input, IPipeWriter output)
+        public static async Task CopyToAsync(this PipeReader input, PipeWriter output)
         {
             while (true)
             {
@@ -57,7 +58,7 @@ namespace System.IO.Pipelines
                         return;
                     }
 
-                    var buffer = output.Alloc();
+                    var buffer = output;
 
                     foreach (var memory in inputBuffer)
                     {
@@ -74,7 +75,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static async Task<int> ReadAsyncAwaited(this IPipeReader input, ArraySegment<byte> destination)
+        private static async Task<int> ReadAsyncAwaited(this PipeReader input, ArraySegment<byte> destination)
         {
             while (true)
             {
@@ -98,12 +99,12 @@ namespace System.IO.Pipelines
             }
         }
 
-        public static Task CopyToAsync(this IPipeReader input, Stream stream)
+        public static Task CopyToAsync(this PipeReader input, Stream stream)
         {
             return input.CopyToAsync(stream, 4096, CancellationToken.None);
         }
 
-        public static async Task CopyToAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        public static async Task CopyToAsync(this PipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
         {
             // TODO: Use bufferSize argument
             while (!cancellationToken.IsCancellationRequested)

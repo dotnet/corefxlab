@@ -85,7 +85,7 @@ namespace System.Diagnostics
 
     public static class HttpLogExtensions
     {
-        public static void LogRequest(this Log log, HttpRequest request, ReadOnlyBytes body)
+        public static void LogRequest(this Log log, HttpRequest request, ReadOnlyBuffer<byte> body)
         {
             if (log.IsVerbose)
             {
@@ -102,7 +102,7 @@ namespace System.Diagnostics
                 }
 
                 // TODO: Logger should support Utf8Span
-                log.LogMessage(Log.Level.Verbose, Utf8.ToString(body.Memory.Span));
+                log.LogMessage(Log.Level.Verbose, Utf8.ToString(body.First.Span));
             }
         }
     }

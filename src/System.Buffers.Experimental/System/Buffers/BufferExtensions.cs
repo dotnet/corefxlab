@@ -126,7 +126,7 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this IBufferOperation transformation, ReadOnlyBytes source, IOutput destination)
+        public static void Pipe(this IBufferOperation transformation, ReadOnlyBuffer<byte> source, IOutput destination)
         {
             int afterMergeSlice = 0;
 
@@ -160,7 +160,6 @@ namespace System.Buffers
 
                         if (status == OperationStatus.DestinationTooSmall)
                         {
-                            destination.Enlarge();  // output buffer is too small
                             outputSpan = destination.GetSpan();
 
                             if (outputSpan.Length - bytesWritten < 3)
@@ -202,7 +201,7 @@ namespace System.Buffers
                 // Not successful
                 if (result == OperationStatus.DestinationTooSmall)
                 {
-                    destination.Enlarge();  // output buffer is too small
+                    destination.GetMemory();  // output buffer is too small
                     outputSpan = destination.GetSpan();
                     if (outputSpan.Length - written < 3)
                     {
