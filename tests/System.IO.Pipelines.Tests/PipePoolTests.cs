@@ -151,7 +151,7 @@ namespace System.IO.Pipelines.Tests
                     }
                 }
 
-                public override MemoryHandle Pin()
+                public override MemoryHandle Pin(int byteOffset = 0)
                 {
                     throw new NotImplementedException();
                 }

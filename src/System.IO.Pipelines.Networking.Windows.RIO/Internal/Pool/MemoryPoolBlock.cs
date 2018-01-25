@@ -116,8 +116,8 @@ namespace System.Buffers
             if (newRefCount < 0) RioPipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
             if (newRefCount == 0)
             {
-               OnZeroReferences();
-               return false;
+                OnZeroReferences();
+                return false;
             }
             return true;
         }
@@ -134,13 +134,13 @@ namespace System.Buffers
             return true;
         }
 
-        public override MemoryHandle Pin()
+        public override MemoryHandle Pin(int byteOffset = 0)
         {
-            if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
-            Retain();
+            Retain();   // checks IsDisposed
+            if (byteOffset < 0 || byteOffset > _length) RioPipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, byteOffset);
             unsafe
             {
-                return new MemoryHandle(this, (Slab.NativePointer + _offset).ToPointer());
+                return new MemoryHandle(this, (Slab.NativePointer + _offset + byteOffset).ToPointer());
             }
         }
     }
