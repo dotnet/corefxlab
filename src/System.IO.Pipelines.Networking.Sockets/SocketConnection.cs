@@ -116,7 +116,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// <param name="pipeOptions">Optionally configures the Pipe <see cref="Pipe"/> with the sepecified options; if none is provided, a <see cref="PipeOptions"/> with <see cref="MemoryPool.Default"/> and <see cref="Scheduler.TaskRun"/> will be used </param>
         public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipeOptions pipeOptions = null)
         {
-            pipeOptions = pipeOptions ?? new PipeOptions(MemoryPool.Default, Scheduler.TaskRun, Scheduler.TaskRun);
+            pipeOptions = pipeOptions ?? new PipeOptions(MemoryPool.Default, Scheduler.ThreadPool, Scheduler.ThreadPool);
 
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
