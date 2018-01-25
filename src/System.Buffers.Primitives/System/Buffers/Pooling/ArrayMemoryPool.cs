@@ -76,7 +76,7 @@ namespace System.Buffers.Internal
                 unsafe
                 {
                     Retain(); // this checks IsDisposed
-                    if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                    if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                     var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
                     void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
                     return new MemoryHandle(this, pointer, handle);
