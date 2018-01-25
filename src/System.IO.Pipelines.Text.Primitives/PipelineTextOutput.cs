@@ -10,10 +10,10 @@ namespace System.IO.Pipelines.Text.Primitives
 {
     public class PipelineTextOutput : ITextOutput
     {
-        private readonly IPipeWriter _writer;
+        private readonly PipeWriter _writer;
         private bool _needAlloc = true;
 
-        public PipelineTextOutput(IPipeWriter writer, SymbolTable symbolTable)
+        public PipelineTextOutput(PipeWriter writer, SymbolTable symbolTable)
         {
             _writer = writer;
             SymbolTable = symbolTable;

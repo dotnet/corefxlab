@@ -24,13 +24,13 @@ namespace System.IO.Pipelines.Tests
     {
         const int BlockSize = 4032;
 
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool<byte> _pool;
 
         public ReadableBufferFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new ResetablePipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -472,7 +472,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var readerWriter = new Pipe(new PipeOptions(pool));
+                var readerWriter = new ResetablePipe(new PipeOptions(pool));
                 var output = readerWriter.Writer;
                 output.Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();

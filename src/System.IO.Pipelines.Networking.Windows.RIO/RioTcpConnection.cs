@@ -27,8 +27,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private long _previousSendCorrelation = RestartSendCorrelations;
 
-        private readonly IPipe _input;
-        private readonly IPipe _output;
+        private readonly Pipe _input;
+        private readonly Pipe _output;
 
         private readonly SemaphoreSlim _outgoingSends = new SemaphoreSlim(RioTcpServer.MaxWritesPerSocket);
         private readonly SemaphoreSlim _previousSendsComplete = new SemaphoreSlim(1);
@@ -44,8 +44,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _rio = rio;
             _rioThread = rioThread;
 
-            _input = new Pipe(new PipeOptions(rioThread.Pool));
-            _output = new Pipe(new PipeOptions(rioThread.Pool));
+            _input = new ResetablePipe(new PipeOptions(rioThread.Pool));
+            _output = new ResetablePipe(new PipeOptions(rioThread.Pool));
 
             _requestQueue = requestQueue;
 
@@ -55,8 +55,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _sendTask = ProcessSends();
         }
 
-        public IPipeReader Input => _input.Reader;
-        public IPipeWriter Output => _output.Writer;
+        public PipeReader Input => _input.Reader;
+        public PipeWriter Output => _output.Writer;
 
         private void ProcessReceives()
         {

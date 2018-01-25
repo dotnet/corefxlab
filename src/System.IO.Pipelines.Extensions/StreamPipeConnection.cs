@@ -11,9 +11,9 @@ namespace System.IO.Pipelines
             Output = CreateWriter(options, stream);
         }
 
-        public IPipeReader Input { get; }
+        public PipeReader Input { get; }
 
-        public IPipeWriter Output { get; }
+        public PipeWriter Output { get; }
 
         public void Dispose()
         {
@@ -21,27 +21,27 @@ namespace System.IO.Pipelines
             Output.Complete();
         }
 
-        public static IPipeReader CreateReader(PipeOptions options, Stream stream)
+        public static PipeReader CreateReader(PipeOptions options, Stream stream)
         {
             if (!stream.CanRead)
             {
                 throw new NotSupportedException();
             }
 
-            var pipe = new Pipe(options);
+            var pipe = new ResetablePipe(options);
             var ignore = stream.CopyToEndAsync(pipe.Writer);
 
             return pipe.Reader;
         }
 
-        public static IPipeWriter CreateWriter(PipeOptions options, Stream stream)
+        public static PipeWriter CreateWriter(PipeOptions options, Stream stream)
         {
             if (!stream.CanWrite)
             {
                 throw new NotSupportedException();
             }
 
-            var pipe = new Pipe(options);
+            var pipe = new ResetablePipe(options);
             var ignore = pipe.Reader.CopyToEndAsync(stream);
 
             return pipe.Writer;

@@ -40,7 +40,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadWriteBytes(IBufferList<byte> first, IBufferList<byte> last)
+        public ReadWriteBytes(IMemoryList<byte> first, IMemoryList<byte> last)
         {
             _start = first;
             _startIndex = 0;
@@ -85,7 +85,7 @@ namespace System.Buffers
                 case Type.Array:
                     return new ReadWriteBytes((byte[])_start, (int)(_startIndex + index), (int)length);
                 case Type.MemoryList:
-                    var sl = (IBufferList<byte>)_start;
+                    var sl = (IMemoryList<byte>)_start;
                     index += _startIndex;
                     while (true)
                     {
@@ -139,7 +139,7 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, new Position((IBufferList<byte>)_end, _endIndex));
+                    return Slice(position, new Position((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
@@ -153,8 +153,8 @@ namespace System.Buffers
                     var (array, index) = start.Get<byte[]>();
                     return new ReadWriteBytes(array, index, (int)end - index);
                 case Type.MemoryList:
-                    var (startList, startIndex) = start.Get<IBufferList<byte>>();
-                    var (endList, endIndex) = end.Get<IBufferList<byte>>();
+                    var (startList, startIndex) = start.Get<IMemoryList<byte>>();
+                    var (endList, endIndex) = end.Get<IMemoryList<byte>>();
                     return new ReadWriteBytes(startList, startIndex, endList, endIndex);
                 default:
                     throw new NotImplementedException();
@@ -173,7 +173,7 @@ namespace System.Buffers
                     case Type.Array:
                         return new ReadOnlyMemory<byte>((byte[])_start, _startIndex, _endIndex - _startIndex);
                     case Type.MemoryList:
-                        var list = (IBufferList<byte>)_start;
+                        var list = (IMemoryList<byte>)_start;
                         if (ReferenceEquals(list, _end))
                         {
                             return list.Memory.Slice(_startIndex, _endIndex - _startIndex);
@@ -197,9 +197,9 @@ namespace System.Buffers
                     case Type.Array:
                         return _endIndex - _startIndex;
                     case Type.MemoryList:
-                        var sl = (IBufferList<byte>)_start;
-                        var el = (IBufferList<byte>)_end;
-                        return (el.RunningLength + _endIndex) - (sl.RunningLength + _startIndex);
+                        var sl = (IMemoryList<byte>)_start;
+                        var el = (IMemoryList<byte>)_end;
+                        return (el.RunningIndex + _endIndex) - (sl.RunningIndex + _startIndex);
                     default:
                         throw new NotImplementedException();
                 }
@@ -228,7 +228,7 @@ namespace System.Buffers
             get {
                 if (_start is byte[]) return Type.Array;
                 if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
-                if (_start is IBufferList<byte>) return Type.MemoryList;
+                if (_start is IMemoryList<byte>) return Type.MemoryList;
                 throw new NotSupportedException();
             }
         }
@@ -287,7 +287,7 @@ namespace System.Buffers
 
             if (Kind == Type.MemoryList)
             {
-                var (node, index) = position.Get<IBufferList<byte>>();
+                var (node, index) = position.Get<IMemoryList<byte>>();
                 item = node.Memory.Slice(index);
                 if (ReferenceEquals(node, _end))
                 {
@@ -319,7 +319,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    var (segment, index) = origin.Get<IBufferList<byte>>();
+                    var (segment, index) = origin.Get<IMemoryList<byte>>();
                     return new Position(segment, (int)(index + offset));
                 }
             }

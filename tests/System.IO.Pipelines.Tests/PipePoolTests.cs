@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             var pool = new DisposeTrackingBufferPool();
 
-            var readerWriter = new Pipe(new PipeOptions(pool));
+            var readerWriter = new ResetablePipe(new PipeOptions(pool));
             await readerWriter.Writer.WriteAsync(new byte[] {1});
 
             readerWriter.Writer.Complete();
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = new ResetablePipe(new PipeOptions(pool));
             while (pool.CurrentlyRentedBlocks != 3)
             {
                 var writableBuffer = pipe.Writer.WriteEmpty(writeSize);
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = new ResetablePipe(new PipeOptions(pool));
             await pipe.Writer.WriteAsync(new byte[writeSize]);
 
             pipe.Writer.GetMemory(writeSize);
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool));
+            var pipe = new ResetablePipe(new PipeOptions(pool));
 
             // Write two blocks
             var buffer = pipe.Writer.GetMemory(writeSize);
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Tests
             var pool = new DisposeTrackingBufferPool();
             var writeSize = 512;
 
-            var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
+            var pipe = new ResetablePipe(new PipeOptions(pool, minimumSegmentSize: 2020));
 
             var buffer = pipe.Writer.GetMemory(writeSize);
             var allocatedSize = buffer.Length;
@@ -151,7 +151,7 @@ namespace System.IO.Pipelines.Tests
                     }
                 }
 
-                public override MemoryHandle Pin()
+                public override MemoryHandle Pin(int byteOffset = 0)
                 {
                     throw new NotImplementedException();
                 }

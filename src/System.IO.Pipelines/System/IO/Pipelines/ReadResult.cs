@@ -6,7 +6,7 @@ using System.Buffers;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// The result of a <see cref="IPipeReader.ReadAsync"/> call.
+    /// The result of a <see cref="PipeReader.ReadAsync"/> call.
     /// </summary>
     public struct ReadResult
     {
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines
         public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) != 0;
 
         /// <summary>
-        /// True if the <see cref="IPipeReader"/> is complete
+        /// True if the <see cref="PipeReader"/> is complete
         /// </summary>
         public bool IsCompleted => (ResultFlags & ResultFlags.Completed) != 0;
     }

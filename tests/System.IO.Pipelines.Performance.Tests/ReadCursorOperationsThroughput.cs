@@ -116,9 +116,9 @@ namespace System.IO.Pipelines.Performance.Tests
                 var span = reader.CurrentSegment;
 
                 // Trim the start if we have an index
-                if (reader.Index > 0)
+                if (reader.CurrentSegmentIndex > 0)
                 {
-                    span = span.Slice(reader.Index);
+                    span = span.Slice(reader.CurrentSegmentIndex);
                 }
 
                 while (span.Length > 0)

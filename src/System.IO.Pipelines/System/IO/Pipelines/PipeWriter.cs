@@ -9,26 +9,29 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public interface IPipeWriter: IOutput
+    public abstract class PipeWriter: IOutput
     {
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void Complete(Exception exception = null);
+        public abstract void Complete(Exception exception = null);
 
         /// <summary>
-        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="PipeReader"/>.
         /// </summary>
-        void CancelPendingFlush();
+        public abstract void CancelPendingFlush();
 
         /// <summary>
         /// Registers callback that gets executed when reader side of pipe completes.
         /// </summary>
-        void OnReaderCompleted(Action<Exception, object> callback, object state);
+        public abstract void OnReaderCompleted(Action<Exception, object> callback, object state);
 
-        ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default);
+        public abstract ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default);
 
-        void Commit();
+        public abstract void Commit();
+        public abstract void Advance(int bytes);
+        public abstract Memory<byte> GetMemory(int minimumLength = 0);
+        public abstract Span<byte> GetSpan(int minimumLength = 0);
     }
 }

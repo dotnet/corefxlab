@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
         private readonly bool _ownsPool;
         private MemoryPool<byte> _pool;
-        private IPipe _input, _output;
+        private Pipe _input, _output;
         private Socket _socket;
         private Task _receiveTask;
         private Task _sendTask;
@@ -86,8 +86,8 @@ namespace System.IO.Pipelines.Networking.Sockets
 
             // TODO: Make this configurable
             // Dispatch to avoid deadlocks
-            _input = new Pipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
-            _output = new Pipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
+            _input = new ResetablePipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
+            _output = new ResetablePipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -96,12 +96,12 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// <summary>
         /// Provides access to data received from the socket
         /// </summary>
-        public IPipeReader Input => _input.Reader;
+        public PipeReader Input => _input.Reader;
 
         /// <summary>
         /// Provides access to write data to the socket
         /// </summary>
-        public IPipeWriter Output => _output.Writer;
+        public PipeWriter Output => _output.Writer;
 
         private MemoryPool<byte> Pool => _pool;
 

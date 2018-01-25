@@ -59,9 +59,10 @@ namespace System.Buffers.Native
             base.Dispose(disposing);
         }
 
-        public unsafe override MemoryHandle Pin()
+        public unsafe override MemoryHandle Pin(int byteOffset = 0)
         {
-            return new MemoryHandle(this, _pointer.ToPointer());
+            if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+            return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
         }
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)

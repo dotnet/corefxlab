@@ -8,7 +8,7 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    internal class BufferSegment : IBufferList<byte>
+    internal class BufferSegment : IMemoryList<byte>
     {
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Combined length of all segments before this
         /// </summary>
-        public long RunningLength { get; private set; }
+        public long RunningIndex { get; private set; }
 
         /// <summary>
         /// The buffer being tracked if segment owns the memory
@@ -67,7 +67,7 @@ namespace System.IO.Pipelines
             AvailableMemory = _ownedMemory.Memory;
 
             ReadOnly = readOnly;
-            RunningLength = 0;
+            RunningIndex = 0;
             Start = start;
             End = end;
             NextSegment = null;
@@ -86,7 +86,7 @@ namespace System.IO.Pipelines
 
         public int Length => End - Start;
 
-        public IBufferList<byte> Next => NextSegment;
+        public IMemoryList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -126,7 +126,7 @@ namespace System.IO.Pipelines
 
             while (segment.Next != null)
             {
-                segment.NextSegment.RunningLength = segment.RunningLength + segment.Length;
+                segment.NextSegment.RunningIndex = segment.RunningIndex + segment.Length;
                 segment = segment.NextSegment;
             }
         }

@@ -44,7 +44,7 @@ namespace System.Buffers
 
         public bool End => _end;
 
-        public int Index => _index;
+        public int CurrentSegmentIndex => _index;
 
         public TSequence Sequence => _sequence;
 
@@ -67,7 +67,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Take()
+        public int Read()
         {
             if (_end)
             {

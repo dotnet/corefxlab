@@ -10,9 +10,9 @@ namespace System.IO.Pipelines.Samples
 {
     public class PipelineHttpContent : HttpContent
     {
-        private readonly IPipeReader _output;
+        private readonly PipeReader _output;
 
-        public PipelineHttpContent(IPipeReader output)
+        public PipelineHttpContent(PipeReader output)
         {
             _output = output;
         }
