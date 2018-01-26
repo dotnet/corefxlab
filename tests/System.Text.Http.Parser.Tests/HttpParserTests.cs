@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.IO.Pipelines;
@@ -313,7 +314,7 @@ namespace System.Text.Http.Parser.Tests
             ReadOnlyBuffer<byte> buffer = BufferUtilities.CreateBuffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
-            bool result = parser.ParseRequestLine(requestHandler, buffer, out SequenceIndex consumed, out SequenceIndex examined);
+            bool result = parser.ParseRequestLine(requestHandler, buffer, out SequencePosition consumed, out SequencePosition examined);
             Assert.False(result);
             Assert.Equal(buffer.Slice(consumed).Length, buffer.Length);
             Assert.True(buffer.Slice(examined).IsEmpty);

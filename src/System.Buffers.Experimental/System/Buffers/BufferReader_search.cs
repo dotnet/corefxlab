@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Buffers
 {
     public interface ISlicable
     {
-        ReadOnlyBuffer<byte> Slice(SequenceIndex start, SequenceIndex end);
+        ReadOnlyBuffer<byte> Slice(SequencePosition start, SequencePosition end);
     }
 
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
@@ -17,10 +18,10 @@ namespace System.Buffers
             where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
         {
             var copy = reader;
-            var start = reader.SequenceIndex;
+            var start = reader.SequencePosition;
             while (!reader.End)
             {
-                SequenceIndex end = reader.SequenceIndex;
+                SequencePosition end = reader.SequencePosition;
                 if (reader.Read() == delimiter)
                 {
                     bytes = reader.Sequence.Slice(start, end);
@@ -43,8 +44,8 @@ namespace System.Buffers
 
             int matched = 0;
             var copy = reader;
-            var start = reader.SequenceIndex;
-            var end = reader.SequenceIndex;
+            var start = reader.SequencePosition;
+            var end = reader.SequencePosition;
             while (!reader.End)
             {
                 if (reader.Read() == delimiter[matched])
@@ -53,7 +54,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    end = reader.SequenceIndex;
+                    end = reader.SequencePosition;
                     matched = 0;
                 }
                 if (matched >= delimiter.Length)

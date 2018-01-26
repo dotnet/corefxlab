@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.IO.Pipelines;
 using System.Numerics;
@@ -37,7 +38,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequenceIndex consumed, out SequenceIndex examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -56,7 +57,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                if (TryGetNewLineSpan(buffer, out SequenceIndex found))
+                if (TryGetNewLineSpan(buffer, out SequencePosition found))
                 {
                     span = buffer.Slice(consumed, found).ToSpan();
                     consumed = found;
@@ -229,7 +230,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequenceIndex consumed, out SequenceIndex examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -319,8 +320,8 @@ namespace System.Text.Http.Parser
                             }
                             else
                             {
-                                var current = reader.SequenceIndex;
-                                var subBuffer = buffer.Slice(reader.SequenceIndex);
+                                var current = reader.SequencePosition;
+                                var subBuffer = buffer.Slice(reader.SequencePosition);
                                 // Split buffers
                                 var lineEnd = subBuffer.PositionOf(ByteLF);
                                 if (!lineEnd.HasValue)
@@ -356,7 +357,7 @@ namespace System.Text.Http.Parser
             }
             finally
             {
-                consumed = reader.SequenceIndex;
+                consumed = reader.SequencePosition;
                 consumedBytes = reader.ConsumedBytes;
 
                 if (done)
@@ -370,9 +371,9 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            SequenceIndex sequenceIndex = buffer.Start;
+            SequencePosition position = buffer.Start;
 
-            if(!buffer.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> currentMemory))
+            if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {
                 consumedBytes = 0;
                 return false;
@@ -463,7 +464,7 @@ namespace System.Text.Http.Parser
                     }
                 }
 
-                if (buffer.TryGet(ref sequenceIndex, out var nextSegment))
+                if (buffer.TryGet(ref position, out var nextSegment))
                 {
                     currentSpan = nextSegment.Span;
                     remaining = currentSpan.Length + remaining;
@@ -647,7 +648,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequenceIndex found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequencePosition found)
         {
             var position = buffer.PositionOf(ByteLF);
             if (position.HasValue)

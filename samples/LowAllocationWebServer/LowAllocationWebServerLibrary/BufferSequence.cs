@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace Microsoft.Net
@@ -35,7 +36,7 @@ namespace Microsoft.Net
 
         public long RunningIndex => throw new NotImplementedException();
 
-        public SequenceIndex First => new SequenceIndex(this, 0);
+        public SequencePosition First => new SequencePosition(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -48,30 +49,30 @@ namespace Microsoft.Net
             return buffer.Length;
         }
 
-        public bool TryGet(ref SequenceIndex sequenceIndex, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
-            if (sequenceIndex == default) {
+            if (position == default) {
                 item = default;
                 return false;
             }
 
-            var (buffer, index) = sequenceIndex.Get<BufferSequence>();
+            var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.Memory.Slice(index, buffer._written - index);
-            if (advance) { sequenceIndex = new SequenceIndex(buffer._next, 0); }
+            if (advance) { position = new SequencePosition(buffer._next, 0); }
             return true;
         }
 
-        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (sequenceIndex == default)
+            if (position == default)
             {
                 item = default;
                 return false;
             }
 
-            var (buffer, index) = sequenceIndex.Get<BufferSequence>();
+            var (buffer, index) = position.Get<BufferSequence>();
             item = buffer.WrittenMemory.Slice(index);
-            if (advance) { sequenceIndex = new SequenceIndex(buffer._next, 0); }
+            if (advance) { position = new SequencePosition(buffer._next, 0); }
             return true;
         }
 

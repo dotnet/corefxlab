@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Text.Parsing
@@ -15,10 +16,10 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            SequenceIndex sequenceIndex = default;
+            SequencePosition position = default;
 
             // Fetch the first segment
-            if (!bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> first))
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
             {
                 return false;
             }
@@ -30,7 +31,7 @@ namespace System.Text.Parsing
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            if (!bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> second))
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> second))
             {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
@@ -51,7 +52,7 @@ namespace System.Text.Parsing
 
                 while (free.Length > 0)
                 {
-                    if (bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> next))
+                    if (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> next))
                     {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
                         next.Span.CopyTo(free);
@@ -88,10 +89,10 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            SequenceIndex sequenceIndex = default;
+            SequencePosition position = default;
 
             // Fetch the first segment
-            if (!bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> first))
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
             {
                 return false;
             }
@@ -103,7 +104,7 @@ namespace System.Text.Parsing
             }
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
-            if (!bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> second))
+            if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> second))
             {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
@@ -124,7 +125,7 @@ namespace System.Text.Parsing
 
                 while (free.Length > 0)
                 {
-                    if (bufferSequence.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> next))
+                    if (bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> next))
                     {
                         if (next.Length > free.Length) next = next.Slice(0, free.Length);
                         next.Span.CopyTo(free);

@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 using Xunit;
 
@@ -139,7 +140,7 @@ namespace System.Buffers.Tests
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);
 
-                Assert.True(Sequence.TryParse(bytes, out value, out SequenceIndex consumedPosition));
+                Assert.True(Sequence.TryParse(bytes, out value, out SequencePosition consumedPosition));
                 Assert.Equal(expected, value);
 
                 var afterValue = bytes.Slice(consumedPosition);

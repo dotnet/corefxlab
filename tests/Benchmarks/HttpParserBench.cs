@@ -5,6 +5,7 @@
 using Microsoft.Xunit.Performance;
 using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
@@ -37,8 +38,8 @@ public class HttpParserBench
         ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
         var parser = new HttpParser();
         var request = new Request();
-        SequenceIndex consumed = default;
-        SequenceIndex read;
+        SequencePosition consumed = default;
+        SequencePosition read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -71,8 +72,8 @@ public class HttpParserBench
         ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        SequenceIndex consumed;
-        SequenceIndex examined;
+        SequencePosition consumed;
+        SequencePosition examined;
         int consumedBytes;
         bool success = true;
 
@@ -103,8 +104,8 @@ public class HttpParserBench
         var parser = new HttpParser();
         var request = new Request();
         int consumedBytes  = 0;
-        SequenceIndex examined;
-        SequenceIndex consumed = buffer.Start;
+        SequencePosition examined;
+        SequencePosition consumed = buffer.Start;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations) {

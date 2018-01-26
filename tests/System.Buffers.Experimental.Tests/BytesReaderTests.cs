@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
@@ -169,15 +170,15 @@ namespace System.Buffers.Tests
             _buffer = buffer;
         }
 
-        public SequenceIndex Start => _buffer.Start;
+        public SequencePosition Start => _buffer.Start;
 
-        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
+        public SequencePosition GetPosition(SequencePosition origin, long offset)
             => _buffer.GetPosition(origin, offset);
 
-        public ReadOnlyBuffer<byte> Slice(SequenceIndex start, SequenceIndex end)
+        public ReadOnlyBuffer<byte> Slice(SequencePosition start, SequencePosition end)
             => _buffer.Slice(start, end);
 
-        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<byte> item, bool advance = true)
-            => _buffer.TryGet(ref sequenceIndex, out item, advance);
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
+            => _buffer.TryGet(ref position, out item, advance);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -13,14 +14,14 @@ namespace System.IO.Pipelines
 
         /// <summary>
         /// Searches for 2 sequential bytes in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
-        /// contains all data up to and excluding the first byte, and a <see cref="SequenceIndex"/> that points to the second byte.
+        /// contains all data up to and excluding the first byte, and a <see cref="SequencePosition"/> that points to the second byte.
         /// </summary>
         /// <param name="b1">The first byte to search for</param>
         /// <param name="b2">The second byte to search for</param>
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
-        /// <param name="cursor">A <see cref="SequenceIndex"/> that points to the second byte</param>
+        /// <param name="cursor">A <see cref="SequencePosition"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static unsafe bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, byte b2, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor)
+        public static unsafe bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, byte b2, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor)
         {
             // use address of ushort rather than stackalloc as the inliner won't inline functions with stackalloc
             ushort twoBytes;
@@ -32,13 +33,13 @@ namespace System.IO.Pipelines
 
         /// <summary>
         /// Searches for a span of bytes in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
-        /// contains all data up to and excluding the first byte of the span, and a <see cref="SequenceIndex"/> that points to the last byte of the span.
+        /// contains all data up to and excluding the first byte of the span, and a <see cref="SequencePosition"/> that points to the last byte of the span.
         /// </summary>
         /// <param name="span">The <see cref="Span{Byte}"/> byte to search for</param>
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> that matches all data up to and excluding the first byte</param>
-        /// <param name="cursor">A <see cref="SequenceIndex"/> that points to the second byte</param>
+        /// <param name="cursor">A <see cref="SequencePosition"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, Span<byte> span, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, Span<byte> span, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor)
         {
             var result = false;
             var subBuffer = buffer;
@@ -70,13 +71,13 @@ namespace System.IO.Pipelines
 
         /// <summary>
         /// Searches for a byte in the <see cref="ReadOnlyBuffer"/> and returns a sliced <see cref="ReadOnlyBuffer"/> that
-        /// contains all data up to and excluding the byte, and a <see cref="SequenceIndex"/> that points to the byte.
+        /// contains all data up to and excluding the byte, and a <see cref="SequencePosition"/> that points to the byte.
         /// </summary>
         /// <param name="b1">The first byte to search for</param>
         /// <param name="slice">A <see cref="ReadOnlyBuffer"/> slice that contains all data up to and excluding the first byte.</param>
-        /// <param name="cursor">A <see cref="SequenceIndex"/> that points to the second byte</param>
+        /// <param name="cursor">A <see cref="SequencePosition"/> that points to the second byte</param>
         /// <returns>True if the byte sequence was found, false if not found</returns>
-        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor)
+        public static bool TrySliceTo(this ReadOnlyBuffer<byte> buffer, byte b1, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor)
         {
             if (buffer.IsEmpty)
             {

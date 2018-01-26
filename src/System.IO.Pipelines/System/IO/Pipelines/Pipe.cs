@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -358,12 +359,12 @@ namespace System.IO.Pipelines
         }
 
         // Reading
-        internal void Advance(SequenceIndex consumed)
+        internal void Advance(SequencePosition consumed)
         {
             Advance(consumed, consumed);
         }
 
-        internal void Advance(SequenceIndex consumed, SequenceIndex examined)
+        internal void Advance(SequencePosition consumed, SequencePosition examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -797,12 +798,12 @@ namespace System.IO.Pipelines
                 return _pipe.ReadAsync(cancellationToken);
             }
 
-            public override void AdvanceTo(SequenceIndex consumed)
+            public override void AdvanceTo(SequencePosition consumed)
             {
                 _pipe.Advance(consumed);
             }
 
-            public override void AdvanceTo(SequenceIndex consumed, SequenceIndex examined)
+            public override void AdvanceTo(SequencePosition consumed, SequencePosition examined)
             {
                 _pipe.Advance(consumed, examined);
             }

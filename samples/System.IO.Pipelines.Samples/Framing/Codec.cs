@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Samples.Framing
@@ -118,7 +119,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         public bool TryDecode(ref ReadOnlyBuffer<byte> input, out Line frame)
         {
-            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor))
+            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out SequencePosition cursor))
             {
                 frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);

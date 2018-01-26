@@ -7,19 +7,19 @@ namespace System.Collections.Sequences
 {
     public struct SequenceEnumerator<T>
     {
-        SequenceIndex _sequenceIndex;
+        SequencePosition _position;
         ISequence<T> _sequence;
         T _current;
 
         public SequenceEnumerator(ISequence<T> sequence)
         {
             _sequence = sequence;
-            _sequenceIndex = default;
+            _position = default;
             _current = default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => _sequence.TryGet(ref _sequenceIndex, out _current);
+        public bool MoveNext() => _sequence.TryGet(ref _position, out _current);
 
         public T Current => _current;
     }
@@ -27,19 +27,19 @@ namespace System.Collections.Sequences
     public struct SequenceEnumerator<T, TSequence>
         where TSequence : ISequence<T>
     {
-        SequenceIndex _sequenceIndex;
+        SequencePosition _position;
         TSequence _sequence;
         T _current;
 
         public SequenceEnumerator(TSequence sequence)
         {
             _sequence = sequence;
-            _sequenceIndex = default;
+            _position = default;
             _current = default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => _sequence.TryGet(ref _sequenceIndex, out _current);
+        public bool MoveNext() => _sequence.TryGet(ref _position, out _current);
 
         public T Current => _current;
     }

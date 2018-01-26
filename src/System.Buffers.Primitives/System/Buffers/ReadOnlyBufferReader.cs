@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
@@ -24,8 +25,8 @@ namespace System.Buffers
         private int _index;
 
         private TSequence _sequence;
-        private SequenceIndex _currentSequenceIndex;
-        private SequenceIndex _nextSequenceIndex;
+        private SequencePosition _currentSequencePosition;
+        private SequencePosition _nextSequencePosition;
 
         private int _consumedBytes;
         private bool _end;
@@ -36,8 +37,8 @@ namespace System.Buffers
             _index = 0;
             _consumedBytes = 0;
             _sequence = buffer;
-            _currentSequenceIndex = _sequence.Start;
-            _nextSequenceIndex = _currentSequenceIndex;
+            _currentSequencePosition = _sequence.Start;
+            _nextSequencePosition = _currentSequencePosition;
             _currentSpan = ReadOnlySpan<byte>.Empty;
             MoveNext();
         }
@@ -48,7 +49,7 @@ namespace System.Buffers
 
         public TSequence Sequence => _sequence;
 
-        public SequenceIndex SequenceIndex => _sequence.GetPosition(_currentSequenceIndex, _index);
+        public SequencePosition Position => _sequence.GetPosition(_currentSequencePosition, _index);
 
         public ReadOnlySpan<byte> CurrentSegment => _currentSpan;
 
@@ -89,10 +90,10 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void MoveNext()
         {
-            var previous = _nextSequenceIndex;
-            while (_sequence.TryGet(ref _nextSequenceIndex, out var memory, true))
+            var previous = _nextSequencePosition;
+            while (_sequence.TryGet(ref _nextSequencePosition, out var memory, true))
             {
-                _currentSequenceIndex = previous;
+                _currentSequencePosition = previous;
                 _currentSpan = memory.Span;
                 _index = 0;
                 if (_currentSpan.Length > 0)
@@ -153,7 +154,7 @@ namespace System.Buffers
                 first.CopyTo(destination);
                 int copied = first.Length;
 
-                var next = bytes._nextSequenceIndex;
+                var next = bytes._nextSequencePosition;
                 while (bytes._sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
                 {
                     var nextSpan = nextSegment.Span;
