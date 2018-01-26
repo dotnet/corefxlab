@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Buffers
@@ -13,6 +14,17 @@ namespace System.Buffers
     /// </summary>
     public readonly partial struct ReadOnlyBuffer<T> : ISequence<ReadOnlyMemory<T>> where T : IEquatable<T>
     {
+        private const int IndexBitMask = 0x7FFFFFFF;
+
+        internal const int MemoryListStartMask = 0;
+        internal const int MemoryListEndMask = 0;
+
+        internal const int ArrayStartMask = 0;
+        internal const int ArrayEndMask = 1 << 31;
+
+        internal const int OwnedMemoryStartMask = 1 << 31;
+        internal const int OwnedMemoryEndMask = 0;
+
         internal readonly Position BufferStart;
         internal readonly Position BufferEnd;
 
@@ -52,13 +64,13 @@ namespace System.Buffers
         /// </summary>
         public Position End => BufferEnd;
 
-        private ReadOnlyBuffer(Position start, Position end)
+        private ReadOnlyBuffer(object startSegment, int startIndex, object endSegment, int endIndex)
         {
-            Debug.Assert(start.Segment != null);
-            Debug.Assert(end.Segment != null);
+            Debug.Assert(startSegment != null);
+            Debug.Assert(endSegment != null);
 
-            BufferStart = start;
-            BufferEnd = end;
+            BufferStart = new Position(startSegment, startIndex);
+            BufferEnd = new Position(endSegment, endIndex);
         }
 
         public ReadOnlyBuffer(IMemoryList<T> startSegment, int offset, IMemoryList<T> endSegment, int endIndex)
@@ -68,8 +80,8 @@ namespace System.Buffers
             Debug.Assert(startSegment.Memory.Length >= offset);
             Debug.Assert(endSegment.Memory.Length >= endIndex);
 
-            BufferStart = new Position(startSegment, offset);
-            BufferEnd = new Position(endSegment, endIndex);
+            BufferStart = new Position(startSegment, offset | MemoryListStartMask);
+            BufferEnd = new Position(endSegment, endIndex | MemoryListEndMask);
         }
 
         public ReadOnlyBuffer(T[] data) : this(data, 0, data.Length)
@@ -83,8 +95,8 @@ namespace System.Buffers
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            BufferStart = new Position(data, offset);
-            BufferEnd = new Position(data, offset + length);
+            BufferStart = new Position(data, offset | ArrayStartMask);
+            BufferEnd = new Position(data, offset + length | ArrayEndMask);
         }
 
         public ReadOnlyBuffer(Memory<T> data)
@@ -93,8 +105,8 @@ namespace System.Buffers
             {
                 Memory = data
             };
-            BufferStart = new Position(segment, 0);
-            BufferEnd = new Position(segment, data.Length);
+            BufferStart = new Position(segment, 0 | MemoryListStartMask);
+            BufferEnd = new Position(segment, data.Length | MemoryListEndMask);
         }
 
         public ReadOnlyBuffer(IEnumerable<Memory<T>> buffers)
@@ -126,8 +138,8 @@ namespace System.Buffers
                 first = segment = new ReadOnlyBufferSegment();
             }
 
-            BufferStart = new Position(first, 0);
-            BufferEnd = new Position(segment, segment.Memory.Length);
+            BufferStart = new Position(first, 0 | MemoryListStartMask);
+            BufferEnd = new Position(segment, segment.Memory.Length | MemoryListEndMask);
         }
 
         /// <summary>
@@ -139,7 +151,7 @@ namespace System.Buffers
         {
             var begin = Seek(BufferStart, BufferEnd, offset, false);
             var end = Seek(begin, BufferEnd, length, false);
-            return new ReadOnlyBuffer<T>(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -151,7 +163,7 @@ namespace System.Buffers
         {
             BoundsCheck(BufferEnd, end);
             var begin = Seek(BufferStart, end, offset);
-            return new ReadOnlyBuffer<T>(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -165,7 +177,7 @@ namespace System.Buffers
 
             var end = Seek(start, BufferEnd, length, false);
 
-            return new ReadOnlyBuffer<T>(start, end);
+            return SliceImpl(start, end);
         }
 
         /// <summary>
@@ -177,7 +189,7 @@ namespace System.Buffers
         {
             var begin = Seek(BufferStart, BufferEnd, offset, false);
             var end = Seek(begin, BufferEnd, length, false);
-            return new ReadOnlyBuffer<T>(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -189,7 +201,7 @@ namespace System.Buffers
         {
             BoundsCheck(BufferEnd, end);
             var begin = Seek(BufferStart, end, offset);
-            return new ReadOnlyBuffer<T>(begin, end);
+            return SliceImpl(begin, end);
         }
 
         /// <summary>
@@ -203,7 +215,7 @@ namespace System.Buffers
 
             var end = Seek(start, BufferEnd, length, false);
 
-            return new ReadOnlyBuffer<T>(start, end);
+            return SliceImpl(start, end);
         }
 
         /// <summary>
@@ -216,7 +228,7 @@ namespace System.Buffers
             BoundsCheck(BufferEnd, end);
             BoundsCheck(end, start);
 
-            return new ReadOnlyBuffer<T>(start, end);
+            return SliceImpl(start, end);
         }
 
         /// <summary>
@@ -227,7 +239,7 @@ namespace System.Buffers
         {
             BoundsCheck(BufferEnd, start);
 
-            return new ReadOnlyBuffer<T>(start, BufferEnd);
+            return SliceImpl(start, BufferEnd);
         }
 
         /// <summary>
@@ -239,7 +251,7 @@ namespace System.Buffers
             if (offset == 0) return this;
 
             var begin = Seek(BufferStart, BufferEnd, offset, false);
-            return new ReadOnlyBuffer<T>(begin, BufferEnd);
+            return SliceImpl(begin, BufferEnd);
         }
 
         /// <summary>
@@ -339,7 +351,6 @@ namespace System.Buffers
         {
             private readonly ReadOnlyBuffer<T> _readOnlyBuffer;
             private Position _next;
-            private Position _current;
 
             private ReadOnlyMemory<T> _currentMemory;
 
@@ -350,7 +361,6 @@ namespace System.Buffers
             {
                 _readOnlyBuffer = readOnlyBuffer;
                 _currentMemory = default;
-                _current = default;
                 _next = readOnlyBuffer.Start;
             }
 
@@ -374,8 +384,6 @@ namespace System.Buffers
                     return false;
                 }
 
-                _current = _next;
-
                 return _readOnlyBuffer.TryGet(ref _next, out _currentMemory);
             }
 
@@ -388,6 +396,36 @@ namespace System.Buffers
             {
                 ThrowHelper.ThrowNotSupportedException();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ReadOnlyBuffer<T> SliceImpl(Position begin, Position end)
+        {
+            return new ReadOnlyBuffer<T>(
+                begin.Segment,
+                begin.Index & IndexBitMask | (Start.Index & ~IndexBitMask),
+                end.Segment,
+                end.Index & IndexBitMask | (End.Index & ~IndexBitMask)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private  BufferType GetBufferType()
+        {
+            return (BufferType)((((uint)Start.Index >> 30) & 2) | (uint)End.Index >> 31);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int GetIndex(int index)
+        {
+            return index & IndexBitMask;
+        }
+
+        private enum BufferType
+        {
+            MemoryList = 0b00,
+            Array = 0b01,
+            OwnedMemory = 0b10
         }
     }
 }

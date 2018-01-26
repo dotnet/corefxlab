@@ -59,7 +59,6 @@ namespace System.IO.Pipelines
         private BufferSegment _writingHead;
 
         private PipeOperationState _readingState;
-        private PipeOperationState _writingState;
 
         private bool _disposed;
 
@@ -115,8 +114,6 @@ namespace System.IO.Pipelines
             _length = 0;
         }
 
-        internal Memory<byte> Buffer => _writingHead?.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
-
         /// <summary>
         /// Allocates memory from the pipeline to write into.
         /// </summary>
@@ -134,47 +131,32 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            var segment = _writingHead;
-            if (segment == null)
+            BufferSegment segment;
+            lock (_sync)
             {
-                lock (_sync)
+                segment = _writingHead;
+
+                if (segment == null)
                 {
-                    // CompareExchange not required as its setting to current value if test fails
-                    _writingState.BeginTentative(ExceptionResource.AlreadyWriting);
+                   segment = AllocateWriteHeadUnsynchronized(minimumSize);
+                }
 
-                    try
-                    {
-                        segment = AllocateWriteHeadUnsynchronized(minimumSize);
-                    }
-                    catch (Exception)
-                    {
-                        // Reset producing state if allocation failed
-                        _writingState.End(ExceptionResource.NoWriteToComplete);
-                        throw;
-                    }
+                var bytesLeftInBuffer = segment.WritableBytes;
 
+                // If inadequate bytes left or if the segment is readonly
+                if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
+                {
+                    var nextSegment = CreateSegmentUnsynchronized();
+
+                    nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
+
+                    segment.SetNext(nextSegment);
+
+                    _writingHead = nextSegment;
                 }
             }
 
-            var bytesLeftInBuffer = segment.WritableBytes;
-
-            // If inadequate bytes left or if the segment is readonly
-            if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
-            {
-                BufferSegment nextSegment;
-                lock (_sync)
-                {
-                    nextSegment = CreateSegmentUnsynchronized();
-                }
-
-                nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
-
-                segment.SetNext(nextSegment);
-
-                _writingHead = nextSegment;
-            }
-
-            return Buffer;
+            return _writingHead.AvailableMemory.Slice(_writingHead.End, _writingHead.WritableBytes);
         }
 
         internal Span<byte> GetSpan(int minimumSize) => GetMemory(minimumSize).Span;
@@ -240,14 +222,6 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void EnsureAlloc()
-        {
-            if (!_writingState.IsStarted)
-            {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
-            }
-        }
-
         internal void Commit()
         {
             // Changing commit head shared with Reader
@@ -259,8 +233,6 @@ namespace System.IO.Pipelines
 
         internal void CommitUnsynchronized()
         {
-            _writingState.End(ExceptionResource.NoWriteToComplete);
-
             if (_writingHead == null)
             {
                 // Nothing written to commit
@@ -295,7 +267,11 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Advance(int bytesWritten)
         {
-            EnsureAlloc();
+            if (_writingHead == null)
+            {
+                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
+            }
+
             if (bytesWritten > 0)
             {
                 Debug.Assert(!_writingHead.ReadOnly);
@@ -324,7 +300,7 @@ namespace System.IO.Pipelines
             CancellationTokenRegistration cancellationTokenRegistration;
             lock (_sync)
             {
-                if (_writingState.IsStarted)
+                if (_writingHead != null)
                 {
                     // Commit the data as not already committed
                     CommitUnsynchronized();
@@ -348,9 +324,9 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         internal void Complete(Exception exception)
         {
-            if (_writingState.IsStarted && _currentWriteLength > 0)
+            if (_currentWriteLength > 0)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
+                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter);
             }
 
             Action awaitable;
@@ -427,7 +403,7 @@ namespace System.IO.Pipelines
                     // we need to check that there is no writing operation that
                     // might be using tailspace
                     if (consumed.Index == returnEnd.Length &&
-                        !(_commitHead == returnEnd && _writingState.IsStarted))
+                        !(_commitHead == returnEnd && _writingHead != null))
                     {
                         var nextBlock = returnEnd.NextSegment;
                         if (_commitHead == returnEnd)

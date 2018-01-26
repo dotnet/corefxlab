@@ -61,7 +61,7 @@ namespace System.Buffers.Native
 
         public unsafe override MemoryHandle Pin(int byteOffset = 0)
         {
-            if (byteOffset < 0 || (byteOffset / Unsafe.SizeOf<T>()) > _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+            if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
             return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
         }
 
