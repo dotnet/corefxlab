@@ -221,7 +221,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(() => { });
 
-            Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
+            Pipe.Reader.AdvanceTo(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
             Pipe.Writer.CancelPendingFlush();
 
             Assert.True(awaitable.IsCompleted);
@@ -240,7 +240,7 @@ namespace System.IO.Pipelines.Tests
             awaitable.OnCompleted(() => { });
 
             Pipe.Writer.CancelPendingFlush();
-            Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
+            Pipe.Reader.AdvanceTo(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
 
             Assert.True(awaitable.IsCompleted);
 
@@ -274,7 +274,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await Pipe.Reader.ReadAsync();
             Assert.Equal(new byte[MaximumSizeHigh], result.Buffer.ToArray());
-            Pipe.Reader.Advance(result.Buffer.End);
+            Pipe.Reader.AdvanceTo(result.Buffer.End);
             await task;
             Assert.True(cancelled);
         }

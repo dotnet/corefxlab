@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Samples
         {
             var pipeOptions = new PipeOptions(GetBufferPool());
 
-            var consoleOutput = StreamPipeConnection.CreateWriter(pipeOptions, Console.OpenStandardOutput());
+            var consoleOutput = StreamDuplexPipe.CreateWriter(pipeOptions, Console.OpenStandardOutput());
             var connection = await GetConnection();
 
             while (true)
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Samples
 
         protected abstract MemoryPool<byte> GetBufferPool();
 
-        protected abstract Task<IPipeConnection> GetConnection();
+        protected abstract Task<IDuplexPipe> GetConnection();
 
         private async Task CopyCompletedAsync(PipeReader input, PipeWriter output)
         {
@@ -62,7 +62,7 @@ namespace System.IO.Pipelines.Samples
                 }
                 finally
                 {
-                    input.Advance(inputBuffer.End);
+                    input.AdvanceTo(inputBuffer.End);
                 }
 
                 var awaiter = input.ReadAsync();

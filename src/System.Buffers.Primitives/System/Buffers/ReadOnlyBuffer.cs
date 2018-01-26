@@ -25,8 +25,8 @@ namespace System.Buffers
         internal const int OwnedMemoryStartMask = 1 << 31;
         internal const int OwnedMemoryEndMask = 0;
 
-        internal readonly Position BufferStart;
-        internal readonly Position BufferEnd;
+        internal readonly SequenceIndex BufferStart;
+        internal readonly SequenceIndex BufferEnd;
 
         public static readonly ReadOnlyBuffer<T> Empty = new ReadOnlyBuffer<T>(new T[0]);
 
@@ -57,12 +57,12 @@ namespace System.Buffers
         /// <summary>
         /// A position to the start of the <see cref="ReadOnlyBuffer"/>.
         /// </summary>
-        public Position Start => BufferStart;
+        public SequenceIndex Start => BufferStart;
 
         /// <summary>
         /// A position to the end of the <see cref="ReadOnlyBuffer"/>
         /// </summary>
-        public Position End => BufferEnd;
+        public SequenceIndex End => BufferEnd;
 
         private ReadOnlyBuffer(object startSegment, int startIndex, object endSegment, int endIndex)
         {
@@ -159,7 +159,7 @@ namespace System.Buffers
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadOnlyBuffer<T> Slice(long offset, Position end)
+        public ReadOnlyBuffer<T> Slice(long offset, SequenceIndex end)
         {
             BoundsCheck(BufferEnd, end);
             var begin = Seek(BufferStart, end, offset);
@@ -169,9 +169,9 @@ namespace System.Buffers
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, and is at most <see cref="length"/> bytes
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
+        /// <param name="start">The starting (inclusive) <see cref="SequenceIndex"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer<T> Slice(Position start, long length)
+        public ReadOnlyBuffer<T> Slice(SequenceIndex start, long length)
         {
             BoundsCheck(BufferEnd, start);
 
@@ -197,7 +197,7 @@ namespace System.Buffers
         /// </summary>
         /// <param name="offset">The index at which to begin this slice.</param>
         /// <param name="end">The end (inclusive) of the slice</param>
-        public ReadOnlyBuffer<T> Slice(int offset, Position end)
+        public ReadOnlyBuffer<T> Slice(int offset, SequenceIndex end)
         {
             BoundsCheck(BufferEnd, end);
             var begin = Seek(BufferStart, end, offset);
@@ -207,9 +207,9 @@ namespace System.Buffers
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at '<see cref="start"/>, and is at most <see cref="length"/> bytes
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
+        /// <param name="start">The starting (inclusive) <see cref="SequenceIndex"/> at which to begin this slice.</param>
         /// <param name="length">The length of the slice</param>
-        public ReadOnlyBuffer<T> Slice(Position start, int length)
+        public ReadOnlyBuffer<T> Slice(SequenceIndex start, int length)
         {
             BoundsCheck(BufferEnd, start);
 
@@ -221,9 +221,9 @@ namespace System.Buffers
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, ending at <see cref="end"/> (inclusive).
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
-        /// <param name="end">The ending (inclusive) <see cref="Position"/> of the slice</param>
-        public ReadOnlyBuffer<T> Slice(Position start, Position end)
+        /// <param name="start">The starting (inclusive) <see cref="SequenceIndex"/> at which to begin this slice.</param>
+        /// <param name="end">The ending (inclusive) <see cref="SequenceIndex"/> of the slice</param>
+        public ReadOnlyBuffer<T> Slice(SequenceIndex start, SequenceIndex end)
         {
             BoundsCheck(BufferEnd, end);
             BoundsCheck(end, start);
@@ -234,8 +234,8 @@ namespace System.Buffers
         /// <summary>
         /// Forms a slice out of the given <see cref="ReadOnlyBuffer"/>, beginning at <see cref="start"/>, ending at the existing <see cref="ReadOnlyBuffer"/>'s end.
         /// </summary>
-        /// <param name="start">The starting (inclusive) <see cref="Position"/> at which to begin this slice.</param>
-        public ReadOnlyBuffer<T> Slice(Position start)
+        /// <param name="start">The starting (inclusive) <see cref="SequenceIndex"/> at which to begin this slice.</param>
+        public ReadOnlyBuffer<T> Slice(SequenceIndex start)
         {
             BoundsCheck(BufferEnd, start);
 
@@ -308,7 +308,7 @@ namespace System.Buffers
             return new Enumerator(this);
         }
 
-        public Position GetPosition(Position origin, long offset)
+        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
         {
             if (offset < 0)
             {
@@ -317,29 +317,29 @@ namespace System.Buffers
             return Seek(origin, BufferEnd, offset, false);
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<T> data, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<T> data, bool advance = true)
         {
-            var result = TryGetBuffer(position, End, out data, out var next);
+            var result = TryGetBuffer(sequenceIndex, End, out data, out var next);
             if (advance)
             {
-                position = next;
+                sequenceIndex = next;
             }
 
             return result;
         }
 
-        public Position? PositionOf(T value)
+        public SequenceIndex? PositionOf(T value)
         {
-            Position position = Start;
-            Position result = position;
-            while (TryGet(ref position, out var memory))
+            SequenceIndex sequenceIndex = Start;
+            SequenceIndex result = sequenceIndex;
+            while (TryGet(ref sequenceIndex, out var memory))
             {
                 var index = memory.Span.IndexOf(value);
                 if (index != -1)
                 {
                     return GetPosition(result, index);
                 }
-                result = position;
+                result = sequenceIndex;
             }
             return null;
         }
@@ -350,7 +350,7 @@ namespace System.Buffers
         public struct Enumerator
         {
             private readonly ReadOnlyBuffer<T> _readOnlyBuffer;
-            private Position _next;
+            private SequenceIndex _next;
 
             private ReadOnlyMemory<T> _currentMemory;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace System.Threading
 {
-    internal sealed class ThreadPoolScheduler : Scheduler
+    internal sealed class ThreadPoolScheduler : PipeScheduler
     {
         public override void Schedule(Action action)
         {

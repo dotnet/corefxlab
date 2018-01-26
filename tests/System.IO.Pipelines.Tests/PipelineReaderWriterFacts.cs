@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
         public PipelineReaderWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(len - 5, reader.Length);
 
             // Don't move
-            _pipe.Reader.Advance(reader.End);
+            _pipe.Reader.AdvanceTo(reader.End);
 
             // Now flush
             await _pipe.Writer.FlushAsync();
@@ -71,7 +71,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
             Assert.Equal(new byte[] { 0, 0, 0, 8 }, reader.Slice(8, 4).ToArray());
 
-            _pipe.Reader.Advance(reader.Start, reader.Start);
+            _pipe.Reader.AdvanceTo(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace System.IO.Pipelines.Tests
         {
             var gotData = _pipe.Reader.TryRead(out var result);
             Assert.False(gotData);
-            _pipe.Reader.Advance(default);
+            _pipe.Reader.AdvanceTo(default);
         }
 
         [Fact]
@@ -108,7 +108,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.True(result.IsCancelled);
 
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.True(result.IsCompleted);
 
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
         }
 
         [Fact]
@@ -135,13 +135,13 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal("Hello World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
-            _pipe.Reader.Advance(result.Buffer.GetPosition(result.Buffer.Start, 6));
+            _pipe.Reader.AdvanceTo(result.Buffer.GetPosition(result.Buffer.Start, 6));
 
             result = await _pipe.Reader.ReadAsync();
 
             Assert.Equal("World", Encoding.ASCII.GetString(result.Buffer.ToArray()));
 
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
         }
 
         [Fact]
@@ -167,7 +167,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.ToArray());
 
             // Don't move
-            _pipe.Reader.Advance(reader.Start);
+            _pipe.Reader.AdvanceTo(reader.Start);
 
             // Now flush
             await buffer.FlushAsync();
@@ -179,7 +179,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
             Assert.Equal(new byte[] { 0, 0, 0, 8 }, reader.Slice(8, 4).ToArray());
 
-            _pipe.Reader.Advance(reader.Start, reader.Start);
+            _pipe.Reader.AdvanceTo(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -193,7 +193,7 @@ namespace System.IO.Pipelines.Tests
             // Write Hello to another pipeline and get the buffer
             var bytes = Encoding.ASCII.GetBytes("Hello");
 
-            var c2 = new ResetablePipe(new PipeOptions(_pool));
+            var c2 = new Pipe(new PipeOptions(_pool));
             await c2.Writer.WriteAsync(bytes);
             var result = await c2.Reader.ReadAsync();
             var c2Buffer = result.Buffer;
@@ -211,7 +211,7 @@ namespace System.IO.Pipelines.Tests
             }
 
             // Mark it as consumed
-            c2.Reader.Advance(c2Buffer.End);
+            c2.Reader.AdvanceTo(c2Buffer.End);
 
             // Now read and make sure we only see the comitted data
             result = await _pipe.Reader.ReadAsync();
@@ -221,7 +221,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
 
             // Consume nothing
-            _pipe.Reader.Advance(reader.Start);
+            _pipe.Reader.AdvanceTo(reader.Start);
 
             // Flush the second set of writes
             await buffer.FlushAsync();
@@ -234,7 +234,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 0, 0, 0, 9 }, reader.Slice(4, 4).ToArray());
             Assert.Equal("Hello", Encoding.ASCII.GetString(reader.Slice(8).ToArray()));
 
-            _pipe.Reader.Advance(reader.Start, reader.Start);
+            _pipe.Reader.AdvanceTo(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -252,7 +252,7 @@ namespace System.IO.Pipelines.Tests
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
 
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -270,12 +270,12 @@ namespace System.IO.Pipelines.Tests
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
 
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
 
             // Now write 0 and advance 0
             await _pipe.Writer.WriteAsync(new byte [] {});
             result = await _pipe.Reader.ReadAsync();
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
 
             var awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
@@ -288,7 +288,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
             Assert.True(result.IsCancelled);
@@ -344,7 +344,7 @@ namespace System.IO.Pipelines.Tests
                 memory.Add(m);
             }
             var spans = memory;
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
 
             Assert.Equal(2, memory.Count);
             var helloBytes = new byte[spans[0].Length];
@@ -386,7 +386,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Complete());
 
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -463,13 +463,13 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
 
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
 
             _pipe.Reader.CancelPendingRead();
             result = await _pipe.Reader.ReadAsync();
 
-            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(buffer.End));
-            _pipe.Reader.Advance(result.Buffer.End);
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.AdvanceTo(buffer.End));
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
         }
 
         [Fact]
@@ -483,7 +483,7 @@ namespace System.IO.Pipelines.Tests
 
             // Consume entire segment
             var result = await _pipe.Reader.ReadAsync();
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
 
             // Append empty segment
             _pipe.Writer.GetMemory(1);
@@ -496,7 +496,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(result.Buffer.Start, result.Buffer.End);
 
             _pipe.Writer.GetMemory();
-            _pipe.Reader.Advance(result.Buffer.Start);
+            _pipe.Reader.AdvanceTo(result.Buffer.Start);
             var awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
             _pipe.Writer.Commit();
@@ -511,7 +511,7 @@ namespace System.IO.Pipelines.Tests
 
             // Advance to the end
             var readResult = await _pipe.Reader.ReadAsync();
-            _pipe.Reader.Advance(readResult.Buffer.End);
+            _pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             // Try reading, it should block
             var awaitable = _pipe.Reader.ReadAsync();
@@ -525,7 +525,7 @@ namespace System.IO.Pipelines.Tests
 
             // Advance to the end should reset awaitable
             readResult = await awaitable;
-            _pipe.Reader.Advance(readResult.Buffer.End);
+            _pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             // Try reading, it should block
             awaitable = _pipe.Reader.ReadAsync();

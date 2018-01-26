@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO
 {
-    public sealed class RioTcpConnection : IPipeConnection
+    public sealed class RioTcpConnection : IDuplexPipe
     {
         private const RioSendFlags MessagePart = RioSendFlags.Defer | RioSendFlags.DontNotify;
         private const RioSendFlags MessageEnd = RioSendFlags.None;
@@ -44,8 +44,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _rio = rio;
             _rioThread = rioThread;
 
-            _input = new ResetablePipe(new PipeOptions(rioThread.Pool));
-            _output = new ResetablePipe(new PipeOptions(rioThread.Pool));
+            _input = new Pipe(new PipeOptions(rioThread.Pool));
+            _output = new Pipe(new PipeOptions(rioThread.Pool));
 
             _requestQueue = requestQueue;
 
@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
                     await SendAsync(current, endOfMessage: true);
                 }
 
-                _output.Reader.Advance(buffer.End);
+                _output.Reader.AdvanceTo(buffer.End);
             }
 
             _output.Reader.Complete();

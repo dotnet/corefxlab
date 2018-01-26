@@ -9,14 +9,14 @@ namespace System.Collections.Sequences
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="position"></param>
+        /// <param name="sequenceIndex"></param>
         /// <param name="advance"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        bool TryGet(ref Position position, out T item, bool advance = true);
+        bool TryGet(ref SequenceIndex sequenceIndex, out T item, bool advance = true);
 
-        Position GetPosition(Position origin, long offset);
+        SequenceIndex GetPosition(SequenceIndex origin, long offset);
 
-        Position Start { get; }
+        SequenceIndex Start { get; }
     }
 }

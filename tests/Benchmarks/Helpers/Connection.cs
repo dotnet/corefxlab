@@ -4,16 +4,16 @@
 
 namespace System.IO.Pipelines
 {
-    public class PipeConnection : IPipeConnection
+    public class DuplexPipe : IDuplexPipe
     {
-        public PipeConnection(PipeOptions pipeOptions)
+        public DuplexPipe(PipeOptions pipeOptions)
         {
-            Input = new ResetablePipe(pipeOptions);
-            Output = new ResetablePipe(pipeOptions);
+            Input = new Pipe(pipeOptions);
+            Output = new Pipe(pipeOptions);
         }
 
-        PipeReader IPipeConnection.Input => Input.Reader;
-        PipeWriter IPipeConnection.Output => Output.Writer;
+        PipeReader IDuplexPipe.Input => Input.Reader;
+        PipeWriter IDuplexPipe.Output => Output.Writer;
 
         public Pipe Input { get; }
 

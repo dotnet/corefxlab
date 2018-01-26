@@ -13,7 +13,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader DeflateDecompress(this PipeReader reader, PipeOptions options)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.Deflate_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = inflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader DeflateCompress(this PipeReader reader, PipeOptions options, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.Deflate_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -29,7 +29,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader GZipDecompress(this PipeReader reader, PipeOptions options)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = inflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeWriter GZipCompress(this PipeWriter writer, PipeOptions options, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(pipe.Reader, writer);
             return pipe.Writer;
         }
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader GZipCompress(this PipeReader reader, PipeOptions options, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -53,7 +53,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader CreateDeflateDecompressReader(PipeOptions options, PipeReader reader)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.Deflate_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = inflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader CreateDeflateCompressReader(PipeOptions options, PipeReader reader, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.Deflate_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -69,7 +69,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader CreateGZipDecompressReader(PipeOptions options, PipeReader reader)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = inflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -77,7 +77,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeWriter CreateGZipCompressWriter(PipeOptions options, PipeWriter writer, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(pipe.Reader, writer);
             return pipe.Writer;
         }
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Compression
         public static PipeReader CreateGZipCompressReader(PipeOptions options, PipeReader reader, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = deflater.Execute(reader, pipe.Writer);
             return pipe.Reader;
         }
@@ -115,7 +115,7 @@ namespace System.IO.Pipelines.Compression
                             break;
                         }
 
-                        reader.Advance(inputBuffer.End);
+                        reader.AdvanceTo(inputBuffer.End);
                         continue;
                     }
 
@@ -145,7 +145,7 @@ namespace System.IO.Pipelines.Compression
 
                     inputBuffer = inputBuffer.Slice(0, consumed);
 
-                    reader.Advance(inputBuffer.End);
+                    reader.AdvanceTo(inputBuffer.End);
 
                     await writerBuffer.FlushAsync();
                 }
@@ -226,7 +226,7 @@ namespace System.IO.Pipelines.Compression
                             break;
                         }
 
-                        reader.Advance(inputBuffer.End);
+                        reader.AdvanceTo(inputBuffer.End);
                         continue;
                     }
 
@@ -252,7 +252,7 @@ namespace System.IO.Pipelines.Compression
                         }
                     }
 
-                    reader.Advance(inputBuffer.End);
+                    reader.AdvanceTo(inputBuffer.End);
 
                     await writerBuffer.FlushAsync();
                 }

@@ -169,15 +169,15 @@ namespace System.Buffers.Tests
             _buffer = buffer;
         }
 
-        public Position Start => _buffer.Start;
+        public SequenceIndex Start => _buffer.Start;
 
-        public Position GetPosition(Position origin, long offset)
+        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
             => _buffer.GetPosition(origin, offset);
 
-        public ReadOnlyBuffer<byte> Slice(Position start, Position end)
+        public ReadOnlyBuffer<byte> Slice(SequenceIndex start, SequenceIndex end)
             => _buffer.Slice(start, end);
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
-            => _buffer.TryGet(ref position, out item, advance);
+        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<byte> item, bool advance = true)
+            => _buffer.TryGet(ref sequenceIndex, out item, advance);
     }
 }

@@ -51,7 +51,7 @@ namespace System.Buffers
                         }
                         else
                         {
-                            next = new Position(nextSegment, 0);
+                            next = new SequenceIndex(nextSegment, 0);
                         }
                     }
 

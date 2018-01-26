@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                     if (length == -1)
                     {
-                        var subBuffer = buffer.Slice(reader.Position);
+                        var subBuffer = buffer.Slice(reader.SequenceIndex);
                         var position = subBuffer.PositionOf((byte)'\n');
                         if (position == null)
                         {

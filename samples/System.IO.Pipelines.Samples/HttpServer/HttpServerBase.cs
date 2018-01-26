@@ -50,9 +50,9 @@ namespace System.IO.Pipelines.Samples.Http
             port = address.Port;
         }
         
-        private static async Task ProcessClient<TContext>(IHttpApplication<TContext> application, IPipeConnection pipeConnection)
+        private static async Task ProcessClient<TContext>(IHttpApplication<TContext> application, IDuplexPipe duplexPipe)
         {
-            var connection = new HttpConnection<TContext>(application, pipeConnection.Input, pipeConnection.Output);
+            var connection = new HttpConnection<TContext>(application, duplexPipe.Input, duplexPipe.Output);
             await connection.ProcessAllRequests();
         }
 

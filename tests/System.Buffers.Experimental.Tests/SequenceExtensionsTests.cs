@@ -139,7 +139,7 @@ namespace System.Buffers.Tests
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);
 
-                Assert.True(Sequence.TryParse(bytes, out value, out Position consumedPosition));
+                Assert.True(Sequence.TryParse(bytes, out value, out SequenceIndex consumedPosition));
                 Assert.Equal(expected, value);
 
                 var afterValue = bytes.Slice(consumedPosition);

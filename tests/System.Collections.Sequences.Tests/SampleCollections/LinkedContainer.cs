@@ -26,25 +26,25 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        public Position Start => new Position(_head, 0);
+        public SequenceIndex Start => new SequenceIndex(_head, 0);
 
-        public bool TryGet(ref Position position, out T item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out T item, bool advance = true)
         {
-            if(_count == 0 || position == default)
+            if(_count == 0 || sequenceIndex == default)
             {
                 item = default;
                 return false;
             }
 
-            var (node, index) = position.Get<Node>();
+            var (node, index) = sequenceIndex.Get<Node>();
             if (node == null || index != 0) {
                 item = default;
-                position = default;
+                sequenceIndex = default;
                 return false;
             }
 
             item = node._item;
-            if (advance) { position = new Position(node._next, 0); }
+            if (advance) { sequenceIndex = new SequenceIndex(node._next, 0); }
             return true;
         }
 
@@ -53,7 +53,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<T>(this);
         }
 
-        public Position GetPosition(Position origin, long offset)
+        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
         {
             if (offset < 0) throw new InvalidOperationException("cannot seek backwards");
             var (node, index) = origin.Get<Node>();
@@ -68,7 +68,7 @@ namespace System.Collections.Sequences
                     throw new ArgumentOutOfRangeException(nameof(offset));
                 }
             }
-            return new Position(node, 0);
+            return new SequenceIndex(node, 0);
         }
     }
 }

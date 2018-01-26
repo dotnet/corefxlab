@@ -37,7 +37,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequenceIndex consumed, out SequenceIndex examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -56,7 +56,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                if (TryGetNewLineSpan(buffer, out Position found))
+                if (TryGetNewLineSpan(buffer, out SequenceIndex found))
                 {
                     span = buffer.Slice(consumed, found).ToSpan();
                     consumed = found;
@@ -229,7 +229,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequenceIndex consumed, out SequenceIndex examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -319,8 +319,8 @@ namespace System.Text.Http.Parser
                             }
                             else
                             {
-                                var current = reader.Position;
-                                var subBuffer = buffer.Slice(reader.Position);
+                                var current = reader.SequenceIndex;
+                                var subBuffer = buffer.Slice(reader.SequenceIndex);
                                 // Split buffers
                                 var lineEnd = subBuffer.PositionOf(ByteLF);
                                 if (!lineEnd.HasValue)
@@ -356,7 +356,7 @@ namespace System.Text.Http.Parser
             }
             finally
             {
-                consumed = reader.Position;
+                consumed = reader.SequenceIndex;
                 consumedBytes = reader.ConsumedBytes;
 
                 if (done)
@@ -370,9 +370,9 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Position position = buffer.Start;
+            SequenceIndex sequenceIndex = buffer.Start;
 
-            if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
+            if(!buffer.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> currentMemory))
             {
                 consumedBytes = 0;
                 return false;
@@ -463,7 +463,7 @@ namespace System.Text.Http.Parser
                     }
                 }
 
-                if (buffer.TryGet(ref position, out var nextSegment))
+                if (buffer.TryGet(ref sequenceIndex, out var nextSegment))
                 {
                     currentSpan = nextSegment.Span;
                     remaining = currentSpan.Length + remaining;
@@ -647,7 +647,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out Position found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequenceIndex found)
         {
             var position = buffer.PositionOf(ByteLF);
             if (position.HasValue)

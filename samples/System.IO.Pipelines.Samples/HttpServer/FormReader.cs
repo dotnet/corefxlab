@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Samples.Http
             while (!buffer.IsEmpty && _contentLength > 0)
             {
                 var next = buffer;
-                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer<byte> key, out Position delim))
+                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer<byte> key, out SequenceIndex delim))
                 {
                     break;
                 }

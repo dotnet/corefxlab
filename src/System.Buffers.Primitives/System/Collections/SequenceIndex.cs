@@ -8,18 +8,18 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
-    public readonly struct Position : IEquatable<Position>
+    public readonly struct SequenceIndex : IEquatable<SequenceIndex>
     {
         readonly object _segment;
         readonly int _index;
 
-        public Position(object segment, int index)
+        public SequenceIndex(object segment, int index)
         {
             _segment = segment;
             _index = index;
         }
 
-        public Position(object segment)
+        public SequenceIndex(object segment)
         {
             _segment = segment;
             _index = 0;
@@ -28,7 +28,7 @@ namespace System.Collections.Sequences
         public object Segment => _segment;
         public int Index => _index;
 
-        public static explicit operator int(Position position) => position._index;
+        public static explicit operator int(SequenceIndex sequenceIndex) => sequenceIndex._index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T segment, int index) Get<T>()
@@ -37,15 +37,15 @@ namespace System.Collections.Sequences
             return (segment, _index);
         }
 
-        public static bool operator ==(Position left, Position right) => left._index == right._index && left._segment == right._segment;
-        public static bool operator !=(Position left, Position right) => left._index != right._index || left._segment != right._segment;
+        public static bool operator ==(SequenceIndex left, SequenceIndex right) => left._index == right._index && left._segment == right._segment;
+        public static bool operator !=(SequenceIndex left, SequenceIndex right) => left._index != right._index || left._segment != right._segment;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool Equals(Position position) => this == position;
+        public bool Equals(SequenceIndex sequenceIndex) => this == sequenceIndex;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) =>
-            obj is Position ? this == (Position)obj : false;
+            obj is SequenceIndex ? this == (SequenceIndex)obj : false;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()

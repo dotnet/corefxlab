@@ -19,11 +19,11 @@ namespace System.IO.Pipelines.Samples
             bufferPool.Dispose();
         }
 
-        protected override Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint)
+        protected override Task<IDuplexPipe> ConnectAsync(IPEndPoint ipEndpoint)
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(ipEndpoint);
-            return Task.FromResult((IPipeConnection)new StreamPipeConnection(new PipeOptions(bufferPool), new NetworkStream(s)));
+            return Task.FromResult((IDuplexPipe)new StreamDuplexPipe(new PipeOptions(bufferPool), new NetworkStream(s)));
         }
     }
 }

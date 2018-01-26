@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new ResetablePipe(new PipeOptions(pool, readerScheduler: scheduler));
+                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
 
                     Func<Task> doRead = async () =>
                     {
@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Tests
 
                         Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
 
-                        pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                        pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
                         pipe.Reader.Complete();
                     };
@@ -55,9 +55,9 @@ namespace System.IO.Pipelines.Tests
             {
                 using (var scheduler = new ThreadScheduler())
                 {
-                    var pipe = new ResetablePipe(new PipeOptions(pool,
-                        maximumSizeLow: 32,
-                        maximumSizeHigh: 64,
+                    var pipe = new Pipe(new PipeOptions(pool,
+                        resumeWriterThreshold: 32,
+                        pauseWriterThreshold: 64,
                         writerScheduler: scheduler));
 
                     var writableBuffer = pipe.Writer.WriteEmpty(64);
@@ -82,7 +82,7 @@ namespace System.IO.Pipelines.Tests
 
                     var result = await pipe.Reader.ReadAsync();
 
-                    pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                    pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
                     pipe.Reader.Complete();
 
@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(pool));
+                var pipe = new Pipe(new PipeOptions(pool));
 
                 var id = 0;
 
@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Tests
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
 
-                    pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                    pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
                     pipe.Reader.Complete();
                 };
@@ -130,9 +130,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(pool,
-                    maximumSizeLow: 32,
-                    maximumSizeHigh: 64
+                var pipe = new Pipe(new PipeOptions(pool,
+                    resumeWriterThreshold: 32,
+                    pauseWriterThreshold: 64
                 ));
 
                 var writableBuffer = pipe.Writer.WriteEmpty(64);
@@ -157,7 +157,7 @@ namespace System.IO.Pipelines.Tests
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
                 pipe.Reader.Complete();
 
@@ -165,7 +165,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class ThreadScheduler : Scheduler, IDisposable
+        private class ThreadScheduler : PipeScheduler, IDisposable
         {
             private BlockingCollection<Action> _work = new BlockingCollection<Action>();
 

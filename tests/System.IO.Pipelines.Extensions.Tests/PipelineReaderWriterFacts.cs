@@ -19,7 +19,7 @@ namespace System.IO.Pipelines.Tests
         public PipelineReaderWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -37,9 +37,9 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
 
-            Assert.False(buffer.TrySliceTo(10, out ReadOnlyBuffer<byte> slice, out Position cursor));
+            Assert.False(buffer.TrySliceTo(10, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor));
 
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -57,9 +57,9 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.False(buffer.TrySliceTo((byte)'R', out ReadOnlyBuffer<byte> slice, out Position cursor));
+            Assert.False(buffer.TrySliceTo((byte)'R', out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor));
 
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -78,14 +78,14 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
             Assert.False(buffer.IsSingleSegment);
-            Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> slice, out Position cursor));
+            Assert.True(buffer.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor));
 
             slice = buffer.Slice(cursor).Slice(1);
             var array = slice.ToArray();
 
             Assert.Equal("World", Encoding.ASCII.GetString(array));
 
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
+            _pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
     }
 }

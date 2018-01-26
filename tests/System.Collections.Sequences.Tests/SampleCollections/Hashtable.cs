@@ -87,28 +87,28 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        public Position Start => default;
+        public SequenceIndex Start => default;
 
-        public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out KeyValuePair<K, V> item, bool advance = true)
         {
             item = default;
 
-            if (_count == 0 | position == default) {
-                position = default;
+            if (_count == 0 | sequenceIndex == default) {
+                sequenceIndex = default;
                 return false;
             }
 
-            if (position == default) {
+            if (sequenceIndex == default) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {
-                    position = default;
+                    sequenceIndex = default;
                     return false;
                 }
 
-                position = new Position(null, firstOccupiedSlot);
+                sequenceIndex = new SequenceIndex(null, firstOccupiedSlot);
             }
 
-            var index = (int)position;
+            var index = (int)sequenceIndex;
             var entry = _entries[index];
             if (entry.IsEmpty) {
                 throw new InvalidOperationException();
@@ -116,9 +116,9 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position = new Position(null, first);
+                sequenceIndex = new SequenceIndex(null, first);
                 if (first == -1) {
-                    position = default;
+                    sequenceIndex = default;
                 }
             }
 
@@ -142,7 +142,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<KeyValuePair<K, V>>(this);
         }
 
-        public Position GetPosition(Position origin, long offset)
+        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
         {
             if (offset<0) throw new ArgumentOutOfRangeException(nameof(offset));
             while (offset-- > 0 && TryGet(ref origin, out _));

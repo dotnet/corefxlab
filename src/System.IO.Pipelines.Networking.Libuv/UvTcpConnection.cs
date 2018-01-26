@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
-    public class UvTcpConnection : IPipeConnection
+    public class UvTcpConnection : IDuplexPipe
     {
         private const int EOF = -4095;
 
@@ -28,11 +28,11 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = new ResetablePipe(new PipeOptions(thread.Pool,
+            _input = new Pipe(new PipeOptions(thread.Pool,
                 // resume from back pressure on the uv thread
                 writerScheduler: thread));
 
-            _output = new ResetablePipe(new PipeOptions(thread.Pool,
+            _output = new Pipe(new PipeOptions(thread.Pool,
                 // user code will dispatch back to the uv thread for writes,
                 readerScheduler: thread));
 
@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                     }
                     finally
                     {
-                        _output.Reader.Advance(buffer.End);
+                        _output.Reader.AdvanceTo(buffer.End);
                     }
                 }
             }

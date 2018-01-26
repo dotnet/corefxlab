@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Tests
         public ReadableBufferFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
         public void Dispose()
         {
@@ -46,9 +46,9 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferSequenceWorks()
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 });
-            Position position = readable.Start;
+            SequenceIndex sequenceIndex = readable.Start;
             int spanCount = 0;
-            while (readable.TryGet(ref position, out ReadOnlyMemory<byte> memory))
+            while (readable.TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> memory))
             {
                 spanCount++;
                 Assert.Equal(spanCount, memory.Length);
@@ -123,7 +123,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(11, ms.Length);
             Assert.Equal(rb.ToArray(), ms.ToArray());
             Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
-            _pipe.Reader.Advance(rb.End);
+            _pipe.Reader.AdvanceTo(rb.End);
         }
 
         [Fact]
@@ -149,7 +149,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(readBuffer.IsSingleSegment);
             Assert.Equal(totalBytes, readBuffer.Length);
             TestIndexOfWorksForAllLocations(ref readBuffer, 42);
-            _pipe.Reader.Advance(readBuffer.End);
+            _pipe.Reader.AdvanceTo(readBuffer.End);
         }
 
         [Fact]
@@ -187,7 +187,7 @@ namespace System.IO.Pipelines.Tests
                 var slice = readBuffer.Slice(data.Length - i, i);
                 EqualsDetectsDeltaForAllLocations(slice, data, data.Length - i, i);
             }
-            _pipe.Reader.Advance(readBuffer.End);
+            _pipe.Reader.AdvanceTo(readBuffer.End);
         }
 
         private void EqualsDetectsDeltaForAllLocations(ReadOnlyBuffer<byte> slice, byte[] expected, int offset, int length)
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Tests
 
             ReadUInt64GivesExpectedValues(ref readBuffer);
 
-            _pipe.Reader.Advance(readBuffer.End);
+            _pipe.Reader.AdvanceTo(readBuffer.End);
         }
 
         [Theory]
@@ -240,7 +240,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
 
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
         }
 
         [Theory]
@@ -260,7 +260,7 @@ namespace System.IO.Pipelines.Tests
             var buffer = result.Buffer;
             var trimmed = buffer.TrimEnd();
             var outputBytes = trimmed.ToArray();
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.Equal(expected, Encoding.ASCII.GetString(outputBytes));
         }
@@ -281,10 +281,10 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out Position cursor));
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor));
             Assert.Equal(expected, slice.GetUtf8Span());
 
-            _pipe.Reader.Advance(buffer.End);
+            _pipe.Reader.AdvanceTo(buffer.End);
         }
 
         private unsafe void TestIndexOfWorksForAllLocations(ref ReadOnlyBuffer<byte> readBuffer, byte emptyValue)
@@ -295,7 +295,7 @@ namespace System.IO.Pipelines.Tests
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
-            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out Position cursor);
+            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out SequenceIndex cursor);
             Assert.False(found);
 
             // correctness test all values
@@ -472,7 +472,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var readerWriter = new ResetablePipe(new PipeOptions(pool));
+                var readerWriter = new Pipe(new PipeOptions(pool));
                 var output = readerWriter.Writer;
                 output.Append("Hello World", SymbolTable.InvariantUtf8);
                 await output.FlushAsync();

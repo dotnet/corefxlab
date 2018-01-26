@@ -53,7 +53,7 @@ namespace System.IO.Pipelines.Samples
                     finally
                     {
                         // Consume the input
-                        connection.Input.Advance(input.End, input.End);
+                        connection.Input.AdvanceTo(input.End, input.End);
                     }
                 }
             });

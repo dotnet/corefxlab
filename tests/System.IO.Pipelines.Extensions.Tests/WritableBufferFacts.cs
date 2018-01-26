@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Tests
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
                     offset += input.Length;
-                    pipe.Reader.Advance(input.End);
+                    pipe.Reader.AdvanceTo(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer;
                 output.Append(data, SymbolTable.InvariantUtf8);
@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Tests
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
                     offset += input.Length;
-                    pipe.Reader.Advance(input.End);
+                    pipe.Reader.AdvanceTo(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8);
                 await buffer.FlushAsync();
@@ -142,14 +142,14 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
                 await buffer.FlushAsync();
                 var result = await pipe.Reader.ReadAsync();
 
                 Assert.Equal(hex, result.Buffer.GetAsciiString());
-                pipe.Reader.Advance(result.Buffer.End);
+                pipe.Reader.AdvanceTo(result.Buffer.End);
             }
         }
 

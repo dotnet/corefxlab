@@ -112,7 +112,7 @@ namespace System.IO.Pipelines
                 }
 
                 // Don't advance the buffer so remains in buffer
-                input.Advance(result.Buffer.Start, result.Buffer.End);
+                input.AdvanceTo(result.Buffer.Start, result.Buffer.End);
             }
         }
 

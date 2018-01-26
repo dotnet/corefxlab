@@ -15,9 +15,9 @@ namespace System.IO.Pipelines.Tests
         protected PipeTest()
         {
             _pool = new MemoryPool();
-            Pipe = new ResetablePipe(new PipeOptions(_pool,
-                maximumSizeHigh: 65,
-                maximumSizeLow: 6
+            Pipe = new Pipe(new PipeOptions(_pool,
+                pauseWriterThreshold: 65,
+                resumeWriterThreshold: 6
             ));
         }
 

@@ -39,14 +39,14 @@ namespace System.Buffers
 
         public long RunningIndex => _virtualIndex;
 
-        public Position First => new Position(this, 0);
+        public SequenceIndex First => new SequenceIndex(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
             int copied = 0;
-            Position position = default;
+            SequenceIndex sequenceIndex = default;
             var free = buffer;
-            while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
+            while (TryGet(ref sequenceIndex, out ReadOnlyMemory<byte> segment, true))
             {
                 if (segment.Length > free.Length)
                 {
@@ -64,24 +64,24 @@ namespace System.Buffers
             return copied;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            var result = TryGet(ref position, out Memory<byte> memory, advance);
+            var result = TryGet(ref sequenceIndex, out Memory<byte> memory, advance);
             item = memory;
             return result;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out Memory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (sequenceIndex == default)
             {
                 item = default;
                 return false;
             }
 
-            var (list, index) = position.Get<BufferList>();
+            var (list, index) = sequenceIndex.Get<BufferList>();
             item = list._data.Slice(index);
-            if (advance) { position = new Position(list._next, 0); }
+            if (advance) { sequenceIndex = new SequenceIndex(list._next, 0); }
             return true;
         }
 

@@ -106,17 +106,17 @@ namespace System.Collections.Sequences
             return oldArray;
         }
 
-        public bool TryGet(ref Position position, out T item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out T item, bool advance = true)
         {
-            int index = (int)position;
+            int index = (int)sequenceIndex;
             if (index < _count) {
                 item = _array[index];
-                if (advance) { position = new Position(null, index+1); }
+                if (advance) { sequenceIndex = new SequenceIndex(null, index+1); }
                 return true;
             }
 
             item = default;
-            position = default;
+            sequenceIndex = default;
             return false;
         }
 

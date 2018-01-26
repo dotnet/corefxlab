@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 buffer.GetMemory(0);
                 buffer.Advance(0); // doing nothing, the hard way
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer;
                 var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
                 Assert.Equal("No writing operation. Make sure GetMemory() was called.", exception.Message);
@@ -40,7 +40,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 var buffer = pipe.Writer.GetMemory(1);
                 var exception = Assert.Throws<InvalidOperationException>(() => pipe.Writer.Advance(buffer.Length + 1));
                 Assert.Equal("Can't advance past buffer size", exception.Message);
@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.Tests
             new Random(length).NextBytes(data);
             using (var memoryPool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(memoryPool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
 
                 var output = pipe.Writer;
                 output.Write(data);
@@ -75,7 +75,7 @@ namespace System.IO.Pipelines.Tests
                     // We are able to cast because test arguments are in range of int
                     Assert.Equal(new Span<byte>(data, (int)offset, (int)input.Length).ToArray(), input.ToArray());
                     offset += input.Length;
-                    pipe.Reader.Advance(input.End);
+                    pipe.Reader.AdvanceTo(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -86,7 +86,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(pool));
+                var pipe = new Pipe(new PipeOptions(pool));
                 var buffer = pipe.Writer;
                 Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetMemory(8192));
             }
@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new ResetablePipe(new PipeOptions(pool));
+                var pipe = new Pipe(new PipeOptions(pool));
                 var buffer = pipe.Writer;
                 buffer.Write(new byte[0]);
             }

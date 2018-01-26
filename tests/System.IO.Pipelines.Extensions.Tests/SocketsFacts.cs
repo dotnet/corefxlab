@@ -77,12 +77,12 @@ namespace System.IO.Pipelines.Tests
                             if (result.IsCompleted)
                             {
                                 reply = input.GetUtf8Span();
-                                client.Input.Advance(input.End);
+                                client.Input.AdvanceTo(input.End);
                                 break;
                             }
                             else
                             {
-                                client.Input.Advance(input.Start, input.End);
+                                client.Input.AdvanceTo(input.Start, input.End);
                             }
                         }
                     }
@@ -182,7 +182,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
+        static async Task<Tuple<int, int, int>> PingClient(IDuplexPipe connection, int messagesToSend)
         {
             ArraySegment<byte> _ping = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
             ArraySegment<byte> _pong = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
@@ -203,12 +203,12 @@ namespace System.IO.Pipelines.Tests
 
                     if (inputBuffer.IsEmpty && result.IsCompleted)
                     {
-                        connection.Input.Advance(inputBuffer.End);
+                        connection.Input.AdvanceTo(inputBuffer.End);
                         break;
                     }
                     if (inputBuffer.Length < 4)
                     {
-                        connection.Input.Advance(inputBuffer.Start, inputBuffer.End);
+                        connection.Input.AdvanceTo(inputBuffer.Start, inputBuffer.End);
                     }
                     else
                     {
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Tests
                         {
                             count++;
                         }
-                        connection.Input.Advance(inputBuffer.End);
+                        connection.Input.AdvanceTo(inputBuffer.End);
                         break;
                     }
                 }
@@ -240,7 +240,7 @@ namespace System.IO.Pipelines.Tests
 
         }
 
-        private static async Task PongServer(IPipeConnection connection)
+        private static async Task PongServer(IDuplexPipe connection)
         {
             ArraySegment<byte> _ping = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
             ArraySegment<byte> _pong = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
@@ -252,13 +252,13 @@ namespace System.IO.Pipelines.Tests
 
                 if (inputBuffer.IsEmpty && result.IsCompleted)
                 {
-                    connection.Input.Advance(inputBuffer.End);
+                    connection.Input.AdvanceTo(inputBuffer.End);
                     break;
                 }
 
                 if (inputBuffer.Length < 4)
                 {
-                    connection.Input.Advance(inputBuffer.Start, inputBuffer.End);
+                    connection.Input.AdvanceTo(inputBuffer.Start, inputBuffer.End);
                 }
                 else
                 {
@@ -272,7 +272,7 @@ namespace System.IO.Pipelines.Tests
                         break;
                     }
 
-                    connection.Input.Advance(inputBuffer.End);
+                    connection.Input.AdvanceTo(inputBuffer.End);
                 }
             }
         }
@@ -299,7 +299,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private async Task Echo(IPipeConnection connection)
+        private async Task Echo(IDuplexPipe connection)
         {
             while (true)
             {
@@ -308,7 +308,7 @@ namespace System.IO.Pipelines.Tests
 
                 if (request.IsEmpty && result.IsCompleted)
                 {
-                    connection.Input.Advance(request.End);
+                    connection.Input.AdvanceTo(request.End);
                     break;
                 }
 
@@ -318,7 +318,7 @@ namespace System.IO.Pipelines.Tests
                     response.Write(memory.Span);
                 }
                 await response.FlushAsync();
-                connection.Input.Advance(request.End);
+                connection.Input.AdvanceTo(request.End);
             }
         }
     }

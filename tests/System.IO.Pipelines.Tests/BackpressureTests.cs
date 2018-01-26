@@ -11,12 +11,12 @@ namespace System.IO.Pipelines.Tests
     public class BackpressureTests : IDisposable
     {
         private MemoryPool _pool;
-        private ResetablePipe _pipe;
+        private Pipe _pipe;
 
         public BackpressureTests()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool, maximumSizeLow: 32, maximumSizeHigh: 64));
+            _pipe = new Pipe(new PipeOptions(_pool, resumeWriterThreshold: 32, pauseWriterThreshold: 64));
         }
 
         public void Dispose()
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
-            _pipe.Reader.Advance(consumed, consumed);
+            _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
             var flushResult = flushAsync.GetResult();
@@ -71,7 +71,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.GetPosition(result.Buffer.Start, 32);
-            _pipe.Reader.Advance(consumed, consumed);
+            _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.False(flushAsync.IsCompleted);
         }
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
-            _pipe.Reader.Advance(consumed, consumed);
+            _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
             var flushResult = flushAsync.GetResult();
@@ -134,9 +134,9 @@ namespace System.IO.Pipelines.Tests
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.GetPosition(result.Buffer.Start, 31);
-            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(consumed, result.Buffer.End));
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.AdvanceTo(consumed, result.Buffer.End));
 
-            _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
         }
     }
 }

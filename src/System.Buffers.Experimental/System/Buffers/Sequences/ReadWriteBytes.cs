@@ -50,7 +50,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadWriteBytes(Position first, Position last)
+        public ReadWriteBytes(SequenceIndex first, SequenceIndex last)
         {
             (_start, _startIndex) = first.Get<object>();
             (_end, _endIndex) = last.Get<object>();
@@ -130,21 +130,21 @@ namespace System.Buffers
         public ReadWriteBytes Slice(int index)
             => Slice((long)index);
 
-        public ReadWriteBytes Slice(Position position)
+        public ReadWriteBytes Slice(SequenceIndex sequenceIndex)
         {
             var kind = Kind;
             switch (kind)
             {
                 case Type.Array:
-                    var (array, index) = position.Get<byte[]>();
+                    var (array, index) = sequenceIndex.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, new Position((IMemoryList<byte>)_end, _endIndex));
+                    return Slice(sequenceIndex, new SequenceIndex((IMemoryList<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
 
-        public ReadWriteBytes Slice(Position start, Position end)
+        public ReadWriteBytes Slice(SequenceIndex start, SequenceIndex end)
         {
             var kind = Kind;
             switch (kind)
@@ -233,7 +233,7 @@ namespace System.Buffers
             }
         }
 
-        public Position Start => new Position(_start, _startIndex);
+        public SequenceIndex Start => new SequenceIndex(_start, _startIndex);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -267,9 +267,9 @@ namespace System.Buffers
             return array;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out Memory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (sequenceIndex == default)
             {
                 item = default;
                 return false;
@@ -278,25 +278,25 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + (int)position;
-                var length = _endIndex - _startIndex - (int)position;
+                var start = _startIndex + (int)sequenceIndex;
+                var length = _endIndex - _startIndex - (int)sequenceIndex;
                 item = new Memory<byte>(array, start, length);
-                if (advance) position = default;
+                if (advance) sequenceIndex = default;
                 return true;
             }
 
             if (Kind == Type.MemoryList)
             {
-                var (node, index) = position.Get<IMemoryList<byte>>();
+                var (node, index) = sequenceIndex.Get<IMemoryList<byte>>();
                 item = node.Memory.Slice(index);
                 if (ReferenceEquals(node, _end))
                 {
                     item = item.Slice(0, _endIndex - index);
-                    if (advance) position = default;
+                    if (advance) sequenceIndex = default;
                 }
                 else
                 {
-                    if (advance) position = new Position(node.Next, 0);
+                    if (advance) sequenceIndex = new SequenceIndex(node.Next, 0);
                 }
                 return true;
             }
@@ -304,7 +304,7 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
 
-        public Position GetPosition(Position origin, long offset)
+        public SequenceIndex GetPosition(SequenceIndex origin, long offset)
         {
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
 
@@ -320,7 +320,7 @@ namespace System.Buffers
                 else
                 {
                     var (segment, index) = origin.Get<IMemoryList<byte>>();
-                    return new Position(segment, (int)(index + offset));
+                    return new SequenceIndex(segment, (int)(index + offset));
                 }
             }
             throw new ArgumentOutOfRangeException(nameof(offset));

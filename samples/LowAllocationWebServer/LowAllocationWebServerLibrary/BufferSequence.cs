@@ -35,7 +35,7 @@ namespace Microsoft.Net
 
         public long RunningIndex => throw new NotImplementedException();
 
-        public Position First => new Position(this, 0);
+        public SequenceIndex First => new SequenceIndex(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -48,30 +48,30 @@ namespace Microsoft.Net
             return buffer.Length;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out Memory<byte> item, bool advance = true)
         {
-            if (position == default) {
+            if (sequenceIndex == default) {
                 item = default;
                 return false;
             }
 
-            var (buffer, index) = position.Get<BufferSequence>();
+            var (buffer, index) = sequenceIndex.Get<BufferSequence>();
             item = buffer.Memory.Slice(index, buffer._written - index);
-            if (advance) { position = new Position(buffer._next, 0); }
+            if (advance) { sequenceIndex = new SequenceIndex(buffer._next, 0); }
             return true;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref SequenceIndex sequenceIndex, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (sequenceIndex == default)
             {
                 item = default;
                 return false;
             }
 
-            var (buffer, index) = position.Get<BufferSequence>();
+            var (buffer, index) = sequenceIndex.Get<BufferSequence>();
             item = buffer.WrittenMemory.Slice(index);
-            if (advance) { position = new Position(buffer._next, 0); }
+            if (advance) { sequenceIndex = new SequenceIndex(buffer._next, 0); }
             return true;
         }
 

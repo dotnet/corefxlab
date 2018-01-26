@@ -37,8 +37,8 @@ public class HttpParserBench
         ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerRequestBytes, 0, s_plaintextTechEmpowerHeadersBytes.Length);
         var parser = new HttpParser();
         var request = new Request();
-        Position consumed = default;
-        Position read;
+        SequenceIndex consumed = default;
+        SequenceIndex read;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations)
@@ -71,8 +71,8 @@ public class HttpParserBench
         ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
-        Position consumed;
-        Position examined;
+        SequenceIndex consumed;
+        SequenceIndex examined;
         int consumedBytes;
         bool success = true;
 
@@ -103,8 +103,8 @@ public class HttpParserBench
         var parser = new HttpParser();
         var request = new Request();
         int consumedBytes  = 0;
-        Position examined;
-        Position consumed = buffer.Start;
+        SequenceIndex examined;
+        SequenceIndex consumed = buffer.Start;
         bool success = true;
 
         foreach (var iteration in Benchmark.Iterations) {
