@@ -22,7 +22,7 @@ if [ $# -eq 0 ]
     Configuration=$1
 fi
 
-BuildVersion="e$(date '+%y%m%d')-1"
+BuildVersion="preview1-$(date '+%y%m%d')-1"
 Version="<default>"
 Restore="true"
 echo "Configuration=$Configuration."
