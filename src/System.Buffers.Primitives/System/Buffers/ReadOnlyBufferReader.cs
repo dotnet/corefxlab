@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -163,7 +164,8 @@ namespace System.Buffers
                         var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
                         nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
                         copied += toCopy;
-                        if (copied >= destination.Length) break;
+                        if (copied == destination.Length) break;
+                        Debug.Assert(copied < destination.Length);
                     }
                 }
                 return copied;

@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
+using System.Text;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
@@ -312,7 +313,13 @@ namespace System.IO.Pipelines.Tests
 
                 int copied = BufferReader.Peek(reader, buffer);
                 Assert.Equal(content.Length - i, copied);
-                Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
+
+                var copiedBuffer = buffer.Slice(0, copied);
+                var contentSlice = content.AsSpan().Slice(i);
+                Assert.True(
+                    copiedBuffer.SequenceEqual(contentSlice),
+                    ToDiagnosticString(copiedBuffer) + ToDiagnosticString(contentSlice)
+                );
 
                 // make sure that nothing more got written, i.e. tail is empty
                 for (int r = copied; r < buffer.Length; r++)
@@ -323,6 +330,22 @@ namespace System.IO.Pipelines.Tests
                 reader.Advance(1);
                 buffer.Clear();
             }
+        }
+
+        string ToDiagnosticString(ReadOnlySpan<byte> span)
+        {
+            var sb = new StringBuilder();
+            sb.Append('[');
+
+            bool first = true;
+            for(int i=0; i<span.Length; i++)
+            {
+                if (!first) sb.Append(' ');
+                else first = false;
+                sb.Append(span[i]);
+            }
+            sb.Append(']');
+            return sb.ToString();
         }
 
         [Fact]

@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using System.Collections.Sequences;
+using System.Diagnostics;
 
 namespace System.Buffers
 {
@@ -118,7 +119,8 @@ namespace System.Buffers
                 var toCopy = Math.Min(span.Length, buffer.Length - copied);
                 span.Slice(0, toCopy).CopyTo(buffer.Slice(copied));
                 copied += toCopy;
-                if (copied >= buffer.Length) break;
+                if (copied == buffer.Length) break;
+                Debug.Assert(copied < buffer.Length);
             }
             return copied;
         }
@@ -132,7 +134,8 @@ namespace System.Buffers
                 var toCopy = Math.Min(span.Length, buffer.Length - copied);
                 span.Slice(0, toCopy).CopyTo(buffer.Slice(copied));
                 copied += toCopy;
-                if (copied >= buffer.Length) break;
+                if (copied == buffer.Length) break;
+                Debug.Assert(copied < buffer.Length);
             }
             return copied;
         }
