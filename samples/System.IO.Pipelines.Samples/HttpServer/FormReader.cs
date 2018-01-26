@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.IO.Pipelines.Text.Primitives;
@@ -32,7 +33,7 @@ namespace System.IO.Pipelines.Samples.Http
             while (!buffer.IsEmpty && _contentLength > 0)
             {
                 var next = buffer;
-                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer<byte> key, out Position delim))
+                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer<byte> key, out SequencePosition delim))
                 {
                     break;
                 }

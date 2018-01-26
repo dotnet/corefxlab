@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.IO.Pipelines;
 using System.Numerics;
@@ -37,7 +38,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -56,7 +57,7 @@ namespace System.Text.Http.Parser
             }
             else
             {
-                if (TryGetNewLineSpan(buffer, out Position found))
+                if (TryGetNewLineSpan(buffer, out SequencePosition found))
                 {
                     span = buffer.Slice(consumed, found).ToSpan();
                     consumed = found;
@@ -229,7 +230,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -370,7 +371,7 @@ namespace System.Text.Http.Parser
         {
             var index = 0;
             consumedBytes = 0;
-            Position position = buffer.Start;
+            SequencePosition position = buffer.Start;
 
             if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {
@@ -647,7 +648,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out Position found)
+        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequencePosition found)
         {
             var position = buffer.PositionOf(ByteLF);
             if (position.HasValue)

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Sequences;
 using System.Text;
 
@@ -39,12 +40,12 @@ namespace System.Buffers
 
         public long RunningIndex => _virtualIndex;
 
-        public Position First => new Position(this, 0);
+        public SequencePosition First => new SequencePosition(this, 0);
 
         public int CopyTo(Span<byte> buffer)
         {
             int copied = 0;
-            Position position = default;
+            SequencePosition position = default;
             var free = buffer;
             while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
             {
@@ -64,14 +65,14 @@ namespace System.Buffers
             return copied;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
             var result = TryGet(ref position, out Memory<byte> memory, advance);
             item = memory;
             return result;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
             if (position == default)
             {
@@ -81,7 +82,7 @@ namespace System.Buffers
 
             var (list, index) = position.Get<BufferList>();
             item = list._data.Slice(index);
-            if (advance) { position = new Position(list._next, 0); }
+            if (advance) { position = new SequencePosition(list._next, 0); }
             return true;
         }
 

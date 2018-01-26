@@ -10,12 +10,12 @@ namespace System.IO.Pipelines.Tests
     public class PipeResetTests : IDisposable
     {
         private MemoryPool _pool;
-        private ResetablePipe _pipe;
+        private Pipe _pipe;
 
         public PipeResetTests()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Tests
             var result = await _pipe.Reader.ReadAsync();
 
             Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
 
             _pipe.Reader.Complete();
             _pipe.Writer.Complete();
@@ -47,7 +47,7 @@ namespace System.IO.Pipelines.Tests
             result = await _pipe.Reader.ReadAsync();
 
             Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.Advance(result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
         }
 
         [Fact]

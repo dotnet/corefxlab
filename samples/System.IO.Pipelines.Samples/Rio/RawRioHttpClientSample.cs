@@ -9,7 +9,7 @@ namespace System.IO.Pipelines.Samples
 {
     public class RawRioHttpClientSample : RawHttpClientSampleBase
     {
-        protected override Task<IPipeConnection> GetConnection()
+        protected override Task<IDuplexPipe> GetConnection()
         {
             //var client = new RioTcpClientPool();
             //return client.Connect(new IPEndPoint(IPAddress.Loopback, 5000));

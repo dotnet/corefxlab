@@ -17,7 +17,7 @@ namespace System.Collections.Sequences.Tests
         {
             ArrayList<int> collection = CreateArrayList(array);
 
-            Position position = default;
+            SequencePosition position = default;
             int arrayIndex = 0;
             while (collection.TryGet(ref position, out int item))
             {
@@ -48,7 +48,7 @@ namespace System.Collections.Sequences.Tests
         {
             LinkedContainer<int> collection = CreateLinkedContainer(array);
 
-            Position position = default;
+            SequencePosition position = default;
             int arrayIndex = array.Length;
             while (collection.TryGet(ref position, out int item))
             {
@@ -72,7 +72,7 @@ namespace System.Collections.Sequences.Tests
             Hashtable<int, string> collection = CreateHashtable(array);
 
             int arrayIndex = 0;
-            Position position = default;
+            SequencePosition position = default;
             while (collection.TryGet(ref position, out KeyValuePair<int, string> item))
             {
                 Assert.Equal(array[arrayIndex++], item.Key);

@@ -7,7 +7,7 @@ namespace System.Collections.Sequences
 {
     public struct SequenceEnumerator<T>
     {
-        Position _position;
+        SequencePosition _position;
         ISequence<T> _sequence;
         T _current;
 
@@ -27,7 +27,7 @@ namespace System.Collections.Sequences
     public struct SequenceEnumerator<T, TSequence>
         where TSequence : ISequence<T>
     {
-        Position _position;
+        SequencePosition _position;
         TSequence _sequence;
         T _current;
 

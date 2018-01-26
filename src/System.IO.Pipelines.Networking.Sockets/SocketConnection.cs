@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines.Networking.Sockets
 {
     /// <summary>
-    /// Represents an <see cref="IPipeConnection"/> implementation using the async Socket API
+    /// Represents an <see cref="IDuplexPipe"/> implementation using the async Socket API
     /// </summary>
-    public class SocketConnection : IPipeConnection
+    public class SocketConnection : IDuplexPipe
     {
         private static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
@@ -86,8 +86,8 @@ namespace System.IO.Pipelines.Networking.Sockets
 
             // TODO: Make this configurable
             // Dispatch to avoid deadlocks
-            _input = new ResetablePipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
-            _output = new ResetablePipe(new PipeOptions(pool, Scheduler.ThreadPool, Scheduler.ThreadPool));
+            _input = new Pipe(new PipeOptions(pool, PipeScheduler.ThreadPool, PipeScheduler.ThreadPool));
+            _output = new Pipe(new PipeOptions(pool, PipeScheduler.ThreadPool, PipeScheduler.ThreadPool));
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -570,7 +570,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                     }
                     finally
                     {
-                        _output.Reader.Advance(buffer.End);
+                        _output.Reader.AdvanceTo(buffer.End);
                     }
                 }
                 _output.Reader.Complete();

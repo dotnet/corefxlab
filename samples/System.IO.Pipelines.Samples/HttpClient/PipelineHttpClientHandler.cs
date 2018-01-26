@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using System.Text.Formatting;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Samples
@@ -71,7 +72,7 @@ namespace System.IO.Pipelines.Samples
             return response;
         }
 
-        private static async Task ProduceResponse(ConnectionState state, IPipeConnection connection, HttpResponseMessage response)
+        private static async Task ProduceResponse(ConnectionState state, IDuplexPipe connection, HttpResponseMessage response)
         {
             // TODO: pipelining support!
             while (true)
@@ -106,7 +107,7 @@ namespace System.IO.Pipelines.Samples
                     {
                         break;
                     }
-                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> responseLine, out Position delim))
+                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> responseLine, out SequencePosition delim))
                     {
                         continue;
                     }
@@ -215,7 +216,7 @@ namespace System.IO.Pipelines.Samples
                 }
                 finally
                 {
-                    connection.Input.Advance(consumed);
+                    connection.Input.AdvanceTo(consumed);
                 }
 
                 if (needMoreData)
@@ -261,7 +262,7 @@ namespace System.IO.Pipelines.Samples
             return state;
         }
 
-        private async Task<IPipeConnection> ConnectAsync(HttpRequestMessage request)
+        private async Task<IDuplexPipe> ConnectAsync(HttpRequestMessage request)
         {
             var addresses = await Dns.GetHostAddressesAsync(request.RequestUri.Host);
             var port = request.RequestUri.Port;
@@ -269,7 +270,7 @@ namespace System.IO.Pipelines.Samples
             return await ConnectAsync(new IPEndPoint(address, port));
         }
 
-        protected abstract Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint);
+        protected abstract Task<IDuplexPipe> ConnectAsync(IPEndPoint ipEndpoint);
 
         protected override void Dispose(bool disposing)
         {
@@ -283,9 +284,9 @@ namespace System.IO.Pipelines.Samples
 
         private class ConnectionState
         {
-            public Task<IPipeConnection> ConnectionTask { get; set; }
+            public Task<IDuplexPipe> ConnectionTask { get; set; }
             public int PreviousContentLength { get; set; }
-            public Position Consumed { get; set; }
+            public SequencePosition Consumed { get; set; }
         }
     }
 }

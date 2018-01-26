@@ -87,9 +87,9 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        public Position Start => default;
+        public SequencePosition Start => default;
 
-        public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
+        public bool TryGet(ref SequencePosition position, out KeyValuePair<K, V> item, bool advance = true)
         {
             item = default;
 
@@ -105,7 +105,7 @@ namespace System.Collections.Sequences
                     return false;
                 }
 
-                position = new Position(null, firstOccupiedSlot);
+                position = new SequencePosition(null, firstOccupiedSlot);
             }
 
             var index = (int)position;
@@ -116,7 +116,7 @@ namespace System.Collections.Sequences
 
             if (advance) {
                 var first = FindFirstStartingAt(index + 1);
-                position = new Position(null, first);
+                position = new SequencePosition(null, first);
                 if (first == -1) {
                     position = default;
                 }
@@ -142,7 +142,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<KeyValuePair<K, V>>(this);
         }
 
-        public Position GetPosition(Position origin, long offset)
+        public SequencePosition GetPosition(SequencePosition origin, long offset)
         {
             if (offset<0) throw new ArgumentOutOfRangeException(nameof(offset));
             while (offset-- > 0 && TryGet(ref origin, out _));

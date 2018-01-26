@@ -10,18 +10,18 @@ namespace System.IO.Pipelines.Samples
 {
     public class FakeListener
     {
-        private readonly List<PipeConnection> _connections = new List<PipeConnection>();
+        private readonly List<DuplexPipe> _connections = new List<DuplexPipe>();
         private Task[] _connectionTasks;
 
         public FakeListener(MemoryPool<byte> pool, int concurrentConnections)
         {
             for (int i = 0; i < concurrentConnections; i++)
             {
-                _connections.Add(new PipeConnection(new PipeOptions(pool)));
+                _connections.Add(new DuplexPipe(new PipeOptions(pool)));
             }
         }
 
-        public void OnConnection(Func<IPipeConnection, Task> callback)
+        public void OnConnection(Func<IDuplexPipe, Task> callback)
         {
             _connectionTasks = new Task[_connections.Count];
             for (int i = 0; i < _connections.Count; i++)

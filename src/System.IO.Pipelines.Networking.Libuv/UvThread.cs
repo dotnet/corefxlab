@@ -9,7 +9,7 @@ using System.IO.Pipelines.Networking.Libuv.Internal;
 namespace System.IO.Pipelines.Networking.Libuv
 {
     // This class needs a bunch of work to make sure it's thread safe
-    public class UvThread : Scheduler, IDisposable
+    public class UvThread : PipeScheduler, IDisposable
     {
         private readonly Thread _thread = new Thread(OnStart)
         {

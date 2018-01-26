@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Text.Formatting
@@ -21,9 +22,9 @@ namespace System.Text.Formatting
         ISequence<Memory<byte>> _buffers;
         SymbolTable _symbolTable;
 
-        Position _currentPosition = default;
+        SequencePosition _currentSequencePosition = default;
         int _currentWrittenBytes;
-        Position _previousPosition = default;
+        SequencePosition _previousSequencePosition = default;
         int _previousWrittenBytes;
         int _totalWritten;
 
@@ -31,20 +32,20 @@ namespace System.Text.Formatting
         {
             _symbolTable = symbolTable;
             _buffers = buffers;
-            _currentPosition = _buffers.Start;
+            _currentSequencePosition = _buffers.Start;
             _previousWrittenBytes = -1;
         }
 
         private Memory<byte> Current {
             get {
-                if (!_buffers.TryGet(ref _currentPosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
+                if (!_buffers.TryGet(ref _currentSequencePosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
         private Memory<byte> Previous
         {
             get {
-                if (!_buffers.TryGet(ref _previousPosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
+                if (!_buffers.TryGet(ref _previousSequencePosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
@@ -61,10 +62,10 @@ namespace System.Text.Formatting
             {
                 if (NeedShift) throw new NotImplementedException("need to allocate temp array");
 
-                _previousPosition = _currentPosition;
+                _previousSequencePosition = _currentSequencePosition;
                 _previousWrittenBytes = _currentWrittenBytes;
 
-                if (!_buffers.TryGet(ref _currentPosition, out Memory<byte> span))
+                if (!_buffers.TryGet(ref _currentSequencePosition, out Memory<byte> span))
                 {
                     throw new InvalidOperationException();
                 }
@@ -89,7 +90,7 @@ namespace System.Text.Formatting
                 }
                 else {
                     current.Slice(0, bytes).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
-                    _currentPosition = _previousPosition;
+                    _currentSequencePosition = _previousSequencePosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }
 

@@ -93,14 +93,14 @@ namespace System.IO.Pipelines.Tests
 
             var cancellationTokenSource1 = new CancellationTokenSource();
             var result = await Pipe.Reader.ReadAsync(cancellationTokenSource1.Token);
-            Pipe.Reader.Advance(result.Buffer.Start);
+            Pipe.Reader.AdvanceTo(result.Buffer.Start);
 
             cancellationTokenSource1.Cancel();
             var cancellationTokenSource2 = new CancellationTokenSource();
 
             // Verifying that ReadAsync does not throw
             result = await Pipe.Reader.ReadAsync(cancellationTokenSource2.Token);
-            Pipe.Reader.Advance(result.Buffer.Start);
+            Pipe.Reader.AdvanceTo(result.Buffer.Start);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var result = await Pipe.Reader.ReadAsync();
                 var buffer = result.Buffer;
-                Pipe.Reader.Advance(buffer.End);
+                Pipe.Reader.AdvanceTo(buffer.End);
 
                 Assert.False(result.IsCompleted);
                 Assert.True(result.IsCancelled);
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Tests
                 var array = new byte[11];
                 buffer.First.Span.CopyTo(array);
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-                Pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                Pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
                 Pipe.Reader.Complete();
             };
@@ -166,7 +166,7 @@ namespace System.IO.Pipelines.Tests
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-            Pipe.Reader.Advance(buffer.End, buffer.End);
+            Pipe.Reader.AdvanceTo(buffer.End, buffer.End);
         }
         [Fact]
         public async Task CancellingPendingReadBeforeReadAsync()
@@ -175,7 +175,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await Pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Pipe.Reader.Advance(buffer.End);
+            Pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
             Assert.True(result.IsCancelled);
@@ -196,7 +196,7 @@ namespace System.IO.Pipelines.Tests
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
 
-            Pipe.Reader.Advance(buffer.Start, buffer.Start);
+            Pipe.Reader.AdvanceTo(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -219,7 +219,7 @@ namespace System.IO.Pipelines.Tests
 
             Pipe.Reader.CancelPendingRead();
 
-            Pipe.Reader.Advance(buffer.End);
+            Pipe.Reader.AdvanceTo(buffer.End);
 
             var awaitable = Pipe.Reader.ReadAsync();
 
@@ -229,7 +229,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.True(result.IsCancelled);
 
-            Pipe.Reader.Advance(result.Buffer.Start, result.Buffer.Start);
+            Pipe.Reader.AdvanceTo(result.Buffer.Start, result.Buffer.Start);
         }
 
         [Fact]
@@ -296,7 +296,7 @@ namespace System.IO.Pipelines.Tests
 
             Assert.True(awaitable.IsCompleted);
 
-            Pipe.Reader.Advance(awaitable.GetResult().Buffer.End);
+            Pipe.Reader.AdvanceTo(awaitable.GetResult().Buffer.End);
         }
 
         [Fact]
@@ -328,7 +328,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = await Pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Pipe.Reader.Advance(buffer.End);
+            Pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
             Assert.True(result.IsCancelled);
@@ -390,7 +390,7 @@ namespace System.IO.Pipelines.Tests
                     cancelled = true;
                     var result = await Pipe.Reader.ReadAsync();
                     Assert.Equal(new byte[] { 1, 2, 3 }, result.Buffer.ToArray());
-                    Pipe.Reader.Advance(result.Buffer.End);
+                    Pipe.Reader.AdvanceTo(result.Buffer.End);
                 }
             };
 

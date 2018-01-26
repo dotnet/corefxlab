@@ -6,7 +6,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a connection from which data can be read from and written to.
     /// </summary>
-    public interface IPipeConnection : IDisposable
+    public interface IDuplexPipe : IDisposable
     {
         /// <summary>
         /// Gets the <see cref="PipeReader"/> half of the duplex connection.

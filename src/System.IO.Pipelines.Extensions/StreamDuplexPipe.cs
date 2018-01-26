@@ -3,9 +3,9 @@
 
 namespace System.IO.Pipelines
 {
-    public class StreamPipeConnection : IPipeConnection
+    public class StreamDuplexPipe : IDuplexPipe
     {
-        public StreamPipeConnection(PipeOptions options, Stream stream)
+        public StreamDuplexPipe(PipeOptions options, Stream stream)
         {
             Input = CreateReader(options, stream);
             Output = CreateWriter(options, stream);
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
                 throw new NotSupportedException();
             }
 
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = stream.CopyToEndAsync(pipe.Writer);
 
             return pipe.Reader;
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines
                 throw new NotSupportedException();
             }
 
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var ignore = pipe.Reader.CopyToEndAsync(stream);
 
             return pipe.Writer;

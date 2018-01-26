@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
                 var sliced = inputBuffer.Slice(0, length);
                 sliced.CopyTo(destination);
 
-                input.Advance(sliced.End);
+                input.AdvanceTo(sliced.End);
 
                 if (length != 0)
                 {
@@ -70,7 +70,7 @@ namespace System.IO.Pipelines
                 }
                 finally
                 {
-                    input.Advance(inputBuffer.End);
+                    input.AdvanceTo(inputBuffer.End);
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines
                 var length = (int)Math.Min(inputBuffer.Length, destination.Count);
                 var sliced = inputBuffer.Slice(0, length);
                 sliced.CopyTo(destination);
-                input.Advance(sliced.End);
+                input.AdvanceTo(sliced.End);
 
                 if (length != 0)
                 {
@@ -122,7 +122,7 @@ namespace System.IO.Pipelines
                 }
                 finally
                 {
-                    input.Advance(inputBuffer.End);
+                    input.AdvanceTo(inputBuffer.End);
                 }
             }
         }
