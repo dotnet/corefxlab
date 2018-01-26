@@ -1,7 +1,7 @@
 <Project>
   <Import Project="dependencies.props" />
   <PropertyGroup>
-    <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(eyyMMdd-1))</VersionSuffix>
+    <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(preview2-yyMMdd-1))</VersionSuffix>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
     <VersionPrefix>0.1.0</VersionPrefix>
     <Authors>Microsoft Corporation</Authors>
