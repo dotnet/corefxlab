@@ -2,7 +2,7 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Version="<default>",
-    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1'),
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('preview1-yyMMdd-1'),
     [string]$SkipTests="false"
 )
 
