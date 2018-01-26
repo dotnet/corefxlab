@@ -63,7 +63,7 @@ namespace System.Text.Http.Parser.Tests
         [Theory]
         [MemberData(nameof(RequestLineInvalidData))]
         public void ParseRequestLineThrowsOnInvalidRequestLine(string requestLine)
-        {            
+        {
             var parser = new HttpParser();
             var buffer = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
@@ -315,8 +315,8 @@ namespace System.Text.Http.Parser.Tests
 
             bool result = parser.ParseRequestLine(requestHandler, buffer, out Position consumed, out Position examined);
             Assert.False(result);
-            Assert.Equal(buffer.Start, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.Equal(buffer.Slice(consumed).Length, buffer.Length);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         //[Fact]
@@ -373,8 +373,8 @@ namespace System.Text.Http.Parser.Tests
             Assert.Equal(1, pairs.Length);
             Assert.Equal(headerName, pairs[0].Key);
             Assert.Equal(expectedHeaderValue, pairs[0].Value);
-            Assert.Equal(buffer.End, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(consumed).IsEmpty);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         private void VerifyRawHeaders(string rawHeaders, IEnumerable<string> expectedHeaderNames, IEnumerable<string> expectedHeaderValues)
@@ -392,8 +392,8 @@ namespace System.Text.Http.Parser.Tests
             Assert.Equal(expectedHeaderNames.Count(), parsedHeaders.Length);
             Assert.Equal(expectedHeaderNames, parsedHeaders.Select(t => t.Key));
             Assert.Equal(expectedHeaderValues, parsedHeaders.Select(t => t.Value));
-            Assert.Equal(buffer.End, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(consumed).IsEmpty);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         public static IEnumerable<string[]> RequestLineValidData => HttpParsingData.RequestLineValidData;
