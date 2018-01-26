@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Samples.Http
                 }
                 finally
                 {
-                    _input.Advance(consumed, examined);
+                    _input.AdvanceTo(consumed, examined);
                 }
 
                 var context = _application.CreateContext(this);

@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Samples
             client = new UvTcpClient(thread, new IPEndPoint(IPAddress.Loopback, 5000));
         }
 
-        protected override async Task<IPipeConnection> GetConnection()
+        protected override async Task<IDuplexPipe> GetConnection()
         {
             return await client.ConnectAsync();
         }

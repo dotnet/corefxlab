@@ -18,7 +18,7 @@ namespace System.IO.Pipelines.Samples
             _thread.Dispose();
         }
 
-        protected override async Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint)
+        protected override async Task<IDuplexPipe> ConnectAsync(IPEndPoint ipEndpoint)
         {
             return await new UvTcpClient(_thread, ipEndpoint).ConnectAsync();
         }

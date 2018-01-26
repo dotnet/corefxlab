@@ -3,14 +3,14 @@
 
 namespace System.Threading
 {
-    public abstract class Scheduler
+    public abstract class PipeScheduler
     {
         private static readonly ThreadPoolScheduler _threadPoolScheduler = new ThreadPoolScheduler();
         private static readonly InlineScheduler _inlineScheduler = new InlineScheduler();
 
-        public static Scheduler ThreadPool => _threadPoolScheduler;
-        public static Scheduler Inline => _inlineScheduler;
-        
+        public static PipeScheduler ThreadPool => _threadPoolScheduler;
+        public static PipeScheduler Inline => _inlineScheduler;
+
         public abstract void Schedule(Action action);
         public abstract void Schedule(Action<object> action, object state);
     }

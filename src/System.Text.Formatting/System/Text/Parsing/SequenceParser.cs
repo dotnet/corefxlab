@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Text.Parsing
@@ -15,7 +16,7 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            Position position = default;
+            SequencePosition position = default;
 
             // Fetch the first segment
             if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))
@@ -88,7 +89,7 @@ namespace System.Text.Parsing
         {
             value = default;
             consumed = default;
-            Position position = default;
+            SequencePosition position = default;
 
             // Fetch the first segment
             if (!bufferSequence.TryGet(ref position, out ReadOnlyMemory<byte> first))

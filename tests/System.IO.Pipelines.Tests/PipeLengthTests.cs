@@ -11,12 +11,12 @@ namespace System.IO.Pipelines.Tests
     public class PipeLengthTests : IDisposable
     {
         private MemoryPool _pool;
-        private ResetablePipe _pipe;
+        private Pipe _pipe;
 
         public PipeLengthTests()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Tests
 
             var result = _pipe.Reader.ReadAsync().GetResult();
             var consumed = result.Buffer.Slice(5).Start;
-            _pipe.Reader.Advance(consumed, consumed);
+            _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.Equal(5, _pipe.Length);
         }
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.FlushAsync();
 
             var result = _pipe.Reader.ReadAsync().GetResult();
-            _pipe.Reader.Advance(result.Buffer.Start, result.Buffer.End);
+            _pipe.Reader.AdvanceTo(result.Buffer.Start, result.Buffer.End);
 
             Assert.Equal(10, _pipe.Length);
         }
@@ -95,7 +95,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.Equal(i + 1, result.Buffer.Length);
 
-                _pipe.Reader.Advance(consumed, consumed);
+                _pipe.Reader.AdvanceTo(consumed, consumed);
 
                 Assert.Equal(i, _pipe.Length);
             }

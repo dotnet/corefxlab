@@ -4,7 +4,7 @@
 
 namespace System.Threading
 {
-    internal sealed class InlineScheduler : Scheduler
+    internal sealed class InlineScheduler : PipeScheduler
     {
         public override void Schedule(Action action)
         {

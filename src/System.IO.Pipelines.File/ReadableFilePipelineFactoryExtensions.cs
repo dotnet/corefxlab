@@ -7,7 +7,7 @@ namespace System.IO.Pipelines.File
     {
         public static PipeReader ReadFile(PipeOptions options, string path)
         {
-            var pipe = new ResetablePipe(options);
+            var pipe = new Pipe(options);
             var file = new FileReader(pipe.Writer);
             file.OpenReadFile(path);
             return pipe.Reader;

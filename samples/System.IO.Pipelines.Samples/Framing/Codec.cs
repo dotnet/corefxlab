@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
 using System.Buffers.Text;
+using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Samples.Framing
@@ -61,7 +62,7 @@ namespace System.IO.Pipelines.Samples.Framing
                         finally
                         {
                             // Consume the input
-                            pipelineConnection.Input.Advance(input.Start, input.End);
+                            pipelineConnection.Input.AdvanceTo(input.Start, input.End);
                         }
                     }
                 }
@@ -85,7 +86,7 @@ namespace System.IO.Pipelines.Samples.Framing
             return Task.CompletedTask;
         }
 
-        public static IPipeConnection MakePipeline(IPipeConnection connection)
+        public static IDuplexPipe MakePipeline(IDuplexPipe connection)
         {
             // Do something fancy here to wrap the connection, SSL etc
             return connection;
@@ -101,7 +102,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         private PipelineTextOutput _textOutput;
 
-        public void Initialize(IPipeConnection connection)
+        public void Initialize(IDuplexPipe connection)
         {
             _textOutput = new PipelineTextOutput(connection.Output, SymbolTable.InvariantUtf8);
         }
@@ -118,7 +119,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         public bool TryDecode(ref ReadOnlyBuffer<byte> input, out Line frame)
         {
-            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out Position cursor))
+            if (input.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> slice, out SequencePosition cursor))
             {
                 frame = new Line { Data = slice.GetUtf8Span() };
                 input = input.Slice(cursor).Slice(1);
@@ -137,7 +138,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public interface IFrameHandler<TInput>
     {
-        void Initialize(IPipeConnection connection);
+        void Initialize(IDuplexPipe connection);
 
         Task HandleAsync(TInput message);
     }

@@ -17,7 +17,7 @@ namespace System.IO.Pipelines.Samples
           //  _pool.Stop();
         }
 
-        protected override Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint)
+        protected override Task<IDuplexPipe> ConnectAsync(IPEndPoint ipEndpoint)
         {
             //return Task.FromResult<IPipeConnection>(_pool.Connect(ipEndpoint));
             throw new NotImplementedException();

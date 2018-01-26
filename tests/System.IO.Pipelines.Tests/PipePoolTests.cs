@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             var pool = new DisposeTrackingBufferPool();
 
-            var readerWriter = new ResetablePipe(new PipeOptions(pool));
+            var readerWriter = new Pipe(new PipeOptions(pool));
             await readerWriter.Writer.WriteAsync(new byte[] {1});
 
             readerWriter.Writer.Complete();
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new ResetablePipe(new PipeOptions(pool));
+            var pipe = new Pipe(new PipeOptions(pool));
             while (pool.CurrentlyRentedBlocks != 3)
             {
                 var writableBuffer = pipe.Writer.WriteEmpty(writeSize);
@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Tests
             }
 
             var readResult = await pipe.Reader.ReadAsync();
-            pipe.Reader.Advance(readResult.Buffer.End);
+            pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             Assert.Equal(0, pool.CurrentlyRentedBlocks);
         }
@@ -54,12 +54,12 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new ResetablePipe(new PipeOptions(pool));
+            var pipe = new Pipe(new PipeOptions(pool));
             await pipe.Writer.WriteAsync(new byte[writeSize]);
 
             pipe.Writer.GetMemory(writeSize);
             var readResult = await pipe.Reader.ReadAsync();
-            pipe.Reader.Advance(readResult.Buffer.End);
+            pipe.Reader.AdvanceTo(readResult.Buffer.End);
             pipe.Writer.Write(new byte[writeSize]);
             pipe.Writer.Commit();
 
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Tests
 
             var writeSize = 512;
 
-            var pipe = new ResetablePipe(new PipeOptions(pool));
+            var pipe = new Pipe(new PipeOptions(pool));
 
             // Write two blocks
             var buffer = pipe.Writer.GetMemory(writeSize);
@@ -86,7 +86,7 @@ namespace System.IO.Pipelines.Tests
 
             // Read everything
             var readResult = await pipe.Reader.ReadAsync();
-            pipe.Reader.Advance(readResult.Buffer.End);
+            pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             // Try writing more
             await pipe.Writer.WriteAsync(new byte[writeSize]);
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Tests
             var pool = new DisposeTrackingBufferPool();
             var writeSize = 512;
 
-            var pipe = new ResetablePipe(new PipeOptions(pool, minimumSegmentSize: 2020));
+            var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
 
             var buffer = pipe.Writer.GetMemory(writeSize);
             var allocatedSize = buffer.Length;

@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Samples
 
         protected abstract Task Stop();
 
-        protected async Task ProcessConnection(IPipeConnection connection)
+        protected async Task ProcessConnection(IDuplexPipe connection)
         {
             var httpParser = new HttpRequestParser();
             while (true)
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines.Samples
                 finally
                 {
                     // Consume the input
-                    connection.Input.Advance(consumed, examined);
+                    connection.Input.AdvanceTo(consumed, examined);
                 }
             }
         }

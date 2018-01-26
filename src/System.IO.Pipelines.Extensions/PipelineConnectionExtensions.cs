@@ -5,7 +5,7 @@ namespace System.IO.Pipelines
 {
     public static class PipelineConnectionExtensions
     {
-        public static Stream GetStream(this IPipeConnection connection)
+        public static Stream GetStream(this IDuplexPipe connection)
         {
             return new PipelineConnectionStream(connection);
         }

@@ -18,13 +18,13 @@ namespace System.IO.Pipelines.Samples
             pool = new MemoryPool();
         }
 
-        protected override Task<IPipeConnection> GetConnection()
+        protected override Task<IDuplexPipe> GetConnection()
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(IPAddress.Loopback, 5000));
 
-            var pipeConnection = new StreamPipeConnection(new PipeOptions(pool), new NetworkStream(s));
-            return Task.FromResult((IPipeConnection)pipeConnection);
+            var pipeConnection = new StreamDuplexPipe(new PipeOptions(pool), new NetworkStream(s));
+            return Task.FromResult((IDuplexPipe)pipeConnection);
         }
 
         protected override MemoryPool<byte> GetBufferPool()

@@ -10,12 +10,12 @@ namespace System.IO.Pipelines.Tests
     public class WritableBufferWriterFacts : IDisposable
     {
         private MemoryPool _pool;
-        private ResetablePipe _pipe;
+        private Pipe _pipe;
 
         public WritableBufferWriterFacts()
         {
             _pool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_pool));
+            _pipe = new Pipe(new PipeOptions(_pool));
         }
 
         public void Dispose()
@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Tests
              _pipe.Writer.FlushAsync().GetAwaiter().GetResult();
             var readResult = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var data = readResult.Buffer.ToArray();
-            _pipe.Reader.Advance(readResult.Buffer.End);
+            _pipe.Reader.AdvanceTo(readResult.Buffer.End);
             return data;
         }
 

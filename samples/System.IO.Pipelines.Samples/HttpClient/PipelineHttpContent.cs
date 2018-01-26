@@ -51,7 +51,7 @@ namespace System.IO.Pipelines.Samples
                 }
                 finally
                 {
-                    _output.Advance(consumed);
+                    _output.AdvanceTo(consumed);
                 }
             }
         }

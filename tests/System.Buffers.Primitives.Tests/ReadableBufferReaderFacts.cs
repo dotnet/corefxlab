@@ -264,7 +264,7 @@ namespace System.IO.Pipelines.Tests
                 reader.Read();
             }
 
-            var expected = end ?  new byte[] {} : readableBuffer.Slice(takes).ToArray();
+            var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
             Assert.Equal(expected, readableBuffer.Slice(reader.Position).ToArray());
         }
 

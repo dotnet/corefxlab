@@ -9,31 +9,33 @@ namespace System.IO.Pipelines
 {
     public class PipeOptions
     {
+        public static PipeOptions Default { get; } = new PipeOptions();
+
         public PipeOptions(
-            MemoryPool<byte> pool,
-            Scheduler readerScheduler = null,
-            Scheduler writerScheduler = null,
-            long maximumSizeHigh = 0,
-            long maximumSizeLow = 0,
+            MemoryPool<byte> pool = null,
+            PipeScheduler readerScheduler = null,
+            PipeScheduler writerScheduler = null,
+            long pauseWriterThreshold = 0,
+            long resumeWriterThreshold = 0,
             int minimumSegmentSize = 2048)
         {
-            Pool = pool;
+            Pool = pool ?? MemoryPool.Default;
             ReaderScheduler = readerScheduler;
             WriterScheduler = writerScheduler;
-            MaximumSizeHigh = maximumSizeHigh;
-            MaximumSizeLow = maximumSizeLow;
+            PauseWriterThreshold = pauseWriterThreshold;
+            ResumeWriterThreshold = resumeWriterThreshold;
             MinimumSegmentSize = minimumSegmentSize;
         }
 
-        public long MaximumSizeHigh { get; }
+        public long PauseWriterThreshold { get; }
 
-        public long MaximumSizeLow { get; }
+        public long ResumeWriterThreshold { get; }
 
         public int MinimumSegmentSize { get; }
 
-        public Scheduler WriterScheduler { get; }
+        public PipeScheduler WriterScheduler { get; }
 
-        public Scheduler ReaderScheduler { get; }
+        public PipeScheduler ReaderScheduler { get; }
 
         public MemoryPool<byte> Pool { get; }
     }
