@@ -69,8 +69,8 @@ namespace System.Buffers
             Debug.Assert(startSegment != null);
             Debug.Assert(endSegment != null);
 
-            BufferStart = new Position(startSegment, startIndex);
-            BufferEnd = new Position(endSegment, endIndex);
+            BufferStart = new SequenceIndex(startSegment, startIndex);
+            BufferEnd = new SequenceIndex(endSegment, endIndex);
         }
 
         public ReadOnlyBuffer(IMemoryList<T> startSegment, int offset, IMemoryList<T> endSegment, int endIndex)
@@ -80,8 +80,8 @@ namespace System.Buffers
             Debug.Assert(startSegment.Memory.Length >= offset);
             Debug.Assert(endSegment.Memory.Length >= endIndex);
 
-            BufferStart = new Position(startSegment, offset | MemoryListStartMask);
-            BufferEnd = new Position(endSegment, endIndex | MemoryListEndMask);
+            BufferStart = new SequenceIndex(startSegment, offset | MemoryListStartMask);
+            BufferEnd = new SequenceIndex(endSegment, endIndex | MemoryListEndMask);
         }
 
         public ReadOnlyBuffer(T[] data) : this(data, 0, data.Length)
@@ -95,8 +95,8 @@ namespace System.Buffers
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            BufferStart = new Position(data, offset | ArrayStartMask);
-            BufferEnd = new Position(data, offset + length | ArrayEndMask);
+            BufferStart = new SequenceIndex(data, offset | ArrayStartMask);
+            BufferEnd = new SequenceIndex(data, offset + length | ArrayEndMask);
         }
 
         public ReadOnlyBuffer(Memory<T> data)
@@ -105,8 +105,8 @@ namespace System.Buffers
             {
                 Memory = data
             };
-            BufferStart = new Position(segment, 0 | MemoryListStartMask);
-            BufferEnd = new Position(segment, data.Length | MemoryListEndMask);
+            BufferStart = new SequenceIndex(segment, 0 | MemoryListStartMask);
+            BufferEnd = new SequenceIndex(segment, data.Length | MemoryListEndMask);
         }
 
         public ReadOnlyBuffer(IEnumerable<Memory<T>> buffers)
@@ -138,8 +138,8 @@ namespace System.Buffers
                 first = segment = new ReadOnlyBufferSegment();
             }
 
-            BufferStart = new Position(first, 0 | MemoryListStartMask);
-            BufferEnd = new Position(segment, segment.Memory.Length | MemoryListEndMask);
+            BufferStart = new SequenceIndex(first, 0 | MemoryListStartMask);
+            BufferEnd = new SequenceIndex(segment, segment.Memory.Length | MemoryListEndMask);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ReadOnlyBuffer<T> SliceImpl(Position begin, Position end)
+        private ReadOnlyBuffer<T> SliceImpl(SequenceIndex begin, SequenceIndex end)
         {
             return new ReadOnlyBuffer<T>(
                 begin.Segment,

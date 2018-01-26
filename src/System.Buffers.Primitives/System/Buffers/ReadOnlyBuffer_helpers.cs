@@ -10,7 +10,7 @@ namespace System.Buffers
     public readonly partial struct ReadOnlyBuffer<T>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetBuffer(Position start, Position end, out ReadOnlyMemory<T> data, out Position next)
+        internal bool TryGetBuffer(SequenceIndex start, SequenceIndex end, out ReadOnlyMemory<T> data, out SequenceIndex next)
         {
             if (start.Segment == null)
             {
@@ -91,7 +91,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Position Seek(Position start, Position end, int bytes, bool checkEndReachable = true)
+        internal SequenceIndex Seek(SequenceIndex start, SequenceIndex end, int bytes, bool checkEndReachable = true)
         {
             var startIndex = start.Index;
             var endIndex = end.Index;
@@ -105,7 +105,7 @@ namespace System.Buffers
                 case BufferType.MemoryList:
                     if (start.Segment == end.Segment && endIndex - startIndex >= bytes)
                     {
-                        return new Position(start.Segment, startIndex + bytes);
+                        return new SequenceIndex(start.Segment, startIndex + bytes);
                     }
                     return SeekMultiSegment((IMemoryList<byte>) start.Segment, startIndex, (IMemoryList<byte>) end.Segment, endIndex, bytes, checkEndReachable);
 
@@ -119,7 +119,7 @@ namespace System.Buffers
 
                     if (endIndex - startIndex >= bytes)
                     {
-                        return new Position(start.Segment, startIndex + bytes);
+                        return new SequenceIndex(start.Segment, startIndex + bytes);
                     }
 
                     ThrowHelper.ThrowCursorOutOfBoundsException();
@@ -132,7 +132,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Position Seek(Position start, Position end, long bytes, bool checkEndReachable = true)
+        internal SequenceIndex Seek(SequenceIndex start, SequenceIndex end, long bytes, bool checkEndReachable = true)
         {
             var startIndex = start.Index;
             var endIndex = end.Index;
@@ -148,7 +148,7 @@ namespace System.Buffers
                     if (start.Segment == end.Segment && endIndex - startIndex >= bytes)
                     {
                         // end.Index >= bytes + Index and end.Index is int
-                        return new Position(start.Segment, startIndex + (int)bytes);
+                        return new SequenceIndex(start.Segment, startIndex + (int)bytes);
                     }
                     return SeekMultiSegment((IMemoryList<byte>) start.Segment, startIndex, (IMemoryList<byte>) end.Segment, endIndex, bytes, checkEndReachable);
 
@@ -158,7 +158,7 @@ namespace System.Buffers
                     if (endIndex - startIndex >= bytes)
                     {
                         // end.Index >= bytes + Index and end.Index is int
-                        return new Position(start.Segment, startIndex + (int)bytes);
+                        return new SequenceIndex(start.Segment, startIndex + (int)bytes);
                     }
 
                     ThrowHelper.ThrowCursorOutOfBoundsException();
@@ -170,9 +170,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Position SeekMultiSegment(IMemoryList<byte> start, int startIndex, IMemoryList<byte> end, int endPosition, long bytes, bool checkEndReachable)
+        private static SequenceIndex SeekMultiSegment(IMemoryList<byte> start, int startIndex, IMemoryList<byte> end, int endPosition, long bytes, bool checkEndReachable)
         {
-            Position result = default;
+            SequenceIndex result = default;
             var foundResult = false;
             var current = start;
             var currentIndex = startIndex;
@@ -193,7 +193,7 @@ namespace System.Buffers
                     if (memory.Length > bytes ||
                        (memory.Length == bytes && current.Next == null))
                     {
-                        result = new Position(current, currentIndex + (int)bytes);
+                        result = new SequenceIndex(current, currentIndex + (int)bytes);
                         foundResult = true;
                         if (!checkEndReachable)
                         {
@@ -222,7 +222,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private long GetLength(Position start, Position end)
+        private long GetLength(SequenceIndex start, SequenceIndex end)
         {
             var startIndex = start.Index;
             var endIndex = end.Index;
@@ -263,7 +263,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void BoundsCheck(Position start, Position newCursor)
+        private void BoundsCheck(SequenceIndex start, SequenceIndex newCursor)
         {
             var startIndex = start.Index;
             var endIndex = newCursor.Index;
