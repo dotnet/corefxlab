@@ -18,10 +18,10 @@ namespace System.Buffers
             where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
         {
             var copy = reader;
-            var start = reader.SequencePosition;
+            var start = reader.Position;
             while (!reader.End)
             {
-                SequencePosition end = reader.SequencePosition;
+                SequencePosition end = reader.Position;
                 if (reader.Read() == delimiter)
                 {
                     bytes = reader.Sequence.Slice(start, end);
@@ -44,8 +44,8 @@ namespace System.Buffers
 
             int matched = 0;
             var copy = reader;
-            var start = reader.SequencePosition;
-            var end = reader.SequencePosition;
+            var start = reader.Position;
+            var end = reader.Position;
             while (!reader.End)
             {
                 if (reader.Read() == delimiter[matched])
@@ -54,7 +54,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    end = reader.SequencePosition;
+                    end = reader.Position;
                     matched = 0;
                 }
                 if (matched >= delimiter.Length)

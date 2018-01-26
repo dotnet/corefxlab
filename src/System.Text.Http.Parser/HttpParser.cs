@@ -320,8 +320,8 @@ namespace System.Text.Http.Parser
                             }
                             else
                             {
-                                var current = reader.SequencePosition;
-                                var subBuffer = buffer.Slice(reader.SequencePosition);
+                                var current = reader.Position;
+                                var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
                                 var lineEnd = subBuffer.PositionOf(ByteLF);
                                 if (!lineEnd.HasValue)
@@ -357,7 +357,7 @@ namespace System.Text.Http.Parser
             }
             finally
             {
-                consumed = reader.SequencePosition;
+                consumed = reader.Position;
                 consumedBytes = reader.ConsumedBytes;
 
                 if (done)

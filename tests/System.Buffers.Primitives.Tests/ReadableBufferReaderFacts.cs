@@ -99,8 +99,8 @@ namespace System.IO.Pipelines.Tests
             reader.Read();
             reader.Read();
             reader.Read();
-            Assert.Same(last, reader.SequencePosition.Segment);
-            Assert.Equal(0, reader.SequencePosition.Index);
+            Assert.Same(last, reader.Position.Segment);
+            Assert.Equal(0, reader.Position.Index);
             Assert.True(reader.End);
         }
 
@@ -265,7 +265,7 @@ namespace System.IO.Pipelines.Tests
             }
 
             var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
-            Assert.Equal(expected, readableBuffer.Slice(reader.SequencePosition).ToArray());
+            Assert.Equal(expected, readableBuffer.Slice(reader.Position).ToArray());
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace System.IO.Pipelines.Tests
             var sliced = buffer.Slice(2L);
 
             var reader = BufferReader.Create(sliced);
-            Assert.Equal(sliced.ToArray(), buffer.Slice(reader.SequencePosition).ToArray());
+            Assert.Equal(sliced.ToArray(), buffer.Slice(reader.Position).ToArray());
             Assert.Equal(2, reader.Peek());
             Assert.Equal(0, reader.CurrentSegmentIndex);
         }
