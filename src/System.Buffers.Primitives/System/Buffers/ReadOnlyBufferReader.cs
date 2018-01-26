@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -92,13 +93,14 @@ namespace System.Buffers
             var previous = _nextPosition;
             while (_sequence.TryGet(ref _nextPosition, out var memory, true))
             {
-                _currentPosition = previous;
                 _currentSpan = memory.Span;
-                _index = 0;
                 if (_currentSpan.Length > 0)
                 {
+                    _index = 0;
+                    _currentPosition = previous;
                     return;
                 }
+                previous = _nextPosition;
             }
             _end = true;
         }
@@ -162,7 +164,8 @@ namespace System.Buffers
                         var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
                         nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
                         copied += toCopy;
-                        if (copied >= destination.Length) break;
+                        if (copied == destination.Length) break;
+                        Debug.Assert(copied < destination.Length);
                     }
                 }
                 return copied;
