@@ -3,7 +3,7 @@
     [string]$Restore="true",
     [string]$Version="<default>",
     [string]$BuildVersion=[System.DateTime]::Now.ToString('preview1-yyMMdd-1'),
-    [string]$SkipTests="true"
+    [string]$SkipTests="false"
 )
 
 Write-Host "Configuration=$Configuration."
