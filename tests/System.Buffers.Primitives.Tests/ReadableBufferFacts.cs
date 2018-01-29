@@ -87,7 +87,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void ReadableBufferMove_MovesReadCursor()
+        public void ReadableBufferGetPosition_MovesReadCursor()
         {
             var buffer = Factory.CreateOfSize(100);
             var cursor = buffer.GetPosition(buffer.Start, 65);
@@ -95,14 +95,14 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void ReadableBufferMove_ChecksBounds()
+        public void ReadableBufferGetPosition_ChecksBounds()
         {
             var buffer = Factory.CreateOfSize(100);
             Assert.Throws<InvalidOperationException>(() => buffer.GetPosition(buffer.Start, 101));
         }
 
         [Fact]
-        public void ReadableBufferMove_DoesNotAlowNegative()
+        public void ReadableBufferGetPosition_DoesNotAlowNegative()
         {
             var buffer = Factory.CreateOfSize(20);
             Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(buffer.Start, -1));
