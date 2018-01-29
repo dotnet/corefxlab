@@ -407,8 +407,7 @@ namespace System.IO.Pipelines
                     // if we are going to return commit head
                     // we need to check that there is no writing operation that
                     // might be using tailspace
-                    if (consumed.Index == returnEnd.Length &&
-                        !(_commitHead == returnEnd && _writingHead != null))
+                    if (consumed.Index == returnEnd.Length && _writingHead != returnEnd)
                     {
                         var nextBlock = returnEnd.NextSegment;
                         if (_commitHead == returnEnd)
