@@ -17,9 +17,9 @@ namespace System.Buffers.Internal
 
         public override int MaxBufferSize => 1024 * 1024 * 1024;
 
-        public override OwnedMemory<T> Rent(int minimumBufferSize = AnySize)
+        public override OwnedMemory<T> Rent(int minimumBufferSize = -1)
         {
-            if (minimumBufferSize == AnySize) minimumBufferSize = DefaultSize;
+            if (minimumBufferSize == -1) minimumBufferSize = DefaultSize;
             else if (minimumBufferSize > MaxBufferSize || minimumBufferSize < 1) throw new ArgumentOutOfRangeException(nameof(minimumBufferSize));
             return new ArrayPoolMemory(minimumBufferSize);
         }

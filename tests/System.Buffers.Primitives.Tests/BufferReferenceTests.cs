@@ -18,7 +18,7 @@ namespace System.Buffers.Tests
         public void PooledBufferReferenceTests()
         {
             BufferReferenceTests.TestOwnedBuffer(() => {
-                return MemoryPool<byte>.Default.Rent(1000);
+                return MemoryPool<byte>.Shared.Rent(1000);
             });
         }
 
