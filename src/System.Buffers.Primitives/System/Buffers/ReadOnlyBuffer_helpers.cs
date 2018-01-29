@@ -189,10 +189,9 @@ namespace System.Buffers
 
                     memory = memory.Slice(0, currentEnd - currentIndex);
                     // We would prefer to put cursor in the beginning of next segment
-                    // then past the end of previous one, but only if next exists
-
+                    // then past the end of previous one, but only if we are not leaving current buffer
                     if (memory.Length > bytes ||
-                       (memory.Length == bytes && current.Next == null))
+                       (memory.Length == bytes && current == end))
                     {
                         result = new SequencePosition(current, currentIndex + (int)bytes);
                         foundResult = true;

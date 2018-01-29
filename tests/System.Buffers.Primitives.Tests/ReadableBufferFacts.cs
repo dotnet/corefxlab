@@ -87,7 +87,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void ReadableBufferMove_MovesReadCursor()
+        public void ReadableBufferGetPosition_MovesReadCursor()
         {
             var buffer = Factory.CreateOfSize(100);
             var cursor = buffer.GetPosition(buffer.Start, 65);
@@ -95,14 +95,14 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void ReadableBufferMove_ChecksBounds()
+        public void ReadableBufferGetPosition_ChecksBounds()
         {
             var buffer = Factory.CreateOfSize(100);
             Assert.Throws<InvalidOperationException>(() => buffer.GetPosition(buffer.Start, 101));
         }
 
         [Fact]
-        public void ReadableBufferMove_DoesNotAlowNegative()
+        public void ReadableBufferGetPosition_DoesNotAlowNegative()
         {
             var buffer = Factory.CreateOfSize(20);
             Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(buffer.Start, -1));
@@ -140,7 +140,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void MovePrefersNextSegment()
+        public void GetPositionPrefersNextSegment()
         {
             var bufferSegment1 = new BufferSegment();
             bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 49, 99);
@@ -154,6 +154,29 @@ namespace System.IO.Pipelines.Tests
             var c1 = readableBuffer.GetPosition(readableBuffer.Start, 50);
 
             Assert.Equal(0, c1.Index);
+            Assert.Equal(bufferSegment2, c1.Segment);
+        }
+
+        [Fact]
+        public void GetPositionDoesNotCrossOutsideBuffer()
+        {
+            var bufferSegment1 = new BufferSegment();
+            bufferSegment1.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 100);
+
+            var bufferSegment2 = new BufferSegment();
+            bufferSegment2.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 100);
+
+            var bufferSegment3 = new BufferSegment();
+            bufferSegment3.SetMemory(new OwnedArray<byte>(new byte[100]), 0, 0);
+
+            bufferSegment1.SetNext(bufferSegment2);
+            bufferSegment2.SetNext(bufferSegment3);
+
+            var readableBuffer = new ReadOnlyBuffer<byte>(bufferSegment1, 0, bufferSegment2, 100);
+
+            var c1 = readableBuffer.GetPosition(readableBuffer.Start, 200);
+
+            Assert.Equal(100, c1.Index);
             Assert.Equal(bufferSegment2, c1.Segment);
         }
 

@@ -531,5 +531,34 @@ namespace System.IO.Pipelines.Tests
             awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
         }
+
+        [Fact]
+        public async Task AdvanceWithGetPositionCrossingIntoWriteHeadWorks()
+        {
+            // Create two blocks
+            var memory = _pipe.Writer.GetMemory(1);
+            _pipe.Writer.Advance(memory.Length);
+            memory = _pipe.Writer.GetMemory(1);
+            _pipe.Writer.Advance(memory.Length);
+            await _pipe.Writer.FlushAsync();
+
+            // Read single block
+            var readResult = await _pipe.Reader.ReadAsync();
+
+            // Allocate more memory
+            memory = _pipe.Writer.GetMemory(1);
+
+            // Create position that would cross into write head
+            var buffer = readResult.Buffer;
+            var position = buffer.GetPosition(buffer.Start, buffer.Length);
+
+            // Return everything
+            _pipe.Reader.AdvanceTo(position);
+
+            // Advance writer
+            _pipe.Writer.Advance(memory.Length);
+            _pipe.Writer.Commit();
+        }
+
     }
 }
