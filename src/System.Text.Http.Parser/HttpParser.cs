@@ -323,7 +323,7 @@ namespace System.Text.Http.Parser
                                 var current = reader.Position;
                                 var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
-                                var lineEnd = subBuffer.PositionOf(ByteLF);
+                                var lineEnd = ReadOnlyBufferExtensions.PositionOf(subBuffer, ByteLF);
                                 if (!lineEnd.HasValue)
                                 {
                                     // Not there
@@ -650,7 +650,7 @@ namespace System.Text.Http.Parser
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequencePosition found)
         {
-            var position = buffer.PositionOf(ByteLF);
+            var position = ReadOnlyBufferExtensions.PositionOf(buffer, ByteLF);
             if (position.HasValue)
             {
                 // Move 1 byte past the \n
