@@ -152,7 +152,7 @@ namespace System.Buffers
             {
                 case Type.Array:
                     var (array, index) = start.Get<byte[]>();
-                    return new ReadWriteBytes(array, index, (int)end - index);
+                    return new ReadWriteBytes(array, index, end.Index - index);
                 case Type.MemoryList:
                     var (startList, startIndex) = start.Get<IMemoryList<byte>>();
                     var (endList, endIndex) = end.Get<IMemoryList<byte>>();
@@ -279,8 +279,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + (int)position;
-                var length = _endIndex - _startIndex - (int)position;
+                var start = _startIndex + position.Index;
+                var length = _endIndex - _startIndex - position.Index;
                 item = new Memory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;

@@ -95,7 +95,7 @@ namespace System.Buffers.Tests
                 Assert.Equal(listPosition, robSequencePosition);
 
                 var robSlice = bytes.Slice(1);
-                robPosition = ReadOnlyBufferExtensions.PositionOf(bytes, value);
+                robPosition = ReadOnlyBufferExtensions.PositionOf(robSlice, value);
                 robSequencePosition = Sequence.PositionOf(robSlice, value);
 
                 if (i > 0)

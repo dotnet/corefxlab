@@ -12,8 +12,6 @@ namespace System.IO.Pipelines
     /// </summary>
     public abstract class PipeWriter: IOutput
     {
-        private static readonly Task _completedTask = Task.FromResult(0);
-
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
@@ -37,23 +35,10 @@ namespace System.IO.Pipelines
         public abstract Memory<byte> GetMemory(int minimumLength = 0);
         public abstract Span<byte> GetSpan(int minimumLength = 0);
 
-        public virtual Task WriteAsync(ReadOnlyMemory<byte> source)
+        public virtual ValueAwaiter<FlushResult> WriteAsync(ReadOnlyMemory<byte> source)
         {
             this.Write(source.Span);
-
-            var awaitable = FlushAsync();
-            if (awaitable.IsCompleted)
-            {
-                awaitable.GetResult();
-                return _completedTask;
-            }
-
-            return FlushAsyncAwaited(awaitable);
-        }
-
-        private static async Task FlushAsyncAwaited(ValueAwaiter<FlushResult> awaitable)
-        {
-            await awaitable;
+            return FlushAsync();
         }
     }
 }

@@ -108,7 +108,7 @@ namespace System.Collections.Sequences
                 position = new SequencePosition(null, firstOccupiedSlot);
             }
 
-            var index = (int)position;
+            var index = position.Index;
             var entry = _entries[index];
             if (entry.IsEmpty) {
                 throw new InvalidOperationException();

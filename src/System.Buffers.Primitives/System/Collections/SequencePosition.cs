@@ -25,8 +25,6 @@ namespace System
         public object Segment => _segment;
         public int Index => _index;
 
-        public static explicit operator int(SequencePosition position) => position._index;
-
         public static bool operator ==(SequencePosition left, SequencePosition right) => left._index == right._index && left._segment == right._segment;
         public static bool operator !=(SequencePosition left, SequencePosition right) => left._index != right._index || left._segment != right._segment;
 

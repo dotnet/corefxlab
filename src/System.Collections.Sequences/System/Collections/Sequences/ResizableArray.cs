@@ -89,7 +89,7 @@ namespace System.Collections.Sequences
                 else {
                     newSize = _array.Length << 1;
                 }
-            }           
+            }
 
             var newArray = new T[newSize];
             new Span<T>(_array, 0, _count).CopyTo(newArray);
@@ -108,7 +108,7 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref SequencePosition position, out T item, bool advance = true)
         {
-            int index = (int)position;
+            int index = position.Index;
             if (index < _count) {
                 item = _array[index];
                 if (advance) { position = new SequencePosition(null, index+1); }
