@@ -45,7 +45,7 @@ namespace System.Buffers.Native
 
         public override OwnedMemory<byte> Rent(int numberOfBytes = DefaultSize)
         {
-            if (numberOfBytes == AnySize) numberOfBytes = DefaultSize;
+            if (numberOfBytes == -1) numberOfBytes = DefaultSize;
             if (numberOfBytes < 1 || numberOfBytes > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
 

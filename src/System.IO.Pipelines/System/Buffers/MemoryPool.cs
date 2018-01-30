@@ -63,9 +63,9 @@ namespace System.Buffers
         /// </summary>
         private bool _disposedValue = false; // To detect redundant calls
 
-        public override OwnedMemory<byte> Rent(int size = AnySize)
+        public override OwnedMemory<byte> Rent(int size = -1)
         {
-            if (size == AnySize) size = _blockLength;
+            if (size == -1) size = _blockLength;
             else if (size > _blockLength)
             {
                 PipelinesThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);

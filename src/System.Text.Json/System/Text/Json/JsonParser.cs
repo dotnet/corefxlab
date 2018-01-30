@@ -146,7 +146,7 @@ namespace System.Text.Json
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json, MemoryPool<byte> pool = null)
         {
             _pool = pool;
-            if (_pool == null) _pool = MemoryPool<byte>.Default;
+            if (_pool == null) _pool = MemoryPool<byte>.Shared;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
             _scratchMemory = _scratchManager.Memory;
 
