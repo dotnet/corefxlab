@@ -88,14 +88,14 @@ namespace System.Buffers.Tests
                     Assert.Equal(value, node.Memory.Span[index]);
                 }
 
-                var robPosition = bytes.PositionOf(value);
+                var robPosition = ReadOnlyBufferExtensions.PositionOf(bytes, value);
                 var robSequencePosition = Sequence.PositionOf(bytes, value);
 
                 Assert.Equal(listPosition, robPosition);
                 Assert.Equal(listPosition, robSequencePosition);
 
                 var robSlice = bytes.Slice(1);
-                robPosition = robSlice.PositionOf(value);
+                robPosition = ReadOnlyBufferExtensions.PositionOf(robSlice, value);
                 robSequencePosition = Sequence.PositionOf(robSlice, value);
 
                 if (i > 0)

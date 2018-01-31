@@ -13,7 +13,7 @@ namespace System.Buffers
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public readonly partial struct ReadOnlyBuffer<T> : ISequence<ReadOnlyMemory<T>> where T : IEquatable<T>
+    public readonly partial struct ReadOnlyBuffer<T> : ISequence<ReadOnlyMemory<T>>
     {
         private const int IndexBitMask = 0x7FFFFFFF;
 
@@ -327,22 +327,6 @@ namespace System.Buffers
             }
 
             return result;
-        }
-
-        public SequencePosition? PositionOf(T value)
-        {
-            SequencePosition position = Start;
-            SequencePosition result = position;
-            while (TryGet(ref position, out var memory))
-            {
-                var index = memory.Span.IndexOf(value);
-                if (index != -1)
-                {
-                    return GetPosition(result, index);
-                }
-                result = position;
-            }
-            return null;
         }
 
         /// <summary>

@@ -155,7 +155,7 @@ namespace System.Buffers
                 if (Utf8Parser.TryParse(temp.Slice(0, copied), out value, out consumed))
                 {
                     return true;
-                }      
+                }
             }
 
             value = default;

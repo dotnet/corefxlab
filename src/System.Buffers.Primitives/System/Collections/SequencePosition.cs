@@ -2,9 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
-namespace System.Collections
+namespace System
 {
     public readonly struct SequencePosition : IEquatable<SequencePosition>
     {
@@ -25,15 +24,6 @@ namespace System.Collections
 
         public object Segment => _segment;
         public int Index => _index;
-
-        public static explicit operator int(SequencePosition position) => position._index;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public (T segment, int index) Get<T>()
-        {
-            var segment = _segment == null ? default : (T)_segment;
-            return (segment, _index);
-        }
 
         public static bool operator ==(SequencePosition left, SequencePosition right) => left._index == right._index && left._segment == right._segment;
         public static bool operator !=(SequencePosition left, SequencePosition right) => left._index != right._index || left._segment != right._segment;

@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
@@ -33,5 +34,11 @@ namespace System.IO.Pipelines
         public abstract void Advance(int bytes);
         public abstract Memory<byte> GetMemory(int minimumLength = 0);
         public abstract Span<byte> GetSpan(int minimumLength = 0);
+
+        public virtual ValueAwaiter<FlushResult> WriteAsync(ReadOnlyMemory<byte> source)
+        {
+            this.Write(source.Span);
+            return FlushAsync();
+        }
     }
 }

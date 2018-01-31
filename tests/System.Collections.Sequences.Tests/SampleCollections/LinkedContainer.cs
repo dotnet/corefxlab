@@ -36,7 +36,8 @@ namespace System.Collections.Sequences
                 return false;
             }
 
-            var (node, index) = position.Get<Node>();
+            var node = (Node) position.Segment;
+            var index = position.Index;
             if (node == null || index != 0) {
                 item = default;
                 position = default;
@@ -56,7 +57,7 @@ namespace System.Collections.Sequences
         public SequencePosition GetPosition(SequencePosition origin, long offset)
         {
             if (offset < 0) throw new InvalidOperationException("cannot seek backwards");
-            var (node, index) = origin.Get<Node>();
+            var node = (Node)origin.Segment;
             while(offset-- > 0)
             {
                 if (node != null)

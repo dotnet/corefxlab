@@ -63,6 +63,13 @@ namespace System.Buffers
             return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (T segment, int index) Get<T>(this SequencePosition position)
+        {
+            var segment = position.Segment == null ? default : (T)position.Segment;
+            return (segment, position.Index);
+        }
+
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest

@@ -28,7 +28,7 @@ namespace System.Collections.Sequences
 
         public SequencePosition GetPosition(SequencePosition origin, long offset)
         {
-            long index = (int)origin + offset;
+            long index = origin.Index + offset;
             if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(offset));
             return new SequencePosition(null, (int)index);
         }
