@@ -199,17 +199,16 @@ namespace System.Buffers.Text
 
             if (kind == DateTimeKind.Local)
             {
-                int hours = offset.Hours;
                 char sign = Plus;
 
-                if (offset.Hours < 0)
+                if (offset < default(TimeSpan) /* a "const" version of TimeSpan.Zero */)
                 {
-                    hours = -offset.Hours;
+                    offset = TimeSpan.FromTicks(-offset.Ticks);
                     sign = Minus;
                 }
 
                 Unsafe.Add(ref utf16Bytes, 27) = sign;
-                FormattingHelpers.WriteDigits(hours, 2, ref utf16Bytes, 28);
+                FormattingHelpers.WriteDigits(offset.Hours, 2, ref utf16Bytes, 28);
                 Unsafe.Add(ref utf16Bytes, 30) = Colon;
                 FormattingHelpers.WriteDigits(offset.Minutes, 2, ref utf16Bytes, 31);
             }
