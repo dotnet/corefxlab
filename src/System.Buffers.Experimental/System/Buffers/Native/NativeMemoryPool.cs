@@ -9,6 +9,11 @@ namespace System.Buffers.Native
     {
         const int DefaultSize = 4096;
 
+        /// <summary>
+        /// This default value passed in to Rent to use the default value for the pool.
+        /// </summary>
+        private const int AnySize = -1;
+
         static NativeMemoryPool s_shared = new NativeMemoryPool(DefaultSize);
         object _lock = new object();
         bool _disposed;
@@ -43,9 +48,9 @@ namespace System.Buffers.Native
 
         public override int MaxBufferSize => 1024 * 1024 * 1024;
 
-        public override OwnedMemory<byte> Rent(int numberOfBytes = DefaultSize)
+        public override OwnedMemory<byte> Rent(int numberOfBytes = AnySize)
         {
-            if (numberOfBytes == -1) numberOfBytes = DefaultSize;
+            if (numberOfBytes == AnySize) numberOfBytes = DefaultSize;
             if (numberOfBytes < 1 || numberOfBytes > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
 
