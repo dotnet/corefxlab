@@ -4,7 +4,6 @@
 
 using System.Buffers.Text;
 using System.Linq;
-using System.Text.Primitives.Tests.MemoryProtection;
 using Xunit;
 
 namespace System.Text.Primitives.Tests.Encoding

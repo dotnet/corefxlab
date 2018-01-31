@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Text.Parsing
@@ -26,7 +25,8 @@ namespace System.Text.Parsing
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
             bool parsed = Utf8Parser.TryParse(first.Span, out value, out consumed);
-            if (parsed && consumed < first.Length) {
+            if (parsed && consumed < first.Length)
+            {
                 return true;
             }
 
@@ -79,7 +79,8 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             var combinedSpan = bufferSequence.ToSpan();
-            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed)) {
+            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed))
+            {
                 return false;
             }
             return true;
@@ -99,7 +100,8 @@ namespace System.Text.Parsing
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
             bool parsed = Utf8Parser.TryParse(first.Span, out value, out consumed);
-            if (parsed && consumed < first.Length) {
+            if (parsed && consumed < first.Length)
+            {
                 return true;
             }
 
@@ -112,7 +114,8 @@ namespace System.Text.Parsing
             }
 
             // Combine the first, the second, and potentially more segments into a stack allocated buffer
-            if (first.Length < StackBufferSize) {
+            if (first.Length < StackBufferSize)
+            {
 
                 Span<byte> destination = stackalloc byte[StackBufferSize];
 
@@ -140,8 +143,10 @@ namespace System.Text.Parsing
                 var combinedStackSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                 // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                if (Utf8Parser.TryParse(combinedStackSpan, out value, out consumed)) {
-                    if(consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize) {
+                if (Utf8Parser.TryParse(combinedStackSpan, out value, out consumed))
+                {
+                    if (consumed < combinedStackSpan.Length || combinedStackSpan.Length < StackBufferSize)
+                    {
                         return true;
                     }
                 }
@@ -150,7 +155,8 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             var combinedSpan = bufferSequence.ToSpan();
-            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed)) {
+            if (!Utf8Parser.TryParse(combinedSpan, out value, out consumed))
+            {
                 return false;
             }
             return true;

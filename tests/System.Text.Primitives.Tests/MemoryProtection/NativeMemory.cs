@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime.InteropServices;
+
 namespace System.Text.Primitives.Tests.MemoryProtection
 {
     /// <summary>
@@ -132,7 +134,7 @@ namespace System.Text.Primitives.Tests.MemoryProtection
             bufferSpan = bufferSpan.Slice(checked(bufferSpan.Length - 2 * cch));
 
             new Random().NextBytes(bufferSpan); // fill with random data, doesn't need to be cryptographically secure
-            return bufferSpan.NonPortableCast<byte, char>();
+            return MemoryMarshal.Cast<byte, char>(bufferSpan);
         }
     }
 }

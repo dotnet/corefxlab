@@ -3,19 +3,18 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
     public static class OutputWriter
     {
-        public static OutputWriter<T> Create<T>(T output) where T:IOutput
+        public static OutputWriter<T> Create<T>(T output) where T : IOutput
         {
             return new OutputWriter<T>(output);
         }
     }
 
-    public ref struct OutputWriter<T> where T: IOutput
+    public ref struct OutputWriter<T> where T : IOutput
     {
         private T _output;
         private Span<byte> _span;

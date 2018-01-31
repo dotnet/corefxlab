@@ -2,10 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers.Text;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text.Utf8;
 
 namespace System.Buffers.Text
 {
@@ -59,12 +55,12 @@ namespace System.Buffers.Text
 
         public bool TryWriteBytes<T>(T value, TransformationFormat format) where T : IWritable
         {
-            if(!value.TryWrite(Free, out int written, format.Format))
+            if (!value.TryWrite(Free, out int written, format.Format))
             {
                 return false;
             }
 
-            if(format.TryTransform(Free, ref written))
+            if (format.TryTransform(Free, ref written))
             {
                 _written += written;
                 return true;
@@ -75,7 +71,7 @@ namespace System.Buffers.Text
 
         public void WriteBytes<T>(T value, TransformationFormat format) where T : IWritable
         {
-            while (!TryWriteBytes(value, format)) Resize();      
+            while (!TryWriteBytes(value, format)) Resize();
         }
         #endregion
 

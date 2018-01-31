@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
 using System.Buffers.Text;
-using System.Collections;
-using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Samples.Framing
 {

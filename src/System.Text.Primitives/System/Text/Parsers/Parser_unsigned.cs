@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.InteropServices;
+
 namespace System.Buffers.Text
 {
     public static partial class CustomParser
@@ -27,7 +29,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))
@@ -118,7 +120,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))
@@ -209,7 +211,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))
@@ -300,7 +302,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.InteropServices;
+
 namespace System.Buffers.Text
 {
     public static partial class CustomParser
@@ -18,7 +20,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> textChars = MemoryMarshal.Cast<byte, char>(text);
                 bool result = Utf16Parser.TryParseDecimal(textChars, out value, out int charactersConsumed);
                 bytesConsumed = charactersConsumed * sizeof(char);
                 return result;
@@ -26,5 +28,5 @@ namespace System.Buffers.Text
 
             return false;
         }
-    } 
+    }
 }

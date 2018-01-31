@@ -1,5 +1,4 @@
-﻿using System.IO.Pipelines;
-using System.IO.Pipelines.Testing;
+﻿using System.IO.Pipelines.Testing;
 using Xunit;
 
 namespace System.Buffers.Tests

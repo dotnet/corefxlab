@@ -4,8 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Collections;
-using System.Collections.Sequences;
 
 namespace Microsoft.Net
 {
@@ -40,7 +38,8 @@ namespace Microsoft.Net
 
         public int CopyTo(Span<byte> buffer)
         {
-            if (buffer.Length > _written) {
+            if (buffer.Length > _written)
+            {
                 Written.CopyTo(buffer);
                 return _next.CopyTo(buffer.Slice(_written));
             }
@@ -51,7 +50,8 @@ namespace Microsoft.Net
 
         public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
-            if (position == default) {
+            if (position == default)
+            {
                 item = default;
                 return false;
             }
@@ -91,7 +91,8 @@ namespace Microsoft.Net
             var array = _array;
             _array = null;
             if (array != null) ArrayPool<byte>.Shared.Return(array);
-            if (_next != null) {
+            if (_next != null)
+            {
                 _next.Dispose();
             }
             _next = null;

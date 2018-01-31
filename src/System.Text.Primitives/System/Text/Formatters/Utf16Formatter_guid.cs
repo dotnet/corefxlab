@@ -34,7 +34,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
             byte* bytes = (byte*)&value;
             int idx = 0;

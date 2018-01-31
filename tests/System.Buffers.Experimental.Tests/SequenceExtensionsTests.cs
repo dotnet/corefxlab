@@ -1,6 +1,4 @@
 ﻿using System.Buffers.Text;
-using System.Collections;
-using System.Collections.Sequences;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -19,7 +17,7 @@ namespace System.Buffers.Tests
 
             for (int i = 0; i < array.Length; i++)
             {
-                Assert.Equal(i, Sequence.IndexOf(bytes, (byte)(i+1)));
+                Assert.Equal(i, Sequence.IndexOf(bytes, (byte)(i + 1)));
             }
         }
 
@@ -27,7 +25,7 @@ namespace System.Buffers.Tests
         public void SequenceIndexOfMultiSegment()
         {
             ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
-                new byte[] { 1, 2},
+                new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
 
@@ -128,7 +126,7 @@ namespace System.Buffers.Tests
             array[written] = (byte)'#';
             var memory = new Memory<byte>(array, 0, written + 1);
 
-            for (int pivot = 0; pivot<written; pivot++)
+            for (int pivot = 0; pivot < written; pivot++)
             {
                 var front = memory.Slice(0, pivot);
                 var back = memory.Slice(pivot);

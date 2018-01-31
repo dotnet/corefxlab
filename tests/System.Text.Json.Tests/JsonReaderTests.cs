@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.Json.Tests.Resources;
 using Xunit;
 
@@ -191,8 +192,8 @@ namespace System.Text.Json.Tests
                 StringValue = "425-000-1213"
             };
 
-            var values = new List<Value> {value1, value2};
-            var arrInner = new Array {Values = values};
+            var values = new List<Value> { value1, value2 };
+            var arrInner = new Array { Values = values };
 
             var valuePhone = new Value
             {
@@ -242,8 +243,8 @@ namespace System.Text.Json.Tests
                 Value = valueZip
             };
 
-            var pairsInner = new List<Pair> {pairStreet, pairCity, pairZip};
-            var objInner = new Object {Pairs = pairsInner};
+            var pairsInner = new List<Pair> { pairStreet, pairCity, pairZip };
+            var objInner = new Object { Pairs = pairsInner };
 
             var valueAddress = new Value
             {
@@ -257,9 +258,9 @@ namespace System.Text.Json.Tests
                 Value = valueAddress
             };
 
-            var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
-            var obj = new Object {Pairs = pairs};
-            var json = new TestDom {Object = obj};
+            var pairs = new List<Pair> { pairAge, pairFirst, pairLast, pairPhone, pairAddress };
+            var obj = new Object { Pairs = pairs };
+            var json = new TestDom { Object = obj };
 
             return json;
         }
@@ -429,7 +430,7 @@ namespace System.Text.Json.Tests
             }
             else if (jsonReader.SymbolTable == SymbolTable.InvariantUtf16)
             {
-                var utf16 = jsonReader.Value.NonPortableCast<byte, char>();
+                var utf16 = MemoryMarshal.Cast<byte, char>(jsonReader.Value);
                 var chars = utf16.ToArray();
 
                 return new string(chars);

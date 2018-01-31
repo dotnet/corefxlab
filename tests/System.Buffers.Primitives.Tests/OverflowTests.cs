@@ -35,7 +35,7 @@ namespace System.Buffers.Tests
             {
                 return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
             }
-            
+
             try
             {
                 var span = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -184,10 +184,10 @@ namespace System.Buffers.Tests
             {
                 var span = new Span<ulong>((void*)huge, ULongThreeGiBLimit);
 
-                var asInt = span.NonPortableCast<ulong, int>();
+                var asInt = MemoryMarshal.Cast<ulong, int>(span);
                 Assert.Equal(Int32ThreeGiBLimit, asInt.Length);
 
-                var asULong = asInt.NonPortableCast<int, ulong>();
+                var asULong = MemoryMarshal.Cast<int, ulong>(asInt);
                 Assert.Equal(ULongThreeGiBLimit, asULong.Length);
 
                 asULong[ULongTwoGiBLimit + 4] = 42;
@@ -369,10 +369,10 @@ namespace System.Buffers.Tests
             {
                 var span = new ReadOnlySpan<ulong>((void*)huge, ULongThreeGiBLimit);
 
-                var asInt = span.NonPortableCast<ulong, int>();
+                var asInt = MemoryMarshal.Cast<ulong, int>(span);
                 Assert.Equal(Int32ThreeGiBLimit, asInt.Length);
 
-                var asULong = asInt.NonPortableCast<int, ulong>();
+                var asULong = MemoryMarshal.Cast<int, ulong>(asInt);
                 Assert.Equal(ULongThreeGiBLimit, asULong.Length);
 
                 var writable = new Span<ulong>((void*)huge, ULongThreeGiBLimit);

@@ -4,35 +4,32 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO.Pipelines.Testing;
 using System.Numerics;
 using Xunit;
-using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Tests
 {
     public abstract class SeekTests
     {
-        public class Array: SingleSegment
+        public class Array : SingleSegment
         {
             public Array() : base(ReadOnlyBufferFactory.Array) { }
             internal Array(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
-        public class OwnedMemory: SingleSegment
+        public class OwnedMemory : SingleSegment
         {
             public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
         }
 
-        public class SingleSegment: SegmentPerByte
+        public class SingleSegment : SegmentPerByte
         {
             public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
             internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
-        public class SegmentPerByte: SeekTests
+        public class SegmentPerByte : SeekTests
         {
             public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
             internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
@@ -63,7 +60,7 @@ namespace System.IO.Pipelines.Tests
         {
             var cursors = Factory.CreateWithContent(raw);
             var result = cursors.PositionOf((byte)searchFor);
-            
+
             Assert.NotNull(result);
             Assert.Equal(cursors.Slice(result.Value).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
         }
@@ -78,7 +75,7 @@ namespace System.IO.Pipelines.Tests
             // Act
             var buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
 
-            var result = buffer.PositionOf((byte) seek);
+            var result = buffer.PositionOf((byte)seek);
 
             // Assert
             if (expectedReturnValue == -1)
@@ -117,7 +114,7 @@ namespace System.IO.Pipelines.Tests
 
             // Assert
             Assert.Equal(input.Contains(limitAfter), end.HasValue);
-            
+
             if (expectedReturnValue != -1)
             {
                 var expectedEndIndex = input.IndexOf(seek);

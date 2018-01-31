@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Collections.Sequences;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -11,18 +10,18 @@ namespace System.IO.Pipelines.Tests
 {
     public abstract class ReadableBufferReaderFacts
     {
-        public class Array: SingleSegment
+        public class Array : SingleSegment
         {
             public Array() : base(ReadOnlyBufferFactory.Array) { }
             internal Array(ReadOnlyBufferFactory factory) : base(factory) { }
         }
 
-        public class OwnedMemory: SingleSegment
+        public class OwnedMemory : SingleSegment
         {
             public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
         }
 
-        public class SingleSegment: SegmentPerByte
+        public class SingleSegment : SegmentPerByte
         {
             public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
             internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory) { }
@@ -55,7 +54,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        public class SegmentPerByte: ReadableBufferReaderFacts
+        public class SegmentPerByte : ReadableBufferReaderFacts
         {
             public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
             internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
@@ -264,7 +263,7 @@ namespace System.IO.Pipelines.Tests
                 reader.Read();
             }
 
-            var expected = end ?  new byte[] {} : readableBuffer.Slice((long)takes).ToArray();
+            var expected = end ? new byte[] { } : readableBuffer.Slice((long)takes).ToArray();
             Assert.Equal(expected, readableBuffer.Slice(reader.Position).ToArray());
         }
 
@@ -308,7 +307,8 @@ namespace System.IO.Pipelines.Tests
             var reader = BufferReader.Create(Factory.CreateWithContent(content));
 
             // this loop skips more and more items in the reader
-            for (int i = 0; i < content.Length; i++) {
+            for (int i = 0; i < content.Length; i++)
+            {
 
                 int copied = BufferReader.Peek(reader, buffer);
                 Assert.Equal(content.Length - i, copied);

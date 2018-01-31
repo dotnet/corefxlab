@@ -3,14 +3,13 @@
 
 using System.Buffers;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public abstract class PipeWriter: IOutput
+    public abstract class PipeWriter : IOutput
     {
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.

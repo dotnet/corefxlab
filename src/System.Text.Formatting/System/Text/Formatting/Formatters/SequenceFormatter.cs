@@ -4,7 +4,6 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Text.Formatting
@@ -36,15 +35,18 @@ namespace System.Text.Formatting
             _previousWrittenBytes = -1;
         }
 
-        private Memory<byte> Current {
-            get {
+        private Memory<byte> Current
+        {
+            get
+            {
                 if (!_buffers.TryGet(ref _currentSequencePosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
         private Memory<byte> Previous
         {
-            get {
+            get
+            {
                 if (!_buffers.TryGet(ref _previousSequencePosition, out Memory<byte> result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
@@ -74,28 +76,32 @@ namespace System.Text.Formatting
             return Current.Slice(_currentWrittenBytes);
         }
 
-        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetMemory(minimumLength).Span;
+        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput)this).GetMemory(minimumLength).Span;
 
         void IOutput.Advance(int bytes)
         {
             var current = Current;
-            if (NeedShift) {
+            if (NeedShift)
+            {
                 var previous = Previous;
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
-                if(spaceInPrevious < bytes) {
+                if (spaceInPrevious < bytes)
+                {
                     current.Slice(0, spaceInPrevious).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     current.Slice(spaceInPrevious, bytes - spaceInPrevious).Span.CopyTo(current.Span);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
-                else {
+                else
+                {
                     current.Slice(0, bytes).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     _currentSequencePosition = _previousSequencePosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }
 
             }
-            else {
+            else
+            {
                 if (current.Length - _currentWrittenBytes < bytes) throw new NotImplementedException();
                 _currentWrittenBytes += bytes;
             }

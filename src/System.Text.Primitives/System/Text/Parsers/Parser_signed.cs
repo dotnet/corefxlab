@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -29,7 +29,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))
@@ -140,7 +140,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))
@@ -250,7 +250,7 @@ namespace System.Buffers.Text
             {
                 /*return isHex ? InvariantUtf16.Hex.TryParseInt32(text, out value, out bytesConsumed) :
                     InvariantUtf16.TryParseInt32(text, out value, out bytesConsumed);*/
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 bool result = isHex ? Utf16Parser.Hex.TryParseInt32(utf16Text, out value, out int charactersConsumed) :
                     Utf16Parser.TryParseInt32(utf16Text, out value, out charactersConsumed);
                 bytesConsumed = charactersConsumed * sizeof(char);
@@ -370,7 +370,7 @@ namespace System.Buffers.Text
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
+                ReadOnlySpan<char> utf16Text = MemoryMarshal.Cast<byte, char>(text);
                 int charactersConsumed;
                 bool result;
                 if (Parsers.IsHexFormat(format))

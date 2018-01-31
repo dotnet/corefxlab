@@ -98,7 +98,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             FormattingHelpers.WriteDigits(value.Month, 2, ref utf16Bytes, 0);
@@ -173,7 +173,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 0);
@@ -231,7 +231,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             var dayAbbrev = DayAbbreviations[(int)value.DayOfWeek];
@@ -280,7 +280,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
 
             var dayAbbrev = DayAbbreviationsLowercase[(int)value.DayOfWeek];
@@ -363,7 +363,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            Span<char> dst = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(dst);
             int idx = 0;
 

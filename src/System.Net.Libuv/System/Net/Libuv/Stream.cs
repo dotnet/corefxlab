@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Native;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -108,11 +107,11 @@ namespace System.Net.Libuv
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
-            
+
             fixed (byte* source = &MemoryMarshal.GetReference(data.Span))
             {
                 var length = data.Length;
-                
+
                 if (IsUnix)
                 {
                     var buffer = new UVBuffer.Unix((IntPtr)source, (uint)length);
@@ -167,7 +166,8 @@ namespace System.Net.Libuv
             }
             else
             {
-                using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
+                using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer))
+                {
                     OnReadCompleted(owned.Memory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }
@@ -197,7 +197,8 @@ namespace System.Net.Libuv
             }
             else
             {
-                using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer)) {
+                using (var owned = new OwnedNativeBuffer((int)bytesRead, buffer.Buffer))
+                {
                     OnReadCompleted(owned.Memory);
                     //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
                 }

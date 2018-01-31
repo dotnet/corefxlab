@@ -14,8 +14,6 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using System.Text.Formatting;
 using System.Buffers.Text;
-using System.Collections;
-using System.Collections.Sequences;
 
 namespace System.IO.Pipelines.Samples
 {

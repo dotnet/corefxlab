@@ -77,11 +77,11 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf16Length(span, out int needed));
                 Span<byte> output = new byte[needed];
                 Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf16(span, output, out int consumed, out int written));
-                return new string(output.NonPortableCast<byte, char>().ToArray());
+                return new string(MemoryMarshal.Cast<byte, char>(output).ToArray());
             }
             else if (symbolTable == SymbolTable.InvariantUtf16)
             {
-                return new string(span.NonPortableCast<byte, char>().ToArray());
+                return new string(MemoryMarshal.Cast<byte, char>(span).ToArray());
             }
 
             throw new NotSupportedException();

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime.InteropServices;
 using Xunit;
 
 using static System.Buffers.Binary.BinaryPrimitives;
@@ -42,7 +43,8 @@ namespace System.Buffers.Tests
             Span<byte> buffer = new byte[4];
             uint value = uint.MaxValue;
             Assert.True(TryWriteMachineEndian(buffer, ref value));
-            for (var i= 0; i<buffer.Length; i++) {
+            for (var i = 0; i < buffer.Length; i++)
+            {
                 Assert.Equal(255, buffer[i]);
             }
 
@@ -56,7 +58,7 @@ namespace System.Buffers.Tests
             var ints = new int[100000];
             Random r = new Random(42324232);
             for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
-            var bytes = ints.AsSpan().NonPortableCast<int, byte>();
+            var bytes = MemoryMarshal.Cast<int, byte>(ints.AsSpan());
             Assert.Equal(bytes.Length, ints.Length * sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -73,7 +75,7 @@ namespace System.Buffers.Tests
             var bytes = new byte[100000];
             Random r = new Random(541345);
             for (int i = 0; i < bytes.Length; i++) { bytes[i] = (byte)r.Next(256); }
-            var ints = bytes.AsSpan().NonPortableCast<byte, int>();
+            var ints = MemoryMarshal.Cast<byte, int>(bytes.AsSpan());
             Assert.Equal(ints.Length, bytes.Length / sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -91,7 +93,7 @@ namespace System.Buffers.Tests
         {
             var sourceSlice = new SevenBytesStruct[sourceLength].AsSpan();
 
-            var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
+            var targetSlice = MemoryMarshal.Cast<SevenBytesStruct, short>(sourceSlice);
 
             Assert.Equal((sourceLength * 7) / sizeof(short), targetSlice.Length);
         }
@@ -105,7 +107,7 @@ namespace System.Buffers.Tests
         {
             var sourceSlice = new short[sourceLength].AsSpan();
 
-            var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
+            var targetSlice = MemoryMarshal.Cast<short, SevenBytesStruct>(sourceSlice);
 
             Assert.Equal(0, targetSlice.Length);
         }
@@ -117,7 +119,7 @@ namespace System.Buffers.Tests
         {
             var sourceSlice = new short[sourceLength].AsSpan();
 
-            var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
+            var targetSlice = MemoryMarshal.Cast<short, SevenBytesStruct>(sourceSlice);
 
             Assert.Equal(1, targetSlice.Length);
         }
@@ -133,7 +135,7 @@ namespace System.Buffers.Tests
 
                 try
                 {
-                    var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
+                    var targetSlice = MemoryMarshal.Cast<SevenBytesStruct, short>(sourceSlice);
                     Assert.True(false);
                 }
                 catch (Exception ex)

@@ -2,9 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
-using System.Collections;
-using System.Collections.Sequences;
-using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -373,7 +370,7 @@ namespace System.Text.Http.Parser
             consumedBytes = 0;
             SequencePosition position = buffer.Start;
 
-            if(!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
+            if (!buffer.TryGet(ref position, out ReadOnlyMemory<byte> currentMemory))
             {
                 consumedBytes = 0;
                 return false;
@@ -482,7 +479,7 @@ namespace System.Text.Http.Parser
         private static void ReadTwoChars(ReadOnlyBuffer<byte> buffer, int consumedBytes, out int ch1, out int ch2)
         {
             var first = buffer.First.Span;
-            if(first.Length - consumedBytes > 1)
+            if (first.Length - consumedBytes > 1)
             {
                 ch1 = first[consumedBytes];
                 ch2 = first[consumedBytes + 1];
