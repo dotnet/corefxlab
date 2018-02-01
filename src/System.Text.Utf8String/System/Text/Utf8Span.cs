@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using System.Buffers.Text;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -166,7 +165,8 @@ namespace System.Text.Utf8
 
         public int CompareTo(Utf8String other) => CompareTo(other.Span);
 
-        public int CompareTo(string other) {
+        public int CompareTo(string other)
+        {
             Utf8CodePointEnumerator thisEnumerator = GetEnumerator();
             Debug.Assert(BitConverter.IsLittleEndian);
             Utf16LittleEndianCodePointEnumerator otherEnumerator = new Utf16LittleEndianCodePointEnumerator(other);
@@ -175,14 +175,14 @@ namespace System.Text.Utf8
             {
                 var thisHasNext = thisEnumerator.MoveNext();
                 var otherHasNext = otherEnumerator.MoveNext();
-                if(!thisHasNext && !otherHasNext) return 0;
-                if(!thisHasNext) return -1;
-                if(!otherHasNext) return 1;
+                if (!thisHasNext && !otherHasNext) return 0;
+                if (!thisHasNext) return -1;
+                if (!otherHasNext) return 1;
 
                 var thisCurrent = thisEnumerator.Current;
                 var otherCurrent = otherEnumerator.Current;
 
-                if(thisCurrent == otherCurrent) continue;
+                if (thisCurrent == otherCurrent) continue;
                 return thisCurrent.CompareTo(otherCurrent);
             }
         }
@@ -213,7 +213,7 @@ namespace System.Text.Utf8
         public bool EndsWith(uint codePoint)
         {
             var e = new Utf8CodePointReverseEnumerator(Bytes);
-            if(!e.MoveNext()) return false;
+            if (!e.MoveNext()) return false;
             return e.Current == codePoint;
         }
 
@@ -288,15 +288,17 @@ namespace System.Text.Utf8
         {
             if (codePoints == null || codePoints.Length == 0) return TrimStart(); // Trim Whitespace
 
-            Utf8CodePointEnumerator it = GetEnumerator();       
-            while (it.MoveNext()) {
-                if(Array.IndexOf(codePoints, it.Current) == -1){
+            Utf8CodePointEnumerator it = GetEnumerator();
+            while (it.MoveNext())
+            {
+                if (Array.IndexOf(codePoints, it.Current) == -1)
+                {
                     break;
                 }
             }
 
             return Substring(it.PositionInCodeUnits);
-        }       
+        }
 
         public Utf8Span TrimStart(Utf8Span characters)
         {
@@ -400,7 +402,7 @@ namespace System.Text.Utf8
 
         // TODO: should we even have index based operations?
         #region Index-based operations
-        public Utf8Span Substring(int index) => index==0 ? this : Substring(index, Bytes.Length - index);
+        public Utf8Span Substring(int index) => index == 0 ? this : Substring(index, Bytes.Length - index);
 
         public Utf8Span Substring(int index, int length)
         {

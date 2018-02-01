@@ -3,7 +3,6 @@
 
 using System.Binary.Base64Experimental;
 using System.Buffers.Text;
-using System.Numerics;
 using System.Text;
 using Xunit;
 using static System.Buffers.Binary.BinaryPrimitives;
@@ -34,7 +33,7 @@ namespace System.Buffers.Tests
 
             writer.WrittenCount = 0;
             writer.Write("AaBc", new TransformationFormat(
-                Encodings.Ascii.ToUppercase, 
+                Encodings.Ascii.ToUppercase,
                 Base64Experimental.Utf8ToBytesDecoder,
                 Base64Experimental.BytesToUtf8Encoder)
             );
@@ -55,7 +54,7 @@ namespace System.Buffers.Tests
             var result = Encodings.Utf8.ToString(writer.Written);
             Assert.Equal("//////////8BAAAAAAAAAA==", result);
 
-            var ulongerSpan = new Span<UInt128>(new UInt128[1]); 
+            var ulongerSpan = new Span<UInt128>(new UInt128[1]);
             Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(writer.Written, ulongerSpan.AsBytes(), out int consumed, out int written));
             Assert.Equal(ulongerSpan[0].Lower, ulonger.Lower);
             Assert.Equal(ulongerSpan[0].Upper, ulonger.Upper);
@@ -103,7 +102,7 @@ namespace System.Buffers.Tests
                 written = size;
                 return true;
             }
-            if(format.Symbol == 't')
+            if (format.Symbol == 't')
             {
                 var utf8 = Encoding.UTF8.GetBytes("hello").AsReadOnlySpan();
                 if (utf8.TryCopyTo(buffer))

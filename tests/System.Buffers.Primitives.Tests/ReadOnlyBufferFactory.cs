@@ -5,7 +5,6 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines.Testing;
-using System.Linq;
 using System.Text;
 
 namespace System.IO.Pipelines.Tests
@@ -55,7 +54,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class SingleSegmentTestBufferFactory: ReadOnlyBufferFactory
+        internal class SingleSegmentTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
             {
@@ -68,7 +67,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        internal class BytePerSegmentTestBufferFactory: ReadOnlyBufferFactory
+        internal class BytePerSegmentTestBufferFactory : ReadOnlyBufferFactory
         {
             public override ReadOnlyBuffer<byte> CreateOfSize(int size)
             {
@@ -82,7 +81,7 @@ namespace System.IO.Pipelines.Tests
                 segments.Add(System.Array.Empty<byte>());
                 foreach (var b in data)
                 {
-                    segments.Add(new [] { b });
+                    segments.Add(new[] { b });
                     segments.Add(System.Array.Empty<byte>());
                 }
 

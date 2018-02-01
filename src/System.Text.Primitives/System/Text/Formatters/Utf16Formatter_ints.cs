@@ -22,7 +22,7 @@ namespace System.Buffers.Text
         {
             int digitCount = FormattingHelpers.CountDigits(value);
             int charsNeeded = digitCount + (int)((value >> 63) & 1);
-            Span<char> span = buffer.NonPortableCast<byte, char>();
+            Span<char> span = MemoryMarshal.Cast<byte, char>(buffer);
 
             if (span.Length < charsNeeded)
             {
@@ -80,7 +80,7 @@ namespace System.Buffers.Text
             if (!TryFormatDecimalInt64((long)value, precision, buffer, out bytesWritten))
                 return false;
 
-            Span<char> span = buffer.Slice(bytesWritten).NonPortableCast<byte, char>();
+            Span<char> span = MemoryMarshal.Cast<byte, char>(buffer.Slice(bytesWritten));
 
             if (span.Length < sizeof(char))
             {
@@ -111,7 +111,7 @@ namespace System.Buffers.Text
             if (trailingZeros > 0)
                 charsNeeded += trailingZeros + 1; // +1 for period.
 
-            Span<char> span = buffer.NonPortableCast<byte, char>();
+            Span<char> span = MemoryMarshal.Cast<byte, char>(buffer);
 
             if (span.Length < charsNeeded)
             {
@@ -186,7 +186,7 @@ namespace System.Buffers.Text
             if (precision > 0)
                 extraChars += precision + 1; // +1 for period.
 
-            Span<char> span = buffer.Slice(bytesWritten).NonPortableCast<byte, char>();
+            Span<char> span = MemoryMarshal.Cast<byte, char>(buffer.Slice(bytesWritten));
 
             if (span.Length < extraChars)
             {
@@ -240,7 +240,7 @@ namespace System.Buffers.Text
             if (paddingCount < 0) paddingCount = 0;
 
             int charsNeeded = digits + paddingCount;
-            Span<char> span = buffer.NonPortableCast<byte, char>();
+            Span<char> span = MemoryMarshal.Cast<byte, char>(buffer);
 
             if (span.Length < charsNeeded)
             {

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Text;
-using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Buffers
@@ -48,16 +47,17 @@ namespace System.Buffers
                 var index = span.IndexOf(v1);
                 if (index != -1)
                 {
-                    if(span.Length > index + 1)
+                    if (span.Length > index + 1)
                     {
                         if (span[index + 1] == v2) return index + totalIndex;
                         else throw new NotImplementedException(); // need to check farther in the span
                     }
                     else
                     {
-                        if(sequence.TryGet(ref position, out var next, false)) {
+                        if (sequence.TryGet(ref position, out var next, false))
+                        {
                             var nextSpan = next.Span;
-                            if(nextSpan.Length > 0)
+                            if (nextSpan.Length > 0)
                             {
                                 if (next.Span[0] == v2) return totalIndex + index;
                             }
@@ -97,7 +97,7 @@ namespace System.Buffers
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 var span = memory.Span;
-                if(span.Length > index)
+                if (span.Length > index)
                 {
                     result = sequence.GetPosition(result, index);
                     return result;
@@ -141,10 +141,10 @@ namespace System.Buffers
         public static bool TryParse<TSequence>(TSequence sequence, out int value, out int consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
             var position = sequence.Start;
-            if(sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
+            if (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
             {
                 var span = memory.Span;
-                if(Utf8Parser.TryParse(span, out value, out consumed) && consumed < span.Length)
+                if (Utf8Parser.TryParse(span, out value, out consumed) && consumed < span.Length)
                 {
                     return true;
                 }
@@ -165,7 +165,7 @@ namespace System.Buffers
 
         public static bool TryParse<TSequence>(TSequence sequence, out int value, out SequencePosition consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
         {
-            if(!TryParse(sequence, out value, out int consumedBytes))
+            if (!TryParse(sequence, out value, out int consumedBytes))
             {
                 consumed = default;
                 return false;

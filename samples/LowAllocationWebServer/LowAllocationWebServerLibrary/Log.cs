@@ -3,9 +3,6 @@
 
 using Microsoft.Net;
 using System.Buffers;
-using System.Buffers.Text;
-using System.Collections.Sequences;
-using System.Text.Http;
 using static System.Buffers.Text.Encodings;
 
 namespace System.Diagnostics
@@ -62,7 +59,7 @@ namespace System.Diagnostics
         }
         public override void LogMessage(Level level, string message)
         {
-            lock(s_lock)
+            lock (s_lock)
             {
                 ConsoleColor oldColor = Console.ForegroundColor;
                 switch (level)
@@ -96,7 +93,8 @@ namespace System.Diagnostics
 
                 log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
                 var headers = request.Headers;
-                for(int i=0; i<headers.Length; i++) {
+                for (int i = 0; i < headers.Length; i++)
+                {
                     var header = headers[i];
                     log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", Utf8.ToString(header.Name), Utf8.ToString(header.Value));
                 }

@@ -5,7 +5,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Utf8;
 
 namespace System.Buffers.Text
 {
@@ -79,7 +78,7 @@ namespace System.Buffers.Text
         public void WriteBytes(ReadOnlySpan<byte> bytes)
         {
             var free = Free;
-            if(bytes.TryCopyTo(free))
+            if (bytes.TryCopyTo(free))
             {
                 Advance(bytes.Length);
                 return;
@@ -135,7 +134,7 @@ namespace System.Buffers.Text
             {
                 var free = Free;
                 // TODO: shouldn't it be easier if Free never returned an empty span?
-                if(free.Length == 0)
+                if (free.Length == 0)
                 {
                     free = Enlarge();
                 }

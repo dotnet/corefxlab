@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using System.Collections.Sequences;
 
 namespace System.Buffers
@@ -167,7 +166,8 @@ namespace System.Buffers
 
         public ReadOnlyMemory<byte> Memory
         {
-            get {
+            get
+            {
                 var kind = Kind;
                 switch (kind)
                 {
@@ -191,7 +191,8 @@ namespace System.Buffers
 
         public long Length
         {
-            get {
+            get
+            {
                 var kind = Kind;
                 switch (kind)
                 {
@@ -226,7 +227,8 @@ namespace System.Buffers
 
         Type Kind
         {
-            get {
+            get
+            {
                 if (_start is byte[]) return Type.Array;
                 if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
                 if (_start is IMemoryList<byte>) return Type.MemoryList;
@@ -310,10 +312,10 @@ namespace System.Buffers
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
 
             var previous = origin;
-            while(TryGet(ref origin, out var memory))
+            while (TryGet(ref origin, out var memory))
             {
                 var length = memory.Length;
-                if(length < offset)
+                if (length < offset)
                 {
                     offset -= length;
                     previous = origin;

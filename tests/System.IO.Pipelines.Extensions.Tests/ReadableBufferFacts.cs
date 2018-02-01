@@ -4,9 +4,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Sequences;
 using System.Globalization;
 using System.IO.Pipelines.Testing;
 using System.IO.Pipelines.Text.Primitives;
@@ -21,7 +19,7 @@ using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadableBufferFacts: IDisposable
+    public class ReadableBufferFacts : IDisposable
     {
         const int BlockSize = 4032;
 

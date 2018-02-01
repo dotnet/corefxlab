@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
-using System.Collections.Sequences;
 using System.Text;
 
 namespace System.Buffers
@@ -88,7 +86,7 @@ namespace System.Buffers
 
         public static (BufferList first, BufferList last) Create(params byte[][] buffers)
         {
-            if(buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
+            if (buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
             {
                 var list = new BufferList(Memory<byte>.Empty);
                 return (list, list);
@@ -115,7 +113,7 @@ namespace System.Buffers
                 first = false;
                 builder.Append(_data.Span[i]);
             }
-            if(_data.Length > 5 || _next != null)
+            if (_data.Length > 5 || _next != null)
             {
                 builder.Append(", ...");
             }

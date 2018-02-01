@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
-using System.Collections;
-using System.Collections.Sequences;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -143,7 +141,7 @@ namespace System.IO.Pipelines
 
                 if (segment == null)
                 {
-                   segment = AllocateWriteHeadUnsynchronized(minimumSize);
+                    segment = AllocateWriteHeadUnsynchronized(minimumSize);
                 }
 
                 var bytesLeftInBuffer = segment.WritableBytes;

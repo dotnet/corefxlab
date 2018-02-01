@@ -5,9 +5,7 @@
 using Microsoft.Xunit.Performance;
 using System;
 using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Sequences;
 using System.Text;
 using System.Text.Http.Parser;
 
@@ -77,9 +75,12 @@ public class HttpParserBench
         int consumedBytes;
         bool success = true;
 
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
                     success = success && parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
@@ -103,14 +104,17 @@ public class HttpParserBench
         ReadOnlyBuffer<byte> buffer = new ReadOnlyBuffer<byte>(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
-        int consumedBytes  = 0;
+        int consumedBytes = 0;
         SequencePosition examined;
         SequencePosition consumed = buffer.Start;
         bool success = true;
 
-        foreach (var iteration in Benchmark.Iterations) {
-            using (iteration.StartMeasurement()) {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
                     success = success && parser.ParseRequestLine(request, buffer, out consumed, out examined);
                     success = success && parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
 
@@ -160,7 +164,8 @@ class Request : IHttpHeadersHandler, IHttpRequestLineHandler
     }
 }
 
-struct RequestStruct : IHttpHeadersHandler, IHttpRequestLineHandler {
+struct RequestStruct : IHttpHeadersHandler, IHttpRequestLineHandler
+{
     //public Http.Method Method;
     //public Http.Version Version;
     //public string Path;

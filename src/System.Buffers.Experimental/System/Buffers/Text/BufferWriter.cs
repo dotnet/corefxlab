@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Text
 {
@@ -20,7 +18,7 @@ namespace System.Buffers.Text
         public static BufferWriter Create(Span<byte> buffer) => new BufferWriter(buffer);
 
         public static BufferWriter<TOutput> Create<TOutput>(TOutput output)
-            where TOutput : IOutput 
+            where TOutput : IOutput
             => new BufferWriter<TOutput>(output);
 
         private BufferWriter(Span<byte> buffer)
@@ -38,7 +36,8 @@ namespace System.Buffers.Text
         public int WrittenCount
         {
             get { return _written; }
-            set {
+            set
+            {
                 while (value > _buffer.Length) Resize(value);
                 _written = value;
             }
@@ -46,7 +45,7 @@ namespace System.Buffers.Text
 
         public void Clear()
             => _written = 0;
-        
+
         private void Resize(int desiredBufferSize = 0)
         {
             if (Enlarge == null) throw new BufferTooSmallException();
@@ -62,7 +61,8 @@ namespace System.Buffers.Text
         public override string ToString()
             => Encodings.Utf8.ToString(Written);
 
-        public class BufferTooSmallException : Exception {
+        public class BufferTooSmallException : Exception
+        {
             public BufferTooSmallException() : base("Buffer is too small") { }
         }
     }

@@ -3,10 +3,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Sequences;
-using System.IO.Pipelines;
 using System.IO.Pipelines.Testing;
 using System.Linq;
 using Xunit;

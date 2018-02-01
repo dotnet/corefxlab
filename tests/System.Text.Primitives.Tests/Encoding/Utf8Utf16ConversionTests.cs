@@ -5,6 +5,7 @@
 using Xunit;
 using System.Buffers;
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Primitives.Tests
 {
@@ -148,7 +149,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedOutput.Length * sizeof(char), written);
 
             actualOutput = actualOutput.Slice(0, written);
-            Assert.True(actualOutput.NonPortableCast<byte, char>().SequenceEqual(expectedOutput));
+            Assert.True(MemoryMarshal.Cast<byte, char>(actualOutput).SequenceEqual(expectedOutput));
         }
 
         [Theory]
@@ -221,7 +222,7 @@ namespace System.Text.Primitives.Tests
             Text.Encoding.UTF8.GetChars(data, 0, data.Length, expected, 0);
 
             // Compare
-            Assert.True(actual.NonPortableCast<byte, char>().SequenceEqual(expected));
+            Assert.True(MemoryMarshal.Cast<byte, char>(actual).SequenceEqual(expected));
         }
 
         static byte[] GenerateUtf32String(int length, int minCodePoint, int maxCodePoint)

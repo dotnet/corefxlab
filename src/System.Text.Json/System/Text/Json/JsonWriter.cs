@@ -546,7 +546,7 @@ namespace System.Text.Json
             bytesNeeded *= sizeof(char);
 
             var buffer = EnsureBuffer(bytesNeeded);
-            var span = buffer.NonPortableCast<byte, char>();
+            var span = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             int idx = 0;
 

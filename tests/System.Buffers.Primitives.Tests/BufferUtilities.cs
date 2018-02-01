@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Collections.Sequences;
 using System.Text;
 
 namespace System.IO.Pipelines.Testing
@@ -69,7 +68,7 @@ namespace System.IO.Pipelines.Testing
             byte[][] buffers;
             if (inputs.Length == 0)
             {
-                buffers = new[] { new byte[] {}};
+                buffers = new[] { new byte[] { } };
             }
             else
             {

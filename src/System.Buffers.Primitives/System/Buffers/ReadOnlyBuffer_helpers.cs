@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections;
-using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -30,7 +28,7 @@ namespace System.Buffers
             switch (type)
             {
                 case BufferType.MemoryList:
-                    var bufferSegment = (IMemoryList<T>) start.Segment;
+                    var bufferSegment = (IMemoryList<T>)start.Segment;
                     var currentEndIndex = bufferSegment.Memory.Length;
 
                     if (bufferSegment == end.Segment)
@@ -62,7 +60,7 @@ namespace System.Buffers
 
 
                 case BufferType.OwnedMemory:
-                    var ownedMemory = (OwnedMemory<T>) start.Segment;
+                    var ownedMemory = (OwnedMemory<T>)start.Segment;
                     data = ownedMemory.Memory.Slice(startIndex, endIndex - startIndex);
 
                     if (ownedMemory != end.Segment)
@@ -74,7 +72,7 @@ namespace System.Buffers
                     return true;
 
                 case BufferType.Array:
-                    var array = (T[]) start.Segment;
+                    var array = (T[])start.Segment;
                     data = new Memory<T>(array, startIndex, endIndex - startIndex);
 
                     if (array != end.Segment)
@@ -108,7 +106,7 @@ namespace System.Buffers
                     {
                         return new SequencePosition(start.Segment, startIndex + bytes);
                     }
-                    return SeekMultiSegment((IMemoryList<byte>) start.Segment, startIndex, (IMemoryList<byte>) end.Segment, endIndex, bytes, checkEndReachable);
+                    return SeekMultiSegment((IMemoryList<byte>)start.Segment, startIndex, (IMemoryList<byte>)end.Segment, endIndex, bytes, checkEndReachable);
 
 
                 case BufferType.OwnedMemory:
@@ -151,7 +149,7 @@ namespace System.Buffers
                         // end.Index >= bytes + Index and end.Index is int
                         return new SequencePosition(start.Segment, startIndex + (int)bytes);
                     }
-                    return SeekMultiSegment((IMemoryList<byte>) start.Segment, startIndex, (IMemoryList<byte>) end.Segment, endIndex, bytes, checkEndReachable);
+                    return SeekMultiSegment((IMemoryList<byte>)start.Segment, startIndex, (IMemoryList<byte>)end.Segment, endIndex, bytes, checkEndReachable);
 
 
                 case BufferType.OwnedMemory:
@@ -234,7 +232,7 @@ namespace System.Buffers
             switch (type)
             {
                 case BufferType.MemoryList:
-                    return GetLength((IMemoryList<T>) start.Segment, startIndex, (IMemoryList<T>)end.Segment, endIndex);
+                    return GetLength((IMemoryList<T>)start.Segment, startIndex, (IMemoryList<T>)end.Segment, endIndex);
 
                 case BufferType.OwnedMemory:
                 case BufferType.Array:
@@ -283,7 +281,7 @@ namespace System.Buffers
                     return;
                 case BufferType.MemoryList:
                     var segment = (IMemoryList<T>)newCursor.Segment;
-                    var memoryList = (IMemoryList<T>) start.Segment;
+                    var memoryList = (IMemoryList<T>)start.Segment;
 
                     if (segment.RunningIndex - startIndex > memoryList.RunningIndex - endIndex)
                     {

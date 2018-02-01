@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Text.Primitives.Tests.Encoding
@@ -21,7 +22,7 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
         public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(byte[] expectedBytes, char[] chars, OperationStatus expectedReturnVal)
         {
-            ReadOnlySpan<byte> utf16 = new ReadOnlySpan<char>(chars).NonPortableCast<char, byte>();
+            ReadOnlySpan<byte> utf16 = MemoryMarshal.Cast<char, byte>(new ReadOnlySpan<char>(chars));
             Span<byte> buffer = new byte[expectedBytes.Length];
 
             Assert.Equal(expectedReturnVal, Encodings.Utf16.ToUtf8(utf16, buffer, out int consumed, out int written));

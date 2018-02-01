@@ -4,7 +4,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
-
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -26,7 +26,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -73,7 +73,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -120,7 +120,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -167,7 +167,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -214,7 +214,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -261,7 +261,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -308,7 +308,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -355,7 +355,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -445,7 +445,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -517,7 +517,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -604,7 +604,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -676,7 +676,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -764,7 +764,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1049,7 +1049,7 @@ namespace System.Text.Primitives.Tests
                 {
                     ref byte memory = ref Unsafe.AsRef<byte>(memBlock.ToPointer());
                     var span = new Span<byte>(memBlock.ToPointer(), TwoGiB);
-                    for (int i = 0; i < TwoGiB / 3; i ++)
+                    for (int i = 0; i < TwoGiB / 3; i++)
                     {
                         span[i * 3] = 0xe0;
                         span[i * 3 + 1] = 0xb9;
@@ -1095,7 +1095,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1144,7 +1144,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1216,7 +1216,7 @@ namespace System.Text.Primitives.Tests
         {
             ReadOnlySpan<byte> utf8Span = TestHelper.UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = TestHelper.UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = MemoryMarshal.Cast<byte, char>(utf16ByteSpan);
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;

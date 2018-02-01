@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
-using System.Text.Http.Parser;
 
 namespace System.Text.Http.Formatter
 {
@@ -26,7 +25,8 @@ namespace System.Text.Http.Formatter
 
         public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, Parser.Http.Version version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextOutput
         {
-            switch (version) {
+            switch (version)
+            {
                 case Parser.Http.Version.Http10: formatter.Append(Http10); break;
                 case Parser.Http.Version.Http11: formatter.Append(Http11); break;
                 //case HttpVersion.V2_0: formatter.Append(Http20); break;
@@ -80,7 +80,7 @@ namespace System.Text.Http.Formatter
             }
         }
 
-        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T:IBufferFormattable
+        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T : IBufferFormattable
         {
             formatter.Append(name);
             formatter.Append(value, formatter.SymbolTable, valueFormat);
@@ -111,7 +111,8 @@ namespace System.Text.Http.Formatter
         public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
         {
             var buffer = formatter.GetSpan();
-            while(buffer.Length < 2) {
+            while (buffer.Length < 2)
+            {
                 buffer = formatter.GetSpan(2);
             }
             buffer[0] = 13;
