@@ -7,6 +7,21 @@ namespace System.IO.Pipelines
     {
         internal ResultFlags ResultFlags;
 
+        public FlushResult(bool isCancelled, bool isCompleted)
+        {
+            ResultFlags = ResultFlags.None;
+
+            if (isCancelled)
+            {
+                ResultFlags |= ResultFlags.Cancelled;
+            }
+
+            if (isCompleted)
+            {
+                ResultFlags |= ResultFlags.Completed;
+            }
+        }
+
         /// <summary>
         /// True if the currrent flush was cancelled
         /// </summary>
