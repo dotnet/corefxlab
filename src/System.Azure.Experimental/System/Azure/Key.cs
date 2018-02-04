@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
@@ -7,7 +7,7 @@ using System.Buffers.Text;
 namespace System.Azure.Authentication
 {
     public static class Key {
-        public static byte[] ComputeKeyBytes(string key)
+        public static byte[] ComputeKeyBytes(string key) 
         {
             int size = key.Length * 2;
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
