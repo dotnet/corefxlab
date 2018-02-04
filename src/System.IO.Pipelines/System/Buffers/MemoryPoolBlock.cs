@@ -47,7 +47,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(ExceptionArgument.MemoryPoolBlock);
                 return new Span<byte>(Slab.Array, _offset, _length);
             }
         }
@@ -106,7 +106,7 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(ExceptionArgument.MemoryPoolBlock);
             Interlocked.Increment(ref _referenceCount);
         }
 
@@ -129,7 +129,7 @@ namespace System.Buffers
         // this method access modifiers need to be `protected internal`
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(ExceptionArgument.MemoryPoolBlock);
             arraySegment = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }

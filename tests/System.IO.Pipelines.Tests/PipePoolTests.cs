@@ -171,7 +171,7 @@ namespace System.IO.Pipelines.Tests
                     get
                     {
                         if (IsDisposed)
-                            PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                            PipelinesThrowHelper.ThrowObjectDisposedException(ExceptionArgument.DisposeTrackingBufferPool);
                         return _array;
                     }
                 }
@@ -184,7 +184,7 @@ namespace System.IO.Pipelines.Tests
                 protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
                 {
                     if (IsDisposed)
-                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        PipelinesThrowHelper.ThrowObjectDisposedException(ExceptionArgument.DisposeTrackingBufferPool);
                     arraySegment = new ArraySegment<byte>(_array);
                     return true;
                 }
