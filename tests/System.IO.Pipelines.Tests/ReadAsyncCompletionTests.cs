@@ -8,12 +8,15 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ReadAsyncCompletionTests: PipeTest
+    public class ReadAsyncCompletionTests : PipeTest
     {
         [Fact]
         public void AwaitingReadAsyncAwaitableTwiceCompletesWriterWithException()
         {
-            async Task Await(ValueAwaiter<ReadResult> a) => await a;
+            async Task Await(ValueAwaiter<ReadResult> a)
+            {
+                await a;
+            }
 
             ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 

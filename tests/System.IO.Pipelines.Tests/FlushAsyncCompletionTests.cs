@@ -9,12 +9,15 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class FlushAsyncCompletionTests: PipeTest
+    public class FlushAsyncCompletionTests : PipeTest
     {
         [Fact]
         public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
-            async Task Await(ValueAwaiter<FlushResult> a) => await a;
+            async Task Await(ValueAwaiter<FlushResult> a)
+            {
+                await a;
+            }
 
             PipeWriter writeBuffer = Pipe.Writer;
             writeBuffer.Write(new byte[MaximumSizeHigh]);

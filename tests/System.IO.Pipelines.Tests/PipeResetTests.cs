@@ -10,9 +10,6 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipeResetTests : IDisposable
     {
-        private MemoryPool _pool;
-        private Pipe _pipe;
-
         public PipeResetTests()
         {
             _pool = new MemoryPool();
@@ -26,30 +23,9 @@ namespace System.IO.Pipelines.Tests
             _pool?.Dispose();
         }
 
+        private readonly MemoryPool _pool;
 
-        [Fact]
-        public async Task ReadsAndWritesAfterReset()
-        {
-            var source = new byte[] { 1, 2, 3 };
-
-            await _pipe.Writer.WriteAsync(source);
-            ReadResult result = await _pipe.Reader.ReadAsync();
-
-            Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.AdvanceTo(result.Buffer.End);
-
-            _pipe.Reader.Complete();
-            _pipe.Writer.Complete();
-
-            _pipe.Reset();
-
-
-            await _pipe.Writer.WriteAsync(source);
-            result = await _pipe.Reader.ReadAsync();
-
-            Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.AdvanceTo(result.Buffer.End);
-        }
+        private readonly Pipe _pipe;
 
         [Fact]
         public async Task LengthIsReseted()
@@ -67,6 +43,29 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task ReadsAndWritesAfterReset()
+        {
+            var source = new byte[] { 1, 2, 3 };
+
+            await _pipe.Writer.WriteAsync(source);
+            ReadResult result = await _pipe.Reader.ReadAsync();
+
+            Assert.Equal(source, result.Buffer.ToArray());
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
+
+            _pipe.Reader.Complete();
+            _pipe.Writer.Complete();
+
+            _pipe.Reset();
+
+            await _pipe.Writer.WriteAsync(source);
+            result = await _pipe.Reader.ReadAsync();
+
+            Assert.Equal(source, result.Buffer.ToArray());
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
+        }
+
+        [Fact]
         public void ResetThrowsIfReaderNotCompleted()
         {
             _pipe.Writer.Complete();
@@ -79,6 +78,5 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Complete();
             Assert.Throws<InvalidOperationException>(() => _pipe.Reset());
         }
-
     }
 }

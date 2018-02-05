@@ -13,80 +13,38 @@ namespace System.IO.Pipelines.Tests
 {
     public class SchedulerFacts
     {
-        [Fact]
-        public async Task ReadAsyncCallbackRunsOnReaderScheduler()
+        private class ThreadScheduler : PipeScheduler, IDisposable
         {
-            using (var pool = new MemoryPool())
+            private readonly BlockingCollection<Action> _work = new BlockingCollection<Action>();
+
+            public ThreadScheduler()
             {
-                using (var scheduler = new ThreadScheduler())
-                {
-                    var pipe = new Pipe(new PipeOptions(pool, readerScheduler: scheduler));
-
-                    Func<Task> doRead = async () =>
-                    {
-                        int oid = Thread.CurrentThread.ManagedThreadId;
-
-                        ReadResult result = await pipe.Reader.ReadAsync();
-
-                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
-
-                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
-
-                        pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
-
-                        pipe.Reader.Complete();
-                    };
-
-                    Task reading = doRead();
-
-                    PipeWriter buffer = pipe.Writer;
-                    buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
-                    await buffer.FlushAsync();
-
-                    await reading;
-                }
+                Thread = new Thread(Work) { IsBackground = true };
+                Thread.Start();
             }
-        }
 
-        [Fact]
-        public async Task FlushCallbackRunsOnWriterScheduler()
-        {
-            using (var pool = new MemoryPool())
+            public Thread Thread { get; }
+
+            public void Dispose()
             {
-                using (var scheduler = new ThreadScheduler())
+                _work.CompleteAdding();
+            }
+
+            public override void Schedule(Action action)
+            {
+                Schedule(o => ((Action)o)(), action);
+            }
+
+            public override void Schedule(Action<object> action, object state)
+            {
+                _work.Add(() => action(state));
+            }
+
+            private void Work(object state)
+            {
+                foreach (Action callback in _work.GetConsumingEnumerable())
                 {
-                    var pipe = new Pipe(new PipeOptions(pool,
-                        resumeWriterThreshold: 32,
-                        pauseWriterThreshold: 64,
-                        writerScheduler: scheduler));
-
-                    PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
-                    ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
-
-                    Assert.False(flushAsync.IsCompleted);
-
-                    Func<Task> doWrite = async () =>
-                    {
-                        int oid = Thread.CurrentThread.ManagedThreadId;
-
-                        await flushAsync;
-
-                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
-
-                        pipe.Writer.Complete();
-
-                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
-                    };
-
-                    Task writing = doWrite();
-
-                    ReadResult result = await pipe.Reader.ReadAsync();
-
-                    pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
-
-                    pipe.Reader.Complete();
-
-                    await writing;
+                    callback();
                 }
             }
         }
@@ -100,8 +58,7 @@ namespace System.IO.Pipelines.Tests
 
                 var id = 0;
 
-                Func<Task> doRead = async () =>
-                {
+                Func<Task> doRead = async () => {
                     ReadResult result = await pipe.Reader.ReadAsync();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
@@ -130,20 +87,21 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool,
-                    resumeWriterThreshold: 32,
-                    pauseWriterThreshold: 64
-                ));
+                var pipe = new Pipe(
+                    new PipeOptions(
+                        pool,
+                        resumeWriterThreshold: 32,
+                        pauseWriterThreshold: 64
+                    ));
 
                 PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
                 ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
                 Assert.False(flushAsync.IsCompleted);
 
-                int id = 0;
+                var id = 0;
 
-                Func<Task> doWrite = async () =>
-                {
+                Func<Task> doWrite = async () => {
                     await flushAsync;
 
                     pipe.Writer.Complete();
@@ -165,39 +123,81 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class ThreadScheduler : PipeScheduler, IDisposable
+        [Fact]
+        public async Task FlushCallbackRunsOnWriterScheduler()
         {
-            private BlockingCollection<Action> _work = new BlockingCollection<Action>();
-
-            public Thread Thread { get; }
-
-            public ThreadScheduler()
+            using (var pool = new MemoryPool())
             {
-                Thread = new Thread(Work) { IsBackground = true };
-                Thread.Start();
-            }
-
-            public override void Schedule(Action action)
-            {
-                Schedule(o => ((Action)o)(), action);
-            }
-
-            public override void Schedule(Action<object> action, object state)
-            {
-                _work.Add(() => action(state));
-            }
-
-            private void Work(object state)
-            {
-                foreach (Action callback in _work.GetConsumingEnumerable())
+                using (var scheduler = new ThreadScheduler())
                 {
-                    callback();
+                    var pipe = new Pipe(
+                        new PipeOptions(
+                            pool,
+                            resumeWriterThreshold: 32,
+                            pauseWriterThreshold: 64,
+                            writerScheduler: scheduler));
+
+                    PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
+                    ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
+
+                    Assert.False(flushAsync.IsCompleted);
+
+                    Func<Task> doWrite = async () => {
+                        int oid = Thread.CurrentThread.ManagedThreadId;
+
+                        await flushAsync;
+
+                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
+
+                        pipe.Writer.Complete();
+
+                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
+                    };
+
+                    Task writing = doWrite();
+
+                    ReadResult result = await pipe.Reader.ReadAsync();
+
+                    pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
+
+                    pipe.Reader.Complete();
+
+                    await writing;
                 }
             }
+        }
 
-            public void Dispose()
+        [Fact]
+        public async Task ReadAsyncCallbackRunsOnReaderScheduler()
+        {
+            using (var pool = new MemoryPool())
             {
-                _work.CompleteAdding();
+                using (var scheduler = new ThreadScheduler())
+                {
+                    var pipe = new Pipe(new PipeOptions(pool, scheduler));
+
+                    Func<Task> doRead = async () => {
+                        int oid = Thread.CurrentThread.ManagedThreadId;
+
+                        ReadResult result = await pipe.Reader.ReadAsync();
+
+                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
+
+                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
+
+                        pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
+
+                        pipe.Reader.Complete();
+                    };
+
+                    Task reading = doRead();
+
+                    PipeWriter buffer = pipe.Writer;
+                    buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
+                    await buffer.FlushAsync();
+
+                    await reading;
+                }
             }
         }
     }

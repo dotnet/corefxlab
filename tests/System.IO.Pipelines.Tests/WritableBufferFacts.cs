@@ -10,43 +10,6 @@ namespace System.IO.Pipelines.Tests
 {
     public class WritableBufferFacts
     {
-        [Fact]
-        public async Task CanWriteNothingToBuffer()
-        {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                PipeWriter buffer = pipe.Writer;
-                buffer.GetMemory(0);
-                buffer.Advance(0); // doing nothing, the hard way
-                await buffer.FlushAsync();
-            }
-        }
-
-        [Fact]
-        public void ThrowsOnAdvanceWithNoMemory()
-        {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                PipeWriter buffer = pipe.Writer;
-                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
-                Assert.Equal("No writing operation. Make sure GetMemory() was called.", exception.Message);
-            }
-        }
-
-        [Fact]
-        public void ThrowsOnAdvanceOverMemorySize()
-        {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                Memory<byte> buffer = pipe.Writer.GetMemory(1);
-                var exception = Assert.Throws<InvalidOperationException>(() => pipe.Writer.Advance(buffer.Length + 1));
-                Assert.Equal("Can't advance past buffer size", exception.Message);
-            }
-        }
-
         [Theory]
         [InlineData(5)]
         [InlineData(50)]
@@ -55,7 +18,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(50000)]
         public async Task WriteLargeDataBinary(int length)
         {
-            byte[] data = new byte[length];
+            var data = new byte[length];
             new Random(length).NextBytes(data);
             using (var memoryPool = new MemoryPool())
             {
@@ -77,7 +40,32 @@ namespace System.IO.Pipelines.Tests
                     offset += input.Length;
                     pipe.Reader.AdvanceTo(input.End);
                 }
+
                 Assert.Equal(data.Length, offset);
+            }
+        }
+
+        [Fact]
+        public async Task CanWriteNothingToBuffer()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(new PipeOptions(memoryPool));
+                PipeWriter buffer = pipe.Writer;
+                buffer.GetMemory(0);
+                buffer.Advance(0); // doing nothing, the hard way
+                await buffer.FlushAsync();
+            }
+        }
+
+        [Fact]
+        public void EmptyWriteDoesNotThrow()
+        {
+            using (var pool = new MemoryPool())
+            {
+                var pipe = new Pipe(new PipeOptions(pool));
+                PipeWriter buffer = pipe.Writer;
+                buffer.Write(new byte[0]);
             }
         }
 
@@ -93,13 +81,26 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void EmptyWriteDoesNotThrow()
+        public void ThrowsOnAdvanceOverMemorySize()
         {
-            using (var pool = new MemoryPool())
+            using (var memoryPool = new MemoryPool())
             {
-                var pipe = new Pipe(new PipeOptions(pool));
+                var pipe = new Pipe(new PipeOptions(memoryPool));
+                Memory<byte> buffer = pipe.Writer.GetMemory(1);
+                var exception = Assert.Throws<InvalidOperationException>(() => pipe.Writer.Advance(buffer.Length + 1));
+                Assert.Equal("Can't advance past buffer size", exception.Message);
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnAdvanceWithNoMemory()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(new PipeOptions(memoryPool));
                 PipeWriter buffer = pipe.Writer;
-                buffer.Write(new byte[0]);
+                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
+                Assert.Equal("No writing operation. Make sure GetMemory() was called.", exception.Message);
             }
         }
     }
