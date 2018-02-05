@@ -24,9 +24,9 @@ namespace System.IO.Pipelines.Tests
 
                     Func<Task> doRead = async () =>
                     {
-                        var oid = Thread.CurrentThread.ManagedThreadId;
+                        int oid = Thread.CurrentThread.ManagedThreadId;
 
-                        var result = await pipe.Reader.ReadAsync();
+                        ReadResult result = await pipe.Reader.ReadAsync();
 
                         Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
 
@@ -37,9 +37,9 @@ namespace System.IO.Pipelines.Tests
                         pipe.Reader.Complete();
                     };
 
-                    var reading = doRead();
+                    Task reading = doRead();
 
-                    var buffer = pipe.Writer;
+                    PipeWriter buffer = pipe.Writer;
                     buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                     await buffer.FlushAsync();
 
@@ -60,14 +60,14 @@ namespace System.IO.Pipelines.Tests
                         pauseWriterThreshold: 64,
                         writerScheduler: scheduler));
 
-                    var writableBuffer = pipe.Writer.WriteEmpty(64);
-                    var flushAsync = writableBuffer.FlushAsync();
+                    PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
+                    ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
                     Assert.False(flushAsync.IsCompleted);
 
                     Func<Task> doWrite = async () =>
                     {
-                        var oid = Thread.CurrentThread.ManagedThreadId;
+                        int oid = Thread.CurrentThread.ManagedThreadId;
 
                         await flushAsync;
 
@@ -78,9 +78,9 @@ namespace System.IO.Pipelines.Tests
                         Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
                     };
 
-                    var writing = doWrite();
+                    Task writing = doWrite();
 
-                    var result = await pipe.Reader.ReadAsync();
+                    ReadResult result = await pipe.Reader.ReadAsync();
 
                     pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
 
@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Tests
 
                 Func<Task> doRead = async () =>
                 {
-                    var result = await pipe.Reader.ReadAsync();
+                    ReadResult result = await pipe.Reader.ReadAsync();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
 
@@ -111,11 +111,11 @@ namespace System.IO.Pipelines.Tests
                     pipe.Reader.Complete();
                 };
 
-                var reading = doRead();
+                Task reading = doRead();
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                var buffer = pipe.Writer;
+                PipeWriter buffer = pipe.Writer;
                 buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                 await buffer.FlushAsync();
 
@@ -135,8 +135,8 @@ namespace System.IO.Pipelines.Tests
                     pauseWriterThreshold: 64
                 ));
 
-                var writableBuffer = pipe.Writer.WriteEmpty(64);
-                var flushAsync = writableBuffer.FlushAsync();
+                PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
+                ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
                 Assert.False(flushAsync.IsCompleted);
 
@@ -151,9 +151,9 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
                 };
 
-                var writing = doWrite();
+                Task writing = doWrite();
 
-                var result = await pipe.Reader.ReadAsync();
+                ReadResult result = await pipe.Reader.ReadAsync();
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
@@ -189,7 +189,7 @@ namespace System.IO.Pipelines.Tests
 
             private void Work(object state)
             {
-                foreach (var callback in _work.GetConsumingEnumerable())
+                foreach (Action callback in _work.GetConsumingEnumerable())
                 {
                     callback();
                 }

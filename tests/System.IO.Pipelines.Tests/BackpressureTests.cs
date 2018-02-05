@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -29,48 +30,48 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCompletedTaskWhenSizeLessThenLimit()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(32);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(32);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
             Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
+            FlushResult flushResult = flushAsync.GetResult();
             Assert.False(flushResult.IsCompleted);
         }
 
         [Fact]
         public void FlushAsyncReturnsNonCompletedSizeWhenCommitOverTheLimit()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
         }
 
         [Fact]
         public void FlushAsyncAwaitableCompletesWhenReaderAdvancesUnderLow()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
 
-            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
+            ReadResult result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            SequencePosition consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
             _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
+            FlushResult flushResult = flushAsync.GetResult();
             Assert.False(flushResult.IsCompleted);
         }
 
         [Fact]
         public void FlushAsyncAwaitableDoesNotCompletesWhenReaderAdvancesUnderHight()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
 
-            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 32);
+            ReadResult result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            SequencePosition consumed = result.Buffer.GetPosition(result.Buffer.Start, 32);
             _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.False(flushAsync.IsCompleted);
@@ -81,8 +82,8 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Reader.Complete(new InvalidOperationException("Reader failed"));
 
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            InvalidOperationException invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
             Assert.Equal("Reader failed", invalidOperationException.Message);
             invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
             Assert.Equal("Reader failed", invalidOperationException.Message);
@@ -91,32 +92,32 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCompletedIfReaderCompletes()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
 
             _pipe.Reader.Complete();
 
             Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
+            FlushResult flushResult = flushAsync.GetResult();
             Assert.True(flushResult.IsCompleted);
         }
 
         [Fact]
         public void FlushAsyncAwaitableResetsOnCommit()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
 
-            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
+            ReadResult result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            SequencePosition consumed = result.Buffer.GetPosition(result.Buffer.Start, 33);
             _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
+            FlushResult flushResult = flushAsync.GetResult();
             Assert.False(flushResult.IsCompleted);
 
             writableBuffer = _pipe.Writer.WriteEmpty(64);
@@ -128,12 +129,12 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AdvanceThrowsIfFlushActiveAndNotConsumedPastThreshold()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(64);
-            var flushAsync = writableBuffer.FlushAsync();
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(64);
+            ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
 
-            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.GetPosition(result.Buffer.Start, 31);
+            ReadResult result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            SequencePosition consumed = result.Buffer.GetPosition(result.Buffer.Start, 31);
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.AdvanceTo(consumed, result.Buffer.End));
 
             _pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);

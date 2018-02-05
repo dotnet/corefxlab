@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="PipeWriter"/> and <see cref="PipeReader"/> implementation.
     /// </summary>
-    public class Pipe : IAwaiter<ReadResult>, IAwaiter<FlushResult>
+    public sealed class Pipe : IAwaiter<ReadResult>, IAwaiter<FlushResult>
     {
         private const int SegmentPoolSize = 16;
 
@@ -45,7 +45,8 @@ namespace System.IO.Pipelines
         private PipeCompletion _writerCompletion;
         private PipeCompletion _readerCompletion;
 
-        private BufferSegment[] _bufferSegmentPool;
+        private readonly BufferSegment[] _bufferSegmentPool;
+
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
         private int _readHeadIndex;
@@ -63,15 +64,16 @@ namespace System.IO.Pipelines
 
         internal long Length => _length;
 
+        /// <summary>
+        /// Initializes the <see cref="Pipe"/> using <see cref="PipeOptions.Default"/> as options.
+        /// </summary>
         public Pipe() : this(PipeOptions.Default)
         {
         }
 
         /// <summary>
-        /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
+        /// Initializes the <see cref="Pipe"/> with the specifed <see cref="PipeOptions"/>.
         /// </summary>
-        /// <param name="pool"></param>
-        /// <param name="options"></param>
         public Pipe(PipeOptions options)
         {
             if (options == null)
@@ -104,8 +106,8 @@ namespace System.IO.Pipelines
             _writerScheduler = options.WriterScheduler ?? PipeScheduler.Inline;
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
-            Reader = new ResetablePipeReader(this);
-            Writer = new ResetablePipeWriter(this);
+            Reader = new DefaultPipeReader(this);
+            Writer = new DefaultPipeWriter(this);
         }
 
         private void ResetState()
@@ -121,35 +123,28 @@ namespace System.IO.Pipelines
         /// Allocates memory from the pipeline to write into.
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
-        /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
         internal Memory<byte> GetMemory(int minimumSize)
         {
             if (_writerCompletion.IsCompleted)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
             }
 
             if (minimumSize < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            BufferSegment segment;
             lock (_sync)
             {
-                segment = _writingHead;
+                BufferSegment segment = _writingHead ?? AllocateWriteHeadUnsynchronized(minimumSize);
 
-                if (segment == null)
-                {
-                    segment = AllocateWriteHeadUnsynchronized(minimumSize);
-                }
-
-                var bytesLeftInBuffer = segment.WritableBytes;
+                int bytesLeftInBuffer = segment.WritableBytes;
 
                 // If inadequate bytes left or if the segment is readonly
                 if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < minimumSize || segment.ReadOnly)
                 {
-                    var nextSegment = CreateSegmentUnsynchronized();
+                    BufferSegment nextSegment = CreateSegmentUnsynchronized();
 
                     nextSegment.SetMemory(_pool.Rent(Math.Max(_minimumSegmentSize, minimumSize)));
 
@@ -262,6 +257,7 @@ namespace System.IO.Pipelines
             {
                 _writerAwaitable.Reset();
             }
+
             // Clear the writing state
             _writingHead = null;
             _currentWriteLength = 0;
@@ -272,7 +268,7 @@ namespace System.IO.Pipelines
         {
             if (_writingHead == null)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
             }
 
             if (bytesWritten > 0)
@@ -280,12 +276,12 @@ namespace System.IO.Pipelines
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
-                var buffer = _writingHead.AvailableMemory;
-                var bufferIndex = _writingHead.End + bytesWritten;
+                Memory<byte> buffer = _writingHead.AvailableMemory;
+                int bufferIndex = _writingHead.End + bytesWritten;
 
                 if (bufferIndex > buffer.Length)
                 {
-                    PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
                 }
 
                 _writingHead.End = bufferIndex;
@@ -293,8 +289,10 @@ namespace System.IO.Pipelines
             }
             else if (bytesWritten < 0)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.bytesWritten);
-            } // and if zero, just do nothing; don't need to validate tail etc
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.bytesWritten);
+            }
+
+            // and if zero, just do nothing; don't need to validate tail etc
         }
 
         internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
@@ -321,23 +319,19 @@ namespace System.IO.Pipelines
             return new ValueAwaiter<FlushResult>(this);
         }
 
-        /// <summary>
-        /// Marks the pipeline as being complete, meaning no more items will be written to it.
-        /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        internal void Complete(Exception exception)
+        internal void CompleteWriter(Exception exception)
         {
-            if (_currentWriteLength > 0)
-            {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter);
-            }
-
             Action awaitable;
             PipeCompletionCallbacks completionCallbacks;
             bool readerCompleted;
 
             lock (_sync)
             {
+                if (_currentWriteLength > 0)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter);
+                }
+
                 completionCallbacks = _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
                 readerCompleted = _readerCompletion.IsCompleted;
@@ -356,22 +350,20 @@ namespace System.IO.Pipelines
             }
         }
 
-        // Reading
-        internal void Advance(SequencePosition consumed)
+        internal void AdvanceReader(SequencePosition consumed)
         {
-            Advance(consumed, consumed);
+            AdvanceReader(consumed, consumed);
         }
 
-        internal void Advance(SequencePosition consumed, SequencePosition examined)
+        internal void AdvanceReader(SequencePosition consumed, SequencePosition examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
-            // Reading commit head shared with writer
             Action continuation = null;
             lock (_sync)
             {
-                bool examinedEverything = false;
+                var examinedEverything = false;
                 if (examined.Segment == _commitHead)
                 {
                     examinedEverything = _commitHead != null ? examined.Index == _commitHeadIndex - _commitHead.Start : examined.Index == 0;
@@ -381,7 +373,7 @@ namespace System.IO.Pipelines
                 {
                     if (_readHead == null)
                     {
-                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
                         return;
                     }
 
@@ -391,8 +383,8 @@ namespace System.IO.Pipelines
                     returnEnd = consumedSegment;
 
                     // Check if we crossed _maximumSizeLow and complete backpressure
-                    var consumedBytes = new ReadOnlyBuffer<byte>(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
-                    var oldLength = _length;
+                    long consumedBytes = new ReadOnlyBuffer<byte>(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
+                    long oldLength = _length;
                     _length -= consumedBytes;
 
                     if (oldLength >= _maximumSizeLow &&
@@ -402,12 +394,11 @@ namespace System.IO.Pipelines
                     }
 
                     // Check if we consumed entire last segment
-                    // if we are going to return commit head
-                    // we need to check that there is no writing operation that
+                    // if we are going to return commit head we need to check that there is no writing operation that
                     // might be using tailspace
                     if (consumed.Index == returnEnd.Length && _writingHead != returnEnd)
                     {
-                        var nextBlock = returnEnd.NextSegment;
+                        var nextBlock = (BufferSegment)returnEnd.Next;
                         if (_commitHead == returnEnd)
                         {
                             _commitHead = nextBlock;
@@ -432,7 +423,7 @@ namespace System.IO.Pipelines
                     // Prevent deadlock where reader awaits new data and writer await backpressure
                     if (!_writerAwaitable.IsCompleted)
                     {
-                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
                     }
                     _readerAwaitable.Reset();
                 }
@@ -443,30 +434,26 @@ namespace System.IO.Pipelines
                 {
                     returnStart.ResetMemory();
                     ReturnSegmentUnsynchronized(returnStart);
-                    returnStart = returnStart.NextSegment;
+                    returnStart = (BufferSegment)returnStart.Next;
                 }
             }
 
             TrySchedule(_writerScheduler, continuation);
         }
 
-        /// <summary>
-        /// Signal to the producer that the consumer is done reading.
-        /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         internal void CompleteReader(Exception exception)
         {
-            if (_readingState.IsActive)
-            {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
-            }
-
             PipeCompletionCallbacks completionCallbacks;
             Action awaitable;
             bool writerCompleted;
 
             lock (_sync)
             {
+                if (_readingState.IsActive)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
+                }
+
                 completionCallbacks = _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
                 writerCompleted = _writerCompletion.IsCompleted;
@@ -554,7 +541,7 @@ namespace System.IO.Pipelines
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
             }
             lock (_sync)
             {
@@ -570,7 +557,7 @@ namespace System.IO.Pipelines
             {
                 if (_readerCompletion.IsCompleted)
                 {
-                    PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
                 }
 
                 result = new ReadResult();
@@ -582,7 +569,7 @@ namespace System.IO.Pipelines
 
                 if (_readerAwaitable.HasContinuation)
                 {
-                    PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
                 }
                 return false;
             }
@@ -617,11 +604,11 @@ namespace System.IO.Pipelines
                 // Return all segments
                 // if _readHead is null we need to try return _commitHead
                 // because there might be a block allocated for writing
-                var segment = _readHead ?? _commitHead;
+                BufferSegment segment = _readHead ?? _commitHead;
                 while (segment != null)
                 {
-                    var returnSegment = segment;
-                    segment = segment.NextSegment;
+                    BufferSegment returnSegment = segment;
+                    segment = (BufferSegment)segment.Next;
 
                     returnSegment.ResetMemory();
                 }
@@ -630,8 +617,6 @@ namespace System.IO.Pipelines
                 _commitHead = null;
             }
         }
-
-        // IReadableBufferAwaiter members
 
         bool IAwaiter<ReadResult>.IsCompleted => _readerAwaitable.IsCompleted;
 
@@ -645,7 +630,7 @@ namespace System.IO.Pipelines
             }
             if (doubleCompletion)
             {
-                Writer.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+                Writer.Complete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_readerScheduler, awaitable);
         }
@@ -654,7 +639,7 @@ namespace System.IO.Pipelines
         {
             if (!_readerAwaitable.IsCompleted)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
 
             var result = new ReadResult();
@@ -672,14 +657,14 @@ namespace System.IO.Pipelines
                 result.ResultFlags |= ResultFlags.Completed;
             }
 
-            var isCancelled = _readerAwaitable.ObserveCancelation();
+            bool isCancelled = _readerAwaitable.ObserveCancelation();
             if (isCancelled)
             {
                 result.ResultFlags |= ResultFlags.Cancelled;
             }
 
             // No need to read end if there is no head
-            var head = _readHead;
+            BufferSegment head = _readHead;
 
             if (head != null)
             {
@@ -697,8 +682,6 @@ namespace System.IO.Pipelines
             }
         }
 
-        // IWritableBufferAwaiter members
-
         bool IAwaiter<FlushResult>.IsCompleted => _writerAwaitable.IsCompleted;
 
         FlushResult IAwaiter<FlushResult>.GetResult()
@@ -708,7 +691,7 @@ namespace System.IO.Pipelines
             {
                 if (!_writerAwaitable.IsCompleted)
                 {
-                    PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
                 }
 
                 // Change the state from to be cancelled -> observed
@@ -735,7 +718,7 @@ namespace System.IO.Pipelines
             }
             if (doubleCompletion)
             {
-                Reader.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+                Reader.Complete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_writerScheduler, awaitable);
         }
@@ -778,11 +761,11 @@ namespace System.IO.Pipelines
             }
         }
 
-        private class ResetablePipeReader : PipeReader
+        private sealed class DefaultPipeReader : PipeReader
         {
             private readonly Pipe _pipe;
 
-            public ResetablePipeReader(Pipe pipe)
+            public DefaultPipeReader(Pipe pipe)
             {
                 _pipe = pipe;
             }
@@ -799,12 +782,12 @@ namespace System.IO.Pipelines
 
             public override void AdvanceTo(SequencePosition consumed)
             {
-                _pipe.Advance(consumed);
+                _pipe.AdvanceReader(consumed);
             }
 
             public override void AdvanceTo(SequencePosition consumed, SequencePosition examined)
             {
-                _pipe.Advance(consumed, examined);
+                _pipe.AdvanceReader(consumed, examined);
             }
 
             public override void CancelPendingRead()
@@ -823,18 +806,18 @@ namespace System.IO.Pipelines
             }
         }
 
-        private class ResetablePipeWriter : PipeWriter
+        private sealed class DefaultPipeWriter : PipeWriter
         {
             private readonly Pipe _pipe;
 
-            public ResetablePipeWriter(Pipe pipe)
+            public DefaultPipeWriter(Pipe pipe)
             {
                 _pipe = pipe;
             }
 
             public override void Complete(Exception exception = null)
             {
-                _pipe.Complete(exception);
+                _pipe.CompleteWriter(exception);
             }
 
             public override void CancelPendingFlush()

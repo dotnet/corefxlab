@@ -3,12 +3,26 @@
 
 namespace System.Buffers
 {
+    /// <summary>
+    /// Represents a <see cref="Byte"/> sink
+    /// </summary>
     public interface IOutput
     {
+        /// <summary>
+        /// Notifies <see cref="IOutput"/> that <see cref="bytes"/> amount of data was written to <see cref="Span{Byte}"/>/<see cref="Memory{Byte}"/>
+        /// </summary>
         void Advance(int bytes);
-        /// <summary>If minimumLength is equal to zero currently available memory would be returned</summary>
+
+        /// <summary>
+        /// Requests the <see cref="Memory{Byte}"/> of at least <see cref="minimumLength"/> in size.
+        /// If <see cref="minimumLength"/> is equal to <code>0</code> currently available memory would get returned.
+        /// </summary>
         Memory<byte> GetMemory(int minimumLength = 0);
-        /// <summary>If minimumLength is equal to zero currently available memory would be returned/summary>
+
+        /// <summary>
+        /// Requests the <see cref="Span{Byte}"/> of at least <see cref="minimumLength"/> in size.
+        /// If <see cref="minimumLength"/> is equal to <code>0</code> currently available memory would get returned.
+        /// </summary>
         Span<byte> GetSpan(int minimumLength = 0);
     }
 }

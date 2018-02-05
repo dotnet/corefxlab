@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
 using System.Threading;
@@ -397,7 +398,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.False(continuationRan);
             }, null);
 
-            var awaiter = pipe.Reader.ReadAsync();
+            ValueAwaiter<ReadResult> awaiter = pipe.Reader.ReadAsync();
             Assert.False(awaiter.IsCompleted);
             awaiter.OnCompleted(() =>
             {
@@ -421,8 +422,8 @@ namespace System.IO.Pipelines.Tests
                 callbackRan = true;
             }, null);
 
-            var buffer = pipe.Writer.WriteEmpty(10);
-            var awaiter = buffer.FlushAsync();
+            PipeWriter buffer = pipe.Writer.WriteEmpty(10);
+            ValueAwaiter<FlushResult> awaiter = buffer.FlushAsync();
 
             Assert.False(awaiter.IsCompleted);
             awaiter.OnCompleted(() =>

@@ -47,7 +47,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
                 return new Span<byte>(Slab.Array, _offset, _length);
             }
         }
@@ -83,17 +83,6 @@ namespace System.Buffers
             return new MemoryPoolBlock(pool, slab, offset, length);
         }
 
-        /// <summary>
-        /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            SpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
-            return builder.ToString();
-        }
-
         protected void OnZeroReferences()
         {
             Pool.Return(this);
@@ -106,14 +95,14 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             Interlocked.Increment(ref _referenceCount);
         }
 
         public override bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
-            if (newRefCount < 0) PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
+            if (newRefCount < 0) ThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
             if (newRefCount == 0)
             {
                 OnZeroReferences();
@@ -129,7 +118,7 @@ namespace System.Buffers
         // this method access modifiers need to be `protected internal`
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
         {
-            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             arraySegment = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
@@ -137,7 +126,7 @@ namespace System.Buffers
         public override MemoryHandle Pin(int byteOffset = 0)
         {
             Retain();   // checks IsDisposed
-            if (byteOffset < 0 || byteOffset > _length) PipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, byteOffset);
+            if (byteOffset < 0 || byteOffset > _length) ThrowHelper.ThrowArgumentOutOfRangeException(_length, byteOffset);
             unsafe
             {
                 return new MemoryHandle(this, (Slab.NativePointer + _offset + byteOffset).ToPointer());

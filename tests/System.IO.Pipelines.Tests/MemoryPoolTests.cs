@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Tests
         {
             using (var pool = new MemoryPool())
             {
-                var block1 = pool.Rent(1);
+                OwnedMemory<byte> block1 = pool.Rent(1);
                 block1.Retain();
                 block1.Release();
 

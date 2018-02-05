@@ -12,13 +12,13 @@ namespace System.IO.Pipelines
     public abstract class PipeWriter : IOutput
     {
         /// <summary>
-        /// Marks the pipeline as being complete, meaning no more items will be written to it.
+        /// Marks the <see cref="PipeWriter"/> as being complete, meaning no more items will be written to it.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
+        /// <param name="exception">Optional <see cref="Exception"/> indicating a failure that's causing the pipeline to complete.</param>
         public abstract void Complete(Exception exception = null);
 
         /// <summary>
-        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="PipeReader"/>.
+        /// Cancel to currently pending or if none is pending next call to <see cref="FlushAsync"/>, without completing the <see cref="PipeWriter"/>.
         /// </summary>
         public abstract void CancelPendingFlush();
 

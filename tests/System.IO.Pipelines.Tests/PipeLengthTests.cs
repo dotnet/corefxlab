@@ -28,7 +28,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthCorrectAfterAllocAdvanceCommit()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(10);
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(10);
             writableBuffer.Commit();
 
             Assert.Equal(10, _pipe.Length);
@@ -52,8 +52,8 @@ namespace System.IO.Pipelines.Tests
             _pipe.Writer.Commit();
             _pipe.Writer.FlushAsync();
 
-            var result = _pipe.Reader.ReadAsync().GetResult();
-            var consumed = result.Buffer.Slice(5).Start;
+            ReadResult result = _pipe.Reader.ReadAsync().GetResult();
+            SequencePosition consumed = result.Buffer.Slice(5).Start;
             _pipe.Reader.AdvanceTo(consumed, consumed);
 
             Assert.Equal(5, _pipe.Length);
@@ -62,11 +62,11 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void LengthNotChangeAfterReadAdvanceExamine()
         {
-            var writableBuffer = _pipe.Writer.WriteEmpty(10);
+            PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(10);
             writableBuffer.Commit();
             writableBuffer.FlushAsync();
 
-            var result = _pipe.Reader.ReadAsync().GetResult();
+            ReadResult result = _pipe.Reader.ReadAsync().GetResult();
             _pipe.Reader.AdvanceTo(result.Buffer.Start, result.Buffer.End);
 
             Assert.Equal(10, _pipe.Length);
@@ -89,8 +89,8 @@ namespace System.IO.Pipelines.Tests
 
             for (int i = 1024 * 1024 - 1; i >= 0; i--)
             {
-                var result = _pipe.Reader.ReadAsync().GetResult();
-                var consumed = result.Buffer.Slice(1).Start;
+                ReadResult result = _pipe.Reader.ReadAsync().GetResult();
+                SequencePosition consumed = result.Buffer.Slice(1).Start;
 
                 Assert.Equal(i + 1, result.Buffer.Length);
 

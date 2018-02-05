@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -42,7 +43,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Action Complete()
         {
-            var awaitableState = _state;
+            Action awaitableState = _state;
             _state = _awaitableIsCompleted;
 
             if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
@@ -76,7 +77,7 @@ namespace System.IO.Pipelines
         public Action OnCompleted(Action continuation, out bool doubleCompletion)
         {
             doubleCompletion = false;
-            var awaitableState = _state;
+            Action awaitableState = _state;
             if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
                 _state = continuation;
@@ -98,7 +99,7 @@ namespace System.IO.Pipelines
 
         public Action Cancel()
         {
-            var action = Complete();
+            Action action = Complete();
             _cancelledState = action == null ?
                 CancelledState.CancellationPreRequested :
                 CancelledState.CancellationRequested;

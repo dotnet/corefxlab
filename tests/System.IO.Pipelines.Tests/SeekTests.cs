@@ -58,8 +58,8 @@ namespace System.IO.Pipelines.Tests
         [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", ' ', 27)]
         public void MemorySeek(string raw, char searchFor, int expectIndex)
         {
-            var cursors = Factory.CreateWithContent(raw);
-            var result = cursors.PositionOf((byte)searchFor);
+            ReadOnlyBuffer<byte> cursors = Factory.CreateWithContent(raw);
+            SequencePosition? result = cursors.PositionOf((byte)searchFor);
 
             Assert.NotNull(result);
             Assert.Equal(cursors.Slice(result.Value).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
@@ -70,12 +70,12 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            var originalBuffer = Factory.CreateWithContent(input);
+            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
 
             // Act
-            var buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
+            ReadOnlyBuffer<byte> buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
 
-            var result = buffer.PositionOf((byte)seek);
+            SequencePosition? result = buffer.PositionOf((byte)seek);
 
             // Assert
             if (expectedReturnValue == -1)
@@ -97,19 +97,19 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
-            var originalBuffer = Factory.CreateWithContent(input);
+            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
 
-            var scan1 = originalBuffer.Start;
-            var buffer = originalBuffer;
+            SequencePosition scan1 = originalBuffer.Start;
+            ReadOnlyBuffer<byte> buffer = originalBuffer;
 
             // Act
-            var end = originalBuffer.PositionOf((byte)limitAfter);
+            SequencePosition? end = originalBuffer.PositionOf((byte)limitAfter);
             if (end.HasValue)
             {
                 buffer = originalBuffer.Slice(buffer.Start, buffer.GetPosition(end.Value, 1));
             }
 
-            var returnValue1 = buffer.PositionOf((byte)seek);
+            SequencePosition? returnValue1 = buffer.PositionOf((byte)seek);
 
 
             // Assert
@@ -117,7 +117,7 @@ namespace System.IO.Pipelines.Tests
 
             if (expectedReturnValue != -1)
             {
-                var expectedEndIndex = input.IndexOf(seek);
+                int expectedEndIndex = input.IndexOf(seek);
 
                 Assert.NotNull(returnValue1);
                 Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(returnValue1.Value).ToArray());
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Tests
         {
             get
             {
-                var vectorSpan = Vector<byte>.Count;
+                int vectorSpan = Vector<byte>.Count;
                 // string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue
                 var data = new List<object[]>();
 
@@ -159,18 +159,18 @@ namespace System.IO.Pipelines.Tests
                 data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', vectorSpan * 2 + vectorSpan / 2, vectorSpan * 2 + vectorSpan / 2, -1 });
 
                 // For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
-                for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
+                for (int length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
                 {
                     // ...place the seek char at vector and input boundaries...
-                    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
+                    for (int i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
                     {
                         var input = new StringBuilder(new string('a', length));
                         input[i] = 'b';
 
                         // ...and check with a seek byte limit before, at, and past the seek char position...
-                        for (var limitOffset = -1; limitOffset <= 1; limitOffset++)
+                        for (int limitOffset = -1; limitOffset <= 1; limitOffset++)
                         {
-                            var limit = (i + 1) + limitOffset;
+                            int limit = (i + 1) + limitOffset;
 
                             if (limit >= i + 1)
                             {
@@ -194,7 +194,7 @@ namespace System.IO.Pipelines.Tests
         {
             get
             {
-                var vectorSpan = Vector<byte>.Count;
+                int vectorSpan = Vector<byte>.Count;
 
                 // string input, char seek, char limitAt, int expectedReturnValue
                 var data = new List<object[]>();
@@ -220,10 +220,10 @@ namespace System.IO.Pipelines.Tests
                 data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', 'b', -1 });
 
                 // For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
-                for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
+                for (int length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
                 {
                     // ...place the seek char at vector and input boundaries...
-                    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
+                    for (int i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
                     {
                         var input = new StringBuilder(new string('a', length));
                         input[i] = 'b';

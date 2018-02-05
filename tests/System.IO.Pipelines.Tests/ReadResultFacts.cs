@@ -2,21 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class FlushResultFacts
+    public class ReadResultTests
     {
         [InlineData(true, true)]
         [InlineData(true, false)]
         [InlineData(false, true)]
         [InlineData(false, false)]
         [Theory]
-        public void FlushResultCanBeConstructed(bool cancelled, bool completed)
+        public void ReadResultCanBeConstructed(bool cancelled, bool completed)
         {
-            var result = new FlushResult(cancelled, completed);
+            var buffer = new ReadOnlyBuffer<byte>(new byte[] { 1, 2, 3 });
+            var result = new ReadResult(buffer, cancelled, completed);
 
+            Assert.Equal(new byte[] { 1, 2, 3 }, result.Buffer.ToArray());
             Assert.Equal(cancelled, result.IsCanceled);
             Assert.Equal(completed, result.IsCompleted);
         }

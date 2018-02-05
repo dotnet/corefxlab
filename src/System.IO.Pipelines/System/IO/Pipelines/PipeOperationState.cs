@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
             // Inactive and Tenative are allowed
             if (_state == State.Active)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
 
             _state = State.Active;
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines
             // Inactive and Tenative are allowed
             if (_state == State.Active)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
 
             _state = State.Tentative;
@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
         {
             if (_state == State.Inactive)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
 
             _state = State.Inactive;

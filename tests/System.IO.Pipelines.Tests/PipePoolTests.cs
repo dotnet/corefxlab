@@ -37,11 +37,11 @@ namespace System.IO.Pipelines.Tests
             var pipe = new Pipe(new PipeOptions(pool));
             while (pool.CurrentlyRentedBlocks != 3)
             {
-                var writableBuffer = pipe.Writer.WriteEmpty(writeSize);
+                PipeWriter writableBuffer = pipe.Writer.WriteEmpty(writeSize);
                 await writableBuffer.FlushAsync();
             }
 
-            var readResult = await pipe.Reader.ReadAsync();
+            ReadResult readResult = await pipe.Reader.ReadAsync();
             pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             Assert.Equal(0, pool.CurrentlyRentedBlocks);
@@ -58,7 +58,7 @@ namespace System.IO.Pipelines.Tests
             await pipe.Writer.WriteAsync(new byte[writeSize]);
 
             pipe.Writer.GetMemory(writeSize);
-            var readResult = await pipe.Reader.ReadAsync();
+            ReadResult readResult = await pipe.Reader.ReadAsync();
             pipe.Reader.AdvanceTo(readResult.Buffer.End);
             pipe.Writer.Write(new byte[writeSize]);
             pipe.Writer.Commit();
@@ -76,7 +76,7 @@ namespace System.IO.Pipelines.Tests
             var pipe = new Pipe(new PipeOptions(pool));
 
             // Write two blocks
-            var buffer = pipe.Writer.GetMemory(writeSize);
+            Memory<byte> buffer = pipe.Writer.GetMemory(writeSize);
             pipe.Writer.Advance(buffer.Length);
             pipe.Writer.GetMemory(buffer.Length);
             pipe.Writer.Advance(writeSize);
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(2, pool.CurrentlyRentedBlocks);
 
             // Read everything
-            var readResult = await pipe.Reader.ReadAsync();
+            ReadResult readResult = await pipe.Reader.ReadAsync();
             pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             // Try writing more
@@ -100,11 +100,11 @@ namespace System.IO.Pipelines.Tests
 
             var pipe = new Pipe(new PipeOptions(pool, minimumSegmentSize: 2020));
 
-            var buffer = pipe.Writer.GetMemory(writeSize);
-            var allocatedSize = buffer.Length;
+            Memory<byte> buffer = pipe.Writer.GetMemory(writeSize);
+            int allocatedSize = buffer.Length;
             pipe.Writer.Advance(buffer.Length);
             buffer = pipe.Writer.GetMemory(1);
-            var ensuredSize = buffer.Length;
+            int ensuredSize = buffer.Length;
             await pipe.Writer.FlushAsync();
 
             pipe.Reader.Complete();
@@ -171,7 +171,7 @@ namespace System.IO.Pipelines.Tests
                     get
                     {
                         if (IsDisposed)
-                            PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                            ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                         return _array;
                     }
                 }
@@ -184,7 +184,7 @@ namespace System.IO.Pipelines.Tests
                 protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
                 {
                     if (IsDisposed)
-                        PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     arraySegment = new ArraySegment<byte>(_array);
                     return true;
                 }

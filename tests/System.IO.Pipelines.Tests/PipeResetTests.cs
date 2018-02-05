@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace System.IO.Pipelines.Tests
             var source = new byte[] { 1, 2, 3 };
 
             await _pipe.Writer.WriteAsync(source);
-            var result = await _pipe.Reader.ReadAsync();
+            ReadResult result = await _pipe.Reader.ReadAsync();
 
             Assert.Equal(source, result.Buffer.ToArray());
             _pipe.Reader.AdvanceTo(result.Buffer.End);

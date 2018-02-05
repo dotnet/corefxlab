@@ -2,17 +2,18 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Buffers;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class WritableBufferWriterFacts : IDisposable
+    public class PipeWriterTests : IDisposable
     {
         private MemoryPool _pool;
         private Pipe _pipe;
 
-        public WritableBufferWriterFacts()
+        public PipeWriterTests()
         {
             _pool = new MemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool));
@@ -28,8 +29,8 @@ namespace System.IO.Pipelines.Tests
         private byte[] Read()
         {
              _pipe.Writer.FlushAsync().GetAwaiter().GetResult();
-            var readResult = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-            var data = readResult.Buffer.ToArray();
+            ReadResult readResult = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            byte[] data = readResult.Buffer.ToArray();
             _pipe.Reader.AdvanceTo(readResult.Buffer.End);
             return data;
         }
@@ -37,8 +38,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ExposesSpan()
         {
-            var initialLength = _pipe.Writer.GetMemory().Length;
-            var writer = OutputWriter.Create(_pipe.Writer);
+            int initialLength = _pipe.Writer.GetMemory().Length;
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
             Assert.Equal(initialLength, writer.Span.Length);
             Assert.Equal(new byte[] { }, Read());
         }
@@ -46,9 +47,9 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void SlicesSpanAndAdvancesAfterWrite()
         {
-            var initialLength = _pipe.Writer.GetMemory().Length;
+            int initialLength = _pipe.Writer.GetMemory().Length;
 
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
 
@@ -66,7 +67,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(3, 4, 4)]
         public void ThrowsForInvalidParameters(int arrayLength, int offset, int length)
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
             var array = new byte[arrayLength];
             for (int i = 0; i < array.Length; i++)
             {
@@ -101,7 +102,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(1, 1, 1)]
         public void CanWriteWithOffsetAndLenght(int alloc, int offset, int length)
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
             var array = new byte[] { 1, 2, 3 };
 
             writer.Write(new Span<byte>(array, offset, length));
@@ -112,7 +113,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteIntoHeadlessBuffer()
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
@@ -121,7 +122,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteMultipleTimes()
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
 
             writer.Write(new byte[] { 1 });
             writer.Write(new byte[] { 2 });
@@ -133,7 +134,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteEmpty()
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
             var array = new byte[] { };
 
             writer.Write(array);
@@ -145,11 +146,11 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteOverTheBlockLength()
         {
-            var memory = _pipe.Writer.GetMemory();
-            var writer = OutputWriter.Create(_pipe.Writer);
+            Memory<byte> memory = _pipe.Writer.GetMemory();
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
 
-            var source = Enumerable.Range(0, memory.Length).Select(i => (byte)i);
-            var expectedBytes = source.Concat(source).Concat(source).ToArray();
+            IEnumerable<byte> source = Enumerable.Range(0, memory.Length).Select(i => (byte)i);
+            byte[] expectedBytes = source.Concat(source).Concat(source).ToArray();
 
             writer.Write(expectedBytes);
 
@@ -159,7 +160,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureAllocatesSpan()
         {
-            var writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
             writer.Ensure(10);
 
             Assert.True(writer.Span.Length > 10);

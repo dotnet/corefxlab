@@ -73,7 +73,7 @@ namespace System.Buffers
             if (size == AnySize) size = _blockLength;
             else if (size > _blockLength)
             {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
+                ThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
             }
 
             var block = Lease();
