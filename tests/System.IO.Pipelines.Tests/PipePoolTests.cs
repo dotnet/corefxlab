@@ -114,6 +114,31 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(2020, allocatedSize);
         }
 
+        [Fact]
+        public void ReturnsWriteHeadOnComplete()
+        {
+            var pool = new DisposeTrackingBufferPool();
+            var pipe = new Pipe(new PipeOptions(pool));
+            var memory = pipe.Writer.GetMemory(512);
+
+            pipe.Reader.Complete();
+            pipe.Writer.Complete();
+            Assert.Equal(0, pool.CurrentlyRentedBlocks);
+        }
+
+        [Fact]
+        public void ReturnsWriteHeadWhenRequestingLargerBlock()
+        {
+            var pool = new DisposeTrackingBufferPool();
+            var pipe = new Pipe(new PipeOptions(pool));
+            var memory = pipe.Writer.GetMemory(512);
+            pipe.Writer.GetMemory(4096);
+
+            pipe.Reader.Complete();
+            pipe.Writer.Complete();
+            Assert.Equal(0, pool.CurrentlyRentedBlocks);
+        }
+
         private class DisposeTrackingBufferPool : MemoryPool
         {
             public override OwnedMemory<byte> Rent(int size)
