@@ -615,7 +615,9 @@ namespace System.IO.Pipelines
 
                 _disposed = true;
                 // Return all segments
-                var segment = _readHead;
+                // if _readHead is null we need to try return _commitHead
+                // because there might be a block allocated for writing
+                var segment = _readHead ?? _commitHead;
                 while (segment != null)
                 {
                     var returnSegment = segment;
