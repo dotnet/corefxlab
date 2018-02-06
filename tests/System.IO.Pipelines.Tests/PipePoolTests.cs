@@ -212,17 +212,5 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(1, pool.CurrentlyRentedBlocks);
         }
-
-        [Fact]
-        public void ReturnsWriteHeadOnComplete()
-        {
-            var pool = new DisposeTrackingBufferPool();
-            var pipe = new Pipe(new PipeOptions(pool));
-            var memory = pipe.Writer.GetMemory(512);
-
-            pipe.Reader.Complete();
-            pipe.Writer.Complete();
-            Assert.Equal(0, pool.CurrentlyRentedBlocks);
-        }
     }
 }
