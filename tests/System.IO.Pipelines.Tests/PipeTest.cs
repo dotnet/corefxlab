@@ -10,18 +10,18 @@ namespace System.IO.Pipelines.Tests
     {
         protected const int MaximumSizeHigh = 65;
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         protected Pipe Pipe;
 
-        protected PipeTest()
+        protected PipeTest(int pauseWriterThreshold = 65, int resumeWriterThreshold = 6)
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             Pipe = new Pipe(
                 new PipeOptions(
                     _pool,
-                    pauseWriterThreshold: 65,
-                    resumeWriterThreshold: 6
+                    pauseWriterThreshold: pauseWriterThreshold,
+                    resumeWriterThreshold: resumeWriterThreshold
                 ));
         }
 

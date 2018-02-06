@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace System.IO.Pipelines.Tests
     {
         public PipeResetTests()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool));
         }
 
@@ -23,7 +22,7 @@ namespace System.IO.Pipelines.Tests
             _pool?.Dispose();
         }
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         private readonly Pipe _pipe;
 

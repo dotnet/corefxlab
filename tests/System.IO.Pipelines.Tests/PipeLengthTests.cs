@@ -11,7 +11,7 @@ namespace System.IO.Pipelines.Tests
     {
         public PipeLengthTests()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool));
         }
 
@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Tests
             _pool?.Dispose();
         }
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         private readonly Pipe _pipe;
 

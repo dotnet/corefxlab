@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Tests
     {
         public PipelineReaderWriterFacts()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool));
         }
 
@@ -29,7 +29,7 @@ namespace System.IO.Pipelines.Tests
 
         private readonly Pipe _pipe;
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         [Fact]
         public async Task AdvanceEmptyBufferAfterWritingResetsAwaitable()
@@ -150,12 +150,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void AllocMoreThanPoolBlockSizeThrows()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => _pipe.Writer.GetMemory(8192));
-        }
-
-        [Fact]
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
             await _pipe.Writer.WriteAsync(new byte[1]);
@@ -240,12 +234,14 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task HelloWorldAcrossTwoBlocks()
         {
-            const int blockSize = 4032;
             //     block 1       ->    block2
             // [padding..hello]  ->  [  world   ]
+            PipeWriter writeBuffer = _pipe.Writer;
+            var blockSize = _pipe.Writer.GetMemory(0).Length;
+
             byte[] paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
             byte[] bytes = Encoding.ASCII.GetBytes("Hello World");
-            PipeWriter writeBuffer = _pipe.Writer;
+
             writeBuffer.Write(paddingBytes);
             writeBuffer.Write(bytes);
             await writeBuffer.FlushAsync();

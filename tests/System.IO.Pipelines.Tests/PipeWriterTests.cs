@@ -4,35 +4,23 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class PipeWriterTests : IDisposable
+    public class PipeWriterTests : PipeTest
     {
-        public PipeWriterTests()
+        public PipeWriterTests() : base(0, 0)
         {
-            _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
         }
-
-        public void Dispose()
-        {
-            _pipe.Writer.Complete();
-            _pipe.Reader.Complete();
-            _pool?.Dispose();
-        }
-
-        private readonly MemoryPool _pool;
-
-        private readonly Pipe _pipe;
 
         private byte[] Read()
         {
-            _pipe.Writer.FlushAsync().GetAwaiter().GetResult();
-            ReadResult readResult = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            Pipe.Writer.FlushAsync().GetAwaiter().GetResult();
+            ReadResult readResult = Pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             byte[] data = readResult.Buffer.ToArray();
-            _pipe.Reader.AdvanceTo(readResult.Buffer.End);
+            Pipe.Reader.AdvanceTo(readResult.Buffer.End);
             return data;
         }
 
@@ -45,7 +33,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(3, 4, 4)]
         public void ThrowsForInvalidParameters(int arrayLength, int offset, int length)
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
             var array = new byte[arrayLength];
             for (var i = 0; i < array.Length; i++)
             {
@@ -80,7 +68,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData(1, 1, 1)]
         public void CanWriteWithOffsetAndLenght(int alloc, int offset, int length)
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
             var array = new byte[] { 1, 2, 3 };
 
             writer.Write(new Span<byte>(array, offset, length));
@@ -91,7 +79,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteEmpty()
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
             var array = new byte[] { };
 
             writer.Write(array);
@@ -103,7 +91,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteIntoHeadlessBuffer()
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
@@ -112,7 +100,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteMultipleTimes()
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             writer.Write(new byte[] { 1 });
             writer.Write(new byte[] { 2 });
@@ -124,8 +112,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanWriteOverTheBlockLength()
         {
-            Memory<byte> memory = _pipe.Writer.GetMemory();
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            Memory<byte> memory = Pipe.Writer.GetMemory();
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             IEnumerable<byte> source = Enumerable.Range(0, memory.Length).Select(i => (byte)i);
             byte[] expectedBytes = source.Concat(source).Concat(source).ToArray();
@@ -138,7 +126,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureAllocatesSpan()
         {
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
             writer.Ensure(10);
 
             Assert.True(writer.Span.Length > 10);
@@ -148,8 +136,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ExposesSpan()
         {
-            int initialLength = _pipe.Writer.GetMemory().Length;
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            int initialLength = Pipe.Writer.GetMemory().Length;
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
             Assert.Equal(initialLength, writer.Span.Length);
             Assert.Equal(new byte[] { }, Read());
         }
@@ -157,15 +145,66 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void SlicesSpanAndAdvancesAfterWrite()
         {
-            int initialLength = _pipe.Writer.GetMemory().Length;
+            int initialLength = Pipe.Writer.GetMemory().Length;
 
-            OutputWriter<PipeWriter> writer = OutputWriter.Create(_pipe.Writer);
+            OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
 
             Assert.Equal(initialLength - 3, writer.Span.Length);
-            Assert.Equal(_pipe.Writer.GetMemory().Length, writer.Span.Length);
+            Assert.Equal(Pipe.Writer.GetMemory().Length, writer.Span.Length);
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
+        }
+
+        [Theory]
+        [InlineData(5)]
+        [InlineData(50)]
+        [InlineData(500)]
+        [InlineData(5000)]
+        [InlineData(50000)]
+        public async Task WriteLargeDataBinary(int length)
+        {
+            var data = new byte[length];
+            new Random(length).NextBytes(data);
+            PipeWriter output = Pipe.Writer;
+            output.Write(data);
+            await output.FlushAsync();
+
+            ReadResult result = await Pipe.Reader.ReadAsync();
+            ReadOnlyBuffer<byte> input = result.Buffer;
+            Assert.Equal(data, input.ToArray());
+            Pipe.Reader.AdvanceTo(input.End);
+        }
+
+        [Fact]
+        public async Task CanWriteNothingToBuffer()
+        {
+            PipeWriter buffer = Pipe.Writer;
+            buffer.GetMemory(0);
+            buffer.Advance(0); // doing nothing, the hard way
+            await buffer.FlushAsync();
+        }
+
+        [Fact]
+        public void EmptyWriteDoesNotThrow()
+        {
+            Pipe.Writer.Write(new byte[0]);
+        }
+
+        [Fact]
+        public void ThrowsOnAdvanceOverMemorySize()
+        {
+            Memory<byte> buffer = Pipe.Writer.GetMemory(1);
+            var exception = Assert.Throws<InvalidOperationException>(() => Pipe.Writer.Advance(buffer.Length + 1));
+            Assert.Equal("Can't advance past buffer size", exception.Message);
+        }
+
+        [Fact]
+        public void ThrowsOnAdvanceWithNoMemory()
+        {
+            PipeWriter buffer = Pipe.Writer;
+            var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
+            Assert.Equal("No writing operation. Make sure GetMemory() was called.", exception.Message);
         }
     }
 }

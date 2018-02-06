@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class FlushResultFacts
+    public class FlushResultTests
     {
         [InlineData(true, true)]
         [InlineData(true, false)]

@@ -13,7 +13,7 @@ namespace System.IO.Pipelines.Tests
     {
         public BackpressureTests()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool, resumeWriterThreshold: 32, pauseWriterThreshold: 64));
         }
 
@@ -24,7 +24,7 @@ namespace System.IO.Pipelines.Tests
             _pool?.Dispose();
         }
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         private readonly Pipe _pipe;
 

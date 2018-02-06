@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace System.IO.Pipelines
 {
-    public class MemoryPool: MemoryPool<byte>
+    public class TestMemoryPool: MemoryPool<byte>
     {
         private MemoryPool<byte> _pool = Shared;
 
@@ -31,7 +31,7 @@ namespace System.IO.Pipelines
         {
             if (_disposed)
             {
-                throw new ObjectDisposedException(nameof(MemoryPool));
+                throw new ObjectDisposedException(nameof(TestMemoryPool));
             }
         }
 
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines
         {
             private OwnedMemory<byte> _ownedMemory;
 
-            private readonly MemoryPool _pool;
+            private readonly TestMemoryPool _pool;
 
             private int _referenceCount;
 
@@ -47,7 +47,7 @@ namespace System.IO.Pipelines
 
             private string _leaser;
 
-            public PooledMemory(OwnedMemory<byte> ownedMemory, MemoryPool pool)
+            public PooledMemory(OwnedMemory<byte> ownedMemory, TestMemoryPool pool)
             {
                 _ownedMemory = ownedMemory;
                 _pool = pool;

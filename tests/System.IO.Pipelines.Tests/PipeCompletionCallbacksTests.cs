@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Tests
     {
         public PipeCompletionCallbacksTests()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
         }
 
         public void Dispose()
@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
             _pool.Dispose();
         }
 
-        private readonly MemoryPool _pool;
+        private readonly TestMemoryPool _pool;
 
         private class TestScheduler : PipeScheduler
         {

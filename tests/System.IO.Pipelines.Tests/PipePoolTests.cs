@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipePoolTests
     {
-        private class DisposeTrackingBufferPool : MemoryPool
+        private class DisposeTrackingBufferPool : TestMemoryPool
         {
             public int ReturnedBlocks { get; set; }
             public int CurrentlyRentedBlocks { get; set; }

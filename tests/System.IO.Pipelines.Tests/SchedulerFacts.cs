@@ -52,7 +52,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultReaderSchedulerRunsInline()
         {
-            using (var pool = new MemoryPool())
+            using (var pool = new TestMemoryPool())
             {
                 var pipe = new Pipe(new PipeOptions(pool));
 
@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultWriterSchedulerRunsInline()
         {
-            using (var pool = new MemoryPool())
+            using (var pool = new TestMemoryPool())
             {
                 var pipe = new Pipe(
                     new PipeOptions(
@@ -126,7 +126,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task FlushCallbackRunsOnWriterScheduler()
         {
-            using (var pool = new MemoryPool())
+            using (var pool = new TestMemoryPool())
             {
                 using (var scheduler = new ThreadScheduler())
                 {
@@ -170,7 +170,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReadAsyncCallbackRunsOnReaderScheduler()
         {
-            using (var pool = new MemoryPool())
+            using (var pool = new TestMemoryPool())
             {
                 using (var scheduler = new ThreadScheduler())
                 {

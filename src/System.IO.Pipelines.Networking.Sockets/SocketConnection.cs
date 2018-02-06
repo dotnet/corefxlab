@@ -351,7 +351,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         // before flushing (entirely arbitrarily) - might want to make this configurable later
 
                         haveWriteBuffer = true;
-                        int FlushInputEveryBytes = 4 * Pool.MaxBufferSize;
+                        int FlushInputEveryBytes = 24;
 
                         if (initialSegment.Array != null)
                         {
