@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
             long resumeWriterThreshold = 0,
             int minimumSegmentSize = 2048)
         {
-            Pool = pool ?? MemoryPool.Shared;
+            Pool = pool ?? MemoryPool<byte>.Shared;
             ReaderScheduler = readerScheduler;
             WriterScheduler = writerScheduler;
             PauseWriterThreshold = pauseWriterThreshold;

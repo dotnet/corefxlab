@@ -127,7 +127,7 @@ namespace System.IO.Pipelines
         {
             if (_writerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
+                ThrowHelper.ThrowInvalidOperationException_NoWritingAllowed();
             }
 
             if (minimumSize < 0)
@@ -268,7 +268,7 @@ namespace System.IO.Pipelines
         {
             if (_writingHead == null)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
+                ThrowHelper.ThrowInvalidOperationException_NotWritingNoAlloc();
             }
 
             if (bytesWritten > 0)
@@ -281,7 +281,7 @@ namespace System.IO.Pipelines
 
                 if (bufferIndex > buffer.Length)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
+                    ThrowHelper.ThrowInvalidOperationException_AdvancingPastBufferSize();
                 }
 
                 _writingHead.End = bufferIndex;
@@ -329,7 +329,7 @@ namespace System.IO.Pipelines
             {
                 if (_currentWriteLength > 0)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter);
+                    ThrowHelper.ThrowInvalidOperationException_CompleteWriterActiveWriter();
                 }
 
                 completionCallbacks = _writerCompletion.TryComplete(exception);
@@ -373,7 +373,7 @@ namespace System.IO.Pipelines
                 {
                     if (_readHead == null)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
+                        ThrowHelper.ThrowInvalidOperationException_AdvanceToInvalidCursor();
                         return;
                     }
 
@@ -398,7 +398,7 @@ namespace System.IO.Pipelines
                     // might be using tailspace
                     if (consumed.Index == returnEnd.Length && _writingHead != returnEnd)
                     {
-                        var nextBlock = (BufferSegment)returnEnd.Next;
+                        var nextBlock = returnEnd.NextSegment;
                         if (_commitHead == returnEnd)
                         {
                             _commitHead = nextBlock;
@@ -423,18 +423,18 @@ namespace System.IO.Pipelines
                     // Prevent deadlock where reader awaits new data and writer await backpressure
                     if (!_writerAwaitable.IsCompleted)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
+                        ThrowHelper.ThrowInvalidOperationException_BackpressureDeadlock();
                     }
                     _readerAwaitable.Reset();
                 }
 
-                _readingState.End(ExceptionResource.NoReadToComplete);
+                _readingState.End();
 
                 while (returnStart != null && returnStart != returnEnd)
                 {
                     returnStart.ResetMemory();
                     ReturnSegmentUnsynchronized(returnStart);
-                    returnStart = (BufferSegment)returnStart.Next;
+                    returnStart = returnStart.NextSegment;
                 }
             }
 
@@ -451,7 +451,7 @@ namespace System.IO.Pipelines
             {
                 if (_readingState.IsActive)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
+                    ThrowHelper.ThrowInvalidOperationException_CompleteReaderActiveReader();
                 }
 
                 completionCallbacks = _readerCompletion.TryComplete(exception);
@@ -541,7 +541,7 @@ namespace System.IO.Pipelines
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                ThrowHelper.ThrowInvalidOperationException_NoReadingAllowed();
             }
             lock (_sync)
             {
@@ -557,7 +557,7 @@ namespace System.IO.Pipelines
             {
                 if (_readerCompletion.IsCompleted)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                    ThrowHelper.ThrowInvalidOperationException_NoReadingAllowed();
                 }
 
                 result = new ReadResult();
@@ -569,7 +569,7 @@ namespace System.IO.Pipelines
 
                 if (_readerAwaitable.HasContinuation)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
+                    ThrowHelper.ThrowInvalidOperationException_AlreadyReading();
                 }
                 return false;
             }
@@ -608,11 +608,12 @@ namespace System.IO.Pipelines
                 while (segment != null)
                 {
                     BufferSegment returnSegment = segment;
-                    segment = (BufferSegment)segment.Next;
+                    segment = segment.NextSegment;
 
                     returnSegment.ResetMemory();
                 }
 
+                _writingHead = null;
                 _readHead = null;
                 _commitHead = null;
             }
@@ -630,7 +631,7 @@ namespace System.IO.Pipelines
             }
             if (doubleCompletion)
             {
-                Writer.Complete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+                Writer.Complete(ThrowHelper.CreateInvalidOperationException_NoConcurrentOperation());
             }
             TrySchedule(_readerScheduler, awaitable);
         }
@@ -639,7 +640,7 @@ namespace System.IO.Pipelines
         {
             if (!_readerAwaitable.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+                ThrowHelper.ThrowInvalidOperationException_GetResultNotCompleted();
             }
 
             var result = new ReadResult();
@@ -674,11 +675,11 @@ namespace System.IO.Pipelines
 
             if (isCancelled)
             {
-                _readingState.BeginTentative(ExceptionResource.AlreadyReading);
+                _readingState.BeginTentative();
             }
             else
             {
-                _readingState.Begin(ExceptionResource.AlreadyReading);
+                _readingState.Begin();
             }
         }
 
@@ -691,7 +692,7 @@ namespace System.IO.Pipelines
             {
                 if (!_writerAwaitable.IsCompleted)
                 {
-                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+                    ThrowHelper.ThrowInvalidOperationException_GetResultNotCompleted();
                 }
 
                 // Change the state from to be cancelled -> observed
@@ -718,7 +719,7 @@ namespace System.IO.Pipelines
             }
             if (doubleCompletion)
             {
-                Reader.Complete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+                Reader.Complete(ThrowHelper.CreateInvalidOperationException_NoConcurrentOperation());
             }
             TrySchedule(_writerScheduler, awaitable);
         }

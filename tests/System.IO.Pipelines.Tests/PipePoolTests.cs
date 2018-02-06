@@ -44,7 +44,7 @@ namespace System.IO.Pipelines.Tests
                     get
                     {
                         if (IsDisposed)
-                            ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                            throw new ObjectDisposedException(nameof(DisposeTrackingBufferPool));
                         return _array;
                     }
                 }
@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Tests
                 protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
                 {
                     if (IsDisposed)
-                        ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        throw new ObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     arraySegment = new ArraySegment<byte>(_array);
                     return true;
                 }
@@ -211,6 +211,18 @@ namespace System.IO.Pipelines.Tests
             pipe.Writer.Commit();
 
             Assert.Equal(1, pool.CurrentlyRentedBlocks);
+        }
+
+        [Fact]
+        public void ReturnsWriteHeadOnComplete()
+        {
+            var pool = new DisposeTrackingBufferPool();
+            var pipe = new Pipe(new PipeOptions(pool));
+            var memory = pipe.Writer.GetMemory(512);
+
+            pipe.Reader.Complete();
+            pipe.Writer.Complete();
+            Assert.Equal(0, pool.CurrentlyRentedBlocks);
         }
     }
 }

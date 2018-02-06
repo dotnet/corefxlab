@@ -55,6 +55,8 @@ namespace System.IO.Pipelines.Tests
                 buffer.GetMemory(0);
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
+                pipe.Reader.Complete();
+                pipe.Writer.Complete();
             }
         }
 
@@ -66,6 +68,8 @@ namespace System.IO.Pipelines.Tests
                 var pipe = new Pipe(new PipeOptions(pool));
                 PipeWriter buffer = pipe.Writer;
                 buffer.Write(new byte[0]);
+                pipe.Reader.Complete();
+                pipe.Writer.Complete();
             }
         }
 
@@ -89,6 +93,8 @@ namespace System.IO.Pipelines.Tests
                 Memory<byte> buffer = pipe.Writer.GetMemory(1);
                 var exception = Assert.Throws<InvalidOperationException>(() => pipe.Writer.Advance(buffer.Length + 1));
                 Assert.Equal("Can't advance past buffer size", exception.Message);
+                pipe.Reader.Complete();
+                pipe.Writer.Complete();
             }
         }
 

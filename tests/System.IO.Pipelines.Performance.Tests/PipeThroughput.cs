@@ -26,13 +26,11 @@ namespace System.IO.Pipelines.Performance.Tests
         };
 
         private Pipe _pipe;
-        private MemoryPool _memoryPool;
 
         [GlobalSetup]
         public void Setup()
         {
-            _memoryPool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_memoryPool));
+            _pipe = new Pipe();
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]

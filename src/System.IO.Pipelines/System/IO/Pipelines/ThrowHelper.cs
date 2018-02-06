@@ -2,228 +2,153 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
     internal class ThrowHelper
     {
-        public static void ThrowArgumentOutOfRangeException(int sourceLength, int offset)
+        internal static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) { throw CreateArgumentOutOfRangeException(argument); }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception CreateArgumentOutOfRangeException(ExceptionArgument argument) { return new ArgumentOutOfRangeException(argument.ToString()); }
+
+        public static void ThrowInvalidOperationException_NotWritingNoAlloc()
         {
-            throw GetArgumentOutOfRangeException(sourceLength, offset);
+            throw CreateInvalidOperationException_NotWritingNoAlloc();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset)
+        public static Exception CreateInvalidOperationException_NotWritingNoAlloc()
         {
-            if ((uint)offset > (uint)sourceLength)
-            {
-                // Offset is negative or less than array length
-                return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset));
-            }
-
-            // The third parameter (not passed) length must be out of range
-            return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
+            return new InvalidOperationException("No writing operation. Make sure GetMemory() was called.");
         }
 
-        public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
+        public static void ThrowInvalidOperationException_AlreadyReading()
         {
-            throw GetArgumentOutOfRangeException(argument);
-        }
-
-        public static void ThrowInvalidOperationException(ExceptionResource resource, string location = null)
-        {
-            throw GetInvalidOperationException(resource, location);
-        }
-
-        public static void ThrowArgumentNullException(ExceptionArgument argument)
-        {
-            throw GetArgumentNullException(argument);
-        }
-
-        public static void ThrowNotSupportedException()
-        {
-            throw GetNotSupportedException();
-        }
-
-        public static void ThrowArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
-        {
-            throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
-        }
-
-        public static void ThrowObjectDisposedException(string objectName)
-        {
-            throw GetObjectDisposedException(objectName);
-        }
-
-        public static void ThrowCursorOutOfBoundsException()
-        {
-            throw GetCursorOutOfBoundsException();
+            throw CreateInvalidOperationException_AlreadyReading();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
+        public static Exception CreateInvalidOperationException_AlreadyReading()
         {
-            return new ArgumentOutOfRangeException(GetArgumentName(argument));
+            return new InvalidOperationException("Already reading.");
+        }
+
+        public static void ThrowInvalidOperationException_NoReadToComplete()
+        {
+            throw CreateInvalidOperationException_NoReadToComplete();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static InvalidOperationException GetInvalidOperationException(ExceptionResource resource, string location = null)
+        public static Exception CreateInvalidOperationException_NoReadToComplete()
         {
-            return new InvalidOperationException(GetResourceString(resource, location));
+            return new InvalidOperationException("No reading operation to complete.");
+        }
+
+        public static void ThrowInvalidOperationException_NoConcurrentOperation()
+        {
+            throw CreateInvalidOperationException_NoConcurrentOperation();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static NotSupportedException GetNotSupportedException()
+        public static Exception CreateInvalidOperationException_NoConcurrentOperation()
         {
-            return new NotSupportedException();
+            return new InvalidOperationException("Concurrent reads or writes are not supported.");
+        }
+
+        public static void ThrowInvalidOperationException_GetResultNotCompleted()
+        {
+            throw CreateInvalidOperationException_GetResultNotCompleted();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArgumentNullException GetArgumentNullException(ExceptionArgument argument)
+        public static Exception CreateInvalidOperationException_GetResultNotCompleted()
         {
-            return new ArgumentNullException(GetArgumentName(argument));
+            return new InvalidOperationException("Can't GetResult unless completed");
+        }
+
+        public static void ThrowInvalidOperationException_NoWritingAllowed()
+        {
+            throw CreateInvalidOperationException_NoWritingAllowed();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
+        public static Exception CreateInvalidOperationException_NoWritingAllowed()
         {
-            return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
-                $"Cannot allocate more than {maxSize} bytes in a single buffer");
+            return new InvalidOperationException("Writing is not allowed after writer was completed");
+        }
+
+        public static void ThrowInvalidOperationException_NoReadingAllowed()
+        {
+            throw CreateInvalidOperationException_NoReadingAllowed();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+
+        public static Exception CreateInvalidOperationException_NoReadingAllowed()
         {
-            return new ObjectDisposedException(objectName);
+            return new InvalidOperationException("Reading is not allowed after reader was completed");
+        }
+
+        public static void ThrowInvalidOperationException_CompleteWriterActiveWriter()
+        {
+            throw CreateInvalidOperationException_CompleteWriterActiveWriter();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Exception GetCursorOutOfBoundsException()
+        public static Exception CreateInvalidOperationException_CompleteWriterActiveWriter()
         {
-            return new InvalidOperationException("Cursor is out of bounds");
+            return new InvalidOperationException("Can't complete writer while writing.");
         }
 
-        private static string GetArgumentName(ExceptionArgument argument)
+        public static void ThrowInvalidOperationException_CompleteReaderActiveReader()
         {
-            Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument),
-                "The enum value is not defined, please check the ExceptionArgument Enum.");
-
-            return argument.ToString();
+            throw CreateInvalidOperationException_CompleteReaderActiveReader();
         }
 
-        private static string GetResourceString(ExceptionResource argument, string location = null)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Exception CreateInvalidOperationException_CompleteReaderActiveReader()
         {
-            Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), argument),
-                "The enum value is not defined, please check the ExceptionResource Enum.");
+            return new InvalidOperationException("Can't complete reader while reading.");
+        }
 
-            // Should be look up with environment resources
-            string resourceString = null;
-            switch (argument)
-            {
-                case ExceptionResource.AlreadyWriting:
-                    resourceString = "Already writing.";
-                    break;
-                case ExceptionResource.NotWritingNoAlloc:
-                    resourceString = "No writing operation. Make sure GetMemory() was called.";
-                    break;
-                case ExceptionResource.NoWriteToComplete:
-                    resourceString = "No writing operation to complete.";
-                    break;
-                case ExceptionResource.AlreadyReading:
-                    resourceString = "Already reading.";
-                    break;
-                case ExceptionResource.NoReadToComplete:
-                    resourceString = "No reading operation to complete.";
-                    break;
-                case ExceptionResource.NoConcurrentOperation:
-                    resourceString = "Concurrent reads or writes are not supported.";
-                    break;
-                case ExceptionResource.GetResultNotCompleted:
-                    resourceString = "Can't GetResult unless completed";
-                    break;
-                case ExceptionResource.NoWritingAllowed:
-                    resourceString = "Writing is not allowed after writer was completed";
-                    break;
-                case ExceptionResource.NoReadingAllowed:
-                    resourceString = "Reading is not allowed after reader was completed";
-                    break;
-                case ExceptionResource.CompleteWriterActiveWriter:
-                    resourceString = "Can't complete writer while writing.";
-                    break;
-                case ExceptionResource.CompleteReaderActiveReader:
-                    resourceString = "Can't complete reader while reading.";
-                    break;
-                case ExceptionResource.AdvancingPastBufferSize:
-                    resourceString = "Can't advance past buffer size";
-                    break;
-                case ExceptionResource.AdvancingWithNoBuffer:
-                    resourceString = "Can't advance without buffer allocated";
-                    break;
-                case ExceptionResource.BackpressureDeadlock:
-                    resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
-                    break;
-                case ExceptionResource.AdvanceToInvalidCursor:
-                    resourceString = "Pipe is already advanced past provided cursor";
-                    break;
-                case ExceptionResource.ReferenceCountZero:
-                    resourceString = "Can't release when reference count is already zero";
-                    break;
-                case ExceptionResource.BufferDoesNotBelongToPool:
-                    resourceString = "Can't return buffers that were not rented from this pool";
-                    break;
-                case ExceptionResource.UnexpectedSegmentType:
-                    resourceString = "Unexpected segment type";
-                    break;
-                case ExceptionResource.EndCursorNotReached:
-                    resourceString = "Segment chain ended without reaching end cursor location";
-                    break;
-            }
+        public static void ThrowInvalidOperationException_AdvancingPastBufferSize()
+        {
+            throw CreateInvalidOperationException_AdvancingPastBufferSize();
+        }
 
-            resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Exception CreateInvalidOperationException_AdvancingPastBufferSize()
+        {
+            return new InvalidOperationException("Can't advance past buffer size");
+        }
 
-            if (location != null)
-            {
-                resourceString += Environment.NewLine;
-                resourceString += "From: " + location.Replace("at ", ">> ");
-            }
+        public static void ThrowInvalidOperationException_BackpressureDeadlock()
+        {
+            throw CreateInvalidOperationException_BackpressureDeadlock();
+        }
 
-            return resourceString;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Exception CreateInvalidOperationException_BackpressureDeadlock()
+        {
+            return new InvalidOperationException("Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting");
+        }
+
+        public static void ThrowInvalidOperationException_AdvanceToInvalidCursor()
+        {
+            throw CreateInvalidOperationException_AdvanceToInvalidCursor();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Exception CreateInvalidOperationException_AdvanceToInvalidCursor()
+        {
+            return new InvalidOperationException("Pipe is already advanced past provided cursor");
         }
     }
 
     internal enum ExceptionArgument
     {
         minimumSize,
-        bytesWritten,
-        destination,
-        offset,
-        length,
-        data,
-        size
-    }
-
-    internal enum ExceptionResource
-    {
-        AlreadyWriting,
-        NotWritingNoAlloc,
-        NoWriteToComplete,
-        AlreadyReading,
-        NoReadToComplete,
-        NoConcurrentOperation,
-        GetResultNotCompleted,
-        NoWritingAllowed,
-        NoReadingAllowed,
-        CompleteWriterActiveWriter,
-        CompleteReaderActiveReader,
-        AdvancingPastBufferSize,
-        AdvancingWithNoBuffer,
-        BackpressureDeadlock,
-        AdvanceToInvalidCursor,
-        ReferenceCountZero,
-        BufferDoesNotBelongToPool,
-        UnexpectedSegmentType,
-        EndCursorNotReached
+        bytesWritten
     }
 }

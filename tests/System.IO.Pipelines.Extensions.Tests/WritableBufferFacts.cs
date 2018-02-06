@@ -25,31 +25,29 @@ namespace System.IO.Pipelines.Tests
         {
             string data = new string('#', length);
             FillRandomStringData(data, length);
-            using (var memoryPool = new MemoryPool())
+            var pipe = new Pipe();
+
+            var output = pipe.Writer;
+            output.Append(data, SymbolTable.InvariantUtf8);
+            var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
+            await output.FlushAsync();
+            pipe.Writer.Complete();
+
+            long offset = 0;
+            while (true)
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var result = await pipe.Reader.ReadAsync();
+                var input = result.Buffer;
+                if (input.Length == 0) break;
 
-                var output = pipe.Writer;
-                output.Append(data, SymbolTable.InvariantUtf8);
-                var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
-                await output.FlushAsync();
-                pipe.Writer.Complete();
-
-                long offset = 0;
-                while (true)
-                {
-                    var result = await pipe.Reader.ReadAsync();
-                    var input = result.Buffer;
-                    if (input.Length == 0) break;
-
-                    string s = ReadableBufferExtensions.GetUtf8Span(input);
-                    // We are able to cast because test arguments are in range of int
-                    Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
-                    offset += input.Length;
-                    pipe.Reader.AdvanceTo(input.End);
-                }
-                Assert.Equal(data.Length, offset);
+                string s = ReadableBufferExtensions.GetUtf8Span(input);
+                // We are able to cast because test arguments are in range of int
+                Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
+                offset += input.Length;
+                pipe.Reader.AdvanceTo(input.End);
             }
+
+            Assert.Equal(data.Length, offset);
         }
 
         [Theory]
@@ -62,31 +60,29 @@ namespace System.IO.Pipelines.Tests
         {
             string data = new string('#', length);
             FillRandomStringData(data, length);
-            using (var memoryPool = new MemoryPool())
+            var pipe = new Pipe();
+
+            var output = pipe.Writer;
+            output.Append(data, SymbolTable.InvariantUtf8);
+            var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
+            await output.FlushAsync();
+            pipe.Writer.Complete();
+
+            long offset = 0;
+            while (true)
             {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
+                var result = await pipe.Reader.ReadAsync();
+                var input = result.Buffer;
+                if (input.Length == 0) break;
 
-                var output = pipe.Writer;
-                output.Append(data, SymbolTable.InvariantUtf8);
-                var foo = output.GetMemory().IsEmpty; // trying to see if .Memory breaks
-                await output.FlushAsync();
-                pipe.Writer.Complete();
-
-                long offset = 0;
-                while (true)
-                {
-                    var result = await pipe.Reader.ReadAsync();
-                    var input = result.Buffer;
-                    if (input.Length == 0) break;
-
-                    string s = ReadableBufferExtensions.GetAsciiString(input);
-                    // We are able to cast because test arguments are in range of int
-                    Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
-                    offset += input.Length;
-                    pipe.Reader.AdvanceTo(input.End);
-                }
-                Assert.Equal(data.Length, offset);
+                string s = ReadableBufferExtensions.GetAsciiString(input);
+                // We are able to cast because test arguments are in range of int
+                Assert.Equal(data.Substring((int)offset, (int)input.Length), s);
+                offset += input.Length;
+                pipe.Reader.AdvanceTo(input.End);
             }
+
+            Assert.Equal(data.Length, offset);
         }
 
         private unsafe void FillRandomStringData(string data, int seed)
@@ -110,18 +106,15 @@ namespace System.IO.Pipelines.Tests
         [InlineData(60000000000000000, "60000000000000000")]
         public async Task CanWriteUInt64ToBuffer(ulong value, string valueAsString)
         {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer;
-                buffer.Append(value, SymbolTable.InvariantUtf8);
-                await buffer.FlushAsync();
+            var pipe = new Pipe();
+            var buffer = pipe.Writer;
+            buffer.Append(value, SymbolTable.InvariantUtf8);
+            await buffer.FlushAsync();
 
-                var result = await pipe.Reader.ReadAsync();
-                var inputBuffer = result.Buffer;
+            var result = await pipe.Reader.ReadAsync();
+            var inputBuffer = result.Buffer;
 
-                Assert.Equal(valueAsString, inputBuffer.GetUtf8Span());
-            }
+            Assert.Equal(valueAsString, inputBuffer.GetUtf8Span());
         }
 
         public static IEnumerable<object[]> HexNumbers
@@ -140,18 +133,14 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public async Task WriteHex(int value, string hex)
         {
-            using (var memoryPool = new MemoryPool())
-            {
-                var pipe = new Pipe(new PipeOptions(memoryPool));
-                var buffer = pipe.Writer;
-                buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
-                await buffer.FlushAsync();
-                var result = await pipe.Reader.ReadAsync();
+            var pipe = new Pipe();
+            var buffer = pipe.Writer;
+            buffer.Append(value, SymbolTable.InvariantUtf8, 'x');
+            await buffer.FlushAsync();
+            var result = await pipe.Reader.ReadAsync();
 
-                Assert.Equal(hex, result.Buffer.GetAsciiString());
-                pipe.Reader.AdvanceTo(result.Buffer.End);
-            }
+            Assert.Equal(hex, result.Buffer.GetAsciiString());
+            pipe.Reader.AdvanceTo(result.Buffer.End);
         }
-
     }
 }

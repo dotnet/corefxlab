@@ -13,12 +13,12 @@ namespace System.IO.Pipelines
 #endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Begin(ExceptionResource exception)
+        public void Begin()
         {
             // Inactive and Tenative are allowed
             if (_state == State.Active)
             {
-                ThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.ThrowInvalidOperationException_AlreadyReading();
             }
 
             _state = State.Active;
@@ -29,12 +29,12 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void BeginTentative(ExceptionResource exception)
+        public void BeginTentative()
         {
             // Inactive and Tenative are allowed
             if (_state == State.Active)
             {
-                ThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.ThrowInvalidOperationException_AlreadyReading();
             }
 
             _state = State.Tentative;
@@ -45,11 +45,11 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void End(ExceptionResource exception)
+        public void End()
         {
             if (_state == State.Inactive)
             {
-                ThrowHelper.ThrowInvalidOperationException(exception, Location);
+                ThrowHelper.CreateInvalidOperationException_NoReadToComplete();
             }
 
             _state = State.Inactive;

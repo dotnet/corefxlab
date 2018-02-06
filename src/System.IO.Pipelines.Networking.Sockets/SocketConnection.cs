@@ -79,7 +79,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             if (pool == null)
             {
                 _ownsPool = true;
-                pool = new MemoryPool();
+                pool = MemoryPool<byte>.Shared;
             }
             _pool = pool;
 
