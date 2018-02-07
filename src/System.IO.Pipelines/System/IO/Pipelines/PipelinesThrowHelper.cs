@@ -51,9 +51,9 @@ namespace System.IO.Pipelines
             throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
         }
 
-        public static void ThrowObjectDisposedException(string objectName)
+        public static void ThrowObjectDisposedException(ExceptionArgument argument)
         {
-            throw GetObjectDisposedException(objectName);
+            throw GetObjectDisposedException(argument);
         }
 
         public static void ThrowCursorOutOfBoundsException()
@@ -93,9 +93,9 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+        private static ObjectDisposedException GetObjectDisposedException(ExceptionArgument argument)
         {
-            return new ObjectDisposedException(objectName);
+            return new ObjectDisposedException(GetArgumentName(argument));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -200,7 +200,9 @@ namespace System.IO.Pipelines
         offset,
         length,
         data,
-        size
+        size,
+        MemoryPoolBlock,
+        DisposeTrackingBufferPool
     }
 
     internal enum ExceptionResource
