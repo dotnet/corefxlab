@@ -4,7 +4,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.IO.Pipelines.Threading
+namespace System.IO.Pipelines
 {
     /// <summary>
     /// An awaitable object that represents an asynchronous read operation

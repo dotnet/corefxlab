@@ -4,7 +4,6 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Pipelines.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
