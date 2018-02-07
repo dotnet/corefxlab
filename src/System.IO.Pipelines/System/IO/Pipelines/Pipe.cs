@@ -72,7 +72,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Initializes the <see cref="Pipe"/> with the specifed <see cref="PipeOptions"/>.
+        /// Initializes the <see cref="Pipe"/> with the specified <see cref="PipeOptions"/>.
         /// </summary>
         public Pipe(PipeOptions options)
         {

@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
         public abstract void Complete(Exception exception = null);
 
         /// <summary>
-        /// Cancel to currently pending or if none is pending next call to <see cref="FlushAsync"/>, without completing the <see cref="PipeWriter"/>.
+        /// Cancel the pending <see cref="FlushAsync"/> operation. If there is none, cancels next <see cref="FlushAsync"/> operation, without completing the <see cref="PipeWriter"/>.
         /// </summary>
         public abstract void CancelPendingFlush();
 
