@@ -27,13 +27,28 @@ namespace System.IO.Pipelines
         /// </summary>
         public abstract void OnReaderCompleted(Action<Exception, object> callback, object state);
 
+        /// <summary>
+        /// Makes bytes written available to <see cref="PipeReader"/> and runs <see cref="PipeReader.ReadAsync"/> continuation.
+        /// </summary>
         public abstract ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// Makes bytes written available to <see cref="PipeReader"/> without running <see cref="PipeReader.ReadAsync"/> continuation.
+        /// </summary>
         public abstract void Commit();
+
+        /// <inheritdoc />
         public abstract void Advance(int bytes);
+
+        /// <inheritdoc />
         public abstract Memory<byte> GetMemory(int minimumLength = 0);
+
+        /// <inheritdoc />
         public abstract Span<byte> GetSpan(int minimumLength = 0);
 
+        /// <summary>
+        /// Writes <paramref name="source"/> to the pipe and makes data accessible to <see cref="PipeReader"/>
+        /// </summary>
         public virtual ValueAwaiter<FlushResult> WriteAsync(ReadOnlyMemory<byte> source)
         {
             this.Write(source.Span);
