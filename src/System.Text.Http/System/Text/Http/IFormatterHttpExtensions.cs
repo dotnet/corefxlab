@@ -23,7 +23,7 @@ namespace System.Text.Http.Formatter
         private static readonly byte[] s_PutUtf8 = Encoding.UTF8.GetBytes("PUT ");
         private static readonly byte[] s_DeleteUtf8 = Encoding.UTF8.GetBytes("DELETE ");
 
-        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, Parser.Http.Version version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextOutput
+        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, Parser.Http.Version version, int statusCode, Utf8Span reasonCode) where TFormatter : ITextBufferWriter
         {
             switch (version)
             {
@@ -40,7 +40,7 @@ namespace System.Text.Http.Formatter
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpRequestLine<TFormatter>(this TFormatter formatter, Parser.Http.Method method, Parser.Http.Version version, string path) where TFormatter : ITextOutput
+        public static void AppendHttpRequestLine<TFormatter>(this TFormatter formatter, Parser.Http.Method method, Parser.Http.Version version, string path) where TFormatter : ITextBufferWriter
         {
             if (formatter.SymbolTable == SymbolTable.InvariantUtf8)
             {
@@ -80,35 +80,35 @@ namespace System.Text.Http.Formatter
             }
         }
 
-        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextOutput where T : IBufferFormattable
+        public static void AppendHttpHeader<TFormatter, T>(this TFormatter formatter, string name, T value, StandardFormat valueFormat = default) where TFormatter : ITextBufferWriter where T : IBufferFormattable
         {
             formatter.Append(name);
             formatter.Append(value, formatter.SymbolTable, valueFormat);
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, string value) where TFormatter : ITextOutput
+        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, string value) where TFormatter : ITextBufferWriter
         {
             formatter.Append(name);
             formatter.Append(value);
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, int value) where TFormatter : ITextOutput
+        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, int value) where TFormatter : ITextBufferWriter
         {
             formatter.Append(name);
             formatter.Append(value);
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, DateTime value) where TFormatter : ITextOutput
+        public static void AppendHttpHeader<TFormatter>(this TFormatter formatter, string name, DateTime value) where TFormatter : ITextBufferWriter
         {
             formatter.Append(name);
             formatter.Append(value, 'R');
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
+        public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : ITextBufferWriter
         {
             var buffer = formatter.GetSpan();
             while (buffer.Length < 2)
@@ -120,7 +120,7 @@ namespace System.Text.Http.Formatter
             formatter.Advance(2);
         }
 
-        static void AppendBytes<TFormatter>(this TFormatter formatter, byte[] bytes) where TFormatter : ITextOutput
+        static void AppendBytes<TFormatter>(this TFormatter formatter, byte[] bytes) where TFormatter : ITextBufferWriter
         {
             while (true)
             {

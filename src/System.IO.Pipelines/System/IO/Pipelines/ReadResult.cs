@@ -27,7 +27,7 @@ namespace System.IO.Pipelines
             }
             if (isCanceled)
             {
-                ResultFlags |= ResultFlags.Cancelled;
+                ResultFlags |= ResultFlags.Canceled;
             }
         }
 
@@ -37,9 +37,9 @@ namespace System.IO.Pipelines
         public ReadOnlyBuffer<byte> Buffer => ResultBuffer;
 
         /// <summary>
-        /// True if the current <see cref="PipeReader.ReadAsync"/> operation was canceled
+        /// True if the current <see cref="PipeReader.ReadAsync"/> operation was canceled, otherwise false.
         /// </summary>
-        public bool IsCanceled => (ResultFlags & ResultFlags.Cancelled) != 0;
+        public bool IsCanceled => (ResultFlags & ResultFlags.Canceled) != 0;
 
         /// <summary>
         /// True if the <see cref="PipeReader"/> is complete

@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public abstract class PipeWriter : IOutput
+    public abstract class PipeWriter : IBufferWriter
     {
         /// <summary>
         /// Marks the <see cref="PipeWriter"/> as being complete, meaning no more items will be written to it.
@@ -23,7 +23,7 @@ namespace System.IO.Pipelines
         public abstract void CancelPendingFlush();
 
         /// <summary>
-        /// Registers callback that gets executed when reader side of pipe completes.
+        /// Registers a callback that gets executed when the <see cref="PipeReader"/> side of the pipe is completed
         /// </summary>
         public abstract void OnReaderCompleted(Action<Exception, object> callback, object state);
 

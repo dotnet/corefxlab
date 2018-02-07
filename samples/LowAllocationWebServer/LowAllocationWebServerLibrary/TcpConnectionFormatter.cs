@@ -12,7 +12,7 @@ using System.Text.Utf8;
 
 namespace Microsoft.Net
 {
-    public class TcpConnectionFormatter : ITextOutput, IDisposable
+    public class TcpConnectionFormatter : ITextBufferWriter, IDisposable
     {
         static byte[] s_terminator = new Utf8Span("0\r\n\r\n").Bytes.ToArray();
         const int ChunkPrefixSize = 10;

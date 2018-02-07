@@ -7,18 +7,18 @@ using System.Buffers.Text;
 
 namespace System.Text.Formatting
 {
-    public struct OutputFormatter<TOutput> : ITextOutput where TOutput : IOutput
+    public struct BufferWriterFormatter<TOutput> : ITextBufferWriter where TOutput : IBufferWriter
     {
         TOutput _output;
         SymbolTable _symbolTable;
 
-        public OutputFormatter(TOutput output, SymbolTable symbolTable)
+        public BufferWriterFormatter(TOutput output, SymbolTable symbolTable)
         {
             _output = output;
             _symbolTable = symbolTable;
         }
 
-        public OutputFormatter(TOutput output) : this(output, SymbolTable.InvariantUtf8)
+        public BufferWriterFormatter(TOutput output) : this(output, SymbolTable.InvariantUtf8)
         {
         }
 

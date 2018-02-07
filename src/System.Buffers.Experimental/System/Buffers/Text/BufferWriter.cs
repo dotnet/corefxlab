@@ -18,7 +18,7 @@ namespace System.Buffers.Text
         public static BufferWriter Create(Span<byte> buffer) => new BufferWriter(buffer);
 
         public static BufferWriter<TOutput> Create<TOutput>(TOutput output)
-            where TOutput : IOutput
+            where TOutput : IBufferWriter
             => new BufferWriter<TOutput>(output);
 
         private BufferWriter(Span<byte> buffer)

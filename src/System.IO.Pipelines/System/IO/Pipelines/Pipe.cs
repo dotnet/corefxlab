@@ -58,7 +58,7 @@ namespace System.IO.Pipelines
         // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
-        private PipeOperationState _readingState;
+        private PipeReaderState _readingState;
 
         private bool _disposed;
 
@@ -658,10 +658,10 @@ namespace System.IO.Pipelines
                 result.ResultFlags |= ResultFlags.Completed;
             }
 
-            bool isCancelled = _readerAwaitable.ObserveCancelation();
-            if (isCancelled)
+            bool isCanceled = _readerAwaitable.ObserveCancelation();
+            if (isCanceled)
             {
-                result.ResultFlags |= ResultFlags.Cancelled;
+                result.ResultFlags |= ResultFlags.Canceled;
             }
 
             // No need to read end if there is no head
@@ -673,7 +673,7 @@ namespace System.IO.Pipelines
                 result.ResultBuffer = new ReadOnlyBuffer<byte>(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
             }
 
-            if (isCancelled)
+            if (isCanceled)
             {
                 _readingState.BeginTentative();
             }
@@ -695,10 +695,10 @@ namespace System.IO.Pipelines
                     ThrowHelper.ThrowInvalidOperationException_GetResultNotCompleted();
                 }
 
-                // Change the state from to be cancelled -> observed
+                // Change the state from to be canceled -> observed
                 if (_writerAwaitable.ObserveCancelation())
                 {
-                    result.ResultFlags |= ResultFlags.Cancelled;
+                    result.ResultFlags |= ResultFlags.Canceled;
                 }
                 if (_readerCompletion.IsCompletedOrThrow())
                 {

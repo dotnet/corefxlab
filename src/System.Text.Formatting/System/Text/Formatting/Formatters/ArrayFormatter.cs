@@ -8,7 +8,7 @@ using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
-    public class ArrayFormatter : ITextOutput, IDisposable
+    public class ArrayFormatter : ITextBufferWriter, IDisposable
     {
         ResizableArray<byte> _buffer;
         SymbolTable _symbolTable;

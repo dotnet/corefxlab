@@ -78,7 +78,7 @@ namespace System.Binary.Base64Experimental.Tests
 
             var (first, last) = BufferList.Create(input);
 
-            var output = new TestOutput();
+            var output = new TestBufferWriter();
             Base64Experimental.Utf8ToBytesDecoder.Pipe(new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length), output);
 
             var expectedArray = expected.ToArray();
@@ -88,7 +88,7 @@ namespace System.Binary.Base64Experimental.Tests
         }
     }
 
-    class TestOutput : IOutput
+    class TestBufferWriter : IBufferWriter
     {
         byte[] _buffer = new byte[1000];
 

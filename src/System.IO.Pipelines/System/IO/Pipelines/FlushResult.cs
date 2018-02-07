@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
 
             if (isCanceled)
             {
-                ResultFlags |= ResultFlags.Cancelled;
+                ResultFlags |= ResultFlags.Canceled;
             }
 
             if (isCompleted)
@@ -30,9 +30,9 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// True if the current <see cref="PipeWriter.FlushAsync"/> operation was canceled otherwise false
+        /// True if the current <see cref="PipeWriter.FlushAsync"/> operation was canceled, otherwise false.
         /// </summary>
-        public bool IsCanceled => (ResultFlags & ResultFlags.Cancelled) != 0;
+        public bool IsCanceled => (ResultFlags & ResultFlags.Canceled) != 0;
 
         /// <summary>
         /// True if the <see cref="PipeWriter"/> is complete otherwise false

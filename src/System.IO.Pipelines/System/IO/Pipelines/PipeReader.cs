@@ -58,7 +58,7 @@ namespace System.IO.Pipelines
         public abstract void Complete(Exception exception = null);
 
         /// <summary>
-        /// Registers callback that gets executed when <see cref="PipeWriter"/> side of pipe complete.
+        ///  Registers a callback that gets executed when the <see cref="PipeReader"/> side of the pipe is completed.
         /// </summary>
         public abstract void OnWriterCompleted(Action<Exception, object> callback, object state);
     }

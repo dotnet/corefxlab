@@ -5,43 +5,32 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    internal struct PipeOperationState
+    internal struct PipeReaderState
     {
         private State _state;
-#if OPERATION_LOCATION_TRACKING
-        private string _operationStartLocation;
-#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Begin()
         {
-            // Inactive and Tenative are allowed
+            // Inactive and Tentative are allowed
             if (_state == State.Active)
             {
                 ThrowHelper.ThrowInvalidOperationException_AlreadyReading();
             }
 
             _state = State.Active;
-
-#if OPERATION_LOCATION_TRACKING
-            _operationStartLocation = Environment.StackTrace;
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BeginTentative()
         {
-            // Inactive and Tenative are allowed
+            // Inactive and Tentative are allowed
             if (_state == State.Active)
             {
                 ThrowHelper.ThrowInvalidOperationException_AlreadyReading();
             }
 
             _state = State.Tentative;
-
-#if OPERATION_LOCATION_TRACKING
-            _operationStartLocation = Environment.StackTrace;
-#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -53,24 +42,9 @@ namespace System.IO.Pipelines
             }
 
             _state = State.Inactive;
-#if OPERATION_LOCATION_TRACKING
-            _operationStartLocation = null;
-#endif
         }
 
         public bool IsActive => _state == State.Active;
-        public bool IsStarted => _state > State.Inactive;
-        public string Location
-        {
-            get
-            {
-#if OPERATION_LOCATION_TRACKING
-                return _operationStartLocation;
-#else
-                return null;
-#endif
-            }
-        }
 
         public override string ToString()
         {

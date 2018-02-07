@@ -7,7 +7,7 @@ using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
-    public class StringFormatter : ITextOutput, IDisposable
+    public class StringFormatter : ITextBufferWriter, IDisposable
     {
         ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
@@ -60,7 +60,7 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Memory<byte> IOutput.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
         {
             if (minimumLength < 1) minimumLength = 1;
             if (_buffer.Free.Count < minimumLength)
@@ -74,9 +74,9 @@ namespace System.Text.Formatting
             return _buffer.Free;
         }
 
-        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput) this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter) this).GetMemory(minimumLength).Span;
 
-        void IOutput.Advance(int bytes)
+        void IBufferWriter.Advance(int bytes)
         {
             _buffer.Count += bytes;
         }

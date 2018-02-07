@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Samples.Http
             return GetEnumerator();
         }
 
-        public void CopyTo(bool chunk, IOutput buffer)
+        public void CopyTo(bool chunk, IBufferWriter buffer)
         {
             foreach (var header in _headers)
             {

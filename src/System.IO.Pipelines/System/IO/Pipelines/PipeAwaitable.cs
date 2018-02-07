@@ -12,14 +12,14 @@ namespace System.IO.Pipelines
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
-        private CancelledState _cancelledState;
+        private CanceledState _canceledState;
         private Action _state;
         private CancellationToken _cancellationToken;
         private CancellationTokenRegistration _cancellationTokenRegistration;
 
         public PipeAwaitable(bool completed)
         {
-            _cancelledState = CancelledState.NotCancelled;
+            _canceledState = CanceledState.NotCanceled;
             _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
         }
 
@@ -58,16 +58,16 @@ namespace System.IO.Pipelines
         public void Reset()
         {
             if (ReferenceEquals(_state, _awaitableIsCompleted) &&
-                _cancelledState < CancelledState.CancellationPreRequested)
+                _canceledState < CanceledState.CancellationPreRequested)
             {
                 _state = _awaitableIsNotCompleted;
             }
 
             // Change the state from observed -> not cancelled.
             // We only want to reset the cancelled state if it was observed
-            if (_cancelledState == CancelledState.CancellationObserved)
+            if (_canceledState == CanceledState.CancellationObserved)
             {
-                _cancelledState = CancelledState.NotCancelled;
+                _canceledState = CanceledState.NotCanceled;
             }
         }
 
@@ -100,25 +100,25 @@ namespace System.IO.Pipelines
         public Action Cancel()
         {
             Action action = Complete();
-            _cancelledState = action == null ?
-                CancelledState.CancellationPreRequested :
-                CancelledState.CancellationRequested;
+            _canceledState = action == null ?
+                CanceledState.CancellationPreRequested :
+                CanceledState.CancellationRequested;
             return action;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ObserveCancelation()
         {
-            if (_cancelledState == CancelledState.NotCancelled)
+            if (_canceledState == CanceledState.NotCanceled)
             {
                 return false;
             }
 
-            bool isPrerequested = _cancelledState == CancelledState.CancellationPreRequested;
+            bool isPrerequested = _canceledState == CanceledState.CancellationPreRequested;
 
-            if (_cancelledState >= CancelledState.CancellationPreRequested)
+            if (_canceledState >= CanceledState.CancellationPreRequested)
             {
-                _cancelledState = CancelledState.CancellationObserved;
+                _canceledState = CanceledState.CancellationObserved;
 
                 // Do not reset awaitable if we were not awaiting in the first place
                 if (!isPrerequested)
@@ -136,12 +136,12 @@ namespace System.IO.Pipelines
 
         public override string ToString()
         {
-            return $"CancelledState: {_cancelledState}, {nameof(IsCompleted)}: {IsCompleted}";
+            return $"CancelledState: {_canceledState}, {nameof(IsCompleted)}: {IsCompleted}";
         }
 
-        private enum CancelledState
+        private enum CanceledState
         {
-            NotCancelled = 0,
+            NotCanceled = 0,
             CancellationObserved = 1,
             CancellationPreRequested = 2,
             CancellationRequested = 3,

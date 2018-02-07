@@ -16,19 +16,19 @@ namespace System.Buffers.Tests
         [Fact]
         public void Bytes()
         {
-            IOutput output = new Output();
-            var writer = BufferWriter.Create(output);
+            IBufferWriter bufferWriter = new BufferWriter();
+            var writer = Text.BufferWriter.Create(bufferWriter);
             writer.WriteBytes(Encoding.UTF8.GetBytes("Hello"));
             writer.WriteBytes(Encoding.UTF8.GetBytes(" World!"));
             writer.Flush();
-            Assert.Equal("Hello World!", output.ToString());
+            Assert.Equal("Hello World!", bufferWriter.ToString());
         }
 
         [Fact]
         public void Writable()
         {
-            IOutput output = new Output();
-            var writer = BufferWriter.Create(output);
+            IBufferWriter bufferWriter = new BufferWriter();
+            var writer = Text.BufferWriter.Create(bufferWriter);
 
             var ulonger = new UInt128();
             ulonger.Lower = ulong.MaxValue;
@@ -39,11 +39,11 @@ namespace System.Buffers.Tests
             writer.Write(123);
             writer.Write("This is just a longish string");
             writer.Flush();
-            Assert.Equal("//////////8BAAAAAAAAAA==hello123This is just a longish string", output.ToString());
+            Assert.Equal("//////////8BAAAAAAAAAA==hello123This is just a longish string", bufferWriter.ToString());
         }
     }
 
-    class Output : IOutput
+    class BufferWriter : IBufferWriter
     {
         byte[] _current = new byte[0];
         List<byte[]> _commited = new List<byte[]>();

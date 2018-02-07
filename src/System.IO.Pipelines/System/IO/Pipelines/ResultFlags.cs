@@ -7,7 +7,7 @@ namespace System.IO.Pipelines
     internal enum ResultFlags : byte
     {
         None = 0,
-        Cancelled = 1,
+        Canceled = 1,
         Completed = 2
     }
 }

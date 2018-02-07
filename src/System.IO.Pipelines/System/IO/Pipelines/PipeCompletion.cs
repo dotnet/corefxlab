@@ -16,33 +16,15 @@ namespace System.IO.Pipelines
         private const int InitialCallbacksSize = 1;
         private static readonly Exception _completedNoException = new Exception();
 
-#if COMPLETION_LOCATION_TRACKING
-        private string _completionLocation;
-#endif
         private Exception _exception;
 
         private PipeCompletionCallback[] _callbacks;
         private int _callbackCount;
 
-        public string Location
-        {
-            get
-            {
-#if COMPLETION_LOCATION_TRACKING
-                return _completionLocation;
-#else
-                return null;
-#endif
-            }
-        }
-
         public bool IsCompleted => _exception != null;
 
         public PipeCompletionCallbacks TryComplete(Exception exception = null)
         {
-#if COMPLETION_LOCATION_TRACKING
-            _completionLocation = Environment.StackTrace;
-#endif
             if (_exception == null)
             {
                 // Set the exception object to the exception passed in or a sentinel value
@@ -119,9 +101,6 @@ namespace System.IO.Pipelines
             Debug.Assert(IsCompleted);
             Debug.Assert(_callbacks == null);
             _exception = null;
-#if COMPLETION_LOCATION_TRACKING
-            _completionLocation = null;
-#endif
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
