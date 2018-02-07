@@ -3,8 +3,8 @@
 
 using System.Buffers;
 using System.Diagnostics;
+using System.IO.Pipelines.Threading;
 using System.Runtime.CompilerServices;
-
 using System.Threading;
 
 namespace System.IO.Pipelines
@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="PipeWriter"/> and <see cref="PipeReader"/> implementation.
     /// </summary>
-    public sealed class Pipe : IAwaiter<ReadResult>, IAwaiter<FlushResult>
+    public sealed class Pipe : IPipeAwaiter<ReadResult>, IPipeAwaiter<FlushResult>
     {
         private const int SegmentPoolSize = 16;
 
@@ -295,7 +295,7 @@ namespace System.IO.Pipelines
             // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
+        internal PipeAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken)
         {
             Action awaitable;
             CancellationTokenRegistration cancellationTokenRegistration;
@@ -316,7 +316,7 @@ namespace System.IO.Pipelines
 
             TrySchedule(_readerScheduler, awaitable);
 
-            return new ValueAwaiter<FlushResult>(this);
+            return new PipeAwaiter<FlushResult>(this);
         }
 
         internal void CompleteWriter(Exception exception)
@@ -536,7 +536,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal ValueAwaiter<ReadResult> ReadAsync(CancellationToken token)
+        internal PipeAwaiter<ReadResult> ReadAsync(CancellationToken token)
         {
             CancellationTokenRegistration cancellationTokenRegistration;
             if (_readerCompletion.IsCompleted)
@@ -548,7 +548,7 @@ namespace System.IO.Pipelines
                 cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
-            return new ValueAwaiter<ReadResult>(this);
+            return new PipeAwaiter<ReadResult>(this);
         }
 
         internal bool TryRead(out ReadResult result)
@@ -619,9 +619,9 @@ namespace System.IO.Pipelines
             }
         }
 
-        bool IAwaiter<ReadResult>.IsCompleted => _readerAwaitable.IsCompleted;
+        bool IPipeAwaiter<ReadResult>.IsCompleted => _readerAwaitable.IsCompleted;
 
-        void IAwaiter<ReadResult>.OnCompleted(Action continuation)
+        void IPipeAwaiter<ReadResult>.OnCompleted(Action continuation)
         {
             Action awaitable;
             bool doubleCompletion;
@@ -636,7 +636,7 @@ namespace System.IO.Pipelines
             TrySchedule(_readerScheduler, awaitable);
         }
 
-        ReadResult IAwaiter<ReadResult>.GetResult()
+        ReadResult IPipeAwaiter<ReadResult>.GetResult()
         {
             if (!_readerAwaitable.IsCompleted)
             {
@@ -683,9 +683,9 @@ namespace System.IO.Pipelines
             }
         }
 
-        bool IAwaiter<FlushResult>.IsCompleted => _writerAwaitable.IsCompleted;
+        bool IPipeAwaiter<FlushResult>.IsCompleted => _writerAwaitable.IsCompleted;
 
-        FlushResult IAwaiter<FlushResult>.GetResult()
+        FlushResult IPipeAwaiter<FlushResult>.GetResult()
         {
             var result = new FlushResult();
             lock (_sync)
@@ -709,7 +709,7 @@ namespace System.IO.Pipelines
             return result;
         }
 
-        void IAwaiter<FlushResult>.OnCompleted(Action continuation)
+        void IPipeAwaiter<FlushResult>.OnCompleted(Action continuation)
         {
             Action awaitable;
             bool doubleCompletion;
@@ -776,7 +776,7 @@ namespace System.IO.Pipelines
                 return _pipe.TryRead(out result);
             }
 
-            public override ValueAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default)
+            public override PipeAwaiter<ReadResult> ReadAsync(CancellationToken cancellationToken = default)
             {
                 return _pipe.ReadAsync(cancellationToken);
             }
@@ -831,7 +831,7 @@ namespace System.IO.Pipelines
                 _pipe.OnReaderCompleted(callback, state);
             }
 
-            public override ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
+            public override PipeAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default)
             {
                 return _pipe.FlushAsync(cancellationToken);
             }

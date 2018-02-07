@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Threading;
 using System.IO.Pipelines.Networking.Libuv.Interop;
 using System.IO.Pipelines.Networking.Libuv.Internal;
+using System.IO.Pipelines.Threading;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {

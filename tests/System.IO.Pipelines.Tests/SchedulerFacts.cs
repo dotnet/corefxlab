@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.IO.Pipelines.Threading;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -95,7 +96,7 @@ namespace System.IO.Pipelines.Tests
                     ));
 
                 PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
-                ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
+                PipeAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
                 Assert.False(flushAsync.IsCompleted);
 
@@ -138,7 +139,7 @@ namespace System.IO.Pipelines.Tests
                             writerScheduler: scheduler));
 
                     PipeWriter writableBuffer = pipe.Writer.WriteEmpty(64);
-                    ValueAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
+                    PipeAwaiter<FlushResult> flushAsync = writableBuffer.FlushAsync();
 
                     Assert.False(flushAsync.IsCompleted);
 

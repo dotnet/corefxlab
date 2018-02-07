@@ -4,7 +4,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.Threading;
+using System.IO.Pipelines.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
@@ -33,7 +33,7 @@ namespace System.IO.Pipelines.Samples
 
         public Task ExecuteRequestAsync(byte[] request)
         {
-            async Task Await(ValueAwaiter<FlushResult> awaiter) => await awaiter;
+            async Task Await(PipeAwaiter<FlushResult> awaiter) => await awaiter;
 
             var tasks = new Task[_connections.Count];
             for (int i = 0; i < _connections.Count; i++)

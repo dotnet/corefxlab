@@ -4,6 +4,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
+using System.IO.Pipelines.Threading;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -53,7 +54,7 @@ namespace System.IO.Pipelines.Tests
             result = await _pipe.Reader.ReadAsync();
             _pipe.Reader.AdvanceTo(result.Buffer.End);
 
-            ValueAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
         }
 
@@ -69,7 +70,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.AdvanceTo(readResult.Buffer.End);
 
             // Try reading, it should block
-            ValueAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
 
             // Unblock without writing anything
@@ -100,7 +101,7 @@ namespace System.IO.Pipelines.Tests
             Assert.True(result.IsCanceled);
             Assert.True(buffer.IsEmpty);
 
-            ValueAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
         }
 
@@ -186,7 +187,7 @@ namespace System.IO.Pipelines.Tests
 
             _pipe.Writer.GetMemory();
             _pipe.Reader.AdvanceTo(result.Buffer.Start);
-            ValueAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = _pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
             _pipe.Writer.Commit();
         }
@@ -195,7 +196,7 @@ namespace System.IO.Pipelines.Tests
         public void FlushAsync_ReturnsCompletedTaskWhenMaxSizeIfZero()
         {
             PipeWriter writableBuffer = _pipe.Writer.WriteEmpty(1);
-            ValueAwaiter<FlushResult> flushTask = writableBuffer.FlushAsync();
+            PipeAwaiter<FlushResult> flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
 
             writableBuffer = _pipe.Writer.WriteEmpty(1);

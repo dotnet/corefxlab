@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.IO.Pipelines.Threading;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,12 +14,12 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AwaitingReadAsyncAwaitableTwiceCompletesWriterWithException()
         {
-            async Task Await(ValueAwaiter<ReadResult> a)
+            async Task Await(PipeAwaiter<ReadResult> a)
             {
                 await a;
             }
 
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Task task1 = Await(awaitable);
             Task task2 = Await(awaitable);

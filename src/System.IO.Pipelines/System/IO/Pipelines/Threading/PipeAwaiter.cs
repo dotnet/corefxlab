@@ -4,28 +4,38 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Threading
+namespace System.IO.Pipelines.Threading
 {
     /// <summary>
     /// An awaitable object that represents an asynchronous read operation
     /// </summary>
-    public struct ValueAwaiter<T> : ICriticalNotifyCompletion
+    public struct PipeAwaiter<T> : ICriticalNotifyCompletion
     {
-        private readonly IAwaiter<T> _awaiter;
+        private readonly IPipeAwaiter<T> _awaiter;
 
-        public ValueAwaiter(IAwaiter<T> awaiter)
+        public PipeAwaiter(IPipeAwaiter<T> awaiter)
         {
             _awaiter = awaiter;
         }
-
+        /// <summary>
+        /// Gets whether the async operation being awaited is completed.
+        /// </summary>
         public bool IsCompleted => _awaiter.IsCompleted;
 
+        /// <summary>
+        /// Ends the await on the completed <see cref="PipeAwaiter{T}"/>.
+        /// </summary>
         public T GetResult() => _awaiter.GetResult();
 
-        public ValueAwaiter<T> GetAwaiter() => this;
+        /// <summary>
+        /// Gets an awaiter used to await this <see cref="PipeAwaiter{T}"/>.
+        /// </summary>
+        public PipeAwaiter<T> GetAwaiter() => this;
 
+        /// <inheritdoc />
         public void UnsafeOnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
 
+        /// <inheritdoc />
         public void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
     }
 }

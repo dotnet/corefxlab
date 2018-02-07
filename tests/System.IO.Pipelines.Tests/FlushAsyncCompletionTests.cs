@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.IO.Pipelines.Threading;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -14,14 +15,14 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
-            async Task Await(ValueAwaiter<FlushResult> a)
+            async Task Await(PipeAwaiter<FlushResult> a)
             {
                 await a;
             }
 
             PipeWriter writeBuffer = Pipe.Writer;
             writeBuffer.Write(new byte[MaximumSizeHigh]);
-            ValueAwaiter<FlushResult> awaitable = writeBuffer.FlushAsync();
+            PipeAwaiter<FlushResult> awaitable = writeBuffer.FlushAsync();
 
             Task task1 = Await(awaitable);
             Task task2 = Await(awaitable);

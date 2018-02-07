@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.IO.Pipelines.Threading;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace System.IO.Pipelines.Tests
             Assert.True(result.IsCanceled);
             Assert.True(buffer.IsEmpty);
 
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
             Assert.False(awaitable.IsCompleted);
         }
 
@@ -51,7 +52,7 @@ namespace System.IO.Pipelines.Tests
 
             Pipe.Reader.AdvanceTo(buffer.End);
 
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Assert.True(awaitable.IsCompleted);
 
@@ -141,7 +142,7 @@ namespace System.IO.Pipelines.Tests
             var cts2 = new CancellationTokenSource();
             var e = new ManualResetEventSlim();
 
-            ValueAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cts.Token);
+            PipeAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cts.Token);
             awaiter.OnCompleted(
                 () => {
                     // We are on cancellation thread and need to wait untill another ReadAsync call
@@ -173,7 +174,7 @@ namespace System.IO.Pipelines.Tests
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
 
-            ValueAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
+            PipeAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
             bool awaiterIsCompleted = awaiter.IsCompleted;
 
             cancellationTokenSource.Cancel();
@@ -195,7 +196,7 @@ namespace System.IO.Pipelines.Tests
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
 
-            ValueAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
+            PipeAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
             bool awaiterIsCompleted = awaiter.IsCompleted;
             awaiter.OnCompleted(
                 () => {
@@ -215,7 +216,7 @@ namespace System.IO.Pipelines.Tests
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
 
-            ValueAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
+            PipeAwaiter<ReadResult> awaiter = Pipe.Reader.ReadAsync(cancellationTokenSource.Token);
             bool awaiterIsCompleted = awaiter.IsCompleted;
 
             cancellationTokenSource.Cancel();
@@ -266,7 +267,7 @@ namespace System.IO.Pipelines.Tests
             Pipe.Reader.CancelPendingRead();
             Pipe.Writer.WriteAsync(new byte[] { 1, 2, 3 }).GetAwaiter().GetResult();
 
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Assert.True(awaitable.IsCompleted);
 
@@ -285,7 +286,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadAsyncNotCompletedAfterCancellation()
         {
             var onCompletedCalled = false;
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(
@@ -309,7 +310,7 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cts = new CancellationTokenSource();
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync(cts.Token);
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync(cts.Token);
 
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(
@@ -330,7 +331,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadAsyncReturnsIsCancelOnCancelPendingReadAfterGetResult()
         {
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(() => { });
@@ -347,7 +348,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReadAsyncReturnsIsCancelOnCancelPendingReadBeforeGetResult()
         {
-            ValueAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaitable = Pipe.Reader.ReadAsync();
 
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(() => { });

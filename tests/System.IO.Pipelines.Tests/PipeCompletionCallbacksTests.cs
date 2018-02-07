@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.IO.Pipelines.Threading;
 using System.Threading;
 using Xunit;
 
@@ -209,7 +210,7 @@ namespace System.IO.Pipelines.Tests
                 }, null);
 
             PipeWriter buffer = pipe.Writer.WriteEmpty(10);
-            ValueAwaiter<FlushResult> awaiter = buffer.FlushAsync();
+            PipeAwaiter<FlushResult> awaiter = buffer.FlushAsync();
 
             Assert.False(awaiter.IsCompleted);
             awaiter.OnCompleted(() => { continuationRan = true; });
@@ -407,7 +408,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.False(continuationRan);
                 }, null);
 
-            ValueAwaiter<ReadResult> awaiter = pipe.Reader.ReadAsync();
+            PipeAwaiter<ReadResult> awaiter = pipe.Reader.ReadAsync();
             Assert.False(awaiter.IsCompleted);
             awaiter.OnCompleted(() => { continuationRan = true; });
             pipe.Writer.Complete();

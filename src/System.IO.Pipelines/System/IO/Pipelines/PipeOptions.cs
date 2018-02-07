@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.IO.Pipelines.Threading;
 using System.Threading;
 
 namespace System.IO.Pipelines

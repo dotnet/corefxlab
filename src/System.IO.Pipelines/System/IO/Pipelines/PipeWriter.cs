@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.IO.Pipelines.Threading;
 using System.Threading;
 
 namespace System.IO.Pipelines
@@ -30,7 +31,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Makes bytes written available to <see cref="PipeReader"/> and runs <see cref="PipeReader.ReadAsync"/> continuation.
         /// </summary>
-        public abstract ValueAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default);
+        public abstract PipeAwaiter<FlushResult> FlushAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Makes bytes written available to <see cref="PipeReader"/> without running <see cref="PipeReader.ReadAsync"/> continuation.
@@ -49,7 +50,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Writes <paramref name="source"/> to the pipe and makes data accessible to <see cref="PipeReader"/>
         /// </summary>
-        public virtual ValueAwaiter<FlushResult> WriteAsync(ReadOnlyMemory<byte> source)
+        public virtual PipeAwaiter<FlushResult> WriteAsync(ReadOnlyMemory<byte> source)
         {
             this.Write(source.Span);
             return FlushAsync();
