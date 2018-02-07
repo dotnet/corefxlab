@@ -14,38 +14,35 @@ namespace System.IO.Pipelines.Samples
     {
         public Task Run()
         {
-            using (var bufferPool = new MemoryPool())
-            {
-                var filePath = Path.GetFullPath("Program.cs");
+            var filePath = Path.GetFullPath("Program.cs");
 
-                // This is what Stream looks like
-                //var fs = File.OpenRead(filePath);
-                //var compressed = new MemoryStream();
-                //var compressStream = new DeflateStream(compressed, CompressionMode.Compress);
-                //fs.CopyTo(compressStream);
-                //compressStream.Flush();
-                //compressed.Seek(0, SeekOrigin.Begin);
+            // This is what Stream looks like
+            //var fs = File.OpenRead(filePath);
+            //var compressed = new MemoryStream();
+            //var compressStream = new DeflateStream(compressed, CompressionMode.Compress);
+            //fs.CopyTo(compressStream);
+            //compressStream.Flush();
+            //compressed.Seek(0, SeekOrigin.Begin);
 
-                var options = new PipeOptions(bufferPool);
+            var options = new PipeOptions();
 
-                var input = ReadableFilePipelineFactoryExtensions.ReadFile(options, filePath)
-                              .DeflateCompress(options, CompressionLevel.Optimal)
-                              .DeflateDecompress(options);
+            var input = ReadableFilePipelineFactoryExtensions.ReadFile(options, filePath)
+                .DeflateCompress(options, CompressionLevel.Optimal)
+                .DeflateDecompress(options);
 
-                // Wrap the console in a pipeline writer
+            // Wrap the console in a pipeline writer
 
-                var outputPipe = new Pipe(options);
-                outputPipe.Reader.CopyToEndAsync(Console.OpenStandardOutput());
+            var outputPipe = new Pipe(options);
+            outputPipe.Reader.CopyToEndAsync(Console.OpenStandardOutput());
 
-                // Copy from the file reader to the console writer
-                input.CopyToAsync(outputPipe.Writer).GetAwaiter().GetResult();
+            // Copy from the file reader to the console writer
+            input.CopyToAsync(outputPipe.Writer).GetAwaiter().GetResult();
 
-                input.Complete();
+            input.Complete();
 
-                outputPipe.Writer.Complete();
+            outputPipe.Writer.Complete();
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
         }
     }
 }

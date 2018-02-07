@@ -98,18 +98,18 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public class LineHandler : IFrameHandler<Line>
     {
-        private PipelineTextOutput _textOutput;
+        private PipelineTextBufferWriter _textBufferWriter;
 
         public void Initialize(IDuplexPipe connection)
         {
-            _textOutput = new PipelineTextOutput(connection.Output, SymbolTable.InvariantUtf8);
+            _textBufferWriter = new PipelineTextBufferWriter(connection.Output, SymbolTable.InvariantUtf8);
         }
 
         public Task HandleAsync(Line message)
         {
             // Echo back to the caller
-            _textOutput.Append(message.Data);
-            return _textOutput.FlushAsync();
+            _textBufferWriter.Append(message.Data);
+            return _textBufferWriter.FlushAsync();
         }
     }
 

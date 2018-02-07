@@ -1,7 +1,7 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -9,12 +9,9 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipeResetTests : IDisposable
     {
-        private MemoryPool _pool;
-        private Pipe _pipe;
-
         public PipeResetTests()
         {
-            _pool = new MemoryPool();
+            _pool = new TestMemoryPool();
             _pipe = new Pipe(new PipeOptions(_pool));
         }
 
@@ -25,30 +22,9 @@ namespace System.IO.Pipelines.Tests
             _pool?.Dispose();
         }
 
+        private readonly TestMemoryPool _pool;
 
-        [Fact]
-        public async Task ReadsAndWritesAfterReset()
-        {
-            var source = new byte[] { 1, 2, 3 };
-
-            await _pipe.Writer.WriteAsync(source);
-            var result = await _pipe.Reader.ReadAsync();
-
-            Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.AdvanceTo(result.Buffer.End);
-
-            _pipe.Reader.Complete();
-            _pipe.Writer.Complete();
-
-            _pipe.Reset();
-
-
-            await _pipe.Writer.WriteAsync(source);
-            result = await _pipe.Reader.ReadAsync();
-
-            Assert.Equal(source, result.Buffer.ToArray());
-            _pipe.Reader.AdvanceTo(result.Buffer.End);
-        }
+        private readonly Pipe _pipe;
 
         [Fact]
         public async Task LengthIsReseted()
@@ -66,6 +42,29 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task ReadsAndWritesAfterReset()
+        {
+            var source = new byte[] { 1, 2, 3 };
+
+            await _pipe.Writer.WriteAsync(source);
+            ReadResult result = await _pipe.Reader.ReadAsync();
+
+            Assert.Equal(source, result.Buffer.ToArray());
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
+
+            _pipe.Reader.Complete();
+            _pipe.Writer.Complete();
+
+            _pipe.Reset();
+
+            await _pipe.Writer.WriteAsync(source);
+            result = await _pipe.Reader.ReadAsync();
+
+            Assert.Equal(source, result.Buffer.ToArray());
+            _pipe.Reader.AdvanceTo(result.Buffer.End);
+        }
+
+        [Fact]
         public void ResetThrowsIfReaderNotCompleted()
         {
             _pipe.Writer.Complete();
@@ -78,6 +77,5 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Complete();
             Assert.Throws<InvalidOperationException>(() => _pipe.Reset());
         }
-
     }
 }

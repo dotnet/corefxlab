@@ -28,7 +28,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         public SocketListener(MemoryPool<byte> pool = null)
         {
             _ownsPool = pool == null;
-            _pool = pool ?? new MemoryPool();
+            _pool = pool ?? MemoryPool<byte>.Shared;
         }
 
         /// <summary>

@@ -1,26 +1,29 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class FlushAsyncCompletionTests: PipeTest
+    public class FlushAsyncCompletionTests : PipeTest
     {
         [Fact]
         public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
-            async Task Await(ValueAwaiter<FlushResult> a) => await a;
+            async Task Await(PipeAwaiter<FlushResult> a)
+            {
+                await a;
+            }
 
-            var writeBuffer = Pipe.Writer;
+            PipeWriter writeBuffer = Pipe.Writer;
             writeBuffer.Write(new byte[MaximumSizeHigh]);
-            var awaitable = writeBuffer.FlushAsync();
+            PipeAwaiter<FlushResult> awaitable = writeBuffer.FlushAsync();
 
-            var task1 = Await(awaitable);
-            var task2 = Await(awaitable);
+            Task task1 = Await(awaitable);
+            Task task2 = Await(awaitable);
 
             Assert.Equal(true, task1.IsCompleted);
             Assert.Equal(true, task1.IsFaulted);

@@ -7,9 +7,9 @@ namespace System.IO.Pipelines.Text.Primitives
 {
     public static class PipelineWriterExtensions
     {
-        public static PipelineTextOutput AsTextOutput(this PipeWriter writer, SymbolTable symbolTable)
+        public static PipelineTextBufferWriter AsTextOutput(this PipeWriter writer, SymbolTable symbolTable)
         {
-            return new PipelineTextOutput(writer, symbolTable);
+            return new PipelineTextBufferWriter(writer, symbolTable);
         }
     }
 }

@@ -13,7 +13,10 @@ namespace System.IO.Pipelines
         internal ReadOnlyBuffer<byte> ResultBuffer;
         internal ResultFlags ResultFlags;
 
-        public ReadResult(ReadOnlyBuffer<byte> buffer, bool isCancelled, bool isCompleted)
+        /// <summary>
+        /// Creates a new instance of <see cref="ReadResult"/> setting <see cref="IsCanceled"/> and <see cref="IsCompleted"/> flags
+        /// </summary>
+        public ReadResult(ReadOnlyBuffer<byte> buffer, bool isCanceled, bool isCompleted)
         {
             ResultBuffer = buffer;
             ResultFlags = ResultFlags.None;
@@ -22,21 +25,21 @@ namespace System.IO.Pipelines
             {
                 ResultFlags |= ResultFlags.Completed;
             }
-            if (isCancelled)
+            if (isCanceled)
             {
-                ResultFlags |= ResultFlags.Cancelled;
+                ResultFlags |= ResultFlags.Canceled;
             }
         }
 
         /// <summary>
-        /// The <see cref="ReadOnlyBuffer"/> that was read
+        /// The <see cref="ReadOnlyBuffer{Byte}"/> that was read
         /// </summary>
         public ReadOnlyBuffer<byte> Buffer => ResultBuffer;
 
         /// <summary>
-        /// True if the currrent read was cancelled
+        /// True if the current <see cref="PipeReader.ReadAsync"/> operation was canceled, otherwise false.
         /// </summary>
-        public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) != 0;
+        public bool IsCanceled => (ResultFlags & ResultFlags.Canceled) != 0;
 
         /// <summary>
         /// True if the <see cref="PipeReader"/> is complete

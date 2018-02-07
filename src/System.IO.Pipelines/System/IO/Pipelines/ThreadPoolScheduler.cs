@@ -2,9 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Threading
+namespace System.IO.Pipelines
 {
     internal sealed class ThreadPoolScheduler : PipeScheduler
     {
@@ -12,9 +13,9 @@ namespace System.Threading
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action, preferLocal: true);
+            System.Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action, preferLocal: true);
 #elif NETSTANDARD2_0
-            Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action);
+            System.Threading.ThreadPool.QueueUserWorkItem(_actionWaitCallback, action);
 #else
             Task.Factory.StartNew(action);
 #endif
@@ -24,9 +25,9 @@ namespace System.Threading
         {
 #if NETCOREAPP2_1
             // Queue to low contention local ThreadPool queue; rather than global queue as per Task
-            Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state), preferLocal: true);
+            System.Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state), preferLocal: true);
 #elif NETSTANDARD2_0
-            Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state));
+            System.Threading.ThreadPool.QueueUserWorkItem(_actionObjectWaitCallback, new ActionObjectAsWaitCallback(action, state));
 #else
             Task.Factory.StartNew(action, state);
 #endif

@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public UvLoopHandle Loop { get; private set; }
 
-        public MemoryPool<byte> Pool { get; } = new MemoryPool();
+        public MemoryPool<byte> Pool { get; } = MemoryPool<byte>.Shared;
 
         public WriteReqPool WriteReqPool { get; }
 
@@ -138,7 +138,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             Pool.Dispose();
         }
-        
+
         public override void Schedule(Action<object> action, object state)
         {
             // REVIEW: Should we inline actions if we're already on the libuv thread?

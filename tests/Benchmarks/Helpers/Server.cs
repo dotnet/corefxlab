@@ -12,8 +12,7 @@ namespace System.IO.Pipelines.Samples
     {
         public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<object, PipeWriter> writeResponse)
         {
-            var memoryPool = new MemoryPool();
-            var listener = new FakeListener(memoryPool, concurrentConnections);
+            var listener = new FakeListener(MemoryPool<byte>.Shared, concurrentConnections);
 
             listener.OnConnection(async connection => {
                 while (true)
@@ -67,7 +66,6 @@ namespace System.IO.Pipelines.Samples
             Task.WaitAll(tasks);
 
             listener.Dispose();
-            memoryPool.Dispose();
         }
 
     }

@@ -4,131 +4,26 @@
 
 using System.Buffers;
 using System.Collections.Generic;
-using System.Text;
 using System.Numerics;
+using System.Text;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
     public abstract class SeekTests
     {
-        public class Array : SingleSegment
-        {
-            public Array() : base(ReadOnlyBufferFactory.Array) { }
-            internal Array(ReadOnlyBufferFactory factory) : base(factory) { }
-        }
-
-        public class OwnedMemory : SingleSegment
-        {
-            public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory) { }
-        }
-
-        public class SingleSegment : SegmentPerByte
-        {
-            public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment) { }
-            internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory) { }
-        }
-
-        public class SegmentPerByte : SeekTests
-        {
-            public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte) { }
-            internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory) { }
-        }
-
-        internal ReadOnlyBufferFactory Factory { get; }
-
         internal SeekTests(ReadOnlyBufferFactory factory)
         {
             Factory = factory;
         }
 
-        [Theory]
-        [InlineData("a", 'a', 0)]
-        [InlineData("ab", 'a', 0)]
-        [InlineData("aab", 'a', 0)]
-        [InlineData("acab", 'a', 0)]
-        [InlineData("acab", 'c', 1)]
-        [InlineData("abcdefghijklmnopqrstuvwxyz", 'l', 11)]
-        [InlineData("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'l', 11)]
-        [InlineData("aaaaaaaaaaacmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'm', 12)]
-        [InlineData("aaaaaaaaaaarmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'r', 11)]
-        [InlineData("/localhost:5000/PATH/%2FPATH2/ HTTP/1.1", '%', 21)]
-        [InlineData("/localhost:5000/PATH/%2FPATH2/?key=value HTTP/1.1", '%', 21)]
-        [InlineData("/localhost:5000/PATH/PATH2/?key=value HTTP/1.1", '?', 27)]
-        [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", ' ', 27)]
-        public void MemorySeek(string raw, char searchFor, int expectIndex)
-        {
-            var cursors = Factory.CreateWithContent(raw);
-            var result = cursors.PositionOf((byte)searchFor);
-
-            Assert.NotNull(result);
-            Assert.Equal(cursors.Slice(result.Value).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
-        }
-
-        [Theory]
-        [MemberData(nameof(SeekByteLimitData))]
-        public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
-        {
-            // Arrange
-            var originalBuffer = Factory.CreateWithContent(input);
-
-            // Act
-            var buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
-
-            var result = buffer.PositionOf((byte)seek);
-
-            // Assert
-            if (expectedReturnValue == -1)
-            {
-                Assert.Null(result);
-            }
-            else
-            {
-                Assert.NotNull(result);
-            }
-
-            if (expectedReturnValue != -1)
-            {
-                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)), originalBuffer.Slice(result.Value).ToArray());
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(SeekIteratorLimitData))]
-        public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
-        {
-            var originalBuffer = Factory.CreateWithContent(input);
-
-            var scan1 = originalBuffer.Start;
-            var buffer = originalBuffer;
-
-            // Act
-            var end = originalBuffer.PositionOf((byte)limitAfter);
-            if (end.HasValue)
-            {
-                buffer = originalBuffer.Slice(buffer.Start, buffer.GetPosition(end.Value, 1));
-            }
-
-            var returnValue1 = buffer.PositionOf((byte)seek);
-
-
-            // Assert
-            Assert.Equal(input.Contains(limitAfter), end.HasValue);
-
-            if (expectedReturnValue != -1)
-            {
-                var expectedEndIndex = input.IndexOf(seek);
-
-                Assert.NotNull(returnValue1);
-                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(returnValue1.Value).ToArray());
-            }
-        }
+        internal ReadOnlyBufferFactory Factory { get; }
 
         public static IEnumerable<object[]> SeekByteLimitData
         {
             get
             {
-                var vectorSpan = Vector<byte>.Count;
+                int vectorSpan = Vector<byte>.Count;
                 // string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue
                 var data = new List<object[]>();
 
@@ -156,21 +51,27 @@ namespace System.IO.Pipelines.Tests
                 // Two vectors, no seek char in input, expect failure
                 data.Add(new object[] { new string('a', vectorSpan * 2), 'b', vectorSpan * 2, vectorSpan * 2, -1 });
                 // Two vectors plus non vector length (thus hitting slow path too), no seek char in input, expect failure
-                data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', vectorSpan * 2 + vectorSpan / 2, vectorSpan * 2 + vectorSpan / 2, -1 });
+                data.Add(
+                    new object[]
+                    {
+                        new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', vectorSpan * 2 + vectorSpan / 2, vectorSpan * 2 + vectorSpan / 2, -1
+                    });
 
                 // For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
-                for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
+                for (int length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
                 {
                     // ...place the seek char at vector and input boundaries...
-                    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
+                    for (int i = Math.Min(vectorSpan - 1, length - 1);
+                        i < length;
+                        i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
                     {
                         var input = new StringBuilder(new string('a', length));
                         input[i] = 'b';
 
                         // ...and check with a seek byte limit before, at, and past the seek char position...
-                        for (var limitOffset = -1; limitOffset <= 1; limitOffset++)
+                        for (int limitOffset = -1; limitOffset <= 1; limitOffset++)
                         {
-                            var limit = (i + 1) + limitOffset;
+                            int limit = (i + 1) + limitOffset;
 
                             if (limit >= i + 1)
                             {
@@ -194,7 +95,7 @@ namespace System.IO.Pipelines.Tests
         {
             get
             {
-                var vectorSpan = Vector<byte>.Count;
+                int vectorSpan = Vector<byte>.Count;
 
                 // string input, char seek, char limitAt, int expectedReturnValue
                 var data = new List<object[]>();
@@ -220,10 +121,12 @@ namespace System.IO.Pipelines.Tests
                 data.Add(new object[] { new string('a', vectorSpan * 2 + vectorSpan / 2), 'b', 'b', -1 });
 
                 // For each input length from 1/2 to 3 1/2 vector spans in 1/2 vector span increments...
-                for (var length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
+                for (int length = vectorSpan / 2; length <= vectorSpan * 3 + vectorSpan / 2; length += vectorSpan / 2)
                 {
                     // ...place the seek char at vector and input boundaries...
-                    for (var i = Math.Min(vectorSpan - 1, length - 1); i < length; i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
+                    for (int i = Math.Min(vectorSpan - 1, length - 1);
+                        i < length;
+                        i += ((i + 1) % vectorSpan == 0) ? 1 : Math.Min(i + (vectorSpan - 1), length - 1))
                     {
                         var input = new StringBuilder(new string('a', length));
                         input[i] = 'b';
@@ -242,6 +145,127 @@ namespace System.IO.Pipelines.Tests
                 }
 
                 return data;
+            }
+        }
+
+        [Theory]
+        [InlineData("a", 'a', 0)]
+        [InlineData("ab", 'a', 0)]
+        [InlineData("aab", 'a', 0)]
+        [InlineData("acab", 'a', 0)]
+        [InlineData("acab", 'c', 1)]
+        [InlineData("abcdefghijklmnopqrstuvwxyz", 'l', 11)]
+        [InlineData("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'l', 11)]
+        [InlineData("aaaaaaaaaaacmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'm', 12)]
+        [InlineData("aaaaaaaaaaarmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz", 'r', 11)]
+        [InlineData("/localhost:5000/PATH/%2FPATH2/ HTTP/1.1", '%', 21)]
+        [InlineData("/localhost:5000/PATH/%2FPATH2/?key=value HTTP/1.1", '%', 21)]
+        [InlineData("/localhost:5000/PATH/PATH2/?key=value HTTP/1.1", '?', 27)]
+        [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", ' ', 27)]
+        public void MemorySeek(string raw, char searchFor, int expectIndex)
+        {
+            ReadOnlyBuffer<byte> cursors = Factory.CreateWithContent(raw);
+            SequencePosition? result = cursors.PositionOf((byte)searchFor);
+
+            Assert.NotNull(result);
+            Assert.Equal(cursors.Slice(result.Value).ToArray(), Encoding.ASCII.GetBytes(raw.Substring(expectIndex)));
+        }
+
+        [Theory]
+        [MemberData(nameof(SeekByteLimitData))]
+        public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
+        {
+            // Arrange
+            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
+
+            // Act
+            ReadOnlyBuffer<byte> buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
+
+            SequencePosition? result = buffer.PositionOf((byte)seek);
+
+            // Assert
+            if (expectedReturnValue == -1)
+            {
+                Assert.Null(result);
+            }
+            else
+            {
+                Assert.NotNull(result);
+            }
+
+            if (expectedReturnValue != -1)
+            {
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedBytesScanned - 1)), originalBuffer.Slice(result.Value).ToArray());
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SeekIteratorLimitData))]
+        public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
+        {
+            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
+
+            SequencePosition scan1 = originalBuffer.Start;
+            ReadOnlyBuffer<byte> buffer = originalBuffer;
+
+            // Act
+            SequencePosition? end = originalBuffer.PositionOf((byte)limitAfter);
+            if (end.HasValue)
+            {
+                buffer = originalBuffer.Slice(buffer.Start, buffer.GetPosition(end.Value, 1));
+            }
+
+            SequencePosition? returnValue1 = buffer.PositionOf((byte)seek);
+
+            // Assert
+            Assert.Equal(input.Contains(limitAfter), end.HasValue);
+
+            if (expectedReturnValue != -1)
+            {
+                int expectedEndIndex = input.IndexOf(seek);
+
+                Assert.NotNull(returnValue1);
+                Assert.Equal(Encoding.ASCII.GetBytes(input.Substring(expectedEndIndex)), originalBuffer.Slice(returnValue1.Value).ToArray());
+            }
+        }
+
+        public class Array : SingleSegment
+        {
+            public Array() : base(ReadOnlyBufferFactory.Array)
+            {
+            }
+
+            internal Array(ReadOnlyBufferFactory factory) : base(factory)
+            {
+            }
+        }
+
+        public class OwnedMemory : SingleSegment
+        {
+            public OwnedMemory() : base(ReadOnlyBufferFactory.OwnedMemory)
+            {
+            }
+        }
+
+        public class SingleSegment : SegmentPerByte
+        {
+            public SingleSegment() : base(ReadOnlyBufferFactory.SingleSegment)
+            {
+            }
+
+            internal SingleSegment(ReadOnlyBufferFactory factory) : base(factory)
+            {
+            }
+        }
+
+        public class SegmentPerByte : SeekTests
+        {
+            public SegmentPerByte() : base(ReadOnlyBufferFactory.SegmentPerByte)
+            {
+            }
+
+            internal SegmentPerByte(ReadOnlyBufferFactory factory) : base(factory)
+            {
             }
         }
     }

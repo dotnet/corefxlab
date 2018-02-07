@@ -16,7 +16,7 @@ namespace System.Text.Formatting
         }
     }
 
-    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Memory<byte>>
+    public class SequenceFormatter<TSequence> : ITextBufferWriter where TSequence : ISequence<Memory<byte>>
     {
         ISequence<Memory<byte>> _buffers;
         SymbolTable _symbolTable;
@@ -53,11 +53,11 @@ namespace System.Text.Formatting
         }
         private bool NeedShift => _previousWrittenBytes != -1;
 
-        SymbolTable ITextOutput.SymbolTable => _symbolTable;
+        SymbolTable ITextBufferWriter.SymbolTable => _symbolTable;
 
         public int TotalWritten => _totalWritten;
 
-        Memory<byte> IOutput.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
         {
             if (minimumLength == 0) minimumLength = 1;
             if (minimumLength > Current.Length - _currentWrittenBytes)
@@ -76,9 +76,9 @@ namespace System.Text.Formatting
             return Current.Slice(_currentWrittenBytes);
         }
 
-        Span<byte> IOutput.GetSpan(int minimumLength) => ((IOutput)this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter)this).GetMemory(minimumLength).Span;
 
-        void IOutput.Advance(int bytes)
+        void IBufferWriter.Advance(int bytes)
         {
             var current = Current;
             if (NeedShift)

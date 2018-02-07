@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Sockets
@@ -79,7 +78,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             if (pool == null)
             {
                 _ownsPool = true;
-                pool = new MemoryPool();
+                pool = MemoryPool<byte>.Shared;
             }
             _pool = pool;
 
@@ -351,7 +350,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         // before flushing (entirely arbitrarily) - might want to make this configurable later
 
                         haveWriteBuffer = true;
-                        int FlushInputEveryBytes = 4 * Pool.MaxBufferSize;
+                        int FlushInputEveryBytes = 24;
 
                         if (initialSegment.Array != null)
                         {

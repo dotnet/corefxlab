@@ -1,5 +1,6 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System.Buffers;
 using System.Diagnostics;
@@ -15,33 +16,15 @@ namespace System.IO.Pipelines
         private const int InitialCallbacksSize = 1;
         private static readonly Exception _completedNoException = new Exception();
 
-#if COMPLETION_LOCATION_TRACKING
-        private string _completionLocation;
-#endif
         private Exception _exception;
 
         private PipeCompletionCallback[] _callbacks;
         private int _callbackCount;
 
-        public string Location
-        {
-            get
-            {
-#if COMPLETION_LOCATION_TRACKING
-                return _completionLocation;
-#else
-                return null;
-#endif
-            }
-        }
-
         public bool IsCompleted => _exception != null;
 
         public PipeCompletionCallbacks TryComplete(Exception exception = null)
         {
-#if COMPLETION_LOCATION_TRACKING
-            _completionLocation = Environment.StackTrace;
-#endif
             if (_exception == null)
             {
                 // Set the exception object to the exception passed in or a sentinel value
@@ -57,12 +40,12 @@ namespace System.IO.Pipelines
                 _callbacks = CompletionCallbackPool.Rent(InitialCallbacksSize);
             }
 
-            var newIndex = _callbackCount;
+            int newIndex = _callbackCount;
             _callbackCount++;
 
             if (newIndex == _callbacks.Length)
             {
-                var newArray = CompletionCallbackPool.Rent(_callbacks.Length * 2);
+                PipeCompletionCallback[] newArray = CompletionCallbackPool.Rent(_callbacks.Length * 2);
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
                 CompletionCallbackPool.Return(_callbacks, clearArray: true);
                 _callbacks = newArray;
@@ -118,9 +101,6 @@ namespace System.IO.Pipelines
             Debug.Assert(IsCompleted);
             Debug.Assert(_callbacks == null);
             _exception = null;
-#if COMPLETION_LOCATION_TRACKING
-            _completionLocation = null;
-#endif
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

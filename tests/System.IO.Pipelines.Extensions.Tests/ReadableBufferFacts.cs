@@ -24,12 +24,10 @@ namespace System.IO.Pipelines.Tests
         const int BlockSize = 4032;
 
         private Pipe _pipe;
-        private MemoryPool<byte> _pool;
 
         public ReadableBufferFacts()
         {
-            _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new Pipe();
         }
         public void Dispose()
         {
@@ -38,7 +36,6 @@ namespace System.IO.Pipelines.Tests
             GC.WaitForPendingFinalizers();
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pool?.Dispose();
         }
 
         [Fact]
@@ -469,22 +466,19 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsync()
         {
-            using (var pool = new MemoryPool())
-            {
-                var readerWriter = new Pipe(new PipeOptions(pool));
-                var output = readerWriter.Writer;
-                output.Append("Hello World", SymbolTable.InvariantUtf8);
-                await output.FlushAsync();
-                var ms = new MemoryStream();
-                var result = await readerWriter.Reader.ReadAsync();
-                var rb = result.Buffer;
-                await rb.CopyToAsync(ms);
-                ms.Position = 0;
-                Assert.Equal(11, rb.Length);
-                Assert.Equal(11, ms.Length);
-                Assert.Equal(rb.ToArray(), ms.ToArray());
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
-            }
+            var readerWriter = new Pipe();
+            var output = readerWriter.Writer;
+            output.Append("Hello World", SymbolTable.InvariantUtf8);
+            await output.FlushAsync();
+            var ms = new MemoryStream();
+            var result = await readerWriter.Reader.ReadAsync();
+            var rb = result.Buffer;
+            await rb.CopyToAsync(ms);
+            ms.Position = 0;
+            Assert.Equal(11, rb.Length);
+            Assert.Equal(11, ms.Length);
+            Assert.Equal(rb.ToArray(), ms.ToArray());
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(ms.ToArray()));
         }
     }
 }

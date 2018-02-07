@@ -15,7 +15,7 @@ namespace System.Text.Formatting
     // not never box.
     public static class CompositeFormattingExtensions
     {
-        public static void Format<TFormatter, T0>(this TFormatter formatter, string compositeFormat, T0 arg0) where TFormatter : ITextOutput
+        public static void Format<TFormatter, T0>(this TFormatter formatter, string compositeFormat, T0 arg0) where TFormatter : ITextBufferWriter
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -35,7 +35,7 @@ namespace System.Text.Formatting
             }
         }
 
-        public static void Format<TFormatter, T0, T1>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1) where TFormatter : ITextOutput
+        public static void Format<TFormatter, T0, T1>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1) where TFormatter : ITextBufferWriter
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -56,7 +56,7 @@ namespace System.Text.Formatting
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2) where TFormatter : ITextOutput
+        public static void Format<TFormatter, T0, T1, T2>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2) where TFormatter : ITextBufferWriter
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -78,7 +78,7 @@ namespace System.Text.Formatting
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2, T3>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3) where TFormatter : ITextOutput
+        public static void Format<TFormatter, T0, T1, T2, T3>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3) where TFormatter : ITextBufferWriter
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -101,7 +101,7 @@ namespace System.Text.Formatting
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2, T3, T4>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4) where TFormatter : ITextOutput
+        public static void Format<TFormatter, T0, T1, T2, T3, T4>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4) where TFormatter : ITextBufferWriter
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -126,7 +126,7 @@ namespace System.Text.Formatting
         }
 
         // TODO: this should be removed and an ability to append substrings should be added
-        static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : ITextOutput
+        static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : ITextBufferWriter
         {
             var buffer = formatter.GetSpan();
             var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
@@ -144,7 +144,7 @@ namespace System.Text.Formatting
             }
         }
 
-        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, StandardFormat format) where TFormatter : ITextOutput
+        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, StandardFormat format) where TFormatter : ITextBufferWriter
         {
             #region Built in types
             var i32 = value as int?;

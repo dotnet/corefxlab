@@ -8,12 +8,12 @@ using System.Buffers.Text;
 
 namespace System.IO.Pipelines.Text.Primitives
 {
-    public class PipelineTextOutput : ITextOutput
+    public class PipelineTextBufferWriter : ITextBufferWriter
     {
         private readonly PipeWriter _writer;
         private bool _needAlloc = true;
 
-        public PipelineTextOutput(PipeWriter writer, SymbolTable symbolTable)
+        public PipelineTextBufferWriter(PipeWriter writer, SymbolTable symbolTable)
         {
             _writer = writer;
             SymbolTable = symbolTable;

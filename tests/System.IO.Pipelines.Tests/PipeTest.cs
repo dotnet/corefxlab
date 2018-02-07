@@ -1,7 +1,6 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System.Buffers;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 namespace System.IO.Pipelines.Tests
 {
@@ -9,16 +8,21 @@ namespace System.IO.Pipelines.Tests
     {
         protected const int MaximumSizeHigh = 65;
 
-        protected Pipe Pipe;
-        private readonly MemoryPool _pool;
+        protected const int MaximumSizeLow = 6;
 
-        protected PipeTest()
+        private readonly TestMemoryPool _pool;
+
+        protected Pipe Pipe;
+
+        protected PipeTest(int pauseWriterThreshold = MaximumSizeHigh, int resumeWriterThreshold = MaximumSizeLow)
         {
-            _pool = new MemoryPool();
-            Pipe = new Pipe(new PipeOptions(_pool,
-                pauseWriterThreshold: 65,
-                resumeWriterThreshold: 6
-            ));
+            _pool = new TestMemoryPool();
+            Pipe = new Pipe(
+                new PipeOptions(
+                    _pool,
+                    pauseWriterThreshold: pauseWriterThreshold,
+                    resumeWriterThreshold: resumeWriterThreshold
+                ));
         }
 
         public void Dispose()

@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Samples
 
         public RawSocketHttpClientSample()
         {
-            pool = new MemoryPool();
+            pool = MemoryPool<byte>.Shared;
         }
 
         protected override Task<IDuplexPipe> GetConnection()

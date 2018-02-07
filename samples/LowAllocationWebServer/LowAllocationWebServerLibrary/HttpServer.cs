@@ -128,7 +128,7 @@ namespace Microsoft.Net
             Http.Version version,
             int statuCode,
             string reasonCode)
-            where TFormatter : ITextOutput
+            where TFormatter : ITextBufferWriter
         {
             var currentTime = DateTime.UtcNow;
             formatter.AppendHttpStatusLine(version, statuCode, new Utf8Span(reasonCode));

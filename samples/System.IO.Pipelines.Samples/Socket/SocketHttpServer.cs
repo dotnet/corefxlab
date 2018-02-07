@@ -27,25 +27,21 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             _listenSocket.Bind(new IPEndPoint(ip, port));
             _listenSocket.Listen(10);
-
-            using (var memoryPool = new MemoryPool())
+            while (true)
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        var clientSocket = await _listenSocket.AcceptAsync();
-                        clientSocket.NoDelay = true;
-                        var task = ProcessConnection(application, memoryPool, clientSocket);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        break;
-                    }
-                    catch (Exception)
-                    {
-                        /* Ignored */
-                    }
+                    var clientSocket = await _listenSocket.AcceptAsync();
+                    clientSocket.NoDelay = true;
+                    var task = ProcessConnection(application, MemoryPool<byte>.Shared, clientSocket);
+                }
+                catch (ObjectDisposedException)
+                {
+                    break;
+                }
+                catch (Exception)
+                {
+                    /* Ignored */
                 }
             }
         }

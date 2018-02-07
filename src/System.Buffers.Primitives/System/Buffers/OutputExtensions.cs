@@ -5,15 +5,15 @@ namespace System.Buffers
 {
     public static class OutputExtensions
     {
-        public static void Write(this IOutput output, ReadOnlySpan<byte> source)
+        public static void Write(this IBufferWriter bufferWriter, ReadOnlySpan<byte> source)
         {
-            var buffer = output.GetMemory();
+            var buffer = bufferWriter.GetMemory();
 
             // Fast path, try copying to the available memory directly
             if (source.Length <= buffer.Length)
             {
                 source.CopyTo(buffer.Span);
-                output.Advance(source.Length);
+                bufferWriter.Advance(source.Length);
                 return;
             }
 
@@ -24,7 +24,7 @@ namespace System.Buffers
             {
                 var writable = Math.Min(remaining, buffer.Length);
 
-                buffer = output.GetMemory(writable);
+                buffer = bufferWriter.GetMemory(writable);
 
                 if (writable == 0)
                 {
@@ -36,7 +36,7 @@ namespace System.Buffers
                 remaining -= writable;
                 offset += writable;
 
-                output.Advance(writable);
+                bufferWriter.Advance(writable);
             }
         }
     }

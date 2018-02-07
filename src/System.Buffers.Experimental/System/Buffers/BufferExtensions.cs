@@ -132,7 +132,7 @@ namespace System.Buffers
     {
         const int stackLength = 32;
 
-        public static void Pipe(this IBufferOperation transformation, ReadOnlyBuffer<byte> source, IOutput destination)
+        public static void Pipe(this IBufferOperation transformation, ReadOnlyBuffer<byte> source, IBufferWriter destination)
         {
             int afterMergeSlice = 0;
 

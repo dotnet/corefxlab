@@ -13,18 +13,15 @@ namespace System.IO.Pipelines.Tests
     public class PipelineReaderWriterFacts : IDisposable
     {
         private Pipe _pipe;
-        private MemoryPool<byte> _pool;
 
         public PipelineReaderWriterFacts()
         {
-            _pool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_pool));
+            _pipe = new Pipe();
         }
         public void Dispose()
         {
             _pipe.Writer.Complete();
             _pipe.Reader.Complete();
-            _pool?.Dispose();
         }
 
         [Fact]
