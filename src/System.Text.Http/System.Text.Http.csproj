@@ -5,6 +5,9 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <PackageTags>HTTP parser parsing .NET non-allocating corefxlab</PackageTags>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />

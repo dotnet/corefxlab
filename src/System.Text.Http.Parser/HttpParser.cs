@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -22,6 +23,7 @@ namespace System.Text.Http.Parser
         private const byte ByteTab = (byte)'\t';
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
+        static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
 
         private readonly bool _showErrorDetails;
 
@@ -76,7 +78,7 @@ namespace System.Text.Http.Parser
             return true;
         }
 
-        static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
+
         public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
@@ -473,6 +475,27 @@ namespace System.Text.Http.Parser
                     return false;
                 }
             }
+        }
+
+        public bool ParseResponseLine<T>(ref T handler, ref ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
+        {
+            var first = buffer.First.Span;
+            var eol = first.IndexOf(s_Eol);
+            if (eol == -1)
+            {
+                throw new NotImplementedException();
+            }
+            first = first.Slice(0, eol);
+            int codeStart = first.IndexOf((byte)' ') + 1;
+            var codeSlice = first.Slice(codeStart);
+            if (!Utf8Parser.TryParse(codeSlice, out ushort code, out consumedBytes))
+            {
+                throw new Exception("no status code");
+            }
+
+            handler.OnStartLine(Parser.Http.Version.Http11, code, codeSlice.Slice(consumedBytes + 1));
+            consumedBytes = eol + s_Eol.Length;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
