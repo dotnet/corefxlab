@@ -7,9 +7,71 @@ using System.Text.Utf8;
 using System.Binary.Base64Experimental;
 using System.Buffers.Text;
 using System.Buffers;
+using System.Buffers.Transformations;
 
 namespace System.Azure.Authentication
 {
+    public struct StorageAuthorizationHeader : IWritable
+    {
+        private static TransformationFormat s_toBase64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        private static TransformationFormat s_removeCR = new TransformationFormat(new RemoveTransformation(13));
+
+        public Sha256 Hash;
+        public string HttpVerb;
+        public string AccountName;
+        public string CanonicalizedResource;
+        public WritableBytes CanonicalizedHeaders;
+        public long ContentLength;
+
+        public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
+        {
+            try
+            {
+                var writer = BufferWriter.Create(buffer);
+                writer.Write("SharedKey ");
+                writer.Write(AccountName);
+                writer.Write(':');
+
+                int signatureStart = writer.WrittenCount;
+
+                writer.Write(HttpVerb);
+                if (ContentLength == 0)
+                {
+                    writer.Write("\n\n\n\n\n\n\n\n\n\n\n\n");
+                }
+                else
+                {
+                    writer.Write("\n\n\n");
+                    writer.Write(ContentLength.ToString());
+                    writer.Write("\n\n\n\n\n\n\n\n\n");
+                }
+                writer.WriteBytes(CanonicalizedHeaders, s_removeCR);
+
+                // write canonicalized resource
+                writer.Write('/');
+                writer.Write(AccountName);
+                writer.Write('/');
+                writer.Write(CanonicalizedResource);
+
+                // compute hash
+                Hash.Append(writer.Written.Slice(signatureStart));
+                writer.WrittenCount = signatureStart;
+
+                // write hash
+                writer.WriteBytes(Hash, s_toBase64);
+
+                written = writer.WrittenCount;
+                return true;
+            }
+            catch (BufferWriter.BufferTooSmallException)
+            {
+                buffer.Clear();
+                written = 0;
+                return false;
+            }
+        }
+    }
+
     public static class StorageAccessSignature
     {
         private static Utf8String s_emptyHeaders = (Utf8String)"\n\n\n\n\n\n\n\n\n\n\nx-ms-date:"; // this wont be needed once we have UTF8 literals
