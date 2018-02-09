@@ -20,13 +20,21 @@ namespace System.Text.Http.Formatter
             return writer;
         }
 
-        public static void WriteRequestLine(ref this BufferWriter writer, Parser.Http.Method verb, string path)
+        public static void WriteRequestLine(ref this BufferWriter writer, Parser.Http.Method verb, Parser.Http.Version version, string path)
         {
             writer.WriteBytes(verb.AsBytes());
             writer.Write(" /");
 
             writer.Write(path);
-            writer.WriteLine(" HTTP/1.1");
+            if (version == Parser.Http.Version.Http11)
+            {
+                writer.WriteLine(" HTTP/1.1");
+            }
+            else if (version == Parser.Http.Version.Http10)
+            {
+                writer.WriteLine(" HTTP/1.0");
+            }
+            else throw new NotSupportedException("version not supported");
         }
 
         public static void WriteHeader(ref this BufferWriter writer, string headerName, string headerValue)

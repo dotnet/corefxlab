@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-
     public static class MemoryListExtensions
     {
         // span creation helpers:

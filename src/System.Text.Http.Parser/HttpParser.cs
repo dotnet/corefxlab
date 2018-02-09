@@ -78,7 +78,6 @@ namespace System.Text.Http.Parser
             return true;
         }
 
-
         public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
@@ -493,7 +492,7 @@ namespace System.Text.Http.Parser
                 throw new Exception("no status code");
             }
 
-            handler.OnStartLine(Parser.Http.Version.Http11, code, codeSlice.Slice(consumedBytes + 1));
+            handler.OnStatusLine(Http.Version.Http11, code, codeSlice.Slice(consumedBytes + 1));
             consumedBytes = eol + s_Eol.Length;
             return true;
         }

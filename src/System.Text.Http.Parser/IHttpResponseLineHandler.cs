@@ -5,6 +5,6 @@ namespace System.Text.Http.Parser
 {
     public interface IHttpResponseLineHandler
     {
-        void OnStartLine(Http.Version version, ushort code, ReadOnlySpan<byte> status);
+        void OnStatusLine(Http.Version version, ushort status, ReadOnlySpan<byte> reason);
     }
 }
