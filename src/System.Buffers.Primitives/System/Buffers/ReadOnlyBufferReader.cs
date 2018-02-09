@@ -13,9 +13,9 @@ namespace System.Buffers
             return new BufferReader<TSequence>(buffer);
         }
 
-        public static int Peek<TSequence>(BufferReader<TSequence> reader, Span<byte> destination)
+        public static int Peek<TSequence>(in BufferReader<TSequence> reader, Span<byte> destination)
             where TSequence : ISequence<ReadOnlyMemory<byte>>
-            => BufferReader<TSequence>.Peek(reader, destination);
+            => BufferReader<TSequence>.Peek(in reader, destination);
     }
 
     public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
@@ -135,7 +135,7 @@ namespace System.Buffers
             }
         }
 
-        internal static int Peek(BufferReader<TSequence> bytes, Span<byte> destination)
+        internal static int Peek(in BufferReader<TSequence> bytes, Span<byte> destination)
         {
             var first = bytes.UnreadSegment;
             if (first.Length > destination.Length)
