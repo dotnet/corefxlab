@@ -14,7 +14,4 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.ValueTuple" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="System\Collections\" />
-  </ItemGroup>
 </Project>
