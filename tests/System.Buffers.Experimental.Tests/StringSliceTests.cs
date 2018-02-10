@@ -60,15 +60,6 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public static void StringSliceNullChecked()
-        {
-            string s = null;
-            Assert.Throws<ArgumentNullException>(() => s.AsReadOnlySpan().DontBox());
-            Assert.Throws<ArgumentNullException>(() => s.AsReadOnlySpan().Slice(0).DontBox());
-            Assert.Throws<ArgumentNullException>(() => s.AsReadOnlySpan().Slice(0, 0).DontBox());
-        }
-
-        [Fact]
         public static void StringSliceIntRangeChecked()
         {
             string s = "Hello";

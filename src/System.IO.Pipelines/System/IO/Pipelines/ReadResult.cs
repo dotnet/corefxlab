@@ -10,13 +10,13 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadResult
     {
-        internal ReadOnlyBuffer<byte> ResultBuffer;
+        internal ReadOnlySequence<byte> ResultBuffer;
         internal ResultFlags ResultFlags;
 
         /// <summary>
         /// Creates a new instance of <see cref="ReadResult"/> setting <see cref="IsCanceled"/> and <see cref="IsCompleted"/> flags
         /// </summary>
-        public ReadResult(ReadOnlyBuffer<byte> buffer, bool isCanceled, bool isCompleted)
+        public ReadResult(ReadOnlySequence<byte> buffer, bool isCanceled, bool isCompleted)
         {
             ResultBuffer = buffer;
             ResultFlags = ResultFlags.None;
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The <see cref="ReadOnlyBuffer{Byte}"/> that was read
         /// </summary>
-        public ReadOnlyBuffer<byte> Buffer => ResultBuffer;
+        public ReadOnlySequence<byte> Buffer => ResultBuffer;
 
         /// <summary>
         /// True if the current <see cref="PipeReader.ReadAsync"/> operation was canceled, otherwise false.

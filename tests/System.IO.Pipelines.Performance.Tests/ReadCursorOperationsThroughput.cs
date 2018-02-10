@@ -25,19 +25,19 @@ namespace System.IO.Pipelines.Performance.Tests
             "Accept-Language: en-US,en;q=0.8\r\n" +
             "Cookie: __unam=7a67379-1s65dc575c4-6d778abe-1; omniID=9519gfde_3347_4762_8762_df51458c8ec2\r\n\r\n";
 
-        private ReadOnlyBuffer<byte> _plainTextBuffer;
-        private ReadOnlyBuffer<byte> _plainTextPipelinedBuffer;
-        private ReadOnlyBuffer<byte> _liveAspNetBuffer;
-        private ReadOnlyBuffer<byte> _liveAspNetMultiBuffer;
+        private ReadOnlySequence<byte> _plainTextBuffer;
+        private ReadOnlySequence<byte> _plainTextPipelinedBuffer;
+        private ReadOnlySequence<byte> _liveAspNetBuffer;
+        private ReadOnlySequence<byte> _liveAspNetMultiBuffer;
 
         [GlobalSetup]
         public void Setup()
         {
             var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);
             var pipelinedRequests = string.Concat(Enumerable.Repeat(plaintextRequest, 16));
-            _plainTextPipelinedBuffer = new ReadOnlyBuffer<byte>(Encoding.UTF8.GetBytes(pipelinedRequests));
-            _plainTextBuffer = new ReadOnlyBuffer<byte>(Encoding.UTF8.GetBytes(plaintextRequest));
-            _liveAspNetBuffer = new ReadOnlyBuffer<byte>(liveaspnetRequestBytes);
+            _plainTextPipelinedBuffer = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(pipelinedRequests));
+            _plainTextBuffer = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(plaintextRequest));
+            _liveAspNetBuffer = new ReadOnlySequence<byte>(liveaspnetRequestBytes);
 
             // Split the liveaspnetRequest across 3 byte[]
             var remaining = liveaspnetRequestBytes.Length;
@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Performance.Tests
             FindAllNewLinesReadableBufferReader(_liveAspNetMultiBuffer);
         }
 
-        private static void FindAllNewLinesReadableBufferReader(ReadOnlyBuffer<byte> buffer)
+        private static void FindAllNewLinesReadableBufferReader(ReadOnlySequence<byte> buffer)
         {
             var reader = BufferReader.Create(buffer);
             var end = buffer.End;
@@ -151,7 +151,7 @@ namespace System.IO.Pipelines.Performance.Tests
             }
         }
 
-        private static void FindAllNewLines(ReadOnlyBuffer<byte> buffer)
+        private static void FindAllNewLines(ReadOnlySequence<byte> buffer)
         {
             while (true)
             {

@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Tests
 
             await _pipe.Writer.WriteAsync(bytes);
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
             Assert.True(buffer.IsSingleSegment);
@@ -93,7 +93,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.CancelPendingRead();
 
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
             _pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
@@ -110,7 +110,7 @@ namespace System.IO.Pipelines.Tests
             await _pipe.Writer.WriteAsync(new byte[100]);
 
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             _pipe.Reader.AdvanceTo(buffer.End);
 
@@ -138,7 +138,7 @@ namespace System.IO.Pipelines.Tests
             memory = _pipe.Writer.GetMemory(1);
 
             // Create position that would cross into write head
-            ReadOnlyBuffer<byte> buffer = readResult.Buffer;
+            ReadOnlySequence<byte> buffer = readResult.Buffer;
             SequencePosition position = buffer.GetPosition(buffer.Start, buffer.Length);
 
             // Return everything
@@ -154,7 +154,7 @@ namespace System.IO.Pipelines.Tests
         {
             await _pipe.Writer.WriteAsync(new byte[1]);
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Complete());
 
@@ -247,9 +247,9 @@ namespace System.IO.Pipelines.Tests
             await writeBuffer.FlushAsync();
 
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
             Assert.False(buffer.IsSingleSegment);
-            ReadOnlyBuffer<byte> helloBuffer = buffer.Slice(blockSize - 5);
+            ReadOnlySequence<byte> helloBuffer = buffer.Slice(blockSize - 5);
             Assert.False(helloBuffer.IsSingleSegment);
             var memory = new List<ReadOnlyMemory<byte>>();
             foreach (ReadOnlyMemory<byte> m in helloBuffer)
@@ -314,7 +314,7 @@ namespace System.IO.Pipelines.Tests
 
             // Make sure we don't see it yet
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> reader = result.Buffer;
+            ReadOnlySequence<byte> reader = result.Buffer;
 
             Assert.Equal(4, reader.Length);
             Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.ToArray());
@@ -360,7 +360,7 @@ namespace System.IO.Pipelines.Tests
 
             // Make sure we don't see it yet
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> reader = result.Buffer;
+            ReadOnlySequence<byte> reader = result.Buffer;
 
             Assert.Equal(len - 5, reader.Length);
 
@@ -394,7 +394,7 @@ namespace System.IO.Pipelines.Tests
             var c2 = new Pipe(new PipeOptions(_pool));
             await c2.Writer.WriteAsync(bytes);
             ReadResult result = await c2.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> c2Buffer = result.Buffer;
+            ReadOnlySequence<byte> c2Buffer = result.Buffer;
 
             Assert.Equal(bytes.Length, c2Buffer.Length);
 
@@ -413,7 +413,7 @@ namespace System.IO.Pipelines.Tests
 
             // Now read and make sure we only see the comitted data
             result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> reader = result.Buffer;
+            ReadOnlySequence<byte> reader = result.Buffer;
 
             Assert.Equal(4, reader.Length);
             Assert.Equal(new byte[] { 0, 0, 0, 10 }, reader.Slice(0, 4).ToArray());
@@ -450,7 +450,7 @@ namespace System.IO.Pipelines.Tests
             await Assert.ThrowsAsync<OperationCanceledException>(
                 async () => {
                     ReadResult result = await _pipe.Reader.ReadAsync();
-                    ReadOnlyBuffer<byte> buffer = result.Buffer;
+                    ReadOnlySequence<byte> buffer = result.Buffer;
                 });
         }
 
@@ -547,7 +547,7 @@ namespace System.IO.Pipelines.Tests
 
             await _pipe.Writer.WriteAsync(bytes);
             ReadResult result = await _pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
             Assert.True(buffer.IsSingleSegment);

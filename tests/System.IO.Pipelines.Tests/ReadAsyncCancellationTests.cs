@@ -18,7 +18,7 @@ namespace System.IO.Pipelines.Tests
             Pipe.Reader.CancelPendingRead();
 
             ReadResult result = await Pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
             Pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Tests
             await output.FlushAsync();
 
             ReadResult result = await Pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             Assert.Equal(11, buffer.Length);
             Assert.False(result.IsCanceled);
@@ -71,7 +71,7 @@ namespace System.IO.Pipelines.Tests
 
             Func<Task> taskFunc = async () => {
                 ReadResult result = await Pipe.Reader.ReadAsync();
-                ReadOnlyBuffer<byte> buffer = result.Buffer;
+                ReadOnlySequence<byte> buffer = result.Buffer;
                 Pipe.Reader.AdvanceTo(buffer.End);
 
                 Assert.False(result.IsCompleted);
@@ -109,7 +109,7 @@ namespace System.IO.Pipelines.Tests
             Pipe.Reader.CancelPendingRead();
 
             ReadResult result = await Pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
             Pipe.Reader.AdvanceTo(buffer.End);
 
             Assert.False(result.IsCompleted);
@@ -402,7 +402,7 @@ namespace System.IO.Pipelines.Tests
             await Assert.ThrowsAsync<OperationCanceledException>(
                 async () => {
                     ReadResult result = await Pipe.Reader.ReadAsync();
-                    ReadOnlyBuffer<byte> buffer = result.Buffer;
+                    ReadOnlySequence<byte> buffer = result.Buffer;
                 });
         }
 
@@ -417,7 +417,7 @@ namespace System.IO.Pipelines.Tests
             Pipe.Reader.CancelPendingRead();
 
             ReadResult result = await Pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
+            ReadOnlySequence<byte> buffer = result.Buffer;
 
             Assert.False(result.IsCompleted);
             Assert.True(result.IsCanceled);

@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Tests
             first.SetMemory(new OwnedArray<byte>(new byte[] { 1, 2 }), 0, 2);
             first.SetNext(last);
 
-            var reader = BufferReader.Create(new ReadOnlyBuffer<byte>(first, first.Start, last, last.Start));
+            var reader = BufferReader.Create(new ReadOnlySequence<byte>(first, first.Start, last, last.Start));
             reader.Read();
             reader.Read();
             reader.Read();

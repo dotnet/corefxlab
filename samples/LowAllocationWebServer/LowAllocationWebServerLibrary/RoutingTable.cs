@@ -14,7 +14,7 @@ namespace Microsoft.Net
         byte[][] _uris = new byte[tablecapacity][];
         TRequestId[] _requestIds = new TRequestId[tablecapacity];
         Http.Method[] _verbs = new Http.Method[tablecapacity];
-        Action<HttpRequest, ReadOnlyBuffer<byte>, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, ReadOnlyBuffer<byte>, TcpConnectionFormatter>[tablecapacity];
+        Action<HttpRequest, ReadOnlySequence<byte>, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, ReadOnlySequence<byte>, TcpConnectionFormatter>[tablecapacity];
         int _count;
 
         public TRequestId GetRequestId(HttpRequest request)
@@ -25,7 +25,7 @@ namespace Microsoft.Net
             return default;
         }
 
-        public bool TryHandle(HttpRequest request, ReadOnlyBuffer<byte> body, TcpConnectionFormatter response)
+        public bool TryHandle(HttpRequest request, ReadOnlySequence<byte> body, TcpConnectionFormatter response)
         {
             var path = new Utf8Span(request.PathBytes);
             for (int i = 0; i < _count; i++)
@@ -40,7 +40,7 @@ namespace Microsoft.Net
             return false;
         }
 
-        public void Add(Http.Method method, string requestUri, TRequestId requestId, Action<HttpRequest, ReadOnlyBuffer<byte>, TcpConnectionFormatter> handler = null)
+        public void Add(Http.Method method, string requestUri, TRequestId requestId, Action<HttpRequest, ReadOnlySequence<byte>, TcpConnectionFormatter> handler = null)
         {
             if (_count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
             _uris[_count] = new Utf8Span(requestUri).Bytes.ToArray();

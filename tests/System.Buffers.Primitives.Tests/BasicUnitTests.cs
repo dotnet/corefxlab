@@ -116,34 +116,6 @@ namespace System.Buffers.Tests
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(bytes, start, length);
         }
 
-        [Fact]
-        public void ByteSpanCtorWithRangeThrowsArgumentExceptionOnNull()
-        {
-            try
-            {
-                Span<byte> span = new Span<byte>(null, 0, 0);
-                Assert.True(false);
-            }
-            catch (Exception ex)
-            {
-                Assert.True(ex is ArgumentNullException);
-            }
-        }
-
-        [Fact]
-        public void ByteReadOnlySpanCtorWithRangeThrowsArgumentExceptionOnNull()
-        {
-            try
-            {
-                ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0);
-                Assert.True(false);
-            }
-            catch (Exception ex)
-            {
-                Assert.True(ex is ArgumentNullException);
-            }
-        }
-
         [Theory]
         [InlineData(new byte[0], 1, 0)]
         [InlineData(new byte[0], 1, -1)]

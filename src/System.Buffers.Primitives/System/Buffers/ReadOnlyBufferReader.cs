@@ -8,29 +8,28 @@ namespace System.Buffers
 {
     public class BufferReader
     {
-        public static BufferReader<TSequence> Create<TSequence>(TSequence buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static ByteBufferReader Create(ReadOnlySequence<byte> buffer)
         {
-            return new BufferReader<TSequence>(buffer);
+            return new ByteBufferReader(buffer);
         }
 
-        public static int Peek<TSequence>(BufferReader<TSequence> reader, Span<byte> destination)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
-            => BufferReader<TSequence>.Peek(reader, destination);
+        public static int Peek(ByteBufferReader reader, Span<byte> destination)
+            => ByteBufferReader.Peek(reader, destination);
     }
 
-    public ref struct BufferReader<TSequence> where TSequence : ISequence<ReadOnlyMemory<byte>>
+    public ref struct ByteBufferReader
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
 
-        private TSequence _sequence;
+        private ReadOnlySequence<byte> _sequence;
         private SequencePosition _currentSequencePosition;
         private SequencePosition _nextSequencePosition;
 
         private int _consumedBytes;
         private bool _end;
 
-        public BufferReader(TSequence buffer)
+        public ByteBufferReader(ReadOnlySequence<byte> buffer)
         {
             _end = false;
             _index = 0;
@@ -46,7 +45,7 @@ namespace System.Buffers
 
         public int CurrentSegmentIndex => _index;
 
-        public TSequence Sequence => _sequence;
+        public ReadOnlySequence<byte> Sequence => _sequence;
 
         public SequencePosition Position => _sequence.GetPosition(_currentSequencePosition, _index);
 
@@ -135,7 +134,7 @@ namespace System.Buffers
             }
         }
 
-        internal static int Peek(BufferReader<TSequence> bytes, Span<byte> destination)
+        internal static int Peek(ByteBufferReader bytes, Span<byte> destination)
         {
             var first = bytes.UnreadSegment;
             if (first.Length > destination.Length)

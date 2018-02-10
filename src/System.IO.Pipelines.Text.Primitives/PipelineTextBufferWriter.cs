@@ -11,7 +11,6 @@ namespace System.IO.Pipelines.Text.Primitives
     public class PipelineTextBufferWriter : ITextBufferWriter
     {
         private readonly PipeWriter _writer;
-        private bool _needAlloc = true;
 
         public PipelineTextBufferWriter(PipeWriter writer, SymbolTable symbolTable)
         {
@@ -41,7 +40,6 @@ namespace System.IO.Pipelines.Text.Primitives
         public async Task FlushAsync()
         {
             await _writer.FlushAsync();
-            _needAlloc = true;
         }
     }
 }
