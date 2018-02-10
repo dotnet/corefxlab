@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseArrayBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = new ReadOnlyBuffer<byte>(data, 3, data.Length - 7);
+            var buffer = new ReadOnlySequence<byte>(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -82,7 +82,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            var buffer = new ReadOnlyBuffer<byte>(data, 3, data.Length - 7);
+            var buffer = new ReadOnlySequence<byte>(data, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');
             Assert.Equal(3, split.Count());
@@ -186,7 +186,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.AdvanceTo(readBuffer.End);
         }
 
-        private void EqualsDetectsDeltaForAllLocations(ReadOnlyBuffer<byte> slice, byte[] expected, int offset, int length)
+        private void EqualsDetectsDeltaForAllLocations(ReadOnlySequence<byte> slice, byte[] expected, int offset, int length)
         {
             Assert.Equal(length, slice.Length);
             Assert.True(slice.EqualsTo(new Span<byte>(expected, offset, length)));
@@ -277,13 +277,13 @@ namespace System.IO.Pipelines.Tests
 
             var result = await _pipe.Reader.ReadAsync();
             var buffer = result.Buffer;
-            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor));
+            Assert.True(buffer.TrySliceTo(sliceToBytes, out ReadOnlySequence<byte> slice, out SequencePosition cursor));
             Assert.Equal(expected, slice.GetUtf8Span());
 
             _pipe.Reader.AdvanceTo(buffer.End);
         }
 
-        private unsafe void TestIndexOfWorksForAllLocations(ref ReadOnlyBuffer<byte> readBuffer, byte emptyValue)
+        private unsafe void TestIndexOfWorksForAllLocations(ref ReadOnlySequence<byte> readBuffer, byte emptyValue)
         {
             byte huntValue = (byte)~emptyValue;
 
@@ -291,7 +291,7 @@ namespace System.IO.Pipelines.Tests
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
             var addresses = BuildPointerIndex(ref readBuffer, handles);
-            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlyBuffer<byte> slice, out SequencePosition cursor);
+            var found = readBuffer.TrySliceTo(huntValue, out ReadOnlySequence<byte> slice, out SequencePosition cursor);
             Assert.False(found);
 
             // correctness test all values
@@ -320,7 +320,7 @@ namespace System.IO.Pipelines.Tests
             handles.Clear();
         }
 
-        private static unsafe byte*[] BuildPointerIndex(ref ReadOnlyBuffer<byte> readBuffer, List<MemoryHandle> handles)
+        private static unsafe byte*[] BuildPointerIndex(ref ReadOnlySequence<byte> readBuffer, List<MemoryHandle> handles)
         {
 
             byte*[] addresses = new byte*[readBuffer.Length];
@@ -338,7 +338,7 @@ namespace System.IO.Pipelines.Tests
             return addresses;
         }
 
-        private unsafe void ReadUInt64GivesExpectedValues(ref ReadOnlyBuffer<byte> readBuffer)
+        private unsafe void ReadUInt64GivesExpectedValues(ref ReadOnlySequence<byte> readBuffer)
         {
             Assert.True(readBuffer.IsSingleSegment);
 
@@ -364,7 +364,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private unsafe void TestValue(ref ReadOnlyBuffer<byte> readBuffer, ulong value)
+        private unsafe void TestValue(ref ReadOnlySequence<byte> readBuffer, ulong value)
         {
             fixed (byte* ptr = &MemoryMarshal.GetReference(readBuffer.First.Span))
             {
@@ -405,7 +405,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(expected.Length, i);
 
             // via objects/LINQ etc
-            IEnumerable<ReadOnlyBuffer<byte>> asObject = iter;
+            IEnumerable<ReadOnlySequence<byte>> asObject = iter;
             Assert.Equal(expected.Length, asObject.Count());
             i = 0;
             foreach (var item in asObject)

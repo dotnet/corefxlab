@@ -8,8 +8,7 @@ namespace System.Buffers
 {
     public static partial class BufferReaderExtensions 
     {
-        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out bool value) 
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse(ref ByteBufferReader reader, out bool value) 
         {
             var unread = reader.UnreadSegment;
             if (Utf8Parser.TryParse(unread, out value, out int consumed))
@@ -32,8 +31,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out int value)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse(ref ByteBufferReader reader, out int value)
         {
             var unread = reader.UnreadSegment;
             if (Utf8Parser.TryParse(unread, out value, out int consumed))
@@ -56,8 +54,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(ref BufferReader<TSequence> reader, out ulong value)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse(ref ByteBufferReader reader, out ulong value)
         {
             var unread = reader.UnreadSegment;
             if (Utf8Parser.TryParse(unread, out value, out int consumed))

@@ -116,7 +116,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             }
         }
 
-        private async Task WriteAsync(ReadOnlyBuffer<byte> buffer)
+        private async Task WriteAsync(ReadOnlySequence<byte> buffer)
         {
             var writeReq = _thread.WriteReqPool.Allocate();
 

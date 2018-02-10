@@ -9,6 +9,18 @@ namespace System.Buffers
 {
     public static class Sequence
     {
+        public static ReadOnlySpan<byte> ToSpan(this ReadOnlySequence<byte> sequence)
+        {
+            SequencePosition position = sequence.Start;
+            ResizableArray<byte> array = new ResizableArray<byte>(1024);
+            while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> buffer))
+            {
+                array.AddAll(buffer.Span);
+            }
+            array.Resize(array.Count);
+            return array.Span.Slice(0, array.Count);
+        }
+
         public static ReadOnlySpan<byte> ToSpan<T>(this T sequence) where T : ISequence<ReadOnlyMemory<byte>>
         {
             SequencePosition position = sequence.Start;
@@ -24,7 +36,7 @@ namespace System.Buffers
         // TODO: this cannot be an extension method (as I would like it to be).
         // If I make it an extensions method, the compiler complains Span<T> cannot
         // be used as a type parameter.
-        public static long IndexOf<TSequence>(TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static long IndexOf(ReadOnlySequence<byte> sequence, byte value)
         {
             SequencePosition position = sequence.Start;
             int totalIndex = 0;
@@ -37,7 +49,7 @@ namespace System.Buffers
             return -1;
         }
 
-        public static long IndexOf<TSequence>(TSequence sequence, byte v1, byte v2) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static long IndexOf(ReadOnlySequence<byte> sequence, byte v1, byte v2)
         {
             SequencePosition position = sequence.Start;
             int totalIndex = 0;
@@ -69,10 +81,8 @@ namespace System.Buffers
             return -1;
         }
 
-        public static SequencePosition? PositionOf<TSequence>(this TSequence sequence, byte value) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static SequencePosition? PositionOf(this ReadOnlySequence<byte> sequence, byte value)
         {
-            if (sequence == null) return null;
-
             SequencePosition position = sequence.Start;
             SequencePosition result = position;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
@@ -88,10 +98,8 @@ namespace System.Buffers
             return null;
         }
 
-        public static SequencePosition? PositionAt<TSequence>(this TSequence sequence, long index) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static SequencePosition? PositionAt(this ReadOnlySequence<byte> sequence, long index)
         {
-            if (sequence == null) return null;
-
             SequencePosition position = sequence.Start;
             SequencePosition result = position;
             while (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
@@ -109,7 +117,7 @@ namespace System.Buffers
             return null;
         }
 
-        public static int Copy<TSequence>(TSequence sequence, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static int Copy(ReadOnlySequence<byte> sequence, Span<byte> buffer)
         {
             int copied = 0;
             var position = sequence.Start;
@@ -124,7 +132,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static int Copy<TSequence>(TSequence sequence, SequencePosition from, Span<byte> buffer) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static int Copy(ReadOnlySequence<byte> sequence, SequencePosition from, Span<byte> buffer)
         {
             int copied = 0;
             while (sequence.TryGet(ref from, out ReadOnlyMemory<byte> memory, true))
@@ -138,7 +146,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static bool TryParse<TSequence>(TSequence sequence, out int value, out int consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse(ReadOnlySequence<byte> sequence, out int value, out int consumed)
         {
             var position = sequence.Start;
             if (sequence.TryGet(ref position, out ReadOnlyMemory<byte> memory))
@@ -163,7 +171,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryParse<TSequence>(TSequence sequence, out int value, out SequencePosition consumed) where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryParse(ReadOnlySequence<byte> sequence, out int value, out SequencePosition consumed)
         {
             if (!TryParse(sequence, out value, out int consumedBytes))
             {

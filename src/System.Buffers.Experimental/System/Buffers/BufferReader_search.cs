@@ -5,16 +5,10 @@ using System.Collections.Sequences;
 
 namespace System.Buffers
 {
-    public interface ISlicable
-    {
-        ReadOnlyBuffer<byte> Slice(SequencePosition start, SequencePosition end);
-    }
-
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
-        public static bool TryReadUntill<TSequence>(ref BufferReader<TSequence> reader, out ReadOnlyBuffer<byte> bytes, byte delimiter)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
+        public static bool TryReadUntill(ref ByteBufferReader reader, out ReadOnlySequence<byte> bytes, byte delimiter)
         {
             var copy = reader;
             var start = reader.Position;
@@ -32,8 +26,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryReadUntill<TSequence>(ref BufferReader<TSequence> reader, out ReadOnlyBuffer<byte> bytes, ReadOnlySpan<byte> delimiter)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>, ISlicable
+        public static bool TryReadUntill(ref ByteBufferReader reader, out ReadOnlySequence<byte> bytes, ReadOnlySpan<byte> delimiter)
         {
             if (delimiter.Length == 0)
             {

@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Tests
         [Theory]
         public void ReadResultCanBeConstructed(bool cancelled, bool completed)
         {
-            var buffer = new ReadOnlyBuffer<byte>(new byte[] { 1, 2, 3 });
+            var buffer = new ReadOnlySequence<byte>(new byte[] { 1, 2, 3 });
             var result = new ReadResult(buffer, cancelled, completed);
 
             Assert.Equal(new byte[] { 1, 2, 3 }, result.Buffer.ToArray());

@@ -8,8 +8,7 @@ namespace System.Buffers
 {
     public static partial class BufferReaderExtensions
     {
-        public static bool TryRead<TSequence>(ref BufferReader<TSequence> reader, out int value, bool littleEndian = false)
-            where TSequence : ISequence<ReadOnlyMemory<byte>>
+        public static bool TryRead(ref ByteBufferReader reader, out int value, bool littleEndian = false)
         {
             var unread = reader.UnreadSegment;
             if (littleEndian)

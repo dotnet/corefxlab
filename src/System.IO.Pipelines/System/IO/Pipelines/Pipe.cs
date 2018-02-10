@@ -382,7 +382,7 @@ namespace System.IO.Pipelines
                     returnEnd = consumedSegment;
 
                     // Check if we crossed _maximumSizeLow and complete backpressure
-                    long consumedBytes = new ReadOnlyBuffer<byte>(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
+                    long consumedBytes = new ReadOnlySequence<byte>(returnStart, _readHeadIndex, consumedSegment, consumed.Index).Length;
                     long oldLength = _length;
                     _length -= consumedBytes;
 
@@ -669,7 +669,7 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer = new ReadOnlyBuffer<byte>(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
+                result.ResultBuffer = new ReadOnlySequence<byte>(head, _readHeadIndex, _commitHead, _commitHeadIndex - _commitHead.Start);
             }
 
             if (isCanceled)

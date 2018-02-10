@@ -37,7 +37,7 @@ namespace System.Text.Http.Parser
             _showErrorDetails = showErrorDetails;
         }
 
-        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(T handler, in ReadOnlySequence<byte> buffer, out SequencePosition consumed, out SequencePosition examined) where T : IHttpRequestLineHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -58,7 +58,7 @@ namespace System.Text.Http.Parser
             {
                 if (TryGetNewLineSpan(buffer, out SequencePosition found))
                 {
-                    span = buffer.Slice(consumed, found).ToSpan();
+                    span = Sequence.ToSpan(buffer.Slice(consumed, found));
                     consumed = found;
                 }
                 else
@@ -78,7 +78,7 @@ namespace System.Text.Http.Parser
             return true;
         }
 
-        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlyBuffer<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, in ReadOnlySequence<byte> buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
             var span = buffer.First.Span;
@@ -97,7 +97,7 @@ namespace System.Text.Http.Parser
                     return false;
                 }
 
-                span = buffer.Slice(0, eol + s_Eol.Length).ToSpan();
+                span = Sequence.ToSpan(buffer.Slice(0, eol + s_Eol.Length));
             }
 
             // Fix and parse the span
@@ -228,7 +228,7 @@ namespace System.Text.Http.Parser
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, in ReadOnlySequence<byte> buffer, out SequencePosition consumed, out SequencePosition examined, out int consumedBytes) where T : IHttpHeadersHandler
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -237,7 +237,7 @@ namespace System.Text.Http.Parser
             var bufferEnd = buffer.End;
 
             var reader = BufferReader.Create(buffer);
-            var start = default(BufferReader<ReadOnlyBuffer<byte>>);
+            var start = default(ByteBufferReader);
             var done = false;
 
             try
@@ -321,7 +321,7 @@ namespace System.Text.Http.Parser
                                 var current = reader.Position;
                                 var subBuffer = buffer.Slice(reader.Position);
                                 // Split buffers
-                                var lineEnd = ReadOnlyBufferExtensions.PositionOf(subBuffer, ByteLF);
+                                var lineEnd = BuffersExtensions.PositionOf(subBuffer, ByteLF);
                                 if (!lineEnd.HasValue)
                                 {
                                     // Not there
@@ -330,7 +330,7 @@ namespace System.Text.Http.Parser
 
                                 // Make sure LF is included in lineEnd
                                 lineEnd = subBuffer.GetPosition(lineEnd.Value, 1);
-                                var headerSpan = subBuffer.Slice(current, lineEnd.Value).ToSpan();
+                                var headerSpan = Sequence.ToSpan(subBuffer.Slice(current, lineEnd.Value));
                                 length = headerSpan.Length;
 
                                 fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -365,7 +365,7 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpHeadersHandler
         {
             var index = 0;
             consumedBytes = 0;
@@ -446,7 +446,7 @@ namespace System.Text.Http.Parser
                                 return false;
                             }
 
-                            var headerSpan = buffer.Slice(index, end - index + 1).ToSpan();
+                            var headerSpan = Sequence.ToSpan(buffer.Slice(index, end - index + 1));
                             length = headerSpan.Length;
 
                             fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -476,7 +476,7 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public bool ParseResponseLine<T>(ref T handler, ref ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
+        public bool ParseResponseLine<T>(ref T handler, ref ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
         {
             var first = buffer.First.Span;
             var eol = first.IndexOf(s_Eol);
@@ -498,7 +498,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ReadTwoChars(ReadOnlyBuffer<byte> buffer, int consumedBytes, out int ch1, out int ch2)
+        private static void ReadTwoChars(ReadOnlySequence<byte> buffer, int consumedBytes, out int ch1, out int ch2)
         {
             var first = buffer.First.Span;
             if (first.Length - consumedBytes > 1)
@@ -667,9 +667,9 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(in ReadOnlyBuffer<byte> buffer, out SequencePosition found)
+        private static bool TryGetNewLineSpan(in ReadOnlySequence<byte> buffer, out SequencePosition found)
         {
-            var position = ReadOnlyBufferExtensions.PositionOf(buffer, ByteLF);
+            var position = BuffersExtensions.PositionOf(buffer, ByteLF);
             if (position.HasValue)
             {
                 // Move 1 byte past the \n

@@ -164,7 +164,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", ' ', 27)]
         public void MemorySeek(string raw, char searchFor, int expectIndex)
         {
-            ReadOnlyBuffer<byte> cursors = Factory.CreateWithContent(raw);
+            ReadOnlySequence<byte> cursors = Factory.CreateWithContent(raw);
             SequencePosition? result = cursors.PositionOf((byte)searchFor);
 
             Assert.NotNull(result);
@@ -176,10 +176,10 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
+            ReadOnlySequence<byte> originalBuffer = Factory.CreateWithContent(input);
 
             // Act
-            ReadOnlyBuffer<byte> buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
+            ReadOnlySequence<byte> buffer = limit > input.Length ? originalBuffer : originalBuffer.Slice(0, limit);
 
             SequencePosition? result = buffer.PositionOf((byte)seek);
 
@@ -203,10 +203,10 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
-            ReadOnlyBuffer<byte> originalBuffer = Factory.CreateWithContent(input);
+            ReadOnlySequence<byte> originalBuffer = Factory.CreateWithContent(input);
 
             SequencePosition scan1 = originalBuffer.Start;
-            ReadOnlyBuffer<byte> buffer = originalBuffer;
+            ReadOnlySequence<byte> buffer = originalBuffer;
 
             // Act
             SequencePosition? end = originalBuffer.PositionOf((byte)limitAfter);

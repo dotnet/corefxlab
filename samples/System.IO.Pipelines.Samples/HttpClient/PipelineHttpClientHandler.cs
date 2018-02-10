@@ -105,14 +105,14 @@ namespace System.IO.Pipelines.Samples
                     {
                         break;
                     }
-                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlyBuffer<byte> responseLine, out SequencePosition delim))
+                    if (!responseBuffer.TrySliceTo((byte)'\r', (byte)'\n', out ReadOnlySequence<byte> responseLine, out SequencePosition delim))
                     {
                         continue;
                     }
 
                     responseBuffer = responseBuffer.Slice(delim).Slice(2);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> httpVersion, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlySequence<byte> httpVersion, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -122,7 +122,7 @@ namespace System.IO.Pipelines.Samples
 
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> statusCode, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlySequence<byte> statusCode, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Samples
                     response.StatusCode = (HttpStatusCode)statusCode.GetUInt32();
                     responseLine = responseLine.Slice(delim).Slice(1);
 
-                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlyBuffer<byte> remaining, out delim))
+                    if (!responseLine.TrySliceTo((byte)' ', out ReadOnlySequence<byte> remaining, out delim))
                     {
                         // Bad request
                         throw new InvalidOperationException();
@@ -170,7 +170,7 @@ namespace System.IO.Pipelines.Samples
 
                         // End of the header
                         // \n
-                        if (!responseBuffer.TrySliceTo((byte)'\n', out ReadOnlyBuffer<byte> headerPair, out delim))
+                        if (!responseBuffer.TrySliceTo((byte)'\n', out ReadOnlySequence<byte> headerPair, out delim))
                         {
                             break;
                         }
@@ -178,7 +178,7 @@ namespace System.IO.Pipelines.Samples
                         responseBuffer = responseBuffer.Slice(delim).Slice(1);
 
                         // :
-                        if (!headerPair.TrySliceTo((byte)':', out ReadOnlyBuffer<byte> headerName, out delim))
+                        if (!headerPair.TrySliceTo((byte)':', out ReadOnlySequence<byte> headerName, out delim))
                         {
                             throw new Exception();
                         }
@@ -187,7 +187,7 @@ namespace System.IO.Pipelines.Samples
                         headerPair = headerPair.Slice(headerName.End).Slice(1);
 
                         // \r
-                        if (!headerPair.TrySliceTo((byte)'\r', out ReadOnlyBuffer<byte> headerValue, out delim))
+                        if (!headerPair.TrySliceTo((byte)'\r', out ReadOnlySequence<byte> headerValue, out delim))
                         {
                             // Bad request
                             throw new Exception();

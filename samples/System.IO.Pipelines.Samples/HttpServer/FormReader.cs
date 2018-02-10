@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         public Dictionary<string, StringValues> FormValues => _data;
 
-        public bool TryParse(ref ReadOnlyBuffer<byte> buffer)
+        public bool TryParse(ref ReadOnlySequence<byte> buffer)
         {
             if (buffer.IsEmpty || !_contentLength.HasValue)
             {
@@ -31,14 +31,14 @@ namespace System.IO.Pipelines.Samples.Http
             while (!buffer.IsEmpty && _contentLength > 0)
             {
                 var next = buffer;
-                if (!next.TrySliceTo((byte)'=', out ReadOnlyBuffer<byte> key, out SequencePosition delim))
+                if (!next.TrySliceTo((byte)'=', out ReadOnlySequence<byte> key, out SequencePosition delim))
                 {
                     break;
                 }
 
                 next = next.Slice(delim).Slice(1);
 
-                if (next.TrySliceTo((byte)'&', out ReadOnlyBuffer<byte> value, out delim))
+                if (next.TrySliceTo((byte)'&', out ReadOnlySequence<byte> value, out delim))
                 {
                     next = next.Slice(delim).Slice(1);
                 }

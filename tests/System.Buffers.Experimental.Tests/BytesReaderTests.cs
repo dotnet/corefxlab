@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
@@ -13,7 +14,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SingleSegmentBytesReader()
         {
-            var bytes = new ReadOnlyBuffer<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }).AsSlicable();
+            var bytes = new ReadOnlySequence<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
             var reader = BufferReader.Create(bytes);
 
             Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, 3));
@@ -39,7 +40,7 @@ namespace System.Buffers.Tests
                 new byte[] { 1,         },
                 new byte[] { 0, 2,      },
                 new byte[] { 1, 2, 3, 4 },
-            }).AsSlicable();
+            });
 
             var reader = BufferReader.Create(bytes);
 
@@ -68,7 +69,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void EmptyBytesReader()
         {
-            var bytes = ReadOnlyBuffer<byte>.Empty.AsSlicable();
+            var bytes = ReadOnlySequence<byte>.Empty;
             var reader = BufferReader.Create(bytes);
             Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out var range, (byte)' '));
         }
@@ -76,7 +77,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void BytesReaderParse()
         {
-            ReadOnlyBuffer<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
+            ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BufferReader.Create(bytes);
 
             Assert.True(BufferReaderExtensions.TryParse(ref reader, out ulong u64));
@@ -111,8 +112,8 @@ namespace System.Buffers.Tests
             }
             var data = Encoding.UTF8.GetBytes(sb.ToString());
 
-            var readOnlyBytes = new ReadOnlyBuffer<byte>(data);
-            var bytesRange = new ReadOnlyBuffer<byte>(data);
+            var readOnlyBytes = new ReadOnlySequence<byte>(data);
+            var bytesRange = new ReadOnlySequence<byte>(data);
 
             var robReader = BufferReader.Create(readOnlyBytes);
 
@@ -138,15 +139,55 @@ namespace System.Buffers.Tests
 
     static class BufferFactory
     {
-        public static ReadOnlyBuffer<byte> Create(params byte[][] buffers)
+
+        private class ReadOnlyBufferSegment : IMemoryList<byte>
         {
-            if (buffers.Length == 1) return new ReadOnlyBuffer<byte>(buffers[0]);
-            var list = new List<Memory<byte>>();
-            foreach (var b in buffers) list.Add(b);
-            return new ReadOnlyBuffer<byte>(list);
+            public Memory<byte> Memory { get; set; }
+            public IMemoryList<byte> Next { get; set; }
+            public long RunningIndex { get; set; }
         }
 
-        public static ReadOnlyBuffer<byte> Parse(string text)
+        public static ReadOnlySequence<byte> Create(params byte[][] buffers)
+        {
+            if (buffers.Length == 1) return new ReadOnlySequence<byte>(buffers[0]);
+            var list = new List<Memory<byte>>();
+            foreach (var b in buffers) list.Add(b);
+            return Create(list.ToArray());
+        }
+
+        public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
+        {
+            ReadOnlyBufferSegment segment = null;
+            ReadOnlyBufferSegment first = null;
+            foreach (var buffer in buffers)
+            {
+                var newSegment = new ReadOnlyBufferSegment()
+                {
+                    Memory = buffer,
+                    RunningIndex = segment?.RunningIndex ?? 0
+                };
+
+                if (segment != null)
+                {
+                    segment.Next = newSegment;
+                }
+                else
+                {
+                    first = newSegment;
+                }
+
+                segment = newSegment;
+            }
+
+            if (first == null)
+            {
+                first = segment = new ReadOnlyBufferSegment();
+            }
+
+            return new ReadOnlySequence<byte>(first, 0, segment, segment.Memory.Length);
+        }
+
+        public static ReadOnlySequence<byte> Parse(string text)
         {
             var segments = text.Split('|');
             var buffers = new List<Memory<byte>>();
@@ -154,30 +195,7 @@ namespace System.Buffers.Tests
             {
                 buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-            return new ReadOnlyBuffer<byte>(buffers.ToArray());
+            return Create(buffers.ToArray());
         }
-
-        public static ReadOnlyBufferToSlicableSequenceAdapter AsSlicable(this ReadOnlyBuffer<byte> buffer)
-            => new ReadOnlyBufferToSlicableSequenceAdapter(buffer);
-    }
-
-    struct ReadOnlyBufferToSlicableSequenceAdapter : ISequence<ReadOnlyMemory<byte>>, ISlicable
-    {
-        ReadOnlyBuffer<byte> _buffer;
-        public ReadOnlyBufferToSlicableSequenceAdapter(ReadOnlyBuffer<byte> buffer)
-        {
-            _buffer = buffer;
-        }
-
-        public SequencePosition Start => _buffer.Start;
-
-        public SequencePosition GetPosition(SequencePosition origin, long offset)
-            => _buffer.GetPosition(origin, offset);
-
-        public ReadOnlyBuffer<byte> Slice(SequencePosition start, SequencePosition end)
-            => _buffer.Slice(start, end);
-
-        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
-            => _buffer.TryGet(ref position, out item, advance);
     }
 }

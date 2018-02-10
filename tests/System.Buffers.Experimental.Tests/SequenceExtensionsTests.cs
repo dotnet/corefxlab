@@ -9,7 +9,7 @@ namespace System.Buffers.Tests
         public void SequenceIndexOfSingleSegment()
         {
             var array = new byte[] { 1, 2, 3, 4, 5 };
-            var bytes = new ReadOnlyBuffer<byte>(array);
+            var bytes = new ReadOnlySequence<byte>(array);
             Assert.Equal(array.Length, bytes.Length);
 
             // Static method call to avoid calling ReadOnlyBytes.IndexOf
@@ -24,7 +24,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegment()
         {
-            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
@@ -43,7 +43,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void SequenceIndexOfMultiSegmentSliced()
         {
-            ReadOnlyBuffer<byte> bytes = BufferFactory.Create(
+            ReadOnlySequence<byte> bytes = BufferFactory.Create(
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
@@ -67,7 +67,7 @@ namespace System.Buffers.Tests
                 new byte[] { 1, 2 },
                 new byte[] { 3, 4 }
             );
-            var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
+            var bytes = new ReadOnlySequence<byte>(first, 0, last, last.Memory.Length);
 
             Assert.Equal(4, bytes.Length);
 
@@ -86,14 +86,14 @@ namespace System.Buffers.Tests
                     Assert.Equal(value, node.Memory.Span[index]);
                 }
 
-                var robPosition = ReadOnlyBufferExtensions.PositionOf(bytes, value);
+                var robPosition = BuffersExtensions.PositionOf(bytes, value);
                 var robSequencePosition = Sequence.PositionOf(bytes, value);
 
                 Assert.Equal(listPosition, robPosition);
                 Assert.Equal(listPosition, robSequencePosition);
 
                 var robSlice = bytes.Slice(1);
-                robPosition = ReadOnlyBufferExtensions.PositionOf(robSlice, value);
+                robPosition = BuffersExtensions.PositionOf(robSlice, value);
                 robSequencePosition = Sequence.PositionOf(robSlice, value);
 
                 if (i > 0)
@@ -133,7 +133,7 @@ namespace System.Buffers.Tests
                 var first = new BufferList(front);
                 var last = first.Append(back);
 
-                var bytes = new ReadOnlyBuffer<byte>(first, 0, last, last.Memory.Length);
+                var bytes = new ReadOnlySequence<byte>(first, 0, last, last.Memory.Length);
 
                 Assert.True(Sequence.TryParse(bytes, out int value, out int consumed));
                 Assert.Equal(expected, value);

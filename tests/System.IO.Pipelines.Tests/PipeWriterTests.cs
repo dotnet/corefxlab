@@ -171,7 +171,7 @@ namespace System.IO.Pipelines.Tests
             await output.FlushAsync();
 
             ReadResult result = await Pipe.Reader.ReadAsync();
-            ReadOnlyBuffer<byte> input = result.Buffer;
+            ReadOnlySequence<byte> input = result.Buffer;
             Assert.Equal(data, input.ToArray());
             Pipe.Reader.AdvanceTo(input.End);
         }
