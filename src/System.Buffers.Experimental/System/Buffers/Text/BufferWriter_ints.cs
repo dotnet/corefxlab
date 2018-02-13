@@ -30,5 +30,17 @@ namespace System.Buffers.Text
         {
             while (!TryWriteLine(value, format)) Resize();
         }
+
+        public void Write(long value, StandardFormat format = default)
+        {
+            while (!TryWrite(value, format)) Resize();
+        }
+
+        public bool TryWrite(long value, StandardFormat format = default)
+        {
+            if (!Utf8Formatter.TryFormat(value, Free, out int written, format)) return false;
+            _written += written;
+            return true;
+        }
     }
 }

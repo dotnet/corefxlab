@@ -10,7 +10,8 @@ namespace System.Text.Http.Parser
         {
             Unknown = -1,
             Http10 = 0,
-            Http11 = 1
+            Http11 = 1,
+            Http20 = 2,
         }
     }
 }

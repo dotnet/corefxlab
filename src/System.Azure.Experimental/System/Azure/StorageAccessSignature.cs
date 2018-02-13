@@ -17,7 +17,7 @@ namespace System.Azure.Authentication
         private static TransformationFormat s_removeCR = new TransformationFormat(new RemoveTransformation(13));
 
         public Sha256 Hash;
-        public string HttpVerb;
+        public ReadOnlyMemory<byte> HttpVerb;
         public string AccountName;
         public string CanonicalizedResource;
         public WritableBytes CanonicalizedHeaders;
@@ -34,7 +34,7 @@ namespace System.Azure.Authentication
 
                 int signatureStart = writer.WrittenCount;
 
-                writer.Write(HttpVerb);
+                writer.WriteBytes(HttpVerb);
                 if (ContentLength == 0)
                 {
                     writer.Write("\n\n\n\n\n\n\n\n\n\n\n\n");
@@ -42,7 +42,7 @@ namespace System.Azure.Authentication
                 else
                 {
                     writer.Write("\n\n\n");
-                    writer.Write(ContentLength.ToString());
+                    writer.Write(ContentLength);
                     writer.Write("\n\n\n\n\n\n\n\n\n");
                 }
                 writer.WriteBytes(CanonicalizedHeaders, s_removeCR);
