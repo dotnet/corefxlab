@@ -71,7 +71,7 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void EnsureMore(int count = 1)
+        private void EnsureMore(int count = 0)
         {
             if (_buffered > 0)
             {
