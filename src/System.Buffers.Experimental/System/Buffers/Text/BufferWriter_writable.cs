@@ -38,7 +38,7 @@ namespace System.Buffers.Text
         #endregion
 
         #region IWritable
-        public bool TryWriteBytes<T>(T value, StandardFormat format) where T : IWritable
+        public bool TryWriteBytes<T>(T value, StandardFormat format = default) where T : IWritable
         {
             if (!value.TryWrite(Free, out int written, format))
             {
@@ -48,7 +48,7 @@ namespace System.Buffers.Text
             return true;
         }
 
-        public void WriteBytes<T>(T value, StandardFormat format) where T : IWritable
+        public void WriteBytes<T>(T value, StandardFormat format = default) where T : IWritable
         {
             while (!TryWriteBytes(value, format)) Resize();
         }
@@ -76,7 +76,7 @@ namespace System.Buffers.Text
         #endregion
 
         #region IBufferFormattable
-        public bool TryWrite<T>(T value, StandardFormat format) where T : IBufferFormattable
+        public bool TryWrite<T>(T value, StandardFormat format = default) where T : IBufferFormattable
         {
             if (value.TryFormat(Free, out int written, format, SymbolTable.InvariantUtf8))
             {
@@ -86,7 +86,7 @@ namespace System.Buffers.Text
             return false;
         }
 
-        public void Write<T>(T value, StandardFormat format) where T : IBufferFormattable
+        public void Write<T>(T value, StandardFormat format = default) where T : IBufferFormattable
         {
             while (!TryWrite(value, format)) Resize();
         }

@@ -23,7 +23,12 @@ namespace System.Text.Http.Parser
         private const byte ByteTab = (byte)'\t';
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
+        private const long maxRequestLineLength = 1024;
+
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
+        static readonly byte[] s_http11 = Encoding.UTF8.GetBytes("HTTP/1.1");
+        static readonly byte[] s_http10 = Encoding.UTF8.GetBytes("HTTP/1.0");
+        static readonly byte[] s_http20 = Encoding.UTF8.GetBytes("HTTP/2.0");
 
         private readonly bool _showErrorDetails;
 
@@ -476,24 +481,61 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public bool ParseResponseLine<T>(ref T handler, ref ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
+        public static bool ParseResponseLine<T>(ref T handler, ref ReadOnlySequence<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
         {
-            var first = buffer.First.Span;
-            var eol = first.IndexOf(s_Eol);
-            if (eol == -1)
+            var line = buffer.First.Span;
+            var lf = line.IndexOf(ByteLF);
+            if (lf >= 0)
             {
-                throw new NotImplementedException();
+                line = line.Slice(0, lf + 1);
             }
-            first = first.Slice(0, eol);
-            int codeStart = first.IndexOf((byte)' ') + 1;
-            var codeSlice = first.Slice(codeStart);
-            if (!Utf8Parser.TryParse(codeSlice, out ushort code, out consumedBytes))
+            else if (buffer.IsSingleSegment)
             {
-                throw new Exception("no status code");
+                consumedBytes = 0;
+                return false;
+            }
+            else
+            {
+                long index = Sequence.IndexOf(buffer, ByteLF);
+                if (index < 0)
+                {
+                    consumedBytes = 0;
+                    return false;
+                }
+                if (index > maxRequestLineLength)
+                {
+                    throw new Exception("invalid response (LF too far)");
+                }
+                line = line.Slice(0, lf + 1);
             }
 
-            handler.OnStatusLine(Http.Version.Http11, code, codeSlice.Slice(consumedBytes + 1));
-            consumedBytes = eol + s_Eol.Length;
+            if (line[lf - 1] != ByteCR)
+            {
+                throw new Exception("invalid response (no CR)");
+            }
+
+            Http.Version version;
+            if (line.StartsWith(s_http11)) { version = Http.Version.Http11; }
+            else if (line.StartsWith(s_http20)) { version = Http.Version.Http20; }
+            else if (line.StartsWith(s_http10)) { version = Http.Version.Http10; }
+            else
+            {
+                throw new Exception("invalid response (version)");
+            }
+
+            int codeStart = line.IndexOf((byte)' ') + 1;
+            var codeSlice = line.Slice(codeStart);
+            if (!Utf8Parser.TryParse(codeSlice, out ushort code, out consumedBytes))
+            {
+                throw new Exception("invalid response (status code)");
+            }
+
+            var reasonStart = consumedBytes + 1;
+            var reason = codeSlice.Slice(reasonStart, codeSlice.Length - reasonStart - 2);
+            consumedBytes = lf + s_Eol.Length;
+
+            handler.OnStatusLine(version, code, reason);
+
             return true;
         }
 
