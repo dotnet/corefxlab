@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeFrameworkVersion>2.1.0-preview2-26209-04</RuntimeFrameworkVersion> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Azure.Experimental" Version="0.1.0-preview2-180209-2" />
+    <PackageReference Include="System.Buffers.Experimental" Version="0.1.0-preview2-180209-2" />
+    <PackageReference Include="System.IO.Pipelines" Version="0.1.0-preview2-180209-2" />
+    <PackageReference Include="System.Memory" Version="4.5.0-preview2-26209-05" />
+    <PackageReference Include="System.Text.Http" Version="0.1.0-preview2-180209-2" />
+    <PackageReference Include="System.Text.Http.Parser" Version="0.1.0-preview2-180209-2" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.0-preview2-26209-05" />
+  </ItemGroup>
+
+</Project>
