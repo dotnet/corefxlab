@@ -25,9 +25,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(0, SocketConnection.SmallBuffersInUse);
         }
 
-#if (Windows || OSX) // "The test hangs on linux"
         [Fact]
-#endif
         public async Task CanCreateWorkingEchoServer_PipelineLibuvServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
@@ -95,9 +93,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-#if (Windows || OSX) // "The test hangs on linux"
         [Fact]
-#endif
         public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5030);
@@ -116,9 +112,7 @@ namespace System.IO.Pipelines.Tests
 
         // Issue #1687 - The test intermittently fails on linux -
         // Reason: Unhandled Exception: System.IO.Pipelines.Networking.Libuv.Interop.UvException: Error -16 EBUSY resource busy or locked
-#if (Windows || OSX)
         [Fact]
-#endif
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
