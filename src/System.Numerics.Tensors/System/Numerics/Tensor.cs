@@ -750,12 +750,20 @@ namespace System.Numerics
         {
             get
             {
+                if (indices == null)
+                {
+                    throw new ArgumentNullException(nameof(indices));
+                }
                 var span = new Span<int>(indices);
                 return this[span];
             }
 
             set
             {
+                if (indices == null)
+                {
+                    throw new ArgumentNullException(nameof(indices));
+                }
                 var span = new Span<int>(indices);
                 this[span] = value;
             }
