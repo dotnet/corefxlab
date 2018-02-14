@@ -1,10 +1,16 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Azure.Authentication;
 using System.Azure.Storage;
 using System.Azure.Storage.Requests;
 using System.Buffers;
+using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipelines;
 using System.Threading.Tasks;
 
 static class Program
@@ -21,10 +27,10 @@ static class Program
 
     static void Main(string[] args)
     {
-        Log.Listeners.Add(new TextWriterTraceListener(Console.Out));
+        Log.Listeners.Add(new ConsoleTraceListener());
         Log.Switch.Level = SourceLevels.Error;
 
-        var options = new CommandOptions(args);
+        var options = new CommandLine(args);
         ReadOnlyMemory<char> source = options.Get("/Source:");
         ReadOnlyMemory<char> destination = options.Get("/Dest:");
 
@@ -47,7 +53,7 @@ static class Program
         }
     }
 
-    static void TransferDirectoryToStorage(ReadOnlyMemory<char> localDirectory, ReadOnlyMemory<char> storageDirectory, CommandOptions options)
+    static void TransferDirectoryToStorage(ReadOnlyMemory<char> localDirectory, ReadOnlyMemory<char> storageDirectory, CommandLine options)
     {
         var directoryPath = new string(localDirectory.Span);     
         if (!Directory.Exists(directoryPath))
@@ -61,15 +67,13 @@ static class Program
             return;
         }
 
-        ReadOnlyMemory<char> key = options.Get("/DestKey:");
-        byte[] keyBytes = key.Span.ComputeKeyBytes();
-
-        ReadOnlyMemory<char> storageFullPath = storageDirectory.Slice(7);
+        ReadOnlyMemory<char> storageFullPath = storageDirectory.Slice("http://".Length);
         int pathStart = storageFullPath.Span.IndexOf('/');
         ReadOnlyMemory<char> host = storageFullPath.Slice(0, pathStart);
         ReadOnlyMemory<char> path = storageFullPath.Slice(pathStart + 1);
         ReadOnlyMemory<char> account = storageFullPath.Slice(0, storageFullPath.Span.IndexOf('.'));
 
+        byte[] keyBytes = options["/DestKey:"].ComputeKeyBytes();
         using (var client = new StorageClient(keyBytes, account, host))
         {
             client.Log = Log;           
@@ -87,7 +91,7 @@ static class Program
         }
     }
 
-    static void TransferStorageFileToDirectory(ReadOnlyMemory<char> storageFile, ReadOnlyMemory<char> localDirectory, CommandOptions options)
+    static void TransferStorageFileToDirectory(ReadOnlyMemory<char> storageFile, ReadOnlyMemory<char> localDirectory, CommandLine options)
     {
         var directory = new string(localDirectory.Span);
         if (!options.Contains("/SourceKey:"))
@@ -96,10 +100,7 @@ static class Program
             return;
         }
 
-        ReadOnlyMemory<char> key = options.Get("/SourceKey:");
-        byte[] keyBytes = key.Span.ComputeKeyBytes();
-
-        ReadOnlyMemory<char> storageFullPath = storageFile.Slice(7);
+        ReadOnlyMemory<char> storageFullPath = storageFile.Slice("http://".Length);
         int pathStart = storageFullPath.Span.IndexOf('/');
         ReadOnlyMemory<char> host = storageFullPath.Slice(0, pathStart);
         ReadOnlyMemory<char> storagePath = storageFullPath.Slice(pathStart + 1);
@@ -112,6 +113,7 @@ static class Program
             Directory.CreateDirectory(directory);
         }
 
+        byte[] keyBytes = options["/SourceKey:"].ComputeKeyBytes();
         string destinationPath = directory + "\\" + new string(file.Span);
         using (var client = new StorageClient(keyBytes, account, host))
         {
@@ -140,7 +142,7 @@ static class Program
             }
         }
 
-        Log.WriteError($"Response Error {response.StatusCode}");
+        Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
         return false;
     }
 
@@ -151,7 +153,7 @@ static class Program
 
         if (response.StatusCode != 200)
         {
-            Log.WriteError($"Response Error {response.StatusCode}");
+            Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
             return false;
         }
 

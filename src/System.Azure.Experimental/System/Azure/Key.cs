@@ -8,41 +8,52 @@ namespace System.Azure.Authentication
 {
     public static class Key {
         public static byte[] ComputeKeyBytes(string key)
+            => ComputeKeyBytes(key.AsReadOnlySpan());
+
+        public static byte[] ComputeKeyBytes(this ReadOnlySpan<char> key)
         {
-            int size = key.Length * 2;
+            var utf16Bytes = key.AsBytes();
+            int size = utf16Bytes.Length; // the input must be ASCII (i.e. Base64 encoded)
+
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
-            if (Encodings.Utf16.ToUtf8(key.AsReadOnlySpan().AsBytes(), buffer, out int consumed, out int written) != OperationStatus.Done)
+            var result = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
+            if (result != OperationStatus.Done)
             {
-                throw new NotImplementedException("need to resize buffer");
+                throw new ArgumentOutOfRangeException(nameof(key), $"ToUtf8 returned {result}");
             }
 
             var keyBytes = new byte[64];
-            var result = Base64.DecodeFromUtf8(buffer.Slice(0, written), keyBytes, out consumed, out written);
-            if (result != OperationStatus.Done || written != 64)
+            result = Base64.DecodeFromUtf8(buffer.Slice(0, written), keyBytes, out consumed, out written);
+            if (result != OperationStatus.Done)
             {
-                throw new NotImplementedException("need to resize buffer");
+                throw new ArgumentOutOfRangeException(nameof(key), $"Base64.Decode returned {result}");
+            }
+            if (written != 64)
+            {
+                throw new ArgumentOutOfRangeException(nameof(key), $"{written}!={64}");
             }
             return keyBytes;
         }
 
-        public static byte[] ComputeKeyBytes(this ReadOnlySpan<char> key)
+        public static bool TryComputeKeyBytes(this ReadOnlySpan<char> key, Span<byte> keyBytes)
         {
-            int size = key.Length * 2;
+            var utf16Bytes = key.AsBytes();
+            int size = utf16Bytes.Length; // the input must be ASCII (i.e. Base64 encoded)
+
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
 
-            if (Encodings.Utf16.ToUtf8(key.AsBytes(), buffer, out int consumed, out int written) != OperationStatus.Done)
+            var result = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out int written);
+            if (result != OperationStatus.Done)
             {
-                throw new NotImplementedException("need to resize buffer");
+                throw new ArgumentOutOfRangeException(nameof(key), $"ToUtf8 returned {result}");
             }
 
-            var keyBytes = new byte[64];
-            var result = Base64.DecodeFromUtf8(buffer.Slice(0, written), keyBytes, out consumed, out written);
-            if (result != OperationStatus.Done || written != 64)
-            {
-                throw new NotImplementedException("need to resize buffer");
-            }
-            return keyBytes;
+            result = Base64.DecodeFromUtf8(buffer.Slice(0, written), keyBytes, out consumed, out written);
+            if (result == OperationStatus.Done) return true;
+            if (result == OperationStatus.DestinationTooSmall) return false;
+
+            throw new ArgumentOutOfRangeException(nameof(key), $"Base64.Decode returned {result}");
         }
     }
 }
