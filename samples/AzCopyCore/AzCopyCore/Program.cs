@@ -21,7 +21,7 @@ static class Program
 
     static void Main(string[] args)
     {
-        Log.Listeners.Add(new TextWriterTraceListener(Console.Out));
+        Log.Listeners.Add(new ConsoleTraceListener());
         Log.Switch.Level = SourceLevels.Error;
 
         var options = new CommandOptions(args);
@@ -140,7 +140,7 @@ static class Program
             }
         }
 
-        Log.WriteError($"Response Error {response.StatusCode}");
+        Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
         return false;
     }
 
@@ -151,7 +151,7 @@ static class Program
 
         if (response.StatusCode != 200)
         {
-            Log.WriteError($"Response Error {response.StatusCode}");
+            Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
             return false;
         }
 

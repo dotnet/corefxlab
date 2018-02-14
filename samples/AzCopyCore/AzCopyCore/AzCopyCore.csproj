@@ -23,6 +23,7 @@
     <PackageReference Include="System.Memory" Version="4.5.0-preview2-26213-06" />
     <PackageReference Include="System.Text.Http" Version="0.1.0-preview2-180213-4" />
     <PackageReference Include="System.Text.Http.Parser" Version="0.1.0-preview2-180213-4" />
+    <PackageReference Include="System.Text.Utf8String" Version="0.1.0-preview2-180214-3" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.0-preview2-26213-06" />
   </ItemGroup>
 

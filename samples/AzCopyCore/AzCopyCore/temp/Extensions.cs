@@ -59,30 +59,6 @@ namespace System.Buffers
         }
     }
 
-    // TODO (pri 3): Is TraceSource the right logger here? 
-    public static class TraceListenerExtensions
-    {
-        public static void WriteInformation(this TraceSource source, string tag, ReadOnlyMemory<byte> utf8Text)
-        {
-            if (source.Switch.ShouldTrace(TraceEventType.Information))
-            {
-                var message = Encodings.Utf8.ToString(utf8Text.Span);
-                source.TraceInformation($"{tag}:\n{message}\n");
-            }
-        }
-
-        public static void WriteError(this TraceSource source, string message)
-        {
-            if (source.Switch.ShouldTrace(TraceEventType.Error))
-            {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                source.TraceEvent(TraceEventType.Error, 0, message);
-                Console.ForegroundColor = color;
-            }
-        }
-    }
-
     // TODO (pri 3): Should I use the command line library?
     class CommandOptions
     {
@@ -117,6 +93,64 @@ namespace System.Buffers
                 }
             }
             return ReadOnlyMemory<char>.Empty;
+        }
+    }
+
+    class ConsoleTraceListener : TraceListener
+    {
+        public override void Write(string message)
+            => Console.Write(message);
+
+        public override void WriteLine(string message)
+            => Console.WriteLine(message);
+
+        public override void Fail(string message)
+        {
+            base.Fail(message);
+        }
+        public override void Fail(string message, string detailMessage)
+        {
+            base.Fail(message, detailMessage);
+        }
+        public override bool IsThreadSafe => false;
+
+        public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, params object[] data)
+        {
+            ConsoleColor color = default;
+            if (eventType == TraceEventType.Error || eventType == TraceEventType.Critical)
+            {
+                color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
+            Console.WriteLine(eventType.ToString());
+
+            if (eventType == TraceEventType.Error || eventType == TraceEventType.Critical) { 
+                Console.ForegroundColor = color;
+            }
+            
+            foreach(var item in data)
+            {
+                Console.Write("\t");
+                Console.WriteLine(data);
+            }
+        }
+
+        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format, params object[] args)
+        {
+            ConsoleColor color = default;
+            if (eventType == TraceEventType.Error || eventType == TraceEventType.Critical)
+            {
+                color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
+            Console.WriteLine(format, args);
+
+            if (eventType == TraceEventType.Error || eventType == TraceEventType.Critical)
+            {
+                Console.ForegroundColor = color;
+            }
         }
     }
 }

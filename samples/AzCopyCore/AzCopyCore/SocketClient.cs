@@ -5,6 +5,7 @@ using System.IO.Pipelines;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text.Http.Parser;
+using System.Text.Utf8;
 using System.Threading.Tasks;
 
 // SocketClient is an experimental low-allocating/low-copy HTTP client API
@@ -100,7 +101,7 @@ namespace System.Net.Experimental
             var result = await reader.ReadAsync();
             ReadOnlySequence<byte> buffer = result.Buffer;
 
-            if (log != null) log.WriteInformation("RESPONSE: ", buffer.First);
+            if (log != null) log.TraceInformation("RESPONSE:\n{0}", new Utf8String(buffer.First.Span));
 
             var handler = new T();
             // TODO (pri 2): this should not be static, or all should be static
@@ -152,7 +153,7 @@ namespace System.Net.Experimental
             }
             catch(Exception e)
             {
-                Log.WriteError(e.ToString());
+                Log.TraceEvent(TraceEventType.Error, 0, e.ToString());
             }
             finally
             {
@@ -176,7 +177,7 @@ namespace System.Net.Experimental
                         var readBytes = await ReadFromSocketAsync(buffer).ConfigureAwait(false);
                         if (readBytes == 0) break;
 
-                        if (Log != null) Log.WriteInformation($"RESPONSE {readBytes}", buffer.Slice(0, readBytes));
+                        if (Log != null) Log.TraceInformation(new Utf8String(buffer.Span.Slice(0, readBytes)).ToString());
 
                         writer.Advance(readBytes);
                         await writer.FlushAsync();
