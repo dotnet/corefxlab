@@ -25,9 +25,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(0, SocketConnection.SmallBuffersInUse);
         }
 
-#if (Windows || OSX) // "The test hangs on linux"
         [Fact]
-#endif
         public async Task CanCreateWorkingEchoServer_PipelineLibuvServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
@@ -95,9 +93,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-#if (Windows || OSX) // "The test hangs on linux"
         [Fact]
-#endif
         public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5030);
