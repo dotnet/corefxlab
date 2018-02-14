@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipelines;
-using System.Text;
 using System.Text.Http.Parser;
 using System.Threading.Tasks;
 
@@ -12,9 +11,9 @@ namespace System.Buffers
     static class GeneralExtensions
     {
         /// <summary>
-        /// Copies bytes from ReadOnlyBuffer to a Stream
+        /// Copies bytes from ReadOnlySequence to a Stream
         /// </summary>
-        public static async Task WriteAsync(this Stream stream, ReadOnlyBuffer<byte> buffer)
+        public static async Task WriteAsync(this Stream stream, ReadOnlySequence<byte> buffer)
         {
             for (var position = buffer.Start; buffer.TryGet(ref position, out var memory);)
             {
@@ -30,7 +29,7 @@ namespace System.Buffers
             while (bytes > 0)
             {
                 var result = await reader.ReadAsync();
-                ReadOnlyBuffer<byte> bodyBuffer = result.Buffer;
+                ReadOnlySequence<byte> bodyBuffer = result.Buffer;
                 if (bytes < (ulong)bodyBuffer.Length)
                 {
                     throw new NotImplementedException();
@@ -81,104 +80,6 @@ namespace System.Buffers
                 source.TraceEvent(TraceEventType.Error, 0, message);
                 Console.ForegroundColor = color;
             }
-        }
-    }
-
-    public static class HttpExtensions
-    {
-        static HttpParser s_headersParser = new HttpParser();
-        private const byte ByteLF = (byte)'\n';
-        private const byte ByteCR = (byte)'\r';
-        private const long maxRequestLineLength = 1024;
-        static readonly byte[] s_Eol = Encoding.ASCII.GetBytes("\r\n");
-        static readonly byte[] s_http11 = Encoding.ASCII.GetBytes("HTTP/1.1");
-        static readonly byte[] s_http10 = Encoding.ASCII.GetBytes("HTTP/1.0");
-        static readonly byte[] s_http20 = Encoding.ASCII.GetBytes("HTTP/2.0");
-
-        // TODO (pri 2): move to corfxlab
-        public static bool ParseResponseLine<T>(ref T handler, ref ReadOnlyBuffer<byte> buffer, out int consumedBytes) where T : IHttpResponseLineHandler
-        {
-            var line = buffer.First.Span;
-            var lf = line.IndexOf(ByteLF);
-            if (lf >= 0)
-            {
-                line = line.Slice(0, lf + 1);
-            }
-            else if (buffer.IsSingleSegment)
-            {
-                consumedBytes = 0;
-                return false;
-            }
-            else
-            {
-                long index = Sequence.IndexOf(buffer, ByteLF);
-                if(index < 0)
-                {
-                    consumedBytes = 0;
-                    return false;
-                }
-                if(index > maxRequestLineLength)
-                {
-                    throw new Exception("invalid response (LF too far)");
-                }
-                line = line.Slice(0, lf + 1);
-            }
-
-            if(line[lf - 1] != ByteCR)
-            {
-                throw new Exception("invalid response (no CR)");
-            }
-
-            Http.Version version;
-            if (line.StartsWith(s_http11)) { version = Http.Version.Http11; }
-            // TODO (pri 2): add HTTP2 to HTTP.Version
-            else if (line.StartsWith(s_http20)) { version = Http.Version.Unknown; }
-            else if (line.StartsWith(s_http10)) { version = Http.Version.Http10; }
-            else
-            {
-                throw new Exception("invalid response (version)");
-            }
-
-            int codeStart = line.IndexOf((byte)' ') + 1;
-            var codeSlice = line.Slice(codeStart);
-            if (!Utf8Parser.TryParse(codeSlice, out ushort code, out consumedBytes))
-            {
-                throw new Exception("invalid response (status code)");
-            }
-
-            var reasonStart = consumedBytes + 1;
-            var reason = codeSlice.Slice(reasonStart, codeSlice.Length - reasonStart - 2);
-            consumedBytes = lf + s_Eol.Length;
-
-            handler.OnStatusLine(version, code, reason);
-
-            return true;
-        }
-
-        // TODO (pri 3): Add to the platform, but this would require common logging API
-        public static async ValueTask<T> ParseAsync<T>(PipeReader reader, TraceSource log = null)
-            where T : IHttpResponseLineHandler, IHttpHeadersHandler, new()
-        {
-            var result = await reader.ReadAsync();
-            ReadOnlyBuffer<byte> buffer = result.Buffer;
-
-            if (log != null) log.WriteInformation("RESPONSE: ", buffer.First);
-
-            var handler = new T();
-            if (!ParseResponseLine(ref handler, ref buffer, out int rlConsumed))
-            {
-                throw new NotImplementedException("could not parse the response");
-            }
-
-            buffer = buffer.Slice(rlConsumed);
-            if (!s_headersParser.ParseHeaders(ref handler, buffer, out int hdConsumed))
-            {
-                throw new NotImplementedException("could not parse the response");
-            }
-
-            reader.AdvanceTo(buffer.GetPosition(buffer.Start, hdConsumed));
-
-            return handler;
         }
     }
 

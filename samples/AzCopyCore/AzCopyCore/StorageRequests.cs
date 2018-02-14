@@ -5,6 +5,7 @@ using System.Buffers.Transformations;
 using System.IO;
 using System.IO.Pipelines;
 using System.Net.Experimental;
+using System.Text;
 using System.Text.Http.Formatter;
 using System.Text.Http.Parser;
 using System.Threading.Tasks;
@@ -71,11 +72,12 @@ namespace System.Azure.Storage.Requests
             writer.WriteHeader("Host", arguments.Client.Host);
         }
 
-        // TODO (pri 2): this should be UTF8
-        public static string AsString(Http.Method verb)
+        static readonly byte[] s_GETu8 = Encoding.ASCII.GetBytes("GET");
+        static readonly byte[] s_PUTu8 = Encoding.ASCII.GetBytes("PUT");
+        public static ReadOnlyMemory<byte> AsString(Http.Method verb)
         {
-            if (verb == Http.Method.Get) return "GET";
-            if (verb == Http.Method.Put) return "PUT";
+            if (verb == Http.Method.Get) return s_GETu8;
+            if (verb == Http.Method.Put) return s_PUTu8;
             throw new NotImplementedException();
         }
     }

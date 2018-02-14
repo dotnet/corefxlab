@@ -86,9 +86,38 @@ namespace System.Net.Experimental
             await request.WriteAsync(_requestPipe.Writer).ConfigureAwait(false);
 
             var reader = _responsePipe.Reader;
-            var response = await HttpExtensions.ParseAsync<TResponse>(reader, Log).ConfigureAwait(false);
+            var response = await ParseAsync<TResponse>(reader, Log).ConfigureAwait(false);
             response.OnBody(reader);
             return response;
+        }
+
+        static HttpParser s_headersParser = new HttpParser();
+
+        // TODO (pri 3): Add to the platform, but this would require common logging API
+        public static async ValueTask<T> ParseAsync<T>(PipeReader reader, TraceSource log = null)
+            where T : IHttpResponseLineHandler, IHttpHeadersHandler, new()
+        {
+            var result = await reader.ReadAsync();
+            ReadOnlySequence<byte> buffer = result.Buffer;
+
+            if (log != null) log.WriteInformation("RESPONSE: ", buffer.First);
+
+            var handler = new T();
+            // TODO (pri 2): this should not be static, or all should be static
+            if (!HttpParser.ParseResponseLine(ref handler, ref buffer, out int rlConsumed))
+            {
+                throw new NotImplementedException("could not parse the response");
+            }
+
+            buffer = buffer.Slice(rlConsumed);
+            if (!s_headersParser.ParseHeaders(ref handler, buffer, out int hdConsumed))
+            {
+                throw new NotImplementedException("could not parse the response");
+            }
+
+            reader.AdvanceTo(buffer.GetPosition(buffer.Start, hdConsumed));
+
+            return handler;
         }
 
         async Task SendAsync()
