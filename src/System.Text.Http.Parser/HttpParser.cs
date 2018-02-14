@@ -63,7 +63,7 @@ namespace System.Text.Http.Parser
             {
                 if (TryGetNewLineSpan(buffer, out SequencePosition found))
                 {
-                    span = Sequence.ToSpan(buffer.Slice(consumed, found));
+                    span = PipelineExtensions.ToSpan(buffer.Slice(consumed, found));
                     consumed = found;
                 }
                 else
@@ -102,7 +102,7 @@ namespace System.Text.Http.Parser
                     return false;
                 }
 
-                span = Sequence.ToSpan(buffer.Slice(0, eol + s_Eol.Length));
+                span = PipelineExtensions.ToSpan(buffer.Slice(0, eol + s_Eol.Length));
             }
 
             // Fix and parse the span
@@ -335,7 +335,7 @@ namespace System.Text.Http.Parser
 
                                 // Make sure LF is included in lineEnd
                                 lineEnd = subBuffer.GetPosition(lineEnd.Value, 1);
-                                var headerSpan = Sequence.ToSpan(subBuffer.Slice(current, lineEnd.Value));
+                                var headerSpan = PipelineExtensions.ToSpan(subBuffer.Slice(current, lineEnd.Value));
                                 length = headerSpan.Length;
 
                                 fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
@@ -451,7 +451,7 @@ namespace System.Text.Http.Parser
                                 return false;
                             }
 
-                            var headerSpan = Sequence.ToSpan(buffer.Slice(index, end - index + 1));
+                            var headerSpan = PipelineExtensions.ToSpan(buffer.Slice(index, end - index + 1));
                             length = headerSpan.Length;
 
                             fixed (byte* pHeader = &MemoryMarshal.GetReference(headerSpan))
