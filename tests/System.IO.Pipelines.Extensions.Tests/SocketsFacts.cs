@@ -112,7 +112,9 @@ namespace System.IO.Pipelines.Tests
 
         // Issue #1687 - The test intermittently fails on linux -
         // Reason: Unhandled Exception: System.IO.Pipelines.Networking.Libuv.Interop.UvException: Error -16 EBUSY resource busy or locked
+#if (Windows || OSX)
         [Fact]
+#endif
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
