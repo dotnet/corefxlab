@@ -142,8 +142,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Azure.Experimental",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Pipelines.Extensions.Tests", "tests\System.IO.Pipelines.Extensions.Tests\System.IO.Pipelines.Extensions.Tests.csproj", "{64C08774-982C-4141-8F8D-2884B6FA0E4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzCopyCore", "samples\AzCopyCore\AzCopyCore\AzCopyCore.csproj", "{A96B401D-2A16-4633-8105-3E8999079414}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -922,18 +920,6 @@ Global
 		{64C08774-982C-4141-8F8D-2884B6FA0E4B}.Release|x64.Build.0 = Release|Any CPU
 		{64C08774-982C-4141-8F8D-2884B6FA0E4B}.Release|x86.ActiveCfg = Release|Any CPU
 		{64C08774-982C-4141-8F8D-2884B6FA0E4B}.Release|x86.Build.0 = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|x64.Build.0 = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Debug|x86.Build.0 = Debug|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|x64.ActiveCfg = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|x64.Build.0 = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|x86.ActiveCfg = Release|Any CPU
-		{A96B401D-2A16-4633-8105-3E8999079414}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1003,7 +989,6 @@ Global
 		{0BA3C0A9-64B9-445D-B085-8FFAC09D6E37} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{916370AB-B0D3-4136-850B-AA12FAB23ECD} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{64C08774-982C-4141-8F8D-2884B6FA0E4B} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
-		{A96B401D-2A16-4633-8105-3E8999079414} = {E1DE693E-C1FB-4A1F-B6D8-A071D86D7354}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DD4022C-A010-4A9B-BCC5-171566D4CB17}
