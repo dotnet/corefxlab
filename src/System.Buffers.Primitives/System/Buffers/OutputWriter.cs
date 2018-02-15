@@ -18,9 +18,11 @@ namespace System.Buffers
     {
         private T _output;
         private Span<byte> _span;
+        private int _buffered;
 
         public OutputWriter(T output)
         {
+            _buffered = 0;
             _output = output;
             _span = output.GetSpan();
         }
@@ -28,10 +30,21 @@ namespace System.Buffers
         public Span<byte> Span => _span;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Commit()
+        {
+            var buffered = _buffered;
+            if (buffered > 0)
+            {
+                _buffered = 0;
+                _output.Advance(buffered);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(int count)
         {
+            _buffered += count;
             _span = _span.Slice(count);
-            _output.Advance(count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48,9 +61,23 @@ namespace System.Buffers
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Ensure(int count = 1)
         {
+            if (_span.Length < count)
+            {
+                EnsureMore(count);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void EnsureMore(int count = 0)
+        {
+            if (_buffered > 0)
+            {
+                Commit();
+            }
+
             _output.GetMemory(count);
             _span = _output.GetSpan();
         }
@@ -61,7 +88,7 @@ namespace System.Buffers
             {
                 if (_span.Length == 0)
                 {
-                    Ensure();
+                    EnsureMore();
                 }
 
                 var writable = Math.Min(source.Length, _span.Length);
@@ -70,6 +97,5 @@ namespace System.Buffers
                 Advance(writable);
             }
         }
-
     }
 }

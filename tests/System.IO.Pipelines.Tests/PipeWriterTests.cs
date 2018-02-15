@@ -54,6 +54,8 @@ namespace System.IO.Pipelines.Tests
             }
 
             writer.Write(new Span<byte>(array, 0, array.Length));
+            writer.Commit();
+
             Assert.Equal(array, Read());
         }
 
@@ -72,6 +74,7 @@ namespace System.IO.Pipelines.Tests
             var array = new byte[] { 1, 2, 3 };
 
             writer.Write(new Span<byte>(array, offset, length));
+            writer.Commit();
 
             Assert.Equal(array.Skip(offset).Take(length).ToArray(), Read());
         }
@@ -84,6 +87,7 @@ namespace System.IO.Pipelines.Tests
 
             writer.Write(array);
             writer.Write(new Span<byte>(array, 0, array.Length));
+            writer.Commit();
 
             Assert.Equal(array, Read());
         }
@@ -94,6 +98,8 @@ namespace System.IO.Pipelines.Tests
             OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
+            writer.Commit();
+
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
         }
 
@@ -105,6 +111,7 @@ namespace System.IO.Pipelines.Tests
             writer.Write(new byte[] { 1 });
             writer.Write(new byte[] { 2 });
             writer.Write(new byte[] { 3 });
+            writer.Commit();
 
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
         }
@@ -119,6 +126,7 @@ namespace System.IO.Pipelines.Tests
             byte[] expectedBytes = source.Concat(source).Concat(source).ToArray();
 
             writer.Write(expectedBytes);
+            writer.Commit();
 
             Assert.Equal(expectedBytes, Read());
         }
@@ -150,6 +158,7 @@ namespace System.IO.Pipelines.Tests
             OutputWriter<PipeWriter> writer = OutputWriter.Create(Pipe.Writer);
 
             writer.Write(new byte[] { 1, 2, 3 });
+            writer.Commit();
 
             Assert.Equal(initialLength - 3, writer.Span.Length);
             Assert.Equal(Pipe.Writer.GetMemory().Length, writer.Span.Length);
