@@ -206,7 +206,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             else
             {
                 _input.Writer.Advance((int)bytesTransferred);
-                _input.Writer.Commit();
 
                 ProcessReceives();
             }

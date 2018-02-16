@@ -6,11 +6,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="System.Threading.Thread" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="System.Threading.Overlapped" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="System.Diagnostics.Process" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe " Version="$(SystemCompilerServicesUnsafeVersion)" />
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
 </Project>

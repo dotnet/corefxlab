@@ -21,12 +21,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
-    <ProjectReference Include="..\System.IO.Pipelines.Tests\System.IO.Pipelines.Tests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.10" />
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
 
 </Project>

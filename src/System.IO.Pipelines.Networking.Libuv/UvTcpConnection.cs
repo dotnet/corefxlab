@@ -169,7 +169,6 @@ namespace System.IO.Pipelines.Networking.Libuv
                 handle.Libuv.Check(status, out Exception uvError);
                 error = new IOException(uvError.Message, uvError);
 
-                _input.Writer.Commit();
                 UnpinInputBuffer();
 
                 // REVIEW: Should we treat ECONNRESET as an error?
@@ -180,7 +179,6 @@ namespace System.IO.Pipelines.Networking.Libuv
             {
 
                 _input.Writer.Advance(readCount);
-                _input.Writer.Commit();
                 UnpinInputBuffer();
 
                 // Flush if there was data

@@ -7,10 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
-    <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
 </Project>

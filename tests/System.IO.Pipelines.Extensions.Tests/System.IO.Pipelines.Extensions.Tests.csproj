@@ -27,7 +27,6 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Text.Primitives\System.IO.Pipelines.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Sockets\System.IO.Pipelines.Networking.Sockets.csproj" />
