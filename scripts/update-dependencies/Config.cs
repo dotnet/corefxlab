@@ -35,6 +35,7 @@ namespace Microsoft.Dotnet.Scripts
         public string VersionsUrl => $"https://raw.githubusercontent.com/dotnet/versions/master/build-info/dotnet";
         public string DependencyFilePath = Path.Combine("tools", "dependencies.props");
         public string CLIVersionFilePath = "DotnetCLIVersion.txt";
+        public string RuntimeVersionFilePath = "SharedRuntimeVersion.txt";
 
         private static string GetEnvironmentVariable(string name, string defaultValue = null)
         {
