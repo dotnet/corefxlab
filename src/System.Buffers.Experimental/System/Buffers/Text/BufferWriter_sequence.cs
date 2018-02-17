@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
-    public ref struct BufferWriter<TOutput> where TOutput : IBufferWriter
+    public ref struct BufferWriter<TOutput> where TOutput : IBufferWriter<byte>
     {
         TOutput _output;
         Span<byte> _buffer;

@@ -49,6 +49,8 @@ namespace Microsoft.Net
 
         public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
+        public int MaxBufferSize { get; } = Int32.MaxValue;
+
         private void Send()
         {
             ReadOnlySpan<byte> toSend;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
-    public class UvTcpConnection : IDuplexPipe
+    public class UvTcpConnection : IDuplexPipe, IDisposable
     {
         private const int EOF = -4095;
 

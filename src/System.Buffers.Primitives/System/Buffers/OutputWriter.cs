@@ -8,13 +8,13 @@ namespace System.Buffers
 {
     public static class OutputWriter
     {
-        public static OutputWriter<T> Create<T>(T output) where T : IBufferWriter
+        public static OutputWriter<T> Create<T>(T output) where T : IBufferWriter<byte>
         {
             return new OutputWriter<T>(output);
         }
     }
 
-    public ref struct OutputWriter<T> where T : IBufferWriter
+    public ref struct OutputWriter<T> where T : IBufferWriter<byte>
     {
         private T _output;
         private Span<byte> _span;

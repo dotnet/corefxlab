@@ -23,6 +23,11 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.10" />
     <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
   </ItemGroup>
 
 </Project>

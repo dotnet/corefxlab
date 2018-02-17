@@ -29,7 +29,7 @@ namespace System.Text.Formatting
             _symbolTable = symbolTable;
             _stream = stream;
         }
-        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter<byte>.GetMemory(int minimumLength)
         {
             if (minimumLength > _buffer.Length)
             {
@@ -44,7 +44,7 @@ namespace System.Text.Formatting
             return _buffer;
         }
 
-        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter) this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength) => ((IBufferWriter<byte>) this).GetMemory(minimumLength).Span;
 
         // ISSUE
         // I would like to lazy write to the stream, but unfortunatelly this seems to be exclusive with this type being a struct.
@@ -52,10 +52,12 @@ namespace System.Text.Formatting
         // A stack frame could write more data to the buffer, and then when the frame pops, the infroamtion about how much was written could be lost.
         // On the other hand, I cannot make this type a class and keep using it as it can be used today (i.e. pass streams around and create instances of this type on demand).
         // Too bad we don't support move semantics and stack only structs.
-        void IBufferWriter.Advance(int bytes)
+        void IBufferWriter<byte>.Advance(int bytes)
         {
             _stream.Write(_buffer, 0, bytes);
         }
+
+        public int MaxBufferSize => Int32.MaxValue;
 
         SymbolTable ITextBufferWriter.SymbolTable
         {

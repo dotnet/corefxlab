@@ -57,7 +57,7 @@ namespace System.Text.Formatting
 
         public int TotalWritten => _totalWritten;
 
-        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter<byte>.GetMemory(int minimumLength)
         {
             if (minimumLength == 0) minimumLength = 1;
             if (minimumLength > Current.Length - _currentWrittenBytes)
@@ -76,9 +76,10 @@ namespace System.Text.Formatting
             return Current.Slice(_currentWrittenBytes);
         }
 
-        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter)this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength) => ((IBufferWriter<byte>)this).GetMemory(minimumLength).Span;
 
-        void IBufferWriter.Advance(int bytes)
+
+        void IBufferWriter<byte>.Advance(int bytes)
         {
             var current = Current;
             if (NeedShift)
@@ -108,5 +109,7 @@ namespace System.Text.Formatting
 
             _totalWritten += bytes;
         }
+
+        public int MaxBufferSize { get; } = Int32.MaxValue;
     }
 }

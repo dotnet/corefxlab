@@ -56,6 +56,7 @@ namespace System.Text.Formatting
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
             }
         }
+        public int MaxBufferSize { get; } = Int32.MaxValue;
 
         public void Dispose()
         {
