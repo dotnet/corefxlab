@@ -171,7 +171,6 @@ namespace System.IO.Pipelines
 
         protected override void Dispose(bool disposing)
         {
-            _connection.Dispose();
         }
     }
 }

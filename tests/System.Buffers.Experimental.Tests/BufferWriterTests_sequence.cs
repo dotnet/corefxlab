@@ -16,7 +16,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void Bytes()
         {
-            IBufferWriter bufferWriter = new BufferWriter();
+            IBufferWriter<byte> bufferWriter = new BufferWriter();
             var writer = Text.BufferWriter.Create(bufferWriter);
             writer.WriteBytes(Encoding.UTF8.GetBytes("Hello"));
             writer.WriteBytes(Encoding.UTF8.GetBytes(" World!"));
@@ -27,7 +27,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void Writable()
         {
-            IBufferWriter bufferWriter = new BufferWriter();
+            IBufferWriter<byte> bufferWriter = new BufferWriter();
             var writer = Text.BufferWriter.Create(bufferWriter);
 
             var ulonger = new UInt128();
@@ -43,7 +43,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class BufferWriter : IBufferWriter
+    class BufferWriter : IBufferWriter<byte>
     {
         byte[] _current = new byte[0];
         List<byte[]> _commited = new List<byte[]>();
@@ -66,6 +66,8 @@ namespace System.Buffers.Tests
         }
 
         public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+
+        public int MaxBufferSize { get; } = Int32.MaxValue;
 
         public override string ToString()
         {

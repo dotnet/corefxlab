@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Networking.Sockets
     /// <summary>
     /// Represents an <see cref="IDuplexPipe"/> implementation using the async Socket API
     /// </summary>
-    public class SocketConnection : IDuplexPipe
+    public class SocketConnection : IDuplexPipe, IDisposable
     {
         private static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 

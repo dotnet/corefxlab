@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO
 {
-    public sealed class RioTcpConnection : IDuplexPipe
+    public sealed class RioTcpConnection : IDuplexPipe, IDisposable
     {
         private const RioSendFlags MessagePart = RioSendFlags.Defer | RioSendFlags.DontNotify;
         private const RioSendFlags MessageEnd = RioSendFlags.None;
@@ -206,7 +206,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             else
             {
                 _input.Writer.Advance((int)bytesTransferred);
-                _input.Writer.Commit();
 
                 ProcessReceives();
             }

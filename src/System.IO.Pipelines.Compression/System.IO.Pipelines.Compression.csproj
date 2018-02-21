@@ -6,9 +6,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="System.Diagnostics.Contracts" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
   </ItemGroup>
 </Project>

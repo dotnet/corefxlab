@@ -3,7 +3,7 @@
 
 namespace System.IO.Pipelines
 {
-    public class StreamDuplexPipe : IDuplexPipe
+    public class StreamDuplexPipe : IDuplexPipe, IDisposable
     {
         public StreamDuplexPipe(PipeOptions options, Stream stream)
         {

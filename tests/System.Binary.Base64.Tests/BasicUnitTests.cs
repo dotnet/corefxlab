@@ -88,7 +88,7 @@ namespace System.Binary.Base64Experimental.Tests
         }
     }
 
-    class TestBufferWriter : IBufferWriter
+    class TestBufferWriter : IBufferWriter<byte>
     {
         byte[] _buffer = new byte[1000];
 
@@ -107,5 +107,7 @@ namespace System.Binary.Base64Experimental.Tests
         }
 
         public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+
+        public int MaxBufferSize { get; } = Int32.MaxValue;
     }
 }

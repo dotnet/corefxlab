@@ -5,7 +5,7 @@ namespace System.Buffers
 {
     public static class OutputExtensions
     {
-        public static void Write(this IBufferWriter bufferWriter, ReadOnlySpan<byte> source)
+        public static void Write(this IBufferWriter<byte> bufferWriter, ReadOnlySpan<byte> source)
         {
             var buffer = bufferWriter.GetMemory();
 

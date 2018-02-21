@@ -32,6 +32,8 @@ namespace System.IO.Pipelines.Text.Primitives
 
         public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
 
+        public int MaxBufferSize => _writer.MaxBufferSize;
+
         public void Write(Span<byte> data)
         {
             _writer.Write(data);
