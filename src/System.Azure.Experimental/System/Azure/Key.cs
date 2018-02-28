@@ -8,7 +8,7 @@ namespace System.Azure.Authentication
 {
     public static class Key {
         public static byte[] ComputeKeyBytes(string key)
-            => ComputeKeyBytes(key.AsReadOnlySpan());
+            => ComputeKeyBytes(key.AsSpan());
 
         public static byte[] ComputeKeyBytes(this ReadOnlySpan<char> key)
         {

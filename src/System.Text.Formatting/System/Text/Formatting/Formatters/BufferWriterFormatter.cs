@@ -32,7 +32,5 @@ namespace System.Text.Formatting
         }
 
         public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
-
-        public int MaxBufferSize => _output.MaxBufferSize;
     }
 }

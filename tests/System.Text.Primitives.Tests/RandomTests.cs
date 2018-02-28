@@ -35,7 +35,7 @@ namespace System.Text.Primitives.Tests
             int expectedBytes = Text.Encoding.UTF8.GetByteCount(value);
 
             // test via string input
-            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(value.AsReadOnlySpan().AsBytes(), out int actual));
+            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(value.AsSpan().AsBytes(), out int actual));
             Assert.Equal(expectedBytes, actual);
 
             // test via utf16 input
@@ -70,7 +70,7 @@ namespace System.Text.Primitives.Tests
         public void TryComputeEncodedBytesIllegal_Utf8()
         {
             string text = Encoding.TextEncoderTestHelper.GenerateOnlyInvalidString(20);
-            Assert.Equal(Buffers.OperationStatus.InvalidData, Encodings.Utf16.ToUtf8Length(text.AsReadOnlySpan().AsBytes(), out int needed));
+            Assert.Equal(Buffers.OperationStatus.InvalidData, Encodings.Utf16.ToUtf8Length(text.AsSpan().AsBytes(), out int needed));
         }
     }
 }
