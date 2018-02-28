@@ -121,7 +121,7 @@ public class CosmosDbBench
         s_type.CopyTo(buffer);
         totalWritten += s_type.Length;
 
-        if (Encodings.Utf16.ToUtf8(keyType.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out int consumed, out int written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(keyType.AsSpan().AsBytes(), buffer.Slice(totalWritten), out int consumed, out int written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
@@ -130,7 +130,7 @@ public class CosmosDbBench
         s_ver.CopyTo(buffer.Slice(totalWritten));
         totalWritten += s_ver.Length;
 
-        if (Encodings.Utf16.ToUtf8(tokenVersion.AsReadOnlySpan().AsBytes(), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(tokenVersion.AsSpan().AsBytes(), buffer.Slice(totalWritten), out consumed, out written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
@@ -161,7 +161,7 @@ public class CosmosDbBench
         }
         else
         {
-            if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(verb.AsSpan().AsBytes(), payload, out consumed, out written) != OperationStatus.Done)
             {
                 throw new NotImplementedException("need to resize buffer");
             }
@@ -176,7 +176,7 @@ public class CosmosDbBench
 
         var bufferSlice = payload.Slice(totalWritten);
 
-        if (Encodings.Utf16.ToUtf8(resourceType.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(resourceType.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
@@ -188,7 +188,7 @@ public class CosmosDbBench
         totalWritten += written + 1;
         bufferSlice = payload.Slice(totalWritten);
 
-        if (Encodings.Utf16.ToUtf8(resourceId.AsReadOnlySpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(resourceId.AsSpan().AsBytes(), bufferSlice, out consumed, out written) != OperationStatus.Done)
         {
             throw new NotImplementedException("need to resize buffer");
         }
