@@ -133,8 +133,8 @@ namespace System.IO.Pipelines.Tests
 
             var c1 = readableBuffer.GetPosition(readableBuffer.Start, 50);
 
-            Assert.Equal(0, c1.Index);
-            Assert.Equal(bufferSegment2, c1.Segment);
+            Assert.Equal(0, c1.GetInteger());
+            Assert.Equal(bufferSegment2, c1.GetObject());
         }
 
         [Fact]
@@ -156,8 +156,8 @@ namespace System.IO.Pipelines.Tests
 
             var c1 = readableBuffer.GetPosition(readableBuffer.Start, 200);
 
-            Assert.Equal(100, c1.Index);
-            Assert.Equal(bufferSegment2, c1.Segment);
+            Assert.Equal(100, c1.GetInteger());
+            Assert.Equal(bufferSegment2, c1.GetObject());
         }
 
         [Fact]

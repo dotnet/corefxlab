@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
-    <RuntimeFrameworkVersion>2.1.0-preview2-26221-04</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.0-preview2-26227-03</RuntimeFrameworkVersion>
     <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
     <RoslynVersion>2.6.0-beta3-62316-02</RoslynVersion>
-    <SystemMemoryVersion>4.5.0-preview2-26221-05</SystemMemoryVersion>
-    <SystemCompilerServicesUnsafeVersion>4.5.0-preview2-26221-05</SystemCompilerServicesUnsafeVersion>
-    <SystemNumericsVectorsVersion>4.5.0-preview2-26221-05</SystemNumericsVectorsVersion>
-    <SystemBuffersVersion>4.5.0-preview2-26221-05</SystemBuffersVersion>
-    <SystemIOPipelinesVersion>4.5.0-preview2-26221-05</SystemIOPipelinesVersion>
+    <SystemMemoryVersion>4.5.0-preview2-26228-03</SystemMemoryVersion>
+    <SystemCompilerServicesUnsafeVersion>4.5.0-preview2-26228-03</SystemCompilerServicesUnsafeVersion>
+    <SystemNumericsVectorsVersion>4.5.0-preview2-26228-03</SystemNumericsVectorsVersion>
+    <SystemBuffersVersion>4.5.0-preview2-26228-03</SystemBuffersVersion>
+    <SystemIOPipelinesVersion>4.5.0-preview2-26228-03</SystemIOPipelinesVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>

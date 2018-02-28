@@ -221,12 +221,12 @@ namespace System.Text.Primitives.Tests.Encoding
             string inputStringHigh = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength, true);
             Span<byte> output = new byte[16];
 
-            ReadOnlySpan<byte> input = inputStringLow.AsReadOnlySpan().AsBytes();
+            ReadOnlySpan<byte> input = inputStringLow.AsSpan().AsBytes();
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out int consumed, out int written));
             Assert.Equal(0, consumed);
             Assert.Equal(0, written);
 
-            input = inputStringHigh.AsReadOnlySpan().AsBytes();
+            input = inputStringHigh.AsSpan().AsBytes();
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out consumed, out written));
             Assert.Equal(0, consumed);
             Assert.Equal(0, written);
@@ -249,9 +249,9 @@ namespace System.Text.Primitives.Tests.Encoding
         {
             string inputStringEndsWithLow = TextEncoderTestHelper.GenerateInvalidStringEndsWithLow(TextEncoderConstants.DataLength);
             byte[] inputBytes = Text.Encoding.Unicode.GetBytes(inputStringEndsWithLow);
-            ReadOnlySpan<byte> input = inputStringEndsWithLow.AsReadOnlySpan().AsBytes();
+            ReadOnlySpan<byte> input = inputStringEndsWithLow.AsSpan().AsBytes();
             ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.Unicode, Text.Encoding.UTF8, inputBytes);
-            int expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringEndsWithLow.AsReadOnlySpan());
+            int expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringEndsWithLow.AsSpan());
             Span<byte> output = new byte[expectedWritten + 10];
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out int consumed, out int written));
             Assert.True(consumed < input.Length, "Consumed too many input characters");
@@ -260,9 +260,9 @@ namespace System.Text.Primitives.Tests.Encoding
 
             string inputStringInvalid = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
             inputBytes = Text.Encoding.Unicode.GetBytes(inputStringInvalid);
-            input = inputStringInvalid.AsReadOnlySpan().AsBytes();
+            input = inputStringInvalid.AsSpan().AsBytes();
             expected = Text.Encoding.Convert(Text.Encoding.Unicode, Text.Encoding.UTF8, inputBytes);
-            expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringInvalid.AsReadOnlySpan());
+            expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringInvalid.AsSpan());
             output = new byte[expectedWritten + 10];
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out consumed, out written));
             Assert.True(consumed < input.Length, "Consumed more input than expected");

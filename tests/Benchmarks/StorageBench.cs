@@ -130,7 +130,7 @@ public class StorageBench
         }
         else
         {
-            if (Encodings.Utf16.ToUtf8(verb.AsReadOnlySpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
@@ -154,7 +154,7 @@ public class StorageBench
         bytesWritten += written + 1;
         free = output.Slice(bytesWritten);
 
-        if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsReadOnlySpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
         {
             bytesWritten = 0;
             return false;
