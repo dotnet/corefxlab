@@ -223,7 +223,7 @@ namespace System.Buffers.Text
             else if (format.Symbol != 'G') throw new FormatException();
 
             var text = value.ToString("G");
-            if (text.AsReadOnlySpan().AsBytes().TryCopyTo(buffer))
+            if (text.AsSpan().AsBytes().TryCopyTo(buffer))
             {
                 bytesWritten = text.Length * 2;
                 return true;
