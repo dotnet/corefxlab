@@ -108,7 +108,7 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref SequencePosition position, out T item, bool advance = true)
         {
-            int index = position.Index;
+            int index = position.GetInteger();
             if (index < _count) {
                 item = _array[index];
                 if (advance) { position = new SequencePosition(null, index+1); }

@@ -129,7 +129,7 @@ namespace System.Buffers.Text
 
         public void Write(string value)
         {
-            var utf16Bytes = value.AsReadOnlySpan().AsBytes();
+            var utf16Bytes = value.AsSpan().AsBytes();
             while (true)
             {
                 var free = Free;
