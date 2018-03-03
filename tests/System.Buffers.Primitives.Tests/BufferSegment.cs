@@ -4,8 +4,10 @@ using System.Text;
 
 namespace System.IO.Pipelines.Testing
 {
-    internal class BufferSegment : IMemoryList<byte>
+    internal class BufferSegment : ReadOnlySequenceSegment<byte>
     {
+        private BufferSegment _next;
+        
         public int Start { get; private set; }
 
         public int End
@@ -26,12 +28,15 @@ namespace System.IO.Pipelines.Testing
         /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active"
         /// memory is shrunk when bytes are consumed, Start is increased, and blocks are returned to the pool.
         /// </summary>
-        public BufferSegment NextSegment;
-
-        /// <summary>
-        /// Combined length of all segments before this
-        /// </summary>
-        public long RunningIndex { get; private set; }
+        public BufferSegment NextSegment
+        {
+            get => _next;
+            set
+            {
+                _next = value;
+                Next = value;
+            }
+        }
 
         /// <summary>
         /// The buffer being tracked if segment owns the memory
@@ -68,11 +73,7 @@ namespace System.IO.Pipelines.Testing
 
         public Memory<byte> AvailableMemory { get; private set; }
 
-        public Memory<byte> Memory { get; private set; }
-
         public int Length => End - Start;
-
-        public IMemoryList<byte> Next => NextSegment;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
