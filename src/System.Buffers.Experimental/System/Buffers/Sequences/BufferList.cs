@@ -5,7 +5,7 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public class BufferList : IMemoryList<byte>
+    public class BufferList : ReadOnlySequenceSegment<byte>
     {
         private Memory<byte> _data;
         private BufferList _next;
@@ -34,7 +34,7 @@ namespace System.Buffers
 
         public Memory<byte> Memory => _data;
 
-        public IMemoryList<byte> Next => _next;
+        public ReadOnlySequenceSegment<byte> Next => _next;
 
         public long RunningIndex => _virtualIndex;
 

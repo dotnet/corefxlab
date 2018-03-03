@@ -79,7 +79,7 @@ namespace System.Buffers.Tests
                 var value = (byte)(i + 1);
 
                 var listPosition = MemoryListExtensions.PositionOf(first, value).GetValueOrDefault();
-                var (node, index) = listPosition.Get<IMemoryList<byte>>();
+                var (node, index) = listPosition.Get<ReadOnlySequenceSegment<byte>>();
 
                 if (listPosition != default)
                 {

@@ -159,7 +159,7 @@ namespace System.Buffers.Text
 
         private bool TryWrite(string text, out int written)
         {
-            var status = Encodings.Utf16.ToUtf8(text.AsReadOnlySpan().AsBytes(), Free, out _, out written);
+            var status = Encodings.Utf16.ToUtf8(text.AsSpan().AsBytes(), Free, out _, out written);
 
             switch (status)
             {

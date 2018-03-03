@@ -140,10 +140,10 @@ namespace System.Buffers.Tests
     static class BufferFactory
     {
 
-        private class ReadOnlyBufferSegment : IMemoryList<byte>
+        private class ReadOnlyBufferSegment : ReadOnlySequenceSegment<byte>
         {
             public Memory<byte> Memory { get; set; }
-            public IMemoryList<byte> Next { get; set; }
+            public ReadOnlySequenceSegment<byte> Next { get; set; }
             public long RunningIndex { get; set; }
         }
 

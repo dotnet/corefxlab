@@ -63,8 +63,7 @@ namespace System.IO.Pipelines
 
         private static async Task WriteToStream(Stream stream, ReadOnlyMemory<byte> readOnlyMemory)
         {
-            var memory = MemoryMarshal.AsMemory(readOnlyMemory);
-            if (memory.TryGetArray(out ArraySegment<byte> data))
+            if (MemoryMarshal.TryGetArray(readOnlyMemory, out ArraySegment<byte> data))
             {
                 await stream.WriteAsync(data.Array, data.Offset, data.Count)
                     .ConfigureAwait(continueOnCapturedContext: false);
@@ -72,7 +71,7 @@ namespace System.IO.Pipelines
             else
             {
                 // Copy required
-                var array = memory.Span.ToArray();
+                var array = readOnlyMemory.Span.ToArray();
                 await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
             }
         }
