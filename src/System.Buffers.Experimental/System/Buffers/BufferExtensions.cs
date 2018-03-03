@@ -13,7 +13,7 @@ namespace System.Buffers
     {
         // span creation helpers:
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long IndexOf(this IMemoryList<byte> list, ReadOnlySpan<byte> value)
+        public static long IndexOf(this ReadOnlySequenceSegment<byte> list, ReadOnlySpan<byte> value)
         {
             var first = list.Memory.Span;
             var index = first.IndexOf(value);
@@ -25,7 +25,7 @@ namespace System.Buffers
             return IndexOfStraddling(first, list.Next, value);
         }
 
-        public static int CopyTo(this IMemoryList<byte> list, Span<byte> destination)
+        public static int CopyTo(this ReadOnlySequenceSegment<byte> list, Span<byte> destination)
         {
             var current = list.Memory.Span;
             int copied = 0;
@@ -48,7 +48,7 @@ namespace System.Buffers
             return copied;
         }
 
-        public static SequencePosition? PositionOf(this IMemoryList<byte> list, byte value)
+        public static SequencePosition? PositionOf(this ReadOnlySequenceSegment<byte> list, byte value)
         {
             while (list != null)
             {
@@ -70,7 +70,7 @@ namespace System.Buffers
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest
-        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, IMemoryList<byte> rest, ReadOnlySpan<byte> value)
+        internal static long IndexOfStraddling(this ReadOnlySpan<byte> first, ReadOnlySequenceSegment<byte> rest, ReadOnlySpan<byte> value)
         {
             Debug.Assert(first.IndexOf(value) == -1);
             if (rest == null) return -1;

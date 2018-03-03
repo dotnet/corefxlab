@@ -78,7 +78,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferGetPosition_MovesReadCursor()
         {
             var buffer = Factory.CreateOfSize(100);
-            var cursor = buffer.GetPosition(buffer.Start, 65);
+            var cursor = buffer.GetPosition(65);
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
@@ -86,14 +86,14 @@ namespace System.IO.Pipelines.Tests
         public void ReadableBufferGetPosition_ChecksBounds()
         {
             var buffer = Factory.CreateOfSize(100);
-            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(buffer.Start, 101));
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(101));
         }
 
         [Fact]
         public void ReadableBufferGetPosition_DoesNotAlowNegative()
         {
             var buffer = Factory.CreateOfSize(20);
-            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(buffer.Start, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.GetPosition(-1));
         }
 
         [Fact]
@@ -111,8 +111,8 @@ namespace System.IO.Pipelines.Tests
 
             var readableBuffer = new ReadOnlySequence<byte>(bufferSegment1, 0, bufferSegment2, 50);
 
-            var c1 = readableBuffer.GetPosition(readableBuffer.Start, 25); // segment 1 index 75
-            var c2 = readableBuffer.GetPosition(readableBuffer.Start, 55); // segment 2 index 5
+            var c1 = readableBuffer.GetPosition(25); // segment 1 index 75
+            var c2 = readableBuffer.GetPosition(55); // segment 2 index 5
 
             var sliced = readableBuffer.Slice(c1, c2);
 
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Tests
 
             var readableBuffer = new ReadOnlySequence<byte>(bufferSegment1, 0, bufferSegment2, 0);
 
-            var c1 = readableBuffer.GetPosition(readableBuffer.Start, 50);
+            var c1 = readableBuffer.GetPosition(50);
 
             Assert.Equal(0, c1.GetInteger());
             Assert.Equal(bufferSegment2, c1.GetObject());
@@ -154,7 +154,7 @@ namespace System.IO.Pipelines.Tests
 
             var readableBuffer = new ReadOnlySequence<byte>(bufferSegment1, 0, bufferSegment2, 100);
 
-            var c1 = readableBuffer.GetPosition(readableBuffer.Start, 200);
+            var c1 = readableBuffer.GetPosition(200);
 
             Assert.Equal(100, c1.GetInteger());
             Assert.Equal(bufferSegment2, c1.GetObject());

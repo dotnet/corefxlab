@@ -7,7 +7,7 @@ using System.Buffers;
 
 namespace Microsoft.Net
 {
-    class BufferSequence : IMemoryList<byte>, IDisposable
+    class BufferSequence : ReadOnlySequenceSegment<byte>, IDisposable
     {
         public const int DefaultBufferSize = 1024;
 
@@ -28,7 +28,7 @@ namespace Microsoft.Net
 
         public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
 
-        public IMemoryList<byte> Next => _next;
+        public ReadOnlySequenceSegment<byte> Next => _next;
 
         public int WrittenByteCount => _written;
 
