@@ -142,9 +142,38 @@ namespace System.Buffers.Tests
 
         private class ReadOnlyBufferSegment : ReadOnlySequenceSegment<byte>
         {
-            public Memory<byte> Memory { get; set; }
-            public ReadOnlySequenceSegment<byte> Next { get; set; }
-            public long RunningIndex { get; set; }
+
+            public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
+            {
+                ReadOnlyBufferSegment segment = null;
+                ReadOnlyBufferSegment first = null;
+                foreach (var buffer in buffers)
+                {
+                    var newSegment = new ReadOnlyBufferSegment()
+                    {
+                        Memory = buffer,
+                        RunningIndex = segment?.Memory.Length ?? 0
+                    };
+
+                    if (segment != null)
+                    {
+                        segment.Next = newSegment;
+                    }
+                    else
+                    {
+                        first = newSegment;
+                    }
+
+                    segment = newSegment;
+                }
+
+                if (first == null)
+                {
+                    first = segment = new ReadOnlyBufferSegment();
+                }
+
+                return new ReadOnlySequence<byte>(first, 0, segment, segment.Memory.Length);
+            }
         }
 
         public static ReadOnlySequence<byte> Create(params byte[][] buffers)
@@ -157,34 +186,7 @@ namespace System.Buffers.Tests
 
         public static ReadOnlySequence<byte> Create(IEnumerable<Memory<byte>> buffers)
         {
-            ReadOnlyBufferSegment segment = null;
-            ReadOnlyBufferSegment first = null;
-            foreach (var buffer in buffers)
-            {
-                var newSegment = new ReadOnlyBufferSegment()
-                {
-                    Memory = buffer,
-                    RunningIndex = segment?.RunningIndex ?? 0
-                };
-
-                if (segment != null)
-                {
-                    segment.Next = newSegment;
-                }
-                else
-                {
-                    first = newSegment;
-                }
-
-                segment = newSegment;
-            }
-
-            if (first == null)
-            {
-                first = segment = new ReadOnlyBufferSegment();
-            }
-
-            return new ReadOnlySequence<byte>(first, 0, segment, segment.Memory.Length);
+            return ReadOnlyBufferSegment.Create(buffers);
         }
 
         public static ReadOnlySequence<byte> Parse(string text)
