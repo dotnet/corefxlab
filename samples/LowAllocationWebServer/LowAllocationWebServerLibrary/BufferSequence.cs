@@ -20,7 +20,41 @@ namespace Microsoft.Net
             Memory = new ReadOnlyMemory<byte>(_array, 0, 0);
         }
 
+        public ReadOnlyMemory<byte> WrittenMemory => new ReadOnlyMemory<byte>(_array, 0, _written);
+
+        public ReadOnlySpan<byte> Written => new ReadOnlySpan<byte>(_array, 0, _written);
+
         public Span<byte> Free => new Span<byte>(_array, _written, _array.Length - _written);
+
+        public int WrittenByteCount => _written;
+
+        public SequencePosition First => new SequencePosition(this, 0);
+
+        public int CopyTo(Span<byte> buffer)
+        {
+            if (buffer.Length > _written)
+            {
+                Written.CopyTo(buffer);
+                return Next.CopyTo(buffer.Slice(_written));
+            }
+
+            Written.Slice(0, buffer.Length).CopyTo(buffer);
+            return buffer.Length;
+        }
+
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
+        {
+            if (position == default)
+            {
+                item = default;
+                return false;
+            }
+
+            var (buffer, index) = position.Get<BufferSequence>();
+            item = buffer.WrittenMemory.Slice(index);
+            if (advance) { position = new SequencePosition(Next, 0); }
+            return true;
+        }
 
         public BufferSequence Append(int desiredSize = DefaultBufferSize)
         {

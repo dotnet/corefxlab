@@ -28,6 +28,45 @@ namespace System.Buffers
             return node;
         }
 
+        public SequencePosition First => new SequencePosition(this, 0);
+
+        public int CopyTo(Span<byte> buffer)
+        {
+            int copied = 0;
+            SequencePosition position = default;
+            var free = buffer;
+            while (TryGet(ref position, out ReadOnlyMemory<byte> segment, true))
+            {
+                if (segment.Length > free.Length)
+                {
+                    segment.Span.Slice(0, free.Length).CopyTo(free);
+                    copied += free.Length;
+                }
+                else
+                {
+                    segment.Span.CopyTo(free);
+                    copied += segment.Length;
+                }
+                free = buffer.Slice(copied);
+                if (free.Length == 0) break;
+            }
+            return copied;
+        }
+
+        public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
+        {
+            if (position == default)
+            {
+                item = default;
+                return false;
+            }
+
+            var (list, index) = position.Get<BufferList>();
+            item = list.Memory.Slice(index);
+            if (advance) { position = new SequencePosition(list.Next, 0); }
+            return true;
+        }
+
         public static (BufferList first, BufferList last) Create(params byte[][] buffers)
         {
             if (buffers.Length == 0 || (buffers.Length == 1 && buffers[0].Length == 0))
