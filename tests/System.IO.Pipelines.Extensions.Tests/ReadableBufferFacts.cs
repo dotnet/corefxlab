@@ -122,7 +122,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.AdvanceTo(rb.End);
         }
 
-        [Fact]
+        [Fact(Skip = "Waiting for a build with the fix from https://github.com/dotnet/corefx/pull/27691")]
         public async Task TestIndexOfWorksForAllLocations()
         {
             const int Size = 5 * BlockSize; // multiple blocks

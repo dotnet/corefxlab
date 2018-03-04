@@ -5,38 +5,28 @@ using System.Text;
 
 namespace System.Buffers
 {
-    public class BufferList : IMemoryList<byte>
+    public class BufferList : ReadOnlySequenceSegment<byte>
     {
-        private Memory<byte> _data;
-        private BufferList _next;
-        private long _virtualIndex;
-
         public BufferList(Memory<byte> bytes)
         {
-            _data = bytes;
-            _next = null;
-            _virtualIndex = 0;
+            Memory = bytes;
+            Next = null;
+            RunningIndex = 0;
         }
 
         private BufferList(Memory<byte> bytes, long virtualIndex)
         {
-            _data = bytes;
-            _virtualIndex = virtualIndex;
+            Memory = bytes;
+            RunningIndex = virtualIndex;
         }
 
         public BufferList Append(Memory<byte> bytes)
         {
-            if (_next != null) throw new InvalidOperationException("Node cannot be appended");
-            var node = new BufferList(bytes, _virtualIndex + _data.Length);
-            _next = node;
+            if (Next != null) throw new InvalidOperationException("Node cannot be appended");
+            var node = new BufferList(bytes, RunningIndex + Memory.Length);
+            Next = node;
             return node;
         }
-
-        public Memory<byte> Memory => _data;
-
-        public IMemoryList<byte> Next => _next;
-
-        public long RunningIndex => _virtualIndex;
 
         public SequencePosition First => new SequencePosition(this, 0);
 
@@ -65,13 +55,6 @@ namespace System.Buffers
 
         public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            var result = TryGet(ref position, out Memory<byte> memory, advance);
-            item = memory;
-            return result;
-        }
-
-        public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
-        {
             if (position == default)
             {
                 item = default;
@@ -79,8 +62,8 @@ namespace System.Buffers
             }
 
             var (list, index) = position.Get<BufferList>();
-            item = list._data.Slice(index);
-            if (advance) { position = new SequencePosition(list._next, 0); }
+            item = list.Memory.Slice(index);
+            if (advance) { position = new SequencePosition(list.Next, 0); }
             return true;
         }
 
@@ -107,13 +90,13 @@ namespace System.Buffers
             var builder = new StringBuilder();
             builder.Append('[');
             bool first = true;
-            for (int i = 0; i < Math.Min(5, _data.Length); i++)
+            for (int i = 0; i < Math.Min(5, Memory.Length); i++)
             {
                 if (!first) { builder.Append(", "); }
                 first = false;
-                builder.Append(_data.Span[i]);
+                builder.Append(Memory.Span[i]);
             }
-            if (_data.Length > 5 || _next != null)
+            if (Memory.Length > 5 || Next != null)
             {
                 builder.Append(", ...");
             }

@@ -35,7 +35,7 @@ namespace System.Text.Http.Parser.Tests
             Assert.Equal("V", request.Headers["N"]);
         }
 
-        [Theory]
+        [Theory(Skip = "Waiting for a build with the fix from https://github.com/dotnet/corefx/pull/27691")]
         [InlineData("GET /plaintext HTTP/1.1\r\nN: V\r\n\r\n")]
         public void HttpParserSegmentedRob(string requestText)
         {
