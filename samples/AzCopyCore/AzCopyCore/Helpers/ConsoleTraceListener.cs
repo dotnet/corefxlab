@@ -38,7 +38,7 @@ namespace System.Diagnostics
                 Console.ForegroundColor = color;
             }
 
-            foreach (var item in data)
+            foreach (object item in data)
             {
                 Console.Write("\t");
                 Console.WriteLine(data);

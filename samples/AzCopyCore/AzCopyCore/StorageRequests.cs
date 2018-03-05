@@ -35,7 +35,7 @@ namespace System.Azure.Storage.Requests
         // TODO (pri 2): it would be good if this could advance and flush instead demanding larger and larger buffers.
         protected override void WriteRequestLineAndHeaders(PipeWriter writer, ref T arguments)
         {
-            var memory = writer.GetSpan();
+            Span<byte> memory = writer.GetSpan();
             BufferWriter bufferWriter = memory.AsHttpWriter();
             bufferWriter.Enlarge = (int desiredSize) =>
             {

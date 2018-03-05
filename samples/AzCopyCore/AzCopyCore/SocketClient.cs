@@ -91,8 +91,8 @@ namespace System.Net.Experimental
         {
             await request.WriteAsync(_requestPipe.Writer).ConfigureAwait(false);
 
-            var reader = _responsePipe.Reader;
-            var response = await ParseAsync<TResponse>(reader, Log).ConfigureAwait(false);
+            PipeReader reader = _responsePipe.Reader;
+            TResponse response = await ParseAsync<TResponse>(reader, Log).ConfigureAwait(false);
             response.OnBody(reader);
             return response;
         }
@@ -103,7 +103,7 @@ namespace System.Net.Experimental
         public static async ValueTask<T> ParseAsync<T>(PipeReader reader, TraceSource log = null)
             where T : IHttpResponseLineHandler, IHttpHeadersHandler, new()
         {
-            var result = await reader.ReadAsync();
+            ReadResult result = await reader.ReadAsync();
             ReadOnlySequence<byte> buffer = result.Buffer;
 
             if (log != null) log.TraceInformation("RESPONSE:\n{0}", new Utf8String(buffer.First.Span));
@@ -128,19 +128,19 @@ namespace System.Net.Experimental
 
         async Task SendAsync()
         {
-            var reader = _requestPipe.Reader;
+            PipeReader reader = _requestPipe.Reader;
             try
             {
                 while (true)
                 {
-                    var result = await reader.ReadAsync();
-                    var buffer = result.Buffer;
+                    ReadResult result = await reader.ReadAsync();
+                    ReadOnlySequence<byte> buffer = result.Buffer;
 
                     try
                     {
                         if (!buffer.IsEmpty)
                         {
-                            for (var position = buffer.Start; buffer.TryGet(ref position, out ReadOnlyMemory<byte> segment);)
+                            for (SequencePosition position = buffer.Start; buffer.TryGet(ref position, out ReadOnlyMemory<byte> segment);)
                             {
                                 await WriteToSocketAsync(segment).ConfigureAwait(false);
                             }
@@ -168,7 +168,7 @@ namespace System.Net.Experimental
 
         async Task ReceiveAsync()
         {
-            var writer = _responsePipe.Writer;
+            PipeWriter writer = _responsePipe.Writer;
             try
             {
                 while (true)
@@ -178,8 +178,8 @@ namespace System.Net.Experimental
 
                     while (HasData)
                     {
-                        var buffer = writer.GetMemory();
-                        var readBytes = await ReadFromSocketAsync(buffer).ConfigureAwait(false);
+                        Memory<byte> buffer = writer.GetMemory();
+                        int readBytes = await ReadFromSocketAsync(buffer).ConfigureAwait(false);
                         if (readBytes == 0) break;
 
                         if (Log != null) Log.TraceInformation(new Utf8String(buffer.Span.Slice(0, readBytes)).ToString());
