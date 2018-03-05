@@ -42,7 +42,8 @@ namespace System.Azure.Storage
             _hash = Sha256.Create(keyBytes);
         }
 
-        public TraceSource Log { 
+        public TraceSource Log
+        {
             get { return _log; }
             set { _log = value; _socket.Log = Log; }
         }
@@ -109,7 +110,8 @@ namespace System.Azure.Storage
             }
         }
 
-        public void OnBody(PipeReader body) {
+        public void OnBody(PipeReader body)
+        {
             Body = body;
         }
     }

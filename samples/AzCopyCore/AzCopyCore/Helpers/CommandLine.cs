@@ -25,7 +25,7 @@ namespace System.CommandLine
         }
 
         public ReadOnlySpan<char> this[string optionName] => Get(optionName).Span;
-        
+
         public ReadOnlyMemory<char> Get(string optionName)
         {
             if (optionName.Length < 1) throw new ArgumentOutOfRangeException(nameof(optionName));
@@ -40,6 +40,21 @@ namespace System.CommandLine
                 }
             }
             return ReadOnlyMemory<char>.Empty;
+        }
+
+        public string GetString(string optionName)
+        {
+            if (optionName.Length < 1) throw new ArgumentOutOfRangeException(nameof(optionName));
+
+            for (int i = 0; i < _options.Length; i++)
+            {
+                var candidate = _options[i];
+                if (candidate.StartsWith(optionName))
+                {
+                    return candidate.Substring(optionName.Length);
+                }
+            }
+            return "";
         }
     }
 }

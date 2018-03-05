@@ -16,7 +16,8 @@ using System.Threading.Tasks;
 // TODO (pri 2): need to support cancellations
 namespace System.Net.Experimental
 {
-    public interface IResponse : IHttpHeadersHandler, IHttpResponseLineHandler {
+    public interface IResponse : IHttpHeadersHandler, IHttpResponseLineHandler
+    {
         void OnBody(PipeReader body);
     }
 
@@ -73,7 +74,7 @@ namespace System.Net.Experimental
                 await tlsStream.AuthenticateAsClientAsync(host).ConfigureAwait(false);
             }
             else
-            {                    
+            {
                 await socket.ConnectAsync(host, port).ConfigureAwait(false);
             }
 
@@ -155,7 +156,7 @@ namespace System.Net.Experimental
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.TraceEvent(TraceEventType.Error, 0, e.ToString());
             }
@@ -164,7 +165,7 @@ namespace System.Net.Experimental
                 reader.Complete();
             }
         }
-        
+
         async Task ReceiveAsync()
         {
             var writer = _responsePipe.Writer;
@@ -218,10 +219,11 @@ namespace System.Net.Experimental
                 return await _socket.ReceiveAsync(buffer, SocketFlags.None).ConfigureAwait(false);
             }
         }
-        
+
         bool HasData
         {
-            get {
+            get
+            {
                 if (_stream != null) return _stream.Length != 0;
                 return _socket.Available != 0;
             }

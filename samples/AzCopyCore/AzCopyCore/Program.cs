@@ -21,7 +21,7 @@ static class Program
     {
         Console.WriteLine("dotnet AzCopyCore.dll /Source:<source> /Dest:<destination> [Options]");
         Console.WriteLine("\tOptions:");
-        Console.WriteLine("\t - /DestKey:<key>");
+        Console.WriteLine("\t - /DestKey:<key> (or /@:<Path to ResponseFile.txt> with the key)");
         Console.WriteLine("\t - /SourceKey:<key>");
     }
 
@@ -35,12 +35,14 @@ static class Program
         ReadOnlyMemory<char> destination = options.Get("/Dest:");
 
         // transfer from file system to storage
-        if (destination.Span.StartsWith("http://")) {
+        if (destination.Span.StartsWith("http://"))
+        {
             TransferDirectoryToStorage(source, destination, options);
         }
 
         // transfer from storage to file system
-        else if (source.Span.StartsWith("http://")) {
+        else if (source.Span.StartsWith("http://"))
+        {
             TransferStorageFileToDirectory(source, destination, options);
         }
 
@@ -55,15 +57,26 @@ static class Program
 
     static void TransferDirectoryToStorage(ReadOnlyMemory<char> localDirectory, ReadOnlyMemory<char> storageDirectory, CommandLine options)
     {
-        var directoryPath = new string(localDirectory.Span);     
+        var directoryPath = new string(localDirectory.Span);
         if (!Directory.Exists(directoryPath))
         {
             Console.WriteLine($"Source directory not found.");
             return;
         }
-        if (!options.Contains("/DestKey:"))
+
+        byte[] keyBytes;
+        if (options.Contains("/DestKey:"))
         {
-            Console.WriteLine("/DestKey option not found.");
+            keyBytes = options["/DestKey:"].ComputeKeyBytes();
+        }
+        else if (options.Contains("/@:"))
+        {
+            if (!TryGetKey(options.GetString("/@:"), out ReadOnlySpan<char> line)) return;
+            keyBytes = line.ComputeKeyBytes();
+        }
+        else
+        {
+            Console.WriteLine("Did not find the /DestKey option nor the /@ option (to pass the response file).");
             return;
         }
 
@@ -73,10 +86,9 @@ static class Program
         ReadOnlyMemory<char> path = storageFullPath.Slice(pathStart + 1);
         ReadOnlyMemory<char> account = storageFullPath.Slice(0, storageFullPath.Span.IndexOf('.'));
 
-        byte[] keyBytes = options["/DestKey:"].ComputeKeyBytes();
         using (var client = new StorageClient(keyBytes, account, host))
         {
-            client.Log = Log;           
+            client.Log = Log;
             foreach (var filepath in Directory.EnumerateFiles(directoryPath))
             {
                 var filename = Path.GetFileName(filepath);
@@ -91,12 +103,48 @@ static class Program
         }
     }
 
+    private static bool TryGetKey(string filename, out ReadOnlySpan<char> line)
+    {
+        if (!File.Exists(filename))
+        {
+            Console.WriteLine("Could not find the response file. Please specify the full path.");
+            return false;
+        }
+
+        using (var fileStream = File.OpenRead(filename))
+        using (var streamReader = new StreamReader(fileStream))
+        {
+            string firstLine;
+            if ((firstLine = streamReader.ReadLine()) != null)
+            {
+                line = firstLine.AsReadOnlySpan();
+            }
+            else
+            {
+                Console.WriteLine("Could not read the key from the specified file.");
+                return false;
+            }
+        }
+        return true;
+    }
+
     static void TransferStorageFileToDirectory(ReadOnlyMemory<char> storageFile, ReadOnlyMemory<char> localDirectory, CommandLine options)
     {
         var directory = new string(localDirectory.Span);
-        if (!options.Contains("/SourceKey:"))
+
+        byte[] keyBytes;
+        if (options.Contains("/SourceKey:"))
         {
-            Console.WriteLine("/SourceKey option not found.");
+            keyBytes = options["/SourceKey:"].ComputeKeyBytes();
+        }
+        else if (options.Contains("/@:"))
+        {
+            if (!TryGetKey(options.GetString("/@:"), out ReadOnlySpan<char> line)) return;
+            keyBytes = line.ComputeKeyBytes();
+        }
+        else
+        {
+            Console.WriteLine("Did not find the /SourceKey option nor the /@ option (to pass the response file).");
             return;
         }
 
@@ -113,11 +161,10 @@ static class Program
             Directory.CreateDirectory(directory);
         }
 
-        byte[] keyBytes = options["/SourceKey:"].ComputeKeyBytes();
         string destinationPath = directory + "\\" + new string(file.Span);
         using (var client = new StorageClient(keyBytes, account, host))
         {
-            if(CopyStorageFileToLocalFile(client, new string(storagePath.Span), destinationPath).Result)
+            if (CopyStorageFileToLocalFile(client, new string(storagePath.Span), destinationPath).Result)
             {
                 Console.WriteLine($"Downloaded {storagePath} to {destinationPath}");
             }
