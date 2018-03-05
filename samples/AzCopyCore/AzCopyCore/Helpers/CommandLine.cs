@@ -14,32 +14,60 @@ namespace System.CommandLine
             _options = options;
         }
 
-        public bool Contains(string optionName)
+        public bool Contains(ReadOnlySpan<char> optionName)
         {
             for (int i = 0; i < _options.Length; i++)
             {
-                var candidate = _options[i];
-                if (candidate.StartsWith(optionName)) return true;
+                if (_options[i].AsReadOnlySpan().StartsWith(optionName)) return true;
             }
             return false;
         }
 
-        public ReadOnlySpan<char> this[string optionName] => Get(optionName).Span;
-        
+        public ReadOnlySpan<char> this[string optionName] => GetSpan(optionName);
+
         public ReadOnlyMemory<char> Get(string optionName)
         {
             if (optionName.Length < 1) throw new ArgumentOutOfRangeException(nameof(optionName));
 
             for (int i = 0; i < _options.Length; i++)
             {
-                var candidate = _options[i];
+                string candidate = _options[i];
                 if (candidate.StartsWith(optionName))
                 {
-                    var option = candidate.AsReadOnlyMemory();
-                    return option.Slice(optionName.Length);
+                    return candidate.AsReadOnlyMemory().Slice(optionName.Length);
                 }
             }
             return ReadOnlyMemory<char>.Empty;
+        }
+
+        public ReadOnlySpan<char> GetSpan(ReadOnlySpan<char> optionName)
+        {
+            if (optionName.Length < 1) throw new ArgumentOutOfRangeException(nameof(optionName));
+
+            for (int i = 0; i < _options.Length; i++)
+            {
+                ReadOnlySpan<char> candidate = _options[i].AsReadOnlySpan();
+                if (candidate.StartsWith(optionName))
+                {
+                    return candidate.Slice(optionName.Length);
+                }
+            }
+            return ReadOnlySpan<char>.Empty;
+        }
+
+        public string GetString(string optionName)
+        {
+            if (optionName.Length < 1) throw new ArgumentOutOfRangeException(nameof(optionName));
+
+            for (int i = 0; i < _options.Length; i++)
+            {
+                string candidate = _options[i];
+                if (candidate.StartsWith(optionName))
+                {
+                    return candidate.Substring(optionName.Length);
+                }
+            }
+            return "";
         }
     }
 }

@@ -4,6 +4,7 @@
 
 using System.Azure.Authentication;
 using System.Azure.Storage.Requests;
+using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;
 using System.Diagnostics;
@@ -24,25 +25,26 @@ namespace System.Azure.Storage
         string _accountName;
         TraceSource _log;
 
-        public StorageClient(ReadOnlyMemory<char> masterKey, ReadOnlyMemory<char> accountName, ReadOnlyMemory<char> host, int port = 80)
+        public StorageClient(ReadOnlySpan<char> masterKey, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80)
         {
-            _host = new string(host.Span);
-            _accountName = new string(accountName.Span);
+            _host = new string(host);
+            _accountName = new string(accountName);
             _port = port;
-            var keyBytes = Key.ComputeKeyBytes(masterKey.Span);
+            byte[] keyBytes = Key.ComputeKeyBytes(masterKey);
             _hash = Sha256.Create(keyBytes);
 
         }
 
-        public StorageClient(byte[] keyBytes, ReadOnlyMemory<char> accountName, ReadOnlyMemory<char> host, int port = 80)
+        public StorageClient(byte[] keyBytes, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80)
         {
-            _host = new string(host.Span);
-            _accountName = new string(accountName.Span);
+            _host = new string(host);
+            _accountName = new string(accountName);
             _port = port;
             _hash = Sha256.Create(keyBytes);
         }
 
-        public TraceSource Log { 
+        public TraceSource Log
+        {
             get { return _log; }
             set { _log = value; _socket.Log = Log; }
         }
@@ -63,7 +65,7 @@ namespace System.Azure.Storage
             }
             request.Client = this;
 
-            var response = await _socket.SendRequest<TRequest, StorageResponse>(request).ConfigureAwait(false);
+            StorageResponse response = await _socket.SendRequest<TRequest, StorageResponse>(request).ConfigureAwait(false);
             if (request.ConsumeBody) await ConsumeResponseBody(response.Body);
             return response;
         }
@@ -72,8 +74,8 @@ namespace System.Azure.Storage
         // I need to skip the body without understanding what it is (it's "0\n\r\n\r", BTW)
         static async Task ConsumeResponseBody(PipeReader reader)
         {
-            var body = await reader.ReadAsync();
-            var bodyBuffer = body.Buffer;
+            ReadResult body = await reader.ReadAsync();
+            ReadOnlySequence<byte> bodyBuffer = body.Buffer;
             reader.AdvanceTo(bodyBuffer.End);
         }
 
@@ -109,7 +111,8 @@ namespace System.Azure.Storage
             }
         }
 
-        public void OnBody(PipeReader body) {
+        public void OnBody(PipeReader body)
+        {
             Body = body;
         }
     }

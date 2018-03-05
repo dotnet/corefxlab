@@ -21,8 +21,8 @@ static class Program
     {
         Console.WriteLine("dotnet AzCopyCore.dll /Source:<source> /Dest:<destination> [Options]");
         Console.WriteLine("\tOptions:");
-        Console.WriteLine("\t - /DestKey:<key>");
-        Console.WriteLine("\t - /SourceKey:<key>");
+        Console.WriteLine("\t - /DestKey:<key> (or /@:<Path to ResponseFile.txt> with the key)");
+        Console.WriteLine("\t - /SourceKey:<key> (or /@:<Path to ResponseFile.txt> with the key)");
     }
 
     static void Main(string[] args)
@@ -31,16 +31,18 @@ static class Program
         Log.Switch.Level = SourceLevels.Error;
 
         var options = new CommandLine(args);
-        ReadOnlyMemory<char> source = options.Get("/Source:");
-        ReadOnlyMemory<char> destination = options.Get("/Dest:");
+        ReadOnlySpan<char> source = options.GetSpan("/Source:");
+        ReadOnlySpan<char> destination = options.GetSpan("/Dest:");
 
         // transfer from file system to storage
-        if (destination.Span.StartsWith("http://")) {
+        if (destination.StartsWith("http://"))
+        {
             TransferDirectoryToStorage(source, destination, options);
         }
 
         // transfer from storage to file system
-        else if (source.Span.StartsWith("http://")) {
+        else if (source.StartsWith("http://"))
+        {
             TransferStorageFileToDirectory(source, destination, options);
         }
 
@@ -53,35 +55,48 @@ static class Program
         }
     }
 
-    static void TransferDirectoryToStorage(ReadOnlyMemory<char> localDirectory, ReadOnlyMemory<char> storageDirectory, CommandLine options)
+    static void TransferDirectoryToStorage(ReadOnlySpan<char> localDirectory, ReadOnlySpan<char> storageDirectory, CommandLine options)
     {
-        var directoryPath = new string(localDirectory.Span);     
+        var directoryPath = new string(localDirectory);
         if (!Directory.Exists(directoryPath))
         {
             Console.WriteLine($"Source directory not found.");
             return;
         }
-        if (!options.Contains("/DestKey:"))
+
+        byte[] keyBytes;
+        if (options.Contains("/DestKey:"))
         {
-            Console.WriteLine("/DestKey option not found.");
+            keyBytes = options["/DestKey:"].ComputeKeyBytes();
+        }
+        else if (options.Contains("/@:"))
+        {
+            if (!TryGetKey(options.GetString("/@:"), out ReadOnlySpan<char> line)) return;
+            keyBytes = line.ComputeKeyBytes();
+        }
+        else
+        {
+            Console.WriteLine("Did not find the /DestKey option nor the /@ option (to pass the response file).");
             return;
         }
 
-        ReadOnlyMemory<char> storageFullPath = storageDirectory.Slice("http://".Length);
-        int pathStart = storageFullPath.Span.IndexOf('/');
-        ReadOnlyMemory<char> host = storageFullPath.Slice(0, pathStart);
-        ReadOnlyMemory<char> path = storageFullPath.Slice(pathStart + 1);
-        ReadOnlyMemory<char> account = storageFullPath.Slice(0, storageFullPath.Span.IndexOf('.'));
+        ReadOnlySpan<char> storageFullPath = storageDirectory.Slice("http://".Length);
+        int accEnd = storageFullPath.IndexOf('.');
+        ReadOnlySpan<char> account = storageFullPath.Slice(0, accEnd);
+        int pathStart = storageFullPath.Slice(accEnd).IndexOf('/') + accEnd;
+        ReadOnlySpan<char> host = storageFullPath.Slice(0, pathStart);
+        ReadOnlySpan<char> path = storageFullPath.Slice(pathStart + 1);
 
-        byte[] keyBytes = options["/DestKey:"].ComputeKeyBytes();
         using (var client = new StorageClient(keyBytes, account, host))
         {
-            client.Log = Log;           
-            foreach (var filepath in Directory.EnumerateFiles(directoryPath))
+            client.Log = Log;
+            foreach (string filepath in Directory.EnumerateFiles(directoryPath))
             {
-                var filename = Path.GetFileName(filepath);
-                var storagePath = new string(path.Span) + "/" + filename;
-
+                // TODO: Use Path.Join when it becomes available
+                // https://github.com/dotnet/corefx/issues/25536
+                // https://github.com/dotnet/corefx/issues/25539
+                var storagePath = new string(path) + "/" + Path.GetFileName(filepath);
+                Console.WriteLine($"Uploaded {filepath} to {storagePath}");
                 // TODO (pri 3): this loop keeps going through all files, even if the key is wrong
                 if (CopyLocalFileToStorageFile(client, filepath, storagePath).Result)
                 {
@@ -91,21 +106,58 @@ static class Program
         }
     }
 
-    static void TransferStorageFileToDirectory(ReadOnlyMemory<char> storageFile, ReadOnlyMemory<char> localDirectory, CommandLine options)
+    private static bool TryGetKey(string filename, out ReadOnlySpan<char> line)
     {
-        var directory = new string(localDirectory.Span);
-        if (!options.Contains("/SourceKey:"))
+        if (!File.Exists(filename))
         {
-            Console.WriteLine("/SourceKey option not found.");
+            Console.WriteLine("Could not find the response file. Please specify the full path.");
+            return false;
+        }
+
+        using (FileStream fileStream = File.OpenRead(filename))
+        using (var streamReader = new StreamReader(fileStream))
+        {
+            string firstLine;
+            if ((firstLine = streamReader.ReadLine()) != null)
+            {
+                line = firstLine.AsReadOnlySpan();
+            }
+            else
+            {
+                Console.WriteLine("Could not read the key from the specified file.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static void TransferStorageFileToDirectory(ReadOnlySpan<char> storageFile, ReadOnlySpan<char> localDirectory, CommandLine options)
+    {
+        var directory = new string(localDirectory);
+
+        byte[] keyBytes;
+        if (options.Contains("/SourceKey:"))
+        {
+            keyBytes = options["/SourceKey:"].ComputeKeyBytes();
+        }
+        else if (options.Contains("/@:"))
+        {
+            if (!TryGetKey(options.GetString("/@:"), out ReadOnlySpan<char> line)) return;
+            keyBytes = line.ComputeKeyBytes();
+        }
+        else
+        {
+            Console.WriteLine("Did not find the /SourceKey option nor the /@ option (to pass the response file).");
             return;
         }
 
-        ReadOnlyMemory<char> storageFullPath = storageFile.Slice("http://".Length);
-        int pathStart = storageFullPath.Span.IndexOf('/');
-        ReadOnlyMemory<char> host = storageFullPath.Slice(0, pathStart);
-        ReadOnlyMemory<char> storagePath = storageFullPath.Slice(pathStart + 1);
-        ReadOnlyMemory<char> account = storageFullPath.Slice(0, storageFullPath.Span.IndexOf('.'));
-        ReadOnlyMemory<char> file = storagePath.Slice(storagePath.Span.LastIndexOf('/') + 1);
+        ReadOnlySpan<char> storageFullPath = storageFile.Slice("http://".Length);
+        int accEnd = storageFullPath.IndexOf('.');
+        ReadOnlySpan<char> account = storageFullPath.Slice(0, accEnd);
+        int pathStart = storageFullPath.Slice(accEnd).IndexOf('/') + accEnd;
+        ReadOnlySpan<char> host = storageFullPath.Slice(0, pathStart);
+        ReadOnlySpan<char> storagePath = storageFullPath.Slice(pathStart + 1);
+        ReadOnlySpan<char> file = storagePath.Slice(storagePath.LastIndexOf('/') + 1);
 
         // TODO (pri 3): use the new directory APIs once they become avaliable     
         if (!Directory.Exists(directory))
@@ -113,13 +165,13 @@ static class Program
             Directory.CreateDirectory(directory);
         }
 
-        byte[] keyBytes = options["/SourceKey:"].ComputeKeyBytes();
-        string destinationPath = directory + "\\" + new string(file.Span);
+        string destinationPath = directory + "\\" + new string(file);
         using (var client = new StorageClient(keyBytes, account, host))
         {
-            if(CopyStorageFileToLocalFile(client, new string(storagePath.Span), destinationPath).Result)
+            string storagePathStr = new string(storagePath);
+            if (CopyStorageFileToLocalFile(client, storagePathStr, destinationPath).Result)
             {
-                Console.WriteLine($"Downloaded {storagePath} to {destinationPath}");
+                Console.WriteLine($"Downloaded {storagePathStr} to {destinationPath}");
             }
         }
     }
@@ -130,7 +182,7 @@ static class Program
         FileInfo fileInfo = new FileInfo(localFilePath);
 
         var createRequest = new CreateFileRequest(storagePath, fileInfo.Length);
-        var response = await client.SendRequest(createRequest).ConfigureAwait(false);
+        StorageResponse response = await client.SendRequest(createRequest).ConfigureAwait(false);
 
         if (response.StatusCode == 201)
         {
@@ -149,7 +201,7 @@ static class Program
     static async ValueTask<bool> CopyStorageFileToLocalFile(StorageClient client, string storagePath, string localFilePath)
     {
         var request = new GetFileRequest(storagePath);
-        var response = await client.SendRequest(request).ConfigureAwait(false);
+        StorageResponse response = await client.SendRequest(request).ConfigureAwait(false);
 
         if (response.StatusCode != 200)
         {

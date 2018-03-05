@@ -22,7 +22,7 @@ namespace System.Azure.Storage.Requests
         string CanonicalizedResource { get; }
         long ContentLength { get; }
         bool ConsumeBody { get; }
-        
+
     }
 
     // This is a helper class for impementing writers for various Storage requests.
@@ -35,7 +35,7 @@ namespace System.Azure.Storage.Requests
         // TODO (pri 2): it would be good if this could advance and flush instead demanding larger and larger buffers.
         protected override void WriteRequestLineAndHeaders(PipeWriter writer, ref T arguments)
         {
-            var memory = writer.GetSpan();
+            Span<byte> memory = writer.GetSpan();
             BufferWriter bufferWriter = memory.AsHttpWriter();
             bufferWriter.Enlarge = (int desiredSize) =>
             {
@@ -70,7 +70,8 @@ namespace System.Azure.Storage.Requests
 
         protected abstract void WriteXmsHeaders(ref BufferWriter writer, ref T arguments);
 
-        protected virtual void WriteOtherHeaders(ref BufferWriter writer, ref T arguments) {
+        protected virtual void WriteOtherHeaders(ref BufferWriter writer, ref T arguments)
+        {
             writer.WriteHeader("Content-Length", arguments.ContentLength);
             writer.WriteHeader("Host", arguments.Client.Host);
         }
@@ -92,7 +93,7 @@ namespace System.Azure.Storage.Requests
 
         // TODO (pri 3): I dont like how the client property is a public API
         public StorageClient Client { get; set; }
-        
+
         public PutRangeRequest(string filePath, Stream fileContent)
         {
             FilePath = filePath;
@@ -123,7 +124,7 @@ namespace System.Azure.Storage.Requests
                 long size = arguments.FileContent.Length;
                 writer.WriteHeader("x-ms-date", Time, 'R');
                 // TODO (pri 3): this allocation should be eliminated
-                writer.WriteHeader("x-ms-range", $"bytes=0-{size-1}");
+                writer.WriteHeader("x-ms-range", $"bytes=0-{size - 1}");
                 writer.WriteHeader("x-ms-version", "2017-04-17");
                 writer.WriteHeader("x-ms-write", "update");
             }
