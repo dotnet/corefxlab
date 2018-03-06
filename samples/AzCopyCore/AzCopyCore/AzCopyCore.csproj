@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-26305-04" />
     <PackageReference Include="System.Azure.Experimental" Version="$(CoreFxLabPackageVersion)" />
     <PackageReference Include="System.Buffers.Experimental" Version="$(CoreFxLabPackageVersion)" />
     <PackageReference Include="System.Text.Http" Version="$(CoreFxLabPackageVersion)" />
