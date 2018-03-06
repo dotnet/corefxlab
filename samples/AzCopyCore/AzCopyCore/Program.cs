@@ -30,6 +30,8 @@ static class Program
         Log.Listeners.Add(new ConsoleTraceListener());
         Log.Switch.Level = SourceLevels.Error;
 
+        long before = GC.GetAllocatedBytesForCurrentThread();
+
         var options = new CommandLine(args);
         ReadOnlySpan<char> source = options.GetSpan("/Source:");
         ReadOnlySpan<char> destination = options.GetSpan("/Dest:");
@@ -37,7 +39,11 @@ static class Program
         // transfer from file system to storage
         if (destination.StartsWith("http://"))
         {
+            var sw = new Stopwatch();
+            sw.Start();
             TransferDirectoryToStorage(source, destination, options);
+            sw.Stop();
+            Console.WriteLine("Elapsed time: " + sw.ElapsedMilliseconds + " ms");
         }
 
         // transfer from storage to file system
@@ -47,6 +53,9 @@ static class Program
         }
 
         else { PrintUsage(); }
+
+        long after = GC.GetAllocatedBytesForCurrentThread();
+        Console.WriteLine($"GC Allocations: {after - before} bytes");
 
         if (Debugger.IsAttached)
         {
@@ -96,7 +105,7 @@ static class Program
                 // https://github.com/dotnet/corefx/issues/25536
                 // https://github.com/dotnet/corefx/issues/25539
                 var storagePath = new string(path) + "/" + Path.GetFileName(filepath);
-                Console.WriteLine($"Uploaded {filepath} to {storagePath}");
+
                 // TODO (pri 3): this loop keeps going through all files, even if the key is wrong
                 if (CopyLocalFileToStorageFile(client, filepath, storagePath).Result)
                 {
