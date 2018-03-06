@@ -68,8 +68,8 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 var writableBuffer = _pipe.Writer;
                 writableBuffer.Advance(WriteLength);
-                writableBuffer.FlushAsync().GetResult();
-                var result = _pipe.Reader.ReadAsync().GetResult();
+                writableBuffer.FlushAsync().GetAwaiter().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.AdvanceTo(buffer.End, buffer.End);
             }
@@ -88,11 +88,11 @@ namespace System.IO.Pipelines.Performance.Tests
                     writableBuffer.Advance(WriteLength);
                     if (j == 14)
                     {
-                        writableBuffer.FlushAsync().GetResult();
+                        writableBuffer.FlushAsync().GetAwaiter().GetResult();
                     }
                 }
 
-                var result = _pipe.Reader.ReadAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.AdvanceTo(buffer.End, buffer.End);
             }
@@ -110,8 +110,8 @@ namespace System.IO.Pipelines.Performance.Tests
                     writableBuffer.Write(write);
                 }
 
-                writableBuffer.FlushAsync().GetResult();
-                var result = _pipe.Reader.ReadAsync().GetResult();
+                writableBuffer.FlushAsync().GetAwaiter().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.AdvanceTo(buffer.End, buffer.End);
             }
@@ -129,8 +129,8 @@ namespace System.IO.Pipelines.Performance.Tests
                     writableBuffer.Write((ReadOnlySpan<byte>)write);
                 }
 
-                writableBuffer.FlushAsync().GetResult();
-                var result = _pipe.Reader.ReadAsync().GetResult();
+                writableBuffer.FlushAsync().GetAwaiter().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.AdvanceTo(buffer.End, buffer.End);
             }
@@ -149,8 +149,8 @@ namespace System.IO.Pipelines.Performance.Tests
                     writer.Write(write);
                 }
 
-                writableBuffer.FlushAsync().GetResult();
-                var result = _pipe.Reader.ReadAsync().GetResult();
+                writableBuffer.FlushAsync().GetAwaiter().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.AdvanceTo(buffer.End, buffer.End);
             }
