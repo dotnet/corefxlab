@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
                     break;
                 }
 
-                var result = awaiter.GetResult();
+                var result = awaiter.GetAwaiter().GetResult();
                 var inputBuffer = result.Buffer;
 
                 var length = (int) Math.Min(inputBuffer.Length, destination.Count);

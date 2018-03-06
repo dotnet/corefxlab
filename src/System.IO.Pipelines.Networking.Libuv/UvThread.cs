@@ -139,16 +139,14 @@ namespace System.IO.Pipelines.Networking.Libuv
             Pool.Dispose();
         }
 
-        public override void Schedule(Action<object> action, object state)
+        // TODO: Re-write to avoid allocation
+        public override void Schedule<TState>(Action<TState> action, TState state)
         {
-            // REVIEW: Should we inline actions if we're already on the libuv thread?
-            Post(action, state);
-        }
-
-        public override void Schedule(Action action)
-        {
-            // REVIEW: Should we inline actions if we're already on the libuv thread?
-            Schedule(o => ((Action)o)(), action);
+            Post(s =>
+            {
+                var tuple = (Tuple<Action<TState>, TState>)s;
+                tuple.Item1(tuple.Item2);
+            }, Tuple.Create(action, state));
         }
 
         private struct Work
