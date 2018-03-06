@@ -37,7 +37,11 @@ static class Program
         // transfer from file system to storage
         if (destination.StartsWith("http://"))
         {
+            var sw = new Stopwatch();
+            sw.Start();
             TransferDirectoryToStorage(source, destination, options);
+            sw.Stop();
+            Console.WriteLine("Elapsed time: " + sw.ElapsedMilliseconds + " ms");
         }
 
         // transfer from storage to file system
