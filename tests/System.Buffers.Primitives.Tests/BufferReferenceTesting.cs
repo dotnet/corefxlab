@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Buffers.Tests
@@ -223,7 +225,7 @@ namespace System.Buffers.Tests
             var array = buffer.ToArray();
             for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], span[i]);
 
-            if (buffer.TryGetArray(out var segment))
+            if (MemoryMarshal.TryGetArray<byte>(buffer, out var segment))
             {
                 Assert.Equal(segment.Count, array.Length);
                 for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], segment.Array[i + segment.Offset]);
