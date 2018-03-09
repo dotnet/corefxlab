@@ -9,7 +9,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void AutoDisposeBufferReferenceTests()
         {
-            BufferReferenceTests.TestOwnedBuffer(() => {
+            BufferReferenceTests.TestAutoOwnedBuffer(() => {
                 return new AutoDisposeBuffer<byte>(new byte[1024]);
             });
         }
@@ -17,7 +17,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void AutoPooledBufferReferenceTests()
         {
-            BufferReferenceTests.TestOwnedBuffer(() => {
+            BufferReferenceTests.TestAutoOwnedBuffer(() => {
                 return new AutoPooledBuffer(1024);
             });
         }

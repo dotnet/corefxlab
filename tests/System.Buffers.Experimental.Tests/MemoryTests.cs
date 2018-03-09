@@ -125,6 +125,7 @@ namespace System.Buffers.Tests
             {
                 Assert.Equal(0, owned.OnNoRefencesCalledCount);
             }
+            owned.Release();
             Assert.Equal(1, owned.OnNoRefencesCalledCount);
         }
 
@@ -198,6 +199,7 @@ namespace System.Buffers.Tests
         public CustomBuffer(int size)
         {
             _array = new T[size];
+            _referenceCount = 1;
         }
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
@@ -250,14 +252,22 @@ namespace System.Buffers.Tests
 
         public override bool Release()
         {
-            int newRefCount = Interlocked.Decrement(ref _referenceCount);
-            if (newRefCount < 0) throw new InvalidOperationException();
-            if (newRefCount == 0)
+            while (true)
             {
-                _noReferencesCalledCount++;
-                return false;
+                int currentCount = Volatile.Read(ref _referenceCount);
+                if (currentCount <= 0)
+                    throw new InvalidOperationException();
+                if (Interlocked.CompareExchange(ref _referenceCount, currentCount - 1, currentCount) == currentCount)
+                {
+                    if (currentCount == 1)
+                    {
+                        Dispose();
+                        _noReferencesCalledCount++;
+                        return false;
+                    }
+                    return true;
+                }
             }
-            return true;
         }
     }
 
