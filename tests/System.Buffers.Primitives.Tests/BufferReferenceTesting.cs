@@ -20,6 +20,18 @@ namespace System.Buffers.Tests
             //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
         }
 
+        public static void TestAutoOwnedBuffer(Func<OwnedMemory<byte>> create, Action<OwnedMemory<byte>> dispose = null)
+        {
+            RunTest(BufferLifetimeBasicsAuto, create, dispose);
+            RunTest(MemoryHandleDoubleFreeAuto, create, dispose);
+            RunTest(Span, create, dispose);
+            RunTest(Buffer, create, dispose);
+            RunTest(Pin, create, dispose);
+            RunTest(DisposeAuto, create, dispose);
+            RunTest(buffer => TestBuffer(() => buffer.Memory), create, dispose);
+            //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
+        }
+
         static void RunTest(Action<OwnedMemory<byte>> test, Func<OwnedMemory<byte>> create,
             Action<OwnedMemory<byte>> dispose)
         {
@@ -120,6 +132,41 @@ namespace System.Buffers.Tests
         {
             var length = buffer.Length;
 
+            buffer.Release();
+
+            buffer.Dispose();
+            Assert.True(buffer.IsDisposed);
+
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
+                var ignore = buffer.Span;
+            });
+
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
+                buffer.Span.Slice(0, length);
+            });
+
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
+                buffer.Pin();
+            });
+
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
+                var rwBuffer = buffer.Memory;
+            });
+
+            Assert.ThrowsAny<ObjectDisposedException>((Action)(() =>
+            {
+                ReadOnlyMemory<byte> roBuffer = buffer.Memory;
+            }));
+        }
+
+        static void DisposeAuto(OwnedMemory<byte> buffer)
+        {
+            var length = buffer.Length;
+
             buffer.Dispose();
             Assert.True(buffer.IsDisposed);
 
@@ -177,6 +224,41 @@ namespace System.Buffers.Tests
                 {
                     handle.Dispose(); // release reservation
                 }
+                buffer.Release();
+            }
+            finally
+            {
+                buffer.Dispose(); // can finish dispose with no exception
+            }
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
+                // memory is disposed; cannot use copy stored for later
+                var span = copyStoredForLater.Span;
+            });
+
+            Assert.True(buffer.IsDisposed);
+        }
+
+        static void BufferLifetimeBasicsAuto(OwnedMemory<byte> buffer)
+        {
+            Memory<byte> copyStoredForLater;
+            try
+            {
+                Memory<byte> memory = buffer.Memory;
+                Memory<byte> slice = memory.Slice(10);
+                copyStoredForLater = slice;
+                var handle = slice.Retain();
+                try
+                {
+                    Assert.Throws<InvalidOperationException>(() =>
+                    { // memory is reserved; premature dispose check fires
+                        buffer.Dispose();
+                    });
+                }
+                finally
+                {
+                    handle.Dispose(); // release reservation
+                }
             }
             finally
             {
@@ -192,6 +274,17 @@ namespace System.Buffers.Tests
         }
 
         static void MemoryHandleDoubleFree(OwnedMemory<byte> buffer)
+        {
+            var memory = buffer.Memory;
+            var handle = memory.Retain(pin: true);
+            buffer.Retain();
+            handle.Dispose();
+            handle.Dispose();
+            Assert.True(buffer.Release());
+            Assert.False(buffer.Release());
+        }
+
+        static void MemoryHandleDoubleFreeAuto(OwnedMemory<byte> buffer)
         {
             var memory = buffer.Memory;
             var handle = memory.Retain(pin: true);
