@@ -211,6 +211,7 @@ namespace System.Text.Json
             }
 
             var result =  new JsonObject(_values, _db.Slice(0, _dbIndex).Span, _pool, _scratchManager);
+            _scratchManager.Release();
             _scratchManager = null;
             return result;
         }

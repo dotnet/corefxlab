@@ -104,7 +104,7 @@ namespace System.Buffers.Tests
             }
             if (format.Symbol == 't')
             {
-                var utf8 = Encoding.UTF8.GetBytes("hello").AsReadOnlySpan();
+                var utf8 = Encoding.UTF8.GetBytes("hello").AsSpan();
                 if (utf8.TryCopyTo(buffer))
                 {
                     written = utf8.Length;

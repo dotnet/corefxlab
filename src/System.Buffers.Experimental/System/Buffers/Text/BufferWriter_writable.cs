@@ -9,10 +9,10 @@ namespace System.Buffers.Text
     {
         #region Byte
         public bool TryWriteBytes(byte[] bytes)
-            => TryWriteBytes(bytes.AsReadOnlySpan());
+            => TryWriteBytes((ReadOnlySpan<byte>)bytes.AsSpan());
 
         public void WriteBytes(byte[] bytes)
-            => WriteBytes(bytes.AsReadOnlySpan());
+            => WriteBytes((ReadOnlySpan<byte>)bytes.AsSpan());
 
         public bool TryWriteBytes(ReadOnlySpan<byte> bytes)
         {

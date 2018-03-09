@@ -120,6 +120,8 @@ namespace System.Buffers.Tests
         {
             var length = buffer.Length;
 
+            buffer.Release();
+
             buffer.Dispose();
             Assert.True(buffer.IsDisposed);
 
@@ -177,6 +179,7 @@ namespace System.Buffers.Tests
                 {
                     handle.Dispose(); // release reservation
                 }
+                buffer.Release();
             }
             finally
             {
@@ -198,6 +201,7 @@ namespace System.Buffers.Tests
             buffer.Retain();
             handle.Dispose();
             handle.Dispose();
+            Assert.True(buffer.Release());
             Assert.False(buffer.Release());
         }
 
