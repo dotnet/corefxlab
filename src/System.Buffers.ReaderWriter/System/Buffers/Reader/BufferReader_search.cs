@@ -3,12 +3,12 @@
 
 using System.Collections.Sequences;
 
-namespace System.Buffers
+namespace System.Buffers.Reader
 {
     // TODO: the TryReadUntill methods are very inneficient. We need to fix that.
     public static partial class BufferReaderExtensions
     {
-        public static bool TryReadUntill(ref ByteBufferReader reader, out ReadOnlySequence<byte> bytes, byte delimiter)
+        public static bool TryReadUntill(ref BufferReader reader, out ReadOnlySequence<byte> bytes, byte delimiter)
         {
             var copy = reader;
             var start = reader.Position;
@@ -26,7 +26,7 @@ namespace System.Buffers
             return false;
         }
 
-        public static bool TryReadUntill(ref ByteBufferReader reader, out ReadOnlySequence<byte> bytes, ReadOnlySpan<byte> delimiter)
+        public static bool TryReadUntill(ref BufferReader reader, out ReadOnlySequence<byte> bytes, ReadOnlySpan<byte> delimiter)
         {
             if (delimiter.Length == 0)
             {
