@@ -5,6 +5,7 @@ using System.Binary.Base64Experimental;
 using System.Buffers;
 using System.Buffers.Cryptography;
 using System.Buffers.Text;
+using System.Buffers.Writer;
 using System.Text.Encodings.Web.Utf8;
 using System.Text.Utf8;
 using static System.Buffers.Text.Encodings;

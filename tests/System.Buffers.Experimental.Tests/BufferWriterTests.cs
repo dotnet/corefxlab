@@ -3,6 +3,7 @@
 
 using System.Binary.Base64Experimental;
 using System.Buffers.Text;
+using System.Buffers.Writer;
 using System.Text;
 using Xunit;
 using static System.Buffers.Binary.BinaryPrimitives;
@@ -17,7 +18,7 @@ namespace System.Buffers.Tests
         public void Basics()
         {
             Span<byte> buffer = stackalloc byte[256];
-            var writer = Text.BufferWriter.Create(buffer);
+            var writer = BufferWriter.Create(buffer);
 
             writer.WrittenCount = 0;
             writer.Write("AaBc", new TransformationFormat(Encodings.Ascii.ToLowercase, Encodings.Ascii.ToUppercase));
@@ -44,7 +45,7 @@ namespace System.Buffers.Tests
         public void Writable()
         {
             Span<byte> buffer = stackalloc byte[256];
-            var writer = Text.BufferWriter.Create(buffer);
+            var writer = BufferWriter.Create(buffer);
 
             var ulonger = new UInt128();
             ulonger.Lower = ulong.MaxValue;
@@ -65,7 +66,7 @@ namespace System.Buffers.Tests
         {
             var now = DateTime.UtcNow;
             Span<byte> buffer = stackalloc byte[256];
-            var writer = Text.BufferWriter.Create(buffer);
+            var writer = BufferWriter.Create(buffer);
             writer.WriteLine(now, 'R');
             var result = Encodings.Utf8.ToString(writer.Written);
             Assert.Equal(string.Format("{0:R}\n", now), result);

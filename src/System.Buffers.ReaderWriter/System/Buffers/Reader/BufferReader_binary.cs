@@ -2,13 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Binary;
-using System.Collections.Sequences;
 
-namespace System.Buffers
+namespace System.Buffers.Reader
 {
     public static partial class BufferReaderExtensions
     {
-        public static bool TryRead(ref ByteBufferReader reader, out int value, bool littleEndian = false)
+        public static bool TryRead(ref BufferReader reader, out int value, bool littleEndian = false)
         {
             var unread = reader.UnreadSegment;
             if (littleEndian)
@@ -26,7 +25,7 @@ namespace System.Buffers
             }
 
             Span<byte> tempSpan = stackalloc byte[4];
-            var copied = BufferReader.Peek(reader, tempSpan);
+            var copied = BufferReaderExtensions.Peek(reader, tempSpan);
             if (copied < 4)
             {
                 value = default;
@@ -44,5 +43,11 @@ namespace System.Buffers
             reader.Advance(sizeof(int));
             return true;
         }
+    }
+
+    public static partial class BufferReaderExtensions
+    {
+        public static int Peek(BufferReader reader, Span<byte> destination)
+            => BufferReader.Peek(reader, destination);
     }
 }
