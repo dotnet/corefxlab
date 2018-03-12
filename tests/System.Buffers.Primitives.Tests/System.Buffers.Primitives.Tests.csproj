@@ -22,6 +22,7 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
+    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
   </ItemGroup>
