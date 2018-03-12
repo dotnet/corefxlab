@@ -9,6 +9,7 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />
   </ItemGroup>

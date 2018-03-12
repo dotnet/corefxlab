@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\System.Binary.Base64\System.Binary.Base64.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
+    <ProjectReference Include="..\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
     <ProjectReference Include="..\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
   </ItemGroup>
 </Project>
