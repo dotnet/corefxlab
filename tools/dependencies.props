@@ -7,7 +7,7 @@
     <SystemCompilerServicesUnsafeVersion>4.5.0-preview2-26312-02</SystemCompilerServicesUnsafeVersion>
     <SystemNumericsVectorsVersion>4.5.0-preview2-26312-02</SystemNumericsVectorsVersion>
     <SystemBuffersVersion>4.5.0-preview2-26312-02</SystemBuffersVersion>
-    <SystemIOPipelinesVersion>4.5.0-preview2-26312-02</SystemIOPipelinesVersion>
+    <SystemIOPipelinesVersion>4.5.0-preview2-26305-02</SystemIOPipelinesVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
