@@ -1,23 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers
+namespace System.Buffers.Reader
 {
-    public class BufferReader
-    {
-        public static ByteBufferReader Create(ReadOnlySequence<byte> buffer)
-        {
-            return new ByteBufferReader(buffer);
-        }
-
-        public static int Peek(ByteBufferReader reader, Span<byte> destination)
-            => ByteBufferReader.Peek(reader, destination);
-    }
-
-    public ref struct ByteBufferReader
+    public ref struct BufferReader
     {
         private ReadOnlySpan<byte> _currentSpan;
         private int _index;
@@ -29,7 +17,7 @@ namespace System.Buffers
         private int _consumedBytes;
         private bool _end;
 
-        public ByteBufferReader(ReadOnlySequence<byte> buffer)
+        public BufferReader(ReadOnlySequence<byte> buffer)
         {
             _end = false;
             _index = 0;
@@ -39,6 +27,11 @@ namespace System.Buffers
             _nextSequencePosition = _currentSequencePosition;
             _currentSpan = ReadOnlySpan<byte>.Empty;
             MoveNext();
+        }
+
+        public static BufferReader Create(ReadOnlySequence<byte> buffer)
+        {
+            return new BufferReader(buffer);
         }
 
         public bool End => _end;
@@ -134,7 +127,7 @@ namespace System.Buffers
             }
         }
 
-        internal static int Peek(ByteBufferReader bytes, Span<byte> destination)
+        internal static int Peek(BufferReader bytes, Span<byte> destination)
         {
             var first = bytes.UnreadSegment;
             if (first.Length > destination.Length)

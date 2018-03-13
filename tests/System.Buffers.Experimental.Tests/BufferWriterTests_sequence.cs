@@ -3,6 +3,7 @@
 
 using System.Binary.Base64Experimental;
 using System.Buffers.Text;
+using System.Buffers.Writer;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -16,8 +17,8 @@ namespace System.Buffers.Tests
         [Fact]
         public void Bytes()
         {
-            IBufferWriter<byte> bufferWriter = new BufferWriter();
-            var writer = Text.BufferWriter.Create(bufferWriter);
+            IBufferWriter<byte> bufferWriter = new TestBufferWriter();
+            var writer = BufferWriter.Create(bufferWriter);
             writer.WriteBytes(Encoding.UTF8.GetBytes("Hello"));
             writer.WriteBytes(Encoding.UTF8.GetBytes(" World!"));
             writer.Flush();
@@ -27,8 +28,8 @@ namespace System.Buffers.Tests
         [Fact]
         public void Writable()
         {
-            IBufferWriter<byte> bufferWriter = new BufferWriter();
-            var writer = Text.BufferWriter.Create(bufferWriter);
+            IBufferWriter<byte> bufferWriter = new TestBufferWriter();
+            var writer = BufferWriter.Create(bufferWriter);
 
             var ulonger = new UInt128();
             ulonger.Lower = ulong.MaxValue;
@@ -43,7 +44,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class BufferWriter : IBufferWriter<byte>
+    class TestBufferWriter : IBufferWriter<byte>
     {
         byte[] _current = new byte[0];
         List<byte[]> _commited = new List<byte[]>();

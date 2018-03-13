@@ -4,7 +4,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Buffers
+namespace System.Buffers.Writer
 {
     public static class OutputWriter
     {

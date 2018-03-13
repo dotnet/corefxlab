@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Reader;
 using System.Buffers.Text;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -242,7 +243,7 @@ namespace System.Text.Http.Parser
             var bufferEnd = buffer.End;
 
             var reader = BufferReader.Create(buffer);
-            var start = default(ByteBufferReader);
+            var start = default(BufferReader);
             var done = false;
 
             try

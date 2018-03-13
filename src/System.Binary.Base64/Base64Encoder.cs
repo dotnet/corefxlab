@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Operations;
 using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
