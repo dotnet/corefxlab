@@ -11,7 +11,4 @@
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
-  </ItemGroup>
 </Project>
