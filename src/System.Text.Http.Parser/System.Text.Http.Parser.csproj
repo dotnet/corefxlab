@@ -10,7 +10,4 @@
   <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" Version="$(SystemIOPipelinesVersion)" />
-  </ItemGroup>
 </Project>

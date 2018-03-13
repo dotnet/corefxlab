@@ -13,6 +13,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
-    <ProjectReference Include="..\System.Text.Utf8String\System.Text.Utf8String.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Buffers" Version="$(SystemBuffersVersion)" />
   </ItemGroup>
 </Project>
