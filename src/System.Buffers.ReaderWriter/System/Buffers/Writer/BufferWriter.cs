@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-
 using System.Buffers.Text;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Writer
 {
@@ -17,8 +17,10 @@ namespace System.Buffers.Writer
 
         static byte[] s_defaultNewline = new byte[] { (byte)'\n' };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BufferWriter Create(Span<byte> buffer) => new BufferWriter(buffer);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BufferWriter<TOutput> Create<TOutput>(TOutput output)
             where TOutput : IBufferWriter<byte>
             => new BufferWriter<TOutput>(output);
