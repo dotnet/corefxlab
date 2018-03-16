@@ -33,7 +33,7 @@ namespace System.Buffers.Writer
 
         public void Write(string value)
         {
-            var utf16Bytes = value.AsSpan().AsBytes();
+            ReadOnlySpan<byte> utf16Bytes = value.AsSpan().AsBytes();
             int totalConsumed = 0;
             while (true)
             {
