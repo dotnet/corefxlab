@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Azure.Experimental\System.Azure.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
+    <ProjectReference Include="..\..\src\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />

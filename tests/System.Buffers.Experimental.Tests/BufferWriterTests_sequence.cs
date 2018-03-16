@@ -19,8 +19,8 @@ namespace System.Buffers.Tests
         {
             IBufferWriter<byte> bufferWriter = new TestBufferWriter();
             var writer = BufferWriter.Create(bufferWriter);
-            writer.WriteBytes(Encoding.UTF8.GetBytes("Hello"));
-            writer.WriteBytes(Encoding.UTF8.GetBytes(" World!"));
+            writer.Write(Encoding.UTF8.GetBytes("Hello"));
+            writer.Write(Encoding.UTF8.GetBytes(" World!"));
             writer.Flush();
             Assert.Equal("Hello World!", bufferWriter.ToString());
         }
@@ -35,8 +35,8 @@ namespace System.Buffers.Tests
             ulonger.Lower = ulong.MaxValue;
             ulonger.Upper = 1;
 
-            writer.WriteBytes(ulonger, s_base64);
-            writer.WriteBytes(ulonger, 't');
+            writer.Write(ulonger, s_base64);
+            writer.Write(ulonger, 't');
             writer.Write(123);
             writer.Write("This is just a longish string");
             writer.Flush();
