@@ -6,31 +6,23 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Writer
 {
-    public static class OutputWriter
-    {
-        public static OutputWriter<T> Create<T>(T output) where T : IBufferWriter<byte>
-        {
-            return new OutputWriter<T>(output);
-        }
-    }
-
-    public ref struct OutputWriter<T> where T : IBufferWriter<byte>
+    public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
     {
         private T _output;
         private Span<byte> _span;
         private int _buffered;
 
-        public OutputWriter(T output)
+        public BufferWriter(T output)
         {
             _buffered = 0;
             _output = output;
             _span = output.GetSpan();
         }
 
-        public Span<byte> Span => _span;
+        public Span<byte> Buffer => _span;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Commit()
+        public void Flush()
         {
             var buffered = _buffered;
             if (buffered > 0)
@@ -48,20 +40,6 @@ namespace System.Buffers.Writer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(ReadOnlySpan<byte> source)
-        {
-            if (_span.Length >= source.Length)
-            {
-                source.CopyTo(_span);
-                Advance(source.Length);
-            }
-            else
-            {
-                WriteMultiBuffer(source);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Ensure(int count = 1)
         {
             if (_span.Length < count)
@@ -73,29 +51,19 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EnsureMore(int count = 0)
         {
-            if (_buffered > 0)
+            var buffered = _buffered;
+            if (buffered > 0)
             {
-                Commit();
+                _buffered = 0;
+                _output.Advance(buffered);
             }
-
-            _output.GetMemory(count);
-            _span = _output.GetSpan();
+            _span = _output.GetSpan(count);
         }
 
-        private void WriteMultiBuffer(ReadOnlySpan<byte> source)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Enlarge()
         {
-            while (source.Length > 0)
-            {
-                if (_span.Length == 0)
-                {
-                    EnsureMore();
-                }
-
-                var writable = Math.Min(source.Length, _span.Length);
-                source.Slice(0, writable).CopyTo(_span);
-                source = source.Slice(writable);
-                Advance(writable);
-            }
+            EnsureMore(_span.Length + 1);
         }
     }
 }
