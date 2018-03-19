@@ -18,36 +18,33 @@ namespace System.Azure.Storage
 {
     public class StorageClient : IDisposable
     {
-        SocketClient _socket;
+        PipeHttpClient _client;
+        SocketPipe _pipe;
         Sha256 _hash;
         string _host;
         int _port;
         string _accountName;
-        TraceSource _log;
 
-        public StorageClient(ReadOnlySpan<char> masterKey, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80)
+        public StorageClient(ReadOnlySpan<char> masterKey, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80, TraceSource log = null)
         {
             _host = new string(host);
             _accountName = new string(accountName);
             _port = port;
             byte[] keyBytes = Key.ComputeKeyBytes(masterKey);
             _hash = Sha256.Create(keyBytes);
-
+            Log = log;
         }
 
-        public StorageClient(byte[] keyBytes, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80)
+        public StorageClient(byte[] keyBytes, ReadOnlySpan<char> accountName, ReadOnlySpan<char> host, int port = 80, TraceSource log = null)
         {
             _host = new string(host);
             _accountName = new string(accountName);
             _port = port;
             _hash = Sha256.Create(keyBytes);
+            Log = log;
         }
 
-        public TraceSource Log
-        {
-            get { return _log; }
-            set { _log = value; _socket.Log = Log; }
-        }
+        public TraceSource Log { get; }
 
         public string Host => _host;
 
@@ -58,14 +55,15 @@ namespace System.Azure.Storage
         public async ValueTask<StorageResponse> SendRequest<TRequest>(TRequest request)
             where TRequest : IStorageRequest
         {
-            if (!_socket.IsConnected)
+            if (!_client.IsConnected)
             {
-                _socket = await SocketClient.ConnectAsync(_host, _port).ConfigureAwait(false);
-                _socket.Log = Log;
+                _pipe = await SocketPipe.ConnectAsync(_host, _port).ConfigureAwait(false);
+                _pipe.Log = Log;
+                _client = new PipeHttpClient(_pipe);
             }
             request.Client = this;
 
-            StorageResponse response = await _socket.SendRequest<TRequest, StorageResponse>(request).ConfigureAwait(false);
+            StorageResponse response = await _client.SendRequest<TRequest, StorageResponse>(request).ConfigureAwait(false);
             if (request.ConsumeBody) await ConsumeResponseBody(response.Body);
             return response;
         }
@@ -81,12 +79,12 @@ namespace System.Azure.Storage
 
         public void Dispose()
         {
-            _socket.Dispose();
+            _pipe.Dispose();
             _hash.Dispose();
         }
     }
 
-    public struct StorageResponse : IResponse
+    public struct StorageResponse : IHttpResponseHandler
     {
         static byte[] s_contentLength = Encoding.UTF8.GetBytes("Content-Length");
 
@@ -111,9 +109,10 @@ namespace System.Azure.Storage
             }
         }
 
-        public void OnBody(PipeReader body)
+        public ValueTask OnBody(PipeReader body)
         {
             Body = body;
+            return default;
         }
     }
 }

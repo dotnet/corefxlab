@@ -8,36 +8,12 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Text.Http.Parser;
-using System.Text.Utf8;
 using System.Threading.Tasks;
+using static System.Buffers.Text.Encodings;
 
-// SocketClient is an experimental low-allocating/low-copy HTTP client API
-// TODO (pri 2): need to support cancellations
 namespace System.Net.Experimental
 {
-    public interface IResponse : IHttpHeadersHandler, IHttpResponseLineHandler
-    {
-        void OnBody(PipeReader body);
-    }
-
-    public abstract class RequestWriter<T> where T : IPipeWritable
-    {
-        public abstract Text.Http.Parser.Http.Method Verb { get; }
-
-        public async Task WriteAsync(PipeWriter writer, T request)
-        {
-            WriteRequestLineAndHeaders(writer, ref request);
-            await WriteBody(writer, request).ConfigureAwait(false);
-            await writer.FlushAsync();
-        }
-
-        // TODO (pri 2): writing the request line should not be abstract; writing headers should.
-        protected abstract void WriteRequestLineAndHeaders(PipeWriter writer, ref T request);
-        protected virtual Task WriteBody(PipeWriter writer, T request) { return Task.CompletedTask; }
-    }
-
-    public struct SocketClient : IDisposable
+    public class SocketPipe : IDisposable, IDuplexPipe
     {
         readonly Pipe _requestPipe;
         readonly Pipe _responsePipe;
@@ -49,7 +25,7 @@ namespace System.Net.Experimental
         Task _requestWriter;
         public TraceSource Log;
 
-        SocketClient(Socket socket, SslStream stream)
+        SocketPipe(Socket socket, SslStream stream)
         {
             _socket = socket;
             _stream = stream;
@@ -60,7 +36,7 @@ namespace System.Net.Experimental
             Log = null;
         }
 
-        public static async Task<SocketClient> ConnectAsync(string host, int port, bool tls = false)
+        public static async Task<SocketPipe> ConnectAsync(string host, int port, bool tls = false)
         {
             var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
@@ -78,52 +54,11 @@ namespace System.Net.Experimental
                 await socket.ConnectAsync(host, port).ConfigureAwait(false);
             }
 
-            var client = new SocketClient(socket, tlsStream);
+            var client = new SocketPipe(socket, tlsStream);
             client._responseReader = client.ReceiveAsync();
             client._requestWriter = client.SendAsync();
 
             return client;
-        }
-
-        public async ValueTask<TResponse> SendRequest<TRequest, TResponse>(TRequest request)
-            where TRequest : IPipeWritable
-            where TResponse : IResponse, new()
-        {
-            await request.WriteAsync(_requestPipe.Writer).ConfigureAwait(false);
-
-            PipeReader reader = _responsePipe.Reader;
-            TResponse response = await ParseAsync<TResponse>(reader, Log).ConfigureAwait(false);
-            response.OnBody(reader);
-            return response;
-        }
-
-        static HttpParser s_headersParser = new HttpParser();
-
-        // TODO (pri 3): Add to the platform, but this would require common logging API
-        public static async ValueTask<T> ParseAsync<T>(PipeReader reader, TraceSource log = null)
-            where T : IHttpResponseLineHandler, IHttpHeadersHandler, new()
-        {
-            ReadResult result = await reader.ReadAsync();
-            ReadOnlySequence<byte> buffer = result.Buffer;
-
-            if (log != null) log.TraceInformation("RESPONSE:\n{0}", new Utf8String(buffer.First.Span));
-
-            var handler = new T();
-            // TODO (pri 2): this should not be static, or all should be static
-            if (!HttpParser.ParseResponseLine(ref handler, ref buffer, out int rlConsumed))
-            {
-                throw new NotImplementedException("could not parse the response");
-            }
-
-            buffer = buffer.Slice(rlConsumed);
-            if (!s_headersParser.ParseHeaders(ref handler, buffer, out int hdConsumed))
-            {
-                throw new NotImplementedException("could not parse the response");
-            }
-
-            reader.AdvanceTo(buffer.GetPosition(buffer.Start, hdConsumed));
-
-            return handler;
         }
 
         async Task SendAsync()
@@ -142,6 +77,9 @@ namespace System.Net.Experimental
                         {
                             for (SequencePosition position = buffer.Start; buffer.TryGet(ref position, out ReadOnlyMemory<byte> segment);)
                             {
+                                if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Information))
+                                    Log.TraceInformation(Utf8.ToString(segment.Span));
+
                                 await WriteToSocketAsync(segment).ConfigureAwait(false);
                             }
                         }
@@ -182,7 +120,8 @@ namespace System.Net.Experimental
                         int readBytes = await ReadFromSocketAsync(buffer).ConfigureAwait(false);
                         if (readBytes == 0) break;
 
-                        if (Log != null) Log.TraceInformation(new Utf8String(buffer.Span.Slice(0, readBytes)).ToString());
+                        if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Information))
+                            Log.TraceInformation(Utf8.ToString(buffer.Span.Slice(0, readBytes)));
 
                         writer.Advance(readBytes);
                         await writer.FlushAsync();
@@ -236,6 +175,10 @@ namespace System.Net.Experimental
         }
 
         public bool IsConnected => _socket != null;
+
+        public PipeReader Input => _responsePipe.Reader;
+
+        public PipeWriter Output => _requestPipe.Writer;
     }
 }
 
