@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers.Operations;
 using System.Buffers.Text;
 using System.Buffers.Writer;
 using System.Diagnostics;
@@ -58,6 +59,17 @@ namespace System.Buffers.Tests
 
             var result = _sink.ToString();
             Assert.Equal(s_response, _sink.ToString());
+        }
+
+        [Fact]
+        public void BufferWriterTransform()
+        {
+            byte[] buffer = new byte[10];
+            var writer = BufferWriter.Create(buffer.AsSpan());
+            var transformation = new TransformationFormat(new RemoveTransformation(2));
+            ReadOnlyMemory<byte> value = new byte[] { 1, 2, 3 };
+            writer.WriteBytes(value, transformation);
+            Assert.Equal(-1, buffer.AsSpan().IndexOf((byte)2));
         }
     }
 
