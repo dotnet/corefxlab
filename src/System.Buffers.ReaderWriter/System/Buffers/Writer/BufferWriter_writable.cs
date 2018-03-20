@@ -39,12 +39,13 @@ namespace System.Buffers.Writer
 
         public bool TryWriteBytes(ReadOnlyMemory<byte> bytes, TransformationFormat format)
         {
-            if (!TryWriteBytes(bytes.Span))
+            var span = bytes.Span;
+            if (!span.TryCopyTo(Free))
             {
                 return false;
             }
+            int written = span.Length;
 
-            int written = bytes.Length;
             if (format.TryTransform(Free, ref written))
             {
                 _written += written;
