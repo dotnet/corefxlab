@@ -18,7 +18,7 @@ namespace System.CommandLine
         {
             for (int i = 0; i < _options.Length; i++)
             {
-                if (_options[i].AsReadOnlySpan().StartsWith(optionName)) return true;
+                if (_options[i].AsSpan().StartsWith(optionName)) return true;
             }
             return false;
         }
@@ -34,7 +34,7 @@ namespace System.CommandLine
                 string candidate = _options[i];
                 if (candidate.StartsWith(optionName))
                 {
-                    return candidate.AsReadOnlyMemory().Slice(optionName.Length);
+                    return candidate.AsMemory().Slice(optionName.Length);
                 }
             }
             return ReadOnlyMemory<char>.Empty;
@@ -46,7 +46,7 @@ namespace System.CommandLine
 
             for (int i = 0; i < _options.Length; i++)
             {
-                ReadOnlySpan<char> candidate = _options[i].AsReadOnlySpan();
+                ReadOnlySpan<char> candidate = _options[i].AsSpan();
                 if (candidate.StartsWith(optionName))
                 {
                     return candidate.Slice(optionName.Length);

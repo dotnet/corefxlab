@@ -28,22 +28,19 @@ static class Program
     static void Main(string[] args)
     {
         Log.Listeners.Add(new ConsoleTraceListener());
-        Log.Switch.Level = SourceLevels.Error;
-
-        long before = GC.GetAllocatedBytesForCurrentThread();
+        Log.Switch.Level = SourceLevels.Information;
 
         var options = new CommandLine(args);
         ReadOnlySpan<char> source = options.GetSpan("/Source:");
         ReadOnlySpan<char> destination = options.GetSpan("/Dest:");
 
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        var sw = Stopwatch.StartNew();
+
         // transfer from file system to storage
         if (destination.StartsWith("http://"))
         {
-            var sw = new Stopwatch();
-            sw.Start();
             TransferDirectoryToStorage(source, destination, options);
-            sw.Stop();
-            Console.WriteLine("Elapsed time: " + sw.ElapsedMilliseconds + " ms");
         }
 
         // transfer from storage to file system
@@ -54,8 +51,14 @@ static class Program
 
         else { PrintUsage(); }
 
+        sw.Stop();
         long after = GC.GetAllocatedBytesForCurrentThread();
-        Console.WriteLine($"GC Allocations: {after - before} bytes");
+
+        if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Information))
+        {
+            Log.TraceInformation("Elapsed time: " + sw.ElapsedMilliseconds + " ms");
+            Log.TraceInformation($"GC Allocations: {after - before} bytes");
+        }
 
         if (Debugger.IsAttached)
         {
@@ -76,7 +79,9 @@ static class Program
         byte[] keyBytes;
         if (options.Contains("/DestKey:"))
         {
-            keyBytes = options["/DestKey:"].ComputeKeyBytes();
+            ReadOnlySpan<char> key = options["/DestKey:"];
+            var str = key.ToString();
+            keyBytes = key.ComputeKeyBytes();
         }
         else if (options.Contains("/@:"))
         {
@@ -96,9 +101,9 @@ static class Program
         ReadOnlySpan<char> host = storageFullPath.Slice(0, pathStart);
         ReadOnlySpan<char> path = storageFullPath.Slice(pathStart + 1);
 
-        using (var client = new StorageClient(keyBytes, account, host))
+        using (var client = new StorageClient(keyBytes, account, host, 80, Log))
         {
-            client.Log = Log;
+            //var files = new Files(directoryPath);
             foreach (string filepath in Directory.EnumerateFiles(directoryPath))
             {
                 // TODO: Use Path.Join when it becomes available
@@ -115,7 +120,7 @@ static class Program
         }
     }
 
-    private static bool TryGetKey(string filename, out ReadOnlySpan<char> line)
+    static bool TryGetKey(string filename, out ReadOnlySpan<char> line)
     {
         if (!File.Exists(filename))
         {
@@ -129,7 +134,7 @@ static class Program
             string firstLine;
             if ((firstLine = streamReader.ReadLine()) != null)
             {
-                line = firstLine.AsReadOnlySpan();
+                line = firstLine.AsSpan();
             }
             else
             {
