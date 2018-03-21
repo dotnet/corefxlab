@@ -35,7 +35,7 @@ static class Program
         ReadOnlySpan<char> destination = options.GetSpan("/Dest:");
 
         long before = GC.GetAllocatedBytesForCurrentThread();
-        var sw = Stopwatch.StartNew();
+        Stopwatch sw = Stopwatch.StartNew();
 
         // transfer from file system to storage
         if (destination.StartsWith("http://"))
@@ -80,7 +80,6 @@ static class Program
         if (options.Contains("/DestKey:"))
         {
             ReadOnlySpan<char> key = options["/DestKey:"];
-            var str = key.ToString();
             keyBytes = key.ComputeKeyBytes();
         }
         else if (options.Contains("/@:"))
@@ -103,7 +102,6 @@ static class Program
 
         using (var client = new StorageClient(keyBytes, account, host, 80, Log))
         {
-            //var files = new Files(directoryPath);
             foreach (string filepath in Directory.EnumerateFiles(directoryPath))
             {
                 // TODO: Use Path.Join when it becomes available
