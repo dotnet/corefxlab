@@ -77,8 +77,12 @@ namespace System.Net.Experimental
                         {
                             for (SequencePosition position = buffer.Start; buffer.TryGet(ref position, out ReadOnlyMemory<byte> segment);)
                             {
-                                if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Information))
-                                    Log.TraceInformation(Utf8.ToString(segment.Span));
+                                if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Verbose))
+                                {
+                                    string data = Utf8.ToString(segment.Span);
+                                    if (!string.IsNullOrWhiteSpace(data))
+                                        Log.TraceInformation(data);
+                                }
 
                                 await WriteToSocketAsync(segment).ConfigureAwait(false);
                             }
@@ -120,8 +124,12 @@ namespace System.Net.Experimental
                         int readBytes = await ReadFromSocketAsync(buffer).ConfigureAwait(false);
                         if (readBytes == 0) break;
 
-                        if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Information))
-                            Log.TraceInformation(Utf8.ToString(buffer.Span.Slice(0, readBytes)));
+                        if (Log != null && Log.Switch.ShouldTrace(TraceEventType.Verbose))
+                        {
+                            string data = Utf8.ToString(buffer.Span.Slice(0, readBytes));
+                            if (!string.IsNullOrWhiteSpace(data))
+                                Log.TraceInformation(data);
+                        }
 
                         writer.Advance(readBytes);
                         await writer.FlushAsync();
