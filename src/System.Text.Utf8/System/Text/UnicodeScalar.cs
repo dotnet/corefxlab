@@ -3,6 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.ComponentModel;
+using System.Text.Utf8.Resources;
+
+// TODO: Make this struct serializable.
 
 namespace System.Text
 {
@@ -13,8 +16,10 @@ namespace System.Text
     /// A Unicode scalar value is an unsigned integer in the range U+0000..U+D7FF, inclusive;
     /// or within the range U+E000..U+10FFFF, inclusive.
     /// </remarks>
-    public struct UnicodeScalar : IComparable<UnicodeScalar>, IEquatable<UnicodeScalar>
+    public readonly struct UnicodeScalar : IComparable<UnicodeScalar>, IEquatable<UnicodeScalar>
     {
+        private readonly uint _value;
+
         /// <summary>
         /// Creates a <see cref="UnicodeScalar"/> from the provided UTF-16 code unit.
         /// </summary>
@@ -22,7 +27,16 @@ namespace System.Text
         /// If <paramref name="ch"/> represents a UTF-16 surrogate code point
         /// U+D800..U+DFFF, inclusive.
         /// </exception>
-        public UnicodeScalar(char ch) => throw null;
+        public UnicodeScalar(char ch)
+            : this(ch, false)
+        {
+            if (UnicodeHelpers.IsSurrogateCodePoint(_value))
+            {
+                throw new ArgumentOutOfRangeException(
+                    message: Strings.Argument_NotValidUnicodeScalar,
+                    paramName: nameof(ch));
+            }
+        }
 
         /// <summary>
         /// Creates a <see cref="UnicodeScalar"/> from the provided Unicode scalar value.
@@ -30,7 +44,10 @@ namespace System.Text
         /// <exception cref="ArgumentOutOfRangeException">
         /// If <paramref name="scalarValue"/> does not represent a value Unicode scalar value.
         /// </exception>
-        public UnicodeScalar(int scalarValue) { throw null; }
+        public UnicodeScalar(int scalarValue)
+            : this((uint)scalarValue)
+        {
+        }
 
         /// <summary>
         /// Creates a <see cref="UnicodeScalar"/> from the provided Unicode scalar value.
@@ -38,34 +55,49 @@ namespace System.Text
         /// <exception cref="ArgumentOutOfRangeException">
         /// If <paramref name="scalarValue"/> does not represent a value Unicode scalar value.
         /// </exception>
-        public UnicodeScalar(uint scalarValue) { throw null; }
+        public UnicodeScalar(uint scalarValue)
+            : this(scalarValue, false)
+        {
+            if (!UnicodeHelpers.IsValidUnicodeScalar(_value))
+            {
+                throw new ArgumentOutOfRangeException(
+                    message: Strings.Argument_NotValidUnicodeScalar,
+                    paramName: nameof(scalarValue));
+            }
+        }
+
+        // non-validating ctor
+        private UnicodeScalar(uint scalarValue, bool ignored)
+        {
+            _value = scalarValue;
+        }
 
         /// <summary>
         /// Compares two <see cref="UnicodeScalar"/> instances for equality.
         /// </summary>
-        public static bool operator ==(UnicodeScalar a, UnicodeScalar b) => throw null;
+        public static bool operator ==(UnicodeScalar a, UnicodeScalar b) => (a._value == b._value);
 
         /// <summary>
         /// Compares two <see cref="UnicodeScalar"/> instances for inequality.
         /// </summary>
-        public static bool operator !=(UnicodeScalar a, UnicodeScalar b) => throw null;
+        public static bool operator !=(UnicodeScalar a, UnicodeScalar b) => (a._value != b._value);
 
         /// <summary>
         /// Returns true iff this scalar value is ASCII ([ U+0000..U+007F ])
         /// and therefore representable by a single UTF-8 code unit.
         /// </summary>
-        public bool IsAscii => throw null;
+        public bool IsAscii => UnicodeHelpers.IsAsciiCodePoint(_value);
 
         /// <summary>
         /// Returns true iff this scalar value is within the BMP ([ U+0000..U+FFFF ])
         /// and therefore representable by a single UTF-16 code unit.
         /// </summary>
-        public bool IsBmp => throw null;
+        public bool IsBmp => UnicodeHelpers.IsBmpCodePoint(_value);
 
         /// <summary>
         /// A <see cref="UnicodeScalar"/> instance that represents the Unicode replacement character U+FFFD.
         /// </summary>
-        public static UnicodeScalar ReplacementChar => throw null;
+        public static UnicodeScalar ReplacementChar => DangerousCreateWithoutValidation(UnicodeHelpers.ReplacementChar);
 
         /// <summary>
         /// Returns the length in code units (<see cref="Char"/>) of the
@@ -74,7 +106,7 @@ namespace System.Text
         /// <remarks>
         /// The return value will be 1 or 2.
         /// </remarks>
-        public int Utf16SequenceLength => throw null;
+        public int Utf16SequenceLength => UnicodeHelpers.GetUtf16SequenceLength(_value);
 
         /// <summary>
         /// Returns the length in code units (<see cref="Utf8Char"/>) of the
@@ -83,17 +115,17 @@ namespace System.Text
         /// <remarks>
         /// The return value will be 1 through 4, inclusive.
         /// </remarks>
-        public int Utf8SequenceLength => throw null;
+        public int Utf8SequenceLength => UnicodeHelpers.GetUtf8SequenceLength(_value);
 
         /// <summary>
         /// Returns the Unicode scalar value as an unsigned integer.
         /// </summary>
-        public uint Value => throw null;
+        public uint Value => _value;
 
         /// <summary>
         /// Compares this <see cref="UnicodeScalar"/> instance to another <see cref="UnicodeScalar"/> instance.
         /// </summary>
-        public int CompareTo(UnicodeScalar other) => throw null;
+        public int CompareTo(UnicodeScalar other) => this._value.CompareTo(other._value);
 
         /// <summary>
         /// Creates a <see cref="UnicodeScalar"/> from the provided Unicode scalar value
@@ -104,28 +136,35 @@ namespace System.Text
         /// a valid value. The behavior of this type is undefined if the input value is invalid.
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static UnicodeScalar DangerousCreateWithoutValidation(uint scalarValue) => throw null;
+        public static UnicodeScalar DangerousCreateWithoutValidation(uint scalarValue) => new UnicodeScalar(scalarValue, false);
 
         /// <summary>
         /// Returns true iff this <see cref="UnicodeScalar"/> instance is equal to the provided object.
         /// </summary>
-        public override bool Equals(object obj) => throw null;
+        public override bool Equals(object obj)
+        {
+            return (obj is UnicodeScalar) && Equals((UnicodeScalar)obj);
+        }
 
         /// <summary>
         /// Returns true iff this <see cref="UnicodeScalar"/> instance is equal to the provided <see cref="UnicodeScalar"/> instance.
         /// </summary>
-        public bool Equals(UnicodeScalar other) => throw null;
+        public bool Equals(UnicodeScalar other) => this._value.Equals(other._value);
 
         /// <summary>
         /// Returns a hash code for this <see cref="UnicodeScalar"/> instance suitable for use in a dictionary.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() => throw null;
+        public override int GetHashCode() => _value.GetHashCode();
 
         /// <summary>
         /// Returns a <see cref="String"/> representation of this <see cref="UnicodeScalar"/> instance.
         /// </summary>
-        public override string ToString() => throw null;
+        public override string ToString()
+        {
+            Span<char> chars = stackalloc char[2]; // worst case
+            return new String(chars.Slice(0, ToUtf16(chars)));
+        }
 
         /// <summary>
         /// Writes this scalar value as a UTF-16 sequence to the output buffer, returning
@@ -135,7 +174,28 @@ namespace System.Text
         /// Thrown if <paramref name="output"/> is too short to contain the output.
         /// The required length can be queried ahead of time via the <see cref="Utf16SequenceLength"/> property.
         /// </exception>
-        public int ToUtf16(Span<char> output) => throw null;
+        public int ToUtf16(Span<char> output)
+        {
+            if (IsBmp && output.Length > 0)
+            {
+                output[0] = (char)_value;
+                return 1;
+            }
+            else if (output.Length > 1)
+            {
+                // TODO: This logic can be optimized into a single unaligned write, endianness-dependent.
+
+                output[0] = (char)((_value >> 10) + 0xD800U - 0x40U); // high surrogate
+                output[1] = (char)((_value & 0x3FFFU) + 0xDC00U); // low surrogate
+                return 2;
+            }
+            else
+            {
+                throw new ArgumentException(
+                    message: Strings.Argument_OutputBufferTooSmall,
+                    paramName: nameof(output));
+            }
+        }
 
         /// <summary>
         /// Writes this scalar value as a UTF-8 sequence to the output buffer, returning
@@ -145,11 +205,55 @@ namespace System.Text
         /// Thrown if <paramref name="output"/> is too short to contain the output.
         /// The required length can be queried ahead of time via the <see cref="Utf8SequenceLength"/> property.
         /// </exception>
-        public int ToUtf8(Span<Utf8Char> output) => throw null;
+        public int ToUtf8(Span<Utf8Char> output)
+        {
+            // TODO: This logic can be optimized into fewer unaligned writes, endianness-dependent.
+            // TODO: Consider using BMI2 (pext, pdep) when it comes online.
+            // TODO: Consider using hardware-accelerated byte swapping (bswap, movbe) if available.
+
+            var outputAsBytes = output.AsBytes();
+
+            if (IsAscii && output.Length > 0)
+            {
+                outputAsBytes[0] = (byte)_value;
+                return 1;
+            }
+            else if (_value < 0x800U && output.Length > 1)
+            {
+                outputAsBytes[0] = (byte)((_value >> 6) + 0xC0U);
+                outputAsBytes[1] = (byte)((_value & 0x3FU) + 0x80U);
+                return 2;
+            }
+            else if (_value < 0x10000U && output.Length > 2)
+            {
+                outputAsBytes[0] = (byte)((_value >> 12) + 0xE0U);
+                outputAsBytes[1] = (byte)(((_value >> 6) & 0x3FU) + 0x80U);
+                outputAsBytes[2] = (byte)((_value & 0x3FU) + 0x80U);
+                return 3;
+            }
+            else if (output.Length > 3)
+            {
+                outputAsBytes[0] = (byte)((_value >> 18) + 0xF0U);
+                outputAsBytes[1] = (byte)(((_value >> 12) & 0x3FU) + 0x80U);
+                outputAsBytes[2] = (byte)(((_value >> 6) & 0x3FU) + 0x80U);
+                outputAsBytes[3] = (byte)((_value & 0x3FU) + 0x80U);
+                return 4;
+            }
+            else
+            {
+                throw new ArgumentException(
+                    message: Strings.Argument_OutputBufferTooSmall,
+                    paramName: nameof(output));
+            }
+        }
 
         /// <summary>
         /// Returns a <see cref="Utf8String"/> representation of this <see cref="UnicodeScalar"/> instance.
         /// </summary>
-        public Utf8String ToUtf8String() => throw null;
+        public Utf8String ToUtf8String()
+        {
+            Span<Utf8Char> utf8Chars = stackalloc Utf8Char[4]; // worst case
+            return new Utf8String(utf8Chars.Slice(0, ToUtf8(utf8Chars)));
+        }
     }
 }
