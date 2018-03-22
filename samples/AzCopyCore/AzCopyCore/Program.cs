@@ -28,7 +28,7 @@ static class Program
     static void Main(string[] args)
     {
         Log.Listeners.Add(new ConsoleTraceListener());
-        Log.Switch.Level = SourceLevels.Information;
+        Log.Switch.Level = SourceLevels.Error;
 
         var options = new CommandLine(args);
         ReadOnlySpan<char> source = options.GetSpan("/Source:");
@@ -197,14 +197,27 @@ static class Program
         {
             using (var bytes = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
             {
-                var putRequest = new PutRangeRequest(storagePath, bytes);
-                response = await client.SendRequest(putRequest).ConfigureAwait(false);
-                if (response.StatusCode == 201) return true;
+                long bytesLeft = bytes.Length;
+                long index = 0;
+                int length = 1024 * 1024 * 4; 
+                while (true)
+                {
+                    if (bytesLeft < length) length = (int)bytesLeft;
+                    var putRequest = new PutRangeRequest(storagePath, bytes, index, length);
+                    response = await client.SendRequest(putRequest).ConfigureAwait(false);
+                    if (response.StatusCode != 201)
+                    {
+                        Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
+                        return false;
+                    }
+                    index += length;
+                    bytesLeft -= length;
+                    if (bytesLeft == 0) break;
+                }
             }
         }
 
-        Log.TraceEvent(TraceEventType.Error, 0, "Response Status Code {0}", response.StatusCode);
-        return false;
+        return true;
     }
 
     static async ValueTask<bool> CopyStorageFileToLocalFile(StorageClient client, string storagePath, string localFilePath)

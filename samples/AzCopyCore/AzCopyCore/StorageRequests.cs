@@ -102,23 +102,30 @@ namespace System.Azure.Storage.Requests
 
     public struct PutRangeRequest : IStorageRequest
     {
-        public Stream FileContent { get; set; } // TODO (pri 3): should there be a way to write from file handle or PipeReader?
-        public string FilePath { get; set; }
+        Stream _fileContent; // TODO (pri 3): should there be a way to write from file handle or PipeReader?
+        string _filePath;
+        long _offset;
+        int _length;
 
         // TODO (pri 3): I dont like how the client property is a public API
         public StorageClient Client { get; set; }
 
-        public PutRangeRequest(string filePath, Stream fileContent)
+        public PutRangeRequest(string filePath, Stream fileContent, long offset, int length)
         {
-            FilePath = filePath;
-            FileContent = fileContent;
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 1) throw new ArgumentOutOfRangeException(nameof(length)); 
+
+            _filePath = filePath;
+            _fileContent = fileContent;
             Client = null;
+            _offset = offset;
+            _length = length;
         }
 
-        public long ContentLength => FileContent.Length;
+        public long ContentLength => _length;
         // TODO (pri 2): would be nice to elimnate these allocations
-        public string RequestPath => FilePath + "?comp=range";
-        public string CanonicalizedResource => FilePath + "\ncomp:range";
+        public string RequestPath => _filePath + "?comp=range";
+        public string CanonicalizedResource => _filePath + "\ncomp:range";
         public bool ConsumeBody => true;
 
         // TODO (pri 3): can this be an extension method? All implementations are the same.
@@ -131,14 +138,21 @@ namespace System.Azure.Storage.Requests
             public override Http.Method Verb => Http.Method.Put;
 
             protected override async Task WriteBody(PipeWriter writer, PutRangeRequest arguments)
-                => await writer.WriteAsync(arguments.FileContent);
+            {
+                var stream = arguments._fileContent;
+                stream.Seek(arguments._offset, SeekOrigin.Begin);
+                await writer.WriteAsync(stream, arguments._length);
+            }
 
             protected override void WriteXmsHeaders(ref BufferWriter writer, ref PutRangeRequest arguments)
             {
-                long size = arguments.FileContent.Length;
+                long size = arguments._fileContent.Length;
                 writer.WriteHeader("x-ms-date", Time, 'R');
                 // TODO (pri 3): this allocation should be eliminated
-                writer.WriteHeader("x-ms-range", $"bytes=0-{size - 1}");
+
+                var start = arguments._offset;
+                var end = start + arguments._length - 1;
+                writer.WriteHeader("x-ms-range", $"bytes={start}-{end}");
                 writer.WriteHeader("x-ms-version", "2017-04-17");
                 writer.WriteHeader("x-ms-write", "update");
             }
