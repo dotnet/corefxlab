@@ -30,6 +30,8 @@ namespace System.Text
 
         public Utf8Char this[int index] => throw null;
 
+        public ReadOnlySpan<Utf8Char> Chars => throw null;
+
         public static readonly Utf8String Empty;
 
         public int Length => throw null;
@@ -153,9 +155,13 @@ namespace System.Text
 
         public Utf8String Substring(int startIndex, int length) => throw null;
 
+        public Utf8String ToLowerInvariant() => throw null;
+
         public override string ToString() => throw null;
 
         public string ToString(IFormatProvider provider) => throw null;
+
+        public Utf8String ToUpperInvariant() => throw null;
 
         public Utf8String Trim() => throw null;
 
