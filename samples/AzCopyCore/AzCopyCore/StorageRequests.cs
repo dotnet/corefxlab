@@ -3,11 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Azure.Authentication;
-using System.Buffers.Text;
-using System.Buffers.Transformations;
+using System.Buffers.Writer;
 using System.IO;
 using System.IO.Pipelines;
-using System.Net.Experimental;
 using System.Text;
 using System.Text.Http.Formatter;
 using System.Text.Http.Parser;
@@ -23,6 +21,22 @@ namespace System.Azure.Storage.Requests
         long ContentLength { get; }
         bool ConsumeBody { get; }
 
+    }
+
+    public abstract class RequestWriter<T> where T : IPipeWritable
+    {
+        public abstract Text.Http.Parser.Http.Method Verb { get; }
+
+        public async Task WriteAsync(PipeWriter writer, T request)
+        {
+            WriteRequestLineAndHeaders(writer, ref request);
+            await WriteBody(writer, request).ConfigureAwait(false);
+            await writer.FlushAsync();
+        }
+
+        // TODO (pri 2): writing the request line should not be abstract; writing headers should.
+        protected abstract void WriteRequestLineAndHeaders(PipeWriter writer, ref T request);
+        protected virtual Task WriteBody(PipeWriter writer, T request) { return Task.CompletedTask; }
     }
 
     // This is a helper class for impementing writers for various Storage requests.
@@ -56,7 +70,7 @@ namespace System.Azure.Storage.Requests
                 AccountName = arguments.Client.AccountName,
                 CanonicalizedResource = arguments.CanonicalizedResource,
                 // TODO (pri 1): this allocation should be eliminated
-                CanonicalizedHeaders = new WritableBytes(headersBuffer.ToArray()),
+                CanonicalizedHeaders = headersBuffer.ToArray(),
                 ContentLength = arguments.ContentLength
             };
             // TODO (pri 3): the default should be defaulted
