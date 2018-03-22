@@ -19,6 +19,8 @@ namespace System.Buffers.Writer
             _span = output.GetSpan();
         }
 
+        public ReadOnlySpan<byte> NewLine;
+
         public Span<byte> Buffer => _span;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -71,6 +71,34 @@ namespace System.Buffers.Tests
             writer.WriteBytes(value, transformation);
             Assert.Equal(-1, buffer.AsSpan().IndexOf((byte)2));
         }
+
+        [Fact]
+        public void WriteLineString()
+        {
+            _sink.Reset();
+            var writer = BufferWriter.Create(_sink);
+            writer.NewLine = new byte[] { (byte)'X', (byte)'Y' };
+            writer.WriteLine("hello world");
+            writer.WriteLine("!");
+
+            writer.Flush();
+            var result = _sink.ToString();
+            Assert.Equal("hello worldXY!XY", result);
+        }
+
+        [Fact]
+        public void WriteLineUtf8String()
+        {
+            _sink.Reset();
+            var writer = BufferWriter.Create(_sink);
+            writer.NewLine = new byte[] { (byte)'X', (byte)'Y' };
+            writer.WriteLine((Utf8String)"hello world");
+            writer.WriteLine((Utf8String)"!");
+
+            writer.Flush();
+            var result = _sink.ToString();
+            Assert.Equal("hello worldXY!XY", result);
+        }
     }
 
     class Sink : IBufferWriter<byte>
