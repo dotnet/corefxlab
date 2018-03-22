@@ -4,33 +4,12 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Text.Utf8;
 
 namespace System.Buffers.Writer
 {
     public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(int value, StandardFormat format = default)
-        {
-            int written;
-            while (!Utf8Formatter.TryFormat(value, Buffer, out written, format))
-            {
-                Enlarge();
-            }
-            Advance(written);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(ulong value, StandardFormat format = default)
-        {
-            int written;
-            while (!Utf8Formatter.TryFormat(value, Buffer, out written, format))
-            {
-                Enlarge();
-            }
-            Advance(written);
-        }
-
         public void Write(string value)
         {
             ReadOnlySpan<byte> utf16Bytes = value.AsSpan().AsBytes();
@@ -55,45 +34,44 @@ namespace System.Buffers.Writer
             }
         }
 
-        public void Write<TWritable>(TWritable value, TransformationFormat format) where TWritable : IWritable
+        // TODO: implement all the overloads taking TransformationFormat
+        //public void Write(string value, TransformationFormat format);
+
+        public void WriteLine(string value)
         {
-            int written;
-            while (true)
-            {
-                while (!value.TryWrite(Buffer, out written, format.Format))
-                {
-                    Enlarge();
-                }
-                if (format.TryTransform(Buffer, ref written)) break;
-                Enlarge();
-            }
-            Advance(written);
+            Write(value);
+            Write(NewLine);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write<TWritable>(TWritable value, StandardFormat format) where TWritable : IWritable
+        //public void WriteLine(string value, TransformationFormat format);
+
+        public void Write(Utf8String value) => Write(value.Bytes);
+
+        //public void Write(Utf8String value, TransformationFormat format);
+
+        public void WriteLine(Utf8String value)
         {
-            int written;
-            while (!value.TryWrite(Buffer, out written, format))
-            {
-                Enlarge();
-            }
-            Advance(written);
+            Write(value.Bytes);
+            Write(NewLine);
         }
 
+        //public void WriteLine(Utf8String value, TransformationFormat format);
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Write(ReadOnlySpan<byte> source)
+        public void Write(ReadOnlySpan<byte> value)
         {
-            if (_span.Length >= source.Length)
+            if (_span.Length >= value.Length)
             {
-                source.CopyTo(_span);
-                Advance(source.Length);
+                value.CopyTo(_span);
+                Advance(value.Length);
             }
             else
             {
-                WriteMultiBuffer(source);
+                WriteMultiBuffer(value);
             }
         }
+
+        //public void Write(ReadOnlySpan<byte> value, TransformationFormat format)
 
         private void WriteMultiBuffer(ReadOnlySpan<byte> source)
         {
