@@ -9,6 +9,18 @@ namespace System.Buffers.Writer
 {
     public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
     {
+        #region Int32
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(int value)
+        {
+            int written;
+            while (!Utf8Formatter.TryFormat(value, Buffer, out written, default))
+            {
+                Enlarge();
+            }
+            Advance(written);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(int value, StandardFormat format = default)
         {
@@ -20,6 +32,27 @@ namespace System.Buffers.Writer
             Advance(written);
         }
 
+        public void Write(int value, TransformationFormat format)
+        {
+            int written;
+            while (true)
+            {
+                Span<byte> buffer = Buffer;
+                while (!Utf8Formatter.TryFormat(value, Buffer, out written, format.Format))
+                {
+                    Enlarge();
+                }
+                if (format.TryTransform(buffer, ref written))
+                {
+                    Advance(written);
+                    return;
+                }
+                Enlarge();
+            }
+        }
+        #endregion
+
+        #region UInt64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(ulong value, StandardFormat format = default)
         {
@@ -30,5 +63,6 @@ namespace System.Buffers.Writer
             }
             Advance(written);
         }
+        #endregion
     }
 }

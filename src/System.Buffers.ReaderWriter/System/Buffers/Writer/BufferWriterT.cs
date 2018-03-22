@@ -19,7 +19,7 @@ namespace System.Buffers.Writer
             _span = output.GetSpan();
         }
 
-        public ReadOnlySpan<byte> NewLine;
+        public ReadOnlySpan<byte> NewLine { get; set; }
 
         public Span<byte> Buffer => _span;
 
