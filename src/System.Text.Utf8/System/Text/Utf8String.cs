@@ -48,20 +48,36 @@ namespace System.Text
 
         public Utf8String Concat(params Utf8String[] values) => throw null;
 
+        public bool Contains(ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public bool Contains(UnicodeScalar value) => throw null;
+
         public bool Contains(Utf8Char value) => throw null;
 
         public bool Contains(Utf8String value) => throw null;
 
+        public static Utf8String Create<TState>(int length, TState state, SpanAction<byte, TState> action) => throw null;
+
         public static Utf8String Create<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => throw null;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
+        public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<byte, TState> action) => throw null;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => throw null;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<byte> value) => throw null;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => throw null;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref readonly Utf8Char DangerousGetPinnableReference() => throw null;
+
+        public static bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public static bool EndsWith(UnicodeScalar value) => throw null;
 
         public static bool EndsWith(Utf8Char value) => throw null;
 
@@ -74,6 +90,18 @@ namespace System.Text
         public Utf8CharEnumerator GetEnumerator() => throw null;
 
         public override int GetHashCode() => throw null;
+
+        public int IndexOf(ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public int IndexOf(ReadOnlySpan<Utf8Char> value, int startIndex) => throw null;
+
+        public int IndexOf(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
+
+        public int IndexOf(UnicodeScalar value) => throw null;
+
+        public int IndexOf(UnicodeScalar value, int startIndex) => throw null;
+
+        public int IndexOf(UnicodeScalar value, int startIndex, int count) => throw null;
 
         public int IndexOf(Utf8Char value) => throw null;
 
@@ -93,11 +121,27 @@ namespace System.Text
 
         public int IndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
 
+        public Utf8String Insert(int startIndex, ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public Utf8String Insert(int startIndex, UnicodeScalar value) => throw null;
+
         public Utf8String Insert(int startIndex, Utf8String value) => throw null;
 
         public static bool IsNullOrEmpty(Utf8String value) => throw null;
 
         public static bool IsNullOrWhiteSpace(Utf8String value) => throw null;
+
+        public int LastIndexOf(ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public int LastIndexOf(ReadOnlySpan<Utf8Char> value, int startIndex) => throw null;
+
+        public int LastIndexOf(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
+
+        public int LastIndexOf(UnicodeScalar value) => throw null;
+
+        public int LastIndexOf(UnicodeScalar value, int startIndex) => throw null;
+
+        public int LastIndexOf(UnicodeScalar value, int startIndex, int count) => throw null;
 
         public int LastIndexOf(Utf8Char value) => throw null;
 
@@ -129,7 +173,17 @@ namespace System.Text
 
         public Utf8String Remove(int startIndex, int count) => throw null;
 
+        public Utf8String Replace(ReadOnlySpan<Utf8Char> oldValue, ReadOnlySpan<Utf8Char> newValue) => throw null;
+
         public Utf8String Replace(Utf8String oldValue, Utf8String newValue) => throw null;
+
+        public Utf8String[] Split(ReadOnlySpan<Utf8Char> separator, int count, StringSplitOptions options = default) => throw null;
+
+        public Utf8String[] Split(ReadOnlySpan<Utf8Char> separator, StringSplitOptions options = default) => throw null;
+
+        public Utf8String[] Split(UnicodeScalar separator, int count, StringSplitOptions options = default) => throw null;
+
+        public Utf8String[] Split(UnicodeScalar separator, StringSplitOptions options = default) => throw null;
 
         public Utf8String[] Split(Utf8Char separator, int count, StringSplitOptions options = default) => throw null;
 
@@ -146,6 +200,10 @@ namespace System.Text
         public Utf8String[] Split(Utf8String[] separator, int count, StringSplitOptions options = default) => throw null;
 
         public Utf8String[] Split(Utf8String[] separator, StringSplitOptions options = default) => throw null;
+
+        public bool StartsWith(ReadOnlySpan<Utf8Char> value) => throw null;
+
+        public bool StartsWith(UnicodeScalar value) => throw null;
 
         public bool StartsWith(Utf8Char value) => throw null;
 

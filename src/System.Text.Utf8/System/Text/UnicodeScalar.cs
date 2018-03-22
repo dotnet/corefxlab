@@ -253,7 +253,7 @@ namespace System.Text
         public Utf8String ToUtf8String()
         {
             Span<Utf8Char> utf8Chars = stackalloc Utf8Char[4]; // worst case
-            return new Utf8String(utf8Chars.Slice(0, ToUtf8(utf8Chars)));
+            return Utf8String.DangerousCreateWithoutValidation(utf8Chars.Slice(0, ToUtf8(utf8Chars)));
         }
     }
 }
