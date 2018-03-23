@@ -96,6 +96,6 @@ namespace System.Text
         /// value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValidUnicodeScalar(uint value) => IsInRangeInclusive(value & 0xD800U, 0x800U, 0x10FFFFU);
+        public static bool IsValidUnicodeScalar(uint value) => IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
     }
 }
