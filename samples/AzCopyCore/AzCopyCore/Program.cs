@@ -200,7 +200,7 @@ static class Program
                 long bytesLeft = bytes.Length;
                 long index = 0;
                 int length = 1024 * 1024 * 4; 
-                while (true)
+                while (bytesLeft > 0)
                 {
                     if (bytesLeft < length) length = (int)bytesLeft;
                     var putRequest = new PutRangeRequest(storagePath, bytes, index, length);
@@ -212,7 +212,7 @@ static class Program
                     }
                     index += length;
                     bytesLeft -= length;
-                    if (bytesLeft == 0) break;
+                    Debug.Assert(bytesLeft >= 0);
                 }
             }
         }

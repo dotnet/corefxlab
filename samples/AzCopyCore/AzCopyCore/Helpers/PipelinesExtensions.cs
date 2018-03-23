@@ -50,7 +50,7 @@ namespace System.IO.Pipelines
             while (bytesToWrite > 0)
             {
                 Memory<byte> buffer = writer.GetMemory();
-                if(buffer.Length > bytesToWrite)
+                if (buffer.Length > bytesToWrite)
                 {
                     buffer = buffer.Slice(0, (int)bytesToWrite);
                 }

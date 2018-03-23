@@ -112,7 +112,7 @@ namespace System.Azure.Storage.Requests
 
         public PutRangeRequest(string filePath, Stream fileContent, long offset, int length)
         {
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (offset < 0 || offset > fileContent.Length - length) throw new ArgumentOutOfRangeException(nameof(offset));
             if (length < 1) throw new ArgumentOutOfRangeException(nameof(length)); 
 
             _filePath = filePath;
@@ -139,7 +139,7 @@ namespace System.Azure.Storage.Requests
 
             protected override async Task WriteBody(PipeWriter writer, PutRangeRequest arguments)
             {
-                var stream = arguments._fileContent;
+                Stream stream = arguments._fileContent;
                 stream.Seek(arguments._offset, SeekOrigin.Begin);
                 await writer.WriteAsync(stream, arguments._length);
             }
@@ -150,8 +150,8 @@ namespace System.Azure.Storage.Requests
                 writer.WriteHeader("x-ms-date", Time, 'R');
                 // TODO (pri 3): this allocation should be eliminated
 
-                var start = arguments._offset;
-                var end = start + arguments._length - 1;
+                long start = arguments._offset;
+                long end = start + arguments._length - 1;
                 writer.WriteHeader("x-ms-range", $"bytes={start}-{end}");
                 writer.WriteHeader("x-ms-version", "2017-04-17");
                 writer.WriteHeader("x-ms-write", "update");
