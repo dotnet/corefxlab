@@ -12,8 +12,8 @@ namespace System.Buffers.Writer
         Span<byte> _buffer;
         int _written;
 
-        public ReadOnlySpan<byte> NewLine;
-        public Func<int, Memory<byte>> Enlarge;
+        public ReadOnlySpan<byte> NewLine { get; set; }
+        public Func<int, Memory<byte>> Enlarge { get; set; }
 
         static byte[] s_defaultNewline = new byte[] { (byte)'\n' };
 

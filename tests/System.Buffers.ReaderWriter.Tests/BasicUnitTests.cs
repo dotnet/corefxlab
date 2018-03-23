@@ -99,6 +99,19 @@ namespace System.Buffers.Tests
             var result = _sink.ToString();
             Assert.Equal("hello worldXY!XY", result);
         }
+
+        [Fact]
+        public void WriteInt32Transformed()
+        {
+            TransformationFormat widen = new TransformationFormat(new AsciiToUtf16());
+            _sink.Reset();
+            var writer = BufferWriter.Create(_sink);
+            writer.Write(255, widen);
+            writer.Flush();
+
+            var result = _sink.ToStringAssumingUtf16Buffer();
+            Assert.Equal("255", result);
+        }
     }
 
     class Sink : IBufferWriter<byte>
@@ -125,9 +138,16 @@ namespace System.Buffers.Tests
         public Span<byte> GetSpan(int sizeHint = 0)
             => _buffer.AsSpan(_written, _buffer.Length - _written);
 
+        public Span<byte> WrittenBytes => _buffer.AsSpan(0, _written);
+
         public override string ToString()
         {
             return Encoding.UTF8.GetString(_buffer, 0, _written);
+        }
+
+        public string ToStringAssumingUtf16Buffer()
+        {
+            return Encoding.Unicode.GetString(_buffer, 0, _written);
         }
     }
 
@@ -168,6 +188,26 @@ namespace System.Buffers.Tests
                 s_headerBytesMaster = s_headerBytesScratch;
                 s_headerBytesScratch = temp;
             }
+        }
+    }
+
+    class AsciiToUtf16 : IBufferTransformation
+    {
+        public OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperationStatus Transform(Span<byte> buffer, int dataLength, out int written)
+        {
+            written = dataLength * 2;
+            if (buffer.Length < written) return OperationStatus.DestinationTooSmall;
+            for(int i = written - 1; i > 0; i-=2)
+            {
+                buffer[i] = 0;
+                buffer[i - 1] = buffer[i / 2];
+            }
+            return OperationStatus.Done;
         }
     }
 }
