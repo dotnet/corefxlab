@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using Xunit;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Buffers.Tests
 {
@@ -17,11 +18,11 @@ namespace System.Buffers.Tests
             Span<byte> buffer;
 
             buffer = new Span<byte>(new byte[] { 1, 0, 0, 0 });
-            Assert.True(TryReadMachineEndian(buffer, out uint value));
+            Assert.True(TryRead(buffer, out uint value));
             Assert.Equal(1u, value);
 
             buffer = new Span<byte>(new byte[] { 1, 0, 0 });
-            Assert.False(TryReadMachineEndian(buffer, out value));
+            Assert.False(TryRead(buffer, out value));
         }
 
         [Fact]
@@ -30,11 +31,11 @@ namespace System.Buffers.Tests
             ReadOnlySpan<byte> buffer;
 
             buffer = new ReadOnlySpan<byte>(new byte[] { 1, 0, 0, 0 });
-            Assert.True(TryReadMachineEndian(buffer, out uint value));
+            Assert.True(TryRead(buffer, out uint value));
             Assert.Equal(1u, value);
 
             buffer = new ReadOnlySpan<byte>(new byte[] { 1, 0, 0 });
-            Assert.False(TryReadMachineEndian(buffer, out value));
+            Assert.False(TryRead(buffer, out value));
         }
 
         [Fact]
@@ -42,14 +43,14 @@ namespace System.Buffers.Tests
         {
             Span<byte> buffer = new byte[4];
             uint value = uint.MaxValue;
-            Assert.True(TryWriteMachineEndian(buffer, ref value));
+            Assert.True(MemoryMarshal.TryWrite(buffer, ref value));
             for (var i = 0; i < buffer.Length; i++)
             {
                 Assert.Equal(255, buffer[i]);
             }
 
             buffer = buffer.Slice(1);
-            Assert.False(TryWriteMachineEndian(buffer, ref value));
+            Assert.False(MemoryMarshal.TryWrite(buffer, ref value));
         }
 
         [Fact]

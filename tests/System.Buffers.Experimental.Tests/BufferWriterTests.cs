@@ -7,6 +7,7 @@ using System.Buffers.Writer;
 using System.Text;
 using Xunit;
 using static System.Buffers.Binary.BinaryPrimitives;
+using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Buffers.Tests
 {
@@ -92,13 +93,13 @@ namespace System.Buffers.Tests
 
                 if (BitConverter.IsLittleEndian)
                 {
-                    WriteMachineEndian(buffer, ref Lower);
-                    WriteMachineEndian(buffer.Slice(sizeof(ulong)), ref Upper);
+                    Write(buffer, ref Lower);
+                    Write(buffer.Slice(sizeof(ulong)), ref Upper);
                 }
                 else
                 {
-                    WriteMachineEndian(buffer, ref Upper);
-                    WriteMachineEndian(buffer.Slice(sizeof(ulong)), ref Lower);
+                    Write(buffer, ref Upper);
+                    Write(buffer.Slice(sizeof(ulong)), ref Lower);
                 }
                 written = size;
                 return true;
