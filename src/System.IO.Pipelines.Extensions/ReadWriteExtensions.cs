@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 using static System.Buffers.Binary.BinaryPrimitives;
 
@@ -74,12 +75,12 @@ namespace System.IO.Pipelines
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static T ReadBigEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer) where T : struct
-            => BitConverter.IsLittleEndian ? Reverse(ReadMachineEndian<T>(buffer)) : ReadMachineEndian<T>(buffer);
+            => BitConverter.IsLittleEndian ? Reverse(MemoryMarshal.Read<T>(buffer)) : MemoryMarshal.Read<T>(buffer);
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static T ReadLittleEndian<[Primitive]T>(this ReadOnlySpan<byte> buffer) where T : struct
-            => BitConverter.IsLittleEndian ? ReadMachineEndian<T>(buffer) : Reverse(ReadMachineEndian<T>(buffer));
+            => BitConverter.IsLittleEndian ? MemoryMarshal.Read<T>(buffer) : Reverse(MemoryMarshal.Read<T>(buffer));
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,7 +88,7 @@ namespace System.IO.Pipelines
         {
             if (BitConverter.IsLittleEndian)
                 value = Reverse(value);
-            WriteMachineEndian(buffer, ref value);
+            MemoryMarshal.Write(buffer, ref value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -95,7 +96,7 @@ namespace System.IO.Pipelines
         {
             if (!BitConverter.IsLittleEndian)
                 value = Reverse(value);
-            WriteMachineEndian(buffer, ref value);
+            MemoryMarshal.Write(buffer, ref value);
         }
 
         public static async Task<ReadOnlySequence<byte>> ReadToEndAsync(this PipeReader input)

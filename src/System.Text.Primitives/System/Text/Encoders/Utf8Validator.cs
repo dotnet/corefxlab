@@ -3,6 +3,7 @@
 
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -89,7 +90,7 @@ namespace System.Buffers.Text
             // Copy as much data as we can from the input buffer to our partial sequence.
 
             Span<byte> partialSequenceAsBytes = stackalloc byte[sizeof(uint)];
-            BinaryPrimitives.WriteMachineEndian(partialSequenceAsBytes, ref partialSequence);
+            MemoryMarshal.Write(partialSequenceAsBytes, ref partialSequence);
 
             int numBytesToCopyFromInputToPartialSequence = Math.Min(4 - partialSequenceOriginalByteCount, utf8Bytes.Length);
             utf8Bytes.Slice(0, numBytesToCopyFromInputToPartialSequence).CopyTo(partialSequenceAsBytes.Slice(partialSequenceOriginalByteCount));
@@ -123,7 +124,7 @@ namespace System.Buffers.Text
                 // Put all partial data into the high 3 bytes, making room for us to
                 // write the count of partial bytes in the buffer as the low byte.
 
-                partialSequence = BinaryPrimitives.ReadMachineEndian<uint>(partialSequenceAsBytes);
+                partialSequence = MemoryMarshal.Read<uint>(partialSequenceAsBytes);
                 if (BitConverter.IsLittleEndian)
                 {
                     return (partialSequence << 8) | (uint)numBytesConsumed;
@@ -169,7 +170,7 @@ namespace System.Buffers.Text
                     // write the count of partial bytes in the buffer as the low byte.
 
                     Span<byte> partialSequenceAsBytes = stackalloc byte[sizeof(uint)];
-                    BinaryPrimitives.WriteMachineEndian(partialSequenceAsBytes, ref numBytesConsumed);
+                    MemoryMarshal.Write(partialSequenceAsBytes, ref numBytesConsumed);
 
                     if (BitConverter.IsLittleEndian)
                     {
@@ -180,7 +181,7 @@ namespace System.Buffers.Text
                         utf8Bytes.Slice(0, numBytesConsumed).CopyTo(partialSequenceAsBytes);
                     }
 
-                    return BinaryPrimitives.ReadMachineEndian<uint>(partialSequenceAsBytes);
+                    return MemoryMarshal.Read<uint>(partialSequenceAsBytes);
                 }
                 else
                 {
