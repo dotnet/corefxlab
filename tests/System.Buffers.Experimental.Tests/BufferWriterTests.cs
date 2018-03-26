@@ -57,7 +57,7 @@ namespace System.Buffers.Tests
             Assert.Equal("//////////8BAAAAAAAAAA==", result);
 
             var ulongerSpan = new Span<UInt128>(new UInt128[1]);
-            Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(writer.Written, ulongerSpan.AsBytes(), out int consumed, out int written));
+            Assert.Equal(OperationStatus.Done, Base64.DecodeFromUtf8(writer.Written, AsBytes(ulongerSpan), out int consumed, out int written));
             Assert.Equal(ulongerSpan[0].Lower, ulonger.Lower);
             Assert.Equal(ulongerSpan[0].Upper, ulonger.Upper);
         }

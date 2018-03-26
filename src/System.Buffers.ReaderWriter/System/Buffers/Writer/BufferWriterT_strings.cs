@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
 namespace System.Buffers.Writer
@@ -12,7 +13,7 @@ namespace System.Buffers.Writer
     {
         public void Write(string value)
         {
-            ReadOnlySpan<byte> utf16Bytes = value.AsSpan().AsBytes();
+            ReadOnlySpan<byte> utf16Bytes = MemoryMarshal.AsBytes(value.AsSpan());
             int totalConsumed = 0;
             while (true)
             {
