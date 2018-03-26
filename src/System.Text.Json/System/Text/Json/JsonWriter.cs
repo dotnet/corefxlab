@@ -421,7 +421,7 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Write(ReadOnlySpan<char> value)
         {
-            ReadOnlySpan<byte> source = value.AsBytes();
+            ReadOnlySpan<byte> source = MemoryMarshal.AsBytes(value);
 
             if (UseFastUtf8)
             {

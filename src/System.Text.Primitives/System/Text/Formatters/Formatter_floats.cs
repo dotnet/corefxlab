@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -44,7 +45,7 @@ namespace System.Buffers.Text
             // TODO: the lines below need to be replaced with properly implemented algorithm
             // the problem is the algorithm is complex, so I am commiting a stub for now
             var hack = value.ToString(format.Symbol.ToString());
-            var utf16Bytes = hack.AsSpan().AsBytes();
+            var utf16Bytes = MemoryMarshal.AsBytes(hack.AsSpan());
             if (symbolTable == SymbolTable.InvariantUtf8)
             {
                 var status = Encodings.Utf16.ToUtf8(utf16Bytes, buffer, out int consumed, out bytesWritten);

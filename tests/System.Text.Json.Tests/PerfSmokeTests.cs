@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json.Tests.Resources;
+using System.Runtime.InteropServices;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -77,7 +78,7 @@ namespace System.Text.Json.Tests
 
         private static void ReadJsonHelper(string jsonStr)
         {
-            var reader = new JsonReader(jsonStr.AsSpan().AsBytes(), SymbolTable.InvariantUtf16);
+            var reader = new JsonReader(MemoryMarshal.AsBytes(jsonStr.AsSpan()), SymbolTable.InvariantUtf16);
             while (reader.Read())
             {
                 var tokenType = reader.TokenType;
