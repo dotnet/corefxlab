@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
     public class WritableBufferFacts
     {
 
-        [Theory(Skip="This test hangs resulting in timeout in CI. See #2157")]
+        [Theory]
         [InlineData(5)]
         [InlineData(50)]
         [InlineData(500)]
@@ -25,7 +25,7 @@ namespace System.IO.Pipelines.Tests
         {
             string data = new string('#', length);
             FillRandomStringData(data, length);
-            var pipe = new Pipe();
+            var pipe = new Pipe(new PipeOptions(pauseWriterThreshold: 0, resumeWriterThreshold: 0));
 
             var output = pipe.Writer;
             output.Append(data, SymbolTable.InvariantUtf8);
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(data.Length, offset);
         }
 
-        [Theory(Skip="This test hangs resulting in timeout in CI. See #2157")]
+        [Theory]
         [InlineData(5)]
         [InlineData(50)]
         [InlineData(500)]
@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Tests
         {
             string data = new string('#', length);
             FillRandomStringData(data, length);
-            var pipe = new Pipe();
+            var pipe = new Pipe(new PipeOptions(pauseWriterThreshold: 0, resumeWriterThreshold: 0));
 
             var output = pipe.Writer;
             output.Append(data, SymbolTable.InvariantUtf8);
