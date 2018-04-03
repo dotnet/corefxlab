@@ -6,18 +6,18 @@ using System.Threading;
 
 namespace System.Buffers.Native
 {
-    public abstract class ReferenceCountedMemory<T> : OwnedMemory<T>
+    public abstract class ReferenceCountedMemory<T> : MemoryManager<T>
     {
         int _referenceCount;
         bool _disposed;
 
-        public override void Retain()
+        public void Retain()
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(ReferenceCountedMemory<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override bool Release()
+        public bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
             if (newRefCount < 0) BuffersExperimentalThrowHelper.ThrowInvalidOperationException();
@@ -29,7 +29,7 @@ namespace System.Buffers.Native
             return true;
         }
 
-        protected override bool IsRetained => _referenceCount > 0;
+        protected bool IsRetained => _referenceCount > 0;
 
         protected virtual void OnNoReferences()
         {
@@ -40,6 +40,6 @@ namespace System.Buffers.Native
             _disposed = disposing;
         }
 
-        public override bool IsDisposed => _disposed;
+        public bool IsDisposed => _disposed;
     }
 }

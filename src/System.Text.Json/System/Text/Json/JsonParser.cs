@@ -117,7 +117,7 @@ namespace System.Text.Json
         private Memory<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
         private Memory<byte> _scratchMemory;
-        private OwnedMemory<byte> _scratchManager;
+        private IMemoryOwner<byte> _scratchManager;
         MemoryPool<byte> _pool;
         TwoStacks _stack;
 
@@ -212,7 +212,7 @@ namespace System.Text.Json
             }
 
             var result =  new JsonObject(_values, _db.Slice(0, _dbIndex).Span, _pool, _scratchManager);
-            _scratchManager.Release();
+            _scratchManager.Dispose();
             _scratchManager = null;
             return result;
         }
@@ -221,7 +221,7 @@ namespace System.Text.Json
         {
             var oldData = _scratchMemory.Span;
             var newScratch = _pool.Rent(_scratchMemory.Length * 2);
-            int dbLength = newScratch.Length / 2;
+            int dbLength = newScratch.Memory.Length / 2;
 
             var newDb = newScratch.Memory.Slice(0, dbLength);
             _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);

@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace System.Numerics.Tensors.Tests
 {
-    public class NativeMemory<T> : OwnedMemory<T>
+    public class NativeMemory<T> : MemoryManager<T>
     {
         private bool disposed = false;
         private int refCount = 0;
@@ -36,13 +36,13 @@ namespace System.Numerics.Tensors.Tests
             return new NativeMemory<T>(memory, length);
         }
 
-        public override bool IsDisposed => disposed;
+        public bool IsDisposed => disposed;
 
         public override int Length => length;
 
-        public unsafe override Span<T> Span => new Span<T>((void*)memory, length);
+        public unsafe override Span<T> GetSpan() => new Span<T>((void*)memory, length);
 
-        protected override bool IsRetained => refCount > 0;
+        protected bool IsRetained => refCount > 0;
 
         public override MemoryHandle Pin(int byteOffset = 0)
         {
@@ -51,11 +51,11 @@ namespace System.Numerics.Tensors.Tests
                 Retain();
                 if (byteOffset < 0 || (byteOffset / Marshal.SizeOf<T>()) > length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
                 void* pointer = (void*)((byte*)memory + byteOffset);
-                return new MemoryHandle(this, pointer);
+                return new MemoryHandle(pointer, default, this);
             }
         }
 
-        public override bool Release()
+        public bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref refCount);
 
@@ -67,7 +67,7 @@ namespace System.Numerics.Tensors.Tests
             return newRefCount != 0;
         }
 
-        public override void Retain()
+        public void Retain()
         {
             if (disposed)
             {
@@ -96,6 +96,11 @@ namespace System.Numerics.Tensors.Tests
             // cannot expose managed array
             arraySegment = default;
             return false;
+        }
+
+        public override void Unpin()
+        {
+            Release();
         }
     }
 }

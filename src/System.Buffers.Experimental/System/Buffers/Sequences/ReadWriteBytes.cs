@@ -215,7 +215,7 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                case Type.OwnedMemory:
+                case Type.MemoryOwner:
                     if (!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }
                     break;
                 case Type.MemoryList:
@@ -231,7 +231,7 @@ namespace System.Buffers
             get
             {
                 if (_start is byte[]) return Type.Array;
-                if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
+                if (_start is IMemoryOwner<byte>) return Type.MemoryOwner;
                 if (_start is ReadOnlySequenceSegment<byte>) return Type.MemoryList;
                 throw new NotSupportedException();
             }
@@ -333,7 +333,7 @@ namespace System.Buffers
         enum Type : byte
         {
             Array,
-            OwnedMemory,
+            MemoryOwner,
             MemoryList,
         }
     }

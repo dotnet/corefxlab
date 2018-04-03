@@ -304,7 +304,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.True(found);
                 var remaining = readBuffer.Slice(cursor);
-                var handle = remaining.First.Retain(pin: true);
+                var handle = remaining.First.Pin();
                 Assert.True(handle.Pointer != null);
                 if (i % BlockSize == 0)
                 {
@@ -328,7 +328,7 @@ namespace System.IO.Pipelines.Tests
             int index = 0;
             foreach (var memory in readBuffer)
             {
-                var handle = memory.Retain(pin: true);
+                var handle = memory.Pin();
                 handles.Add(handle);
                 var ptr = (byte*)handle.Pointer;
                 for (int i = 0; i < memory.Length; i++)

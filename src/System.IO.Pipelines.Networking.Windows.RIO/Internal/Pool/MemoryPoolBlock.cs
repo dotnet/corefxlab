@@ -12,7 +12,7 @@ namespace System.Buffers
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independent array segments.
     /// </summary>
-    internal class RioMemoryPoolBlock : OwnedMemory<byte>
+    internal class RioMemoryPoolBlock : MemoryManager<byte>
     {
         private readonly int _offset;
         private readonly int _length;
@@ -43,13 +43,10 @@ namespace System.Buffers
 
         public override int Length => _length;
 
-        public override Span<byte> Span
+        public override Span<byte> GetSpan()
         {
-            get
-            {
-                if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
-                return new Span<byte>(Slab.Array, _offset, _length);
-            }
+            if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
+            return new Span<byte>(Slab.Array, _offset, _length);
         }
 
 #if BLOCK_LEASE_TRACKING
@@ -104,13 +101,13 @@ namespace System.Buffers
             _disposed = true;
         }
 
-        public override void Retain()
+        public void Retain()
         {
             if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override bool Release()
+        public bool Release()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
             if (newRefCount < 0) RioPipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.ReferenceCountZero);
@@ -122,8 +119,8 @@ namespace System.Buffers
             return true;
         }
 
-        protected override bool IsRetained => _referenceCount > 0;
-        public override bool IsDisposed => _disposed;
+        protected bool IsRetained => _referenceCount > 0;
+        public bool IsDisposed => _disposed;
 
         // In kestrel both MemoryPoolBlock and OwnedMemory end up in the same assembly so
         // this method access modifiers need to be `protected internal`
@@ -140,8 +137,13 @@ namespace System.Buffers
             if (byteOffset < 0 || byteOffset > _length) RioPipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, byteOffset);
             unsafe
             {
-                return new MemoryHandle(this, (Slab.NativePointer + _offset + byteOffset).ToPointer());
+                return new MemoryHandle((Slab.NativePointer + _offset + byteOffset).ToPointer(), default, this);
             }
+        }
+
+        public override void Unpin()
+        {
+            Release();
         }
     }
 }
