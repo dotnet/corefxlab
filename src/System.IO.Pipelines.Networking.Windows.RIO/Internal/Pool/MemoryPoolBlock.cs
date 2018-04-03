@@ -131,13 +131,13 @@ namespace System.Buffers
             return true;
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             Retain();   // checks IsDisposed
-            if (byteOffset < 0 || byteOffset > _length) RioPipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, byteOffset);
+            if (elementIndex < 0 || elementIndex > _length) RioPipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, elementIndex);
             unsafe
             {
-                return new MemoryHandle((Slab.NativePointer + _offset + byteOffset).ToPointer(), default, this);
+                return new MemoryHandle((Slab.NativePointer + _offset + elementIndex).ToPointer(), default, this);
             }
         }
 

@@ -38,11 +38,11 @@ namespace System.Buffers.Native
                 return false;
             }
 
-            public override MemoryHandle Pin(int byteOffset = 0)
+            public override MemoryHandle Pin(int elementIndex = 0)
             {
                 Retain();
-                if (byteOffset < 0 || byteOffset > _length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
-                return new MemoryHandle(Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset), default, this);
+                if (elementIndex < 0 || elementIndex > _length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
+                return new MemoryHandle(Unsafe.Add<byte>(_pointer.ToPointer(), elementIndex), default, this);
             }
 
             public override void Unpin()

@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace System.Numerics.Tensors.Tests
@@ -44,13 +45,13 @@ namespace System.Numerics.Tensors.Tests
 
         protected bool IsRetained => refCount > 0;
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
                 Retain();
-                if (byteOffset < 0 || (byteOffset / Marshal.SizeOf<T>()) > length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
-                void* pointer = (void*)((byte*)memory + byteOffset);
+                if ((uint)elementIndex > length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
+                void* pointer = Unsafe.Add<T>((void*)memory, elementIndex);
                 return new MemoryHandle(pointer, default, this);
             }
         }

@@ -56,10 +56,10 @@ namespace System.Buffers.Native
             base.Dispose(disposing);
         }
 
-        public unsafe override MemoryHandle Pin(int byteOffset = 0)
+        public unsafe override MemoryHandle Pin(int elementIndex = 0)
         {
-            if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
-            return new MemoryHandle(Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset), default, this);
+            if (elementIndex != 0 && (((uint)elementIndex) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
+            return new MemoryHandle(Unsafe.Add<T>(_pointer.ToPointer(), elementIndex), default, this);
         }
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)

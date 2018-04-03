@@ -33,14 +33,14 @@ namespace System.Buffers
             return new Span<T>(_array);
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
                 Retain();
-                if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                if ((uint)elementIndex > (uint)_array.Length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
+                void* pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), elementIndex);
                 return new MemoryHandle(pointer, handle, this);
             }
         }
