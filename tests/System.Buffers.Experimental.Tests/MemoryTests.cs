@@ -16,7 +16,7 @@ namespace System.Buffers.Tests
         {
             using (var owned = new OwnedNativeBuffer(1024))
             {
-                var span = owned.Span;
+                var span = owned.GetSpan();
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
@@ -32,7 +32,7 @@ namespace System.Buffers.Tests
 
             using (OwnedPinnedBuffer<byte> owned = new byte[1024])
             {
-                var span = owned.Span;
+                var span = owned.GetSpan();
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
 
@@ -67,7 +67,7 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void TestLifetime(OwnedMemory<byte> owned)
+        static void TestLifetime(MemoryManager<byte> owned)
         {
             Memory<byte> copyStoredForLater;
             try
@@ -75,22 +75,12 @@ namespace System.Buffers.Tests
                 Memory<byte> memory = owned.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                var r = memorySlice.Retain();
-                try
-                {
-                    Assert.Throws<InvalidOperationException>(() =>
-                    { // memory is reserved; premature dispose check fires
-                        owned.Dispose();
-                    });
-                }
-                finally
-                {
-                    r.Dispose(); // release reservation
-                }
+                MemoryHandle r = memorySlice.Pin();
+                r.Dispose(); // release reservation
             }
             finally
             {
-                owned.Dispose(); // can finish dispose with no exception
+                ((IDisposable)owned).Dispose(); // can finish dispose with no exception
             }
             Assert.Throws<ObjectDisposedException>(() =>
             {
@@ -102,16 +92,12 @@ namespace System.Buffers.Tests
         [Fact]
         public void AutoDispose()
         {
-            OwnedMemory<byte> owned = new AutoPooledBuffer(1000);
-            owned.Retain();
+            MemoryManager<byte> owned = new AutoPooledBuffer(1000);
+            owned.Pin();
             var memory = owned.Memory;
-            Assert.Equal(false, owned.IsDisposed);
-            var reservation = memory.Retain();
-            Assert.Equal(false, owned.IsDisposed);
-            owned.Release();
-            Assert.Equal(false, owned.IsDisposed);
+            var reservation = memory.Pin();
+            owned.Unpin();
             reservation.Dispose();
-            Assert.Equal(true, owned.IsDisposed);
         }
 
         [Fact]
@@ -121,7 +107,7 @@ namespace System.Buffers.Tests
             var memory = owned.Memory;
             Assert.Equal(0, owned.OnNoRefencesCalledCount);
 
-            using (memory.Retain())
+            using (memory.Pin())
             {
                 Assert.Equal(0, owned.OnNoRefencesCalledCount);
             }
@@ -134,7 +120,7 @@ namespace System.Buffers.Tests
         {
             for (int k = 0; k < 1000; k++)
             {
-                var owners = new OwnedMemory<byte>[128];
+                var owners = new IMemoryOwner<byte>[128];
                 var memories = new Memory<byte>[owners.Length];
                 var reserves = new MemoryHandle[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
@@ -169,7 +155,7 @@ namespace System.Buffers.Tests
                     {
                         try
                         {
-                            reserves[i] = memories[i].Retain();
+                            reserves[i] = memories[i].Pin();
                             reserveSuccesses[i] = true;
                         }
                         catch (ObjectDisposedException)
@@ -189,7 +175,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class CustomBuffer<T> : OwnedMemory<T>
+    class CustomBuffer<T> : MemoryManager<T>
     {
         bool _disposed;
         int _referenceCount;
@@ -204,30 +190,34 @@ namespace System.Buffers.Tests
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
 
-        public override int Length => _array.Length;
-
-        public override bool IsDisposed => _disposed;
-
-        protected override bool IsRetained => _referenceCount > 0;
-
-        public override Span<T> Span
+        public override int Length
         {
             get
             {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
-                return new Span<T>(_array);
+                if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
+                return _array.Length;
             }
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public bool IsDisposed => _disposed;
+
+        protected bool IsRetained => _referenceCount > 0;
+
+        public override Span<T> GetSpan()
+        {
+            if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
+            return new Span<T>(_array);
+        }
+
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
                 Retain();
-                if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                if ((uint)elementIndex > (uint)_array.Length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
-                return new MemoryHandle(this, pointer, handle);
+                void* pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), elementIndex);
+                return new MemoryHandle(pointer, handle, this);
             }
         }
 
@@ -244,13 +234,13 @@ namespace System.Buffers.Tests
             _array = null;
         }
 
-        public override void Retain()
+        public void Retain()
         {
             if (IsDisposed) throw new ObjectDisposedException(nameof(CustomBuffer<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override bool Release()
+        public bool Release()
         {
             while (true)
             {
@@ -261,13 +251,18 @@ namespace System.Buffers.Tests
                 {
                     if (currentCount == 1)
                     {
-                        Dispose();
+                        ((IDisposable)this).Dispose();
                         _noReferencesCalledCount++;
                         return false;
                     }
                     return true;
                 }
             }
+        }
+
+        public override void Unpin()
+        {
+            Release();
         }
     }
 
@@ -278,15 +273,19 @@ namespace System.Buffers.Tests
             _array = array;
         }
 
-        public override int Length => _array.Length;
-
-        public override Span<T> Span
+        public override int Length
         {
             get
             {
                 if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-                return new Span<T>(_array);
+                return _array.Length;
             }
+        }
+
+        public override Span<T> GetSpan()
+        {
+            if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
+            return new Span<T>(_array);
         }
 
         protected override void Dispose(bool disposing)
@@ -297,7 +296,7 @@ namespace System.Buffers.Tests
 
         protected override void OnNoReferences()
         {
-            Dispose();
+            Dispose(true);
         }
 
         protected override bool TryGetArray(out ArraySegment<T> arraySegment)
@@ -307,16 +306,21 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
                 Retain();
-                if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                if ((uint)elementIndex > (uint)_array.Length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
-                return new MemoryHandle(this, pointer, handle);
+                void* pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), elementIndex);
+                return new MemoryHandle(pointer, handle, this);
             }
+        }
+
+        public override void Unpin()
+        {
+            Release();
         }
 
         protected T[] _array;

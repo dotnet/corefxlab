@@ -14,7 +14,7 @@ namespace System.Text.Json
     public ref struct JsonObject
     {
         private MemoryPool<byte> _pool;
-        private OwnedMemory<byte> _dbMemory;
+        private IMemoryOwner<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
@@ -32,7 +32,7 @@ namespace System.Text.Json
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, MemoryPool<byte> pool = null, OwnedMemory<byte> dbMemory = null)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, MemoryPool<byte> pool = null, IMemoryOwner<byte> dbMemory = null)
         {
             _db = db;
             _values = values;

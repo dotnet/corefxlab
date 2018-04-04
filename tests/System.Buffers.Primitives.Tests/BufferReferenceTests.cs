@@ -9,16 +9,8 @@ namespace System.Buffers.Tests
         [Fact]
         public void OwnedArrayReferenceTests()
         {
-            BufferReferenceTests.TestOwnedBuffer(() => {
+            BufferReferenceTests.TestMemoryManager(() => {
                 return new CustomMemoryForTest<byte>(new byte[1024]);
-            });
-        }
-
-        [Fact]
-        public void PooledBufferReferenceTests()
-        {
-            BufferReferenceTests.TestOwnedBuffer(() => {
-                return MemoryPool<byte>.Shared.Rent(1000);
             });
         }
 

@@ -8,7 +8,7 @@ namespace System.Buffers.Tests
 {
     public class BufferReferenceTests
     {
-        public static void TestOwnedBuffer(Func<OwnedMemory<byte>> create, Action<OwnedMemory<byte>> dispose = null)
+        public static void TestMemoryManager(Func<MemoryManager<byte>> create, Action<MemoryManager<byte>> dispose = null)
         {
             RunTest(BufferLifetimeBasics, create, dispose);
             RunTest(MemoryHandleDoubleFree, create, dispose);
@@ -20,7 +20,7 @@ namespace System.Buffers.Tests
             //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
         }
 
-        public static void TestAutoOwnedBuffer(Func<OwnedMemory<byte>> create, Action<OwnedMemory<byte>> dispose = null)
+        public static void TestAutoOwnedBuffer(Func<MemoryManager<byte>> create, Action<MemoryManager<byte>> dispose = null)
         {
             RunTest(BufferLifetimeBasicsAuto, create, dispose);
             RunTest(MemoryHandleDoubleFreeAuto, create, dispose);
@@ -32,8 +32,8 @@ namespace System.Buffers.Tests
             //RunTest(OverRelease, create, dispose); // TODO: corfxlab #1571
         }
 
-        static void RunTest(Action<OwnedMemory<byte>> test, Func<OwnedMemory<byte>> create,
-            Action<OwnedMemory<byte>> dispose)
+        static void RunTest(Action<MemoryManager<byte>> test, Func<MemoryManager<byte>> create,
+            Action<MemoryManager<byte>> dispose)
         {
             var buffer = create();
             try
@@ -46,9 +46,9 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void MemoryAccessBasics(OwnedMemory<byte> buffer)
+        static void MemoryAccessBasics(MemoryManager<byte> buffer)
         {
-            var span = buffer.Span;
+            var span = buffer.GetSpan();
             span[10] = 10;
 
             Assert.Equal(buffer.Length, span.Length);
@@ -68,17 +68,17 @@ namespace System.Buffers.Tests
         }
 
         // tests OwnedMemory.Span overloads
-        static void Span(OwnedMemory<byte> buffer)
+        static void Span(MemoryManager<byte> buffer)
         {
-            var span = buffer.Span;
-            var fullSlice = buffer.Span.Slice(0, buffer.Length);
+            var span = buffer.GetSpan();
+            var fullSlice = buffer.GetSpan().Slice(0, buffer.Length);
             for (int i = 0; i < span.Length; i++)
             {
                 span[i] = (byte)(i % 254 + 1);
                 Assert.Equal(span[i], fullSlice[i]);
             }
 
-            var slice = buffer.Span.Slice(5, buffer.Length - 5);
+            var slice = buffer.GetSpan().Slice(5, buffer.Length - 5);
             Assert.Equal(span.Length - 5, slice.Length);
 
             for (int i = 0; i < slice.Length; i++)
@@ -88,17 +88,17 @@ namespace System.Buffers.Tests
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.Span.Slice(buffer.Length, 1);
+                buffer.GetSpan().Slice(buffer.Length, 1);
             });
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.Span.Slice(1, buffer.Length);
+                buffer.GetSpan().Slice(1, buffer.Length);
             });
         }
 
         // tests that OwnedMemory.Memory and OwnedMemory.ReadOnlyMemory point to the same memory
-        static void Buffer(OwnedMemory<byte> buffer)
+        static void Buffer(MemoryManager<byte> buffer)
         {
             var rwBuffer = buffer.Memory;
             var rwSpan = rwBuffer.Span;
@@ -117,10 +117,10 @@ namespace System.Buffers.Tests
             }
         }
 
-        static void Pin(OwnedMemory<byte> buffer)
+        static void Pin(MemoryManager<byte> buffer)
         {
             var memory = buffer.Memory;
-            var handle = memory.Retain(pin: true);
+            var handle = memory.Pin();
             unsafe
             {
                 Assert.NotEqual(0L, new IntPtr(handle.Pointer).ToInt64());
@@ -128,23 +128,20 @@ namespace System.Buffers.Tests
             handle.Dispose();
         }
 
-        static void Dispose(OwnedMemory<byte> buffer)
+        static void Dispose(MemoryManager<byte> buffer)
         {
             var length = buffer.Length;
 
-            buffer.Release();
-
-            buffer.Dispose();
-            Assert.True(buffer.IsDisposed);
+            ((IDisposable)buffer).Dispose();
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                var ignore = buffer.Span;
+                var ignore = buffer.GetSpan();
             });
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                buffer.Span.Slice(0, length);
+                buffer.GetSpan().Slice(0, length);
             });
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
@@ -163,21 +160,20 @@ namespace System.Buffers.Tests
             }));
         }
 
-        static void DisposeAuto(OwnedMemory<byte> buffer)
+        static void DisposeAuto(MemoryManager<byte> buffer)
         {
             var length = buffer.Length;
 
-            buffer.Dispose();
-            Assert.True(buffer.IsDisposed);
+            ((IDisposable)buffer).Dispose();
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                var ignore = buffer.Span;
+                var ignore = buffer.GetSpan();
             });
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
-                buffer.Span.Slice(0, length);
+                buffer.GetSpan().Slice(0, length);
             });
 
             Assert.ThrowsAny<ObjectDisposedException>(() =>
@@ -196,15 +192,15 @@ namespace System.Buffers.Tests
             }));
         }
 
-        static void OverRelease(OwnedMemory<byte> buffer)
+        static void OverRelease(MemoryManager<byte> buffer)
         {
             Assert.ThrowsAny<InvalidOperationException>(() =>
             {
-                buffer.Release();
+                buffer.Unpin();
             });
         }
 
-        static void BufferLifetimeBasics(OwnedMemory<byte> buffer)
+        static void BufferLifetimeBasics(MemoryManager<byte> buffer)
         {
             Memory<byte> copyStoredForLater;
             try
@@ -212,34 +208,21 @@ namespace System.Buffers.Tests
                 Memory<byte> memory = buffer.Memory;
                 Memory<byte> slice = memory.Slice(10);
                 copyStoredForLater = slice;
-                var handle = slice.Retain();
-                try
-                {
-                    Assert.Throws<InvalidOperationException>(() =>
-                    { // memory is reserved; premature dispose check fires
-                        buffer.Dispose();
-                    });
-                }
-                finally
-                {
-                    handle.Dispose(); // release reservation
-                }
-                buffer.Release();
+                MemoryHandle handle = slice.Pin();
+                handle.Dispose(); // release reservation
             }
             finally
             {
-                buffer.Dispose(); // can finish dispose with no exception
+                ((IDisposable)buffer).Dispose(); // can finish dispose with no exception
             }
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
-
-            Assert.True(buffer.IsDisposed);
         }
 
-        static void BufferLifetimeBasicsAuto(OwnedMemory<byte> buffer)
+        static void BufferLifetimeBasicsAuto(MemoryManager<byte> buffer)
         {
             Memory<byte> copyStoredForLater;
             try
@@ -247,51 +230,39 @@ namespace System.Buffers.Tests
                 Memory<byte> memory = buffer.Memory;
                 Memory<byte> slice = memory.Slice(10);
                 copyStoredForLater = slice;
-                var handle = slice.Retain();
-                try
-                {
-                    Assert.Throws<InvalidOperationException>(() =>
-                    { // memory is reserved; premature dispose check fires
-                        buffer.Dispose();
-                    });
-                }
-                finally
-                {
-                    handle.Dispose(); // release reservation
-                }
+                var handle = slice.Pin();
+                handle.Dispose(); // release reservation
             }
             finally
             {
-                buffer.Dispose(); // can finish dispose with no exception
+                ((IDisposable)buffer).Dispose(); // can finish dispose with no exception
             }
             Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
-
-            Assert.True(buffer.IsDisposed);
         }
 
-        static void MemoryHandleDoubleFree(OwnedMemory<byte> buffer)
+        static void MemoryHandleDoubleFree(MemoryManager<byte> buffer)
         {
             var memory = buffer.Memory;
-            var handle = memory.Retain(pin: true);
-            buffer.Retain();
+            var handle = memory.Pin();
+            buffer.Pin();
             handle.Dispose();
             handle.Dispose();
-            Assert.True(buffer.Release());
-            Assert.False(buffer.Release());
+            buffer.Unpin();
+            buffer.Unpin();
         }
 
-        static void MemoryHandleDoubleFreeAuto(OwnedMemory<byte> buffer)
+        static void MemoryHandleDoubleFreeAuto(MemoryManager<byte> buffer)
         {
             var memory = buffer.Memory;
-            var handle = memory.Retain(pin: true);
-            buffer.Retain();
+            var handle = memory.Pin();
+            buffer.Pin();
             handle.Dispose();
             handle.Dispose();
-            Assert.False(buffer.Release());
+            buffer.Unpin();
         }
 
         public static void TestBuffer(Func<Memory<byte>> create)
@@ -336,7 +307,7 @@ namespace System.Buffers.Tests
         static void BufferLifetime(Memory<byte> buffer)
         {
             var array = buffer.ToArray();
-            using (var pinned = buffer.Retain(pin: true))
+            using (var pinned = buffer.Pin())
             {
                 unsafe
                 {
@@ -383,7 +354,7 @@ namespace System.Buffers.Tests
         static void BufferLifetime(ReadOnlyMemory<byte> buffer)
         {
             var array = buffer.ToArray();
-            using (var pinned = buffer.Retain(pin: true))
+            using (var pinned = buffer.Pin())
             {
                 unsafe
                 {

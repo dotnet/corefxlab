@@ -152,7 +152,7 @@ namespace System.Numerics.Tensors.Tests
             // **only for test purposes**
 
             var memory = NativeMemory<T>.Allocate(array.Length);
-            var span = memory.Span;
+            var span = memory.GetSpan();
             int index = 0;
             foreach (T item in array)
             {

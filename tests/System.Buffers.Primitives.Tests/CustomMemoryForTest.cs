@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace System.Buffers.Tests
 {
-    public class CustomMemoryForTest<T> : OwnedMemory<T>
+    public class CustomMemoryForTest<T> : MemoryManager<T>
     {
         private bool _disposed;
         private int _referenceCount;
@@ -24,31 +24,50 @@ namespace System.Buffers.Tests
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
 
-        public override int Length => _array.Length;
-
-        public override bool IsDisposed => _disposed;
-
-        protected override bool IsRetained => _referenceCount > 0;
-
-        public override Span<T> Span
+        public override int Length
         {
             get
             {
                 if (IsDisposed)
                     throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-                return new Span<T>(_array, 0, _array.Length);
+                return _array.Length;
             }
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+
+        public bool IsDisposed => _disposed;
+
+        protected bool IsRetained => _referenceCount > 0;
+
+        public override Span<T> GetSpan()
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
+            return new Span<T>(_array, 0, _array.Length);
+        }
+
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
-                Retain();
-                if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
-                var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
-                return new MemoryHandle(this, pointer, handle);
+                if (IsDisposed)
+                    throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
+                Interlocked.Increment(ref _referenceCount);
+                try
+                {
+                    if ((uint)elementIndex > (uint)(_array.Length))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(elementIndex));
+                    }
+
+                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    return new MemoryHandle(Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), elementIndex), handle, this);
+                }
+                catch
+                {
+                    Unpin();
+                    throw;
+                }
             }
         }
 
@@ -74,30 +93,16 @@ namespace System.Buffers.Tests
             
         }
 
-        public override void Retain()
+        public override void Unpin()
         {
-            if (IsDisposed)
-                throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-            Interlocked.Increment(ref _referenceCount);
-        }
+            int newRefCount = Interlocked.Decrement(ref _referenceCount);
 
-        public override bool Release()
-        {
-            while (true)
+            if (newRefCount < 0)
+                throw new InvalidOperationException();
+
+            if (newRefCount == 0)
             {
-                int currentCount = Volatile.Read(ref _referenceCount);
-                if (currentCount <= 0)
-                    throw new InvalidOperationException();
-                if (Interlocked.CompareExchange(ref _referenceCount, currentCount - 1, currentCount) == currentCount)
-                {
-                    if (currentCount == 1)
-                    {
-                        Dispose();
-                        _noReferencesCalledCount++;
-                        return false;
-                    }
-                    return true;
-                }
+                _noReferencesCalledCount++;
             }
         }
     }

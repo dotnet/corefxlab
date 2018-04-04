@@ -78,7 +78,7 @@ namespace System.Buffers
         /// </summary>
         private const int AnySize = -1;
 
-        public override OwnedMemory<byte> Rent(int size = AnySize)
+        public override IMemoryOwner<byte> Rent(int size = AnySize)
         {
             if (size == AnySize) size = _blockLength;
             else if (size > _blockLength)
