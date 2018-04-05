@@ -225,19 +225,19 @@ namespace System.Text
 
         public Utf8String Trim(Utf8Char trimChar) => throw null;
 
-        public Utf8String Trim(Utf8Char[] trimChars) => throw null;
+        public Utf8String Trim(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
         public Utf8String TrimEnd() => throw null;
 
         public Utf8String TrimEnd(Utf8Char trimChar) => throw null;
 
-        public Utf8String TrimEnd(Utf8Char[] trimChars) => throw null;
+        public Utf8String TrimEnd(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
         public Utf8String TrimStart() => throw null;
 
         public Utf8String TrimStart(Utf8Char trimChar) => throw null;
 
-        public Utf8String TrimStart(Utf8Char[] trimChars) => throw null;
+        public Utf8String TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
         TypeCode IConvertible.GetTypeCode() => throw null;
 
