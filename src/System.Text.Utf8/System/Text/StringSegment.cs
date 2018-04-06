@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 // Open question: should this type have APIs which manufacture System.String instances,
 // e.g., Normalize(), PadLeft(int), Replace(char, char), etc.? How about APIs which
@@ -18,47 +20,161 @@ namespace System.Text
     /// </summary>
     public readonly struct StringSegment : IComparable<StringSegment>, IEnumerable<char>, IEquatable<StringSegment>
     {
-        public StringSegment(string value) => throw null;
+        private readonly int _length;
+        private readonly int _startIndex;
+        private readonly string _value;
 
-        public StringSegment(string value, int startIndex) => throw null;
+        public StringSegment(string value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
-        public StringSegment(string value, int startIndex, int length) => throw null;
+            _value = value;
+            _startIndex = 0;
+            _length = value.Length;
+        }
 
-        public static bool operator ==(StringSegment a, StringSegment b) => throw null;
+        public StringSegment(string value, int startIndex)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
-        public static bool operator !=(StringSegment a, StringSegment b) => throw null;
+            if ((uint)startIndex > (uint)value.Length)
+            {
+                // TODO: Actual exception message.
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
 
-        public static implicit operator ReadOnlyMemory<char>(StringSegment value) => throw null;
+            _value = value;
+            _startIndex = startIndex;
+            _length = value.Length - startIndex;
+        }
 
-        public static implicit operator ReadOnlySpan<char>(StringSegment value) => throw null;
+        public StringSegment(string value, int startIndex, int length)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
-        public static implicit operator StringSegment(string value) => throw null;
+            if ((uint)startIndex > (uint)value.Length)
+            {
+                // TODO: Actual exception message.
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
 
-        public char this[int index] => throw null;
+            if ((uint)length > (uint)(value.Length - startIndex))
+            {
+                // TODO: Actual exception message.
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            _value = value;
+            _startIndex = startIndex;
+            _length = length;
+        }
+
+        // non-validating ctor for internal use, allows null inputs
+        private StringSegment(string value, bool ignored)
+        {
+            _value = value;
+            _startIndex = 0;
+            _length = (value != null) ? value.Length : 0;
+        }
+
+        // non-validating ctor for internal use, allows null inputs
+        private StringSegment(string value, int startIndex, int length, bool ignored)
+        {
+            _value = value;
+            _startIndex = startIndex;
+            _length = length;
+        }
+
+        public static bool operator ==(StringSegment a, StringSegment b) => a.AsSpan().SequenceEqual(b.AsSpan());
+
+        public static bool operator !=(StringSegment a, StringSegment b) => !(a == b);
+
+        public static implicit operator ReadOnlyMemory<char>(StringSegment value) => value.AsMemory();
+
+        public static implicit operator ReadOnlySpan<char>(StringSegment value) => value.AsSpan();
+
+        public static implicit operator StringSegment(string value) => new StringSegment(value, false /* ignored */);
+
+        public ref readonly char this[int index]
+        {
+            get
+            {
+                if ((uint)index >= (uint)_length)
+                {
+                    // TODO: Real exception message.
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                // TODO: Don't go through AsSpan() below; return the computed offset directly as a single 'lea'.
+                return ref Unsafe.Add(ref MemoryMarshal.GetReference(AsSpan()), index);
+            }
+        }
 
         public static StringSegment Empty => default;
 
-        public int Length => throw null;
+        public int Length => _length;
 
-        public ReadOnlyMemory<char> AsMemory() => throw null;
+        public ReadOnlyMemory<char> AsMemory()
+        {
+            // TODO: Make the below call non-validating.
 
-        public ReadOnlySpan<char> AsSpan() => throw null;
+            return _value.AsMemory(_startIndex, _length);
+        }
 
-        public static int Compare(StringSegment segmentA, StringSegment segmentB) => throw null;
+        public ReadOnlySpan<char> AsSpan()
+        {
+            // TODO: If we knew the exact offset of String._firstChar, we could immediately use
+            // return new ReadOnlySpan<char>(ref [str + offset_to_firstchar + startIndex], length),
+            // and this would work regardless of whether string was null or not. (The pointer would
+            // be bogus if string is null, but who cares.) Since this is the workhorse routine used
+            // by tons of other methods on this type, we should optimize this as much as possible.
 
-        public static int Compare(StringSegment segmentA, StringSegment segmentB, bool ignoreCase) => throw null;
+            return ((ReadOnlySpan<char>)_value).Slice(_startIndex, _length);
+        }
 
-        public static int Compare(StringSegment segmentA, StringSegment segmentB, bool ignoreCase, CultureInfo culture) => throw null;
+        public static int Compare(StringSegment segmentA, StringSegment segmentB)
+            => CompareNoValidation(segmentA, segmentB, CultureInfo.CurrentCulture, CompareOptions.None);
 
-        public static int Compare(StringSegment segmentA, StringSegment segmentB, CultureInfo culture, CompareOptions options) => throw null;
+        public static int Compare(StringSegment segmentA, StringSegment segmentB, bool ignoreCase)
+            => CompareNoValidation(segmentA, segmentB, CultureInfo.CurrentCulture, (ignoreCase) ? CompareOptions.IgnoreCase : CompareOptions.None);
 
-        public static int Compare(StringSegment segmentA, StringSegment segmentB, StringComparison comparisonType) => throw null;
+        public static int Compare(StringSegment segmentA, StringSegment segmentB, bool ignoreCase, CultureInfo culture)
+            => Compare(segmentA, segmentB, culture, (ignoreCase) ? CompareOptions.IgnoreCase : CompareOptions.None);
 
-        public static int CompareOrdinal(StringSegment segmentA, StringSegment segmentB) => throw null;
+        public static int Compare(StringSegment segmentA, StringSegment segmentB, CultureInfo culture, CompareOptions options)
+        {
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
 
-        public int CompareTo(StringSegment other) => throw null;
+            return CompareNoValidation(segmentA, segmentB, culture, options);
+        }
 
-        public bool Contains(char value) => throw null;
+        public static int Compare(StringSegment segmentA, StringSegment segmentB, StringComparison comparisonType)
+            => segmentA.AsSpan().CompareTo(segmentB.AsSpan(), comparisonType);
+
+        private static int CompareNoValidation(StringSegment segmentA, StringSegment segmentB, CultureInfo culture, CompareOptions options)
+            => culture.CompareInfo.Compare(segmentA._value, segmentA._startIndex, segmentA._length, segmentB._value, segmentB._startIndex, segmentB._length, options);
+
+        public static int CompareOrdinal(StringSegment segmentA, StringSegment segmentB) => segmentA.AsSpan().CompareTo(segmentB.AsSpan(), StringComparison.Ordinal);
+
+        public int CompareTo(StringSegment other) => CompareNoValidation(this, other, CultureInfo.CurrentCulture, CompareOptions.None);
+
+        public bool Contains(char value)
+        {
+            // TODO: Replace IndexOf below with Contains when it's made public, which will give better performance.
+            return AsSpan().IndexOf(value) >= 0;
+        }
 
         public bool Contains(char value, StringComparison comparisonType) => throw null;
 
@@ -70,9 +186,13 @@ namespace System.Text
 
         public bool Contains(StringSegment value, StringComparison comparisonType) => throw null;
 
-        public void CopyTo(Span<char> destination) => throw null;
+        public void CopyTo(Span<char> destination) => AsSpan().CopyTo(destination);
 
-        public bool EndsWith(char value) => throw null;
+        public bool EndsWith(char value)
+        {
+            // TODO: Improve line below to skip validation (_value null check on indexer access, out-of-bounds check on indexer).
+            return (_length > 0) && (_value[_startIndex + _length - 1] == value);
+        }
 
         public bool EndsWith(string value) => throw null;
 
@@ -86,64 +206,100 @@ namespace System.Text
 
         public bool EndsWith(StringSegment value, StringComparison comparisonType) => throw null;
 
-        public override bool Equals(object value) => throw null;
+        public override bool Equals(object value)
+        {
+            if (value is StringSegment asStringSegment)
+            {
+                return Equals(asStringSegment);
+            }
+            else if (value is string asString)
+            {
+                return Equals(asString);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-        public bool Equals(string value) => throw null;
+        public bool Equals(string value) => AsSpan().SequenceEqual(value);
 
-        public bool Equals(string value, StringComparison comparisonType) => throw null;
+        public bool Equals(string value, StringComparison comparisonType) => AsSpan().Equals((ReadOnlySpan<char>)value, comparisonType);
 
-        public bool Equals(StringSegment value) => throw null;
+        public bool Equals(StringSegment value) => AsSpan().SequenceEqual(value);
 
-        public bool Equals(StringSegment value, StringComparison comparisonType) => throw null;
+        public bool Equals(StringSegment value, StringComparison comparisonType) => AsSpan().Equals((ReadOnlySpan<char>)value, comparisonType);
 
-        public static bool Equals(StringSegment a, StringSegment b) => throw null;
+        public static bool Equals(StringSegment a, StringSegment b) => a.AsSpan().SequenceEqual(b.AsSpan());
 
-        public static bool Equals(StringSegment a, StringSegment b, StringComparison comparisonType) => throw null;
+        public static bool Equals(StringSegment a, StringSegment b, StringComparison comparisonType) => a.AsSpan().Equals(b.AsSpan(), comparisonType);
 
-        public Enumerator GetEnumerator() => throw null;
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
-        public override int GetHashCode() => throw null;
+        public override int GetHashCode()
+        {
+            // TODO: Where's Marvin32?
+            throw null;
+        }
 
         public int GetHashCode(StringComparison comparisonType) => throw null;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void GetString(out string value, out int startIndex, out int length) => throw null;
+        public void GetString(out string value, out int startIndex, out int length)
+        {
+            value = (_length == 0) ? default : _value; // normalize empty -> null
+            startIndex = _startIndex;
+            length = _length;
+        }
 
-        public int IndexOf(char value) => throw null;
+        public int IndexOf(char value) => AsSpan().IndexOf(value);
 
         public int IndexOf(char value, StringComparison comparisonType) => throw null;
 
-        public int IndexOf(string value) => throw null;
+        public int IndexOf(string value) => IndexOf(value, StringComparison.CurrentCulture);
 
-        public int IndexOf(string value, StringComparison comparisonType) => throw null;
+        public int IndexOf(string value, StringComparison comparisonType) => AsSpan().IndexOf(value, comparisonType);
 
-        public int IndexOf(StringSegment value) => throw null;
+        public int IndexOf(StringSegment value) => IndexOf(value, StringComparison.CurrentCulture);
 
-        public int IndexOf(StringSegment value, StringComparison comparisonType) => throw null;
+        public int IndexOf(StringSegment value, StringComparison comparisonType) => AsSpan().IndexOf(value, comparisonType);
 
-        public int IndexOfAny(ReadOnlySpan<char> anyOf) => throw null;
+        public int IndexOfAny(ReadOnlySpan<char> anyOf) => AsSpan().IndexOfAny(anyOf);
 
-        public static bool IsEmpty(StringSegment value) => throw null;
+        public static bool IsEmpty(StringSegment value) => (value._length == 0);
 
-        public static bool IsEmptyOrWhiteSpace(StringSegment value) => throw null;
+        public static bool IsEmptyOrWhiteSpace(StringSegment value)
+        {
+            // TODO: Perf improvements to the below code.
+            foreach (char ch in value.AsSpan())
+            {
+                if (!Char.IsWhiteSpace(ch)) { return false; }
+            }
+
+            return true; // no non-whitespace character found
+        }
 
         public bool IsNormalized() => throw null;
 
         public bool IsNormalized(NormalizationForm normalizationForm) => throw null;
 
-        public int LastIndexOf(char value) => throw null;
+        public int LastIndexOf(char value) => AsSpan().LastIndexOf(value);
 
-        public int LastIndexOf(string value) => throw null;
+        public int LastIndexOf(string value) => LastIndexOf(value, StringComparison.CurrentCulture);
 
         public int LastIndexOf(string value, StringComparison comparisonType) => throw null;
 
-        public int LastIndexOf(StringSegment value) => throw null;
+        public int LastIndexOf(StringSegment value) => LastIndexOf(value, StringComparison.CurrentCulture);
 
         public int LastIndexOf(StringSegment value, StringComparison comparisonType) => throw null;
 
-        public int LastIndexOfAny(ReadOnlySpan<char> anyOf) => throw null;
+        public int LastIndexOfAny(ReadOnlySpan<char> anyOf) => AsSpan().LastIndexOfAny(anyOf);
 
-        public bool StartsWith(char value) => throw null;
+        public bool StartsWith(char value)
+        {
+            // TODO: Improve line below to skip validation (_value null check on indexer access, out-of-bounds check on indexer).
+            return (_length > 0) && (_value[_startIndex] == value);
+        }
 
         public bool StartsWith(string value) => throw null;
 
@@ -157,49 +313,177 @@ namespace System.Text
 
         public bool StartsWith(StringSegment value, StringComparison comparisonType) => throw null;
 
-        public StringSegment Substring(int startIndex) => throw null;
+        public StringSegment Substring(int startIndex)
+        {
+            if ((uint)startIndex > (uint)_length)
+            {
+                // TODO: Real exception message.
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
 
-        public StringSegment Substring(int startIndex, int length) => throw null;
+            return new StringSegment(_value, _startIndex + startIndex, _length - startIndex, false /* ignored */); // non-validating
+        }
 
-        public char[] ToCharArray() => throw null;
+        public StringSegment Substring(int startIndex, int length)
+        {
+            if ((uint)startIndex > (uint)_length)
+            {
+                // TODO: Real exception message.
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
 
-        public override string ToString() => throw null;
+            if ((uint)length > (uint)(_length - startIndex))
+            {
+                // TODO: Real exception message.
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
 
-        public StringSegment Trim() => throw null;
+            return new StringSegment(_value, _startIndex + startIndex, length, false /* ignored */); // non-validating
+        }
 
-        public StringSegment Trim(char trimChar) => throw null;
+        public char[] ToCharArray() => AsSpan().ToArray();
+
+        public override string ToString()
+        {
+            if (_length == 0)
+            {
+                // default(StringSegment)
+                return String.Empty;
+            }
+            else if (_startIndex == 0 && _length == _value.Length)
+            {
+                // StringSegment backed by a full (non-sliced) string
+                return _value;
+            }
+            else
+            {
+                // TODO: Improve ReadOnlySpan<char>.ToString() to be non-pinning.
+                return AsSpan().ToString();
+            }
+        }
+
+        public StringSegment Trim() => TrimStart().TrimEnd();
+
+        public StringSegment Trim(char trimChar) => TrimStart(trimChar).TrimEnd(trimChar);
 
         public StringSegment Trim(ReadOnlySpan<char> trimChars) => throw null;
 
-        public StringSegment TrimEnd() => throw null;
+        public StringSegment TrimEnd()
+        {
+            // TODO: Can we skip indexer bounds checks in the below code?
+            // TODO: Is there a faster check than Char.IsWhiteSpace?
 
-        public StringSegment TrimEnd(char trimChar) => throw null;
+            for (int i = Length - 1; i >= 0; i--)
+            {
+                if (!Char.IsWhiteSpace(this[i]))
+                {
+                    return new StringSegment(_value, _startIndex, i + 1, false /* ignored */); // no validation
+                }
+            }
+
+            return Empty;
+        }
+
+        public StringSegment TrimEnd(char trimChar)
+        {
+            // TODO: Can we skip indexer bounds checks in the below code?
+
+            for (int i = Length - 1; i >= 0; i--)
+            {
+                if (this[i] != trimChar)
+                {
+                    return new StringSegment(_value, _startIndex, i + 1, false /* ignored */); // no validation
+                }
+            }
+
+            return Empty;
+        }
 
         public StringSegment TrimEnd(ReadOnlySpan<char> trimChars) => throw null;
 
-        public StringSegment TrimStart() => throw null;
+        public StringSegment TrimStart()
+        {
+            // TODO: Can we skip indexer bounds checks in the below code?
+            // TODO: Is there a faster check than Char.IsWhiteSpace?
 
-        public StringSegment TrimStart(char trimChar) => throw null;
+            for (int i = 0; i < Length; i++)
+            {
+                if (!Char.IsWhiteSpace(this[i]))
+                {
+                    return new StringSegment(_value, _startIndex + i, _length - i, false /* ignored */); // no validation
+                }
+            }
+
+            return Empty;
+        }
+
+        public StringSegment TrimStart(char trimChar)
+        {
+            // TODO: Can we skip indexer bounds checks in the below code?
+
+            for (int i = 0; i < Length; i++)
+            {
+                if (this[i] != trimChar)
+                {
+                    return new StringSegment(_value, _startIndex + i, _length - i, false /* ignored */); // no validation
+                }
+            }
+
+            return Empty;
+        }
 
         public StringSegment TrimStart(ReadOnlySpan<char> trimChars) => throw null;
 
-        public static bool TryCreateFromMemory(ReadOnlyMemory<char> memory, out StringSegment segment) => throw null;
+        public static bool TryCreateFromMemory(ReadOnlyMemory<char> memory, out StringSegment segment)
+        {
+            bool retVal = MemoryMarshal.TryGetString(memory, out var text, out var startIndex, out var length);
+            segment = new StringSegment(text, startIndex, length, false /* ignored */); // non-validating
+            return retVal;
+        }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         IEnumerator<char> IEnumerable<char>.GetEnumerator() => GetEnumerator();
 
-        public readonly struct Enumerator : IEnumerator<char>
+        public struct Enumerator : IEnumerator<char>
         {
-            public char Current => throw null;
+            private int _currentOffset;
+            private readonly StringSegment _segment;
 
-            public void Dispose() => throw null;
+            internal Enumerator(StringSegment segment)
+            {
+                _segment = segment;
+                _currentOffset = 0;
+                Current = default;
+            }
 
-            public bool MoveNext() => throw null;
+            public char Current { get; private set; }
 
-            public void Reset() => throw null;
+            public void Dispose()
+            {
+                /* no-op */
+            }
 
-            object IEnumerator.Current => throw null;
+            public bool MoveNext()
+            {
+                if ((uint)_currentOffset >= (uint)_segment.Length)
+                {
+                    // went past the end of the segment
+                    Current = default;
+                    return false;
+                }
+
+                Current = _segment[_currentOffset++];
+                return true;
+            }
+
+            public void Reset()
+            {
+                _currentOffset = 0;
+                Current = default;
+            }
+
+            object IEnumerator.Current => Current;
         }
     }
 }
