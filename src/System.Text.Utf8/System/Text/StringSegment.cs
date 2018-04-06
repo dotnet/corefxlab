@@ -9,9 +9,39 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// Open question: should this type have APIs which manufacture System.String instances,
+// Open question: should this type have APIs which manufacture System.String instances;
 // e.g., Normalize(), PadLeft(int), Replace(char, char), etc.? How about APIs which
-// allocate in general, e.g., Split(char)?
+// allocate in general; e.g., Split(char), which might return a StringSegment[]?
+
+// This type solves some of the shortcomings of ReadOnlyMemory<char> and ReadOnlySpan<char>.
+//
+// - Unlike ROM<char>, callers don't have to worry about lifetime / lease semantics. There's no
+//   fear that the underlying memory will be ripped out from under them if they hold on to the
+//   instance.
+//
+// - Unlike ROS<char>, this type is heapable, so it can exist as a field in a normal (non-ref) type.
+//
+// - Unlike ROM<char>, this type directly implements much of the same API surface as System.String,
+//   so callers can use it directly rather than converting to Span over and over.
+//
+// - Unlike ROM<char> and ROS<char>, this type implements GetHashCode, Equals, and similar methods,
+//   so it's suitable for use in dictionaries or other containers.
+//
+// - Unlike ROM<char> and ROS<char>, you're _guaranteed_ to be able to get a System.String instance
+//   back out of this, so you can call existing APIs with shape (string, int offset, int length)
+//   without allocating or copying the string data.
+//
+// Open question: are these benefits worth introducing this type? We'd need to provide guidance on
+// when to use String, StringSegment, ReadOnlyMemory<char>, and ReadOnlySpan<char>.
+//
+// Preliminary guidance:
+//
+// - If you're a synchronous API author, take ReadOnlySpan<char> in your leaf APIs.
+// - If you're an asynchronous API author, take ReadOnlyMemory<char> in your leaf APIs.
+// - If you're an API author who needs to return standalone data not tied to any
+//   other lifetime (e.g., you're a deserializer), return String or StringSegment.
+// - If you're an application developer, use String and StringSegment as fields in
+//   your classes unless you know you need to potentially deal with unmanaged memory.
 
 namespace System.Text
 {
@@ -357,6 +387,13 @@ namespace System.Text
             }
             else
             {
+                // In an ideal world we could mutate this instance on-the-fly (even though
+                // it's marked as a readonly struct) by clever use of unsafe code in order
+                // to cache the generated string. However, this is dangerous because this
+                // instance may be accessed by multiple threads concurrently, and mutating
+                // this instance could result in a torn struct, which could lead to runtime
+                // corruption.
+
                 // TODO: Improve ReadOnlySpan<char>.ToString() to be non-pinning.
                 return AsSpan().ToString();
             }
