@@ -151,6 +151,8 @@ namespace System.Text
 
         public static StringSegment Empty => default;
 
+        public bool IsEmpty => (_length == 0);
+
         public int Length => _length;
 
         public ReadOnlyMemory<char> AsMemory()
@@ -296,12 +298,10 @@ namespace System.Text
 
         public int IndexOfAny(ReadOnlySpan<char> anyOf) => AsSpan().IndexOfAny(anyOf);
 
-        public static bool IsEmpty(StringSegment value) => (value._length == 0);
-
-        public static bool IsEmptyOrWhiteSpace(StringSegment value)
+        public bool IsEmptyOrWhiteSpace()
         {
             // TODO: Perf improvements to the below code.
-            foreach (char ch in value.AsSpan())
+            foreach (char ch in AsSpan())
             {
                 if (!Char.IsWhiteSpace(ch)) { return false; }
             }
