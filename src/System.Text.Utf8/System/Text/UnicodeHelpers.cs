@@ -47,7 +47,7 @@ namespace System.Text
             // 'a' will be -1 if input is < 0x800; else 'a' will be 0
             // => 'a' will be -1 if input is 1 or 2 UTF-8 code units; else 'a' will be 0
 
-            uint a = (value - 0x0800U) >> 31;
+            int a = ((int)value - 0x0800) >> 31;
 
             // The number of UTF-8 code units for a given scalar is as follows:
             // - U+0000..U+007F => 1 code unit
@@ -74,7 +74,7 @@ namespace System.Text
             // - U+0080..U+07FF => 4 + (-1) * 2 = 2
             // - U+0800..U+FFFF => 3 + ( 0) * 2 = 3
             // - U+10000+       => 4 + ( 0) * 2 = 4
-            return (int)(value + (a * 2));
+            return (int)value + (a * 2);
         }
 
         /// <summary>
