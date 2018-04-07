@@ -144,6 +144,14 @@ namespace System.Text
         /// value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValidUnicodeScalar(uint value) => IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
+        public static bool IsValidUnicodeScalar(uint value)
+        {
+            // By XORing the incoming value with 0xD800, surrogate code points
+            // are moved to the range [ U+0000..U+07FF ], and all valid scalar
+            // values are clustered into the single range [ U+0800..U+10FFFF ],
+            // which allows performing a single fast range check.
+
+            return IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
+        }
     }
 }

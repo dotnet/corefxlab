@@ -158,6 +158,12 @@ namespace System.Text
         public override int GetHashCode() => _value.GetHashCode();
 
         /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar
+        /// value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
+        /// </summary>
+        public static bool IsValid(int value) => UnicodeHelpers.IsValidUnicodeScalar((uint)value);
+
+        /// <summary>
         /// Returns a <see cref="String"/> representation of this <see cref="UnicodeScalar"/> instance.
         /// </summary>
         public override string ToString()
