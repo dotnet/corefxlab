@@ -21,9 +21,10 @@ namespace System.Text
         {
             Debug.Assert(IsValidUnicodeScalar(value));
 
-            // If value <  0x10000, returns (-1) + 2 = 1
-            // If value >= 0x10000, returns   0  + 2 = 2
-            return (((int)value - 0x10000) >> 31) + 2;
+            value -= 0x10000;   // if value < 0x10000, high byte = 0xFF; else high byte = 0x00
+            value += (2 << 24); // if value < 0x10000, high byte = 0x01; else high byte = 0x02
+            value >>= 24;       // shift high byte down
+            return (int)value;  // and return it
         }
 
         /// <summary>
