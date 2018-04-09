@@ -155,6 +155,8 @@ namespace System.Text
 
         public int Length => _length;
 
+        public ScalarSequence Scalars => throw null;
+
         public ReadOnlyMemory<char> AsMemory()
         {
             // TODO: Make the below call non-validating.
@@ -521,6 +523,28 @@ namespace System.Text
             }
 
             object IEnumerator.Current => Current;
+        }
+
+        public struct ScalarEnumerator : IEnumerator<UnicodeScalar>
+        {
+            public UnicodeScalar Current => throw null;
+
+            public void Dispose() => throw null;
+
+            public bool MoveNext() => throw null;
+
+            public void Reset() => throw null;
+
+            object IEnumerator.Current => throw new NotImplementedException();
+        }
+
+        public struct ScalarSequence : IEnumerable<UnicodeScalar>
+        {
+            public ScalarEnumerator GetEnumerator() => throw null;
+
+            IEnumerator IEnumerable.GetEnumerator() => throw null;
+
+            IEnumerator<UnicodeScalar> IEnumerable<UnicodeScalar>.GetEnumerator() => throw null;
         }
     }
 }

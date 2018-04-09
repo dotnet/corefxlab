@@ -12,11 +12,6 @@ namespace System.Text
         // TODO: These should really be extension properties, not extension methods.
 
         /// <summary>
-        /// Allows enumerating individual Unicode scalars of a <see cref="Utf8String"/>.
-        /// </summary>
-        public static Utf8StringUnicodeScalarEnumerable GetScalars(this Utf8String value) => throw null;
-
-        /// <summary>
         /// Allows enumerating individual Unicode scalars of a <see cref="ReadOnlySpan{Utf8Char}"/>.
         /// </summary>
         public static Utf8CharSpanUnicodeScalarEnumerable GetScalars(this ReadOnlySpan<Utf8Char> value) => throw null;
@@ -50,15 +45,6 @@ namespace System.Text
         public ref struct Utf8CharSpanUnicodeScalarEnumerable
         {
             public Utf8SpanUnicodeScalarEnumerator GetEnumerator() => throw null;
-        }
-
-        public struct Utf8StringUnicodeScalarEnumerable : IEnumerable<UnicodeScalar>
-        {
-            public Utf8UnicodeScalarEnumerator GetEnumerator() => throw null;
-
-            IEnumerator IEnumerable.GetEnumerator() => throw null;
-
-            IEnumerator<UnicodeScalar> IEnumerable<UnicodeScalar>.GetEnumerator() => throw null;
         }
     }
 }

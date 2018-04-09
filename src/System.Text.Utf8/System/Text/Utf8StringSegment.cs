@@ -39,6 +39,8 @@ namespace System.Text
 
         public int Length => throw null;
 
+        public ScalarSequence Scalars => throw null;
+
         public ReadOnlyMemory<Utf8Char> AsMemory() => throw null;
 
         public ReadOnlySpan<Utf8Char> AsSpan() => throw null;
@@ -155,6 +157,28 @@ namespace System.Text
             public void Reset() => throw null;
 
             object IEnumerator.Current => throw null;
+        }
+
+        public struct ScalarEnumerator : IEnumerator<UnicodeScalar>
+        {
+            public UnicodeScalar Current => throw null;
+
+            public void Dispose() => throw null;
+
+            public bool MoveNext() => throw null;
+
+            public void Reset() => throw null;
+
+            object IEnumerator.Current => throw new NotImplementedException();
+        }
+
+        public struct ScalarSequence : IEnumerable<UnicodeScalar>
+        {
+            public ScalarEnumerator GetEnumerator() => throw null;
+
+            IEnumerator IEnumerable.GetEnumerator() => throw null;
+
+            IEnumerator<UnicodeScalar> IEnumerable<UnicodeScalar>.GetEnumerator() => throw null;
         }
     }
 }

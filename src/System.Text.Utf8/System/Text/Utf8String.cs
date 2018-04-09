@@ -44,6 +44,8 @@ namespace System.Text
 
         public int Length => throw null;
 
+        public ScalarSequence Scalars => throw null;
+
         public int CompareTo(Utf8String other) => throw null;
 
         public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
@@ -288,5 +290,27 @@ namespace System.Text
         IEnumerator IEnumerable.GetEnumerator() => throw null;
 
         IEnumerator<Utf8Char> IEnumerable<Utf8Char>.GetEnumerator() => throw null;
+
+        public struct ScalarSequence : IEnumerable<UnicodeScalar>
+        {
+            public ScalarEnumerator GetEnumerator() => throw null;
+
+            IEnumerator IEnumerable.GetEnumerator() => throw null;
+
+            IEnumerator<UnicodeScalar> IEnumerable<UnicodeScalar>.GetEnumerator() => throw null;
+        }
+
+        public struct ScalarEnumerator : IEnumerator<UnicodeScalar>
+        {
+            public UnicodeScalar Current => throw null;
+
+            public void Dispose() => throw null;
+
+            public bool MoveNext() => throw null;
+
+            public void Reset() => throw null;
+
+            object IEnumerator.Current => throw new NotImplementedException();
+        }
     }
 }
