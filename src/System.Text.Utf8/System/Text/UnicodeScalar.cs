@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Text.Utf8.Resources;
 
 // TODO: Make this struct serializable.
@@ -217,7 +218,7 @@ namespace System.Text
             // TODO: Consider using BMI2 (pext, pdep) when it comes online.
             // TODO: Consider using hardware-accelerated byte swapping (bswap, movbe) if available.
 
-            var outputAsBytes = output.AsBytes();
+            var outputAsBytes = MemoryMarshal.AsBytes(output);
 
             if (IsAscii && output.Length > 0)
             {
