@@ -181,19 +181,21 @@ namespace System.Text
         /// Thrown if <paramref name="output"/> is too short to contain the output.
         /// The required length can be queried ahead of time via the <see cref="Utf16SequenceLength"/> property.
         /// </exception>
-        public int ToUtf16(Span<char> output)
+        public int ToUtf16(Span<char> output) => ToUtf16(output, _value);
+
+        private static int ToUtf16(Span<char> output, uint value)
         {
-            if (IsBmp && output.Length > 0)
+            if (UnicodeHelpers.IsBmpCodePoint(value) && output.Length > 0)
             {
-                output[0] = (char)_value;
+                output[0] = (char)value;
                 return 1;
             }
             else if (output.Length > 1)
             {
                 // TODO: This logic can be optimized into a single unaligned write, endianness-dependent.
 
-                output[0] = (char)((_value >> 10) + 0xD800U - 0x40U); // high surrogate
-                output[1] = (char)((_value & 0x3FFFU) + 0xDC00U); // low surrogate
+                output[0] = (char)((value + ((0xD800U - 0x40U) << 10)) >> 10); // high surrogate
+                output[1] = (char)((value & 0x3FFFU) + 0xDC00U); // low surrogate
                 return 2;
             }
             else
@@ -212,7 +214,9 @@ namespace System.Text
         /// Thrown if <paramref name="output"/> is too short to contain the output.
         /// The required length can be queried ahead of time via the <see cref="Utf8SequenceLength"/> property.
         /// </exception>
-        public int ToUtf8(Span<Utf8Char> output)
+        public int ToUtf8(Span<Utf8Char> output) => ToUtf8(output, _value);
+
+        private static int ToUtf8(Span<Utf8Char> output, uint value)
         {
             // TODO: This logic can be optimized into fewer unaligned writes, endianness-dependent.
             // TODO: Consider using BMI2 (pext, pdep) when it comes online.
@@ -220,30 +224,30 @@ namespace System.Text
 
             var outputAsBytes = MemoryMarshal.AsBytes(output);
 
-            if (IsAscii && output.Length > 0)
+            if (UnicodeHelpers.IsAsciiCodePoint(value) && output.Length > 0)
             {
-                outputAsBytes[0] = (byte)_value;
+                outputAsBytes[0] = (byte)value;
                 return 1;
             }
-            else if (_value < 0x800U && output.Length > 1)
+            else if (value < 0x800U && output.Length > 1)
             {
-                outputAsBytes[0] = (byte)((_value >> 6) + 0xC0U);
-                outputAsBytes[1] = (byte)((_value & 0x3FU) + 0x80U);
+                outputAsBytes[0] = (byte)((value + (0xC0U << 6)) >> 6);
+                outputAsBytes[1] = (byte)((value & 0x3FU) + 0x80U);
                 return 2;
             }
-            else if (_value < 0x10000U && output.Length > 2)
+            else if (value < 0x10000U && output.Length > 2)
             {
-                outputAsBytes[0] = (byte)((_value >> 12) + 0xE0U);
-                outputAsBytes[1] = (byte)(((_value >> 6) & 0x3FU) + 0x80U);
-                outputAsBytes[2] = (byte)((_value & 0x3FU) + 0x80U);
+                outputAsBytes[0] = (byte)((value + (0xE0U << 12)) >> 12);
+                outputAsBytes[1] = (byte)(((value >> 6) & 0x3FU) + 0x80U);
+                outputAsBytes[2] = (byte)((value & 0x3FU) + 0x80U);
                 return 3;
             }
             else if (output.Length > 3)
             {
-                outputAsBytes[0] = (byte)((_value >> 18) + 0xF0U);
-                outputAsBytes[1] = (byte)(((_value >> 12) & 0x3FU) + 0x80U);
-                outputAsBytes[2] = (byte)(((_value >> 6) & 0x3FU) + 0x80U);
-                outputAsBytes[3] = (byte)((_value & 0x3FU) + 0x80U);
+                outputAsBytes[0] = (byte)((value + (0xF0U << 18)) >> 18);
+                outputAsBytes[1] = (byte)(((value >> 12) & 0x3FU) + 0x80U);
+                outputAsBytes[2] = (byte)(((value >> 6) & 0x3FU) + 0x80U);
+                outputAsBytes[3] = (byte)((value & 0x3FU) + 0x80U);
                 return 4;
             }
             else
