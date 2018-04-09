@@ -24,7 +24,15 @@ namespace System.Text
 
         public static bool operator ==(Utf8String a, Utf8String b) => throw null;
 
+        public static bool operator ==(string a, Utf8String b) => throw null;
+
+        public static bool operator ==(Utf8String a, string b) => throw null;
+
         public static bool operator !=(Utf8String a, Utf8String b) => throw null;
+
+        public static bool operator !=(string a, Utf8String b) => throw null;
+
+        public static bool operator !=(Utf8String a, string b) => throw null;
 
         public static implicit operator ReadOnlySpan<Utf8Char>(Utf8String value) => throw null;
 
@@ -86,6 +94,8 @@ namespace System.Text
         public override bool Equals(object other) => throw null;
 
         public bool Equals(Utf8String other) => throw null;
+
+        public bool Equals(string other) => throw null;
 
         public Utf8CharEnumerator GetEnumerator() => throw null;
 
