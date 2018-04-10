@@ -30,9 +30,6 @@ holes or issues with our platform without being drowned in large PRs.
 
 Currently, this repo contains the following experimental components:
 
-* **System.Slices**
-These APIs moved to System.Memory (a component in the CoreFx repo) and to System.Buffers.Primitives (a component in this repo)
-
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
