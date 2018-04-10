@@ -134,7 +134,7 @@ namespace System.Text
 
         public static implicit operator StringSegment(string value) => new StringSegment(value, false /* ignored */);
 
-        public ref readonly char this[int index]
+        public char this[int index]
         {
             get
             {
@@ -144,8 +144,10 @@ namespace System.Text
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                // TODO: Don't go through AsSpan() below; return the computed offset directly as a single 'lea'.
-                return ref Unsafe.Add(ref MemoryMarshal.GetReference(AsSpan()), index);
+                // TODO: Figure out how to get the reference to this element so that we can return it as a 'ref readonly'
+                // instead of as a value directly.
+
+                return _value[index + _startIndex];
             }
         }
 
