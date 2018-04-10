@@ -96,6 +96,11 @@ namespace System.Text
         public bool IsBmp => UnicodeHelpers.IsBmpCodePoint(_value);
 
         /// <summary>
+        /// Returns the Unicode plane (0 to 16, inclusive) which contains this scalar.
+        /// </summary>
+        public int Plane => UnicodeHelpers.GetPlane(_value);
+
+        /// <summary>
         /// A <see cref="UnicodeScalar"/> instance that represents the Unicode replacement character U+FFFD.
         /// </summary>
         public static UnicodeScalar ReplacementChar => DangerousCreateWithoutValidation(UnicodeHelpers.ReplacementChar);
@@ -144,7 +149,7 @@ namespace System.Text
         /// </summary>
         public override bool Equals(object obj)
         {
-            return (obj is UnicodeScalar) && Equals((UnicodeScalar)obj);
+            return (obj is UnicodeScalar scalar) && Equals(scalar);
         }
 
         /// <summary>

@@ -15,6 +15,14 @@ namespace System.Text
         public const uint ReplacementChar = 0xFFFDU;
 
         /// <summary>
+        /// Returns the Unicode plane (0 through 16, inclusive) which contains this code point.
+        /// </summary>
+        public static int GetPlane(uint codePoint)
+        {
+            return (int)(codePoint >> 16);
+        }
+
+        /// <summary>
         /// Given a Unicode scalar value, gets the number of UTF-16 code units required to represent this value.
         /// </summary>
         public static int GetUtf16SequenceLength(uint value)
@@ -124,7 +132,6 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsBmpCodePoint(uint value) => (value < 0x10000U);
 
-
         /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is between
         /// <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
@@ -138,6 +145,15 @@ namespace System.Text
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSurrogateCodePoint(uint value) => IsInRangeInclusive(value, 0xD800U, 0xDFFFU);
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode code
+        /// point, i.e., is in [ U+0000..U+10FFFF ], inclusive.
+        /// </summary>
+        public static bool IsValidCodePoint(uint codePoint)
+        {
+            return (codePoint <= 0x10FFFFU);
+        }
 
         /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar

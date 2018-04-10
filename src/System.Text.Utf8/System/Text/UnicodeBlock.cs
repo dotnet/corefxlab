@@ -15,6 +15,8 @@ namespace System.Text
 
         public int Length => throw null;
 
+        public int Plane => throw null;
+
         public bool Contains(char value) => throw null;
 
         public bool Contains(int codePoint) => throw null;
@@ -22,6 +24,8 @@ namespace System.Text
         public bool Contains(UnicodeScalar value) => throw null;
 
         public string GetName() => throw null;
+
+        public static bool TryGetBlockForCharacter(char value, out UnicodeBlock block) => throw null;
 
         public static bool TryGetBlockForCodePoint(int codePoint, out UnicodeBlock block) => throw null;
 
