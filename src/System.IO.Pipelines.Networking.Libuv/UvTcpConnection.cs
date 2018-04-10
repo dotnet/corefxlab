@@ -3,6 +3,8 @@
 
 using System.Buffers;
 using System.IO.Pipelines.Networking.Libuv.Interop;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Libuv
@@ -20,8 +22,10 @@ namespace System.IO.Pipelines.Networking.Libuv
         private readonly UvTcpHandle _handle;
         private volatile bool _stopping;
 
-        private Task _sendingTask;
+        private readonly Task _sendingTask;
         private MemoryHandle _inputBufferPin;
+
+        private readonly Lazy<IPEndPoint> _remoteEndpoint;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -38,6 +42,13 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             StartReading();
             _sendingTask = ProcessWrites();
+
+            _remoteEndpoint = new Lazy<IPEndPoint>(() =>
+            {
+                var size = Marshal.SizeOf<SockAddr>();
+                _thread.Uv.tcp_getpeername(_handle, out SockAddr address, ref size);
+                return address.GetIPEndPoint();
+            });
         }
 
         public async Task DisposeAsync()
@@ -45,6 +56,8 @@ namespace System.IO.Pipelines.Networking.Libuv
             // Dispose on the thread pool so we don't return on the libuv thread
             await Task.Factory.StartNew(state => ((UvTcpConnection)state).DisposeAsyncCore(), this);
         }
+
+        public IPEndPoint RemoteEndPoint => _remoteEndpoint.Value;
 
         private async Task DisposeAsyncCore()
         {
