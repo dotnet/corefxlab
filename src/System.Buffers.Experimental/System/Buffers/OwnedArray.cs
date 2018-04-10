@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    public class OwnedArray<T> : OwnedMemory<T>
+    public class OwnedArray<T> : MemoryManager<T>
     {
         T[] _array;
         int _referenceCount;
@@ -27,24 +27,21 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span
+        public override Span<T> GetSpan()
         {
-            get
-            {
-                if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
-                return new Span<T>(_array);
-            }
+            if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
+            return new Span<T>(_array);
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             unsafe
             {
                 Retain();
-                if (byteOffset != 0 && (((uint)byteOffset) - 1) / Unsafe.SizeOf<T>() >= _array.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+                if ((uint)elementIndex > (uint)_array.Length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
                 var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-                void* pointer = Unsafe.Add<byte>((void*)handle.AddrOfPinnedObject(), byteOffset);
-                return new MemoryHandle(this, pointer, handle);
+                void* pointer = Unsafe.Add<T>((void*)handle.AddrOfPinnedObject(), elementIndex);
+                return new MemoryHandle(pointer, handle, this);
             }
         }
 
@@ -60,31 +57,29 @@ namespace System.Buffers
             _array = null;
         }
 
-        public override void Retain()
+        public void Retain()
         {
             if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public override bool Release()
+        public override void Unpin()
         {
             int newRefCount = Interlocked.Decrement(ref _referenceCount);
             if (newRefCount < 0) ThrowInvalidOperationException();
             if (newRefCount == 0)
             {
                 OnNoReferences();
-                return false;
             }
-            return true;
         }
 
         protected virtual void OnNoReferences()
         {
         }
 
-        protected override bool IsRetained => _referenceCount > 0;
+        protected bool IsRetained => _referenceCount > 0;
 
-        public override bool IsDisposed => _array == null;
+        public bool IsDisposed => _array == null;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowObjectDisposedException(string objectName)

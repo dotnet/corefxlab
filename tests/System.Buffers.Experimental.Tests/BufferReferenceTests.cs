@@ -25,7 +25,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void CustomBufferReferenceTests()
         {
-            BufferReferenceTests.TestOwnedBuffer(() => {
+            BufferReferenceTests.TestMemoryManager(() => {
                 return new CustomBuffer<byte>(512);
             });
         }

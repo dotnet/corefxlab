@@ -273,7 +273,7 @@ namespace System.Text.Json.Tests
                 return json;
             }
 
-            var jsonReader = new JsonReader(jsonString.AsSpan().AsBytes(), SymbolTable.InvariantUtf16);
+            var jsonReader = new JsonReader(MemoryMarshal.AsBytes(jsonString.AsSpan()), SymbolTable.InvariantUtf16);
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {

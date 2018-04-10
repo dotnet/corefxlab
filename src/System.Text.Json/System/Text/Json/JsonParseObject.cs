@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Text.Utf8;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.Json
 {
     public ref struct JsonObject
     {
         private MemoryPool<byte> _pool;
-        private OwnedMemory<byte> _dbMemory;
+        private IMemoryOwner<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
@@ -31,7 +32,7 @@ namespace System.Text.Json
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, MemoryPool<byte> pool = null, OwnedMemory<byte> dbMemory = null)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, MemoryPool<byte> pool = null, IMemoryOwner<byte> dbMemory = null)
         {
             _db = db;
             _values = values;
@@ -51,7 +52,7 @@ namespace System.Text.Json
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                record = ReadMachineEndian<DbRow>(_db.Slice(i));
+                record = Read<DbRow>(_db.Slice(i));
 
                 if (!record.IsSimpleValue) {
                     i += record.Length * DbRow.Size;
@@ -62,7 +63,7 @@ namespace System.Text.Json
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = ReadMachineEndian<DbRow>(_db.Slice(newStart));
+                    record = Read<DbRow>(_db.Slice(newStart));
 
                     if (!record.IsSimpleValue) {
                         newEnd = newEnd + DbRow.Size * record.Length;
@@ -72,7 +73,7 @@ namespace System.Text.Json
                     return true;
                 }
 
-                var valueType = ReadMachineEndian<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
+                var valueType = Read<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
                     i += DbRow.Size;
                 }
@@ -95,7 +96,7 @@ namespace System.Text.Json
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                record = ReadMachineEndian<DbRow>(_db.Slice(i));
+                record = Read<DbRow>(_db.Slice(i));
 
                 if (!record.IsSimpleValue) {
                     i += record.Length * DbRow.Size;
@@ -106,7 +107,7 @@ namespace System.Text.Json
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = ReadMachineEndian<DbRow>(_db.Slice(newStart));
+                    record = Read<DbRow>(_db.Slice(newStart));
 
                     if (!record.IsSimpleValue) {
                         newEnd = newEnd + DbRow.Size * record.Length;
@@ -116,7 +117,7 @@ namespace System.Text.Json
                     return true;
                 }
 
-                var valueType = ReadMachineEndian<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
+                var valueType = Read<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
                     i += DbRow.Size;
                 }
@@ -161,7 +162,7 @@ namespace System.Text.Json
 
                 int counter = 0;
                 for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
-                    record = ReadMachineEndian<DbRow>(_db.Slice(i));
+                    record = Read<DbRow>(_db.Slice(i));
 
                     if (index == counter) {
                         int newStart = i;
@@ -325,8 +326,8 @@ namespace System.Text.Json
 
         }
 
-        internal DbRow Record => ReadMachineEndian<DbRow>(_db);
-        public JsonValueType Type => ReadMachineEndian<JsonValueType>(_db.Slice(8));
+        internal DbRow Record => Read<DbRow>(_db);
+        public JsonValueType Type => Read<JsonValueType>(_db.Slice(8));
 
         public enum JsonValueType : byte
         {

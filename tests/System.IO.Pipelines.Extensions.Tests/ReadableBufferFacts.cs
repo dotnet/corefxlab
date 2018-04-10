@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -303,7 +304,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.True(found);
                 var remaining = readBuffer.Slice(cursor);
-                var handle = remaining.First.Retain(pin: true);
+                var handle = remaining.First.Pin();
                 Assert.True(handle.Pointer != null);
                 if (i % BlockSize == 0)
                 {
@@ -327,7 +328,7 @@ namespace System.IO.Pipelines.Tests
             int index = 0;
             foreach (var memory in readBuffer)
             {
-                var handle = memory.Retain(pin: true);
+                var handle = memory.Pin();
                 handles.Add(handle);
                 var ptr = (byte*)handle.Pointer;
                 for (int i = 0; i < memory.Length; i++)
@@ -423,16 +424,16 @@ namespace System.IO.Pipelines.Tests
             var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
             var span = readable.First.Span;
             Assert.True(readable.IsSingleSegment);
-            Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
-            Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
-            Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
-            Assert.Equal(ReadMachineEndian<ushort>(span), readable.ReadLittleEndian<ushort>());
-            Assert.Equal(ReadMachineEndian<int>(span), readable.ReadLittleEndian<int>());
-            Assert.Equal(ReadMachineEndian<uint>(span), readable.ReadLittleEndian<uint>());
-            Assert.Equal(ReadMachineEndian<long>(span), readable.ReadLittleEndian<long>());
-            Assert.Equal(ReadMachineEndian<ulong>(span), readable.ReadLittleEndian<ulong>());
-            Assert.Equal(ReadMachineEndian<float>(span), readable.ReadLittleEndian<float>());
-            Assert.Equal(ReadMachineEndian<double>(span), readable.ReadLittleEndian<double>());
+            Assert.Equal(Read<byte>(span), readable.ReadLittleEndian<byte>());
+            Assert.Equal(Read<sbyte>(span), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(Read<short>(span), readable.ReadLittleEndian<short>());
+            Assert.Equal(Read<ushort>(span), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(Read<int>(span), readable.ReadLittleEndian<int>());
+            Assert.Equal(Read<uint>(span), readable.ReadLittleEndian<uint>());
+            Assert.Equal(Read<long>(span), readable.ReadLittleEndian<long>());
+            Assert.Equal(Read<ulong>(span), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(Read<float>(span), readable.ReadLittleEndian<float>());
+            Assert.Equal(Read<double>(span), readable.ReadLittleEndian<double>());
         }
 
         [Fact]
@@ -451,16 +452,16 @@ namespace System.IO.Pipelines.Tests
             Assert.False(readable.IsSingleSegment);
             Span<byte> span = readable.ToArray();
 
-            Assert.Equal(ReadMachineEndian<byte>(span), readable.ReadLittleEndian<byte>());
-            Assert.Equal(ReadMachineEndian<sbyte>(span), readable.ReadLittleEndian<sbyte>());
-            Assert.Equal(ReadMachineEndian<short>(span), readable.ReadLittleEndian<short>());
-            Assert.Equal(ReadMachineEndian<ushort>(span), readable.ReadLittleEndian<ushort>());
-            Assert.Equal(ReadMachineEndian<int>(span), readable.ReadLittleEndian<int>());
-            Assert.Equal(ReadMachineEndian<uint>(span), readable.ReadLittleEndian<uint>());
-            Assert.Equal(ReadMachineEndian<long>(span), readable.ReadLittleEndian<long>());
-            Assert.Equal(ReadMachineEndian<ulong>(span), readable.ReadLittleEndian<ulong>());
-            Assert.Equal(ReadMachineEndian<float>(span), readable.ReadLittleEndian<float>());
-            Assert.Equal(ReadMachineEndian<double>(span), readable.ReadLittleEndian<double>());
+            Assert.Equal(Read<byte>(span), readable.ReadLittleEndian<byte>());
+            Assert.Equal(Read<sbyte>(span), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(Read<short>(span), readable.ReadLittleEndian<short>());
+            Assert.Equal(Read<ushort>(span), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(Read<int>(span), readable.ReadLittleEndian<int>());
+            Assert.Equal(Read<uint>(span), readable.ReadLittleEndian<uint>());
+            Assert.Equal(Read<long>(span), readable.ReadLittleEndian<long>());
+            Assert.Equal(Read<ulong>(span), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(Read<float>(span), readable.ReadLittleEndian<float>());
+            Assert.Equal(Read<double>(span), readable.ReadLittleEndian<double>());
         }
 
         [Fact]

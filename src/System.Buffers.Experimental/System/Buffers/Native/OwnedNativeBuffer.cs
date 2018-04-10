@@ -37,13 +37,13 @@ namespace System.Buffers.Native
             _pointer = IntPtr.Zero;
         }
 
-        public override MemoryHandle Pin(int byteOffset = 0)
+        public override MemoryHandle Pin(int elementIndex = 0)
         {
             Retain();
-            if (byteOffset < 0 || byteOffset > _length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+            if (elementIndex < 0 || elementIndex > _length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
             unsafe
             {
-                return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
+                return new MemoryHandle(Unsafe.Add<byte>(_pointer.ToPointer(), elementIndex), default, this);
             }
         }
         protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
@@ -56,13 +56,15 @@ namespace System.Buffers.Native
 
         public override int Length => _length;
         
-        public unsafe override Span<byte> Span
+        public unsafe override Span<byte> GetSpan()
         {
-            get
-            {
-                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
-                return new Span<byte>(_pointer.ToPointer(), _length);
-            }
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
+            return new Span<byte>(_pointer.ToPointer(), _length);
+        }
+
+        public override void Unpin()
+        {
+            Release();
         }
 
         int _length;

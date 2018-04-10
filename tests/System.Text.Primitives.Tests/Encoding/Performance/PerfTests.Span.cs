@@ -7,6 +7,7 @@ using Microsoft.Xunit.Performance;
 using System.Text.Primitives.Tests.Encoding;
 using System.Buffers;
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Primitives.Tests
 {
@@ -46,7 +47,7 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf16toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            ReadOnlySpan<byte> utf16 = inputString.AsSpan().AsBytes();
+            ReadOnlySpan<byte> utf16 = MemoryMarshal.AsBytes(inputString.AsSpan());
 
             var status = Encodings.Utf16.ToUtf8Length(utf16, out int needed);
             Assert.Equal(OperationStatus.Done, status);

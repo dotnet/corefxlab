@@ -16,6 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Numerics.Tensors\System.Numerics.Tensors.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
+  </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

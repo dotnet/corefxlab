@@ -11,6 +11,7 @@ using System.Buffers.Text;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Utf8;
+using System.Runtime.InteropServices;
 
 public class StorageBench
 {
@@ -130,7 +131,7 @@ public class StorageBench
         }
         else
         {
-            if (Encodings.Utf16.ToUtf8(verb.AsSpan().AsBytes(), output, out consumed, out written) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(verb.AsSpan()), output, out consumed, out written) != OperationStatus.Done)
             {
                 bytesWritten = 0;
                 return false;
@@ -154,7 +155,7 @@ public class StorageBench
         bytesWritten += written + 1;
         free = output.Slice(bytesWritten);
 
-        if (Encodings.Utf16.ToUtf8(canonicalizedResource.AsSpan().AsBytes(), free, out consumed, out written) != OperationStatus.Done)
+        if (Encodings.Utf16.ToUtf8(MemoryMarshal.AsBytes(canonicalizedResource.AsSpan()), free, out consumed, out written) != OperationStatus.Done)
         {
             bytesWritten = 0;
             return false;

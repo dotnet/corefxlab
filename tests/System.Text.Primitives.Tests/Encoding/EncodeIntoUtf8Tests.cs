@@ -4,7 +4,9 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 using Xunit;
+
 
 namespace System.Text.Primitives.Tests.Encoding
 {
@@ -221,12 +223,12 @@ namespace System.Text.Primitives.Tests.Encoding
             string inputStringHigh = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength, true);
             Span<byte> output = new byte[16];
 
-            ReadOnlySpan<byte> input = inputStringLow.AsSpan().AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputStringLow.AsSpan());
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out int consumed, out int written));
             Assert.Equal(0, consumed);
             Assert.Equal(0, written);
 
-            input = inputStringHigh.AsSpan().AsBytes();
+            input = MemoryMarshal.AsBytes(inputStringHigh.AsSpan());
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf16.ToUtf8(input, output, out consumed, out written));
             Assert.Equal(0, consumed);
             Assert.Equal(0, written);
@@ -236,7 +238,7 @@ namespace System.Text.Primitives.Tests.Encoding
         public void InputContainsOnlyInvalidDataFromUtf32()
         {
             uint[] codepoints = TextEncoderTestHelper.GenerateOnlyInvalidUtf32CodePoints(TextEncoderConstants.DataLength / sizeof(uint));
-            ReadOnlySpan<byte> input = codepoints.AsSpan().AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(codepoints.AsSpan());
             Span<byte> output = new byte[16];
 
             Assert.Equal(OperationStatus.InvalidData, Encodings.Utf32.ToUtf8(input, output, out int consumed, out int written));
@@ -249,7 +251,7 @@ namespace System.Text.Primitives.Tests.Encoding
         {
             string inputStringEndsWithLow = TextEncoderTestHelper.GenerateInvalidStringEndsWithLow(TextEncoderConstants.DataLength);
             byte[] inputBytes = Text.Encoding.Unicode.GetBytes(inputStringEndsWithLow);
-            ReadOnlySpan<byte> input = inputStringEndsWithLow.AsSpan().AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputStringEndsWithLow.AsSpan());
             ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.Unicode, Text.Encoding.UTF8, inputBytes);
             int expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringEndsWithLow.AsSpan());
             Span<byte> output = new byte[expectedWritten + 10];
@@ -260,7 +262,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
             string inputStringInvalid = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
             inputBytes = Text.Encoding.Unicode.GetBytes(inputStringInvalid);
-            input = inputStringInvalid.AsSpan().AsBytes();
+            input = MemoryMarshal.AsBytes(inputStringInvalid.AsSpan());
             expected = Text.Encoding.Convert(Text.Encoding.Unicode, Text.Encoding.UTF8, inputBytes);
             expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStringInvalid.AsSpan());
             output = new byte[expectedWritten + 10];
@@ -274,7 +276,7 @@ namespace System.Text.Primitives.Tests.Encoding
         public void InputContainsSomeInvalidDataFromUtf32()
         {
             uint[] codepoints = TextEncoderTestHelper.GenerateOnlyInvalidUtf32CodePoints(TextEncoderConstants.DataLength / sizeof(uint));
-            ReadOnlySpan<byte> input = codepoints.AsSpan().AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(codepoints.AsSpan());
             ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.UTF32, Text.Encoding.UTF8, input.ToArray());
             int expectedWritten = TextEncoderTestHelper.GetUtf8ByteCount(codepoints);
             Span<byte> output = new byte[expectedWritten];
@@ -295,8 +297,8 @@ namespace System.Text.Primitives.Tests.Encoding
             inputString1.CopyTo(0, inputCharsAll, 0, inputString1.Length);
             inputString2.CopyTo(0, inputCharsAll, inputString1.Length, inputString2.Length);
 
-            ReadOnlySpan<byte> input1 = inputCharsAll.AsSpan().Slice(0, inputString1.Length).AsBytes();
-            ReadOnlySpan<byte> input2 = inputCharsAll.AsSpan().Slice(inputString1.Length - 1).AsBytes();
+            ReadOnlySpan<byte> input1 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan().Slice(0, inputString1.Length));
+            ReadOnlySpan<byte> input2 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan().Slice(inputString1.Length - 1));
 
             ReadOnlySpan<byte> expected = Text.Encoding.UTF8.GetBytes(inputString1 + inputString2);
             Span<byte> output = new byte[expected.Length];
@@ -323,17 +325,17 @@ namespace System.Text.Primitives.Tests.Encoding
             Array.Copy(codepoints1, inputAll, codepoints1.Length);
             Array.Copy(codepoints2, 0, inputAll, codepoints1.Length, codepoints2.Length);
 
-            ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.UTF32, Text.Encoding.UTF8, inputAll.AsSpan().AsBytes().ToArray());
+            ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.UTF32, Text.Encoding.UTF8, MemoryMarshal.AsBytes(inputAll.AsSpan()).ToArray());
             Span<byte> output = new byte[expected.Length];
 
-            ReadOnlySpan<byte> input = inputAll.AsSpan().Slice(0, codepoints1.Length).AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputAll.AsSpan().Slice(0, codepoints1.Length));
             input = input.Slice(0, input.Length - 2); // Strip a couple bytes from last good code point
             Assert.Equal(OperationStatus.NeedMoreData, Encodings.Utf32.ToUtf8(input, output, out int consumed, out int written));
             Assert.True(input.Length > consumed, "Consumed too many bytes [first half]");
             Assert.NotEqual(expected.Length, written);
             Assert.True(expected.Slice(0, written).SequenceEqual(output.Slice(0, written)), "Invalid output sequence [first half]");
 
-            input = inputAll.AsSpan().AsBytes().Slice(consumed);
+            input = MemoryMarshal.AsBytes(inputAll.AsSpan()).Slice(consumed);
             expected = expected.Slice(written);
             Assert.Equal(OperationStatus.Done, Encodings.Utf32.ToUtf8(input, output, out consumed, out written));
             Assert.Equal(input.Length, consumed);

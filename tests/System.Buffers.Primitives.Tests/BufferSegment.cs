@@ -41,19 +41,18 @@ namespace System.IO.Pipelines.Testing
         /// <summary>
         /// The buffer being tracked if segment owns the memory
         /// </summary>
-        private OwnedMemory<byte> _ownedMemory;
+        private IMemoryOwner<byte> _ownedMemory;
 
         private int _end;
 
-        public void SetMemory(OwnedMemory<byte> buffer)
+        public void SetMemory(IMemoryOwner<byte> buffer)
         {
             SetMemory(buffer, 0, 0);
         }
 
-        public void SetMemory(OwnedMemory<byte> ownedMemory, int start, int end, bool readOnly = false)
+        public void SetMemory(IMemoryOwner<byte> ownedMemory, int start, int end, bool readOnly = false)
         {
             _ownedMemory = ownedMemory;
-            _ownedMemory.Retain();
 
             AvailableMemory = _ownedMemory.Memory;
 
@@ -66,7 +65,7 @@ namespace System.IO.Pipelines.Testing
 
         public void ResetMemory()
         {
-            _ownedMemory.Release();
+            _ownedMemory.Dispose();
             _ownedMemory = null;
             AvailableMemory = default;
         }

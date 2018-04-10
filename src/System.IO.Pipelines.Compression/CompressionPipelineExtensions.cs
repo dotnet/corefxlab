@@ -124,7 +124,7 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        var handle = buffer.Retain(pin: true);
+                        var handle = buffer.Pin();
                         handles.Add(handle);
                         _deflater.SetInput((IntPtr)handle.Pointer, buffer.Length);
                     }
@@ -134,7 +134,7 @@ namespace System.IO.Pipelines.Compression
                         unsafe
                         {
                             var wbuffer = writerBuffer.GetMemory();
-                            var handle = wbuffer.Retain(pin: true);
+                            var handle = wbuffer.Pin();
                             handles.Add(handle);
                             int written = _deflater.ReadDeflateOutput((IntPtr)handle.Pointer, wbuffer.Length);
                             writerBuffer.Advance(written);
@@ -159,7 +159,7 @@ namespace System.IO.Pipelines.Compression
                     unsafe
                     {
                         var memory = writerBuffer.GetMemory();
-                        var handle = memory.Retain(pin: true);
+                        var handle = memory.Pin();
                         handles.Add(handle);
                         flushed = _deflater.Flush((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
                         writerBuffer.Advance(compressedBytes);
@@ -178,7 +178,7 @@ namespace System.IO.Pipelines.Compression
                     unsafe
                     {
                         var memory = writerBuffer.GetMemory();
-                        var handle = memory.Retain(pin: true);
+                        var handle = memory.Pin();
                         handles.Add(handle);
                         finished = _deflater.Finish((IntPtr)handle.Pointer, memory.Length, out int compressedBytes);
                         writerBuffer.Advance(compressedBytes);
@@ -236,12 +236,12 @@ namespace System.IO.Pipelines.Compression
                     {
                         unsafe
                         {
-                            var handle = buffer.Retain(pin: true);
+                            var handle = buffer.Pin();
                             handles.Add(handle);
                             _inflater.SetInput((IntPtr)handle.Pointer, buffer.Length);
 
                             var wbuffer = writerBuffer.GetMemory();
-                            handle = wbuffer.Retain(pin: true);
+                            handle = wbuffer.Pin();
                             handles.Add(handle);
                             int written = _inflater.Inflate((IntPtr)handle.Pointer, wbuffer.Length);
                             writerBuffer.Advance(written);

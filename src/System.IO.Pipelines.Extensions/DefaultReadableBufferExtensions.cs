@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using static System.Buffers.Binary.BinaryPrimitives;
 
@@ -97,7 +98,7 @@ namespace System.IO.Pipelines
                 {
                     while (currentSpan.Length >= VectorWidth)
                     {
-                        var data = ReadMachineEndian<Vector<byte>>(currentSpan);
+                        var data = MemoryMarshal.Read<Vector<byte>>(currentSpan);
                         var byte0Equals = Vector.Equals(data, byte0Vector);
 
                         if (byte0Equals.Equals(Vector<byte>.Zero))

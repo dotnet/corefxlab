@@ -20,13 +20,10 @@ namespace System.Buffers.Native
 
             public override int Length => _length;
 
-            public override Span<byte> Span
+            public override Span<byte> GetSpan()
             {
-                get
-                {
-                    if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(NativeMemoryPool.Memory));
-                    return new Span<byte>(_pointer.ToPointer(), _length);
-                }
+                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(NativeMemoryPool.Memory));
+                return new Span<byte>(_pointer.ToPointer(), _length);
             }
 
             protected override void Dispose(bool disposing)
@@ -41,11 +38,16 @@ namespace System.Buffers.Native
                 return false;
             }
 
-            public override MemoryHandle Pin(int byteOffset = 0)
+            public override MemoryHandle Pin(int elementIndex = 0)
             {
                 Retain();
-                if (byteOffset < 0 || byteOffset > _length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
-                return new MemoryHandle(this, Unsafe.Add<byte>(_pointer.ToPointer(), byteOffset));
+                if (elementIndex < 0 || elementIndex > _length) throw new ArgumentOutOfRangeException(nameof(elementIndex));
+                return new MemoryHandle(Unsafe.Add<byte>(_pointer.ToPointer(), elementIndex), default, this);
+            }
+
+            public override void Unpin()
+            {
+                Release();
             }
 
             private readonly NativeMemoryPool _pool;

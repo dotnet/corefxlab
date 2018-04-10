@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 
 namespace System.Azure.Authentication
 {
@@ -12,7 +13,7 @@ namespace System.Azure.Authentication
 
         public static byte[] ComputeKeyBytes(this ReadOnlySpan<char> key)
         {
-            var utf16Bytes = key.AsBytes();
+            var utf16Bytes = MemoryMarshal.AsBytes(key);
             int size = utf16Bytes.Length; // the input must be ASCII (i.e. Base64 encoded)
 
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
@@ -38,7 +39,7 @@ namespace System.Azure.Authentication
 
         public static bool TryComputeKeyBytes(this ReadOnlySpan<char> key, Span<byte> keyBytes)
         {
-            var utf16Bytes = key.AsBytes();
+            var utf16Bytes = MemoryMarshal.AsBytes(key);
             int size = utf16Bytes.Length; // the input must be ASCII (i.e. Base64 encoded)
 
             var buffer = size < 128 ? stackalloc byte[size] : new byte[size];
