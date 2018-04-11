@@ -12,11 +12,14 @@ namespace System.Buffers.Writer
         private Span<byte> _span;
         private int _buffered;
 
+        private static readonly byte[] s_newLine = new byte[] { (byte)'\r', (byte)'\n' };
+
         public BufferWriter(T output)
         {
             _buffered = 0;
             _output = output;
             _span = output.GetSpan();
+            NewLine = s_newLine;
         }
 
         public ReadOnlySpan<byte> NewLine { get; set; }
