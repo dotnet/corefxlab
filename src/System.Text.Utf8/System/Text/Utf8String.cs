@@ -38,6 +38,8 @@ namespace System.Text
 
         public Utf8Char this[int index] => throw null;
 
+        public ReadOnlySpan<byte> Bytes => throw null;
+
         public ReadOnlySpan<Utf8Char> Chars => throw null;
 
         public static readonly Utf8String Empty;
@@ -99,7 +101,7 @@ namespace System.Text
 
         public bool Equals(string other) => throw null;
 
-        public Utf8CharEnumerator GetEnumerator() => throw null;
+        public Enumerator GetEnumerator() => throw null;
 
         public override int GetHashCode() => throw null;
 
@@ -290,6 +292,19 @@ namespace System.Text
         IEnumerator IEnumerable.GetEnumerator() => throw null;
 
         IEnumerator<Utf8Char> IEnumerable<Utf8Char>.GetEnumerator() => throw null;
+
+        public struct Enumerator : IEnumerator<Utf8Char>
+        {
+            public Utf8Char Current => throw null;
+
+            public void Dispose() => throw null;
+
+            public bool MoveNext() => throw null;
+
+            public void Reset() => throw null;
+
+            object IEnumerator.Current => throw null;
+        }
 
         public struct ScalarSequence : IEnumerable<UnicodeScalar>
         {
