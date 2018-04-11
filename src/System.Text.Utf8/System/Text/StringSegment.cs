@@ -540,7 +540,7 @@ namespace System.Text
             object IEnumerator.Current => throw new NotImplementedException();
         }
 
-        public struct ScalarSequence : IEnumerable<UnicodeScalar>
+        public readonly struct ScalarSequence : IEnumerable<UnicodeScalar>
         {
             public ScalarEnumerator GetEnumerator() => throw null;
 

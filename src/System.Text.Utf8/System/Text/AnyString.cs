@@ -12,7 +12,7 @@ namespace System.Text
     /// <summary>
     /// Can hold a <see cref="String"/> or a <see cref="Utf8String"/>.
     /// </summary>
-    public struct AnyString : IEnumerable<UnicodeScalar>, IEquatable<AnyString>
+    public readonly struct AnyString : IEnumerable<UnicodeScalar>, IEquatable<AnyString>
     {
         public AnyString(string value) => throw null;
 
