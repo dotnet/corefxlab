@@ -92,8 +92,8 @@ namespace System.IO.FileSystem
         internal byte _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
         public string Path;
         public string Directory;
-        public ulong LastWrite;
-        public ulong FileSize;
+        public DateTime LastWrite;
+        public long FileSize;
 
         public FileState(string directory, string path) : this()
         {

@@ -33,23 +33,27 @@ namespace System.IO.FileSystem
         bool _includeSubdirectories;
 
         List<string> _extensionsToWatch;
-        List<string> _directories = new List<string>();
+        string _directory;
         PathToFileStateHashtable _state; // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        static string[] SpecialFiles = new[] { "", ".", ".." };
 
         /// <summary>
         /// Creates an instance of a watcher
         /// </summary>
-        /// <param name="rootDirectory">The directory to watch. It does not support UNC paths (yet).</param>
+        /// <param name="directory">The directory to watch. It does not support UNC paths (yet).</param>
         /// <param name="includeSubdirectories">A bool controlling whether or not subdirectories will be watched too</param>
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
-        public PollingWatcher(string rootDirectory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
+        public PollingWatcher(string directory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
+            if (!Directory.Exists(directory))
+                throw new ArgumentException("Directory not found.", nameof(directory));
+
             Tracing = new TraceSource("PollingWatcher");
-            _state = new PathToFileStateHashtable(Tracing); 
+            _state = new PathToFileStateHashtable(Tracing);
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
             _includeSubdirectories = includeSubdirectories;
-            _directories.Add(ToDirectoryFormat(rootDirectory));
+            _directory = directory;
         }
 
         /// <summary>
@@ -61,11 +65,11 @@ namespace System.IO.FileSystem
         /// </remarks>
         public void AddExtension(string extension)
         {
-            if(_timer != null)
+            if (_timer != null)
             {
                 throw new InvalidOperationException(Strings.InvalidOperation_Extension);
             }
-            if(_extensionsToWatch == null)
+            if (_extensionsToWatch == null)
             {
                 _extensionsToWatch = new List<string>();
             }
@@ -84,43 +88,20 @@ namespace System.IO.FileSystem
             _version++;
             var changes = new FileChangeList();
 
-            WIN32_FIND_DATAW fileData = new WIN32_FIND_DATAW();
-            unsafe
+            if (Directory.Exists(_directory))
             {
-                WIN32_FIND_DATAW* pFileData = &fileData;
-
-                for(int index=0; index < _directories.Count; index++) {
-                    var directory = _directories[index];
-
-                    var handle = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
-                    if (handle == DllImports.INVALID_HANDLE_VALUE) { // directory got deleted 
-                        if (Tracing.Switch.ShouldTrace(TraceEventType.Information))
-                        {
-                            Tracing.TraceEvent(TraceEventType.Warning, 2, "Directory could not be opened {0}", directory);
-                        }
-                        _directories.Remove(directory);
-                        continue;
-                    }
-
-                    try
-                    {
-                        do
-                        {
-                            if (IsSpecial(fileData.cFileName)) continue;
-                            if (!IsWatched(fileData.cFileName)) continue;
-                            UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
-                        }
-                        while (DllImports.FindNextFileW(handle, pFileData));
-                    }
-                    finally
-                    {
-                        DllImports.FindClose(handle);
-                    }
+                var files = Directory.EnumerateFiles(_directory, "*", _includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+                foreach (var fileName in files)
+                {
+                    if (!IsWatched(fileName)) continue;
+                    UpdateState(_directory, ref changes, fileName);
                 }
             }
 
-            foreach (var value in _state) {
-                if (value._version != _version) {
+            foreach (var value in _state)
+            {
+                if (value._version != _version)
+                {
                     changes.AddRemoved(value.Directory, value.Path);
                     _state.Remove(value.Directory, value.Path);
                 }
@@ -129,52 +110,12 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        // returns true for empty, '.', and '..' 
-        private unsafe bool IsSpecial(char* cFileName)
-        {
-            if (cFileName[0] == 0) return true;
-            if (cFileName[0] == '.') {
-                if (cFileName[1] == 0) return true;
-                if (cFileName[1] == '.' && cFileName[2] == 0) return true;
-            }
-            return false;
-        }
-
-        private unsafe static int GetLength(char* nullTerminatedString)
-        {
-            int length = -1;
-            while (true)
-            {
-                if (nullTerminatedString[++length] == 0)
-                {
-                    break;
-                }
-            }
-            return length;
-        }
-        private unsafe static bool EndsWith(char* nullTerminatedString, int length, string possibleEnding)
-        {
-            if(possibleEnding.Length > length)
-            {
-                return false;
-            }
-
-            var start = nullTerminatedString + (length - possibleEnding.Length);
-
-            for(int i=0; i<possibleEnding.Length; i++)
-            {
-                if (start[i] != possibleEnding[i]) return false;
-            }
-            return true;
-        }
-
-        private unsafe bool IsWatched(char* filename)
+        private bool IsWatched(string filename)
         {
             if (_extensionsToWatch == null) return true;
-            var length = GetLength(filename);
-            foreach(var extension in _extensionsToWatch)
+            foreach (var extension in _extensionsToWatch)
             {
-                if(EndsWith(filename, length, extension))
+                if (filename.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -182,24 +123,19 @@ namespace System.IO.FileSystem
             return false;
         }
 
-        private unsafe void UpdateState(string directory, ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
+        private void UpdateState(string directory, ref FileChangeList changes, string filename)
         {
+            var file = new FileInfo(filename);
             int index = _state.IndexOf(directory, filename);
             if (index == -1) // file added
             {
-                string path = new string(filename);
-
-                if (file.IsDirectory) {
-                    if (_includeSubdirectories) {
-                        _directories.Add(Path.Combine(directory.TrimEnd('*'), path, "*"));
-                    }
-                }
+                string path = filename;
 
                 changes.AddAdded(directory, path);
-                
+
                 var newFileState = new FileState(directory, path);
-                newFileState.LastWrite = file.LastWrite;
-                newFileState.FileSize = file.FileSize;
+                newFileState.LastWrite = file.LastWriteTimeUtc;
+                newFileState.FileSize = file.Length;
                 newFileState._version = _version;
                 _state.Add(directory, path, newFileState);
                 return;
@@ -207,15 +143,12 @@ namespace System.IO.FileSystem
 
             _state.Values[index]._version = _version;
 
-            if (file.IsDirectory) {
-                return;
-            }
-
             var previousState = _state.Values[index];
-            if (file.LastWrite != previousState.LastWrite || file.FileSize != previousState.FileSize) {
+            if (file.LastWriteTimeUtc != previousState.LastWrite || file.Length != previousState.FileSize)
+            {
                 changes.AddChanged(directory, previousState.Path);
-                _state.Values[index].LastWrite = file.LastWrite;
-                _state.Values[index].FileSize = file.FileSize;
+                _state.Values[index].LastWrite = file.LastWriteTimeUtc;
+                _state.Values[index].FileSize = file.Length;
             }
         }
 
@@ -236,13 +169,14 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
-            try {
+            try
+            {
                 _stopwatch.Restart();
                 var changes = ComputeChangesAndUpdateState();
                 var lastCycleTicks = _stopwatch.ElapsedTicks;
                 if (Tracing.Switch.ShouldTrace(TraceEventType.Information))
                 {
-                    Tracing.TraceEvent(TraceEventType.Information, 1, "Last polling cycle {0}ms", lastCycleTicks*1000/Stopwatch.Frequency);
+                    Tracing.TraceEvent(TraceEventType.Information, 1, "Last polling cycle {0}ms", lastCycleTicks * 1000 / Stopwatch.Frequency);
                     Tracing.TraceEvent(TraceEventType.Information, 6, "Changes detected {0}", changes.Count);
                 }
 
@@ -253,18 +187,12 @@ namespace System.IO.FileSystem
                 {
                     if (!changes.IsEmpty)
                     {
-                        if (changedHandler != null)
-                        {
-                            changedHandler();
-                        }
-                        if (ChangedDetailedHandler != null)
-                        {
-                            ChangedDetailedHandler(changes.ToArray());
-                        }
+                        changedHandler?.Invoke();
+                        ChangedDetailedHandler?.Invoke(changes.ToArray());
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Tracing.TraceEvent(TraceEventType.Error, 0, e.ToString());
             }
@@ -272,15 +200,9 @@ namespace System.IO.FileSystem
             if (Tracing.Switch.ShouldTrace(TraceEventType.Verbose))
             {
                 Tracing.TraceEvent(TraceEventType.Verbose, 3, "Number of names watched: {0}", _state.Count);
-                Tracing.TraceEvent(TraceEventType.Verbose, 4, "Number of directories watched: {0}", _directories.Count);
             }
 
             _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
-        }
-
-        private static string ToDirectoryFormat(string path)
-        {
-            return @"\\?\" + path + @"\*";
         }
     }
 }
