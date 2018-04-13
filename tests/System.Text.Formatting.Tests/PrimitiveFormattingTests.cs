@@ -365,7 +365,7 @@ namespace System.Text.Formatting.Tests
                 writer.Append(-100);
                 writer.Append('h');
                 writer.Append("i!");
-                AssertUtf8Equal(buffer.AsSpan().Slice(0, (int)stream.Position), "100-100hi!");
+                AssertUtf8Equal(buffer.AsSpan(0, (int)stream.Position), "100-100hi!");
             }
         }
 
@@ -383,7 +383,7 @@ namespace System.Text.Formatting.Tests
                 utf8Writer.Append("\u0391"); // greek alpha
                 utf8Writer.Append("\uD950\uDF21");
                 utf8Writer.Append(new Utf8Span("Hello"));
-                AssertUtf8Equal(buffer.AsSpan().Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21Hello");
+                AssertUtf8Equal(buffer.AsSpan(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21Hello");
             }
 
             stream.Position = 0;
@@ -394,7 +394,7 @@ namespace System.Text.Formatting.Tests
                 utf16Writer.Append("World!");
                 utf16Writer.Append("\u0391");
                 utf16Writer.Append("\uD950\uDF21");
-                AssertUtf16Equal(buffer.AsSpan().Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
+                AssertUtf16Equal(buffer.AsSpan(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
             }
         }
 

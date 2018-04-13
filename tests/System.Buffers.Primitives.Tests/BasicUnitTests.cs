@@ -307,7 +307,7 @@ namespace System.Buffers.Tests
 
             try
             {
-                var slice = array.AsSpan().Slice(0);
+                var slice = array.AsSpan(0);
                 Assert.True(false);
             }
             catch (Exception ex)

@@ -313,7 +313,7 @@ namespace System.IO.Pipelines.Tests
 
                 int copied = BufferReaderExtensions.Peek(reader, buffer);
                 Assert.Equal(content.Length - i, copied);
-                Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i)));
+                Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan(i)));
 
                 // make sure that nothing more got written, i.e. tail is empty
                 for (int r = copied; r < buffer.Length; r++)
@@ -345,7 +345,7 @@ namespace System.IO.Pipelines.Tests
                     int copied = BufferReaderExtensions.Peek(reader, bufferSlice);
                     Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), copied);
 
-                    Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan().Slice(i, j)));
+                    Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan(i, j)));
                 }
 
                 reader.Advance(1);

@@ -111,7 +111,7 @@ namespace System.Numerics
                 throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
             }
 
-            Buffer.Span.CopyTo(array.AsSpan().Slice(arrayIndex));
+            Buffer.Span.CopyTo(array.AsSpan(arrayIndex));
         }
 
         protected override int IndexOf(T item)
