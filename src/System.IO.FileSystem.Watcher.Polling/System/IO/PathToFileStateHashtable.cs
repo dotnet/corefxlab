@@ -8,7 +8,6 @@ namespace System.IO.FileSystem
 {
     // this is a quick an dirty hashtable optimized for the PollingWatcher
     // It allows mutating struct values (FileState) contained in the hashtable
-    // It allows both string and char* (filenames from WIN32_FIND_DATA) lookups
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
     class PathToFileStateHashtable
@@ -90,25 +89,6 @@ namespace System.IO.FileSystem
             }
         }
 
-        public unsafe int IndexOf(string directory, char* file)
-        {
-            int bucket = ComputeBucket(file);
-            while (true)
-            {
-                var valueIndex = Buckets[bucket].ValuesIndex;
-                if (valueIndex == 0)
-                {
-                    return -1; // not found
-                }
-
-                if (Equal(Buckets[bucket].Key, directory, file))
-                {
-                    if (Values[valueIndex].Path != null) return valueIndex;
-                }
-                bucket = NextCandidateBucket(bucket);
-            }
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int NextCandidateBucket(int bucket)
         {
@@ -118,26 +98,6 @@ namespace System.IO.FileSystem
                 bucket = 0;
             }
             return bucket;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(FullPath fullPath, string directory, char* file)
-        {
-
-            if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            int index;
-            for (index = 0; index < fullPath.File.Length; index++)
-            {
-                if (file[index] == 0) return false;
-                if (file[index] != fullPath.File[index]) return false;
-            }
-            if (file[index] != 0) return false;
-            return true;
-
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,38 +128,7 @@ namespace System.IO.FileSystem
             return code;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe int GetHashCode(char* nullTerminatedString)
-        {
-            int code = 0;
-            int index = 0;
-            while (true)
-            {
-                char next = *nullTerminatedString;
-                if (next == 0)
-                {
-                    break;
-                }
-                nullTerminatedString++;
-                code |= next;
-                code <<= 8;
-                if (index > 8) break;
-                index++;
-            }
-            return code;
-        }
-
         private int ComputeBucket(string file)
-        {
-            var hash = GetHashCode(file);
-            if (hash == Int32.MinValue) hash = Int32.MaxValue;
-
-            var bucket = Math.Abs(hash) % Buckets.Length;
-            return bucket;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe int ComputeBucket(char* file)
         {
             var hash = GetHashCode(file);
             if (hash == Int32.MinValue) hash = Int32.MaxValue;
