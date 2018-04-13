@@ -39,7 +39,7 @@ namespace System.IO.FileSystem
         {
             get
             {
-                return _directory.Substring(4, _directory.Length - 6);
+                return _directory;
             }
         }
 
