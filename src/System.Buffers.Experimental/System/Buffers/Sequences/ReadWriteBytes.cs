@@ -246,7 +246,7 @@ namespace System.Buffers
             {
                 int length = _endIndex - _startIndex;
                 if (buffer.Length < length) length = buffer.Length;
-                array.AsSpan().Slice(_startIndex, length).CopyTo(buffer);
+                array.AsSpan(_startIndex, length).CopyTo(buffer);
                 return length;
             }
 

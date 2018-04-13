@@ -52,7 +52,7 @@ namespace System.Buffers.Tests
         public void Advance(int bytes)
         {
             if (bytes == 0) return;
-            _commited.Add(_current.AsSpan().Slice(0, bytes).ToArray());
+            _commited.Add(_current.AsSpan(0, bytes).ToArray());
             _current = new byte[0];
         }
 

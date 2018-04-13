@@ -311,7 +311,7 @@ namespace System.Text.Utf8
             }
             if(index == 0 && length == Bytes.Length) return this;
 
-            return new Utf8String(_buffer.AsSpan().Slice(index, length));
+            return new Utf8String(_buffer.AsSpan(index, length));
         }
 
         public int IndexOf(Utf8String value) => Bytes.IndexOf(value.Bytes);
