@@ -22,7 +22,7 @@ namespace System.Buffers.Tests
 
                 var memory = owned.Memory;
                 var array = memory.ToArray();
-                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(memory.Length, array.Length);
                 Assert.Equal(10, array[10]);
 
                 Span<byte> copy = new byte[20];
@@ -40,7 +40,7 @@ namespace System.Buffers.Tests
 
                 var memory = owned.Memory;
                 var array = memory.ToArray();
-                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(memory.Length, array.Length);
                 Assert.Equal(10, array[10]);
 
                 Span<byte> copy = new byte[20];
@@ -190,15 +190,6 @@ namespace System.Buffers.Tests
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
 
-        public override int Length
-        {
-            get
-            {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-                return _array.Length;
-            }
-        }
-
         public bool IsDisposed => _disposed;
 
         protected bool IsRetained => _referenceCount > 0;
@@ -271,15 +262,6 @@ namespace System.Buffers.Tests
         public AutoDisposeBuffer(T[] array)
         {
             _array = array;
-        }
-
-        public override int Length
-        {
-            get
-            {
-                if (IsDisposed) throw new ObjectDisposedException(nameof(AutoDisposeBuffer<T>));
-                return _array.Length;
-            }
         }
 
         public override Span<T> GetSpan()

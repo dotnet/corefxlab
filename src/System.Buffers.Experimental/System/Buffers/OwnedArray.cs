@@ -25,8 +25,6 @@ namespace System.Buffers
 
         public static implicit operator OwnedArray<T>(T[] array) => new OwnedArray<T>(array);
 
-        public override int Length => _array.Length;
-
         public override Span<T> GetSpan()
         {
             if (IsDisposed) ThrowObjectDisposedException(nameof(OwnedArray<T>));
