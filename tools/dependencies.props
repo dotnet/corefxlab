@@ -1,10 +1,6 @@
 <Project>
   <PropertyGroup>
-<<<<<<< HEAD
-    <RuntimeFrameworkVersion>2.1.0-preview3-26413-01</RuntimeFrameworkVersion>
-=======
     <RuntimeFrameworkVersion>2.1.0-preview3-26413-05</RuntimeFrameworkVersion>
->>>>>>> 9f1602755243d145099b9e26bca57bd05532daa7
     <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
     <RoslynVersion>2.6.0-beta3-62316-02</RoslynVersion>
     <SystemMemoryVersion>4.5.0-preview3-26413-08</SystemMemoryVersion>
