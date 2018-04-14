@@ -53,8 +53,6 @@ namespace System.Buffers.Native
         }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
-
-        public override int Length => _length;
         
         public unsafe override Span<byte> GetSpan()
         {

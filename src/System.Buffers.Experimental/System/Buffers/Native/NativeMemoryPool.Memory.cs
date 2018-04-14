@@ -18,8 +18,6 @@ namespace System.Buffers.Native
 
             public IntPtr Pointer => _pointer;
 
-            public override int Length => _length;
-
             public override Span<byte> GetSpan()
             {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(NativeMemoryPool.Memory));

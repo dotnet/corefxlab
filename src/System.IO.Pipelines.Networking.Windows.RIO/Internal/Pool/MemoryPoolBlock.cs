@@ -41,8 +41,6 @@ namespace System.Buffers
         /// </summary>
         public RioMemoryPoolSlab Slab { get; }
 
-        public override int Length => _length;
-
         public override Span<byte> GetSpan()
         {
             if (IsDisposed) RioPipelinesThrowHelper.ThrowObjectDisposedException(nameof(RioMemoryPoolBlock));

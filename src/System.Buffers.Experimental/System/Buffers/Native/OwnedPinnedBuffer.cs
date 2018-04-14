@@ -33,8 +33,6 @@ namespace System.Buffers.Native
 
         public static implicit operator T[] (OwnedPinnedBuffer<T> owner) => owner.Array;
 
-        public override int Length => _array.Length;
-
         public override Span<T> GetSpan()
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));

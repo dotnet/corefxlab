@@ -24,16 +24,6 @@ namespace System.Buffers.Tests
 
         public int OnNoRefencesCalledCount => _noReferencesCalledCount;
 
-        public override int Length
-        {
-            get
-            {
-                if (IsDisposed)
-                    throw new ObjectDisposedException(nameof(CustomMemoryForTest<T>));
-                return _array.Length;
-            }
-        }
-
 
         public bool IsDisposed => _disposed;
 
