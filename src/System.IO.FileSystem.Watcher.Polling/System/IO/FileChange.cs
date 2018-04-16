@@ -47,7 +47,7 @@ namespace System.IO.FileSystem
         {
             get
             {
-                return Directory + '\\' + Name;
+                return _path;
             }
         }
     }
