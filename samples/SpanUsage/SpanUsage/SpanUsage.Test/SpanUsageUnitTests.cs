@@ -18,7 +18,7 @@ namespace SpanUsage.Test
 
         //No diagnostics expected to show up
         [TestMethod]
-        public void TestMethod1()
+        public void TestEmptyProgram()
         {
             var test = @"";
 
@@ -27,7 +27,7 @@ namespace SpanUsage.Test
 
         //Diagnostic and CodeFix both triggered and checked for
         [TestMethod]
-        public void TestMethod2()
+        public void TestDetectionAndFix()
         {
             var test = @"
     using System;
@@ -80,6 +80,59 @@ namespace SpanUsage.Test
             expected[6].Locations = new[] { new DiagnosticResultLocation("Test0.cs", 17, 37) };
             expected[7].Locations = new[] { new DiagnosticResultLocation("Test0.cs", 19, 47) };
 
+            VerifyCSharpDiagnostic(test, expected);
+
+            var fixtest = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        class TypeName
+        {
+            static void Main(string[] args)
+            {
+                var arraySpanSlice = args.AsSpan(1);
+                arraySpanSlice = args.AsSpan(1, 2);
+
+                var stringSpanSlice = args[0].AsSpan(1);
+                stringSpanSlice = args[0].AsSpan(1, 2);
+
+                var multipleSpanSlice = args.AsSpan(1).Slice(1, 1);
+                multipleSpanSlice = args.AsSpan(1).ToArray().AsSpan(1, 1);
+
+                var stringSpanSliceInMiddle = args[0].Substring(1, 2).AsSpan(1).ToString();
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
+        public void TestDetectionAndFixNothingChanges()
+        {
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        class TypeName
+        {
+            static void Main(string[] args)
+            {
+                var arraySpanSlice = args.AsSpan(1);
+                arraySpanSlice = args.AsSpan(1, 2);
+
+                var stringSpanSlice = args[0].AsSpan(1);
+                stringSpanSlice = args[0].AsSpan(1, 2);
+
+                var multipleSpanSlice = args.AsSpan(1).Slice(1, 1);
+                multipleSpanSlice = args.AsSpan(1).ToArray().AsSpan(1, 1);
+
+                var stringSpanSliceInMiddle = args[0].Substring(1, 2).AsSpan(1).ToString();
+            }
+        }
+    }";
+            var expected = new DiagnosticResult[0] {};
             VerifyCSharpDiagnostic(test, expected);
 
             var fixtest = @"
