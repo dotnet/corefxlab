@@ -39,6 +39,34 @@ namespace System.Text
         /// value, returns <see cref="SequenceValidity.InvalidSequence"/>, <see cref="UnicodeScalar.ReplacementChar"/>,
         /// and the number of UTF-16 code units that the caller should skip before attempting to read the next scalar.
         /// </returns>
-        public static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekFirstScalar(ReadOnlySpan<char> utf16Data) => throw null;
+        public static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekFirstScalar(ReadOnlySpan<char> utf16Data)
+        {
+            if (utf16Data.Length == 0)
+            {
+                return (SequenceValidity.Empty, default, default);
+            }
+
+            uint thisCodePoint = utf16Data[0];
+            if (!UnicodeHelpers.IsSurrogateCodePoint(thisCodePoint))
+            {
+                return (SequenceValidity.ValidSequence, UnicodeScalar.DangerousCreateWithoutValidation(thisCodePoint), charsConsumed: 1);
+            }
+
+            // At this point, we know the value is a surrogate, but we haven't determined if it's a high or a low surrogate.
+
+            uint nextCodePoint = (utf16Data.Length >= 2) ? (uint)utf16Data[1] : 0;
+            if (!UnicodeHelpers.IsHighSurrogateCodePoint(thisCodePoint) || !UnicodeHelpers.IsLowSurrogateCodePoint(nextCodePoint))
+            {
+                // Not a (high surrogate, low surrogate) pair.
+                return (SequenceValidity.InvalidSequence, UnicodeScalar.ReplacementChar, charsConsumed: 1);
+            }
+
+            // At this point, we have a valid surrogate pair.
+
+            return (
+                SequenceValidity.ValidSequence,
+                UnicodeScalar.DangerousCreateWithoutValidation(UnicodeHelpers.GetScalarFromUtf16SurrogateCodePoints(thisCodePoint, nextCodePoint)),
+                charsConsumed: 2);
+        }
     }
 }

@@ -19,7 +19,20 @@ namespace System.Text
         /// </summary>
         public static int GetPlane(uint codePoint)
         {
+            Debug.Assert(IsValidCodePoint(codePoint));
+
             return (int)(codePoint >> 16);
+        }
+
+        /// <summary>
+        /// Given a UTF-16 surrogate pair, returns the corresponding Unicode scalar.
+        /// </summary>
+        public static uint GetScalarFromUtf16SurrogateCodePoints(uint highSurrogate, uint lowSurrogate)
+        {
+            Debug.Assert(IsHighSurrogateCodePoint(highSurrogate));
+            Debug.Assert(IsLowSurrogateCodePoint(lowSurrogate));
+
+            return (highSurrogate << 10) + lowSurrogate + (1U << 16) - (0xD800U << 10) - 0xDC00U;
         }
 
         /// <summary>
@@ -133,11 +146,25 @@ namespace System.Text
         public static bool IsBmpCodePoint(uint value) => (value < 0x10000U);
 
         /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 high surrogate code point,
+        /// i.e., is in [ U+D800..U+DBFF ], inclusive.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsHighSurrogateCodePoint(uint value) => IsInRangeInclusive(value, 0xD800U, 0xDBFFU);
+
+        /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is between
         /// <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInRangeInclusive(uint value, uint lowerBound, uint upperBound) => ((value - lowerBound) <= (upperBound - lowerBound));
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 low surrogate code point,
+        /// i.e., is in [ U+DC00..U+DFFF ], inclusive.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsLowSurrogateCodePoint(uint value) => IsInRangeInclusive(value, 0xDC00U, 0xDBFFU);
 
         /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 surrogate code point,
