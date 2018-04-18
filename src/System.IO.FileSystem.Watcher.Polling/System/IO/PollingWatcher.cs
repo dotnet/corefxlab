@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Enumeration;
 using System.IO.FileSystem.Watcher.Polling.Properties;
 using System.Threading;
 
@@ -59,7 +60,7 @@ namespace System.IO.FileSystem
         /// <summary>
         /// Extensions to watch
         /// </summary>
-        /// <param name="extension">for examople "txt", "doc", etc., i.e don't use wildcards</param>
+        /// <param name="extension">for example "txt", "doc", etc., i.e don't use wildcards</param>
         /// <remarks>
         /// By default all extensions are watched. Once this method is called, only extensions in added are watched.
         /// </remarks>
@@ -73,7 +74,7 @@ namespace System.IO.FileSystem
             {
                 _extensionsToWatch = new List<string>();
             }
-            _extensionsToWatch.Add(extension);
+            _extensionsToWatch.Add($".{extension}");
         }
 
         public void Start()
@@ -90,11 +91,16 @@ namespace System.IO.FileSystem
 
             if (Directory.Exists(_directory))
             {
-                var files = Directory.EnumerateFiles(_directory, "*", _includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-                foreach (var fileName in files)
+                var files = new FileSystemEnumerable<FileInfo>(
+                    _directory,
+                    (ref FileSystemEntry entry) => (FileInfo)entry.ToFileSystemInfo(),
+                    new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = _includeSubdirectories })
                 {
-                    if (!IsWatched(fileName)) continue;
-                    UpdateState(_directory, ref changes, fileName);
+                    ShouldIncludePredicate = (ref FileSystemEntry entry) => IsWatched(ref entry)
+                };
+                foreach (var file in files)
+                {
+                    UpdateState(_directory, ref changes, file);
                 }
             }
 
@@ -110,26 +116,24 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        private bool IsWatched(string filename)
+        private bool IsWatched(ref FileSystemEntry entry)
         {
+            if (entry.IsDirectory) return false;
             if (_extensionsToWatch == null) return true;
             foreach (var extension in _extensionsToWatch)
             {
-                if (filename.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-                {
+                if (Path.GetExtension(entry.FileName).SequenceEqual(extension))
                     return true;
-                }
             }
             return false;
         }
 
-        private void UpdateState(string directory, ref FileChangeList changes, string filename)
+        private void UpdateState(string directory, ref FileChangeList changes, FileInfo file)
         {
-            var file = new FileInfo(filename);
-            int index = _state.IndexOf(directory, filename);
+            int index = _state.IndexOf(directory, file.FullName);
             if (index == -1) // file added
             {
-                string path = filename;
+                string path = file.FullName;
 
                 changes.AddAdded(directory, path);
 
