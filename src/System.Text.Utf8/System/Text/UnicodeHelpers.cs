@@ -196,5 +196,23 @@ namespace System.Text
 
             return IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
         }
+
+        /// <summary>
+        /// ROL32. The JIT treats this as an intrinsic.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ROL32(uint value, int shift)
+        {
+            return (value << shift) | (value >> (32 - shift));
+        }
+
+        /// <summary>
+        /// ROR32. The JIT treats this as an intrinsic.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ROR32(uint value, int shift)
+        {
+            return (value >> shift) | (value << (32 - shift));
+        }
     }
 }

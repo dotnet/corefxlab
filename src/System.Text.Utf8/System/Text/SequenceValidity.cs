@@ -25,6 +25,8 @@ namespace System.Text
         /// <summary>
         /// The input buffer contained an invalid or incomplete sequence.
         /// </summary>
-        InvalidSequence = 2
+        InvalidSequence = 2,
+
+        Incomplete = 3,
     }
 }
