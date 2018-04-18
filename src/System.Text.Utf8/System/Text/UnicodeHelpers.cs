@@ -174,6 +174,16 @@ namespace System.Text
         public static bool IsSurrogateCodePoint(uint value) => IsInRangeInclusive(value, 0xD800U, 0xDFFFU);
 
         /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-8 continuation byte
+        /// point, i.e., has binary representation 10xxxxxx, where x is any bit.
+        /// </summary>
+        public static bool IsUtf8ContinuationByte(uint value)
+        {
+            Debug.Assert(value <= byte.MaxValue);
+            return IsInRangeInclusive(value, 0x80U, 0xBFU);
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode code
         /// point, i.e., is in [ U+0000..U+10FFFF ], inclusive.
         /// </summary>
@@ -195,24 +205,6 @@ namespace System.Text
             // which allows performing a single fast range check.
 
             return IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
-        }
-
-        /// <summary>
-        /// ROL32. The JIT treats this as an intrinsic.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ROL32(uint value, int shift)
-        {
-            return (value << shift) | (value >> (32 - shift));
-        }
-
-        /// <summary>
-        /// ROR32. The JIT treats this as an intrinsic.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ROR32(uint value, int shift)
-        {
-            return (value >> shift) | (value << (32 - shift));
         }
     }
 }
