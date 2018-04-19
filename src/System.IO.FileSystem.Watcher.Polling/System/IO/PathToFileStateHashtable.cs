@@ -70,7 +70,7 @@ namespace System.IO.FileSystem
             _count--;
         }
 
-        public int IndexOf(string directory, string file)
+        public int IndexOf(string directory, ReadOnlySpan<char> file)
         {
             int bucket = ComputeBucket(file);
             while (true)
@@ -101,21 +101,21 @@ namespace System.IO.FileSystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(FullPath fullPath, string directory, string file)
+        private unsafe bool Equal(FullPath fullPath, string directory, ReadOnlySpan<char> file)
         {
             if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (!String.Equals(fullPath.File, file, StringComparison.Ordinal))
+            if (!MemoryExtensions.Equals(fullPath.File, file, StringComparison.Ordinal))
             {
                 return false;
             }
             return true;
         }
 
-        private unsafe int GetHashCode(string path)
+        private unsafe int GetHashCode(ReadOnlySpan<char> path)
         {
             int code = 0;
             for (int index = 0; index < path.Length; index++)
@@ -128,7 +128,7 @@ namespace System.IO.FileSystem
             return code;
         }
 
-        private int ComputeBucket(string file)
+        private int ComputeBucket(ReadOnlySpan<char> file)
         {
             var hash = GetHashCode(file);
             if (hash == Int32.MinValue) hash = Int32.MaxValue;

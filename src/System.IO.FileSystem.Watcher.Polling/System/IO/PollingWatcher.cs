@@ -87,22 +87,13 @@ namespace System.IO.FileSystem
         private FileChangeList ComputeChangesAndUpdateState()
         {
             _version++;
-            var changes = new FileChangeList();
 
-            if (Directory.Exists(_directory))
+            var enumerator = new FileSystemChangeEnumerator(this, _directory);
+            while (enumerator.MoveNext())
             {
-                var files = new FileSystemEnumerable<FileInfo>(
-                    _directory,
-                    (ref FileSystemEntry entry) => (FileInfo)entry.ToFileSystemInfo(),
-                    new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = _includeSubdirectories })
-                {
-                    ShouldIncludePredicate = (ref FileSystemEntry entry) => IsWatched(ref entry)
-                };
-                foreach (var file in files)
-                {
-                    UpdateState(_directory, ref changes, file);
-                }
+                // Ignore `.Current`
             }
+            var changes = enumerator.Changes;
 
             foreach (var value in _state)
             {
@@ -116,7 +107,7 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        private bool IsWatched(ref FileSystemEntry entry)
+        internal bool IsWatched(ref FileSystemEntry entry)
         {
             if (entry.IsDirectory) return false;
             if (_extensionsToWatch == null) return true;
@@ -128,14 +119,14 @@ namespace System.IO.FileSystem
             return false;
         }
 
-        private void UpdateState(string directory, ref FileChangeList changes, FileInfo file)
+        internal void UpdateState(string directory, ref FileChangeList changes, ref FileSystemEntry file)
         {
-            int index = _state.IndexOf(directory, file.FullName);
+            int index = _state.IndexOf(directory, file.FileName);
             if (index == -1) // file added
             {
-                string path = file.FullName;
+                string path = file.FileName.ToString();
 
-                changes.AddAdded(directory, path);
+                changes.AddAdded(directory, path.ToString());
 
                 var newFileState = new FileState(directory, path);
                 newFileState.LastWrite = file.LastWriteTimeUtc;
