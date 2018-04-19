@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Enumeration;
 using System.IO.FileSystem.Watcher.Polling.Properties;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 //TODO: add support for UNC paths
@@ -74,7 +75,7 @@ namespace System.IO.FileSystem
             {
                 _extensionsToWatch = new List<string>();
             }
-            _extensionsToWatch.Add($".{extension}");
+            _extensionsToWatch.Add($"*{extension}");
         }
 
         public void Start()
@@ -113,7 +114,8 @@ namespace System.IO.FileSystem
             if (_extensionsToWatch == null) return true;
             foreach (var extension in _extensionsToWatch)
             {
-                if (Path.GetExtension(entry.FileName).SequenceEqual(extension))
+                var ignoreCase = !RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+                if (FileSystemName.MatchesSimpleExpression(extension, entry.FileName, ignoreCase: ignoreCase))
                     return true;
             }
             return false;
