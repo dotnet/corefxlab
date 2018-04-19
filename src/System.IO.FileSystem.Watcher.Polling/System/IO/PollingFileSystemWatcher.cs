@@ -14,7 +14,7 @@ using System.Threading;
 namespace System.IO.FileSystem
 {
     /// <summary>
-    /// PollingWatcher can be used to monitor changes to a file system directory
+    /// PollingFileSystemWatcher can be used to monitor changes to a file system directory
     /// </summary>
     /// <remarks>
     /// This type is similar to FileSystemWatcher, but unlike FileSystemWatcher it is fully reliable,
@@ -22,11 +22,11 @@ namespace System.IO.FileSystem
     /// Instead of relying on Win32 file notification APIs, it periodically scans the watched directory to discover changes.
     /// This means that sooner or later it will discover every change.
     /// FileSystemWatcher's Win32 APIs can drop some events in rare circumstances, which is often an acceptable compromise.
-    /// In scenarios where events cannot be missed, PollingWatcher should be used.
+    /// In scenarios where events cannot be missed, PollingFileSystemWatcher should be used.
     /// Note: When a watched file is renamed, one or two notifications will be made.
-    /// Note: When no changes are detected, PollingWatcher will not allocate memory on the GC heap.
+    /// Note: When no changes are detected, PollingFileSystemWatcher will not allocate memory on the GC heap.
     /// </remarks>
-    public class PollingWatcher : IDisposable
+    public class PollingFileSystemWatcher : IDisposable
     {
         public TraceSource Tracing { get; private set; }
         Stopwatch _stopwatch = new Stopwatch();
@@ -46,12 +46,12 @@ namespace System.IO.FileSystem
         /// <param name="directory">The directory to watch. It does not support UNC paths (yet).</param>
         /// <param name="includeSubdirectories">A bool controlling whether or not subdirectories will be watched too</param>
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
-        public PollingWatcher(string directory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
+        public PollingFileSystemWatcher(string directory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
             if (!Directory.Exists(directory))
                 throw new ArgumentException("Directory not found.", nameof(directory));
 
-            Tracing = new TraceSource("PollingWatcher");
+            Tracing = new TraceSource("PollingFileSystemWatcher");
             _state = new PathToFileStateHashtable(Tracing);
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
             _includeSubdirectories = includeSubdirectories;

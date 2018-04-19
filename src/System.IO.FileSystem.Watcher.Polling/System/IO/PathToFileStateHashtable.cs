@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.FileSystem
 {
-    // this is a quick an dirty hashtable optimized for the PollingWatcher
+    // this is a quick an dirty hashtable optimized for the PollingFileSystemWatcher
     // It allows mutating struct values (FileState) contained in the hashtable
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized

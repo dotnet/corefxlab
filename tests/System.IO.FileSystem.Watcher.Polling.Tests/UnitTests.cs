@@ -7,7 +7,7 @@ using System.IO.FileSystem;
 using System.Threading;
 using Xunit;
 
-public partial class PollingWatcherUnitTests
+public partial class PollingFileSystemWatcherUnitTests
 {
     [Fact]
     public static void FileSystemWatcher_Created_File()
@@ -15,7 +15,7 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
         watcher.ChangedDetailed += (changes) =>
         {
             Assert.Equal(1, changes.Length);
@@ -40,7 +40,7 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {
@@ -68,7 +68,7 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {
