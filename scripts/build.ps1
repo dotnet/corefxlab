@@ -18,7 +18,7 @@ if ($Version -eq "<default>") {
 }
 $SharedVersion = (Get-Content "$PSScriptRoot\..\SharedRuntimeVersion.txt" -Raw).Trim()
 
-if (!(Test-Path "dotnetcli")) {
+if (!(Test-Path "$PSScriptRoot\..\dotnetcli")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
     Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
