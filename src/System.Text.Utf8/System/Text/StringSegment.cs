@@ -482,6 +482,61 @@ namespace System.Text
             return retVal;
         }
 
+        public static bool TryReduce(ref StringSegment segment)
+        {
+            string value = segment._value;
+
+            // If the segment isn't backed by anything useful, there's no
+            // opportunity to save memory by reducing the string.
+
+            if (String.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            // If this represents an empty segment but there's an unnecessary string
+            // backing this segment, release our reference to it now.
+
+            if (segment._length == 0)
+            {
+                segment = default;
+                return true;
+            }
+
+            // If the backing string is interned, we may have opportunity for savings.
+
+            string internedString = String.IsInterned(value);
+            if (!ReferenceEquals(internedString, null))
+            {
+                if (ReferenceEquals(internedString, value))
+                {
+                    // Backing string is interned; nothing to do.
+                    return false;
+                }
+                else
+                {
+                    // Backing string isn't interned but there is an interned equivalent, so swap it now.
+                    Unsafe.AsRef(in segment._value) = internedString;
+                    return true;
+                }
+            }
+
+            // If we can get rid of half (or more) of the backing string, do so. We only perform
+            // this optimization if the backing string length is above some threshold, otherwise
+            // the string overhead isn't really worth it.
+
+            const int SmallStringCutoffLength = 12;
+            if ((uint)segment._startIndex > (uint)(segment._length + SmallStringCutoffLength))
+            {
+                segment = segment.ToString();
+                return true;
+            }
+
+            // Nothing to do.
+
+            return false;
+        }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         IEnumerator<char> IEnumerable<char>.GetEnumerator() => GetEnumerator();
