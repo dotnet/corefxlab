@@ -75,7 +75,7 @@ else
     ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
     ret=$?
 	if [ $ret -ne 0 ]; then
-      echo "Failed to install latest dotnet.exe, exit code $ret, aborting build.."
+      echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
       exit -1
     fi
   fi
@@ -84,7 +84,7 @@ else
   found=0
   for i in "${installedRuntimeVersions[@]}"
   do
-      if [ "$i" == "$yourValue" ] ; then
+      if [ "$i" == "$SharedVersion" ] ; then
           found=1
       fi
   done
