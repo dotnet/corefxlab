@@ -12,8 +12,27 @@ Write-Host "Version=$Version."
 Write-Host "BuildVersion=$BuildVersion."
 Write-Host "SkipTests=$SkipTests."
 
-if (!(Test-Path "dotnetcli\dotnet.exe")) {
+$dotnetExePath="$PSScriptRoot\..\dotnetcli\dotnet.exe"
+
+if (!(Test-Path "dotnetcli")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
+    if ($Version -eq "<default>") {
+        $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
+    }
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
+    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+        Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
+        exit -1
+    }
+
+    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
+    $SharedVersion = (Get-Content "$PSScriptRoot\..\SharedRuntimeVersion.txt" -Raw).Trim()
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnetcli -SharedRuntime"
+    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+        Write-Error "Failed to install latest 2.1.0 shared runtime (version $SharedVersion), exit code [$lastexitcode], aborting build."
+        exit -1
+    }
+
     Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 1.0.0 -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install framework version 1.0.0, exit code [$lastexitcode], aborting build."
@@ -25,32 +44,30 @@ if (!(Test-Path "dotnetcli\dotnet.exe")) {
         Write-Error "Failed to install framework version 2.0.0, exit code [$lastexitcode], aborting build."
         exit -1
     }
-}
-
-$dotnetExePath=".\dotnetcli\dotnet.exe"
-
-$cliVersion = Invoke-Expression "$dotnetExePath --version"
-if ($Version -eq "<default>") {
-    $Version = (Get-Content ".\DotnetCLIVersion.txt" -Raw).Trim()
-}
-if ($cliVersion -ne $Version) {
-    Write-Host "Newest version of dotnet cli not installed, downloading and installing."
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $cliVersion -InstallDir $PSScriptRoot\..\dotnetcli"
-    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
-        Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
-        exit -1
+} else {
+    $cliVersion = Invoke-Expression "$dotnetExePath --version"
+    if ($Version -eq "<default>") {
+        $Version = (Get-Content ".\DotnetCLIVersion.txt" -Raw).Trim()
     }
-}
+    if ($cliVersion -ne $Version) {
+        Write-Host "Newest version of dotnet cli not installed, downloading and installing."
+        Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $cliVersion -InstallDir $PSScriptRoot\..\dotnetcli"
+        if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+            Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
+            exit -1
+        }
+    }
 
-# Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-$installedRuntimeVersions = Invoke-Expression "$dotnetExePath --list-runtimes" | %{ $_.split(" ")[1] } | Select-Object
-$SharedVersion = (Get-Content ".\SharedRuntimeVersion.txt" -Raw).Trim()
-if (!($installedRuntimeVersions.Contains($SharedVersion))) {
-    Write-Host "Newest version of dotnet runtime not installed, downloading and installing."
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnetcli -SharedRuntime"
-    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
-        Write-Error "Failed to install latest 2.1.0 shared runtime (version $SharedVersion), exit code [$lastexitcode], aborting build."
-        exit -1
+    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
+    $installedRuntimeVersions = Invoke-Expression "$dotnetExePath --list-runtimes" | %{ $_.split(" ")[1] } | Select-Object
+    $SharedVersion = (Get-Content ".\SharedRuntimeVersion.txt" -Raw).Trim()
+    if (!($installedRuntimeVersions.Contains($SharedVersion))) {
+        Write-Host "Newest version of dotnet runtime not installed, downloading and installing."
+        Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnetcli -SharedRuntime"
+        if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+            Write-Error "Failed to install latest shared runtime (version $SharedVersion), exit code [$lastexitcode], aborting build."
+            exit -1
+        }
     }
 }
 
