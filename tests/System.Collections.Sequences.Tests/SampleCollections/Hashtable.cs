@@ -93,12 +93,12 @@ namespace System.Collections.Sequences
         {
             item = default;
 
-            if (_count == 0 | position == default) {
+            if (_count == 0 | position.GetObject() == null) {
                 position = default;
                 return false;
             }
 
-            if (position == default) {
+            if (position.GetObject() == null) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {
                     position = default;

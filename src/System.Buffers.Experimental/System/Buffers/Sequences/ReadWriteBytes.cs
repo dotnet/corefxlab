@@ -273,7 +273,7 @@ namespace System.Buffers
 
         public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (position.GetObject() == null)
             {
                 item = default;
                 return false;
