@@ -420,7 +420,7 @@ namespace System.CommandLine.Tests
                 });
             });
 
-            Assert.Equal("value 'abc' isn't valid for -o: String was not recognized as a valid Boolean.", ex.Message);
+            Assert.Equal("value 'abc' isn't valid for -o: String 'abc' was not recognized as a valid Boolean.", ex.Message);
         }
 
         [Fact]
@@ -887,7 +887,7 @@ namespace System.CommandLine.Tests
                 });
             });
 
-            Assert.Equal("value 'abc' isn't valid for <p>: String was not recognized as a valid Boolean.", ex.Message);
+            Assert.Equal("value 'abc' isn't valid for <p>: String 'abc' was not recognized as a valid Boolean.", ex.Message);
         }
 
         [Fact]
