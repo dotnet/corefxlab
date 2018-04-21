@@ -117,7 +117,7 @@ fi
 
 echo "Building solution $myFile..."
 
-./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion"
+./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion" --no-restore
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "Failed to build solution $myFile"

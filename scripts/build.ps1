@@ -85,7 +85,7 @@ if ($Restore -eq "true") {
 }
 
 Write-Host "Building solution $file..."
-Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
+Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion --no-restore"
 
 if ($lastexitcode -ne 0) {
     Write-Error "Failed to build solution $file"
