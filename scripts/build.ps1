@@ -50,7 +50,7 @@ if (!(Test-Path "$PSScriptRoot\..\dotnetcli")) {
     $cliVersion = Invoke-Expression "$dotnetExePath --version"
     if ($cliVersion -ne $Version) {
         Write-Host "Newest version of dotnet cli not installed, downloading and installing."
-        Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $cliVersion -InstallDir $PSScriptRoot\..\dotnetcli"
+        Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
         if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
             Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
             exit -1
