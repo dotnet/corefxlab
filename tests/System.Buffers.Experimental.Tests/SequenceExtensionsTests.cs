@@ -81,7 +81,7 @@ namespace System.Buffers.Tests
                 var listPosition = MemoryListExtensions.PositionOf(first, value).GetValueOrDefault();
                 var (node, index) = listPosition.Get<ReadOnlySequenceSegment<byte>>();
 
-                if (listPosition != default)
+                if (listPosition.GetObject() != null)
                 {
                     Assert.Equal(value, node.Memory.Span[index]);
                 }
@@ -108,7 +108,7 @@ namespace System.Buffers.Tests
                     Assert.False(robSequencePosition.HasValue);
                 }
 
-                if (listPosition != default)
+                if (listPosition.GetObject() != null)
                 {
                     robSlice = bytes.Slice(listPosition);
                     Assert.Equal(value, robSlice.First.Span[0]);
