@@ -55,7 +55,7 @@ namespace System.Buffers
 
         public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position.GetObject() == null)
+            if (position.Equals(default))
             {
                 item = default;
                 return false;
