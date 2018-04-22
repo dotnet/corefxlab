@@ -10,12 +10,8 @@ namespace System.Text.Json
 
         public JsonToken CurrentToken => throw null;
 
+        public JsonTokenType CurrentTokenType => throw null;
+
         public bool MoveNext() => throw null;
-
-        public bool TryGetComment(out Utf8StringSegment value) => throw null;
-
-        public bool TryGetNumber(out Utf8JsonString value) => throw null;
-
-        public bool TryGetString(out Utf8JsonString value) => throw null;
     }
 }

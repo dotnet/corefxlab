@@ -12,7 +12,7 @@ namespace System.Text.Json
         /// <remarks>
         /// The <see cref="Utf8JsonReader"/> class by itself simply reads tokens from an input
         /// but does not perform validation across tokens. For example, the token reader might
-        /// return <see cref="JsonToken.ObjectStart"/> immeditately followed by <see cref="JsonToken.NullLiteral"/>
+        /// return <see cref="JsonTokenType.ObjectStart"/> immeditately followed by <see cref="JsonTokenType.NullLiteral"/>
         /// if the input reads "{ null ...". It is up to the caller to ensure that the tokens
         /// are valid with respect to each other.
         /// </remarks>
@@ -20,13 +20,13 @@ namespace System.Text.Json
 
         /// <summary>
         /// Similar to <see cref="Rfc8259"/>, but also allows comments in the input.
-        /// Comments are exposed to the caller as <see cref="JsonToken.Comment"/> tokens.
+        /// Comments are exposed to the caller as <see cref="JsonTokenType.Comment"/> tokens.
         /// </summary>
         Rfc8259ExposeComments,
 
         /// <summary>
         /// Similar to <see cref="Rfc8259ExposeComments"/>, but silently skips comments
-        /// in the input without exposing <see cref="JsonToken.Comment"/> tokens to the caller.
+        /// in the input without exposing <see cref="JsonTokenType.Comment"/> tokens to the caller.
         /// </summary>
         Rfc8259SkipComments,
     }
