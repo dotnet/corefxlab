@@ -108,7 +108,7 @@ namespace System.IO.FileSystem
                 return false;
             }
 
-            if (!MemoryExtensions.Equals(fullPath.File, file, StringComparison.Ordinal))
+            if (!file.Equals((ReadOnlySpan<char>)fullPath.File, StringComparison.Ordinal))
             {
                 return false;
             }

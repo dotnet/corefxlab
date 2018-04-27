@@ -112,9 +112,9 @@ namespace System.IO.FileSystem
         {
             if (entry.IsDirectory) return false;
             if (_extensionsToWatch == null) return true;
-            foreach (var extension in _extensionsToWatch)
+            foreach (string extension in _extensionsToWatch)
             {
-                var ignoreCase = !RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+                bool ignoreCase = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
                 if (FileSystemName.MatchesSimpleExpression(extension, entry.FileName, ignoreCase: ignoreCase))
                     return true;
             }
