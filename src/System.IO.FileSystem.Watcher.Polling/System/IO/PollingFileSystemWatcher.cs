@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Enumeration;
-using System.IO.FileSystem.Watcher.Polling.Properties;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -29,14 +26,23 @@ namespace System.IO.FileSystem
     public class PollingFileSystemWatcher : IDisposable
     {
         Timer _timer;
-        int _pollingIntervalInMilliseconds;
-        bool _includeSubdirectories;
-
-        List<string> _extensionsToWatch;
-        string _directory;
         PathToFileStateHashtable _state; // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
-        static string[] SpecialFiles = new[] { "", ".", ".." };
+
+        /// <summary>
+        /// Creates an instance of a watcher
+        /// </summary>
+        /// <param name="directory">The directory to watch. It does not support UNC paths (yet).</param>
+        /// <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
+        public PollingFileSystemWatcher(string directory, string filter = "*.*")
+        {
+            if (!IO.Directory.Exists(directory))
+                throw new ArgumentException("Directory not found.", nameof(directory));
+
+            _state = new PathToFileStateHashtable();
+            Directory = directory;
+            Filter = filter;
+        }
 
         /// <summary>
         /// Creates an instance of a watcher
@@ -46,39 +52,24 @@ namespace System.IO.FileSystem
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
         public PollingFileSystemWatcher(string directory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
-            if (!Directory.Exists(directory))
+            if (!IO.Directory.Exists(directory))
                 throw new ArgumentException("Directory not found.", nameof(directory));
 
             _state = new PathToFileStateHashtable();
-            _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
-            _includeSubdirectories = includeSubdirectories;
-            _directory = directory;
-        }
+            PollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
+            IncludeSubdirectories = includeSubdirectories;
+            Directory = directory;
+            }
 
-        /// <summary>
-        /// Extensions to watch
-        /// </summary>
-        /// <param name="extension">for example "txt", "doc", etc., i.e don't use wildcards</param>
-        /// <remarks>
-        /// By default all extensions are watched. Once this method is called, only extensions in added are watched.
-        /// </remarks>
-        public void AddExtension(string extension)
-        {
-            if (_timer != null)
-            {
-                throw new InvalidOperationException(Strings.InvalidOperation_Extension);
-            }
-            if (_extensionsToWatch == null)
-            {
-                _extensionsToWatch = new List<string>();
-            }
-            _extensionsToWatch.Add($"*{extension}");
-        }
+        public string Filter { get; set; } = "*.*";
+        public bool IncludeSubdirectories { get; set; } = false;
+        public string Directory { get; set; } = "";
+        public int PollingIntervalInMilliseconds { get; set; } = 1000;
 
         public void Start()
         {
             ComputeChangesAndUpdateState(); // captures the initial state
-            _timer = new Timer(new TimerCallback(TimerHandler), null, _pollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer = new Timer(new TimerCallback(TimerHandler), null, PollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
@@ -86,7 +77,7 @@ namespace System.IO.FileSystem
         {
             _version++;
 
-            var enumerator = new FileSystemChangeEnumerator(this, _directory);
+            var enumerator = new FileSystemChangeEnumerator(this, Directory);
             while (enumerator.MoveNext())
             {
                 // Ignore `.Current`
@@ -108,13 +99,12 @@ namespace System.IO.FileSystem
         internal bool IsWatched(ref FileSystemEntry entry)
         {
             if (entry.IsDirectory) return false;
-            if (_extensionsToWatch == null) return true;
-            foreach (string extension in _extensionsToWatch)
-            {
-                bool ignoreCase = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-                if (FileSystemName.MatchesSimpleExpression(extension, entry.FileName, ignoreCase: ignoreCase))
+            if (Filter == null) return true;
+
+            bool ignoreCase = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+            if (FileSystemName.MatchesSimpleExpression(Filter, entry.FileName, ignoreCase: ignoreCase))
                     return true;
-            }
+
             return false;
         }
 
@@ -177,7 +167,7 @@ namespace System.IO.FileSystem
                 }
             }
 
-            _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
         }
     }
 }
