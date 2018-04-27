@@ -139,9 +139,9 @@ namespace System.IO.FileSystem
         /// <summary>
         /// This callback is called when any change (Created, Deleted, Changed) is detected in any watched file.
         /// </summary>
-        public Action Changed;
+        public event EventHandler Changed;
 
-        public Action<FileChange[]> ChangedDetailed;
+        public event PollingFileSystemEventHandler ChangedDetailed;
 
         /// <summary>
         /// Disposes the timer used for polling.
@@ -155,16 +155,10 @@ namespace System.IO.FileSystem
         {
             var changes = ComputeChangesAndUpdateState();
 
-            var changedHandler = Changed;
-            var ChangedDetailedHandler = ChangedDetailed;
-
-            if (changedHandler != null || ChangedDetailedHandler != null)
+            if (!changes.IsEmpty)
             {
-                if (!changes.IsEmpty)
-                {
-                    changedHandler?.Invoke();
-                    ChangedDetailedHandler?.Invoke(changes.ToArray());
-                }
+                Changed?.Invoke(this, EventArgs.Empty);
+                ChangedDetailed?.Invoke(this, new PollingFileSystemEventArgs(changes.ToArray()));
             }
 
             _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
