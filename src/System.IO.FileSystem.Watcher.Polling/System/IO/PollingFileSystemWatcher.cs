@@ -28,8 +28,6 @@ namespace System.IO.FileSystem
     /// </remarks>
     public class PollingFileSystemWatcher : IDisposable
     {
-        public TraceSource Tracing { get; private set; }
-        Stopwatch _stopwatch = new Stopwatch();
         Timer _timer;
         int _pollingIntervalInMilliseconds;
         bool _includeSubdirectories;
@@ -51,8 +49,7 @@ namespace System.IO.FileSystem
             if (!Directory.Exists(directory))
                 throw new ArgumentException("Directory not found.", nameof(directory));
 
-            Tracing = new TraceSource("PollingFileSystemWatcher");
-            _state = new PathToFileStateHashtable(Tracing);
+            _state = new PathToFileStateHashtable();
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
             _includeSubdirectories = includeSubdirectories;
             _directory = directory;
@@ -166,37 +163,18 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
-            try
+            var changes = ComputeChangesAndUpdateState();
+
+            var changedHandler = Changed;
+            var ChangedDetailedHandler = ChangedDetailed;
+
+            if (changedHandler != null || ChangedDetailedHandler != null)
             {
-                _stopwatch.Restart();
-                var changes = ComputeChangesAndUpdateState();
-                var lastCycleTicks = _stopwatch.ElapsedTicks;
-                if (Tracing.Switch.ShouldTrace(TraceEventType.Information))
+                if (!changes.IsEmpty)
                 {
-                    Tracing.TraceEvent(TraceEventType.Information, 1, "Last polling cycle {0}ms", lastCycleTicks * 1000 / Stopwatch.Frequency);
-                    Tracing.TraceEvent(TraceEventType.Information, 6, "Changes detected {0}", changes.Count);
+                    changedHandler?.Invoke();
+                    ChangedDetailedHandler?.Invoke(changes.ToArray());
                 }
-
-                var changedHandler = Changed;
-                var ChangedDetailedHandler = ChangedDetailed;
-
-                if (changedHandler != null || ChangedDetailedHandler != null)
-                {
-                    if (!changes.IsEmpty)
-                    {
-                        changedHandler?.Invoke();
-                        ChangedDetailedHandler?.Invoke(changes.ToArray());
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Tracing.TraceEvent(TraceEventType.Error, 0, e.ToString());
-            }
-
-            if (Tracing.Switch.ShouldTrace(TraceEventType.Verbose))
-            {
-                Tracing.TraceEvent(TraceEventType.Verbose, 3, "Number of names watched: {0}", _state.Count);
             }
 
             _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
