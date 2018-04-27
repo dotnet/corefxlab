@@ -77,7 +77,7 @@ namespace System.IO.FileSystem
         {
             _version++;
 
-            var enumerator = new FileSystemChangeEnumerator(this, Directory);
+            var enumerator = new FileSystemChangeEnumerator(this, Directory, new EnumerationOptions { RecurseSubdirectories = IncludeSubdirectories });
             while (enumerator.MoveNext())
             {
                 // Ignore `.Current`
