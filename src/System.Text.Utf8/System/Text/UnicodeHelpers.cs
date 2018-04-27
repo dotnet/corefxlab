@@ -146,6 +146,18 @@ namespace System.Text
         public static bool IsBmpCodePoint(uint value) => (value < 0x10000U);
 
         /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a code point denoted as a control code.
+        /// </summary>
+        /// <remarks>
+        /// See http://www.unicode.org/glossary/#control_codes and the Unicode Standard, Sec. 23.1, for more information.
+        /// </remarks>
+        public static bool IsControlCode(uint value)
+        {
+            return IsInRangeInclusive(value, 0x00U, 0x1FU) // C0 controls
+                || IsInRangeInclusive(value, 0x7FU, 0x9FU); // DEL and C1 controls
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 high surrogate code point,
         /// i.e., is in [ U+D800..U+DBFF ], inclusive.
         /// </summary>
@@ -165,6 +177,49 @@ namespace System.Text
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsLowSurrogateCodePoint(uint value) => IsInRangeInclusive(value, 0xDC00U, 0xDBFFU);
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a code point denoted as a noncharacter.
+        /// </summary>
+        /// <remarks>
+        /// See http://www.unicode.org/faq/private_use.html and the Unicode Standard, Sec. 23.7, for more information.
+        /// </remarks>
+        public static bool IsNoncharacter(uint value)
+        {
+            // Noncharacter range within Arabic Presentation Forms-A block
+            if (IsInRangeInclusive(value, 0xFDD0U, 0xFDEFU))
+            {
+                return true;
+            }
+
+            // The last two code points of any plane
+            // TODO: If 'value' is already known to be a valid code point, can instead use '(ushort)value >= 0xFFFEU'
+            return (ROR32((value | 1U) ^ 0xFFFFU, 16) <= 0x10U);
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a code point denoted as a private use character.
+        /// </summary>
+        /// <remarks>
+        /// See http://www.unicode.org/faq/private_use.html and the Unicode Standard, Sec. 23.5, for more information.
+        /// </remarks>
+        public static bool IsPrivateUseCharacter(uint value)
+        {
+            // Private use range within BMP
+            if (IsInRangeInclusive(value, 0xE000U, 0xF8FFU))
+            {
+                return true;
+            }
+
+            // All of plane 15 minus noncharacters
+            if (IsInRangeInclusive(value, 0xF0000U, 0xFFFFDU))
+            {
+                return true;
+            }
+
+            // All of plane 16 minus noncharacters
+            return IsInRangeInclusive(value, 0x100000U, 0x10FFFDU);
+        }
 
         /// <summary>
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 surrogate code point,
@@ -205,6 +260,15 @@ namespace System.Text
             // which allows performing a single fast range check.
 
             return IsInRangeInclusive(value ^ 0xD800U, 0x800U, 0x10FFFFU);
+        }
+
+        /// <summary>
+        /// ROR32 operation, optimized by the JIT.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ROR32(uint value, int shift)
+        {
+            return (value >> shift) | (value << (32 - shift));
         }
     }
 }
