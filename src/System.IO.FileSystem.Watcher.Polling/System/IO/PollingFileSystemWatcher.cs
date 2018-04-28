@@ -118,8 +118,8 @@ namespace System.IO.FileSystem
                 changes.AddAdded(directory, path.ToString());
 
                 var newFileState = new FileState(directory, path);
-                newFileState.LastWrite = file.LastWriteTimeUtc;
-                newFileState.FileSize = file.Length;
+                newFileState.LastWriteTimeUtc = file.LastWriteTimeUtc;
+                newFileState.Length = file.Length;
                 newFileState._version = _version;
                 _state.Add(directory, path, newFileState);
                 return;
@@ -128,11 +128,11 @@ namespace System.IO.FileSystem
             _state.Values[index]._version = _version;
 
             var previousState = _state.Values[index];
-            if (file.LastWriteTimeUtc != previousState.LastWrite || file.Length != previousState.FileSize)
+            if (file.LastWriteTimeUtc != previousState.LastWriteTimeUtc || file.Length != previousState.Length)
             {
                 changes.AddChanged(directory, previousState.Path);
-                _state.Values[index].LastWrite = file.LastWriteTimeUtc;
-                _state.Values[index].FileSize = file.Length;
+                _state.Values[index].LastWriteTimeUtc = file.LastWriteTimeUtc;
+                _state.Values[index].Length = file.Length;
             }
         }
 
