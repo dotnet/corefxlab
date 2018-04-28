@@ -143,6 +143,8 @@ namespace System.IO.FileSystem
 
         public event PollingFileSystemEventHandler ChangedDetailed;
 
+        public event ErrorEventHandler Error;
+
         /// <summary>
         /// Disposes the timer used for polling.
         /// </summary>
@@ -153,12 +155,19 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
-            var changes = ComputeChangesAndUpdateState();
-
-            if (!changes.IsEmpty)
+            try
             {
-                Changed?.Invoke(this, EventArgs.Empty);
-                ChangedDetailed?.Invoke(this, new PollingFileSystemEventArgs(changes.ToArray()));
+                var changes = ComputeChangesAndUpdateState();
+
+                if (!changes.IsEmpty)
+                {
+                    Changed?.Invoke(this, EventArgs.Empty);
+                    ChangedDetailed?.Invoke(this, new PollingFileSystemEventArgs(changes.ToArray()));
+                }
+            }
+            catch (Exception e)
+            {
+                Error?.Invoke(this, new ErrorEventArgs(e));
             }
 
             _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
