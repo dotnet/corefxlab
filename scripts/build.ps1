@@ -96,7 +96,7 @@ $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 if ($SkipTests -ne "true") {
-    foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+    foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*Tests*.csproj", "AllDirectories")) {
         Write-Host "Building and running tests for project $testFile..."
         Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
     
