@@ -33,7 +33,7 @@ namespace System.IO.FileSystem
         /// </summary>
         /// <param name="path">The path to watch.</param>
         /// <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
-        public PollingFileSystemWatcher(string path, string filter = "*.*")
+        public PollingFileSystemWatcher(string path, string filter = "*.*", EnumerationOptions options = null)
         {
             if (!Directory.Exists(path))
                 throw new ArgumentException("Path not found.", nameof(path));
@@ -41,28 +41,12 @@ namespace System.IO.FileSystem
             _state = new PathToFileStateHashtable();
             Path = path;
             Filter = filter;
-        }
-
-        /// <summary>
-        /// Creates an instance of a watcher
-        /// </summary>
-        /// <param name="path">The path to watch.</param>
-        /// <param name="includeSubdirectories">A bool controlling whether or not subdirectories will be watched too</param>
-        /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
-        public PollingFileSystemWatcher(string path, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
-        {
-            if (!Directory.Exists(path))
-                throw new ArgumentException("Path not found.", nameof(path));
-
-            _state = new PathToFileStateHashtable();
-            PollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
-            EnumerationOptions.RecurseSubdirectories = includeSubdirectories;
-            Path = path;
+            EnumerationOptions = null ?? new EnumerationOptions();
         }
 
         public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
         public string Filter { get; set; } = "*.*";
-        public string Path { get; set; } = "";
+        public string Path { get; set; }
         public int PollingIntervalInMilliseconds { get; set; } = 1000;
 
         public void Start()

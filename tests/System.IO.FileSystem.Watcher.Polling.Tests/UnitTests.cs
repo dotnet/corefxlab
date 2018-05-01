@@ -15,7 +15,7 @@ public partial class PollingFileSystemWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
         watcher.ChangedDetailed += (e, changes) =>
         {
             Assert.Equal(1, changes.Changes.Length);
@@ -40,7 +40,7 @@ public partial class PollingFileSystemWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
 
         using (var file = new TemporaryTestFile(fileName))
         {
@@ -68,7 +68,7 @@ public partial class PollingFileSystemWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingFileSystemWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
 
         using (var file = new TemporaryTestFile(fileName))
         {
