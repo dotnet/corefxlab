@@ -44,7 +44,7 @@ namespace Microsoft.Net
 
         public bool TryGet(ref SequencePosition position, out ReadOnlyMemory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (position.Equals(default))
             {
                 item = default;
                 return false;

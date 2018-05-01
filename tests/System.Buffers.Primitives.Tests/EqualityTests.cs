@@ -193,7 +193,7 @@ namespace System.Buffers.Tests
             Assert.True(emptySpan.SequenceEqual(otherEmptySpan));
             Assert.True(otherEmptySpan.SequenceEqual(emptySpan));
 
-            var spanFromNonEmptyArrayButWithZeroLength = new int[1] { 123 }.AsSpan().Slice(0, 0);
+            var spanFromNonEmptyArrayButWithZeroLength = new int[1] { 123 }.AsSpan(0, 0);
 
             Assert.True(emptySpan.SequenceEqual(spanFromNonEmptyArrayButWithZeroLength));
             Assert.True(spanFromNonEmptyArrayButWithZeroLength.SequenceEqual(emptySpan));

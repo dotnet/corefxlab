@@ -246,7 +246,7 @@ namespace System.Buffers
             {
                 int length = _endIndex - _startIndex;
                 if (buffer.Length < length) length = buffer.Length;
-                array.AsSpan().Slice(_startIndex, length).CopyTo(buffer);
+                array.AsSpan(_startIndex, length).CopyTo(buffer);
                 return length;
             }
 
@@ -273,7 +273,7 @@ namespace System.Buffers
 
         public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (position.Equals(default))
             {
                 item = default;
                 return false;

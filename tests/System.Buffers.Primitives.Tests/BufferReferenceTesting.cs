@@ -51,19 +51,18 @@ namespace System.Buffers.Tests
             var span = buffer.GetSpan();
             span[10] = 10;
 
-            Assert.Equal(buffer.Length, span.Length);
+            var memory = buffer.Memory;
+            Assert.Equal(memory.Length, span.Length);
             Assert.Equal(10, span[10]);
 
-            var memory = buffer.Memory;
-            Assert.Equal(buffer.Length, memory.Length);
             Assert.Equal(10, memory.Span[10]);
 
             var array = memory.ToArray();
-            Assert.Equal(buffer.Length, array.Length);
+            Assert.Equal(memory.Length, array.Length);
             Assert.Equal(10, array[10]);
 
             Span<byte> copy = new byte[20];
-            memory.Slice(10, 20).Span.CopyTo(copy);
+            memory.Span.Slice(10, 20).CopyTo(copy);
             Assert.Equal(10, copy[0]);
         }
 
@@ -71,14 +70,15 @@ namespace System.Buffers.Tests
         static void Span(MemoryManager<byte> buffer)
         {
             var span = buffer.GetSpan();
-            var fullSlice = buffer.GetSpan().Slice(0, buffer.Length);
+            var memory = buffer.Memory;
+            var fullSlice = buffer.GetSpan().Slice(0, memory.Length);
             for (int i = 0; i < span.Length; i++)
             {
                 span[i] = (byte)(i % 254 + 1);
                 Assert.Equal(span[i], fullSlice[i]);
             }
 
-            var slice = buffer.GetSpan().Slice(5, buffer.Length - 5);
+            var slice = buffer.GetSpan().Slice(5, memory.Length - 5);
             Assert.Equal(span.Length - 5, slice.Length);
 
             for (int i = 0; i < slice.Length; i++)
@@ -88,12 +88,12 @@ namespace System.Buffers.Tests
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.GetSpan().Slice(buffer.Length, 1);
+                buffer.GetSpan().Slice(memory.Length, 1);
             });
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                buffer.GetSpan().Slice(1, buffer.Length);
+                buffer.GetSpan().Slice(1, memory.Length);
             });
         }
 
@@ -130,7 +130,7 @@ namespace System.Buffers.Tests
 
         static void Dispose(MemoryManager<byte> buffer)
         {
-            var length = buffer.Length;
+            var length = buffer.Memory.Length;
 
             ((IDisposable)buffer).Dispose();
 
@@ -162,7 +162,7 @@ namespace System.Buffers.Tests
 
         static void DisposeAuto(MemoryManager<byte> buffer)
         {
-            var length = buffer.Length;
+            var length = buffer.Memory.Length;
 
             ((IDisposable)buffer).Dispose();
 

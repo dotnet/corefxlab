@@ -30,7 +30,7 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref SequencePosition position, out T item, bool advance = true)
         {
-            if(_count == 0 || position == default)
+            if(_count == 0 || position.Equals(default))
             {
                 item = default;
                 return false;

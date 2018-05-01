@@ -39,8 +39,6 @@ namespace System.Numerics.Tensors.Tests
 
         public bool IsDisposed => disposed;
 
-        public override int Length => length;
-
         public unsafe override Span<T> GetSpan() => new Span<T>((void*)memory, length);
 
         protected bool IsRetained => refCount > 0;

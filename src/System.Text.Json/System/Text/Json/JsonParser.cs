@@ -70,7 +70,7 @@ namespace System.Text.Json
         public bool TryPushObject(int value)
         {
             if (!IsFull) {
-                Write(_memory.Slice(topOfStackObj - 8).Span, ref value);
+                Write(_memory.Span.Slice(topOfStackObj - 8), ref value);
                 topOfStackObj -= 8;
                 objectStackCount++;
                 return true;
@@ -81,7 +81,7 @@ namespace System.Text.Json
         public bool TryPushArray(int value)
         {
             if (!IsFull) {
-                Write(_memory.Slice(topOfStackArr - 4).Span, ref value);
+                Write(_memory.Span.Slice(topOfStackArr - 4), ref value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
                 return true;
@@ -92,7 +92,7 @@ namespace System.Text.Json
         public int PopObject()
         {
             objectStackCount--;
-            var value = Read<int>(_memory.Slice(topOfStackObj).Span);
+            var value = Read<int>(_memory.Span.Slice(topOfStackObj));
             topOfStackObj += 8;
             return value;
         }
@@ -100,14 +100,14 @@ namespace System.Text.Json
         public int PopArray()
         {
             arrayStackCount--;
-            var value = Read<int>(_memory.Slice(topOfStackArr + 4).Span);
+            var value = Read<int>(_memory.Span.Slice(topOfStackArr + 4));
             topOfStackArr += 8;
             return value;
         }
 
         internal void Resize(Memory<byte> newStackMemory)
         {
-            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).Span.CopyTo(newStackMemory.Span);
+            _memory.Span.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory.Span);
             _memory = newStackMemory;
         }
     }
@@ -211,7 +211,7 @@ namespace System.Text.Json
                 }
             }
 
-            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex).Span, _pool, _scratchManager);
+            var result =  new JsonObject(_values, _db.Span.Slice(0, _dbIndex), _pool, _scratchManager);
             _scratchManager.Dispose();
             _scratchManager = null;
             return result;
@@ -224,7 +224,7 @@ namespace System.Text.Json
             int dbLength = newScratch.Memory.Length / 2;
 
             var newDb = newScratch.Memory.Slice(0, dbLength);
-            _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);
+            _db.Span.Slice(0, _valuesIndex).CopyTo(newDb.Span);
             _db = newDb;
 
             var newStackMemory = newScratch.Memory.Slice(dbLength);
@@ -240,7 +240,7 @@ namespace System.Text.Json
 
             while (true) {
                 int rowStartOffset = rowNumber * DbRow.Size;
-                var row = Read<DbRow>(_db.Slice(rowStartOffset).Span);
+                var row = Read<DbRow>(_db.Span.Slice(rowStartOffset));
 
                 int lengthOffset = rowStartOffset + 4;
                 

@@ -179,7 +179,7 @@ namespace System.Buffers.Tests
         {
             lock (s_headerBytesScratch)
             {
-                if (!Utf8Formatter.TryFormat(value, s_headerBytesScratch.AsSpan().Slice(prefixLength), out int written, 'R'))
+                if (!Utf8Formatter.TryFormat(value, s_headerBytesScratch.AsSpan(prefixLength), out int written, 'R'))
                 {
                     throw new Exception("date time format failed");
                 }

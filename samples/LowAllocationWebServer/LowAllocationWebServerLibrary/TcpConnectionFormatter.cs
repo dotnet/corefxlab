@@ -57,19 +57,19 @@ namespace Microsoft.Net
             // if send headers
             if (!_headerSent)
             {
-                toSend = _buffer.AsSpan().Slice(ChunkPrefixSize, _written);
+                toSend = _buffer.AsSpan(ChunkPrefixSize, _written);
                 _written = 0;
                 _headerSent = true;
             }
             else
             {
-                var chunkPrefixBuffer = _buffer.AsSpan().Slice(0, ChunkPrefixSize);
+                var chunkPrefixBuffer = _buffer.AsSpan(0, ChunkPrefixSize);
                 var prefixLength = WriteChunkPrefix(chunkPrefixBuffer, _written);
 
                 _buffer[ChunkPrefixSize + _written++] = 13;
                 _buffer[ChunkPrefixSize + _written++] = 10;
 
-                toSend = _buffer.AsSpan().Slice(ChunkPrefixSize - prefixLength, _written + prefixLength);
+                toSend = _buffer.AsSpan(ChunkPrefixSize - prefixLength, _written + prefixLength);
                 _written = 0;
             }
 

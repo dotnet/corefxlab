@@ -84,7 +84,7 @@ namespace System.IO.Pipelines.Samples
 
                 try
                 {
-                    if (consumed == state.Consumed)
+                    if (consumed.Equals(state.Consumed))
                     {
                         var oldBody = responseBuffer.Slice(0, state.PreviousContentLength);
 

@@ -297,8 +297,8 @@ namespace System.Text.Primitives.Tests.Encoding
             inputString1.CopyTo(0, inputCharsAll, 0, inputString1.Length);
             inputString2.CopyTo(0, inputCharsAll, inputString1.Length, inputString2.Length);
 
-            ReadOnlySpan<byte> input1 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan().Slice(0, inputString1.Length));
-            ReadOnlySpan<byte> input2 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan().Slice(inputString1.Length - 1));
+            ReadOnlySpan<byte> input1 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan(0, inputString1.Length));
+            ReadOnlySpan<byte> input2 = MemoryMarshal.AsBytes(inputCharsAll.AsSpan(inputString1.Length - 1));
 
             ReadOnlySpan<byte> expected = Text.Encoding.UTF8.GetBytes(inputString1 + inputString2);
             Span<byte> output = new byte[expected.Length];
@@ -328,7 +328,7 @@ namespace System.Text.Primitives.Tests.Encoding
             ReadOnlySpan<byte> expected = Text.Encoding.Convert(Text.Encoding.UTF32, Text.Encoding.UTF8, MemoryMarshal.AsBytes(inputAll.AsSpan()).ToArray());
             Span<byte> output = new byte[expected.Length];
 
-            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputAll.AsSpan().Slice(0, codepoints1.Length));
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputAll.AsSpan(0, codepoints1.Length));
             input = input.Slice(0, input.Length - 2); // Strip a couple bytes from last good code point
             Assert.Equal(OperationStatus.NeedMoreData, Encodings.Utf32.ToUtf8(input, output, out int consumed, out int written));
             Assert.True(input.Length > consumed, "Consumed too many bytes [first half]");
