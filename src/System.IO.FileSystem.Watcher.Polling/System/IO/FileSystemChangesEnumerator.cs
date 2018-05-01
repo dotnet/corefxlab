@@ -8,7 +8,7 @@ namespace System.IO.FileSystem
         private string _currentDirectory;
         private PollingFileSystemWatcher _watcher;
 
-        public FileSystemChangeEnumerator(PollingFileSystemWatcher watcher, string directory, EnumerationOptions options = null)
+        internal FileSystemChangeEnumerator(PollingFileSystemWatcher watcher, string directory, EnumerationOptions options = null)
             : base(directory, options)
         {
             _watcher = watcher;
@@ -32,7 +32,12 @@ namespace System.IO.FileSystem
             if (_currentDirectory == null)
                 _currentDirectory = entry.Directory.ToString();
 
-            return _watcher.IsWatched(ref entry);
+            return _watcher.ShouldIncludeEntry(ref entry);
+        }
+
+        protected override bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
+        {
+            return _watcher.ShouldRecurseIntoEntry(ref entry);
         }
     }
 }

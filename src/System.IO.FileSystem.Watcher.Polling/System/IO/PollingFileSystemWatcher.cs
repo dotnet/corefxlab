@@ -24,6 +24,7 @@ namespace System.IO.FileSystem
     {
         Timer _timer;
         PathToFileStateHashtable _state; // stores state of the directory
+
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        internal bool IsWatched(ref FileSystemEntry entry)
+        protected internal virtual bool ShouldIncludeEntry(ref FileSystemEntry entry)
         {
             if (entry.IsDirectory) return false;
             if (Filter == null) return true;
@@ -87,6 +88,11 @@ namespace System.IO.FileSystem
                 return true;
 
             return false;
+        }
+
+        protected internal virtual bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
+        {
+            return true;
         }
 
         internal void UpdateState(string directory, ref FileChangeList changes, ref FileSystemEntry file)
