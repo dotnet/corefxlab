@@ -88,14 +88,14 @@ namespace System.Text.Formatting
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
                 if (spaceInPrevious < bytes)
                 {
-                    current.Slice(0, spaceInPrevious).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
-                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).Span.CopyTo(current.Span);
+                    current.Span.Slice(0, spaceInPrevious).CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Span.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current.Span);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
                 else
                 {
-                    current.Slice(0, bytes).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Span.Slice(0, bytes).CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     _currentSequencePosition = _previousSequencePosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }
