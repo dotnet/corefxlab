@@ -22,7 +22,7 @@ namespace Benchmarks.Encodings
         [Benchmark]
         public string AsciiToStringPrimitives() => System.Buffers.Text.Encodings.Ascii.ToUtf16String((ReadOnlySpan<byte>)bytes);
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public string AsciiToStringClr() => Encoding.ASCII.GetString(bytes);
 
         [Benchmark]

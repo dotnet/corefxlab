@@ -21,8 +21,8 @@
     <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.14.525" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.10.14.525" />
+    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNetVersion)" />
     <PackageReference Include="System.Text.Encodings.Web" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.performance.core" Version="$(XunitPerformanceVersion)" />
