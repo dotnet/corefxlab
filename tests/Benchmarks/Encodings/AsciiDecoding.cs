@@ -20,7 +20,7 @@ namespace Benchmarks.Encodings
         public void Setup() => bytes = Encoding.ASCII.GetBytes(Text);
 
         [Benchmark]
-        public string AsciiToStringPrimitives() => System.Buffers.Text.Encodings.Ascii.ToUtf16String((ReadOnlySpan<byte>)bytes);
+        public string AsciiToStringPrimitives() => System.Buffers.Text.Encodings.Ascii.ToUtf16String(bytes);
 
         [Benchmark(Baseline = true)]
         public string AsciiToStringClr() => Encoding.ASCII.GetString(bytes);
