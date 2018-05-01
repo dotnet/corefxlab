@@ -62,7 +62,7 @@ namespace System.Buffers.Tests
             Assert.Equal(10, array[10]);
 
             Span<byte> copy = new byte[20];
-            memory.Slice(10, 20).Span.CopyTo(copy);
+            memory.Span.Slice(10, 20).CopyTo(copy);
             Assert.Equal(10, copy[0]);
         }
 
