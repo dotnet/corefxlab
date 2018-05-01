@@ -5,8 +5,6 @@ using System.IO.Enumeration;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-//TODO: write real tests
-
 namespace System.IO.FileSystem
 {
     /// <summary>
