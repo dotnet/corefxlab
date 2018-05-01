@@ -5,7 +5,6 @@ using System.IO.Enumeration;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-//TODO: add support for UNC paths
 //TODO: write real tests
 
 namespace System.IO.FileSystem
@@ -32,38 +31,38 @@ namespace System.IO.FileSystem
         /// <summary>
         /// Creates an instance of a watcher
         /// </summary>
-        /// <param name="directory">The directory to watch. It does not support UNC paths (yet).</param>
+        /// <param name="path">The path to watch.</param>
         /// <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
-        public PollingFileSystemWatcher(string directory, string filter = "*.*")
+        public PollingFileSystemWatcher(string path, string filter = "*.*")
         {
-            if (!IO.Directory.Exists(directory))
-                throw new ArgumentException("Directory not found.", nameof(directory));
+            if (!Directory.Exists(path))
+                throw new ArgumentException("Path not found.", nameof(path));
 
             _state = new PathToFileStateHashtable();
-            Directory = directory;
+            Path = path;
             Filter = filter;
         }
 
         /// <summary>
         /// Creates an instance of a watcher
         /// </summary>
-        /// <param name="directory">The directory to watch. It does not support UNC paths (yet).</param>
+        /// <param name="path">The path to watch.</param>
         /// <param name="includeSubdirectories">A bool controlling whether or not subdirectories will be watched too</param>
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
-        public PollingFileSystemWatcher(string directory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
+        public PollingFileSystemWatcher(string path, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
-            if (!IO.Directory.Exists(directory))
-                throw new ArgumentException("Directory not found.", nameof(directory));
+            if (!Directory.Exists(path))
+                throw new ArgumentException("Path not found.", nameof(path));
 
             _state = new PathToFileStateHashtable();
             PollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
-            IncludeSubdirectories = includeSubdirectories;
-            Directory = directory;
-            }
+            EnumerationOptions.RecurseSubdirectories = includeSubdirectories;
+            Path = path;
+        }
 
+        public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
         public string Filter { get; set; } = "*.*";
-        public bool IncludeSubdirectories { get; set; } = false;
-        public string Directory { get; set; } = "";
+        public string Path { get; set; } = "";
         public int PollingIntervalInMilliseconds { get; set; } = 1000;
 
         public void Start()
@@ -77,7 +76,7 @@ namespace System.IO.FileSystem
         {
             _version++;
 
-            var enumerator = new FileSystemChangeEnumerator(this, Directory, new EnumerationOptions { RecurseSubdirectories = IncludeSubdirectories });
+            var enumerator = new FileSystemChangeEnumerator(this, Path, EnumerationOptions);
             while (enumerator.MoveNext())
             {
                 // Ignore `.Current`
@@ -103,7 +102,7 @@ namespace System.IO.FileSystem
 
             bool ignoreCase = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
             if (FileSystemName.MatchesSimpleExpression(Filter, entry.FileName, ignoreCase: ignoreCase))
-                    return true;
+                return true;
 
             return false;
         }
