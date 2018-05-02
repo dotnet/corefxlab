@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Xunit.Performance;
+using BenchmarkDotNet.Attributes;
 using System;
 using System.Azure.Authentication;
 using System.Buffers;
@@ -27,66 +27,41 @@ public class StorageBench
     static Sha256 sha;
     const int BufferSize = 256;
 
-    static StorageBench()
+    [GlobalSetup]
+    public void Setup()
     {
         var keyBytes = Key.ComputeKeyBytes(fakeKey);
         sha = Sha256.Create(keyBytes);
     }
 
+    [Benchmark(Baseline = true)]
+    public void Msdn()
+        => StorageBaselineFromMsdn(fakeKey, verb, canonicalizedResource, utc);
+
     [Benchmark]
-    static void Msdn()
-    {
-        foreach (var iteration in Benchmark.Iterations)
+    public void Primitive()
+    {       
+        if (!TryWritePrimitive(buffer, sha, verb, canonicalizedResource, utc, out int bytesWritten))
         {
-            using (iteration.StartMeasurement())
-            {
-                StorageBaselineFromMsdn(fakeKey, verb, canonicalizedResource, utc);
-            }
+            throw new Exception("TryWrite failed");
         }
     }
 
     [Benchmark]
-    static void Primitive()
+    public void TryWrite()
     {
-        foreach (var iteration in Benchmark.Iterations)
+        if(!StorageAccessSignature.TryWrite(buffer, sha, "GET", canonicalizedResource, utc, out int bytesWritten))
         {
-            using (iteration.StartMeasurement())
-            {
-                if (!TryWritePrimitive(buffer, sha, verb, canonicalizedResource, utc, out int bytesWritten))
-                {
-                    throw new Exception("TryWrite failed");
-                }
-            }
+            throw new Exception("TryWrite failed");
         }
     }
 
     [Benchmark]
-    static void Writer()
+    public void TryWriteUtf8()
     {
-        foreach (var iteration in Benchmark.Iterations)
+        if (!StorageAccessSignature.TryWrite(buffer, sha, verbU8, canonicalizedResourceU8, utc, out int bytesWritten))
         {
-            using (iteration.StartMeasurement())
-            {
-                if(!StorageAccessSignature.TryWrite(buffer, sha, "GET", canonicalizedResource, utc, out int bytesWritten))
-                {
-                    throw new Exception("TryWrite failed");
-                }
-            }
-        }
-    }
-
-    [Benchmark]
-    static void WriterUtf8()
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                if (!StorageAccessSignature.TryWrite(buffer, sha, verbU8, canonicalizedResourceU8, utc, out int bytesWritten))
-                {
-                    throw new Exception("TryWrite failed");
-                }
-            }
+            throw new Exception("TryWrite failed");
         }
     }
 
@@ -114,7 +89,7 @@ public class StorageBench
         }
     }
 
-    public static bool TryWritePrimitive(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
+    static bool TryWritePrimitive(Span<byte> output, Sha256 hash, string verb, string canonicalizedResource, DateTime utc, out int bytesWritten)
     {
         int written, consumed;
         bytesWritten = 0;
