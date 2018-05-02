@@ -24,7 +24,8 @@ namespace Benchmarks.SystemTextJson
         [Params(EncoderTarget.InvariantUtf8, EncoderTarget.InvariantUtf16)]
         public EncoderTarget Target;
 
-        // Cannot use the JsonString directly, issue: 
+        // Using the string name listed in the resource file instead of the json string directly
+        // so that the benchmark output is cleaner
         [ParamsSource(nameof(ValuesForJsonStringName))]
         public string JsonStringName;
 #pragma warning restore CS0649
