@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Xunit.Performance;
+using BenchmarkDotNet.Attributes;
 using System;
 using System.Buffers;
 using System.Buffers.Text;
@@ -11,9 +11,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Utf8;
-using System.Threading;
 
-public class BufferWriterBench
+public class Writer
 {
     private static AsciiString s_crlf = "\r\n";
     private static AsciiString s_eoh = "\r\n\r\n"; // End Of Headers
@@ -35,162 +34,124 @@ public class BufferWriterBench
 
     private static Sink s_sink = new Sink(4096);
 
-    const int InnerIterations = 1000000;
-
-    [Benchmark(InnerIterationCount = InnerIterations)]
-    static void PlatfromBenchmarkPlaintext()
+    [Benchmark]
+    public void PlatfromBenchmarkPlaintext()
     {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < InnerIterations; i++)
-                {
-                    s_sink.Reset();
-                    var writer = new PlatfromBenchmark.BufferWriter<Sink>(s_sink);
+        s_sink.Reset();
+        var writer = new PlatfromBenchmark.BufferWriter<Sink>(s_sink);
 
-                    // HTTP 1.1 OK
-                    writer.Write(s_http11OK);
+        // HTTP 1.1 OK
+        writer.Write(s_http11OK);
 
-                    // Server headers
-                    writer.Write(s_headerServer);
+        // Server headers
+        writer.Write(s_headerServer);
 
-                    // Date header
-                    writer.Write(DateHeader.HeaderBytes);
+        // Date header
+        writer.Write(DateHeader.HeaderBytes);
 
-                    // Content-Type header
-                    writer.Write(s_headerContentTypeText);
+        // Content-Type header
+        writer.Write(s_headerContentTypeText);
 
-                    // Content-Length header
-                    writer.Write(s_headerContentLength);
-                    writer.Write((ulong)s_plainTextBody.Length);
+        // Content-Length header
+        writer.Write(s_headerContentLength);
+        writer.Write((ulong)s_plainTextBody.Length);
 
-                    // End of headers
-                    writer.Write(s_eoh);
+        // End of headers
+        writer.Write(s_eoh);
 
-                    // Body
-                    writer.Write(s_plainTextBody);
-                    writer.Commit();
-                }
-            }
-        }
+        // Body
+        writer.Write(s_plainTextBody);
+        writer.Commit();
     }
 
-    [Benchmark(InnerIterationCount = InnerIterations)]
-    static void BufferWriterPlaintext()
+    [Benchmark]
+    public void BufferWriterPlaintext()
     {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < InnerIterations; i++)
-                {
-                    s_sink.Reset();
-                    var writer = BufferWriter.Create(s_sink);
+        s_sink.Reset();
+        var writer = BufferWriter.Create(s_sink);
 
-                    // HTTP 1.1 OK
-                    writer.Write(s_http11OK);
+        // HTTP 1.1 OK
+        writer.Write(s_http11OK);
 
-                    // Server headers
-                    writer.Write(s_headerServer);
+        // Server headers
+        writer.Write(s_headerServer);
 
-                    // Date header
-                    writer.Write(DateHeader.HeaderBytes);
+        // Date header
+        writer.Write(DateHeader.HeaderBytes);
 
-                    // Content-Type header
-                    writer.Write(s_headerContentTypeText);
+        // Content-Type header
+        writer.Write(s_headerContentTypeText);
 
-                    // Content-Length header
-                    writer.Write(s_headerContentLength);
-                    writer.Write((ulong)s_plainTextBody.Length);
+        // Content-Length header
+        writer.Write(s_headerContentLength);
+        writer.Write((ulong)s_plainTextBody.Length);
 
-                    // End of headers
-                    writer.Write(s_eoh);
+        // End of headers
+        writer.Write(s_eoh);
 
-                    // Body
-                    writer.Write(s_plainTextBody);
-                    writer.Flush();
-                }
-            }
-        }
+        // Body
+        writer.Write(s_plainTextBody);
+        writer.Flush();
     }
 
-    [Benchmark(InnerIterationCount = InnerIterations)]
-    static void BufferWriterPlaintextUtf8()
+    [Benchmark]
+    public void BufferWriterPlaintextUtf8()
     {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < InnerIterations; i++)
-                {
-                    s_sink.Reset();
-                    var writer = BufferWriter.Create(s_sink);
+        s_sink.Reset();
+        var writer = BufferWriter.Create(s_sink);
 
-                    // HTTP 1.1 OK
-                    writer.Write(s_http11OKU8);
+        // HTTP 1.1 OK
+        writer.Write(s_http11OKU8);
 
-                    // Server headers
-                    writer.Write(s_headerServerU8);
+        // Server headers
+        writer.Write(s_headerServerU8);
 
-                    // Date header
-                    writer.Write(DateHeader.HeaderBytes);
+        // Date header
+        writer.Write(DateHeader.HeaderBytes);
 
-                    // Content-Type header
-                    writer.Write(s_headerContentTypeTextU8);
+        // Content-Type header
+        writer.Write(s_headerContentTypeTextU8);
 
-                    // Content-Length header
-                    writer.Write(s_headerContentLengthU8);
-                    writer.Write((ulong)s_plainTextBody.Length);
+        // Content-Length header
+        writer.Write(s_headerContentLengthU8);
+        writer.Write((ulong)s_plainTextBody.Length);
 
-                    // End of headers
-                    writer.Write(s_eohU8);
+        // End of headers
+        writer.Write(s_eohU8);
 
-                    // Body
-                    writer.Write(s_plainTextBodyU8);
-                    writer.Flush();
-                }
-            }
-        }
+        // Body
+        writer.Write(s_plainTextBodyU8);
+        writer.Flush();
     }
 
-    [Benchmark(InnerIterationCount = InnerIterations)]
-    static void BufferWriterCopyPlaintext()
+    [Benchmark]
+    public void BufferWriterCopyPlaintext()
     {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < InnerIterations; i++)
-                {
-                    s_sink.Reset();
-                    var writer = new SystemBuffers.BufferWriter<Sink>(s_sink);
+        s_sink.Reset();
+        var writer = new SystemBuffers.BufferWriter<Sink>(s_sink);
 
-                    // HTTP 1.1 OK
-                    writer.Write(s_http11OK);
+        // HTTP 1.1 OK
+        writer.Write(s_http11OK);
 
-                    // Server headers
-                    writer.Write(s_headerServer);
+        // Server headers
+        writer.Write(s_headerServer);
 
-                    // Date header
-                    writer.Write(DateHeader.HeaderBytes);
+        // Date header
+        writer.Write(DateHeader.HeaderBytes);
 
-                    // Content-Type header
-                    writer.Write(s_headerContentTypeText);
+        // Content-Type header
+        writer.Write(s_headerContentTypeText);
 
-                    // Content-Length header
-                    writer.Write(s_headerContentLength);
-                    writer.Write((ulong)s_plainTextBody.Length);
+        // Content-Length header
+        writer.Write(s_headerContentLength);
+        writer.Write((ulong)s_plainTextBody.Length);
 
-                    // End of headers
-                    writer.Write(s_eoh);
+        // End of headers
+        writer.Write(s_eoh);
 
-                    // Body
-                    writer.Write(s_plainTextBody);
-                    writer.Flush();
-                }
-            }
-        }
+        // Body
+        writer.Write(s_plainTextBody);
+        writer.Flush();
     }
 }
 

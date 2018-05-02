@@ -137,7 +137,7 @@ do
     projectsFailed[${#projectsFailed[@]}]="$testFile"
 	((errorsEncountered=errorsEncountered+1))
   fi
-done < <(find tests -name "*.csproj")
+done < <(find tests -name "*Tests*.csproj")
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
