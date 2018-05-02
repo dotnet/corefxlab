@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Xunit.Performance;
 using System;
 using System.Azure.Authentication;
 using System.Buffers;
@@ -14,8 +13,9 @@ using System.Text;
 using System.Text.Encodings.Web.Utf8;
 using System.Text.Utf8;
 using System.Runtime.InteropServices;
+using BenchmarkDotNet.Attributes;
 
-public class CosmosDbBench
+public class CosmosDb
 {
     static string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";
     static string keyType = "master";
@@ -34,56 +34,28 @@ public class CosmosDbBench
     static byte[] output = new byte[256];
     static Sha256 sha;
 
-    static CosmosDbBench()
+    [GlobalSetup]
+    public void CosmosDbBench()
     {
         var keyBytes = Key.ComputeKeyBytes(fakeKey);
         sha = Sha256.Create(keyBytes);
     }
 
-    [Benchmark]
-    static void Msdn()
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement()) {
-                CosmosDbBaselineFromMsdn(fakeKey, keyType, verb, resourceId, resourceType, version, utc);
-            }
-        }
-    }
+    [Benchmark(Baseline = true)]
+    public void Msdn()
+        => CosmosDbBaselineFromMsdn(fakeKey, keyType, verb, resourceId, resourceType, version, utc);
 
     [Benchmark]
-    static void Raw()
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement()) {
-                TryWritePrimitives(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
-            }
-        }
-    }
+    public void Primitives()
+        => TryWritePrimitives(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
+        
+    [Benchmark]
+    public void Writer()
+        => CosmosDbAuthorizationHeader.TryWrite(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
 
     [Benchmark]
-    static void Writer()
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement()) {
-                CosmosDbAuthorizationHeader.TryWrite(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
-            }
-        }
-    }
-
-    [Benchmark]
-    static void WriterUtf8()
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                CosmosDbAuthorizationHeader.TryWrite(output, sha, keyTypeU8, verbU8, resourceIdU8, resourceTypeU8, versionU8, utc, out int bytesWritten);
-            }
-        }
-    }
+    public void WriterUtf8()
+        => CosmosDbAuthorizationHeader.TryWrite(output, sha, keyTypeU8, verbU8, resourceIdU8, resourceTypeU8, versionU8, utc, out int bytesWritten);
 
     static string CosmosDbBaselineFromMsdn(string key, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)
     {
@@ -112,7 +84,7 @@ public class CosmosDbBench
         return result;
     }
 
-    public static bool TryWritePrimitives(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
+    static bool TryWritePrimitives(Span<byte> output, Sha256 hash, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc, out int bytesWritten)
     {
         int totalWritten = 0;
         bytesWritten = 0;
