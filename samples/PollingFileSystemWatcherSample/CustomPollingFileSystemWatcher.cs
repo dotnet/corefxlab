@@ -11,9 +11,6 @@ namespace PollingFileSystemWatcherSample
             : base(path, options: new EnumerationOptions { RecurseSubdirectories = true })
         { }
 
-        [Obsolete]
-        public new string Filter => throw new NotSupportedException("Use Filters instead");
-
         public string[] Filters { get; set; }
 
         protected override bool ShouldIncludeEntry(ref FileSystemEntry entry)

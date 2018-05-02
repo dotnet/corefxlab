@@ -24,7 +24,6 @@ namespace System.IO.FileSystem
     {
         Timer _timer;
         PathToFileStateHashtable _state; // stores state of the directory
-
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
 
         /// <summary>
