@@ -89,10 +89,7 @@ namespace System.IO.FileSystem
             return false;
         }
 
-        protected internal virtual bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
-        {
-            return true;
-        }
+        protected internal virtual bool ShouldRecurseIntoEntry(ref FileSystemEntry entry) => true;
 
         internal void UpdateState(string directory, ref FileChangeList changes, ref FileSystemEntry file)
         {

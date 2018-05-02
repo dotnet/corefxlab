@@ -29,8 +29,6 @@ namespace PollingFileSystemWatcherSample
 
         // Only enter subdirectories that start with an underscore
         protected override bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
-        {
-            return (entry.FileName[0] == '_');
-        }
+            => entry.FileName[0] == '_';
     }
 }

@@ -36,8 +36,6 @@ namespace System.IO.FileSystem
         }
 
         protected override bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
-        {
-            return _watcher.ShouldRecurseIntoEntry(ref entry);
-        }
+            => _watcher.ShouldRecurseIntoEntry(ref entry);
     }
 }
