@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>CLI commandline command parsing</Description>
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>Command line parsing support corefxlab</PackageTags>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\*.cs;System\Drawing\Graphics\*.cs;System\Drawing\Graphics\Interop\Windows\*.cs" Exclude="System\Drawing\graphics\Interop\Linux\*.cs;System\Drawing\graphics\Interop\OSX\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
+  </ItemGroup>
+</Project>
