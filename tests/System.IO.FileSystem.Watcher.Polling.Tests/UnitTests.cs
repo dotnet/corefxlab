@@ -7,7 +7,7 @@ using System.IO.FileSystem;
 using System.Threading;
 using Xunit;
 
-public partial class PollingWatcherUnitTests
+public partial class PollingFileSystemWatcherUnitTests
 {
     [Fact]
     public static void FileSystemWatcher_Created_File()
@@ -15,11 +15,11 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
-        watcher.ChangedDetailed += (changes) =>
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
+        watcher.ChangedDetailed += (e, changes) =>
         {
-            Assert.Equal(1, changes.Length);
-            var change = changes[0];
+            Assert.Equal(1, changes.Changes.Length);
+            var change = changes.Changes[0];
             Assert.Equal(ChangeType.Created, change.ChangeType);
             Assert.Equal(fileName, change.Name);
             Assert.Equal(currentDir, change.Directory);
@@ -40,14 +40,14 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
 
         using (var file = new TemporaryTestFile(fileName))
         {
-            watcher.ChangedDetailed += (changes) =>
+            watcher.ChangedDetailed += (e, changes) =>
             {
-                Assert.Equal(1, changes.Length);
-                var change = changes[0];
+                Assert.Equal(1, changes.Changes.Length);
+                var change = changes.Changes[0];
                 Assert.Equal((byte)ChangeType.Deleted, (byte)change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
@@ -68,16 +68,16 @@ public partial class PollingWatcherUnitTests
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
 
-        var watcher = new PollingWatcher(currentDir, false, 100);
+        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
 
         using (var file = new TemporaryTestFile(fileName))
         {
             watcher.Start();
             Thread.Sleep(200);
-            watcher.ChangedDetailed += (changes) =>
+            watcher.ChangedDetailed += (e, changes) =>
             {
-                Assert.Equal(1, changes.Length);
-                var change = changes[0];
+                Assert.Equal(1, changes.Changes.Length);
+                var change = changes.Changes[0];
                 Assert.Equal(ChangeType.Changed, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
