@@ -4,8 +4,6 @@
 
 using System.Buffers;
 using System.IO.Compression;
-using System.IO.Pipelines.Compression;
-using System.IO.Pipelines.File;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples

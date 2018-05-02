@@ -4,7 +4,6 @@
 
 using System.Net;
 using System.Threading.Tasks;
-using System.IO.Pipelines.Networking.Sockets;
 
 namespace System.IO.Pipelines.Samples
 {

@@ -5,7 +5,6 @@
 using System.Buffers;
 using System.Net;
 using System.Threading.Tasks;
-using System.IO.Pipelines.Networking.Libuv;
 
 namespace System.IO.Pipelines.Samples
 {
