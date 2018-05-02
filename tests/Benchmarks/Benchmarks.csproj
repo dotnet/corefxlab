@@ -3,21 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <Description></Description>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
-    <PackageTags></PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl></PackageIconUrl>
-    <PackageProjectUrl></PackageProjectUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
