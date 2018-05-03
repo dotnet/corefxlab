@@ -15,12 +15,11 @@ namespace Benchmarks.SystemTextJson
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
-        private byte[] data;
-        private SymbolTable symbolTable;
-        private MemoryStream mem;
-        private StreamReader reader;
+        private byte[] _data;
+        private SymbolTable _symbolTable;
+        private MemoryStream _stream;
+        private StreamReader _reader;
 
-#pragma warning disable CS0649 // Field '' is never assigned to, and will always have its default value
         [Params(EncoderTarget.InvariantUtf8, EncoderTarget.InvariantUtf16)]
         public EncoderTarget Target;
 
@@ -28,29 +27,28 @@ namespace Benchmarks.SystemTextJson
         // so that the benchmark output is cleaner
         [ParamsSource(nameof(ValuesForJsonStringName))]
         public string JsonStringName;
-#pragma warning restore CS0649
 
         public static IEnumerable<string> ValuesForJsonStringName() => new[] { nameof(JsonStrings.HeavyNestedJson), nameof(JsonStrings.HelloWorld) };
 
         [GlobalSetup]
         public void Setup()
         {
-            symbolTable = GetTargetEncoder(Target);
-            data = EncodeTestData(Target, JsonStrings.ResourceManager.GetString(JsonStringName));
+            _symbolTable = GetTargetEncoder(Target);
+            _data = EncodeTestData(Target, JsonStrings.ResourceManager.GetString(JsonStringName));
 
-            mem = new MemoryStream(data);
+            _stream = new MemoryStream(_data);
             var enc = Target == EncoderTarget.InvariantUtf8 ? Encoding.UTF8 : Encoding.Unicode;
-            reader = new StreamReader(mem, enc, false, 1024, true);
+            _reader = new StreamReader(_stream, enc, false, 1024, true);
         }
 
         [Benchmark]
-        public void ReaderSystemTextJson() => TestReaderSystemTextJson(data, symbolTable);
+        public void ReaderSystemTextJson() => TestReaderSystemTextJson(_data, _symbolTable);
 
         [Benchmark(Baseline = true)]
         public void ReaderNewtonsoft()
         {
-            mem.Seek(0, SeekOrigin.Begin);
-            TestReaderNewtonsoft(reader);
+            _stream.Seek(0, SeekOrigin.Begin);
+            TestReaderNewtonsoft(_reader);
         }
 
         private static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, SymbolTable symbolTable)
