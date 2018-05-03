@@ -40,6 +40,7 @@ namespace System.IO.FileSystem
             Path = path;
             Filter = filter;
             EnumerationOptions = null ?? new EnumerationOptions();
+            _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
         public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
@@ -50,7 +51,7 @@ namespace System.IO.FileSystem
         public void Start()
         {
             ComputeChangesAndUpdateState(); // captures the initial state
-            _timer = new Timer(new TimerCallback(TimerHandler), null, PollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
