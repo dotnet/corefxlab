@@ -25,6 +25,7 @@ namespace System.IO.FileSystem
         Timer _timer;
         PathToFileStateHashtable _state; // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        private bool disposed = false;
 
         /// <summary>
         /// Creates an instance of a watcher
@@ -132,12 +133,33 @@ namespace System.IO.FileSystem
         /// </summary>
         public void Dispose()
         {
-            _timer.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public void Dispose(WaitHandle notifyObject)
         {
-            _timer.Dispose(notifyObject);
+            Dispose(true, notifyObject);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing, WaitHandle notifyObject = null)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                if (notifyObject != null)
+                {
+                    _timer.Dispose(notifyObject);
+                }
+                else
+                {
+                    _timer.Dispose();
+                }
+            }
+
+            disposed = true;
         }
 
         private void TimerHandler(object context)
