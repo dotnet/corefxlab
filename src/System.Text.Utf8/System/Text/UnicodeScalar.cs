@@ -142,7 +142,11 @@ namespace System.Text
         /// a valid value. The behavior of this type is undefined if the input value is invalid.
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static UnicodeScalar DangerousCreateWithoutValidation(uint scalarValue) => new UnicodeScalar(scalarValue, false);
+        public static UnicodeScalar DangerousCreateWithoutValidation(uint scalarValue)
+        {
+            UnicodeDebug.AssertIsValidScalar(scalarValue);
+            return new UnicodeScalar(scalarValue, false);
+        }
 
         /// <summary>
         /// Returns true iff this <see cref="UnicodeScalar"/> instance is equal to the provided object.

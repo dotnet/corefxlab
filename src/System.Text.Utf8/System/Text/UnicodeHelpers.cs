@@ -19,7 +19,7 @@ namespace System.Text
         /// </summary>
         public static int GetPlane(uint codePoint)
         {
-            Debug.Assert(IsValidCodePoint(codePoint));
+            UnicodeDebug.AssertIsValidCodePoint(codePoint);
 
             return (int)(codePoint >> 16);
         }
@@ -29,8 +29,8 @@ namespace System.Text
         /// </summary>
         public static uint GetScalarFromUtf16SurrogateCodePoints(uint highSurrogate, uint lowSurrogate)
         {
-            Debug.Assert(IsHighSurrogateCodePoint(highSurrogate));
-            Debug.Assert(IsLowSurrogateCodePoint(lowSurrogate));
+            UnicodeDebug.AssertIsHighSurrogteCodePoint(highSurrogate);
+            UnicodeDebug.AssertIsLowSurrogteCodePoint(lowSurrogate);
 
             return (highSurrogate << 10) + lowSurrogate + (1U << 16) - (0xD800U << 10) - 0xDC00U;
         }
@@ -40,7 +40,7 @@ namespace System.Text
         /// </summary>
         public static int GetUtf16SequenceLength(uint value)
         {
-            Debug.Assert(IsValidUnicodeScalar(value));
+            UnicodeDebug.AssertIsValidScalar(value);
 
             value -= 0x10000;   // if value < 0x10000, high byte = 0xFF; else high byte = 0x00
             value += (2 << 24); // if value < 0x10000, high byte = 0x01; else high byte = 0x02
@@ -53,7 +53,7 @@ namespace System.Text
         /// </summary>
         public static int GetUtf8SequenceLength(uint value)
         {
-            Debug.Assert(IsValidUnicodeScalar(value));
+            UnicodeDebug.AssertIsValidScalar(value);
 
             // The logic below can handle all valid scalar values branchlessly.
             // It gives good performance across all inputs. If the caller strongly
@@ -104,7 +104,7 @@ namespace System.Text
         /// </summary>
         public static int GetUtf8SequenceLength_BiasForAscii(uint value)
         {
-            Debug.Assert(IsValidUnicodeScalar(value));
+            UnicodeDebug.AssertIsValidScalar(value);
 
             // This method is similar to GetUtf8SequenceLength, but it optimizes for the case
             // of ASCII input, sacrificing performance in the case of multi-byte UTF-8 sequences.
