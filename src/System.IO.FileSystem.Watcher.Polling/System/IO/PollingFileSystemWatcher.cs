@@ -134,6 +134,11 @@ namespace System.IO.FileSystem
             _timer.Dispose();
         }
 
+        public void Dispose(WaitHandle notifyObject)
+        {
+            _timer.Dispose(notifyObject);
+        }
+
         private void TimerHandler(object context)
         {
             try
