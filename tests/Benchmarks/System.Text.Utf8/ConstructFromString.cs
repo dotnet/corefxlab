@@ -1,23 +1,20 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Code;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using Utf8StringRealType = System.Text.Utf8.Utf8String;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Code;
 
-namespace Benchmarks.Utf8String
+namespace System.Text.Utf8.Benchmarks
 {
-    public partial class Utf8String
+    public partial class Utf8StringPerf
     {
         [Benchmark]
         [ArgumentsSource(nameof(GetConstructFromStringParameters))]
-        public Utf8StringRealType ConstructFromString(string value)
+        public Utf8String ConstructFromString(string value)
         {
-            return new Utf8StringRealType(value);
+            return new Utf8String(value);
         }
 
         public IEnumerable<IParam> GetConstructFromStringParameters()

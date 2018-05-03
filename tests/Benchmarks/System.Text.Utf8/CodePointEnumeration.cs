@@ -1,20 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Code;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using Utf8StringRealType = System.Text.Utf8.Utf8String;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Code;
 
-namespace Benchmarks.Utf8String
+namespace System.Text.Utf8.Benchmarks
 {
-    public partial class Utf8String
+    public partial class Utf8StringPerf
     {
         [Benchmark]
         [ArgumentsSource(nameof(GetEnumerateCodePointsParameters))]
-        public uint EnumerateCodePoints(Utf8StringRealType value)
+        public uint EnumerateCodePoints(Utf8String value)
         {
             uint lastValue = default;
             foreach (var codePoint in value)
@@ -44,7 +42,7 @@ namespace Benchmarks.Utf8String
 
             public string DisplayText { get; }
 
-            public object Value => new Utf8StringRealType(_value);
+            public object Value => new Utf8String(_value);
 
             public string ToSourceCode()
             {
