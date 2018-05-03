@@ -2,15 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
-using System;
+using Benchmarks;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-using static Benchmarks.SystemTextJson.Helper;
+using static System.Text.Json.Benchmarks.Helper;
 
-namespace Benchmarks.SystemTextJson
+namespace System.Text.Json.Benchmarks
 {
     [MemoryDiagnoser]
     public class JsonReaderPerf
