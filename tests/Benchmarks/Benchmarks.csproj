@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\src\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="JsonStrings.Designer.cs">
