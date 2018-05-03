@@ -5,7 +5,6 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Net.Libuv\System.Net.Libuv.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
 </Project>
