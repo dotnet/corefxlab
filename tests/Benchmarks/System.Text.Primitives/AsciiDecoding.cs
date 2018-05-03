@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Text;
 using System.Text.Utf8;
 using BenchmarkDotNet.Attributes;
 
-namespace Benchmarks.Encodings
+namespace System.Text.Primitves.Benchmarks
 {
     public class AsciiDecoding
     {
@@ -20,7 +18,7 @@ namespace Benchmarks.Encodings
         public void Setup() => bytes = Encoding.ASCII.GetBytes(Text);
 
         [Benchmark]
-        public string AsciiToStringPrimitives() => System.Buffers.Text.Encodings.Ascii.ToUtf16String(bytes);
+        public string AsciiToStringPrimitives() => Buffers.Text.Encodings.Ascii.ToUtf16String(bytes);
 
         [Benchmark(Baseline = true)]
         public string AsciiToStringClr() => Encoding.ASCII.GetString(bytes);
