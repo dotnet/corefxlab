@@ -4,7 +4,7 @@
 
 using System.Buffers;
 using System.Buffers.Reader;
-using System.IO.Pipelines.Testing;
+using System.Buffers.Testing;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
