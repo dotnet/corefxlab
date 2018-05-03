@@ -6,9 +6,9 @@ namespace System.IO.FileSystem
     {
         private FileChangeList _changes = new FileChangeList();
         private string _currentDirectory;
-        private PollingWatcher _watcher;
+        private PollingFileSystemWatcher _watcher;
 
-        public FileSystemChangeEnumerator(PollingWatcher watcher, string directory, EnumerationOptions options = null)
+        public FileSystemChangeEnumerator(PollingFileSystemWatcher watcher, string directory, EnumerationOptions options = null)
             : base(directory, options)
         {
             _watcher = watcher;

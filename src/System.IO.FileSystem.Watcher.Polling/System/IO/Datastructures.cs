@@ -15,8 +15,6 @@ namespace System.IO.FileSystem
 
         public bool IsEmpty { get { return _changes == null || _count == 0; } }
 
-        public int Count { get { return _count; } }
-
         internal void AddAdded(string directory, string path)
         {
             Debug.Assert(path != null);
@@ -92,8 +90,8 @@ namespace System.IO.FileSystem
         internal byte _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
         public string Path;
         public string Directory;
-        public DateTimeOffset LastWrite;
-        public long FileSize;
+        public DateTimeOffset LastWriteTimeUtc;
+        public long Length;
 
         public FileState(string directory, string path) : this()
         {
@@ -105,11 +103,6 @@ namespace System.IO.FileSystem
         public override string ToString()
         {
             return Path;
-        }
-
-        internal bool IsEmpty
-        {
-            get { return Path == null; }
         }
     }
 }    
