@@ -8,9 +8,6 @@ namespace System.Text.Json.Benchmarks
 {
     public partial class Helper
     {
-        const int ExtraArraySize = 500;
-        const int BufferSize = 1024 + (ExtraArraySize * 64);
-
         public enum EncoderTarget
         {
             InvariantUtf8,
