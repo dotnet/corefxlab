@@ -52,7 +52,7 @@ namespace System.Text.Json.Benchmarks
 
         private static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, SymbolTable symbolTable)
         {
-            var json = new System.Text.Json.JsonReader(data, symbolTable);
+            var json = new JsonReader(data, symbolTable);
             while (json.Read()) ;
         }
 
