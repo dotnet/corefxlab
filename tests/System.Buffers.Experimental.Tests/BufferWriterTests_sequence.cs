@@ -66,7 +66,15 @@ namespace System.Buffers.Tests
             return _current;
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        public Span<byte> GetSpan(int minimumLength)
+        {
+            if (minimumLength == 0) minimumLength = _current.Length + 1;
+            if (minimumLength < _current.Length) throw new InvalidOperationException();
+            var newBuffer = new byte[minimumLength];
+            _current.CopyTo(newBuffer.AsSpan());
+            _current = newBuffer;
+            return _current;
+        }
 
         public int MaxBufferSize { get; } = Int32.MaxValue;
 
