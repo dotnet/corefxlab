@@ -74,7 +74,19 @@ namespace System.Text.Formatting
             return _buffer.Free;
         }
 
-        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength) => ((IBufferWriter<byte>) this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength)
+        {
+            if (minimumLength < 1) minimumLength = 1;
+            if (_buffer.Free.Count < minimumLength)
+            {
+                var doubleCount = _buffer.Free.Count * 2;
+                int newSize = minimumLength > doubleCount ? minimumLength : doubleCount;
+                var newArray = _pool.Rent(newSize + _buffer.Count);
+                var oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            return _buffer.Free;
+        }
 
         void IBufferWriter<byte>.Advance(int bytes)
         {
