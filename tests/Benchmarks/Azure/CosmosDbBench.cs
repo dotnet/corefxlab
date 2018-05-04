@@ -42,19 +42,19 @@ public class CosmosDb
     }
 
     [Benchmark(Baseline = true)]
-    public void Msdn()
+    public string Msdn()
         => CosmosDbBaselineFromMsdn(fakeKey, keyType, verb, resourceId, resourceType, version, utc);
 
     [Benchmark]
-    public void Primitives()
+    public bool Primitives()
         => TryWritePrimitives(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
         
     [Benchmark]
-    public void Writer()
+    public bool Writer()
         => CosmosDbAuthorizationHeader.TryWrite(output, sha, keyType, verb, resourceId, resourceType, version, utc, out int bytesWritten);
 
     [Benchmark]
-    public void WriterUtf8()
+    public bool WriterUtf8()
         => CosmosDbAuthorizationHeader.TryWrite(output, sha, keyTypeU8, verbU8, resourceIdU8, resourceTypeU8, versionU8, utc, out int bytesWritten);
 
     static string CosmosDbBaselineFromMsdn(string key, string keyType, string verb, string resourceId, string resourceType, string tokenVersion, DateTime utc)

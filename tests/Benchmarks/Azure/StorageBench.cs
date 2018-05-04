@@ -35,7 +35,7 @@ public class StorageBench
     }
 
     [Benchmark(Baseline = true)]
-    public void Msdn()
+    public string Msdn()
         => StorageBaselineFromMsdn(fakeKey, verb, canonicalizedResource, utc);
 
     [Benchmark]
