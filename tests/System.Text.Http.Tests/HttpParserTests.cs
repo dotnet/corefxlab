@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Testing;
 using System.Buffers.Text;
 using System.Collections.Generic;
-using System.IO.Pipelines.Testing;
 using System.Linq;
 using Xunit;
 

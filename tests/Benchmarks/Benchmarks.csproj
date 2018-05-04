@@ -23,7 +23,6 @@
     <ProjectReference Include="..\..\src\System.Binary.Base64\System.Binary.Base64.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Encodings.Web.Utf8\System.Text.Encodings.Web.Utf8.csproj" />
-    <ProjectReference Include="..\..\src\System.Text.Http.Parser\System.Text.Http.Parser.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Utf8String\System.Text.Utf8String.csproj" />
