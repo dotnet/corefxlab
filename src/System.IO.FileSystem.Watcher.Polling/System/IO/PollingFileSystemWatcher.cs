@@ -51,7 +51,7 @@ namespace System.IO.FileSystem
 
         public void Start()
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(_timer));
+            if (_disposed) throw new ObjectDisposedException(nameof(PollingFileSystemWatcher));
 
             ComputeChangesAndUpdateState(); // captures the initial state
             _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
