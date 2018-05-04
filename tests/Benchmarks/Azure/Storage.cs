@@ -13,7 +13,7 @@ using System.Text;
 using System.Text.Utf8;
 using System.Runtime.InteropServices;
 
-public class StorageBench
+public class Storage
 {
     static string canonicalizedResource = "/myaccount /mycontainer\ncomp:metadata\nrestype:container\ntimeout:20";
     static string fakeKey = "TjW7xr4kKR67qgt2y3fAAMxvC2neMHT6cKawiliGCsDkxSS34V0EnwL8GKrA6ZTIfNrXK91t1Ey3RmEKQLrrCA==";

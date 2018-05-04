@@ -35,7 +35,7 @@ public class CosmosDb
     static Sha256 sha;
 
     [GlobalSetup]
-    public void CosmosDbBench()
+    public void Setup()
     {
         var keyBytes = Key.ComputeKeyBytes(fakeKey);
         sha = Sha256.Create(keyBytes);
