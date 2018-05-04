@@ -86,5 +86,14 @@ namespace System.Text.Utf8.Resources {
                 return ResourceManager.GetString("Argument_OutputBufferTooSmall", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be non-negative..
+        /// </summary>
+        internal static string ValueMustBeNonNegative {
+            get {
+                return ResourceManager.GetString("ValueMustBeNonNegative", resourceCulture);
+            }
+        }
     }
 }

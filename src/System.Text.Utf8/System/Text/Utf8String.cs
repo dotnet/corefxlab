@@ -486,13 +486,55 @@ namespace System.Text
 
         public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => Bytes.Slice(startIndex, count).LastIndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public Utf8String PadLeft(int totalWidth) => throw null;
+        public Utf8String PadLeft(int totalWidth) => PadLeft(totalWidth, (Utf8Char)' ');
 
-        public Utf8String PadLeft(int totalWidth, Utf8Char paddingChar) => throw null;
+        public Utf8String PadLeft(int totalWidth, Utf8Char paddingChar)
+        {
+            if (totalWidth <= _length)
+            {
+                if (totalWidth < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        paramName: nameof(totalWidth),
+                        message: Strings.ValueMustBeNonNegative);
+                }
+                else
+                {
+                    return this;
+                }
+            }
 
-        public Utf8String PadRight(int totalWidth) => throw null;
+            return CreateInternal(totalWidth, (paddingChar, padLength: totalWidth - _length, source: this), (span, state) =>
+            {
+                span.Slice(0, state.padLength).Fill((byte)state.paddingChar);
+                state.source.Bytes.CopyTo(span.Slice(state.padLength));
+            });
+        }
 
-        public Utf8String PadRight(int totalWidth, Utf8Char paddingChar) => throw null;
+        public Utf8String PadRight(int totalWidth) => PadRight(totalWidth, (Utf8Char)' ');
+
+        public Utf8String PadRight(int totalWidth, Utf8Char paddingChar)
+        {
+            if (totalWidth <= _length)
+            {
+                if (totalWidth < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        paramName: nameof(totalWidth),
+                        message: Strings.ValueMustBeNonNegative);
+                }
+                else
+                {
+                    return this;
+                }
+            }
+
+            return CreateInternal(totalWidth, (paddingChar, source: this), (span, state) =>
+            {
+                state.source.Bytes.CopyTo(span);
+                span.Slice(state.source.Length).Fill((byte)state.paddingChar);
+            });
+        }
 
         public Utf8String Remove(int startIndex) => throw null;
 
