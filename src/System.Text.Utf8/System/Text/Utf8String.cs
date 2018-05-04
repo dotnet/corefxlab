@@ -580,9 +580,58 @@ namespace System.Text
 
         public bool StartsWith(Utf8String value) => throw null;
 
-        public Utf8String Substring(int startIndex) => throw null;
+        public Utf8String Substring(int startIndex)
+        {
+            // n.b. it's ok to pass a startIndex equal to Length; we'll just return an empty string
 
-        public Utf8String Substring(int startIndex, int length) => throw null;
+            if ((uint)startIndex > (uint)_length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (startIndex == 0)
+            {
+                return this;
+            }
+
+            if (startIndex == _length)
+            {
+                return Empty;
+            }
+
+            return CreateInternal(_length - startIndex, (source: this, startIndex), (span, state) =>
+            {
+                state.source.Bytes.Slice(state.startIndex).CopyTo(span);
+            });
+        }
+
+        public Utf8String Substring(int startIndex, int length)
+        {
+            if ((uint)startIndex > (uint)_length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if ((uint)length > (uint)(_length - startIndex))
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (length == _length)
+            {
+                return this;
+            }
+
+            if (length == 0)
+            {
+                return Empty;
+            }
+
+            return CreateInternal(length, (source: this, startIndex, length), (span, state) =>
+            {
+                state.source.Bytes.Slice(state.startIndex, state.length).CopyTo(span);
+            });
+        }
 
         public Utf8String ToLowerInvariant() => throw null;
 
