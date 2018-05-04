@@ -351,15 +351,34 @@ namespace System.Text
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => DangerousCreateWithoutValidation(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public static bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
+        public bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public static bool EndsWith(UnicodeScalar value) => throw null;
+        public bool EndsWith(UnicodeScalar value) => throw null;
 
-        public static bool EndsWith(Utf8Char value) => throw null;
+        public bool EndsWith(Utf8Char value)
+        {
+            int index = _data.Length - 2; // look at the penultimate byte (if there is one)
+            return ((uint)index < (uint)_data.Length) && (_data[index] == (byte)value);
+        }
 
-        public static bool EndsWith(Utf8String value) => throw null;
+        public bool EndsWith(Utf8String value) => throw null;
 
-        public override bool Equals(object value) => throw null;
+        public override bool Equals(object value)
+        {
+            if (ReferenceEquals(this, value))
+            {
+                return true; // same objects being compared
+            }
+
+            if (!(value is Utf8String valueAsUtf8String) || this._length != valueAsUtf8String._length)
+            {
+                return false; // value is null, not a Utf8String, or has different length than this
+            }
+
+            // TODO: The below method performs some redundant checks, such as address referential equality and length checking.
+            // We need a low-level helper routine that elides these checks.
+            return this.Bytes.SequenceEqual(valueAsUtf8String.Bytes);
+        }
 
         public bool Equals(Utf8String value) => Equals(this, value);
 
@@ -511,7 +530,11 @@ namespace System.Text
 
         public bool StartsWith(UnicodeScalar value) => throw null;
 
-        public bool StartsWith(Utf8Char value) => throw null;
+        public bool StartsWith(Utf8Char value)
+        {
+            // Length > 1 check is so that we're not comparing against the null terminator
+            return (_data.Length > 1) && (_data[0] == (byte)value);
+        }
 
         public bool StartsWith(Utf8String value) => throw null;
 
