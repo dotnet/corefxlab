@@ -92,7 +92,7 @@ namespace System.Text
 
         public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1)
+        public static Utf8String Concat(Utf8String str0, Utf8String str1)
         {
             Utf8String singleValueToReturn = Empty;
 
@@ -125,7 +125,7 @@ namespace System.Text
             });
         }
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2)
+        public static Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2)
         {
             Utf8String singleValueToReturn = Empty;
 
@@ -171,7 +171,7 @@ namespace System.Text
             });
         }
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2, Utf8String str3)
+        public static Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2, Utf8String str3)
         {
             Utf8String singleValueToReturn = Empty;
 
@@ -230,7 +230,7 @@ namespace System.Text
             });
         }
 
-        public Utf8String Concat(params Utf8String[] values)
+        public static Utf8String Concat(params Utf8String[] values)
         {
             if (values == null)
             {
@@ -283,9 +283,17 @@ namespace System.Text
 
         public bool Contains(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public bool Contains(UnicodeScalar value) => throw null;
+        public bool Contains(UnicodeScalar value)
+        {
+            // TODO: Create a proper optimized Contains method.
+            return (IndexOf(value) >= 0);
+        }
 
-        public bool Contains(Utf8Char value) => throw null;
+        public bool Contains(Utf8Char value)
+        {
+            // TODO: Call a proper Contains method when it's introduced on MemoryExtensions.
+            return (IndexOf(value) >= 0);
+        }
 
         public bool Contains(Utf8String value) => throw null;
 
@@ -420,11 +428,56 @@ namespace System.Text
 
         public int IndexOf(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
 
-        public int IndexOf(UnicodeScalar value) => throw null;
+        public int IndexOf(UnicodeScalar value)
+        {
+            // Special-case ASCII since it's only a single UTF-8 code unit.
 
-        public int IndexOf(UnicodeScalar value, int startIndex) => throw null;
+            if (value.IsAscii)
+            {
+                return IndexOf((Utf8Char)value.Value);
+            }
 
-        public int IndexOf(UnicodeScalar value, int startIndex, int count) => throw null;
+            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
+            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
+
+            // TODO: Use an IndexOf method that's optimized for short search targets.
+
+            return Bytes.IndexOf(buffer.Slice(actualCodeUnitCount));
+        }
+
+        public int IndexOf(UnicodeScalar value, int startIndex)
+        {
+            // Special-case ASCII since it's only a single UTF-8 code unit.
+
+            if (value.IsAscii)
+            {
+                return IndexOf((Utf8Char)value.Value, startIndex);
+            }
+
+            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
+            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
+
+            // TODO: Use an IndexOf method that's optimized for short search targets.
+
+            return Bytes.Slice(startIndex).IndexOf(buffer.Slice(actualCodeUnitCount));
+        }
+
+        public int IndexOf(UnicodeScalar value, int startIndex, int count)
+        {
+            // Special-case ASCII since it's only a single UTF-8 code unit.
+
+            if (value.IsAscii)
+            {
+                return IndexOf((Utf8Char)value.Value, startIndex, count);
+            }
+
+            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
+            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
+
+            // TODO: Use an IndexOf method that's optimized for short search targets.
+
+            return Bytes.Slice(startIndex, count).IndexOf(buffer.Slice(actualCodeUnitCount));
+        }
 
         public int IndexOf(Utf8Char value) => Bytes.IndexOf((byte)value);
 
