@@ -1,6 +1,9 @@
 @echo off
 setlocal
 
+if not exist dotnetcli GOTO PROMPT
+
+:: Since the dotnetcli folder exists, the dotnet.exe, if running, is probably from here
 tasklist /FI "IMAGENAME eq dotnet.exe" 2>NUL | find /I /N "dotnet.exe">NUL
 if "%ERRORLEVEL%"=="0" (
     echo Killing all instances of dotnet.exe that are running.
