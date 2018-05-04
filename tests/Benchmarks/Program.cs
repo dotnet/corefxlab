@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
@@ -17,8 +18,16 @@ namespace Benchmarks
         /// <param name="args"></param>
         public static void Main(string[] args)
             => BenchmarkSwitcher
-                .FromAssembly(typeof(Program).Assembly)         
+                .FromAssemblyAndTypes(typeof(Program).Assembly, GetGenericBenchmarks())         
                 .Run(args/*, CreateClrVsCoreConfig() uncomment it to run Clr vs .NET Core comparison*/);
+
+        // BenchmarkDotNet can run generic benchmarks, if it knows what generic type arguments to use
+        private static Type[] GetGenericBenchmarks()
+            => new[]
+            {
+                typeof(HttpParser<Request>),
+                typeof(HttpParser<RequestStruct>),
+            };
 
         private static IConfig CreateClrVsCoreConfig()
             => DefaultConfig.Instance

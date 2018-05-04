@@ -5,11 +5,10 @@
 using BenchmarkDotNet.Attributes;
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Http.Parser;
 
-public class HttpParser
+public class HttpParser<T> where T : IHttpHeadersHandler, IHttpRequestLineHandler, new()
 {
     private const string _plaintextTechEmpowerRequest =
         "GET /plaintext HTTP/1.1\r\n" +
@@ -32,30 +31,25 @@ public class HttpParser
 
     private static readonly System.Text.Http.Parser.HttpParser s_parser = new System.Text.Http.Parser.HttpParser();
 
-    [Benchmark]
-    public void RequestLine()
-    {
-        var request = new Request();
-        s_parser.ParseRequestLine(request, s_plaintextTechEmpowerRequestRos, out _, out _);
-    }
+    // new T(); is very expensive because it calls Activator.CreateInstance
+    // so we create it once and keep it in the field (the benchmarks are not mutating it's state so it's fine)
+    private T request = new T(); 
 
     [Benchmark]
-    public void Headers()
-    {
-        var request = new Request();
-        s_parser.ParseHeaders(request, s_plaintextTechEmpowerHeadersRos, out _, out _, out _);
-    }
+    public void RequestLine() => s_parser.ParseRequestLine(request, s_plaintextTechEmpowerRequestRos, out _, out _);
+
+    [Benchmark]
+    public void Headers() => s_parser.ParseHeaders(request, s_plaintextTechEmpowerHeadersRos, out _, out _, out _);
 
     [Benchmark]
     public void FullRequest()
     {
-        var request = new Request();
         s_parser.ParseRequestLine(request, s_plaintextTechEmpowerRequestRos, out var consumed, out _);
         s_parser.ParseHeaders(request, s_plaintextTechEmpowerRequestRos.Slice(consumed), out consumed, out _, out _);
     }
 }
 
-class Request : IHttpHeadersHandler, IHttpRequestLineHandler
+public class Request : IHttpHeadersHandler, IHttpRequestLineHandler
 {
     //public Http.Method Method;
     //public Http.Version Version;
@@ -63,7 +57,7 @@ class Request : IHttpHeadersHandler, IHttpRequestLineHandler
     //public string Query;
     //public string Target;
 
-    public Dictionary<string, string> Headers = new Dictionary<string, string>();
+    //public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
     public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
     {
@@ -82,7 +76,7 @@ class Request : IHttpHeadersHandler, IHttpRequestLineHandler
     }
 }
 
-struct RequestStruct : IHttpHeadersHandler, IHttpRequestLineHandler
+public struct RequestStruct : IHttpHeadersHandler, IHttpRequestLineHandler
 {
     //public Http.Method Method;
     //public Http.Version Version;
