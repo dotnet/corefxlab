@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Code;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,7 @@ namespace System.Text.Json.Benchmarks
     {
         private const int ExtraArraySize = 500;
 
-        private const int BufferSize = 1024 + (ExtraArraySize * 64);
+        public const int BufferSize = 1024 + (ExtraArraySize * 64);
 
         private ArrayFormatter _arrayFormatter;
         private SymbolTable _symbolTable;
@@ -68,31 +69,47 @@ namespace System.Text.Json.Benchmarks
             WriterNewtonsoftHelloWorld(Formatted, _writer);
         }
 
+        // Skipping this test for now since it results in too many extra permutations
+        // The Target Param is redundant here so we end up running this test twice.
         //[Benchmark]
         [ArgumentsSource(nameof(GetWriterSystemTextJsonParameters))]
-        public void WriterSlowSystemTextJsonHelloWorld(bool formatted, ArrayFormatter formatter)
+        public void WriterSlowSystemTextJsonHelloWorld(ArrayFormatter formatter)
         {
             formatter.Clear();
-            WriterSystemTextJsonHelloWorld(formatted, formatter);
+            WriterSystemTextJsonHelloWorld(Formatted, formatter);
         }
 
+        // Skipping this test for now since it results in too many extra permutations
+        // The Target Param is redundant here so we end up running this test twice.
         //[Benchmark]
         [ArgumentsSource(nameof(GetWriterSystemTextJsonParameters))]
-        public void WriterSlowSystemTextJsonBasic(bool formatted, ArrayFormatter formatter)
+        public void WriterSlowSystemTextJsonBasic(ArrayFormatter formatter)
         {
             formatter.Clear();
-            WriterSystemTextJsonBasic(formatted, formatter);
+            WriterSystemTextJsonBasic(Formatted, formatter);
         }
 
-        // Cannot use this since ArrayFormatter is not a compile time constant
-        // System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.MissingMethodException: No parameterless constructor defined for this object.
         public IEnumerable<object[]> GetWriterSystemTextJsonParameters()
         {
-            yield return new object[] { true, new ArrayFormatter(BufferSize, GetTargetEncoder(EncoderTarget.SlowUtf8)) };
-            yield return new object[] { false, new ArrayFormatter(BufferSize, GetTargetEncoder(EncoderTarget.SlowUtf8)) };
+            yield return new object[] { new ArrayFormatterParam(EncoderTarget.SlowUtf8) };
+            yield return new object[] { new ArrayFormatterParam(EncoderTarget.SlowUtf16) };
+        }
 
-            yield return new object[] { true, new ArrayFormatter(BufferSize, GetTargetEncoder(EncoderTarget.SlowUtf16)) };
-            yield return new object[] { false, new ArrayFormatter(BufferSize, GetTargetEncoder(EncoderTarget.SlowUtf16)) };
+        public class ArrayFormatterParam : IParam
+        {
+            private readonly EncoderTarget _target;
+
+            public ArrayFormatterParam(EncoderTarget target)
+            {
+                _target = target;
+            }
+
+            public object Value => new ArrayFormatter(BufferSize, GetTargetEncoder(_target));
+
+            public string DisplayText => $"({_target})";
+
+            public string ToSourceCode()
+                => $"new System.Text.Formatting.ArrayFormatter(BufferSize, System.Text.Json.Benchmarks.Helper.GetTargetEncoder(System.Text.Json.Benchmarks.Helper.EncoderTarget.{_target}))";
         }
 
         private static void WriterSystemTextJsonBasic(bool formatted, ArrayFormatter output)
