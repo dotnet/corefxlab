@@ -426,11 +426,11 @@ namespace System.Text
 
         public int IndexOf(UnicodeScalar value, int startIndex, int count) => throw null;
 
-        public int IndexOf(Utf8Char value) => throw null;
+        public int IndexOf(Utf8Char value) => Bytes.IndexOf((byte)value);
 
-        public int IndexOf(Utf8Char value, int startIndex) => throw null;
+        public int IndexOf(Utf8Char value, int startIndex) => Bytes.Slice(startIndex).IndexOf((byte)value);
 
-        public int IndexOf(Utf8Char value, int startIndex, int count) => throw null;
+        public int IndexOf(Utf8Char value, int startIndex, int count) => Bytes.Slice(startIndex, count).IndexOf((byte)value);
 
         public int IndexOf(Utf8String value) => throw null;
 
@@ -438,11 +438,11 @@ namespace System.Text
 
         public int IndexOf(Utf8String value, int startIndex, int count) => throw null;
 
-        public int IndexOfAny(ReadOnlySpan<Utf8Char> value) => throw null;
+        public int IndexOfAny(ReadOnlySpan<Utf8Char> value) => Bytes.IndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public int IndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex) => throw null;
+        public int IndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex) => Bytes.Slice(startIndex).IndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public int IndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
+        public int IndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => Bytes.Slice(startIndex, count).IndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
         public Utf8String Insert(int startIndex, ReadOnlySpan<Utf8Char> value) => throw null;
 
@@ -468,11 +468,11 @@ namespace System.Text
 
         public int LastIndexOf(UnicodeScalar value, int startIndex, int count) => throw null;
 
-        public int LastIndexOf(Utf8Char value) => throw null;
+        public int LastIndexOf(Utf8Char value) => Bytes.LastIndexOf((byte)value);
 
-        public int LastIndexOf(Utf8Char value, int startIndex) => throw null;
+        public int LastIndexOf(Utf8Char value, int startIndex) => Bytes.Slice(startIndex).LastIndexOf((byte)value);
 
-        public int LastIndexOf(Utf8Char value, int startIndex, int count) => throw null;
+        public int LastIndexOf(Utf8Char value, int startIndex, int count) => Bytes.Slice(startIndex, count).LastIndexOf((byte)value);
 
         public int LastIndexOf(Utf8String value) => throw null;
 
@@ -480,11 +480,11 @@ namespace System.Text
 
         public int LastIndexOf(Utf8String value, int startIndex, int count) => throw null;
 
-        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value) => throw null;
+        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value) => Bytes.LastIndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex) => throw null;
+        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex) => Bytes.Slice(startIndex).LastIndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
-        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
+        public int LastIndexOfAny(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => Bytes.Slice(startIndex, count).LastIndexOfAny(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
         public Utf8String PadLeft(int totalWidth) => throw null;
 
