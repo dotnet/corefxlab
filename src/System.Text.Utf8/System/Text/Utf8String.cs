@@ -26,11 +26,16 @@ namespace System.Text
         {
         }
 
-        // private ctor roughly corresponding to FastAllocateString; caller must check parameters
+        // private ctor roughly corresponding to FastAllocateString
         private Utf8String(int length)
         {
+            if (length < 0)
+            {
+                throw new OutOfMemoryException(); // something overflowed in the caller
+            }
+
             _length = length;
-            _data = new byte[length + 1]; // zero-inited
+            _data = new byte[length + 1]; // zero-inited; array ctor will check for overflow
         }
 
         public Utf8String(ReadOnlySpan<byte> value) => throw null;
@@ -87,13 +92,194 @@ namespace System.Text
 
         public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1) => throw null;
+        public Utf8String Concat(Utf8String str0, Utf8String str1)
+        {
+            Utf8String singleValueToReturn = Empty;
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2) => throw null;
+            if (!IsNullOrEmpty(str0))
+            {
+                singleValueToReturn = str0;
+            }
 
-        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str3, Utf8String str4) => throw null;
+            if (!IsNullOrEmpty(str1))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str1;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
 
-        public Utf8String Concat(params Utf8String[] values) => throw null;
+            return singleValueToReturn;
+
+        AllocateAndCopy:
+
+            // overflow will be checked by the ctor or the CopyTo routine
+            return CreateInternal(str0.Length + str1.Length, (str0, str1), (span, state) =>
+            {
+                str0.Bytes.CopyTo(span);
+                str1.Bytes.CopyTo(span.Slice(str0.Length));
+            });
+        }
+
+        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2)
+        {
+            Utf8String singleValueToReturn = Empty;
+
+            if (!IsNullOrEmpty(str0))
+            {
+                singleValueToReturn = str0;
+            }
+
+            if (!IsNullOrEmpty(str1))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str1;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
+
+            if (!IsNullOrEmpty(str2))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str2;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
+
+            return singleValueToReturn;
+
+        AllocateAndCopy:
+
+            // overflow will be checked by the ctor or the CopyTo routine
+            return CreateInternal(str0.Length + str1.Length + str2.Length, (str0, str1, str2), (span, state) =>
+            {
+                str0.Bytes.CopyTo(span);
+                str1.Bytes.CopyTo(span = span.Slice(str0.Length));
+                str2.Bytes.CopyTo(span.Slice(str1.Length));
+            });
+        }
+
+        public Utf8String Concat(Utf8String str0, Utf8String str1, Utf8String str2, Utf8String str3)
+        {
+            Utf8String singleValueToReturn = Empty;
+
+            if (!IsNullOrEmpty(str0))
+            {
+                singleValueToReturn = str0;
+            }
+
+            if (!IsNullOrEmpty(str1))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str1;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
+
+            if (!IsNullOrEmpty(str2))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str2;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
+
+            if (!IsNullOrEmpty(str3))
+            {
+                if (singleValueToReturn.Length == 0)
+                {
+                    singleValueToReturn = str3;
+                }
+                else
+                {
+                    goto AllocateAndCopy;
+                }
+            }
+
+            return singleValueToReturn;
+
+        AllocateAndCopy:
+
+            // overflow will be checked by the ctor or the CopyTo routine
+            return CreateInternal(str0.Length + str1.Length + str2.Length + str3.Length, (str0, str1, str2, str3), (span, state) =>
+            {
+                str0.Bytes.CopyTo(span);
+                str1.Bytes.CopyTo(span = span.Slice(str0.Length));
+                str2.Bytes.CopyTo(span = span.Slice(str1.Length));
+                str3.Bytes.CopyTo(span.Slice(str2.Length));
+            });
+        }
+
+        public Utf8String Concat(params Utf8String[] values)
+        {
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
+            if (values.Length <= 1)
+            {
+                return (values.Length == 0) ? Empty : (values[0] ?? Empty);
+            }
+
+            int totalRequiredLength = 0;
+            foreach (var item in values)
+            {
+                if (item != null)
+                {
+                    // it's ok if this overflows; it'll be checked later
+                    totalRequiredLength += item.Length;
+                }
+            }
+
+            // overflow will be checked by the ctor or the CopyTo routine
+            return CreateInternal(totalRequiredLength, values, (span, innerValues) =>
+            {
+                // It's possible that the underlying 'values' array could be mutated while
+                // we're working with it. If the destination buffer is too small, the
+                // CopyTo method will throw an exception; if the destination buffer is too
+                // large, we'll throw at the end of this method. If by coincidence the buffer
+                // happens to be correctly sized even in the face of mutating data, just let
+                // it slide.
+
+                foreach (var item in innerValues)
+                {
+                    if (item != null)
+                    {
+                        item.Bytes.CopyTo(span);
+                        span = span.Slice(item.Length);
+                    }
+                }
+
+                if (!span.IsEmpty)
+                {
+                    // String.Concat(params string[]) has logic to retry the loop in the event of
+                    // the 'values' array being mutated. But honestly, nobody should be doing this,
+                    // so we'll just throw rather than try to recover.
+                    throw new InvalidOperationException();
+                }
+            });
+        }
 
         public bool Contains(ReadOnlySpan<Utf8Char> value) => throw null;
 
@@ -106,6 +292,13 @@ namespace System.Text
         public static Utf8String Create<TState>(int length, TState state, SpanAction<byte, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: true);
 
         public static Utf8String Create<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: true);
+
+        private static Utf8String CreateInternal<TState>(int length, TState state, SpanAction<byte, TState> action)
+        {
+            var retVal = new Utf8String(length);
+            action(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(retVal.Bytes), length), state);
+            return retVal;
+        }
 
         private static Utf8String CreateFromUserInputCommon<TState, TCodeUnit>(int length, TState state, SpanAction<TCodeUnit, TState> action, bool validateInput)
             where TCodeUnit : struct
@@ -325,7 +518,7 @@ namespace System.Text
         public Utf8String Substring(int startIndex) => throw null;
 
         public Utf8String Substring(int startIndex, int length) => throw null;
-        
+
         public Utf8String ToLowerInvariant() => throw null;
 
         public override string ToString() => throw null;
