@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text.Utf8.Resources;
 
 namespace System.Text
 {
@@ -102,15 +103,44 @@ namespace System.Text
 
         public bool Contains(Utf8String value) => throw null;
 
-        public static Utf8String Create<TState>(int length, TState state, SpanAction<byte, TState> action) => throw null;
+        public static Utf8String Create<TState>(int length, TState state, SpanAction<byte, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: true);
 
-        public static Utf8String Create<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => throw null;
+        public static Utf8String Create<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: true);
+
+        private static Utf8String CreateFromUserInputCommon<TState, TCodeUnit>(int length, TState state, SpanAction<TCodeUnit, TState> action, bool validateInput)
+            where TCodeUnit : struct
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (length <= 0)
+            {
+                if (length < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(length));
+                }
+
+                return Empty;
+            }
+
+            var retVal = new Utf8String(length);
+            action(MemoryMarshal.CreateSpan(ref Unsafe.As<byte, TCodeUnit>(ref MemoryMarshal.GetReference(retVal.Bytes)), length), state);
+
+            if (validateInput && !retVal.IsWellFormed())
+            {
+                throw new ArgumentException(Strings.Argument_CreateCallbackReturnedIllFormedUtf8String);
+            }
+
+            return retVal;
+        }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<byte, TState> action) => throw null;
+        public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<byte, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: false);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => throw null;
+        public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: false);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<byte> value)
@@ -212,6 +242,8 @@ namespace System.Text
 
         public static bool IsNullOrWhiteSpace(Utf8String value) => throw null;
 
+        internal bool IsWellFormed() => throw null;
+
         public int LastIndexOf(ReadOnlySpan<Utf8Char> value) => throw null;
 
         public int LastIndexOf(ReadOnlySpan<Utf8Char> value, int startIndex) => throw null;
@@ -293,7 +325,7 @@ namespace System.Text
         public Utf8String Substring(int startIndex) => throw null;
 
         public Utf8String Substring(int startIndex, int length) => throw null;
-
+        
         public Utf8String ToLowerInvariant() => throw null;
 
         public override string ToString() => throw null;

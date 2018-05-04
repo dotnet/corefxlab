@@ -61,6 +61,15 @@ namespace System.Text.Utf8.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provided callback created a UTF-8 string that is not well-formed..
+        /// </summary>
+        internal static string Argument_CreateCallbackReturnedIllFormedUtf8String {
+            get {
+                return ResourceManager.GetString("Argument_CreateCallbackReturnedIllFormedUtf8String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The provided argument is not a valid Unicode scalar value. Unicode scalar values must be within the range [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive..
         /// </summary>
         internal static string Argument_NotValidUnicodeScalar {
