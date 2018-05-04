@@ -21,9 +21,15 @@ namespace System.Text
 
         // private ctor for singleton Empty instance
         private Utf8String()
+            : this(0)
         {
-            _length = 0;
-            _data = new byte[1];
+        }
+
+        // private ctor roughly corresponding to FastAllocateString; caller must check parameters
+        private Utf8String(int length)
+        {
+            _length = length;
+            _data = new byte[length + 1]; // zero-inited
         }
 
         public Utf8String(ReadOnlySpan<byte> value) => throw null;
@@ -107,10 +113,20 @@ namespace System.Text
         public static Utf8String DangerousCreateWithoutValidation<TState>(int length, TState state, SpanAction<Utf8Char, TState> action) => throw null;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<byte> value) => throw null;
+        public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<byte> value)
+        {
+            if (value.IsEmpty)
+            {
+                return Empty;
+            }
+
+            var retVal = new Utf8String(value.Length);
+            value.CopyTo(retVal._data); // TODO: remove unneeded bounds check; guaranteed not to overwrite null terminator
+            return retVal;
+        }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => throw null;
+        public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => DangerousCreateWithoutValidation(MemoryMarshal.Cast<Utf8Char, byte>(value));
 
         public static bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
