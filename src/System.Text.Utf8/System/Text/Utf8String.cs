@@ -6,6 +6,8 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Text
 {
@@ -14,6 +16,16 @@ namespace System.Text
     /// </summary>
     public sealed class Utf8String : IComparable, IComparable<Utf8String>, IConvertible, IEnumerable<Utf8Char>, IEquatable<Utf8String>
     {
+        private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
+        private readonly byte[] _data; // the backing data for this string; guaranteed size (_length + 1) and null-terminated
+
+        // private ctor for singleton Empty instance
+        private Utf8String()
+        {
+            _length = 0;
+            _data = new byte[1];
+        }
+
         public Utf8String(ReadOnlySpan<byte> value) => throw null;
 
         public Utf8String(ReadOnlySpan<char> value) => throw null;
@@ -22,29 +34,45 @@ namespace System.Text
 
         public Utf8String(string value) => throw null;
 
-        public static bool operator ==(Utf8String a, Utf8String b) => throw null;
+        public static bool operator ==(Utf8String a, Utf8String b) => Equals(a, b);
 
-        public static bool operator ==(string a, Utf8String b) => throw null;
+        public static bool operator !=(Utf8String a, Utf8String b) => !Equals(a, b);
 
-        public static bool operator ==(Utf8String a, string b) => throw null;
+        public static implicit operator ReadOnlySpan<Utf8Char>(Utf8String value) => (value != null) ? value.Chars : default;
 
-        public static bool operator !=(Utf8String a, Utf8String b) => throw null;
+        public ref readonly Utf8Char this[int index]
+        {
+            get => ref Chars[index];
+        }
 
-        public static bool operator !=(string a, Utf8String b) => throw null;
+        public ReadOnlySpan<byte> Bytes
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                // The logic below looks weird, but it's a performance optimization.
+                // We know as an implementation detail that the _data field is always at least one
+                // element in length. But the JIT doesn't know this, so it'll emit a bounds check if we use
+                // the simple "ref _data[0]" syntax. Bouncing the logic through MemoryMarshal
+                // eliminates that check. However, there's a new issue: the ReadOnlySpan ctor has
+                // a check for a null array parameter. By querying and throwing away the Length
+                // property, this forces a dereference of the object, which allows the JIT to reason
+                // that for the remainder of the method _data must be non-null, so it can eliminate
+                // the null check code paths in the ReadOnlySpan ctor.
+                //
+                // n.b. The use of _length rather than _data.Length in the returned span. We don't expose the
+                // null terminator to the caller.
 
-        public static bool operator !=(Utf8String a, string b) => throw null;
+                var unused = _data.Length;
+                return MemoryMarshal.CreateReadOnlySpan(ref MemoryMarshal.GetReference(new ReadOnlySpan<byte>(_data)), _length);
+            }
+        }
 
-        public static implicit operator ReadOnlySpan<Utf8Char>(Utf8String value) => throw null;
+        public ReadOnlySpan<Utf8Char> Chars => MemoryMarshal.Cast<byte, Utf8Char>(Bytes);
 
-        public Utf8Char this[int index] => throw null;
+        public static readonly Utf8String Empty = new Utf8String();
 
-        public ReadOnlySpan<byte> Bytes => throw null;
-
-        public ReadOnlySpan<Utf8Char> Chars => throw null;
-
-        public static readonly Utf8String Empty;
-
-        public int Length => throw null;
+        public int Length => _length;
 
         public ScalarSequence Scalars => throw null;
 
@@ -84,9 +112,6 @@ namespace System.Text
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref readonly Utf8Char DangerousGetPinnableReference() => throw null;
-
         public static bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
         public static bool EndsWith(UnicodeScalar value) => throw null;
@@ -95,15 +120,41 @@ namespace System.Text
 
         public static bool EndsWith(Utf8String value) => throw null;
 
-        public override bool Equals(object other) => throw null;
+        public override bool Equals(object value) => throw null;
 
-        public bool Equals(Utf8String other) => throw null;
+        public bool Equals(Utf8String value) => Equals(this, value);
 
-        public bool Equals(string other) => throw null;
+        public bool Equals(string value) => throw null;
+
+        public static bool Equals(Utf8String a, Utf8String b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true; // same objects being compared
+            }
+
+            if (a == null || b == null || a.Length != b.Length)
+            {
+                return false; // one null and one non-null object, or two non-null objects of different length
+            }
+
+            // TODO: The below method performs some redundant checks, such as address referential equality and length checking.
+            // We need a low-level helper routine that elides these checks.
+            return a.Bytes.SequenceEqual(b.Bytes);
+        }
 
         public Enumerator GetEnumerator() => throw null;
 
-        public override int GetHashCode() => throw null;
+        public override int GetHashCode() => Marvin.ComputeHash32(Bytes, Marvin.Utf8StringSeed);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref readonly Utf8Char GetPinnableReference()
+        {
+            // See comments in get_Bytes for why this code is written as such.
+
+            var unused = _data.Length;
+            return ref Unsafe.As<byte, Utf8Char>(ref MemoryMarshal.GetReference(new ReadOnlySpan<byte>(_data)));
+        }
 
         public int IndexOf(ReadOnlySpan<Utf8Char> value) => throw null;
 
@@ -141,7 +192,7 @@ namespace System.Text
 
         public Utf8String Insert(int startIndex, Utf8String value) => throw null;
 
-        public static bool IsNullOrEmpty(Utf8String value) => throw null;
+        public static bool IsNullOrEmpty(Utf8String value) => (value == null || value.Length == 0);
 
         public static bool IsNullOrWhiteSpace(Utf8String value) => throw null;
 
