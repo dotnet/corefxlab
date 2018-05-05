@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -20,13 +20,11 @@
     <PackageReference Include="xunit.netcore.extensions" Version="1.0.0-prerelease-*" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
-    <PackageReference Include="xunit.performance.core" Version="$(XunitPerformanceVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Text.Json\System.Text.JsonLab.csproj" />
   </ItemGroup>
   <!-- Project references -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\System.Text.JsonLab.Dynamic\System.Text.JsonLab.Dynamic.csproj" />
+  </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
