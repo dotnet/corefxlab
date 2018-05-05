@@ -7,9 +7,9 @@
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Text.Json\System.Text.Json.csproj" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion)" />
+    <ProjectReference Include="..\System.Text.Json\System.Text.JsonLab.csproj" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
-namespace System.Text.Json.Tests
+namespace System.Text.JsonLab.Tests
 {
     public class PerfSmokeTests
     {

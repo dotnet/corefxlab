@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Text.Utf8;
 
-namespace System.Text.Json.Tests
+namespace System.Text.JsonLab.Tests
 {
     public class TestDom
     {

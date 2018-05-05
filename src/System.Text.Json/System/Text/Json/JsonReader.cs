@@ -5,7 +5,7 @@ using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     public ref struct JsonReader
     {

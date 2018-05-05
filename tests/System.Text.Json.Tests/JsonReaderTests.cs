@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json.Tests.Resources;
 using Xunit;
 
-namespace System.Text.Json.Tests
+namespace System.Text.JsonLab.Tests
 {
     public class JsonReaderTests
     {

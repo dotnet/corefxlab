@@ -7,7 +7,7 @@ using System.Text.Formatting;
 using System.Text.Utf8;
 using Xunit;
 
-namespace System.Text.Json.Dynamic.Tests
+namespace System.Text.JsonLab.Dynamic.Tests
 {
     public class JsonDynamicObjectTests
     {

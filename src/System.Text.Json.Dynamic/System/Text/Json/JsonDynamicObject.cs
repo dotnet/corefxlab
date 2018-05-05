@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Utf8;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     public class JsonDynamicObject : DynamicObject, IBufferFormattable
     {

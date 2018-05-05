@@ -4,7 +4,7 @@
 
 using System.Buffers;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     static class JsonConstants
     {

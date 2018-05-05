@@ -4,7 +4,7 @@
 using System.Buffers.Text;
 using Xunit;
 
-namespace System.Text.Json.Benchmarks
+namespace System.Text.JsonLab.Benchmarks
 {
     public partial class Helper
     {

@@ -9,7 +9,7 @@ using System.Text.Utf8;
 using static System.Buffers.Binary.BinaryPrimitives;
 using static System.Runtime.InteropServices.MemoryMarshal;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     public ref struct JsonObject
     {

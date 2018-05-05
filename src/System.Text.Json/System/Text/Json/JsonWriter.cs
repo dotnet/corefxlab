@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Formatting;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     public struct JsonWriter
     {

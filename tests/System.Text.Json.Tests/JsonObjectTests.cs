@@ -6,7 +6,7 @@ using System.Text.Json.Tests.Resources;
 using System.Text.Utf8;
 using Xunit;
 
-namespace System.Text.Json.Tests
+namespace System.Text.JsonLab.Tests
 {
     public class JsonObjectTests
     {

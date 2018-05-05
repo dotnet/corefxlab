@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Formatting;
 
-using static System.Text.Json.Benchmarks.Helper;
+using static System.Text.JsonLab.Benchmarks.Helper;
 
-namespace System.Text.Json.Benchmarks
+namespace System.Text.JsonLab.Benchmarks
 {
     [MemoryDiagnoser]
     public class JsonWriterPerf
