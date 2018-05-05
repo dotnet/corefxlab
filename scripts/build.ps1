@@ -16,20 +16,12 @@ $dotnetExePath="$PSScriptRoot\..\dotnetcli\dotnet.exe"
 if ($Version -eq "<default>") {
     $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
 }
-$SharedVersion = (Get-Content "$PSScriptRoot\..\SharedRuntimeVersion.txt" -Raw).Trim()
 
 if (!(Test-Path "$PSScriptRoot\..\dotnetcli")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
     Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
-        exit -1
-    }
-
-    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnetcli -SharedRuntime"
-    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
-        Write-Error "Failed to install latest 2.1.0 shared runtime (version $SharedVersion), exit code [$lastexitcode], aborting build."
         exit -1
     }
 
@@ -53,17 +45,6 @@ if (!(Test-Path "$PSScriptRoot\..\dotnetcli")) {
         Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnetcli"
         if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
             Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
-            exit -1
-        }
-    }
-
-    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-    $installedRuntimeVersions = Invoke-Expression "$dotnetExePath --list-runtimes" | %{ $_.split(" ")[1] } | Select-Object
-    if (!($installedRuntimeVersions.Contains($SharedVersion))) {
-        Write-Host "Newest version of dotnet runtime not installed, downloading and installing."
-        Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $SharedVersion -InstallDir $PSScriptRoot\..\dotnetcli -SharedRuntime"
-        if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
-            Write-Error "Failed to install latest shared runtime (version $SharedVersion), exit code [$lastexitcode], aborting build."
             exit -1
         }
     }

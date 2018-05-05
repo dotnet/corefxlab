@@ -35,7 +35,6 @@ dotnetExePath="dotnetcli/dotnet"
 if [ "$Version" = "<default>" ]; then
   Version=$(head -n 1 "DotnetCLIVersion.txt")
 fi
-SharedVersion=$(head -n 1 "SharedRuntimeVersion.txt")
 
 if [ ! -d "dotnetcli" ]; then
   echo "dotnet.exe not installed, downloading and installing."
@@ -43,14 +42,6 @@ if [ ! -d "dotnetcli" ]; then
   ret=$?
   if [ $ret -ne 0 ]; then
     echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
-    exit -1
-  fi
-
-  # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-  ./scripts/install-dotnet.sh -Channel master -Version "$SharedVersion" -InstallDir "dotnetcli" -SharedRuntime
-  ret=$?
-  if [ $ret -ne 0 ]; then
-    echo "Failed to install latest shared runtime (version $SharedVersion), exit code $ret, aborting build."
     exit -1
   fi
 
@@ -76,25 +67,6 @@ else
     ret=$?
 	if [ $ret -ne 0 ]; then
       echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
-      exit -1
-    fi
-  fi
-
-  installedRuntimeVersions=($(./$dotnetExePath --list-runtimes | cut -d ' ' -f2))
-  found=0
-  for i in "${installedRuntimeVersions[@]}"
-  do
-      if [ "$i" == "$SharedVersion" ] ; then
-          found=1
-      fi
-  done
-  if [ $found -eq 0 ]; then
-    echo "Newest version of dotnet runtime not installed, downloading and installing."
-    # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-    ./scripts/install-dotnet.sh -Channel master -Version "$SharedVersion" -InstallDir "dotnetcli" -SharedRuntime
-    ret=$?
-    if [ $ret -ne 0 ]; then
-      echo "Failed to install latest shared runtime (version $SharedVersion), exit code $ret, aborting build."
       exit -1
     fi
   fi
