@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace System.Text.Json.Tests.Resources {
+namespace System.Text.JsonLab.Tests.Resources {
     using System;
     using System.Reflection;
 
@@ -40,7 +40,7 @@ namespace System.Text.Json.Tests.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.Text.Json.Tests.Resources.TestJson", typeof(TestJson).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("System.Text.JsonLab.Tests.Resources.TestJson", typeof(TestJson).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

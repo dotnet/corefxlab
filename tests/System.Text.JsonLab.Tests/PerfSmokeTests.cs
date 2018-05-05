@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text.Json.Tests.Resources;
+using System.Text.JsonLab.Tests.Resources;
 using System.Runtime.InteropServices;
 using Xunit;
 
