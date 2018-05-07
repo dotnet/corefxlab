@@ -47,7 +47,16 @@ namespace Microsoft.Net
             return Memory<byte>.Empty;
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        public Span<byte> GetSpan(int minimumLength)
+        {
+            if (_written < 1) throw new NotImplementedException();
+            Send();
+            _written = 0;
+
+            Span<byte> buffer = _buffer.AsSpan(ChunkPrefixSize + _written);
+            if (buffer.Length > 2) return buffer.Slice(0, buffer.Length - 2);
+            return Span<byte>.Empty;
+        }
 
         public int MaxBufferSize { get; } = Int32.MaxValue;
 

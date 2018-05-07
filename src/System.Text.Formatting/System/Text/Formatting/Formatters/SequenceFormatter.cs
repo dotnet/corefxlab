@@ -76,7 +76,25 @@ namespace System.Text.Formatting
             return Current.Slice(_currentWrittenBytes);
         }
 
-        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength) => ((IBufferWriter<byte>)this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength)
+        {
+            if (minimumLength == 0) minimumLength = 1;
+            if (minimumLength > Current.Length - _currentWrittenBytes)
+            {
+                if (NeedShift) throw new NotImplementedException("need to allocate temp array");
+
+                _previousSequencePosition = _currentSequencePosition;
+                _previousWrittenBytes = _currentWrittenBytes;
+
+                if (!_buffers.TryGet(ref _currentSequencePosition, out Memory<byte> span))
+                {
+                    throw new InvalidOperationException();
+                }
+                _currentWrittenBytes = 0;
+            }
+            // Duplicating logic from GetMemory so we can slice the span rather than slicing the memory
+            return Current.Span.Slice(_currentWrittenBytes);
+        }
 
 
         void IBufferWriter<byte>.Advance(int bytes)
