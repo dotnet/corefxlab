@@ -273,7 +273,6 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNextUtf16(char marker, int markerBytes, ref byte src, int length)
         {
             int skip = markerBytes;
@@ -321,7 +320,6 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNextUtf8(char marker, int markerBytes, ref byte src, int length)
         {
             int skip = markerBytes;
@@ -369,7 +367,6 @@ namespace System.Text.JsonLab
         /// This method contains the logic for processing the next value token and determining
         /// what type of data it is.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeValueUtf16(char marker, int markerBytes, ref byte src, int length)
         {
             TokenType = JsonTokenType.Value;
@@ -439,7 +436,6 @@ namespace System.Text.JsonLab
         /// This method contains the logic for processing the next value token and determining
         /// what type of data it is.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeValueUtf8(char marker, int markerBytes, ref byte src, int length)
         {
             TokenType = JsonTokenType.Value;
@@ -505,7 +501,6 @@ namespace System.Text.JsonLab
             return 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNumberUtf8(ref byte src, int length)
         {
             int idx = 0;
@@ -526,7 +521,6 @@ namespace System.Text.JsonLab
             return idx;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNumberUtf16(ref byte src, int length)
         {
             ref char chars = ref Unsafe.As<byte, char>(ref src);
@@ -817,7 +811,6 @@ namespace System.Text.JsonLab
             return 8;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumePropertyNameUtf8(ref byte src, int length)
         {
             if (src != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
@@ -851,7 +844,6 @@ namespace System.Text.JsonLab
             return consumed;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumePropertyNameUtf16(ref byte src, int length)
         {
             int consumed = ConsumeStringUtf16(ref src, length);
@@ -876,7 +868,6 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeStringUtf8(ref byte src, int length)
         {
             // The first character MUST be a JSON string quote
@@ -900,7 +891,6 @@ namespace System.Text.JsonLab
             return idx;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeStringUtf16(ref byte src, int length)
         {
             ref char chars = ref Unsafe.As<byte, char>(ref src);
@@ -937,7 +927,6 @@ namespace System.Text.JsonLab
             return default;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int SkipWhiteSpaceUtf8(ref byte src, int length)
         {
             int idx = 0;
@@ -953,7 +942,6 @@ namespace System.Text.JsonLab
             return idx;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int SkipWhiteSpaceUtf16(ref byte src, int length)
         {
             ref char chars = ref Unsafe.As<byte, char>(ref src);
@@ -979,7 +967,6 @@ namespace System.Text.JsonLab
             return idx * sizeof(char);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int SkipWhiteSpaceSlow(ref byte src, int length)
         {
             int idx = 0;
