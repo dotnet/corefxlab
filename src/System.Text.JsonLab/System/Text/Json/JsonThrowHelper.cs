@@ -4,7 +4,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace System.Text.JsonLab
 {
     internal static class JsonThrowHelper
     {
