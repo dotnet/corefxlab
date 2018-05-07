@@ -17,7 +17,7 @@ namespace Benchmarks
         /// <param name="args"></param>
         public static void Main(string[] args)
             => BenchmarkSwitcher
-                .FromAssembly(typeof(Program).Assembly)         
+                .FromAssemblyAndTypes(typeof(Program).Assembly, JsonBenchmarks.SerializerBenchmarks.GetTypes())         
                 .Run(args/*, CreateClrVsCoreConfig() uncomment it to run Clr vs .NET Core comparison*/);
 
         private static IConfig CreateClrVsCoreConfig()
