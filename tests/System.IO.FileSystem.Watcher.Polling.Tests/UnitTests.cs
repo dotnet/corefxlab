@@ -32,6 +32,7 @@ public partial class PollingFileSystemWatcherUnitTests
         watcher.Start();
         using (var file = File.Create(fileName)) { }
         signal.WaitOne(1000);
+        watcher.Dispose(signal);
 
         try
         {
@@ -67,6 +68,7 @@ public partial class PollingFileSystemWatcherUnitTests
         watcher.Start();
         File.Delete(fileName);
         signal.WaitOne(1000);
+        watcher.Dispose(signal);
 
         Assert.True(eventRaised);
     }
@@ -95,6 +97,7 @@ public partial class PollingFileSystemWatcherUnitTests
         watcher.Start();
         File.AppendAllText(fileName, ".");
         signal.WaitOne(1000);
+        watcher.Dispose(signal);
 
         try
         {
