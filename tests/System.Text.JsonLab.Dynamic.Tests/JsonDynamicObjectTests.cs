@@ -38,7 +38,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
             }
         }
 
-        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        [Fact]
         public void NestedEagerRead()
         {
             dynamic json = JsonDynamicObject.Parse(new Utf8Span("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"));
@@ -57,7 +57,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
             Assert.Equal(4, address.Count);
         }
 
-        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        [Fact]
         public void NestedEagerWrite()
         {
             var jsonText = new Utf8Span("{\"FirstName\":\"John\",\"LastName\":\"Smith\",\"Address\":{\"Street\":\"21 2nd Street\",\"City\":\"New York\",\"State\":\"NY\",\"Zip\":\"10021-3100\"},\"IsAlive\":true,\"Age\":25,\"Spouse\":null}");
@@ -71,7 +71,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
             Assert.Equal(jsonText.ToString(), formattedText.ToString());
         }
 
-        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        [Fact]
         public void EagerWrite()
         {
             dynamic json = new JsonDynamicObject();
@@ -79,10 +79,11 @@ namespace System.Text.JsonLab.Dynamic.Tests
 
             var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             formatter.Append((JsonDynamicObject)json);
-            Assert.Equal("{\"First\":\"John\"}", formatter.Formatted.ToString());
+            var formattedText = new Utf8Span(formatter.Formatted);
+            Assert.Equal("{\"First\":\"John\"}", formattedText.ToString());
         }
 
-        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        [Fact]
         public void NonAllocatingRead()
         {
             JsonDynamicObject json = JsonDynamicObject.Parse(new Utf8Span("{\"First\":\"John\",\"Age\":25}"));
@@ -99,7 +100,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
 
         public static Utf8Span First(this JsonDynamicObject json)
         {
-            if (json.TryGetString(new Utf8Span(s_first), out Utf8Span value))
+            if (json.TryGetString(new Utf8String(s_first), out Utf8Span value))
             {
                 return value;
             }
@@ -108,7 +109,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
 
         public static uint Age(this JsonDynamicObject json)
         {
-            if (json.TryGetUInt32(new Utf8Span(s_age), out uint value))
+            if (json.TryGetUInt32(new Utf8String(s_age), out uint value))
             {
                 return value;
             }
