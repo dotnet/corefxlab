@@ -115,7 +115,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-        AllocateAndCopy:
+            AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length, (str0, str1), (span, state) =>
@@ -160,7 +160,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-        AllocateAndCopy:
+            AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length + str2.Length, (str0, str1, str2), (span, state) =>
@@ -218,7 +218,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-        AllocateAndCopy:
+            AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length + str2.Length + str3.Length, (str0, str1, str2, str3), (span, state) =>
@@ -361,7 +361,7 @@ namespace System.Text
 
         public bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public bool EndsWith(UnicodeScalar value) => throw null;
+        public bool EndsWith(UnicodeScalar value, StringComparison comparisonType) => throw null;
 
         public bool EndsWith(Utf8Char value)
         {
@@ -369,7 +369,13 @@ namespace System.Text
             return ((uint)index < (uint)_data.Length) && (_data[index] == (byte)value);
         }
 
-        public bool EndsWith(Utf8String value) => throw null;
+        public bool EndsWith(Utf8String value, StringComparison comparisonType)
+        {
+            // TODO: Support other comparison types
+            Validation.ThrowIfNotOrdinal(comparisonType);
+
+            return this.Bytes.EndsWith(value.Bytes);
+        }
 
         public override bool Equals(object value)
         {
@@ -623,7 +629,24 @@ namespace System.Text
 
         public bool StartsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public bool StartsWith(UnicodeScalar value) => throw null;
+        public bool StartsWith(UnicodeScalar value, StringComparison comparisonType)
+        {
+            // TODO: Support other comparison types
+            Validation.ThrowIfNotOrdinal(comparisonType);
+
+            // TODO: This can be optimized by turning both the scalar and 'this' into 32-bit integers and directly comparing.
+
+            if (value.IsAscii)
+            {
+                return StartsWith((Utf8Char)value.Value);
+            }
+            else
+            {
+                Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
+                int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
+                return this.Bytes.StartsWith(buffer.Slice(0, actualCodeUnitCount));
+            }
+        }
 
         public bool StartsWith(Utf8Char value)
         {

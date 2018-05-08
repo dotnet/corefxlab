@@ -126,6 +126,9 @@
   <data name="Argument_OutputBufferTooSmall" xml:space="preserve">
     <value>The provided buffer is not large enough to hold the output data.</value>
   </data>
+  <data name="NotSupported_BadComparisonType" xml:space="preserve">
+    <value>The comparison type '{0}' is not valid for this API.</value>
+  </data>
   <data name="ValueMustBeNonNegative" xml:space="preserve">
     <value>Value must be non-negative.</value>
   </data>

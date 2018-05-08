@@ -88,6 +88,15 @@ namespace System.Text.Utf8.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The comparison type &apos;{0}&apos; is not valid for this API..
+        /// </summary>
+        internal static string NotSupported_BadComparisonType {
+            get {
+                return ResourceManager.GetString("NotSupported_BadComparisonType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value must be non-negative..
         /// </summary>
         internal static string ValueMustBeNonNegative {
