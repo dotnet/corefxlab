@@ -12,81 +12,109 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
-        var currentDir = Directory.GetCurrentDirectory();
-        string fileName = Guid.NewGuid().ToString();
+        string currentDir = Directory.GetCurrentDirectory();
+        string fileName = Path.GetRandomFileName();
+        bool eventRaised = false;
 
-        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
-        watcher.ChangedDetailed += (e, changes) =>
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 0 })
         {
-            Assert.Equal(1, changes.Changes.Length);
-            var change = changes.Changes[0];
-            Assert.Equal(ChangeType.Created, change.ChangeType);
-            Assert.Equal(fileName, change.Name);
-            Assert.Equal(currentDir, change.Directory);
-        };
-        watcher.Start();
-        Thread.Sleep(200);
-        using (var file = new TemporaryTestFile(fileName))
-        {
-            Thread.Sleep(200);
-            watcher.Dispose();
-            Thread.Sleep(200);
-        }
-    }
+            AutoResetEvent signal = new AutoResetEvent(false);
 
-    [Fact]
-    public static void FileSystemWatcher_Deleted_File() 
-    {
-        var currentDir = Directory.GetCurrentDirectory();
-        string fileName = Guid.NewGuid().ToString();
-
-        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
-
-        using (var file = new TemporaryTestFile(fileName))
-        {
             watcher.ChangedDetailed += (e, changes) =>
             {
                 Assert.Equal(1, changes.Changes.Length);
-                var change = changes.Changes[0];
-                Assert.Equal((byte)ChangeType.Deleted, (byte)change.ChangeType);
+                FileChange change = changes.Changes[0];
+                Assert.Equal(ChangeType.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
+                eventRaised = true;
+                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                signal.Set();
             };
-            Thread.Sleep(100);
+
             watcher.Start();
-            Thread.Sleep(200);
+            using (FileStream file = File.Create(fileName)) { }
+            signal.WaitOne(1000);
         }
 
-        Thread.Sleep(200);
-        watcher.Dispose();
-        Thread.Sleep(200);
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            File.Delete(fileName);
+        }
     }
 
     [Fact]
-    public static void FileSystemWatcher_Changed_File() 
+    public static void FileSystemWatcher_Deleted_File()
     {
-        var currentDir = Directory.GetCurrentDirectory();
-        string fileName = Guid.NewGuid().ToString();
+        string currentDir = Directory.GetCurrentDirectory();
+        string fileName = Path.GetRandomFileName();
+        bool eventRaised = false;
 
-        var watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 100 };
-
-        using (var file = new TemporaryTestFile(fileName))
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 0 })
         {
-            watcher.Start();
-            Thread.Sleep(200);
+            AutoResetEvent signal = new AutoResetEvent(false);
+
             watcher.ChangedDetailed += (e, changes) =>
             {
                 Assert.Equal(1, changes.Changes.Length);
-                var change = changes.Changes[0];
+                FileChange change = changes.Changes[0];
+                Assert.Equal(ChangeType.Deleted, change.ChangeType);
+                Assert.Equal(fileName, change.Name);
+                Assert.Equal(currentDir, change.Directory);
+                eventRaised = true;
+                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                signal.Set();
+            };
+
+            using (FileStream file = File.Create(fileName)) { }
+            watcher.Start();
+            File.Delete(fileName);
+            signal.WaitOne(1000);
+        }
+
+        Assert.True(eventRaised);
+    }
+
+    [Fact]
+    public static void FileSystemWatcher_Changed_File()
+    {
+        string currentDir = Directory.GetCurrentDirectory();
+        string fileName = Path.GetRandomFileName();
+        bool eventRaised = false;
+
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 0 })
+        {
+            AutoResetEvent signal = new AutoResetEvent(false);
+
+            watcher.ChangedDetailed += (e, changes) =>
+            {
+                Assert.Equal(1, changes.Changes.Length);
+                FileChange change = changes.Changes[0];
                 Assert.Equal(ChangeType.Changed, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
+                eventRaised = true;
+                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                signal.Set();
             };
-            Thread.Sleep(200);
-            file.WriteByte(100);
-            Thread.Sleep(200);
-            watcher.Dispose();
-            Thread.Sleep(200);
+
+            using (FileStream file = File.Create(fileName)) { }
+            watcher.Start();
+            File.AppendAllText(fileName, ".");
+            signal.WaitOne(1000);
+        }
+
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            File.Delete(fileName);
         }
     }
 }
