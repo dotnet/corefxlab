@@ -43,7 +43,24 @@ namespace JsonBenchmarks
             };
 
         private static IndexViewModel CreateIndexViewModel()
-            => new IndexViewModel
+        {
+            var events = new List<ActiveOrUpcomingEvent>();
+            for (int i = 0; i < 20; i++)
+            {
+                events.Add(new ActiveOrUpcomingEvent
+                {
+                    Id = 10,
+                    CampaignManagedOrganizerName = "Name FamiltyName",
+                    CampaignName = "The very new campaing",
+                    Description = "The .NET Foundation works with Microsoft and the broader industry to increase the exposure of open source projects in the .NET community and the .NET Foundation. The .NET Foundation provides access to these resources to projects and looks to promote the activities of our communities.",
+                    EndDate = DateTime.UtcNow.AddYears(1),
+                    Name = "Just a name",
+                    ImageUrl = "https://www.dotnetfoundation.org/theme/img/carousel/foundation-diagram-content.png",
+                    StartDate = DateTime.UtcNow
+                });
+            }
+
+            return new IndexViewModel
             {
                 IsNewAccount = false,
                 FeaturedCampaign = new CampaignSummaryViewModel
@@ -55,31 +72,56 @@ namespace JsonBenchmarks
                     ImageUrl = "https://www.dotnetfoundation.org/theme/img/carousel/foundation-diagram-content.png",
                     Title = "Promoting Open Source"
                 },
-                ActiveOrUpcomingEvents = Enumerable.Repeat(
-                    new ActiveOrUpcomingEvent
-                    {
-                        Id = 10,
-                        CampaignManagedOrganizerName = "Name FamiltyName",
-                        CampaignName = "The very new campaing",
-                        Description = "The .NET Foundation works with Microsoft and the broader industry to increase the exposure of open source projects in the .NET community and the .NET Foundation. The .NET Foundation provides access to these resources to projects and looks to promote the activities of our communities.",
-                        EndDate = DateTime.UtcNow.AddYears(1),
-                        Name = "Just a name",
-                        ImageUrl = "https://www.dotnetfoundation.org/theme/img/carousel/foundation-diagram-content.png",
-                        StartDate = DateTime.UtcNow
-                    },
-                    count: 20).ToList()
+                ActiveOrUpcomingEvents = events
             };
+        }
 
         private static MyEventsListerViewModel CreateMyEventsListerViewModel()
-            => new MyEventsListerViewModel
+        {
+            var current = new List<MyEventsListerItem>();
+
+            for (int i = 0; i < 3; i++)
             {
-                CurrentEvents = Enumerable.Repeat(CreateMyEventsListerItem(), 3).ToList(),
-                FutureEvents = Enumerable.Repeat(CreateMyEventsListerItem(), 9).ToList(),
-                PastEvents = Enumerable.Repeat(CreateMyEventsListerItem(), 60).ToList() // usually  there is a lot of historical data
+                current.Add(CreateMyEventsListerItem());
+            }
+
+            var future = new List<MyEventsListerItem>();
+
+            for (int i = 0; i < 9; i++)
+            {
+                future.Add(CreateMyEventsListerItem());
+            }
+
+            var past = new List<MyEventsListerItem>();
+
+            // usually  there is a lot of historical data
+            for (int i = 0; i < 60; i++)
+            {
+                past.Add(CreateMyEventsListerItem());
+            }
+
+            return new MyEventsListerViewModel
+            {
+                CurrentEvents = current,
+                FutureEvents = future,
+                PastEvents = past
             };
+        }
 
         private static MyEventsListerItem CreateMyEventsListerItem()
-            => new MyEventsListerItem
+        {
+            var tasks = new List<MyEventsListerItemTask>();
+            for (int i = 0; i < 4; i++)
+            {
+                tasks.Add(new MyEventsListerItemTask
+                {
+                    StartDate = DateTime.UtcNow,
+                    EndDate = DateTime.UtcNow.AddDays(1),
+                    Name = "A very nice task to have"
+                });
+            }
+
+            return new MyEventsListerItem
             {
                 Campaign = "A very nice campaing",
                 EndDate = DateTime.UtcNow.AddDays(7),
@@ -89,14 +131,9 @@ namespace JsonBenchmarks
                 StartDate = DateTime.UtcNow.AddDays(-7),
                 TimeZone = TimeZoneInfo.Utc.DisplayName,
                 VolunteerCount = 15,
-                Tasks = Enumerable.Repeat(
-                    new MyEventsListerItemTask
-                    {
-                        StartDate = DateTime.UtcNow,
-                        EndDate = DateTime.UtcNow.AddDays(1),
-                        Name = "A very nice task to have"
-                    }, 4).ToList()
+                Tasks = tasks
             };
+        }
     }
 
     /// <summary>

@@ -41,7 +41,7 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        public void ReaderSystemTextJson() => TestReaderSystemTextJson(_data, _symbolTable);
+        public void ReaderSystemTextJsonLab() => TestReaderSystemTextJsonLab(_data, _symbolTable);
 
         [Benchmark(Baseline = true)]
         public void ReaderNewtonsoft()
@@ -50,7 +50,7 @@ namespace System.Text.JsonLab.Benchmarks
             TestReaderNewtonsoft(_reader);
         }
 
-        private static void TestReaderSystemTextJson(ReadOnlySpan<byte> data, SymbolTable symbolTable)
+        private static void TestReaderSystemTextJsonLab(ReadOnlySpan<byte> data, SymbolTable symbolTable)
         {
             var json = new JsonReader(data, symbolTable);
             while (json.Read()) ;
