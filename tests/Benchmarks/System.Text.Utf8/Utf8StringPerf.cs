@@ -1,9 +1,10 @@
-﻿using System;
-using System.Text;
-using System.Text.Utf8;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using BenchmarkDotNet.Attributes;
 
-namespace Benchmarks.System.Text.Utf8
+namespace System.Text.Utf8.Benchmarks
 {
     public class Utf8StringPerf
     {
@@ -30,7 +31,7 @@ namespace Benchmarks.System.Text.Utf8
         [Benchmark]
         public void EnumerateCodePoints()
         {
-            foreach (var codePoint in utf8String)
+            foreach (uint codePoint in utf8String)
             {
             }
         }

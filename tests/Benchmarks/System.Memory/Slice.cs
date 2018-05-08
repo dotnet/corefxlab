@@ -1,4 +1,8 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 
 namespace System.Memory.Benchmarks
@@ -7,7 +11,7 @@ namespace System.Memory.Benchmarks
     /// A class containing benchmarks for comparing constructs that do the same task in
     /// different ways with the same end outcome.
     /// </summary>
-    // [HardwareCounters(HardwareCounter.InstructionRetired)] // uncomment if you want to get hardware counters
+    [HardwareCounters(HardwareCounter.InstructionRetired)] // comment if you can't run it as Admin on Windows
     public class Slice
     {
         const int SliceSpanDataSize = 1000;

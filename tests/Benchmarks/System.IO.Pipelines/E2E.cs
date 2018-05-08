@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Buffers.Text;
-using System.IO.Pipelines;
 using System.IO.Pipelines.Samples;
 using System.Text;
 using System.Text.Formatting;
@@ -13,10 +11,10 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Engines;
 
-namespace Benchmarks.Pipelines
+namespace System.IO.Pipelines.Benchmarks
 {
     [SimpleJob(RunStrategy.Monitoring)] // the setting for benchmarks with not-steady state
-    public class E2EPipeline
+    public class E2E
     {
         private static readonly byte[] s_genericRequest = Encoding.UTF8.GetBytes(_plaintextTechEmpowerRequest);
 
