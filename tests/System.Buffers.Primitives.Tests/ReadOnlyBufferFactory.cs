@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Testing;
 using System.Collections.Generic;
-using System.IO.Pipelines.Testing;
 using System.Text;
 
 namespace System.IO.Pipelines.Tests

@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Formatting.Glob
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http", "src\System.Text.Http\System.Text.Http.csproj", "{90008F3E-FFBA-47C4-842F-24014256A9F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json", "src\System.Text.Json\System.Text.Json.csproj", "{D49453F3-A51A-49B8-B151-1C7CD92C229E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.JsonLab", "src\System.Text.JsonLab\System.Text.JsonLab.csproj", "{D49453F3-A51A-49B8-B151-1C7CD92C229E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Time", "src\System.Time\System.Time.csproj", "{66579C6A-8316-4888-8D96-36D4B49D7D51}"
 EndProject
@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Encodings.Web.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Collections.Sequences", "src\System.Collections.Sequences\System.Collections.Sequences.csproj", "{2D178A3D-247D-46C4-BAC3-DAB5EFC064A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Dynamic", "src\System.Text.Json.Dynamic\System.Text.Json.Dynamic.csproj", "{BB6D79C1-783F-4B87-A281-5EAB22CA7BF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.JsonLab.Dynamic", "src\System.Text.JsonLab.Dynamic\System.Text.JsonLab.Dynamic.csproj", "{BB6D79C1-783F-4B87-A281-5EAB22CA7BF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Buffers.Experimental.Tests", "tests\System.Buffers.Experimental.Tests\System.Buffers.Experimental.Tests.csproj", "{0935E538-179C-4768-89B0-C0D197B4D18B}"
 EndProject
@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Formatting.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Tests", "tests\System.Text.Http.Tests\System.Text.Http.Tests.csproj", "{5BEB8847-AD3C-45DF-A705-6F6DE3F4214D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests", "tests\System.Text.Json.Tests\System.Text.Json.Tests.csproj", "{CAE4AD10-4A0F-4DBD-8894-2FA91E7E6DCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.JsonLab.Tests", "tests\System.Text.JsonLab.Tests\System.Text.JsonLab.Tests.csproj", "{CAE4AD10-4A0F-4DBD-8894-2FA91E7E6DCA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Primitives.Tests", "tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj", "{67B42C20-D98A-420B-82C0-04AFD963E650}"
 EndProject
@@ -68,15 +68,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Encodings.Web.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "tests\Benchmarks\Benchmarks.csproj", "{E87AA970-5AE9-405E-8D34-F31EF415BE6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests.Dynamic", "tests\System.Text.Json.Tests.Dynamic\System.Text.Json.Tests.Dynamic.csproj", "{1ED92192-6C2A-44A5-9098-F9CBABB0292D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.JsonLab.Dynamic.Tests", "tests\System.Text.JsonLab.Dynamic.Tests\System.Text.JsonLab.Dynamic.Tests.csproj", "{1ED92192-6C2A-44A5-9098-F9CBABB0292D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Buffers.Primitives", "src\System.Buffers.Primitives\System.Buffers.Primitives.csproj", "{AABC47B4-F133-4B16-920B-9BDCE22F7E97}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Buffers.Primitives.Tests", "tests\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj", "{5E04C824-5961-445E-85E2-8AC27C9AA761}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser", "src\System.Text.Http.Parser\System.Text.Http.Parser.csproj", "{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser.Tests", "tests\System.Text.Http.Parser.Tests\System.Text.Http.Parser.Tests.csproj", "{793E4C5F-33B9-44AA-BE44-54EE624E79CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Utf8String", "src\System.Text.Utf8String\System.Text.Utf8String.csproj", "{07CC9F28-FC67-453B-9057-AC9025E5CA67}"
 EndProject
@@ -464,30 +460,6 @@ Global
 		{5E04C824-5961-445E-85E2-8AC27C9AA761}.Release|x64.Build.0 = Release|Any CPU
 		{5E04C824-5961-445E-85E2-8AC27C9AA761}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E04C824-5961-445E-85E2-8AC27C9AA761}.Release|x86.Build.0 = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|x64.Build.0 = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Debug|x86.Build.0 = Debug|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|x64.ActiveCfg = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|x64.Build.0 = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|x86.ActiveCfg = Release|Any CPU
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}.Release|x86.Build.0 = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|x64.Build.0 = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Debug|x86.Build.0 = Debug|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x64.ActiveCfg = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x64.Build.0 = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x86.ActiveCfg = Release|Any CPU
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x86.Build.0 = Release|Any CPU
 		{07CC9F28-FC67-453B-9057-AC9025E5CA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07CC9F28-FC67-453B-9057-AC9025E5CA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07CC9F28-FC67-453B-9057-AC9025E5CA67}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -619,8 +591,6 @@ Global
 		{1ED92192-6C2A-44A5-9098-F9CBABB0292D} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{AABC47B4-F133-4B16-920B-9BDCE22F7E97} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{5E04C824-5961-445E-85E2-8AC27C9AA761} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
-		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA} = {4B000021-5278-4F2A-B734-DE49F55D4024}
-		{793E4C5F-33B9-44AA-BE44-54EE624E79CB} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{07CC9F28-FC67-453B-9057-AC9025E5CA67} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{C6F061D6-18D6-41E3-A692-C0603A994F30} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{662968A7-5BCC-467B-A814-38584D0184CD} = {4B000021-5278-4F2A-B734-DE49F55D4024}

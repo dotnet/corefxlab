@@ -6,7 +6,7 @@ using System.Buffers.Text;
 using System.IO.Pipelines.Samples;
 using System.Text;
 using System.Text.Formatting;
-using System.Text.Json;
+using System.Text.JsonLab;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Engines;
