@@ -5,12 +5,31 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Reflection;
 using System.Text.Utf8;
 
 namespace System.Text.JsonLab
 {
     public class JsonDynamicObject : DynamicObject, IBufferFormattable
     {
+        public static class PerTypeValues<T>
+        {
+            public static readonly T Instance = Activator.CreateInstance<T>();
+
+            public static readonly Dictionary<Utf8String, PropertyInfo> TypeMap = GetTypeMap();
+
+            private static Dictionary<Utf8String, PropertyInfo> GetTypeMap()
+            {
+                var dictionary = new Dictionary<Utf8String, PropertyInfo>();
+                IEnumerable<PropertyInfo> properties = typeof(T).GetRuntimeProperties();
+                foreach (PropertyInfo pi in properties)
+                {
+                    dictionary.Add(new Utf8String(pi.Name), pi);
+                }
+                return dictionary;
+            }
+        }
+
         private readonly Dictionary<JsonProperty, JsonValue> _properties;
 
         public JsonDynamicObject() : this(new Dictionary<JsonProperty, JsonValue>()) { }
@@ -18,6 +37,39 @@ namespace System.Text.JsonLab
         private JsonDynamicObject(Dictionary<JsonProperty, JsonValue> properties)
         {
             _properties = properties;
+        }
+
+        public static T Deserialize<T>(ReadOnlySpan<byte> utf8)
+        {
+            JsonObject dom = JsonObject.Parse(utf8);
+
+            T instance = PerTypeValues<T>.Instance;
+
+            foreach (var pair in PerTypeValues<T>.TypeMap)
+            {
+                dom.TryGetValue(pair.Key, out JsonObject value);
+
+                var pi = pair.Value;
+                Type propertyType = pi.PropertyType;
+                if (propertyType == typeof(int))
+                {
+                    pi.SetValue(instance, (int)value);
+                }
+                else if (propertyType == typeof(bool))
+                {
+                    pi.SetValue(instance, (bool)value);
+                }
+                else if (propertyType == typeof(string))
+                {
+                    pi.SetValue(instance, (string)value);
+                }
+                else if (propertyType == typeof(Utf8String))
+                {
+                    pi.SetValue(instance, (Utf8String)value);
+                }
+            }
+
+            return instance;
         }
 
         public static JsonDynamicObject Parse(ReadOnlySpan<byte> utf8, int expectedNumberOfProperties = -1)

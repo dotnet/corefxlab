@@ -91,6 +91,26 @@ namespace System.Text.JsonLab.Dynamic.Tests
             Assert.Equal("John", json.First().ToString());
             Assert.Equal(25U, json.Age());
         }
+
+        [Fact]
+        public void Deserialize()
+        {
+            string str = "{\"RememberMe\":true,\"Email\":\"name.familyname@not.com\",\"Password\":\"abcdefgh123456!@\"}";
+            byte[] data = Encoding.UTF8.GetBytes(str);
+            LoginViewModel model = JsonDynamicObject.Deserialize<LoginViewModel>(data);
+
+            Assert.Equal("name.familyname@not.com", model.Email);
+            Assert.Equal("abcdefgh123456!@", model.Password);
+            Assert.Equal(true, model.RememberMe);
+        }
+    }
+
+    [Serializable]
+    public class LoginViewModel
+    {
+        public virtual string Email { get; set; }
+        public virtual string Password { get; set; }
+        public virtual bool RememberMe { get; set; }
     }
 
     static class SchemaExtensions

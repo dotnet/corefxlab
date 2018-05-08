@@ -38,9 +38,9 @@ namespace System.Text.JsonLab
         }
     }
 
-    internal struct TwoStacks
+    internal ref struct TwoStacks
     {
-        Memory<byte> _memory;
+        Span<byte> _memory;
         int topOfStackObj;
         int topOfStackArr;
         int capacity;
@@ -57,7 +57,7 @@ namespace System.Text.JsonLab
             }
         }
 
-        public TwoStacks(Memory<byte> db)
+        public TwoStacks(Span<byte> db)
         {
             _memory = db;
             topOfStackObj = _memory.Length;
@@ -70,7 +70,7 @@ namespace System.Text.JsonLab
         public bool TryPushObject(int value)
         {
             if (!IsFull) {
-                Write(_memory.Span.Slice(topOfStackObj - 8), ref value);
+                Write(_memory.Slice(topOfStackObj - 8), ref value);
                 topOfStackObj -= 8;
                 objectStackCount++;
                 return true;
@@ -81,7 +81,7 @@ namespace System.Text.JsonLab
         public bool TryPushArray(int value)
         {
             if (!IsFull) {
-                Write(_memory.Span.Slice(topOfStackArr - 4), ref value);
+                Write(_memory.Slice(topOfStackArr - 4), ref value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
                 return true;
@@ -92,7 +92,7 @@ namespace System.Text.JsonLab
         public int PopObject()
         {
             objectStackCount--;
-            var value = Read<int>(_memory.Span.Slice(topOfStackObj));
+            var value = Read<int>(_memory.Slice(topOfStackObj));
             topOfStackObj += 8;
             return value;
         }
@@ -100,23 +100,23 @@ namespace System.Text.JsonLab
         public int PopArray()
         {
             arrayStackCount--;
-            var value = Read<int>(_memory.Span.Slice(topOfStackArr + 4));
+            var value = Read<int>(_memory.Slice(topOfStackArr + 4));
             topOfStackArr += 8;
             return value;
         }
 
-        internal void Resize(Memory<byte> newStackMemory)
+        internal void Resize(Span<byte> newStackMemory)
         {
-            _memory.Span.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory.Span);
+            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
             _memory = newStackMemory;
         }
     }
 
     internal ref struct JsonParser
     {
-        private Memory<byte> _db;
+        private Span<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
-        private Memory<byte> _scratchMemory;
+        private Span<byte> _scratchMemory;
         private IMemoryOwner<byte> _scratchManager;
         MemoryPool<byte> _pool;
         TwoStacks _stack;
@@ -149,7 +149,7 @@ namespace System.Text.JsonLab
             _pool = pool;
             if (_pool == null) _pool = MemoryPool<byte>.Shared;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchMemory = _scratchManager.Memory;
+            _scratchMemory = _scratchManager.Memory.Span;
 
             int dbLength = _scratchMemory.Length / 2;
             _db = _scratchMemory.Slice(0, dbLength);
@@ -170,6 +170,8 @@ namespace System.Text.JsonLab
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
 
+            //var span = _db.Span;
+
             while (Read()) {
                 var tokenType = _tokenType;
                 switch (tokenType) {
@@ -181,7 +183,7 @@ namespace System.Text.JsonLab
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        Write(_db.Span.Slice(FindLocation(_stack.ObjectStackCount - 1, true)), ref numberOfRowsForMembers);
+                        Write(_db.Slice(FindLocation(_stack.ObjectStackCount - 1, true)), ref numberOfRowsForMembers);
                         numberOfRowsForMembers += _stack.PopObject();
                         break;
                     case JsonTokenType.ArrayStart:
@@ -192,7 +194,7 @@ namespace System.Text.JsonLab
                         arrayItemsCount = 0;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        Write(_db.Span.Slice(FindLocation(_stack.ArrayStackCount - 1, false)), ref arrayItemsCount);
+                        Write(_db.Slice(FindLocation(_stack.ArrayStackCount - 1, false)), ref arrayItemsCount);
                         arrayItemsCount = _stack.PopArray();
                         break;
                     case JsonTokenType.Property:
@@ -211,7 +213,7 @@ namespace System.Text.JsonLab
                 }
             }
 
-            var result =  new JsonObject(_values, _db.Span.Slice(0, _dbIndex), _pool, _scratchManager);
+            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratchManager);
             _scratchManager.Dispose();
             _scratchManager = null;
             return result;
@@ -219,15 +221,16 @@ namespace System.Text.JsonLab
 
         private void ResizeDb()
         {
-            var oldData = _scratchMemory.Span;
+            //var oldData = _scratchMemory.Span;
             var newScratch = _pool.Rent(_scratchMemory.Length * 2);
             int dbLength = newScratch.Memory.Length / 2;
 
-            var newDb = newScratch.Memory.Slice(0, dbLength);
-            _db.Span.Slice(0, _valuesIndex).CopyTo(newDb.Span);
-            _db = newDb;
+            var temp = newScratch.Memory.Span;
+            var span = temp.Slice(0, dbLength);
+            _db.Slice(0, _valuesIndex).CopyTo(span);
+            _db = span;
 
-            var newStackMemory = newScratch.Memory.Slice(dbLength);
+            var newStackMemory = temp.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;
@@ -240,7 +243,7 @@ namespace System.Text.JsonLab
 
             while (true) {
                 int rowStartOffset = rowNumber * DbRow.Size;
-                var row = Read<DbRow>(_db.Span.Slice(rowStartOffset));
+                var row = Read<DbRow>(_db.Slice(rowStartOffset));
 
                 int lengthOffset = rowStartOffset + 4;
                 
@@ -418,7 +421,7 @@ namespace System.Text.JsonLab
             }
 
             var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
-            Write(_db.Span.Slice(_dbIndex), ref dbRow);
+            Write(_db.Slice(_dbIndex), ref dbRow);
             _dbIndex = newIndex;
             return true;
         }
