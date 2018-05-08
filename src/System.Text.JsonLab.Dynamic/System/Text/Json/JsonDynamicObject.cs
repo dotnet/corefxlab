@@ -10,25 +10,75 @@ using System.Text.Utf8;
 
 namespace System.Text.JsonLab
 {
+    public class Node
+    {
+        public Node Next;
+        public (byte[], PropertyInfo) Value;
+    }
+
+    public class MyLinkedList
+    {
+        public int Count;
+
+        public Node Head { get; private set; }
+
+        public MyLinkedList()
+        {
+            Head = new Node();
+        }
+
+        public void Add((byte[], PropertyInfo) data)
+        {
+            Node newNode = new Node
+            {
+                Value = data
+            };
+
+            Head.Next = newNode;
+            Head = newNode;
+            Count++;
+        }
+    }
+
     public class JsonDynamicObject : DynamicObject, IBufferFormattable
     {
-        public static class PerTypeValues<T>
+        private static int GetHashCode(ReadOnlySpan<byte> span)
         {
-            public static readonly T Instance = Activator.CreateInstance<T>();
-
-            public static readonly Dictionary<Utf8String, PropertyInfo> TypeMap = GetTypeMap();
-
-            private static Dictionary<Utf8String, PropertyInfo> GetTypeMap()
+            int hash = 17;
+            foreach (byte element in span)
             {
-                var dictionary = new Dictionary<Utf8String, PropertyInfo>();
-                IEnumerable<PropertyInfo> properties = typeof(T).GetRuntimeProperties();
-                foreach (PropertyInfo pi in properties)
-                {
-                    dictionary.Add(new Utf8String(pi.Name), pi);
-                }
-                return dictionary;
+                hash = hash * 31 + element;
             }
+            return hash;
         }
+
+        private static Dictionary<int, MyLinkedList> GetTypeMap(Type type)
+        {
+            var dictionary = new Dictionary<int, MyLinkedList>();
+            IEnumerable<PropertyInfo> properties = type.GetRuntimeProperties();
+            foreach (PropertyInfo pi in properties)
+            {
+                byte[] encoded = Encoding.UTF8.GetBytes(pi.Name);
+                int hashcode = GetHashCode(encoded);
+
+                if (dictionary.ContainsKey(hashcode))
+                {
+                    dictionary.TryGetValue(hashcode, out MyLinkedList list);
+                    (byte[], PropertyInfo) data = (encoded, pi);
+                    list.Add(data);
+                }
+                else
+                {
+                    MyLinkedList list = new MyLinkedList();
+                    (byte[], PropertyInfo) data = (encoded, pi);
+                    list.Add(data);
+                    dictionary.Add(hashcode, list);
+                }
+            }
+            return dictionary;
+        }
+
+        public static Dictionary<Type, Dictionary<int, MyLinkedList>> TypeCache = new Dictionary<Type, Dictionary<int, MyLinkedList>>();
 
         private readonly Dictionary<JsonProperty, JsonValue> _properties;
 
@@ -39,33 +89,93 @@ namespace System.Text.JsonLab
             _properties = properties;
         }
 
+        public static PropertyInfo GetPropertyInfo(Dictionary<int, MyLinkedList> dictionary, int key, ReadOnlySpan<byte> span)
+        {
+            if (!dictionary.TryGetValue(key, out MyLinkedList value))
+            {
+                throw new KeyNotFoundException();
+            }
+            Node node = value.Head;
+            PropertyInfo pi = node.Value.Item2;
+            if (value.Count > 1)
+            {
+                while (true)
+                {
+                    if (span.SequenceEqual(node.Value.Item1))
+                    {
+                        pi = node.Value.Item2;
+                        break;
+                    }
+                    node = node.Next;
+                }
+            }
+            return pi;
+        }
+
         public static T Deserialize<T>(ReadOnlySpan<byte> utf8)
         {
-            JsonObject dom = JsonObject.Parse(utf8);
+            T instance = Activator.CreateInstance<T>();
 
-            T instance = PerTypeValues<T>.Instance;
-
-            foreach (var pair in PerTypeValues<T>.TypeMap)
+            if (!TypeCache.TryGetValue(typeof(T), out Dictionary<int, MyLinkedList> dictionary))
             {
-                dom.TryGetValue(pair.Key, out JsonObject value);
+                dictionary = GetTypeMap(typeof(T));
+                TypeCache.Add(typeof(T), dictionary);
+            }
 
-                var pi = pair.Value;
-                Type propertyType = pi.PropertyType;
-                if (propertyType == typeof(int))
+            var reader = new JsonReader(utf8, SymbolTable.InvariantUtf8);
+            while (reader.Read())
+            {
+                switch (reader.TokenType)
                 {
-                    pi.SetValue(instance, (int)value);
-                }
-                else if (propertyType == typeof(bool))
-                {
-                    pi.SetValue(instance, (bool)value);
-                }
-                else if (propertyType == typeof(string))
-                {
-                    pi.SetValue(instance, (string)value);
-                }
-                else if (propertyType == typeof(Utf8String))
-                {
-                    pi.SetValue(instance, (Utf8String)value);
+                    case JsonTokenType.PropertyName:
+                        var key = GetHashCode(reader.Value);
+                        reader.Read(); // Move to the value token
+                        var type = reader.ValueType;
+                        switch (type)
+                        {
+                            case JsonValueType.String:
+                                PropertyInfo pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi.SetValue(instance, new Utf8String(reader.Value));
+                                break;
+                            case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
+                                throw new NotImplementedException("object support not implemented yet.");
+                            case JsonValueType.True:
+                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi.SetValue(instance, true);
+                                break;
+                            case JsonValueType.False:
+                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi.SetValue(instance, false);
+                                break;
+                            case JsonValueType.Null:
+                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                pi.SetValue(instance, null);
+                                break;
+                            case JsonValueType.Number:
+                                pi = GetPropertyInfo(dictionary, key, reader.Value);
+                                if (!Utf8Parser.TryParse(reader.Value, out int result, out _))
+                                {
+                                    throw new InvalidCastException();
+                                }
+                                pi.SetValue(instance, result);
+                                break;
+                            case JsonValueType.Array:
+                                throw new NotImplementedException("array support not implemented yet.");
+                            default:
+                                throw new NotSupportedException();
+                        }
+                        break;
+                    case JsonTokenType.StartObject:
+                        break;
+                    case JsonTokenType.EndObject:
+                        break;
+                    case JsonTokenType.StartArray:
+                        throw new NotImplementedException("array support not implemented yet.");
+                    case JsonTokenType.EndArray:
+                    case JsonTokenType.Value:
+                        break;
+                    default:
+                        throw new NotSupportedException();
                 }
             }
 
