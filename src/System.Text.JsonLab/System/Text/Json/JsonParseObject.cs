@@ -357,11 +357,14 @@ namespace System.Text.JsonLab
 
         public void Dispose()
         {
-            if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
+            //if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
             _db = ReadOnlySpan<byte>.Empty;
             _values = ReadOnlySpan<byte>.Empty;
-            _dbMemory.Dispose();
-            _dbMemory = null;
+            if (_dbMemory != null)
+            {
+                _dbMemory.Dispose();
+                _dbMemory = null;
+            }
         }
     }
 }

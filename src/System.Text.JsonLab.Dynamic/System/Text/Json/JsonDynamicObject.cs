@@ -33,7 +33,7 @@ namespace System.Text.JsonLab
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        var name = new Utf8Span(reader.Value);
+                        var name = new Utf8String(reader.Value);
                         reader.Read(); // Move to the value token
                         var type = reader.ValueType;
                         var current = stack.Peek();
@@ -41,7 +41,7 @@ namespace System.Text.JsonLab
                             switch (type)
                             {
                             case JsonValueType.String:
-                                current._properties[property] = new JsonValue(new Utf8Span(reader.Value));
+                                current._properties[property] = new JsonValue(new Utf8String(reader.Value));
                                 break;
                             case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 var newObj = new JsonDynamicObject(properties);
@@ -58,7 +58,7 @@ namespace System.Text.JsonLab
                                     current._properties[property] = new JsonValue(type);
                                     break;
                             case JsonValueType.Number:
-                                current._properties[property] = new JsonValue(new Utf8Span(reader.Value), type);
+                                current._properties[property] = new JsonValue(new Utf8String(reader.Value), type);
                                     break;
                             case JsonValueType.Array:
                                 throw new NotImplementedException("array support not implemented yet.");
@@ -84,7 +84,7 @@ namespace System.Text.JsonLab
             return stack.Peek();
         }
 
-        public bool TryGetUInt32(Utf8Span property, out uint value)
+        public bool TryGetUInt32(Utf8String property, out uint value)
         {
             var jsonProperty= new JsonProperty(this, property);
             if (!_properties.TryGetValue(jsonProperty, out JsonValue jsonValue))
@@ -100,7 +100,7 @@ namespace System.Text.JsonLab
             return Utf8Parser.TryParse(jsonValue.Value.Bytes, out value, out _);
         }
 
-        public bool TryGetString(Utf8Span property, out Utf8Span value)
+        public bool TryGetString(Utf8String property, out Utf8Span value)
         {
             var jsonProperty = new JsonProperty(this, property);
             if (!_properties.TryGetValue(jsonProperty, out JsonValue jsonValue))
@@ -133,7 +133,7 @@ namespace System.Text.JsonLab
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            var name = new Utf8Span(binder.Name);
+            var name = new Utf8String(binder.Name);
             var property = new JsonProperty(this, name);
             if (!_properties.TryGetValue(property, out JsonValue value))
             {
@@ -147,7 +147,7 @@ namespace System.Text.JsonLab
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            var name = new Utf8Span(binder.Name);
+            var name = new Utf8String(binder.Name);
             var property = new JsonProperty(this, name);
             if(value == null)
             {
@@ -156,7 +156,7 @@ namespace System.Text.JsonLab
             }
             if(value is string)
             {
-                _properties[property] = new JsonValue(new Utf8Span((string)value));
+                _properties[property] = new JsonValue(new Utf8String((string)value));
                 return true;
             }
             return false;
@@ -225,21 +225,18 @@ namespace System.Text.JsonLab
             static readonly byte[] s_falseBytes = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
 
             JsonDynamicObject _object;
-            //TODO: no spans on the heap
-            Utf8Span _value => default;
+            Utf8String _value { get; set; }
             JsonValueType _type;
 
-            public JsonValue(Utf8Span value, JsonValueType type = JsonValueType.String)
+            public JsonValue(Utf8String value, JsonValueType type = JsonValueType.String)
             {
-                //TODO: no spans on the heap
-                //_value = value;
+                _value = value;
                 _object = null;
                 _type = type;
             }
             public JsonValue(JsonDynamicObject obj)
             {
-                //TODO: no spans on the heap
-                //_value = default(Utf8Span);
+                _value = default(Utf8String);
                 _object = obj;
                 _type = JsonValueType.Object;
             }
@@ -247,13 +244,12 @@ namespace System.Text.JsonLab
             public JsonValue(JsonValueType type)
             {
                 _type = type;
-                //TODO: no spans on the heap
-                //_value = default(Utf8Span);
+                _value = default(Utf8String);
                 _object = null;
             }
 
             public JsonDynamicObject Object { get { return _object; } }
-            public Utf8Span Value { get { return _value; } }
+            public Utf8String Value { get { return _value; } }
             public JsonValueType Type { get { return _type; } }
 
             public object ToObject()
@@ -262,8 +258,7 @@ namespace System.Text.JsonLab
                 if (_type == JsonValueType.Null) return null;
                 if (_type == JsonValueType.True) return true;
                 if (_type == JsonValueType.False) return false;
-                //TODO: no spans on the heap
-                //if (_type == JsonValueType.String) return _value;
+                if (_type == JsonValueType.String) return _value.ToString();
                 if (_type == JsonValueType.Number)
                 {
                     return double.Parse(_value.ToString());
@@ -301,8 +296,7 @@ namespace System.Text.JsonLab
         struct JsonProperty : IEquatable<JsonProperty>, IBufferFormattable
         {
             JsonDynamicObject _object;
-            //TODO: no spans on the heap
-            Utf8Span _name => default;
+            Utf8String _name { get; set; }
 
             public JsonDynamicObject Object
             {
@@ -312,11 +306,10 @@ namespace System.Text.JsonLab
                 }
             }
 
-            public JsonProperty(JsonDynamicObject obj, Utf8Span name)
+            public JsonProperty(JsonDynamicObject obj, Utf8String name)
             {
                 _object = obj;
-                //TODO: no spans on the heap
-                //_name = name;
+                _name = name;
             }
 
             public bool Equals(JsonProperty other)
@@ -343,6 +336,36 @@ namespace System.Text.JsonLab
         }
 
         public static bool TryFormatQuotedString(this Utf8Span str, Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
+        {
+            written = 0;
+            int justWritten;
+
+            unsafe
+            {
+                if (!symbolTable.TryEncode((byte)'"', buffer, out justWritten))
+                {
+                    return false;
+                }
+                written += justWritten;
+
+                if (!str.TryFormat(buffer.Slice(written), out justWritten, format, symbolTable))
+                {
+                    return false;
+                }
+                written += justWritten;
+
+                if (!symbolTable.TryEncode((byte)'"', buffer.Slice(written), out justWritten))
+                {
+                    return false;
+                }
+            }
+
+            written += justWritten;
+
+            return true;
+        }
+
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, StandardFormat format, SymbolTable symbolTable)
         {
             written = 0;
             int justWritten;
