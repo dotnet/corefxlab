@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
-using Xunit;
+using System.Diagnostics;
 
 namespace System.Text.JsonLab.Benchmarks
 {
@@ -29,7 +29,7 @@ namespace System.Text.JsonLab.Benchmarks
                 case EncoderTarget.SlowUtf16:
                     return new FakeUtf16SymbolTable();
                 default:
-                    Assert.True(false, "Invalid encoder targetted in test");
+                    Debug.Assert(false, "Invalid encoder targetted in test");
                     return null;
             }
         }
