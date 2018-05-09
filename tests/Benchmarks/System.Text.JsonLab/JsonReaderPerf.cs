@@ -22,18 +22,16 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(EncoderTarget.InvariantUtf8, EncoderTarget.InvariantUtf16)]
         public EncoderTarget Target;
 
-        // Using the string name listed in the resource file instead of the json string directly
-        // so that the benchmark output is cleaner
-        [ParamsSource(nameof(ValuesForJsonStringName))]
-        public string JsonStringName;
+        [ParamsSource(nameof(ValuesForJsonString))]
+        public string JsonString;
 
-        public static IEnumerable<string> ValuesForJsonStringName() => new[] { nameof(JsonStrings.HeavyNestedJson), nameof(JsonStrings.HelloWorld) };
+        public static IEnumerable<string> ValuesForJsonString() => new[] { JsonStrings.HeavyNestedJson, JsonStrings.HelloWorld };
 
         [GlobalSetup]
         public void Setup()
         {
             _symbolTable = GetTargetEncoder(Target);
-            _data = EncodeTestData(Target, JsonStrings.ResourceManager.GetString(JsonStringName));
+            _data = EncodeTestData(Target, JsonString);
 
             _stream = new MemoryStream(_data);
             var enc = Target == EncoderTarget.InvariantUtf8 ? Encoding.UTF8 : Encoding.Unicode;
