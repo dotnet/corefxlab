@@ -24,29 +24,28 @@ namespace JsonBenchmarks
         private static LoginViewModel CreateLoginViewModel()
             => new LoginViewModel
             {
-                Email = (Utf8String)"name.familyname@not.com",
-                Email1 = (Utf8String)"1name.familyname@not.com",
-                Email2 = (Utf8String)"2name.familyname@not.com",
-                Email3 = (Utf8String)"3name.familyname@not.com",
-                Email4 = (Utf8String)"4name.familyname@not.com",
-                Email5 = (Utf8String)"5name.familyname@not.com",
-                Email6 = (Utf8String)"6name.familyname@not.com",
-                Email7 = (Utf8String)"7name.familyname@not.com",
-                Email8 = (Utf8String)"8name.familyname@not.com",
-                Email9 = (Utf8String)"9name.familyname@not.com",
-                Email10 = (Utf8String)"10name.familyname@not.com",
-                Email11 = (Utf8String)"11name.familyname@not.com",
-                Email12 = (Utf8String)"12name.familyname@not.com",
-                Email13 = (Utf8String)"13name.familyname@not.com",
-                Email14 = (Utf8String)"14name.familyname@not.com",
-                Email15 = (Utf8String)"15name.familyname@not.com",
-                Email16 = (Utf8String)"16name.familyname@not.com",
-                Email17 = (Utf8String)"17name.familyname@not.com",
-                Email18 = (Utf8String)"18name.familyname@not.com",
-                Email19 = (Utf8String)"19name.familyname@not.com",
-                Email20 = (Utf8String)"20name.familyname@not.com",
-                Email21 = (Utf8String)"21name.familyname@not.com",
-                Password = "abcdefgh123456!@",
+                Email = 1,
+                Email1 = 2,
+                Email2 = 3,
+                Email3 = 4,
+                Email4 = 5,
+                Email5 = 6,
+                Email6 = 7,
+                Email7 = 8,
+                Email8 = 9,
+                Email9 = 10,
+                Email10 = 11,
+                Email11 = 12,
+                Email12 = 13,
+                Email13 = 14,
+                Email14 = 15,
+                Email15 = 16,
+                Email16 = 17,
+                Email17 = 18,
+                Email18 = 19,
+                Email19 = 20,
+                Email20 = 21,
+                Email21 = 22,
                 RememberMe = true
             };
 
@@ -135,33 +134,31 @@ namespace JsonBenchmarks
     [Serializable]
     public class LoginViewModel : IVerifiable
     {
-        public virtual Utf8String Email { get; set; }
-        public virtual Utf8String Email1 { get; set; }
-        public virtual Utf8String Email2 { get; set; }
-        public virtual Utf8String Email3 { get; set; }
-        public virtual Utf8String Email4 { get; set; }
-        public virtual Utf8String Email5 { get; set; }
-        public virtual Utf8String Email6 { get; set; }
-        public virtual Utf8String Email7 { get; set; }
-        public virtual Utf8String Email8 { get; set; }
-        public virtual Utf8String Email9 { get; set; }
-        public virtual Utf8String Email10 { get; set; }
-        public virtual Utf8String Email11 { get; set; }
-        public virtual Utf8String Email12 { get; set; }
-        public virtual Utf8String Email13 { get; set; }
-        public virtual Utf8String Email14 { get; set; }
-        public virtual Utf8String Email15 { get; set; }
-        public virtual Utf8String Email16 { get; set; }
-        public virtual Utf8String Email17 { get; set; }
-        public virtual Utf8String Email18 { get; set; }
-        public virtual Utf8String Email19 { get; set; }
-        public virtual Utf8String Email20 { get; set; }
-        public virtual Utf8String Email21 { get; set; }
-
-        public virtual string Password { get; set; }
+        public virtual int Email { get; set; }
+        public virtual int Email1 { get; set; }
+        public virtual int Email2 { get; set; }
+        public virtual int Email3 { get; set; }
+        public virtual int Email4 { get; set; }
+        public virtual int Email5 { get; set; }
+        public virtual int Email6 { get; set; }
+        public virtual int Email7 { get; set; }
+        public virtual int Email8 { get; set; }
+        public virtual int Email9 { get; set; }
+        public virtual int Email10 { get; set; }
+        public virtual int Email11 { get; set; }
+        public virtual int Email12 { get; set; }
+        public virtual int Email13 { get; set; }
+        public virtual int Email14 { get; set; }
+        public virtual int Email15 { get; set; }
+        public virtual int Email16 { get; set; }
+        public virtual int Email17 { get; set; }
+        public virtual int Email18 { get; set; }
+        public virtual int Email19 { get; set; }
+        public virtual int Email20 { get; set; }
+        public virtual int Email21 { get; set; }
         public virtual bool RememberMe { get; set; }
 
-        public long TouchEveryProperty() => Email.ToString().Length + Password.Length + Convert.ToInt32(RememberMe);
+        public long TouchEveryProperty() => Email.ToString().Length + Email1.ToString().Length + Convert.ToInt32(RememberMe);
     }
 
     [Serializable]
