@@ -51,8 +51,6 @@ public partial class PollingFileSystemWatcherUnitTests
     }
 
 
-    //TODO: Test defaults
-
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
@@ -244,7 +242,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fullName);
+            Directory.Delete(subDirectory, true);
         }
     }
 
