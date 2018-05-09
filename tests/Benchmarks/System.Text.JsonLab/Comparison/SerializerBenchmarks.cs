@@ -14,6 +14,7 @@ namespace JsonBenchmarks
             => new[]
             {
                 typeof(JsonDeserializerComparison_FromString<>),
+                typeof(JsonSerializerComparison_ToString<>),
             };
 
         private static Type[] GetViewModels()

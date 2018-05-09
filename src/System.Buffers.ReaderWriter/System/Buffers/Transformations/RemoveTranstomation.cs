@@ -5,7 +5,7 @@ namespace System.Buffers.Operations
 {
     public class RemoveTransformation : IBufferTransformation
     {
-        byte _value;
+        private byte _value;
         public RemoveTransformation(byte valueToRemove)
         {
             _value = valueToRemove;

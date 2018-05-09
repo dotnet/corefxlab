@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 namespace JsonBenchmarks
 {
     [MemoryDiagnoser]
-    public class JsonDeserializerComparison_FromString<T>
+    public class JsonDeserializerComparison_FromString<T> where T : IVerifiable
     {
         private readonly T value;
         private string serialized;
@@ -45,27 +45,62 @@ namespace JsonBenchmarks
         public void SerializeManatee() => jsonValue = Manatee.Json.JsonValue.Parse(new Manatee.Json.Serialization.JsonSerializer().Serialize(value).ToString());
 
         //[Benchmark(Description = "Jil")]
-        public T Jil_() => Jil.JSON.Deserialize<T>(serialized);
+        public T Jil_()
+        {
+            T deserialized = Jil.JSON.Deserialize<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
-        [Benchmark(Baseline = true, Description = "Newtonsoft")]
-        public T Newtonsoft_() => Newtonsoft.Json.JsonConvert.DeserializeObject<T>(serialized);
+        //[Benchmark(Baseline = true, Description = "Newtonsoft")]
+        public T Newtonsoft_()
+        {
+            T deserialized = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         //[Benchmark(Description = "Utf8Json")]
-        public T Utf8Json_() => Utf8Json.JsonSerializer.Deserialize<T>(serialized);
+        public T Utf8Json_()
+        {
+            T deserialized = Utf8Json.JsonSerializer.Deserialize<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         //[Benchmark(Description = "YSharp")]
-        public T YSharp() => new System.Text.Json.JsonParser().Parse<T>(serialized);
+        public T YSharp()
+        {
+            T deserialized = new System.Text.Json.JsonParser().Parse<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         //[Benchmark(Description = "FastJson")]
-        public T FastJson() => fastJSON.JSON.ToObject<T>(serialized);
+        public T FastJson()
+        {
+            T deserialized = fastJSON.JSON.ToObject<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         // This benchmarks fails to run for IndexViewModel and MyEventsListerViewModel.
         //[Benchmark(Description = "LitJson")]
-        public T LitJson_() => LitJson.JsonMapper.ToObject<T>(serialized);
+        public T LitJson_()
+        {
+            T deserialized = LitJson.JsonMapper.ToObject<T>(serialized);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         // This benchmarks fails to run for IndexViewModel and MyEventsListerViewModel.
         //[Benchmark(Description = "Manatee")]
-        public T Manatee_() => new Manatee.Json.Serialization.JsonSerializer().Deserialize<T>(jsonValue);
+        public T Manatee_()
+        {
+            T deserialized = new Manatee.Json.Serialization.JsonSerializer().Deserialize<T>(jsonValue);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
 
         [Benchmark(Description = "JsonLab")]
         public T JsonLab() => System.Text.JsonLab.JsonDynamicObject.Deserialize<T>(utf8data);
