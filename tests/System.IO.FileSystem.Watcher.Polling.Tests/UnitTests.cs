@@ -13,7 +13,7 @@ public partial class PollingFileSystemWatcherUnitTests
     public static void FileSystemWatcher_ctor_Defaults()
     {
 
-        const string path = @"C:\";
+        string path = Environment.CurrentDirectory;
         var watcher = new PollingFileSystemWatcher(path);
         Assert.Equal(path, watcher.Path);
         Assert.Equal("*", watcher.Filter);
@@ -38,10 +38,10 @@ public partial class PollingFileSystemWatcherUnitTests
     {
         // Not valid
         Assert.Throws<ArgumentNullException>("path", () => new PollingFileSystemWatcher(null));
-        Assert.Throws<ArgumentNullException>("filter", () => new PollingFileSystemWatcher(@"C:\", null));
+        Assert.Throws<ArgumentNullException>("filter", () => new PollingFileSystemWatcher(Environment.CurrentDirectory, null));
 
         // Valid
-        var watcher = new PollingFileSystemWatcher(@"C:\", options: null);
+        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory, options: null);
     }
 
     [Fact]
