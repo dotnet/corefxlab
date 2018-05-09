@@ -12,7 +12,7 @@ namespace System.Buffers.Tests
 {
     public partial class GenericBufferWriterTests
     {
-        TransformationFormat s_base64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        private TransformationFormat s_base64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
 
         [Fact]
         public void Bytes()
@@ -44,10 +44,10 @@ namespace System.Buffers.Tests
         }
     }
 
-    class TestBufferWriter : IBufferWriter<byte>
+    internal class TestBufferWriter : IBufferWriter<byte>
     {
-        byte[] _current = new byte[0];
-        List<byte[]> _commited = new List<byte[]>();
+        private byte[] _current = new byte[0];
+        private List<byte[]> _commited = new List<byte[]>();
 
         public void Advance(int bytes)
         {

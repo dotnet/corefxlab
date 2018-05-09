@@ -6,14 +6,13 @@ using System.Buffers.Text;
 using System.Buffers.Writer;
 using System.Text;
 using Xunit;
-using static System.Buffers.Binary.BinaryPrimitives;
 using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Buffers.Tests
 {
     public partial class BufferWriterTests
     {
-        TransformationFormat s_base64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
+        private TransformationFormat s_base64 = new TransformationFormat(Base64Experimental.BytesToUtf8Encoder);
 
         [Fact]
         public void Basics()
@@ -78,8 +77,7 @@ namespace System.Buffers.Tests
     {
         public ulong Lower;
         public ulong Upper;
-
-        const int size = sizeof(ulong) * 2;
+        private const int size = sizeof(ulong) * 2;
 
         public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
         {
