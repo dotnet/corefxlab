@@ -28,12 +28,24 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfStartIndexOrCountOutOfRange(int startIndex, int count, int actualLength)
+        public static void ThrowIfStartIndexOutOfRange(int startIndex, int actualLength)
         {
             if ((uint)startIndex > (uint)actualLength)
             {
-                ThrowIfStartIndexOrCountOutOfRangeInternal_StartIndex();
+                ThrowIfStartIndexOutOfRangeInternal();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowIfStartIndexOutOfRangeInternal()
+        {
+            throw new ArgumentOutOfRangeException(paramName: "startIndex");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfStartIndexOrCountOutOfRange(int startIndex, int count, int actualLength)
+        {
+            ThrowIfStartIndexOutOfRange(startIndex, actualLength);
 
             if ((uint)count > (uint)(actualLength - startIndex))
             {
@@ -45,12 +57,6 @@ namespace System.Text
         private static void ThrowIfStartIndexOrCountOutOfRangeInternal_Count()
         {
             throw new ArgumentOutOfRangeException(paramName: "count");
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowIfStartIndexOrCountOutOfRangeInternal_StartIndex()
-        {
-            throw new ArgumentOutOfRangeException(paramName: "startIndex");
         }
     }
 }

@@ -451,6 +451,9 @@ namespace System.Text
                 return IndexOf((Utf8Char)value.Value, startIndex, count);
             }
 
+            // We're responsible for validation for the remainder of this method.
+            // TODO: Elide some validation for other overloads of IndexOf.
+
             ValidateStartIndexAndCount(startIndex, count);
 
             if (ContainsOnlyAsciiData)
@@ -458,10 +461,13 @@ namespace System.Text
                 return -1; // no point searching for non-ASCII scalars in an ASCII string
             }
 
-            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
-            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
+            // We're searching for a non-ASCII scalar in a non-ASCII string.
+            // The largest possible scalar is four UTF-8 code units.
+            // TODO: Use more optimized ToUtf8 methods, avoid parameter checks in Slice.
 
-            return Bytes.DangerousSliceWithoutValidation(startIndex, count).IndexOf(buffer.DangerousSliceWithoutValidation(0, actualCodeUnitCount));
+            Span<byte> utf8RepresentationOfScalar = stackalloc byte[4];
+            int utf8CodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(utf8RepresentationOfScalar));
+            return Bytes.Slice(startIndex, count).IndexOf(utf8RepresentationOfScalar.Slice(0, utf8CodeUnitCount));
         }
 
         public int IndexOf(Utf8Char value) => Bytes.IndexOf((byte)value);
@@ -727,6 +733,12 @@ namespace System.Text
         public Utf8String TrimStart(Utf8Char trimChar) => throw null;
 
         public Utf8String TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidateStartIndexAndCount(int startIndex)
+        {
+            Validation.ThrowIfStartIndexOutOfRange(startIndex, _length);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidateStartIndexAndCount(int startIndex, int count)
