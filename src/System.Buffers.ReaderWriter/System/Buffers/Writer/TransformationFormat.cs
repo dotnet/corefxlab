@@ -9,25 +9,24 @@ namespace System.Buffers.Writer
 {
     public readonly struct TransformationFormat
     {
-        readonly StandardFormat _format;
-        readonly IBufferTransformation _first;
-        readonly IBufferTransformation[] _rest;
+        private readonly IBufferTransformation _first;
+        private readonly IBufferTransformation[] _rest;
 
         public TransformationFormat(IBufferTransformation transformation)
         {
-            _format = default;
+            Format = default;
             _first = transformation;
             _rest = null;
         }
 
         public TransformationFormat(params IBufferTransformation[] transformations)
         {
-            _format = default;
+            Format = default;
             _first = null;
             _rest = transformations;
         }
 
-        public StandardFormat Format { get => _format; }
+        public StandardFormat Format { get; }
 
         public bool TryTransform(Span<byte> buffer, ref int written)
         {

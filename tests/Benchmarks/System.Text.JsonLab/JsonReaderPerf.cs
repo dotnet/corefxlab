@@ -22,44 +22,42 @@ namespace System.Text.JsonLab.Benchmarks
         [Params(EncoderTarget.InvariantUtf8, EncoderTarget.InvariantUtf16)]
         public EncoderTarget Target;
 
-        // Using the string name listed in the resource file instead of the json string directly
-        // so that the benchmark output is cleaner
-        [ParamsSource(nameof(ValuesForJsonStringName))]
-        public string JsonStringName;
+        [ParamsSource(nameof(ValuesForJsonString))]
+        public string JsonString;
 
-        public static IEnumerable<string> ValuesForJsonStringName() => new[] { nameof(JsonStrings.HeavyNestedJson), nameof(JsonStrings.HelloWorld) };
+        public static IEnumerable<string> ValuesForJsonString() => new[] { JsonStrings.HeavyNestedJson, JsonStrings.HelloWorld };
 
         [GlobalSetup]
         public void Setup()
         {
             _symbolTable = GetTargetEncoder(Target);
-            _data = EncodeTestData(Target, JsonStrings.ResourceManager.GetString(JsonStringName));
+            _data = EncodeTestData(Target, JsonString);
 
             _stream = new MemoryStream(_data);
             var enc = Target == EncoderTarget.InvariantUtf8 ? Encoding.UTF8 : Encoding.Unicode;
             _reader = new StreamReader(_stream, enc, false, 1024, true);
         }
 
-        [Benchmark]
-        public void ReaderSystemTextJsonLab() => TestReaderSystemTextJsonLab(_data, _symbolTable);
-
         [Benchmark(Baseline = true)]
-        public void ReaderNewtonsoft()
+        public void ReaderNewtonsoftStringReader()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            TestReaderNewtonsoft(_reader);
-        }
-
-        private static void TestReaderSystemTextJsonLab(ReadOnlySpan<byte> data, SymbolTable symbolTable)
-        {
-            var json = new JsonReader(data, symbolTable);
+            var json = new Newtonsoft.Json.JsonTextReader(new StringReader(JsonString));
             while (json.Read()) ;
         }
 
-        private static void TestReaderNewtonsoft(StreamReader reader)
+        [Benchmark]
+        public void ReaderNewtonsoftStreamReader()
         {
-            using (var json = new Newtonsoft.Json.JsonTextReader(reader))
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (var json = new Newtonsoft.Json.JsonTextReader(_reader))
                 while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLab()
+        {
+            var json = new JsonReader(_data, _symbolTable);
+            while (json.Read()) ;
         }
 
         private static byte[] EncodeTestData(EncoderTarget encoderTarget, string data)

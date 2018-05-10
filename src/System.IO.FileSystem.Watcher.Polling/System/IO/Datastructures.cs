@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace System.IO.FileSystem
 {
-    struct FileChangeList
+    internal struct FileChangeList
     {
         const int DefaultListSize = 4;
 

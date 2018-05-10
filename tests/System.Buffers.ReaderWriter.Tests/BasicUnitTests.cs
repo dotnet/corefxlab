@@ -1,30 +1,29 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System.Buffers.Operations;
 using System.Buffers.Text;
 using System.Buffers.Writer;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Utf8;
-using System.Threading;
 using Xunit;
 
 namespace System.Buffers.Tests
 {
     public class BasicUnitTests
     {
-        private static Utf8String _crlf = (Utf8String)"\r\n";
-        private static Utf8String _eoh = (Utf8String)"\r\n\r\n"; // End Of Headers
-        private static Utf8String _http11OK = (Utf8String)"HTTP/1.1 200 OK\r\n";
-        private static Utf8String _headerServer = (Utf8String)"Server: Custom";
-        private static Utf8String _headerContentLength = (Utf8String)"Content-Length: ";
-        private static Utf8String _headerContentLengthZero = (Utf8String)"Content-Length: 0\r\n";
-        private static Utf8String _headerContentTypeText = (Utf8String)"Content-Type: text/plain\r\n";
+        private static readonly Utf8String _crlf = (Utf8String)"\r\n";
+        private static readonly Utf8String _eoh = (Utf8String)"\r\n\r\n"; // End Of Headers
+        private static readonly Utf8String _http11OK = (Utf8String)"HTTP/1.1 200 OK\r\n";
+        private static readonly Utf8String _headerServer = (Utf8String)"Server: Custom";
+        private static readonly Utf8String _headerContentLength = (Utf8String)"Content-Length: ";
+        private static readonly Utf8String _headerContentLengthZero = (Utf8String)"Content-Length: 0\r\n";
+        private static readonly Utf8String _headerContentTypeText = (Utf8String)"Content-Type: text/plain\r\n";
 
         private static Utf8String _plainTextBody = (Utf8String)"Hello, World!";
-
-        static Sink _sink = new Sink(4096);
-        static string s_response = "HTTP/1.1 200 OK\r\nServer: Custom\r\nDate: Fri, 16 Mar 2018 10:22:15 GMT\r\nContent-Type: text/plain\r\nContent-Length: 13\r\n\r\nHello, World!";
+        private static Sink _sink = new Sink(4096);
+        private static readonly string s_response = "HTTP/1.1 200 OK\r\nServer: Custom\r\nDate: Fri, 16 Mar 2018 10:22:15 GMT\r\nContent-Type: text/plain\r\nContent-Length: 13\r\n\r\nHello, World!";
 
         [Fact]
         public void WritePlainText()
@@ -114,10 +113,10 @@ namespace System.Buffers.Tests
         }
     }
 
-    class Sink : IBufferWriter<byte>
+    internal class Sink : IBufferWriter<byte>
     {
-        byte[] _buffer;
-        int _written;
+        private byte[] _buffer;
+        private int _written;
 
         public Sink(int size)
         {
@@ -151,12 +150,12 @@ namespace System.Buffers.Tests
         }
     }
 
-    static class DateHeader
+    internal static class DateHeader
     {
-        const int prefixLength = 8; // "\r\nDate: ".Length
-        const int dateTimeRLength = 29; // Wed, 14 Mar 2018 14:20:00 GMT
-        const int suffixLength = 2; // crlf
-        const int suffixIndex = dateTimeRLength + prefixLength;
+        private const int prefixLength = 8; // "\r\nDate: ".Length
+        private const int dateTimeRLength = 29; // Wed, 14 Mar 2018 14:20:00 GMT
+        private const int suffixLength = 2; // crlf
+        private const int suffixIndex = dateTimeRLength + prefixLength;
 
         private static byte[] s_headerBytesMaster = new byte[prefixLength + dateTimeRLength + suffixLength];
         private static byte[] s_headerBytesScratch = new byte[prefixLength + dateTimeRLength + suffixLength];
@@ -191,7 +190,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class AsciiToUtf16 : IBufferTransformation
+    internal class AsciiToUtf16 : IBufferTransformation
     {
         public OperationStatus Execute(ReadOnlySpan<byte> input, Span<byte> output, out int consumed, out int written)
         {

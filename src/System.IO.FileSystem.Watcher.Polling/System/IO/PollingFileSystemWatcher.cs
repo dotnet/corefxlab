@@ -84,7 +84,7 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        internal bool IsWatched(ref FileSystemEntry entry)
+        protected internal virtual bool ShouldIncludeEntry(ref FileSystemEntry entry)
         {
             if (entry.IsDirectory) return false;
             if (Filter == null) return true;
@@ -95,6 +95,8 @@ namespace System.IO.FileSystem
 
             return false;
         }
+
+        protected internal virtual bool ShouldRecurseIntoEntry(ref FileSystemEntry entry) => true;
 
         internal void UpdateState(string directory, ref FileChangeList changes, ref FileSystemEntry file)
         {
