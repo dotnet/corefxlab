@@ -18,12 +18,14 @@ namespace System.Text
     public sealed class Utf8String : IComparable, IComparable<Utf8String>, IConvertible, IEnumerable<Utf8Char>, IEquatable<Utf8String>
     {
         private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
+        private readonly DataFlags _flags; // any interesting characteristics about this instance
         private readonly byte[] _data; // the backing data for this string; guaranteed size (_length + 1) and null-terminated
 
         // private ctor for singleton Empty instance
         private Utf8String()
             : this(0)
         {
+            _flags = DataFlags.ContainsOnlyAsciiData | DataFlags.ContainsOnlyBmpChars | DataFlags.IsKnownWellFormed;
         }
 
         // private ctor roughly corresponding to FastAllocateString
@@ -81,6 +83,8 @@ namespace System.Text
         }
 
         public ReadOnlySpan<Utf8Char> Chars => MemoryMarshal.Cast<byte, Utf8Char>(Bytes);
+
+        private bool ContainsOnlyAsciiData => (_flags & DataFlags.ContainsOnlyAsciiData) != 0;
 
         public static readonly Utf8String Empty = new Utf8String();
 
@@ -434,39 +438,9 @@ namespace System.Text
 
         public int IndexOf(ReadOnlySpan<Utf8Char> value, int startIndex, int count) => throw null;
 
-        public int IndexOf(UnicodeScalar value)
-        {
-            // Special-case ASCII since it's only a single UTF-8 code unit.
+        public int IndexOf(UnicodeScalar value) => IndexOf(value, 0);
 
-            if (value.IsAscii)
-            {
-                return IndexOf((Utf8Char)value.Value);
-            }
-
-            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
-            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
-
-            // TODO: Use an IndexOf method that's optimized for short search targets.
-
-            return Bytes.IndexOf(buffer.Slice(actualCodeUnitCount));
-        }
-
-        public int IndexOf(UnicodeScalar value, int startIndex)
-        {
-            // Special-case ASCII since it's only a single UTF-8 code unit.
-
-            if (value.IsAscii)
-            {
-                return IndexOf((Utf8Char)value.Value, startIndex);
-            }
-
-            Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
-            int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
-
-            // TODO: Use an IndexOf method that's optimized for short search targets.
-
-            return Bytes.Slice(startIndex).IndexOf(buffer.Slice(actualCodeUnitCount));
-        }
+        public int IndexOf(UnicodeScalar value, int startIndex) => IndexOf(value, startIndex, _length);
 
         public int IndexOf(UnicodeScalar value, int startIndex, int count)
         {
@@ -475,6 +449,10 @@ namespace System.Text
             if (value.IsAscii)
             {
                 return IndexOf((Utf8Char)value.Value, startIndex, count);
+            }
+            else if (ContainsOnlyAsciiData)
+            {
+                return -1; // no point searching for non-ASCII scalars in an ASCII string
             }
 
             Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
@@ -822,6 +800,34 @@ namespace System.Text
             public void Reset() => throw null;
 
             object IEnumerator.Current => throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Flags
+        /// </summary>
+        [Flags]
+        private enum DataFlags
+        {
+            /// <summary>
+            /// There's nothing special about this instance. It contains basic UTF-8 data.
+            /// </summary>
+            None = 0,
+
+            /// <summary>
+            /// The backing data is known to consist of only ASCII characters.
+            /// </summary>
+            ContainsOnlyAsciiData = 1 << 0,
+
+            /// <summary>
+            /// The backing data is known to consist of only BMP characters.
+            /// TODO: Is such a distinction useful?
+            /// </summary>
+            ContainsOnlyBmpChars = 1 << 1,
+
+            /// <summary>
+            /// The backing data is known to be well-formed (modulo unsafe operations).
+            /// </summary>
+            IsKnownWellFormed = 1 << 2,
         }
     }
 }
