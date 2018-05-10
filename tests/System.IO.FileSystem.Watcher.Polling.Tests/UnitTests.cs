@@ -145,7 +145,7 @@ public partial class PollingFileSystemWatcherUnitTests
             using (FileStream file = File.Create(fileName)) { }
             watcher.Start();
             File.AppendAllText(fileName, ".");
-            signal.WaitOne(1000);
+            signal.WaitOne(2000);
         }
 
         try
