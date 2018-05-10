@@ -13,7 +13,6 @@ namespace System.IO
     [Serializable]
     class PathToFileStateHashtable
     {
-        int _count;
         int _nextValuesIndex = 1; // the first Values slot is reserved so that default(Bucket) knows that it is not pointing to any value.
         public FileState[] Values { get; private set; }
         private Bucket[] Buckets;
@@ -28,13 +27,7 @@ namespace System.IO
             Buckets = new Bucket[GetPrime(capacity + 1)];
         }
 
-        public int Count
-        {
-            get
-            {
-                return _count;
-            }
-        }
+        public int Count { get; private set; }
 
         public void Add(string directory, string file, FileState value)
         {
@@ -51,7 +44,7 @@ namespace System.IO
                 if (Buckets[bucket].IsEmpty)
                 {
                     Buckets[bucket] = new Bucket(directory, file, _nextValuesIndex);
-                    _count++;
+                    Count++;
                     _nextValuesIndex++;
                     return;
                 }
@@ -66,7 +59,7 @@ namespace System.IO
 
             Values[index].Path = null;
             Values[index].Directory = null;
-            _count--;
+            Count--;
         }
 
         public int IndexOf(string directory, ReadOnlySpan<char> file)
@@ -139,7 +132,7 @@ namespace System.IO
         private void Resize()
         {
             // this is because sometimes we just need to garbade collect instead of increase size
-            var newSize = Math.Max(_count * 2, 4);
+            var newSize = Math.Max(Count * 2, 4);
 
             var bigger = new PathToFileStateHashtable(newSize);
 
@@ -150,7 +143,7 @@ namespace System.IO
             Values = bigger.Values;
             Buckets = bigger.Buckets;
             this._nextValuesIndex = bigger._nextValuesIndex;
-            this._count = bigger._count;
+            this.Count = bigger.Count;
         }
 
         private static readonly int[] primes = {
@@ -229,7 +222,7 @@ namespace System.IO
 
         public override string ToString()
         {
-            return _count.ToString();
+            return Count.ToString();
         }
 
         [Serializable]
