@@ -444,13 +444,16 @@ namespace System.Text
 
         public int IndexOf(UnicodeScalar value, int startIndex, int count)
         {
-            // Special-case ASCII since it's only a single UTF-8 code unit.
-
             if (value.IsAscii)
             {
+                // Special-case ASCII since it's only a single UTF-8 code unit.
+                // The callee will perform validation on startIndex and count.
                 return IndexOf((Utf8Char)value.Value, startIndex, count);
             }
-            else if (ContainsOnlyAsciiData)
+
+            ValidateStartIndexAndCount(startIndex, count);
+
+            if (ContainsOnlyAsciiData)
             {
                 return -1; // no point searching for non-ASCII scalars in an ASCII string
             }
@@ -458,9 +461,7 @@ namespace System.Text
             Span<byte> buffer = stackalloc byte[4]; // largest possible scalar is four UTF-8 code units
             int actualCodeUnitCount = value.ToUtf8(MemoryMarshal.Cast<byte, Utf8Char>(buffer));
 
-            // TODO: Use an IndexOf method that's optimized for short search targets.
-
-            return Bytes.Slice(startIndex, count).IndexOf(buffer.Slice(actualCodeUnitCount));
+            return Bytes.DangerousSliceWithoutValidation(startIndex, count).IndexOf(buffer.DangerousSliceWithoutValidation(0, actualCodeUnitCount));
         }
 
         public int IndexOf(Utf8Char value) => Bytes.IndexOf((byte)value);
@@ -726,6 +727,12 @@ namespace System.Text
         public Utf8String TrimStart(Utf8Char trimChar) => throw null;
 
         public Utf8String TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidateStartIndexAndCount(int startIndex, int count)
+        {
+            Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, count, _length);
+        }
 
         TypeCode IConvertible.GetTypeCode() => throw null;
 

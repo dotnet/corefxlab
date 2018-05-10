@@ -12,6 +12,7 @@ namespace System.Text
     [StackTraceHidden]
     internal static class Validation
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNotOrdinal(StringComparison comparisonType)
         {
             if (comparisonType != StringComparison.Ordinal)
@@ -24,6 +25,32 @@ namespace System.Text
         private static void ThrowIfNotOrdinalInternal(StringComparison comparisonType)
         {
             throw new NotSupportedException(String.Format(CultureInfo.InvariantCulture, Strings.NotSupported_BadComparisonType, comparisonType));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfStartIndexOrCountOutOfRange(int startIndex, int count, int actualLength)
+        {
+            if ((uint)startIndex > (uint)actualLength)
+            {
+                ThrowIfStartIndexOrCountOutOfRangeInternal_StartIndex();
+            }
+
+            if ((uint)count > (uint)(actualLength - startIndex))
+            {
+                ThrowIfStartIndexOrCountOutOfRangeInternal_Count();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowIfStartIndexOrCountOutOfRangeInternal_Count()
+        {
+            throw new ArgumentOutOfRangeException(paramName: "count");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowIfStartIndexOrCountOutOfRangeInternal_StartIndex()
+        {
+            throw new ArgumentOutOfRangeException(paramName: "startIndex");
         }
     }
 }
