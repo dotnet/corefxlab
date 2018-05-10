@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Threading;
 using Xunit;
 
 public partial class PollingFileSystemWatcherUnitTests
 {
+    private const int MillisecondsTimeout = 1000;
+
     [Fact]
     public static void FileSystemWatcher_ctor_Defaults()
     {
@@ -52,8 +55,10 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
+        Directory.CreateDirectory(currentDir);
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
         using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
@@ -73,8 +78,8 @@ public partial class PollingFileSystemWatcherUnitTests
             };
 
             watcher.Start();
-            using (FileStream file = File.Create(fileName)) { }
-            signal.WaitOne(1000);
+            using (FileStream file = File.Create(fullName)) { }
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         try
@@ -83,15 +88,17 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public static void FileSystemWatcher_Deleted_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
+        Directory.CreateDirectory(currentDir);
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
         using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
@@ -110,20 +117,24 @@ public partial class PollingFileSystemWatcherUnitTests
                 signal.Set();
             };
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             watcher.Start();
-            File.Delete(fileName);
-            signal.WaitOne(1000);
+            File.Delete(fullName);
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         Assert.True(eventRaised);
+
+        Directory.Delete(currentDir, true);
     }
 
     [Fact]
     public static void FileSystemWatcher_Changed_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
+        Directory.CreateDirectory(currentDir);
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
         using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
@@ -142,10 +153,10 @@ public partial class PollingFileSystemWatcherUnitTests
                 signal.Set();
             };
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             watcher.Start();
-            File.AppendAllText(fileName, ".");
-            signal.WaitOne(2000);
+            File.AppendAllText(fullName, ".");
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         try
@@ -154,7 +165,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
