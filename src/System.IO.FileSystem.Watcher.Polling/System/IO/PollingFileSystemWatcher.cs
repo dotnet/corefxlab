@@ -40,7 +40,7 @@ namespace System.IO.FileSystem
             _state = new PathToFileStateHashtable();
             Path = path;
             Filter = filter;
-            EnumerationOptions = null ?? new EnumerationOptions();
+            EnumerationOptions = options ?? new EnumerationOptions();
             _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
