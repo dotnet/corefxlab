@@ -32,20 +32,23 @@ namespace System.IO.FileSystem
         /// </summary>
         /// <param name="path">The path to watch.</param>
         /// <param name="filter">The type of files to watch. For example, "*.txt" watches for changes to all text files.</param>
-        public PollingFileSystemWatcher(string path, string filter = "*.*", EnumerationOptions options = null)
+        public PollingFileSystemWatcher(string path, string filter = "*", EnumerationOptions options = null)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
             if (!Directory.Exists(path))
                 throw new ArgumentException("Path not found.", nameof(path));
 
             _state = new PathToFileStateHashtable();
             Path = path;
-            Filter = filter;
+            Filter = filter ?? throw new ArgumentNullException(nameof(filter));
             EnumerationOptions = options ?? new EnumerationOptions();
             _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
         public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
-        public string Filter { get; set; } = "*.*";
+        public string Filter { get; set; }
         public string Path { get; set; }
         public int PollingIntervalInMilliseconds { get; set; } = 1000;
 
@@ -143,12 +146,14 @@ namespace System.IO.FileSystem
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose(WaitHandle notifyObject)
+        public bool Dispose(WaitHandle notifyObject)
         {
             _disposed = true;
-            _timer.Dispose(notifyObject);
+            var isSuccess = _timer.Dispose(notifyObject);
             Dispose(true);
             GC.SuppressFinalize(this);
+
+            return isSuccess;
         }
 
         protected virtual void Dispose(bool disposing)
