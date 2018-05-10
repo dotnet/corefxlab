@@ -8,9 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion)" />
-    <PackageReference Include="System.Reflection.Emit" Version="$(CoreFxStableVersion)" />
     <PackageReference Include="System.Reflection.Emit.LightWeight" Version="$(CoreFxStableVersion)" />
-    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.JsonLab\System.Text.JsonLab.csproj" />

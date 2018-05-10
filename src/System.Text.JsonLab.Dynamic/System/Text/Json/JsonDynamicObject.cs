@@ -334,16 +334,16 @@ namespace System.Text.JsonLab
                 throw new KeyNotFoundException();
             }
             PropertyInfoNode node = value.Head;
-            PropertyInfo pi = node.Value.Item2;
+            PropertyInfo pi = node.Value.propertyInfo;
 
             // This should be a very rare occurrence (only if there is hash collision)
             if (value.Count > 1)
             {
-                while (true)
+                while (node != null)
                 {
-                    if (span.SequenceEqual(node.Value.Item1))
+                    if (span.SequenceEqual(node.Value.encodedName))
                     {
-                        pi = node.Value.Item2;
+                        pi = node.Value.propertyInfo;
                         break;
                     }
                     node = node.Next;

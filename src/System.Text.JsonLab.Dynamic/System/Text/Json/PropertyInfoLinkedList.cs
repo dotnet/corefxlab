@@ -8,7 +8,7 @@ namespace System.Text.JsonLab
     public class PropertyInfoNode
     {
         public PropertyInfoNode Next;
-        public (byte[], PropertyInfo) Value;
+        public (byte[] encodedName, PropertyInfo propertyInfo) Value;
     }
 
     public class PropertyInfoLinkedList
