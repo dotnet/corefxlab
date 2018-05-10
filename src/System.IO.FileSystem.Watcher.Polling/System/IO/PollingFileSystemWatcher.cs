@@ -40,7 +40,7 @@ namespace System.IO.FileSystem
             _state = new PathToFileStateHashtable();
             Path = path;
             Filter = filter;
-            EnumerationOptions = null ?? new EnumerationOptions();
+            EnumerationOptions = options ?? new EnumerationOptions();
             _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
@@ -81,7 +81,7 @@ namespace System.IO.FileSystem
             return changes;
         }
 
-        internal bool IsWatched(ref FileSystemEntry entry)
+        protected internal virtual bool ShouldIncludeEntry(ref FileSystemEntry entry)
         {
             if (entry.IsDirectory) return false;
             if (Filter == null) return true;
@@ -92,6 +92,8 @@ namespace System.IO.FileSystem
 
             return false;
         }
+
+        protected internal virtual bool ShouldRecurseIntoEntry(ref FileSystemEntry entry) => true;
 
         internal void UpdateState(string directory, ref FileChangeList changes, ref FileSystemEntry file)
         {
