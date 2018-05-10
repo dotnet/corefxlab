@@ -119,7 +119,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-            AllocateAndCopy:
+        AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length, (str0, str1), (span, state) =>
@@ -164,7 +164,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-            AllocateAndCopy:
+        AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length + str2.Length, (str0, str1, str2), (span, state) =>
@@ -222,7 +222,7 @@ namespace System.Text
 
             return singleValueToReturn;
 
-            AllocateAndCopy:
+        AllocateAndCopy:
 
             // overflow will be checked by the ctor or the CopyTo routine
             return CreateInternal(str0.Length + str1.Length + str2.Length + str3.Length, (str0, str1, str2, str3), (span, state) =>
@@ -362,6 +362,9 @@ namespace System.Text
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static Utf8String DangerousCreateWithoutValidation(ReadOnlySpan<Utf8Char> value) => DangerousCreateWithoutValidation(MemoryMarshal.Cast<Utf8Char, byte>(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ref readonly byte DangerousGetByteAtWithoutValidation(int offset) => ref Unsafe.Add(ref MemoryMarshal.GetReference(Bytes), offset);
 
         public bool EndsWith(ReadOnlySpan<Utf8Char> value) => throw null;
 
@@ -645,44 +648,33 @@ namespace System.Text
         {
             // n.b. it's ok to pass a startIndex equal to Length; we'll just return an empty string
 
-            if ((uint)startIndex > (uint)_length)
+            // Perform validation and edge case checks together to limit total number of branches.
+
+            if (startIndex <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
+                return (startIndex == 0) ? this : throw Exceptions.ArgumentOutOfRange_StartIndex();
             }
 
-            if (startIndex == 0)
+            if (startIndex >= _length)
             {
-                return this;
-            }
-
-            if (startIndex == _length)
-            {
-                return Empty;
+                return (startIndex == _length) ? Empty : throw Exceptions.ArgumentOutOfRange_StartIndex();
             }
 
             // TODO: Consider whether we really need to validate that we're not slicing in the middle of a multi-byte sequence.
             // If we assume that Utf8String instances are already well-formed, then we only need to check that the string isn't
             // being sliced in the middle of a multi-byte sequence. If that check passes then the rest of the data is also good.
 
-            if (UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex]))
+            if (UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex)))
             {
-                throw new InvalidOperationException(Strings.InvalidOperation_SubstringWouldCreateIllFormedUtf8String);
+                throw Exceptions.InvalidOperation_SubstringWouldCreateIllFormedUtf8String();
             }
 
-            return DangerousCreateWithoutValidation(Bytes.Slice(startIndex));
+            return DangerousCreateWithoutValidation(Bytes.DangerousSliceWithoutValidation(startIndex));
         }
 
         public Utf8String Substring(int startIndex, int length)
         {
-            if ((uint)startIndex > (uint)_length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
-            }
-
-            if ((uint)length > (uint)(_length - startIndex))
-            {
-                throw new ArgumentOutOfRangeException(nameof(length));
-            }
+            ValidateStartIndexAndLength(startIndex, length);
 
             if (length == _length)
             {
@@ -700,12 +692,13 @@ namespace System.Text
 
             // n.b. Second byte being compared in below check could be the null terminator.
 
-            if (UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex]) || UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex + length]))
+            if (UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex))
+                || UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex + length)))
             {
-                throw new InvalidOperationException(Strings.InvalidOperation_SubstringWouldCreateIllFormedUtf8String);
+                throw Exceptions.InvalidOperation_SubstringWouldCreateIllFormedUtf8String();
             }
 
-            return DangerousCreateWithoutValidation(Bytes.Slice(startIndex, length));
+            return DangerousCreateWithoutValidation(Bytes.DangerousSliceWithoutValidation(startIndex, length));
         }
 
         public Utf8String ToLowerInvariant() => throw null;
@@ -735,7 +728,7 @@ namespace System.Text
         public Utf8String TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ValidateStartIndexAndCount(int startIndex)
+        private void ValidateStartIndex(int startIndex)
         {
             Validation.ThrowIfStartIndexOutOfRange(startIndex, _length);
         }
@@ -743,7 +736,13 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidateStartIndexAndCount(int startIndex, int count)
         {
-            Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, count, _length);
+            Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, count, ParamName.count, _length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidateStartIndexAndLength(int startIndex, int length)
+        {
+            Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, length, ParamName.length, _length);
         }
 
         TypeCode IConvertible.GetTypeCode() => throw null;

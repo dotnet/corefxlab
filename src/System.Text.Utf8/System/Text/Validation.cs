@@ -3,9 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text.Utf8.Resources;
 
 namespace System.Text
 {
@@ -17,14 +15,8 @@ namespace System.Text
         {
             if (comparisonType != StringComparison.Ordinal)
             {
-                ThrowIfNotOrdinalInternal(comparisonType);
+                throw Exceptions.NotSupported_BadComparisonType(comparisonType);
             }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowIfNotOrdinalInternal(StringComparison comparisonType)
-        {
-            throw new NotSupportedException(String.Format(CultureInfo.InvariantCulture, Strings.NotSupported_BadComparisonType, comparisonType));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,31 +24,19 @@ namespace System.Text
         {
             if ((uint)startIndex > (uint)actualLength)
             {
-                ThrowIfStartIndexOutOfRangeInternal();
+                throw Exceptions.ArgumentOutOfRange_StartIndex();
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowIfStartIndexOutOfRangeInternal()
-        {
-            throw new ArgumentOutOfRangeException(paramName: "startIndex");
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfStartIndexOrCountOutOfRange(int startIndex, int count, int actualLength)
+        public static void ThrowIfStartIndexOrCountOutOfRange(int startIndex, int count, ParamName countParamName, int actualLength)
         {
             ThrowIfStartIndexOutOfRange(startIndex, actualLength);
 
             if ((uint)count > (uint)(actualLength - startIndex))
             {
-                ThrowIfStartIndexOrCountOutOfRangeInternal_Count();
+                throw Exceptions.ArgumentOutOfRange_LengthOrCount(countParamName);
             }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ThrowIfStartIndexOrCountOutOfRangeInternal_Count()
-        {
-            throw new ArgumentOutOfRangeException(paramName: "count");
         }
     }
 }

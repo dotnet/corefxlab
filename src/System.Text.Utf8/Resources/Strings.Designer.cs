@@ -88,6 +88,24 @@ namespace System.Text.Utf8.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified count is larger than the remaining data length..
+        /// </summary>
+        internal static string ArgumentOutOfRange_LengthOrCount {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_LengthOrCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The start index must be non-negative and cannot be greater than the data length..
+        /// </summary>
+        internal static string ArgumentOutOfRange_StartIndex {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange_StartIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This operation would create a Utf8String that is not well-formed..
         /// </summary>
         internal static string InvalidOperation_SubstringWouldCreateIllFormedUtf8String {
