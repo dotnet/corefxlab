@@ -31,6 +31,9 @@ namespace System.Text.Formatting
             return _output.GetMemory(minimumLength);
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        public Span<byte> GetSpan(int minimumLength)
+        {
+            return _output.GetSpan(minimumLength);
+        }
     }
 }

@@ -46,7 +46,19 @@ namespace System.Text.Formatting
             return _buffer.Free;
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        public Span<byte> GetSpan(int minimumLength = 0)
+        {
+            if (minimumLength < 1) minimumLength = 1;
+            if (minimumLength > _buffer.Free.Count)
+            {
+                var doubleCount = _buffer.Free.Count * 2;
+                int newSize = minimumLength > doubleCount ? minimumLength : doubleCount;
+                var newArray = _pool.Rent(newSize + _buffer.Count);
+                var oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            return _buffer.Free;
+        }
 
         public void Advance(int bytes)
         {

@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Json;
+using System.Text.JsonLab;
 using System.Buffers;
 using System.Threading;
 using System.Text.Http.Parser;

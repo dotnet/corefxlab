@@ -7,25 +7,18 @@ namespace System.Buffers.Reader
 {
     public ref struct BufferReader
     {
-        private ReadOnlySpan<byte> _currentSpan;
-        private int _index;
-
-        private ReadOnlySequence<byte> _sequence;
         private SequencePosition _currentSequencePosition;
         private SequencePosition _nextSequencePosition;
 
-        private int _consumedBytes;
-        private bool _end;
-
         public BufferReader(ReadOnlySequence<byte> buffer)
         {
-            _end = false;
-            _index = 0;
-            _consumedBytes = 0;
-            _sequence = buffer;
-            _currentSequencePosition = _sequence.Start;
+            End = false;
+            CurrentSegmentIndex = 0;
+            ConsumedBytes = 0;
+            Sequence = buffer;
+            _currentSequencePosition = Sequence.Start;
             _nextSequencePosition = _currentSequencePosition;
-            _currentSpan = ReadOnlySpan<byte>.Empty;
+            CurrentSegment = ReadOnlySpan<byte>.Empty;
             MoveNext();
         }
 
@@ -34,43 +27,42 @@ namespace System.Buffers.Reader
             return new BufferReader(buffer);
         }
 
-        public bool End => _end;
+        public bool End { get; private set; }
+        public int CurrentSegmentIndex { get; private set; }
 
-        public int CurrentSegmentIndex => _index;
+        public ReadOnlySequence<byte> Sequence { get; }
 
-        public ReadOnlySequence<byte> Sequence => _sequence;
+        public SequencePosition Position => Sequence.GetPosition(CurrentSegmentIndex, _currentSequencePosition);
 
-        public SequencePosition Position => _sequence.GetPosition(_index, _currentSequencePosition);
+        public ReadOnlySpan<byte> CurrentSegment { get; private set; }
 
-        public ReadOnlySpan<byte> CurrentSegment => _currentSpan;
+        public ReadOnlySpan<byte> UnreadSegment => CurrentSegment.Slice(CurrentSegmentIndex);
 
-        public ReadOnlySpan<byte> UnreadSegment => _currentSpan.Slice(_index);
-
-        public int ConsumedBytes => _consumedBytes;
+        public int ConsumedBytes { get; private set; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (_end)
+            if (End)
             {
                 return -1;
             }
-            return _currentSpan[_index];
+            return CurrentSegment[CurrentSegmentIndex];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Read()
         {
-            if (_end)
+            if (End)
             {
                 return -1;
             }
 
-            var value = _currentSpan[_index];
-            _index++;
-            _consumedBytes++;
+            var value = CurrentSegment[CurrentSegmentIndex];
+            CurrentSegmentIndex++;
+            ConsumedBytes++;
 
-            if (_index >= _currentSpan.Length)
+            if (CurrentSegmentIndex >= CurrentSegment.Length)
             {
                 MoveNext();
             }
@@ -82,17 +74,17 @@ namespace System.Buffers.Reader
         private void MoveNext()
         {
             var previous = _nextSequencePosition;
-            while (_sequence.TryGet(ref _nextSequencePosition, out var memory, true))
+            while (Sequence.TryGet(ref _nextSequencePosition, out var memory, true))
             {
                 _currentSequencePosition = previous;
-                _currentSpan = memory.Span;
-                _index = 0;
-                if (_currentSpan.Length > 0)
+                CurrentSegment = memory.Span;
+                CurrentSegmentIndex = 0;
+                if (CurrentSegment.Length > 0)
                 {
                     return;
                 }
             }
-            _end = true;
+            End = true;
         }
 
         public void Advance(int byteCount)
@@ -102,20 +94,20 @@ namespace System.Buffers.Reader
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            _consumedBytes += byteCount;
+            ConsumedBytes += byteCount;
 
-            while (!_end && byteCount > 0)
+            while (!End && byteCount > 0)
             {
-                if ((_index + byteCount) < _currentSpan.Length)
+                if ((CurrentSegmentIndex + byteCount) < CurrentSegment.Length)
                 {
-                    _index += byteCount;
+                    CurrentSegmentIndex += byteCount;
                     byteCount = 0;
                     break;
                 }
 
-                var remaining = (_currentSpan.Length - _index);
+                var remaining = (CurrentSegment.Length - CurrentSegmentIndex);
 
-                _index += remaining;
+                CurrentSegmentIndex += remaining;
                 byteCount -= remaining;
 
                 MoveNext();
@@ -146,7 +138,7 @@ namespace System.Buffers.Reader
                 int copied = first.Length;
 
                 var next = bytes._nextSequencePosition;
-                while (bytes._sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+                while (bytes.Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
                 {
                     var nextSpan = nextSegment.Span;
                     if (nextSpan.Length > 0)

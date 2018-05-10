@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "System.IO.Pipelines.Samples": {
-      "commandName": "Project",
-      "commandLineArgs": "socketht"
-    }
-  }
-}

@@ -33,6 +33,11 @@ Currently, this repo contains the following experimental components:
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
+* **System.IO.FileSystem.Watcher.Polling**. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
+This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
+allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected.
+
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
 They are designed to format values into text streams and to build complex strings. 
@@ -46,14 +51,18 @@ The System.Text.Primitives library contains fast, non-allocating integral parsin
 and an index are accepted as input and a parsed value is desired as output (e.g. in a web server). These APIs present significant performance gains
 over converting the buffer to a string, indexing into the string, and then parsing.
 
-* **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
-This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
-allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected.
-
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
+
+More libraries are coming soon. Stay tuned!
+
+[blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
+
+## Archived Projects
+
+The following projects were moved to the archived_projects directory since they do not have any stewards and are no longer under active development.
+We will no longer publish new packages for these to MyGet and possibly remove them all together in the future.
 
 * **System.Collections.Generic.MultiValueDictionary**.
 The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
@@ -62,11 +71,10 @@ setting of the internal collections so that uniqueness of values can be chosen b
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 * **System.CommandLine**.
-The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](src/System.CommandLine/README.md) for more information.
+The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](archived_projects/src/System.CommandLine/README.md) for more information.
 
-More libraries are coming soon. Stay tuned!
-
-[blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
+* **System.Drawing.Graphics**.
+A prototype of .NET Framework's System.Drawing.Graphics on [LibGD](https://en.wikipedia.org/wiki/GD_Graphics_Library) (instead of using [GDIPlus](https://en.wikipedia.org/wiki/Graphics_Device_Interface)).  Some background information can be found [here](https://blogs.msdn.microsoft.com/dotnet/2017/01/19/net-core-image-processing/).  See the [README.txt](archived_projects/src/System.Drawing.Graphics/README.txt) for more information on building the archived project.
 
 ## Related Projects
 

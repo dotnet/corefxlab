@@ -22,9 +22,10 @@ namespace System.IO.FileSystem
     /// </remarks>
     public class PollingFileSystemWatcher : IDisposable
     {
-        Timer _timer;
-        PathToFileStateHashtable _state; // stores state of the directory
-        byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        private Timer _timer;
+        private PathToFileStateHashtable _state; // stores state of the directory
+        private byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        private bool _disposed = false;
 
         /// <summary>
         /// Creates an instance of a watcher
@@ -39,7 +40,8 @@ namespace System.IO.FileSystem
             _state = new PathToFileStateHashtable();
             Path = path;
             Filter = filter;
-            EnumerationOptions = options ?? new EnumerationOptions();
+            EnumerationOptions = null ?? new EnumerationOptions();
+            _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
         public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
@@ -49,8 +51,10 @@ namespace System.IO.FileSystem
 
         public void Start()
         {
+            if (_disposed) throw new ObjectDisposedException(nameof(PollingFileSystemWatcher));
+
             ComputeChangesAndUpdateState(); // captures the initial state
-            _timer = new Timer(new TimerCallback(TimerHandler), null, PollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
@@ -133,7 +137,22 @@ namespace System.IO.FileSystem
         /// </summary>
         public void Dispose()
         {
+            _disposed = true;
             _timer.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(WaitHandle notifyObject)
+        {
+            _disposed = true;
+            _timer.Dispose(notifyObject);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
         private void TimerHandler(object context)
@@ -153,7 +172,8 @@ namespace System.IO.FileSystem
                 Error?.Invoke(this, new ErrorEventArgs(e));
             }
 
-            _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
+            if (!_disposed)
+                _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
         }
     }
 }

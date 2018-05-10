@@ -9,8 +9,8 @@ namespace System.Buffers.Tests
 {
     public class BufferReaderTests
     {
-        static byte[] s_array;
-        static ReadOnlySequence<byte> s_ros;
+        private static readonly byte[] s_array;
+        private static readonly ReadOnlySequence<byte> s_ros;
 
         static BufferReaderTests()
         {
