@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Utf8;
 
 namespace JsonBenchmarks
 {
@@ -24,28 +22,8 @@ namespace JsonBenchmarks
         private static LoginViewModel CreateLoginViewModel()
             => new LoginViewModel
             {
-                Email = 1,
-                Email1 = 2,
-                Email2 = 3,
-                Email3 = 4,
-                Email4 = 5,
-                Email5 = 6,
-                Email6 = 7,
-                Email7 = 8,
-                Email8 = 9,
-                Email9 = 10,
-                Email10 = 11,
-                Email11 = 12,
-                Email12 = 13,
-                Email13 = 14,
-                Email14 = 15,
-                Email15 = 16,
-                Email16 = 17,
-                Email17 = 18,
-                Email18 = 19,
-                Email19 = 20,
-                Email20 = 21,
-                Email21 = 22,
+                Email = "name.familyname@not.com",
+                Password = "abcdefgh123456!@",
                 RememberMe = true
             };
 
@@ -171,31 +149,11 @@ namespace JsonBenchmarks
     [Serializable]
     public class LoginViewModel : IVerifiable
     {
-        public virtual int Email { get; set; }
-        public virtual int Email1 { get; set; }
-        public virtual int Email2 { get; set; }
-        public virtual int Email3 { get; set; }
-        public virtual int Email4 { get; set; }
-        public virtual int Email5 { get; set; }
-        public virtual int Email6 { get; set; }
-        public virtual int Email7 { get; set; }
-        public virtual int Email8 { get; set; }
-        public virtual int Email9 { get; set; }
-        public virtual int Email10 { get; set; }
-        public virtual int Email11 { get; set; }
-        public virtual int Email12 { get; set; }
-        public virtual int Email13 { get; set; }
-        public virtual int Email14 { get; set; }
-        public virtual int Email15 { get; set; }
-        public virtual int Email16 { get; set; }
-        public virtual int Email17 { get; set; }
-        public virtual int Email18 { get; set; }
-        public virtual int Email19 { get; set; }
-        public virtual int Email20 { get; set; }
-        public virtual int Email21 { get; set; }
+        public virtual string Email { get; set; }
+        public virtual string Password { get; set; }
         public virtual bool RememberMe { get; set; }
 
-        public long TouchEveryProperty() => Email.ToString().Length + Email1.ToString().Length + Convert.ToInt32(RememberMe);
+        public long TouchEveryProperty() => Email.Length + Password.Length + Convert.ToInt32(RememberMe);
     }
 
     [Serializable]

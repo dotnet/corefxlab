@@ -93,67 +93,47 @@ namespace System.Text.JsonLab.Dynamic.Tests
         }
 
         [Fact]
-        public void Deserialize()
+        public void DeserializeWithUtf8Strings()
         {
-            //string str = "{\"RememberMe\":true,\"Email\":\"name.familyname@not.com\",\"Password\":\"abcdefgh123456!@\"}";
-            //byte[] data = Encoding.UTF8.GetBytes(str);
+            string str = "{\"RememberMe\":true,\"Email\":\"name.familyname@not.com\",\"Password\":\"abcdefgh123456!@\"}";
+            byte[] data = Encoding.UTF8.GetBytes(str);
 
-            string str = "{\"Email\":1,\"Email1\":2,\"Email2\":3,\"Email3\":4,\"Email4\":5,\"Email5\":6,\"Email6\":7,\"Email7\":8,\"Email8\":9,\"Email9\":10,\"Email10\":11,\"Email11\":12,\"Email12\":13,\"Email13\":14,\"Email14\":15,\"Email15\":16,\"Email16\":17,\"Email17\":18,\"Email18\":19,\"Email19\":20,\"Email20\":21,\"Email21\":22,\"RememberMe\":true}";
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(str);
+            var model1 = JsonDynamicObject.Deserialize<LoginViewModel>(data);
 
-            LoginViewModel2 model = JsonDynamicObject.Deserialize<LoginViewModel2>(data);
+            Assert.Equal(new Utf8String("name.familyname@not.com"), model1.Email);
+            Assert.Equal(new Utf8String("abcdefgh123456!@"), model1.Password);
+            Assert.Equal(true, model1.RememberMe);
+        }
 
-            Assert.Equal(1, model.Email);
-            Assert.Equal(2, model.Email1);
-            Assert.Equal(3, model.Email2);
-            Assert.Equal(21, model.Email20);
-            Assert.Equal(22, model.Email21);
+        [Fact]
+        public void DeserializeWithoutUtf8Strings()
+        {
+            string str = "{\"Email1\":1,\"Email2\":2,\"Email3\":3,\"RememberMe\":true}";
+            byte[] data = Encoding.UTF8.GetBytes(str);
+
+            var model = JsonDynamicObject.Deserialize<LoginViewModel_NoUtf8>(data);
+
+            Assert.Equal(1, model.Email1);
+            Assert.Equal(2, model.Email2);
+            Assert.Equal(3, model.Email3);
             Assert.Equal(true, model.RememberMe);
-
-            LoginViewModel2 model2 = JsonDynamicObject.Deserialize<LoginViewModel2>(data);
-            Assert.Equal(20, model2.Email19);
-
-            /*LoginViewModel model = JsonDynamicObject.Deserialize<LoginViewModel>(data);
-
-            Assert.Equal("name.familyname@not.com", model.Email);
-            Assert.Equal("abcdefgh123456!@", model.Password);
-            Assert.Equal(true, model.RememberMe);*/
         }
     }
 
     [Serializable]
     public class LoginViewModel
     {
-        public virtual string Email { get; set; }
-        public virtual string Password { get; set; }
+        public virtual Utf8String Email { get; set; }
+        public virtual Utf8String Password { get; set; }
         public virtual bool RememberMe { get; set; }
     }
 
     [Serializable]
-    public class LoginViewModel2
+    public class LoginViewModel_NoUtf8
     {
-        public virtual int Email { get; set; }
         public virtual int Email1 { get; set; }
         public virtual int Email2 { get; set; }
         public virtual int Email3 { get; set; }
-        public virtual int Email4 { get; set; }
-        public virtual int Email5 { get; set; }
-        public virtual int Email6 { get; set; }
-        public virtual int Email7 { get; set; }
-        public virtual int Email8 { get; set; }
-        public virtual int Email9 { get; set; }
-        public virtual int Email10 { get; set; }
-        public virtual int Email11 { get; set; }
-        public virtual int Email12 { get; set; }
-        public virtual int Email13 { get; set; }
-        public virtual int Email14 { get; set; }
-        public virtual int Email15 { get; set; }
-        public virtual int Email16 { get; set; }
-        public virtual int Email17 { get; set; }
-        public virtual int Email18 { get; set; }
-        public virtual int Email19 { get; set; }
-        public virtual int Email20 { get; set; }
-        public virtual int Email21 { get; set; }
         public virtual bool RememberMe { get; set; }
     }
 

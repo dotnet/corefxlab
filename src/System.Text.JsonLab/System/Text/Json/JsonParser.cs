@@ -40,7 +40,7 @@ namespace System.Text.JsonLab
 
     internal ref struct TwoStacks
     {
-        Span<byte> _memory;
+        Span<byte> _span;
         int topOfStackObj;
         int topOfStackArr;
         int capacity;
@@ -59,18 +59,18 @@ namespace System.Text.JsonLab
 
         public TwoStacks(Span<byte> db)
         {
-            _memory = db;
-            topOfStackObj = _memory.Length;
-            topOfStackArr = _memory.Length;
+            _span = db;
+            topOfStackObj = _span.Length;
+            topOfStackArr = _span.Length;
             objectStackCount = 0;
             arrayStackCount = 0;
-            capacity = _memory.Length/8;
+            capacity = _span.Length/8;
         }
 
         public bool TryPushObject(int value)
         {
             if (!IsFull) {
-                Write(_memory.Slice(topOfStackObj - 8), ref value);
+                Write(_span.Slice(topOfStackObj - 8), ref value);
                 topOfStackObj -= 8;
                 objectStackCount++;
                 return true;
@@ -81,7 +81,7 @@ namespace System.Text.JsonLab
         public bool TryPushArray(int value)
         {
             if (!IsFull) {
-                Write(_memory.Slice(topOfStackArr - 4), ref value);
+                Write(_span.Slice(topOfStackArr - 4), ref value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
                 return true;
@@ -92,7 +92,7 @@ namespace System.Text.JsonLab
         public int PopObject()
         {
             objectStackCount--;
-            var value = Read<int>(_memory.Slice(topOfStackObj));
+            var value = Read<int>(_span.Slice(topOfStackObj));
             topOfStackObj += 8;
             return value;
         }
@@ -100,15 +100,15 @@ namespace System.Text.JsonLab
         public int PopArray()
         {
             arrayStackCount--;
-            var value = Read<int>(_memory.Slice(topOfStackArr + 4));
+            var value = Read<int>(_span.Slice(topOfStackArr + 4));
             topOfStackArr += 8;
             return value;
         }
 
         internal void Resize(Span<byte> newStackMemory)
         {
-            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
-            _memory = newStackMemory;
+            _span.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
+            _span = newStackMemory;
         }
     }
 
@@ -116,7 +116,7 @@ namespace System.Text.JsonLab
     {
         private Span<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
-        private Span<byte> _scratchMemory;
+        private Span<byte> _scratchSpan;
         private IMemoryOwner<byte> _scratchManager;
         MemoryPool<byte> _pool;
         TwoStacks _stack;
@@ -149,11 +149,11 @@ namespace System.Text.JsonLab
             _pool = pool;
             if (_pool == null) _pool = MemoryPool<byte>.Shared;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchMemory = _scratchManager.Memory.Span;
+            _scratchSpan = _scratchManager.Memory.Span;
 
-            int dbLength = _scratchMemory.Length / 2;
-            _db = _scratchMemory.Slice(0, dbLength);
-            _stack = new TwoStacks(_scratchMemory.Slice(dbLength));
+            int dbLength = _scratchSpan.Length / 2;
+            _db = _scratchSpan.Slice(0, dbLength);
+            _stack = new TwoStacks(_scratchSpan.Slice(dbLength));
 
             _values = utf8Json;
             _insideObject = 0;
@@ -169,8 +169,6 @@ namespace System.Text.JsonLab
 
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
-
-            //var span = _db.Span;
 
             while (Read()) {
                 var tokenType = _tokenType;
@@ -221,16 +219,15 @@ namespace System.Text.JsonLab
 
         private void ResizeDb()
         {
-            //var oldData = _scratchMemory.Span;
-            var newScratch = _pool.Rent(_scratchMemory.Length * 2);
+            var newScratch = _pool.Rent(_scratchSpan.Length * 2);
             int dbLength = newScratch.Memory.Length / 2;
 
-            var temp = newScratch.Memory.Span;
-            var span = temp.Slice(0, dbLength);
-            _db.Slice(0, _valuesIndex).CopyTo(span);
-            _db = span;
+            var span = newScratch.Memory.Span;
+            var sliceStart = span.Slice(0, dbLength);
+            _db.Slice(0, _valuesIndex).CopyTo(sliceStart);
+            _db = sliceStart;
 
-            var newStackMemory = temp.Slice(dbLength);
+            var newStackMemory = span.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;
