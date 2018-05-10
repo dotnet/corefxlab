@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     public struct FileChange
     {

@@ -3,7 +3,7 @@
 
 using System;
 using System.IO;
-using System.IO.FileSystem;
+using System.IO.Enumeration;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;

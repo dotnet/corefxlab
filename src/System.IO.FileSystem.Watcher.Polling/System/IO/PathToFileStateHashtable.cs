@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     // this is a quick an dirty hashtable optimized for the PollingFileSystemWatcher
     // It allows mutating struct values (FileState) contained in the hashtable

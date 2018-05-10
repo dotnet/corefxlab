@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     internal struct FileChangeList
     {

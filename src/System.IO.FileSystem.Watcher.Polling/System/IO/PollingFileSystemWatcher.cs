@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     /// <summary>
     /// PollingFileSystemWatcher can be used to monitor changes to a file system directory
