@@ -58,7 +58,7 @@ public partial class PollingFileSystemWatcherUnitTests
         string fileName = Path.GetRandomFileName();
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -70,7 +70,7 @@ public partial class PollingFileSystemWatcherUnitTests
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
@@ -96,7 +96,7 @@ public partial class PollingFileSystemWatcherUnitTests
         string fileName = Path.GetRandomFileName();
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -108,7 +108,7 @@ public partial class PollingFileSystemWatcherUnitTests
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
@@ -128,7 +128,7 @@ public partial class PollingFileSystemWatcherUnitTests
         string fileName = Path.GetRandomFileName();
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -140,7 +140,7 @@ public partial class PollingFileSystemWatcherUnitTests
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 

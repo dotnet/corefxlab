@@ -10,6 +10,7 @@ namespace System.IO.FileSystem
     // It allows mutating struct values (FileState) contained in the hashtable
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
+    [Serializable]
     class PathToFileStateHashtable
     {
         int _count;
@@ -231,6 +232,7 @@ namespace System.IO.FileSystem
             return _count.ToString();
         }
 
+        [Serializable]
         struct Bucket
         {
             public FullPath Key;
@@ -251,6 +253,7 @@ namespace System.IO.FileSystem
             }
         }
 
+        [Serializable]
         struct FullPath
         {
             public string Directory;

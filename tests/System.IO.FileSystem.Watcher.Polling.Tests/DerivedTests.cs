@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.IO;
 using System.IO.Enumeration;
 using System.IO.FileSystem;
@@ -15,7 +18,7 @@ public partial class PollingFileSystemWatcherDerivedTests
 
         DerivedWatcher watcher2 = new DerivedWatcher(currentDir)
         {
-            PollingIntervalInMilliseconds = 1
+            PollingInterval = 1
         };
         watcher2.Start();
 
@@ -38,7 +41,7 @@ public partial class PollingFileSystemWatcherDerivedTests
 
         DerivedWatcher watcher2 = new DerivedWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true })
         {
-            PollingIntervalInMilliseconds = 1
+            PollingInterval = 1
         };
         watcher2.Start();
 

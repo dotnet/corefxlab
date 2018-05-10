@@ -85,9 +85,10 @@ namespace System.IO.FileSystem
         }
     }
 
+    [Serializable]
     struct FileState
     {
-        internal byte _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
+        internal long _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
         public string Path;
         public string Directory;
         public DateTimeOffset LastWriteTimeUtc;
