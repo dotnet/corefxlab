@@ -40,26 +40,26 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, enc, false, 1024, true);
         }
 
-        [Benchmark]
-        public void ReaderSystemTextJsonLab() => TestReaderSystemTextJsonLab(_data, _symbolTable);
-
         [Benchmark(Baseline = true)]
-        public void ReaderNewtonsoft()
+        public void ReaderNewtonsoftStringReader()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            TestReaderNewtonsoft(_reader);
-        }
-
-        private static void TestReaderSystemTextJsonLab(ReadOnlySpan<byte> data, SymbolTable symbolTable)
-        {
-            var json = new JsonReader(data, symbolTable);
+            var json = new Newtonsoft.Json.JsonTextReader(new StringReader(JsonString));
             while (json.Read()) ;
         }
 
-        private static void TestReaderNewtonsoft(StreamReader reader)
+        [Benchmark]
+        public void ReaderNewtonsoftStreamReader()
         {
-            using (var json = new Newtonsoft.Json.JsonTextReader(reader))
+            _stream.Seek(0, SeekOrigin.Begin);
+            using (var json = new Newtonsoft.Json.JsonTextReader(_reader))
                 while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLab()
+        {
+            var json = new JsonReader(_data, _symbolTable);
+            while (json.Read()) ;
         }
 
         private static byte[] EncodeTestData(EncoderTarget encoderTarget, string data)

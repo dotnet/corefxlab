@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Text.Http.Parser.Benchmarks;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Environments;
@@ -24,11 +25,19 @@ namespace Benchmarks
 
         // BenchmarkDotNet can run generic benchmarks, if it knows what generic type arguments to use
         private static Type[] GetGenericBenchmarks()
-            => new[]
+        {
+            var types = new List<Type>
             {
                 typeof(HttpParser<Request>),
-                typeof(HttpParser<RequestStruct>),
+                typeof(HttpParser<RequestStruct>)
             };
+
+            foreach (Type type in JsonBenchmarks.SerializerBenchmarks.GetTypes())
+            {
+                types.Add(type);
+            }
+            return types.ToArray();
+        }
 
         private static IConfig CreateClrVsCoreConfig()
             => DefaultConfig.Instance
