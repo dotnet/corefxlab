@@ -216,7 +216,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator Utf8String(JsonObject json)
         {
-            var record = json.Record;
+            DbRow record = json.Record;
             if (!record.IsSimpleValue)
             {
                 throw new InvalidCastException();

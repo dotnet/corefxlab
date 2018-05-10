@@ -39,9 +39,9 @@ namespace System.Text.JsonLab
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        var key = GetHashCode(reader.Value);
+                        int key = GetHashCode(reader.Value);
                         reader.Read(); // Move to the value token
-                        var type = reader.ValueType;
+                        JsonValueType type = reader.ValueType;
                         switch (type)
                         {
                             case JsonValueType.String:

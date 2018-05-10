@@ -92,7 +92,7 @@ namespace System.Text.JsonLab
         public int PopObject()
         {
             objectStackCount--;
-            var value = Read<int>(_span.Slice(topOfStackObj));
+            int value = Read<int>(_span.Slice(topOfStackObj));
             topOfStackObj += 8;
             return value;
         }
@@ -100,7 +100,7 @@ namespace System.Text.JsonLab
         public int PopArray()
         {
             arrayStackCount--;
-            var value = Read<int>(_span.Slice(topOfStackArr + 4));
+            int value = Read<int>(_span.Slice(topOfStackArr + 4));
             topOfStackArr += 8;
             return value;
         }
@@ -219,15 +219,15 @@ namespace System.Text.JsonLab
 
         private void ResizeDb()
         {
-            var newScratch = _pool.Rent(_scratchSpan.Length * 2);
+            IMemoryOwner<byte> newScratch = _pool.Rent(_scratchSpan.Length * 2);
             int dbLength = newScratch.Memory.Length / 2;
 
-            var span = newScratch.Memory.Span;
-            var sliceStart = span.Slice(0, dbLength);
+            Span<byte> span = newScratch.Memory.Span;
+            Span<byte> sliceStart = span.Slice(0, dbLength);
             _db.Slice(0, _valuesIndex).CopyTo(sliceStart);
             _db = sliceStart;
 
-            var newStackMemory = span.Slice(dbLength);
+            Span<byte> newStackMemory = span.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;
@@ -240,7 +240,7 @@ namespace System.Text.JsonLab
 
             while (true) {
                 int rowStartOffset = rowNumber * DbRow.Size;
-                var row = Read<DbRow>(_db.Slice(rowStartOffset));
+                DbRow row = Read<DbRow>(_db.Slice(rowStartOffset));
 
                 int lengthOffset = rowStartOffset + 4;
                 
