@@ -20,7 +20,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Created);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Created);
         }
 
         internal void AddChanged(string directory, string path)
@@ -28,7 +28,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Changed);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Changed);
         }
 
         internal void AddRemoved(string directory, string path)
@@ -36,7 +36,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Deleted);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Deleted);
         }
 
         void EnsureCapacity()

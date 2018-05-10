@@ -9,9 +9,9 @@ namespace System.IO.FileSystem
     {
         string _directory;
         string _path;
-        ChangeType _chageType;
+        WatcherChangeTypes _chageType;
 
-        internal FileChange(string directory, string path, ChangeType type)
+        internal FileChange(string directory, string path, WatcherChangeTypes type)
         {
             Debug.Assert(path != null);
             _directory = directory;
@@ -27,7 +27,7 @@ namespace System.IO.FileSystem
             }
         }
 
-        public ChangeType ChangeType
+        public WatcherChangeTypes ChangeType
         {
             get
             {

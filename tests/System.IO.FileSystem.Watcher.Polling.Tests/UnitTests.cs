@@ -66,7 +66,7 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
@@ -104,7 +104,7 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Deleted, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Deleted, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
@@ -136,7 +136,7 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Changed, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Changed, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
