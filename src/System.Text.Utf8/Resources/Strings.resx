@@ -126,6 +126,9 @@
   <data name="Argument_OutputBufferTooSmall" xml:space="preserve">
     <value>The provided buffer is not large enough to hold the output data.</value>
   </data>
+  <data name="InvalidOperation_SubstringWouldCreateIllFormedUtf8String" xml:space="preserve">
+    <value>This operation would create a Utf8String that is not well-formed.</value>
+  </data>
   <data name="NotSupported_BadComparisonType" xml:space="preserve">
     <value>The comparison type '{0}' is not valid for this API.</value>
   </data>

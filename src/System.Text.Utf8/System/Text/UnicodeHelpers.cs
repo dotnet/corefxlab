@@ -232,6 +232,24 @@ namespace System.Text
         /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-8 continuation byte
         /// point, i.e., has binary representation 10xxxxxx, where x is any bit.
         /// </summary>
+        public static bool IsUtf8ContinuationByte(in byte value)
+        {
+            // This API takes its input as a readonly ref so that the JITter can emit "cmp ModRM" statements
+            // directly rather than bounce a temporary through a register. That is, we want the JIT to be
+            // able to emit a single "cmp byte ptr [data], C0h" statement if we're querying a memory location
+            // to see if it's a continuation byte. Data that's already enregistered will go through the
+            // normal "cmp reg, C0h" code paths, perhaps with some extra unnecessary "movzx" instructions.
+            
+            // The below check takes advantage of the two's complement representation of negative numbers.
+            // [ 0b1000_0000, 0b1011_1111 ] is [ -127 (sbyte.MinValue), -65 ]
+
+            return ((sbyte)value < -64);
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-8 continuation byte
+        /// point, i.e., has binary representation 10xxxxxx, where x is any bit.
+        /// </summary>
         public static bool IsUtf8ContinuationByte(uint value)
         {
             Debug.Assert(value <= byte.MaxValue);

@@ -675,10 +675,16 @@ namespace System.Text
                 return Empty;
             }
 
-            return CreateInternal(_length - startIndex, (source: this, startIndex), (span, state) =>
+            // TODO: Consider whether we really need to validate that we're not slicing in the middle of a multi-byte sequence.
+            // If we assume that Utf8String instances are already well-formed, then we only need to check that the string isn't
+            // being sliced in the middle of a multi-byte sequence. If that check passes then the rest of the data is also good.
+
+            if (UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex]))
             {
-                state.source.Bytes.Slice(state.startIndex).CopyTo(span);
-            });
+                throw new InvalidOperationException(Strings.InvalidOperation_SubstringWouldCreateIllFormedUtf8String);
+            }
+
+            return DangerousCreateWithoutValidation(Bytes.Slice(startIndex));
         }
 
         public Utf8String Substring(int startIndex, int length)
@@ -703,10 +709,18 @@ namespace System.Text
                 return Empty;
             }
 
-            return CreateInternal(length, (source: this, startIndex, length), (span, state) =>
+            // TODO: Consider whether we really need to validate that we're not slicing in the middle of a multi-byte sequence.
+            // If we assume that Utf8String instances are already well-formed, then we only need to check that the string isn't
+            // being sliced in the middle of a multi-byte sequence. If that check passes then the rest of the data is also good.
+
+            // n.b. Second byte being compared in below check could be the null terminator.
+
+            if (UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex]) || UnicodeHelpers.IsUtf8ContinuationByte(_data[startIndex + length]))
             {
-                state.source.Bytes.Slice(state.startIndex, state.length).CopyTo(span);
-            });
+                throw new InvalidOperationException(Strings.InvalidOperation_SubstringWouldCreateIllFormedUtf8String);
+            }
+
+            return DangerousCreateWithoutValidation(Bytes.Slice(startIndex, length));
         }
 
         public Utf8String ToLowerInvariant() => throw null;

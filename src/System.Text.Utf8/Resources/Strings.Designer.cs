@@ -88,6 +88,15 @@ namespace System.Text.Utf8.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This operation would create a Utf8String that is not well-formed..
+        /// </summary>
+        internal static string InvalidOperation_SubstringWouldCreateIllFormedUtf8String {
+            get {
+                return ResourceManager.GetString("InvalidOperation_SubstringWouldCreateIllFormedUtf8String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The comparison type &apos;{0}&apos; is not valid for this API..
         /// </summary>
         internal static string NotSupported_BadComparisonType {
