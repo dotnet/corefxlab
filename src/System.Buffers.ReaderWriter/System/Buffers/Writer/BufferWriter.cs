@@ -9,13 +9,13 @@ namespace System.Buffers.Writer
 {
     public ref partial struct BufferWriter
     {
-        Span<byte> _buffer;
-        int _written;
+        private Span<byte> _buffer;
+        private int _written;
 
         public ReadOnlySpan<byte> NewLine { get; set; }
         public Func<int, Memory<byte>> Enlarge { get; set; }
 
-        static byte[] s_defaultNewline = new byte[] { (byte)'\n' };
+        private static byte[] s_defaultNewline = new byte[] { (byte)'\n' };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BufferWriter Create(Span<byte> buffer) => new BufferWriter(buffer);
