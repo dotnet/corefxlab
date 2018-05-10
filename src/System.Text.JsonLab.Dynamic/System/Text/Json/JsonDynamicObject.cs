@@ -6,10 +6,133 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.Utf8;
 
 namespace System.Text.JsonLab
 {
+    public class FieldDescriptor
+    {
+        public FieldDescriptor(string fieldName, Type fieldType)
+        {
+            FieldName = fieldName;
+            FieldType = fieldType;
+        }
+        public string FieldName { get; }
+        public Type FieldType { get; }
+    }
+
+    public static class MyTypeBuilder
+    {
+        public static object CreateNewObject()
+        {
+            var myTypeInfo = CompileResultTypeInfo();
+            var myType = myTypeInfo.AsType();
+            var myObject = Activator.CreateInstance(myType);
+
+            return myObject;
+        }
+
+        public static TypeInfo CompileResultTypeInfo()
+        {
+            TypeBuilder tb = GetTypeBuilder();
+            ConstructorBuilder constructor = tb.DefineDefaultConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
+
+            var yourListOfFields = new List<FieldDescriptor>()
+            {
+                new FieldDescriptor("YourProp1",typeof(string)),
+                new FieldDescriptor("YourProp2", typeof(int))
+            };
+            foreach (var field in yourListOfFields)
+                CreateProperty(tb, field.FieldName, field.FieldType);
+
+            TypeInfo objectTypeInfo = tb.CreateTypeInfo();
+            return objectTypeInfo;
+        }
+
+        private static TypeBuilder GetTypeBuilder()
+        {
+            var typeSignature = "MyDynamicType";
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
+            TypeBuilder tb = moduleBuilder.DefineType(typeSignature,
+                    TypeAttributes.Public |
+                    TypeAttributes.Class |
+                    TypeAttributes.AutoClass |
+                    TypeAttributes.AnsiClass |
+                    TypeAttributes.BeforeFieldInit |
+                    TypeAttributes.AutoLayout,
+                    null);
+            return tb;
+        }
+
+        private static void CreateProperty(TypeBuilder tb, string propertyName, Type propertyType)
+        {
+            FieldBuilder fieldBuilder = tb.DefineField("_" + propertyName, propertyType, FieldAttributes.Private);
+
+            PropertyBuilder propertyBuilder = tb.DefineProperty(propertyName, PropertyAttributes.HasDefault, propertyType, null);
+            MethodBuilder getPropMthdBldr = tb.DefineMethod("get_" + propertyName, MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig, propertyType, Type.EmptyTypes);
+            ILGenerator getIl = getPropMthdBldr.GetILGenerator();
+
+            getIl.Emit(OpCodes.Ldarg_0);
+            getIl.Emit(OpCodes.Ldfld, fieldBuilder);
+            getIl.Emit(OpCodes.Ret);
+
+            MethodBuilder setPropMthdBldr =
+                tb.DefineMethod("set_" + propertyName,
+                  MethodAttributes.Public |
+                  MethodAttributes.SpecialName |
+                  MethodAttributes.HideBySig,
+                  null, new[] { propertyType });
+
+            ILGenerator setIl = setPropMthdBldr.GetILGenerator();
+            Label modifyProperty = setIl.DefineLabel();
+            Label exitSet = setIl.DefineLabel();
+
+            setIl.MarkLabel(modifyProperty);
+            setIl.Emit(OpCodes.Ldarg_0);
+            setIl.Emit(OpCodes.Ldarg_1);
+            setIl.Emit(OpCodes.Stfld, fieldBuilder);
+
+            setIl.Emit(OpCodes.Nop);
+            setIl.MarkLabel(exitSet);
+            setIl.Emit(OpCodes.Ret);
+
+            propertyBuilder.SetGetMethod(getPropMthdBldr);
+            propertyBuilder.SetSetMethod(setPropMthdBldr);
+        }
+
+        public delegate void SetHandler(object source, object value);
+
+        private static SetHandler GetDelegate(Type type, FieldInfo fieldInfo)
+        {
+            DynamicMethod dm = new DynamicMethod("setter", typeof(void), new Type[] { typeof(object), typeof(object) }, type, true);
+            ILGenerator setGenerator = dm.GetILGenerator();
+
+            setGenerator.Emit(OpCodes.Ldarg_0);
+            setGenerator.DeclareLocal(type);
+            setGenerator.Emit(OpCodes.Unbox_Any, type);
+            setGenerator.Emit(OpCodes.Stloc_0);
+            setGenerator.Emit(OpCodes.Ldloca_S, 0);
+            setGenerator.Emit(OpCodes.Ldarg_1);
+            setGenerator.Emit(OpCodes.Unbox_Any, fieldInfo.FieldType);
+            setGenerator.Emit(OpCodes.Stfld, fieldInfo);
+            setGenerator.Emit(OpCodes.Ldloc, 0);
+            setGenerator.Emit(OpCodes.Box, type);
+            setGenerator.Emit(OpCodes.Ret);
+            return (SetHandler)dm.CreateDelegate(typeof(SetHandler));
+
+            /*DynamicMethod method = new DynamicMethod(name, typeof(void), new[] { typeof(Foo), typeof(string) }, true);
+            var ilgen = method.GetILGenerator();
+            ilgen.Emit(OpCodes.Ldarg_0);
+            ilgen.Emit(OpCodes.Ldarg_1);
+            ilgen.Emit(OpCodes.Callvirt, typeof(Foo).GetProperty("A").GetSetMethod());
+            ilgen.Emit(OpCodes.Ret);
+            var action = method.CreateDelegate(typeof(Action<Foo, string>)) as Action<Foo, string>;*/
+        }
+    }
+
+
     public class Node
     {
         public Node Next;
@@ -42,6 +165,100 @@ namespace System.Text.JsonLab
 
     public class JsonDynamicObject : DynamicObject, IBufferFormattable
     {
+
+        /*public delegate void SetHandler(object source, object value);
+
+        private static SetHandler GetDelegate(Type type, FieldInfo fieldInfo)
+        {
+            DynamicMethod dm = new DynamicMethod("setter", typeof(void), new Type[] { typeof(object), typeof(object) }, type, true);
+            ILGenerator setGenerator = dm.GetILGenerator();
+
+            setGenerator.Emit(OpCodes.Ldarg_0);
+            setGenerator.DeclareLocal(type);
+            setGenerator.Emit(OpCodes.Unbox_Any, type);
+            setGenerator.Emit(OpCodes.Stloc_0);
+            setGenerator.Emit(OpCodes.Ldloca_S, 0);
+            setGenerator.Emit(OpCodes.Ldarg_1);
+            setGenerator.Emit(OpCodes.Unbox_Any, fieldInfo.FieldType);
+            setGenerator.Emit(OpCodes.Stfld, fieldInfo);
+            setGenerator.Emit(OpCodes.Ldloc, 0);
+            setGenerator.Emit(OpCodes.Box, type);
+            setGenerator.Emit(OpCodes.Ret);
+            return (SetHandler)dm.CreateDelegate(typeof(SetHandler));
+        }*/
+
+        /*private static TypeBuilder GetTypeBuilder()
+        {
+            var typeSignature = "MyDynamicType";
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
+            TypeBuilder tb = moduleBuilder.DefineType(typeSignature,
+                    TypeAttributes.Public |
+                    TypeAttributes.Class |
+                    TypeAttributes.AutoClass |
+                    TypeAttributes.AnsiClass |
+                    TypeAttributes.BeforeFieldInit |
+                    TypeAttributes.AutoLayout,
+                    null);
+            return tb;
+        }*/
+
+        public delegate void ClassFieldSetter<in T, in TValue>(T target, TValue value) where T : class;
+
+        public static class FieldSetterCreator
+        {
+            public static ClassFieldSetter<T, TValue> CreateClassFieldSetter<T, TValue>(FieldInfo field)
+                where T : class
+            {
+                return CreateSetter<T, TValue, ClassFieldSetter<T, TValue>>(field);
+            }
+
+            private static TDelegate CreateSetter<T, TValue, TDelegate>(FieldInfo field)
+            {
+                return (TDelegate)(object)CreateSetter(field, typeof(T), typeof(TValue), typeof(TDelegate));
+            }
+
+            private static Delegate CreateSetter(FieldInfo field, Type instanceType, Type valueType, Type delegateType)
+            {
+                var setter = new DynamicMethod("", typeof(void), new[] { instanceType, valueType });
+                var generator = setter.GetILGenerator();
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldarg_1);
+                generator.Emit(OpCodes.Stfld, field);
+                generator.Emit(OpCodes.Ret);
+                return setter.CreateDelegate(delegateType);
+            }
+        }
+
+        private static void SetIntegerProperty(PropertyInfo pi, int value)
+        {
+            /*FieldBuilder ValueField = tb.DefineField("_" + propertyName, typeof(int), FieldAttributes.Private); 
+            MethodAttributes GetSetAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual;
+
+            MethodBuilder ValuePropertyGet = tb.DefineMethod("get_" + propertyName, GetSetAttributes, typeof(int), Type.EmptyTypes);
+            ILGenerator generator = ValuePropertyGet.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldfld, ValueField);
+            generator.Emit(OpCodes.Ret);
+
+            MethodBuilder ValuePropertySet = tb.DefineMethod("set_" + propertyName, GetSetAttributes, null, new Type[] { typeof(int) });
+            generator = ValuePropertySet.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Stfld, ValueField);
+            generator.Emit(OpCodes.Ret);*/
+            DynamicMethod method = new DynamicMethod(pi.Name, typeof(int), null);
+            ILGenerator generator = method.GetILGenerator();
+            generator.Emit(OpCodes.Ldc_I4, value);
+            generator.EmitCall(OpCodes.Callvirt, pi.SetMethod, new Type[] { typeof(int) });
+            generator.Emit(OpCodes.Ret);
+            /*ILGenerator generator = ValuePropertySet.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Stfld, ValueField);
+            generator.Emit(OpCodes.Ret);*/
+        }
+
         private static int GetHashCode(ReadOnlySpan<byte> span)
         {
             int hash = 17;
@@ -78,8 +295,6 @@ namespace System.Text.JsonLab
             return dictionary;
         }
 
-        public static Dictionary<Type, Dictionary<int, MyLinkedList>> TypeCache = new Dictionary<Type, Dictionary<int, MyLinkedList>>();
-
         private readonly Dictionary<JsonProperty, JsonValue> _properties;
 
         public JsonDynamicObject() : this(new Dictionary<JsonProperty, JsonValue>()) { }
@@ -112,15 +327,57 @@ namespace System.Text.JsonLab
             return pi;
         }
 
+        public delegate T CreateInstanceOfType<T>();
+
+        private static CreateInstanceOfType<T> CreateInstance<T>(ConstructorInfo con)
+        {
+            DynamicMethod method = new DynamicMethod("CreateInstanceDynamicMethod", typeof(T), null);
+            ILGenerator generator = method.GetILGenerator();
+            //var con = typeof(T).GetConstructor(new Type[] { typeof(T) });
+
+            generator.Emit(OpCodes.Newobj, con);
+
+            //generator.Emit(OpCodes.Newobj, typeof(T).GetConstructor(new Type[] { typeof(T) }));
+            generator.Emit(OpCodes.Ret);
+            return (CreateInstanceOfType<T>)method.CreateDelegate(typeof(CreateInstanceOfType<T>));
+        }
+
+        public static Dictionary<Type, Dictionary<int, MyLinkedList>> TypeCache = new Dictionary<Type, Dictionary<int, MyLinkedList>>();
+        public static Dictionary<Type, ConstructorInfo> ConstructorCache = new Dictionary<Type, ConstructorInfo>();
+        public static Dictionary<Type, CreateInstanceOfType> DelegateCache = new Dictionary<Type, CreateInstanceOfType>();
+
+        public delegate object CreateInstanceOfType();
+
+        private static CreateInstanceOfType CreateInstance(Type type, ConstructorInfo con)
+        {
+            DynamicMethod method = new DynamicMethod("CreateInstanceDynamicMethod", type, null);
+            ILGenerator generator = method.GetILGenerator();
+            generator.Emit(OpCodes.Newobj, con);
+            generator.Emit(OpCodes.Ret);
+            return (CreateInstanceOfType)method.CreateDelegate(typeof(CreateInstanceOfType));
+        }
+
         public static T Deserialize<T>(ReadOnlySpan<byte> utf8)
         {
-            T instance = Activator.CreateInstance<T>();
-
             if (!TypeCache.TryGetValue(typeof(T), out Dictionary<int, MyLinkedList> dictionary))
             {
                 dictionary = GetTypeMap(typeof(T));
                 TypeCache.Add(typeof(T), dictionary);
             }
+
+            /*if (!ConstructorCache.TryGetValue(typeof(T), out ConstructorInfo ci))
+            {
+                ci = typeof(T).GetConstructors()[0];
+                ConstructorCache.Add(typeof(T), ci);
+            }
+
+            if (!DelegateCache.TryGetValue(typeof(T), out CreateInstanceOfType ctor))
+            {
+                ctor = CreateInstance(typeof(T), ci);
+            }*/
+
+            T instance = Activator.CreateInstance<T>();   // 13 micro seconds
+            //T instance = (T)ctor.Invoke();                  // 98 micro seconds
 
             var reader = new JsonReader(utf8, SymbolTable.InvariantUtf8);
             while (reader.Read())
@@ -158,6 +415,7 @@ namespace System.Text.JsonLab
                                     throw new InvalidCastException();
                                 }
                                 pi.SetValue(instance, result);
+                                //SetIntegerProperty(pi, result);
                                 break;
                             case JsonValueType.Array:
                                 throw new NotImplementedException("array support not implemented yet.");
