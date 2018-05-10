@@ -8,32 +8,49 @@ namespace System.Text.Utf8.Benchmarks
 {
     public class Utf8StringPerf
     {
-        [Params(5, 50000)]
-        public int Length;
+        [Params(TestCaseType.ShortAscii, TestCaseType.ShortMultiByte, TestCaseType.LongAscii, TestCaseType.LongMultiByte)]
+        public TestCaseType TestCase;
 
-        [Params(126, 0xD7FF)]
-        public int MaxCodePoint;
-
-        private string randomString;
-        private Utf8String utf8String;
+        private string _string;
+        private Utf8String _utf8String;
 
         [GlobalSetup]
         public void Setup()
         {
+            int length;
+            int maxCodePoint;
+
+            switch (TestCase)
+            {
+                case TestCaseType.ShortAscii:
+                    { length = 5; maxCodePoint = 126; break; }
+                case TestCaseType.ShortMultiByte:
+                    { length = 5; maxCodePoint = 0xD7FF; break; }
+                case TestCaseType.LongAscii:
+                    { length = 50000; maxCodePoint = 126; break; }
+                case TestCaseType.LongMultiByte:
+                    { length = 50000; maxCodePoint = 0xD7FF; break; }
+                default:
+                    throw new InvalidOperationException();
+            }
+
             // the length of the string is same across the runs, so the content of the string can be random for this particular benchmarks
-            randomString = GetRandomString(Length, 32, MaxCodePoint);
-            utf8String = new Utf8String(randomString);
+            _string = GetRandomString(length, 32, maxCodePoint);
+            _utf8String = new Utf8String(_string);
         }
 
         [Benchmark]
-        public Utf8String ConstructFromString() => new Utf8String(randomString);
+        public Utf8String ConstructFromString() => new Utf8String(_string);
 
         [Benchmark]
-        public void EnumerateCodePoints()
+        public uint EnumerateCodePoints()
         {
-            foreach (uint codePoint in utf8String)
+            uint retVal = default;
+            foreach (uint codePoint in _utf8String)
             {
+                retVal = codePoint;
             }
+            return retVal;
         }
 
         private string GetRandomString(int length, int minCodePoint, int maxCodePoint)
@@ -45,6 +62,14 @@ namespace System.Text.Utf8.Benchmarks
                 sb.Append((char)r.Next(minCodePoint, maxCodePoint));
             }
             return sb.ToString();
+        }
+
+        public enum TestCaseType
+        {
+            ShortAscii,
+            ShortMultiByte,
+            LongAscii,
+            LongMultiByte
         }
     }
 }
