@@ -76,16 +76,14 @@ namespace JsonBenchmarks
         [Benchmark]
         public void ReaderJayrock()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            using (var json = new JsonTextReader(_reader))
+            using (var json = new JsonTextReader(new StringReader(_str)))
                 while (json.Read()) ;
         }
 
         [Benchmark]
         public void ReaderLitJson()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            var json = new LitJson.JsonReader(_reader);
+            var json = new LitJson.JsonReader(new StringReader(_str));
             while (json.Read()) ;
         }
     }
