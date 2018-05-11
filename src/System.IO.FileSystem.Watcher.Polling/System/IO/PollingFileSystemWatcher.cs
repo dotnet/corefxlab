@@ -29,6 +29,7 @@ namespace System.IO
         private long _version; // this is used to keep track of removals. // TODO: describe the algorithm
         private bool _started = false;
         private bool _disposed = false;
+        private long _pollingInterval = 1000;
 
         /// <summary>
         /// Creates an instance of a watcher
@@ -47,7 +48,7 @@ namespace System.IO
             Path = path;
             Filter = filter ?? throw new ArgumentNullException(nameof(filter));
             EnumerationOptions = options ?? new EnumerationOptions();
-            Initialize();
+            _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
         private void Initialize()
@@ -65,7 +66,15 @@ namespace System.IO
         /// <summary>
         /// The number of milliseconds to wait until checking the file system again
         /// </summary>
-        public int PollingInterval { get; set; } = 1000;
+        public long PollingInterval
+        {
+            get { return _pollingInterval; }
+            set
+            {
+                _pollingInterval = value;
+                AttemptRestart();
+            }
+        }
 
         public void Start()
         {
@@ -75,6 +84,11 @@ namespace System.IO
             _started = true;
             ComputeChangesAndUpdateState(); // captures the initial state
             _timer.Change(PollingInterval, Timeout.Infinite);
+        }
+
+        private void AttemptRestart()
+        {
+            if (_started) _timer.Change(PollingInterval, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
@@ -210,9 +224,9 @@ namespace System.IO
             Path = info.GetString(nameof(Path));
             Filter = info.GetString(nameof(Filter));
             EnumerationOptions = new EnumerationOptions { RecurseSubdirectories = info.GetBoolean(nameof(EnumerationOptions.RecurseSubdirectories)) };
-            PollingInterval = info.GetInt32(nameof(PollingInterval));
 
-            Initialize();
+            _timer = new Timer(new TimerCallback(TimerHandler));
+            PollingInterval = info.GetInt32(nameof(PollingInterval));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

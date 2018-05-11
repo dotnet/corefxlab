@@ -207,6 +207,78 @@ public partial class PollingFileSystemWatcherUnitTests
     }
 
     [Fact]
+    public static void FileSystemWatcher_PollingInterval_ChangeBeforeStart()
+    {
+        string currentDir = Utility.GetRandomDirectory();
+        string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
+        bool eventRaised = false;
+
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = Timeout.Infinite })
+        {
+            AutoResetEvent signal = new AutoResetEvent(false);
+
+            watcher.Changed += (e, changes) =>
+            {
+                eventRaised = true;
+                watcher.PollingInterval = Timeout.Infinite;
+                signal.Set();
+            };
+
+            watcher.PollingInterval = 0;
+            watcher.Start();
+
+            using (FileStream file = File.Create(fullName)) { }
+            signal.WaitOne(1000);
+        }
+
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            Directory.Delete(currentDir, true);
+        }
+    }
+
+    [Fact]
+    public static void FileSystemWatcher_PollingInterval_ChangeAfterStart()
+    {
+        string currentDir = Utility.GetRandomDirectory();
+        string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
+        bool eventRaised = false;
+
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = Timeout.Infinite })
+        {
+            AutoResetEvent signal = new AutoResetEvent(false);
+
+            watcher.Changed += (e, changes) =>
+            {
+                eventRaised = true;
+                watcher.PollingInterval = Timeout.Infinite;
+                signal.Set();
+            };
+
+            watcher.Start();
+
+            using (FileStream file = File.Create(fullName)) { }
+            watcher.PollingInterval = 0;
+            signal.WaitOne(1000);
+        }
+
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            Directory.Delete(currentDir, true);
+        }
+    }
+
+    [Fact]
     public static void FileSystemWatcher_Recursive()
     {
         string currentDir = Utility.GetRandomDirectory();
