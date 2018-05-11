@@ -15,7 +15,7 @@ namespace System.Text
     /// <summary>
     /// A UTF-8 string.
     /// </summary>
-    public sealed class Utf8String : IComparable, IComparable<Utf8String>, IConvertible, IEnumerable<Utf8Char>, IEquatable<Utf8String>
+    public sealed class Utf8String : IConvertible, IEnumerable<Utf8Char>, IEquatable<Utf8String>
     {
         private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
         private readonly DataFlags _flags; // any interesting characteristics about this instance
@@ -91,9 +91,7 @@ namespace System.Text
         public int Length => _length;
 
         public ScalarSequence Scalars => throw null;
-
-        public int CompareTo(Utf8String other) => throw null;
-
+        
         public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
 
         public static Utf8String Concat(Utf8String str0, Utf8String str1)
@@ -746,9 +744,7 @@ namespace System.Text
         }
 
         TypeCode IConvertible.GetTypeCode() => throw null;
-
-        int IComparable.CompareTo(object obj) => throw null;
-
+        
         bool IConvertible.ToBoolean(IFormatProvider provider) => throw null;
 
         byte IConvertible.ToByte(IFormatProvider provider) => throw null;
