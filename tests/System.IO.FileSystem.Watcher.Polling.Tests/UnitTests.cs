@@ -202,7 +202,7 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Recursive()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
         string fullName = Path.Combine(subDirectory, fileName);
@@ -242,7 +242,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            Directory.Delete(subDirectory, true);
+            Directory.Delete(currentDir, true);
         }
     }
 
