@@ -42,4 +42,11 @@ public static class Utility
             Directory.Delete(path, true);
         }
     }
+
+    public static string GetRandomDirectory()
+    {
+        var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(path);
+        return path;
+    }
 }
