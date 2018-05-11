@@ -19,7 +19,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Equal(path, watcher.Path);
         Assert.Equal("*", watcher.Filter);
         Assert.NotNull(watcher.EnumerationOptions);
-        Assert.Equal(1000, watcher.PollingIntervalInMilliseconds);
+        Assert.Equal(1000, watcher.PollingInterval);
     }
 
     [Fact]
@@ -55,8 +55,7 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
-        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
-        Directory.CreateDirectory(currentDir);
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
@@ -95,8 +94,7 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Deleted_File()
     {
-        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
-        Directory.CreateDirectory(currentDir);
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
@@ -131,8 +129,7 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Changed_File()
     {
-        string currentDir = Path.Combine(Environment.CurrentDirectory, Path.GetRandomFileName());
-        Directory.CreateDirectory(currentDir);
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
         string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
@@ -172,11 +169,12 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Filter()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = $"{Path.GetRandomFileName()}.csv";
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, filter: "*.csv") { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, filter: "*.csv") { PollingInterval = 1 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -184,17 +182,17 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
             watcher.Start();
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -204,21 +202,21 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public static void FileSystemWatcher_Recursive()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
         string fullName = Path.Combine(subDirectory, fileName);
 
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true }) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true }) { PollingInterval = 1 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -231,11 +229,11 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(subDirectory, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
@@ -251,7 +249,7 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            Directory.Delete(subDirectory, true);
+            Directory.Delete(currentDir, true);
         }
     }
 
@@ -306,7 +304,7 @@ public partial class PollingFileSystemWatcherUnitTests
     public static void FileSystemWatcher_DisposeAfterStartWithWaitHandle()
     {
         ManualResetEvent resetEvent = new ManualResetEvent(false);
-        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingIntervalInMilliseconds = 1 };
+        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 1 };
         watcher.Start();
         var isSuccessful = watcher.Dispose(resetEvent);
         Assert.True(isSuccessful);

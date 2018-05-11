@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using System.IO.Enumeration;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
@@ -14,7 +13,7 @@ public class PollingFileSystemWatcherSerializableTests
     [Fact]
     public void RoundTripPropertyTest()
     {
-        string path = Path.GetTempPath();
+        string path = Environment.CurrentDirectory;
         string filter = "*.abc";
         EnumerationOptions options = new EnumerationOptions { RecurseSubdirectories = true };
         PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(path, filter, options)
@@ -45,10 +44,12 @@ public class PollingFileSystemWatcherSerializableTests
     [Fact]
     public void RoundTripBeforeStartedDoesNotAutomaticallyStartTest()
     {
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 0 };
+        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
         {
@@ -61,7 +62,7 @@ public class PollingFileSystemWatcherSerializableTests
                 signal.Set();
             };
 
-            using (var file = File.Create(fileName)) { }
+            using (var file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -71,17 +72,19 @@ public class PollingFileSystemWatcherSerializableTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public void RoundTripBeforeStartedTest()
     {
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 0 };
+        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
         {
@@ -95,7 +98,7 @@ public class PollingFileSystemWatcherSerializableTests
             };
             deserialized.Start();
 
-            using (var file = File.Create(fileName)) { }
+            using (var file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -105,17 +108,19 @@ public class PollingFileSystemWatcherSerializableTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public void RoundTripAfterStartedTest()
     {
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 0 };
+        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
         watcher.Start();
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
@@ -129,7 +134,7 @@ public class PollingFileSystemWatcherSerializableTests
                 signal.Set();
             };
 
-            using (var file = File.Create(fileName)) { }
+            using (var file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -139,17 +144,19 @@ public class PollingFileSystemWatcherSerializableTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public void RoundTripAfterStartedDoesNotAffectOriginalTest()
     {
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
         AutoResetEvent signal = new AutoResetEvent(false);
-        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 0 };
+        PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 };
         watcher.Start();
 
         using (PollingFileSystemWatcher deserialized = RoundTrip(watcher))
@@ -161,7 +168,7 @@ public class PollingFileSystemWatcherSerializableTests
                 signal.Set();
             };
 
-            using (var file = File.Create(fileName)) { }
+            using (var file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -171,7 +178,7 @@ public class PollingFileSystemWatcherSerializableTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
