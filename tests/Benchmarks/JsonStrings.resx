@@ -507,26 +507,8 @@
   <data name="HelloWorld" xml:space="preserve">
     <value>{ "message": "Hello, World!" }</value>
   </data>
-  <data name="Json300B" xml:space="preserve">
-        <value>[
-  {
-    "_id": "5671ebcfd88de5e8dac53641",
-    "index": 0,
-    "isActive": true,
-    "balance": "$3,951.98",
-    "picture": "http://placehold.it/32x32",
-    "age": 36,
-    "email": "clementsvillarreal@daycore.com",
-    "phone": "+1 (882) 479-2331",
-    "address": "488 Grand Street, Hackneyville, Vermont, 5344",
-    "registered": "2015-04-12T05:27:22 +07:00",
-    "latitude": -57.256693,
-    "longitude": 49.961028
-  }
-]</value>
-  </data>
-  <data name="Json300KB" xml:space="preserve">
-            <value>[
+  <data name="Json400KB" xml:space="preserve">
+    <value>[
   {
     "_id": "5671eaf1eb61139592ea92ff",
     "index": 0,
@@ -14029,8 +14011,8 @@
   }
 ]</value>
   </data>
-  <data name="Json30KB" xml:space="preserve">
-            <value>[
+  <data name="Json40KB" xml:space="preserve">
+    <value>[
   {
     "_id": "5671eb0737b18866984067ac",
     "index": 0,
@@ -15383,8 +15365,8 @@
   }
 ]</value>
   </data>
-  <data name="Json3KB" xml:space="preserve">
-        <value>[
+  <data name="Json4KB" xml:space="preserve">
+    <value>[
   {
     "_id": "5671eb1b60a382ffb56b3946",
     "index": 0,
@@ -15519,6 +15501,24 @@
     ],
     "greeting": "Hello, Oneal Weiss! You have 5 unread messages.",
     "favoriteFruit": "banana"
+  }
+]</value>
+  </data>
+  <data name="Json400B" xml:space="preserve">
+    <value>[
+  {
+    "_id": "5671ebcfd88de5e8dac53641",
+    "index": 0,
+    "isActive": true,
+    "balance": "$3,951.98",
+    "picture": "http://placehold.it/32x32",
+    "age": 36,
+    "email": "clementsvillarreal@daycore.com",
+    "phone": "+1 (882) 479-2331",
+    "address": "488 Grand Street, Hackneyville, Vermont, 5344",
+    "registered": "2015-04-12T05:27:22 +07:00",
+    "latitude": -57.256693,
+    "longitude": 49.961028
   }
 ]</value>
   </data>

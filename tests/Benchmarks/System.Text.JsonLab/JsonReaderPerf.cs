@@ -24,10 +24,10 @@ namespace System.Text.JsonLab.Benchmarks
         BroadTree,
         LotsOfNumbers,
         LotsOfStrings,
-        Json300B,
-        Json3KB,
-        Json30KB,
-        Json300KB
+        Json400B,
+        Json4KB,
+        Json40KB,
+        Json400KB
     }
 
     // Since there are 120 tests here (4 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
@@ -87,17 +87,17 @@ namespace System.Text.JsonLab.Benchmarks
                 case TestCaseType.LotsOfStrings:
                     _jsonString = JsonStrings.LotsOfStrings;
                     break;
-                case TestCaseType.Json300B:
-                    _jsonString = JsonStrings.Json300B;
+                case TestCaseType.Json400B:
+                    _jsonString = JsonStrings.Json400B;
                     break;
-                case TestCaseType.Json3KB:
-                    _jsonString = JsonStrings.Json3KB;
+                case TestCaseType.Json4KB:
+                    _jsonString = JsonStrings.Json4KB;
                     break;
-                case TestCaseType.Json30KB:
-                    _jsonString = JsonStrings.Json30KB;
+                case TestCaseType.Json40KB:
+                    _jsonString = JsonStrings.Json40KB;
                     break;
-                case TestCaseType.Json300KB:
-                    _jsonString = JsonStrings.Json300KB;
+                case TestCaseType.Json400KB:
+                    _jsonString = JsonStrings.Json400KB;
                     break;
             }
 

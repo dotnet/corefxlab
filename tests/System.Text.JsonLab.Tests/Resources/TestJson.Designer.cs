@@ -260,36 +260,36 @@ namespace System.Text.JsonLab.Tests.Resources {
         /// <summary>
         ///   Looks up a localized string similar to c.
         /// </summary>
-        internal static string Json300B {
+        internal static string Json400B {
             get {
-                return ResourceManager.GetString("Json300B", resourceCulture);
+                return ResourceManager.GetString("Json400B", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to d.
         /// </summary>
-        internal static string Json300KB {
+        internal static string Json400KB {
             get {
-                return ResourceManager.GetString("Json300KB", resourceCulture);
+                return ResourceManager.GetString("Json400KB", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to e.
         /// </summary>
-        internal static string Json30KB {
+        internal static string Json40KB {
             get {
-                return ResourceManager.GetString("Json30KB", resourceCulture);
+                return ResourceManager.GetString("Json40KB", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to f.
         /// </summary>
-        internal static string Json3KB {
+        internal static string Json4KB {
             get {
-                return ResourceManager.GetString("Json3KB", resourceCulture);
+                return ResourceManager.GetString("Json4KB", resourceCulture);
             }
         }
         

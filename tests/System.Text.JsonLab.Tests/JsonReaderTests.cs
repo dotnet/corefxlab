@@ -30,10 +30,10 @@ namespace System.Text.JsonLab.Tests
                     new object[] { TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
                     //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // JsonLab doesn't support this yet.
                     //new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
-                    new object[] { TestCaseType.Json300B, TestJson.Json300B},
-                    new object[] { TestCaseType.Json3KB, TestJson.Json3KB},
-                    new object[] { TestCaseType.Json30KB, TestJson.Json30KB},
-                    new object[] { TestCaseType.Json300KB, TestJson.Json300KB}
+                    new object[] { TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { TestCaseType.Json400KB, TestJson.Json400KB}
                 };
             }
         }
@@ -52,10 +52,10 @@ namespace System.Text.JsonLab.Tests
             BroadTree,
             LotsOfNumbers,
             LotsOfStrings,
-            Json300B,
-            Json3KB,
-            Json30KB,
-            Json300KB,
+            Json400B,
+            Json4KB,
+            Json40KB,
+            Json400KB,
         }
 
         // TestCaseType is only used to give the json strings a descriptive name.

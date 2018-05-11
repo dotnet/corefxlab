@@ -92,7 +92,23 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5af4c006873ec87e12466553&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;cce48618-6953-4907-b641-288a68f2bd75&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,677.14&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 22,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Hampton Guerra&quot;,
+        ///    &quot;gender&quot;: &quot;male&quot;,
+        ///    &quot;company&quot;: &quot;GAPTEC&quot;,
+        ///    &quot;email&quot;: &quot;hamptonguerra@gaptec.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (858) 595-2071&quot;,
+        ///    &quot;address&quot;: &quot;282 Harden Street, Orason, Nebraska, 3912&quot;,
+        ///    &quot;about&quot;: &quot;Tempor ullamco eu anim d [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BroadTree {
             get {
@@ -101,7 +117,23 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5af4bfbe93ba383385d9047a&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;1a4244ab-960b-4937-872d-d0b00882a99d&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,377.20&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 30,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Ferguson Avery&quot;,
+        ///    &quot;gender&quot;: &quot;male&quot;,
+        ///    &quot;company&quot;: &quot;PHARMACON&quot;,
+        ///    &quot;email&quot;: &quot;fergusonavery@pharmacon.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (904) 438-2218&quot;,
+        ///    &quot;address&quot;: &quot;732 Falmouth Street, Riviera, Mississippi, 4550&quot;,
+        ///    &quot;about&quot;: &quot;Pariatur adi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DeepTree {
             get {
@@ -126,7 +158,7 @@ namespace Benchmarks {
                 return ResourceManager.GetString("FullJsonSchema2", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {&quot;array&quot;:[  {    &quot;_id&quot;: &quot;56280d1abea79cfca762cd56&quot;,    &quot;index&quot;: 0,    &quot;isActive&quot;: false,    &quot;tags&quot;: [      &quot;ad&quot;,      &quot;voluptate&quot;,      &quot;ullamco&quot;,      &quot;reprehenderit&quot;,      &quot;duis&quot;,      &quot;Lorem&quot;,      &quot;anim&quot;    ],    &quot;friends&quot;: [      {        &quot;id&quot;: 0,        &quot;name&quot;: &quot;Fernandez Barr&quot;,        &quot;friends&quot;: [          {            &quot;id&quot;: 0,            &quot;name&quot;: &quot;Selena Hoover&quot;,            &quot;friends&quot;: [              {                &quot;id&quot;: 0,                &quot;name&quot;: &quot;Verna Keller&quot;,                &quot;friends&quot;: [           [rest of string was truncated]&quot;;.
         /// </summary>
@@ -146,38 +178,101 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eaf1eb61139592ea92ff&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;b825474f-3855-434e-930c-c3015f3b39ee&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$2,100.09&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 20,
+        ///    &quot;eyeColor&quot;: &quot;green&quot;,
+        ///    &quot;name&quot;: &quot;Zelma Blackburn&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;AUTOMON&quot;,
+        ///    &quot;email&quot;: &quot;zelmablackburn@automon.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (935) 411-3028&quot;,
+        ///    &quot;address&quot;: &quot;358 Catherine Street, Takilma, New Hampshire, 9061&quot;,
+        ///    &quot;about&quot;: &quot;Ad ea o [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Json300B {
+        internal static string Json400KB {
             get {
-                return ResourceManager.GetString("Json300B", resourceCulture);
+                return ResourceManager.GetString("Json400KB", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb0737b18866984067ac&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;3cfa77d7-29be-467f-a967-16bae78767e8&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$1,223.37&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 34,
+        ///    &quot;eyeColor&quot;: &quot;brown&quot;,
+        ///    &quot;name&quot;: &quot;Josephine Snider&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;SYBIXTEX&quot;,
+        ///    &quot;email&quot;: &quot;josephinesnider@sybixtex.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (936) 525-3324&quot;,
+        ///    &quot;address&quot;: &quot;905 Marconi Place, Motley, Oregon, 3159&quot;,
+        ///    &quot;about&quot;: &quot;Ut id id conse [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Json300KB {
+        internal static string Json40KB {
             get {
-                return ResourceManager.GetString("Json300KB", resourceCulture);
+                return ResourceManager.GetString("Json40KB", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb1b60a382ffb56b3946&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;8938d485-7ea7-4b57-ab02-cd7ff698a57e&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,138.66&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 28,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Susanne Wright&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;VIXO&quot;,
+        ///    &quot;email&quot;: &quot;susannewright@vixo.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (836) 581-2698&quot;,
+        ///    &quot;address&quot;: &quot;367 Clifford Place, Benson, Northern Mariana Islands, 4627&quot;,
+        ///    &quot;about&quot;: &quot;Irure off [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Json30KB {
+        internal static string Json4KB {
             get {
-                return ResourceManager.GetString("Json30KB", resourceCulture);
+                return ResourceManager.GetString("Json4KB", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671ebcfd88de5e8dac53641&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,951.98&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 36,
+        ///    &quot;email&quot;: &quot;clementsvillarreal@daycore.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (882) 479-2331&quot;,
+        ///    &quot;address&quot;: &quot;488 Grand Street, Hackneyville, Vermont, 5344&quot;,
+        ///    &quot;registered&quot;: &quot;2015-04-12T05:27:22 +07:00&quot;,
+        ///    &quot;latitude&quot;: -57.256693,
+        ///    &quot;longitude&quot;: 49.961028
+        ///  }
+        ///].
         /// </summary>
-        internal static string Json3KB {
+        internal static string Json400B {
             get {
-                return ResourceManager.GetString("Json3KB", resourceCulture);
+                return ResourceManager.GetString("Json400B", resourceCulture);
             }
         }
         
@@ -204,7 +299,31 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id1&quot;: 5957425176,
+        ///    &quot;_id2&quot;: 8643,
+        ///    &quot;_id3&quot;: 5807096065,
+        ///    &quot;_id4&quot;: 7783,
+        ///    &quot;_id5&quot;: 4472383761,
+        ///    &quot;_id6&quot;: 4732,
+        ///    &quot;_id7&quot;: 7115361679,
+        ///    &quot;_id8&quot;: 4182,
+        ///    &quot;_id9&quot;: 7135052469,
+        ///    &quot;_id10&quot;: 9529,
+        ///    &quot;_id11&quot;: 5897146321,
+        ///    &quot;_id12&quot;: 7032,
+        ///    &quot;_id13&quot;: 9662544180,
+        ///    &quot;_id14&quot;: 6889,
+        ///    &quot;_id15&quot;: 2829833657,
+        ///    &quot;_id16&quot;: 4145,
+        ///    &quot;_id17&quot;: 6358760299,
+        ///    &quot;_id18&quot;: 4908,
+        ///    &quot;_id19&quot;: 1013268274,
+        ///    &quot;_id20&quot;: 1232,
+        ///    &quot;_id21&quot;: 9736001947,
+        ///    &quot;_id22&quot;: 2862,
+        ///    &quot;_i [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LotsOfNumbers {
             get {
@@ -213,7 +332,41 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to {
+        ///  &quot;tags&quot;: [
+        ///    &quot;culpa&quot;,
+        ///    &quot;laboris&quot;,
+        ///    &quot;nulla&quot;,
+        ///    &quot;exercitation&quot;,
+        ///    &quot;do&quot;,
+        ///    &quot;pariatur&quot;,
+        ///    &quot;occaecat&quot;,
+        ///    &quot;aliquip&quot;,
+        ///    &quot;est&quot;,
+        ///    &quot;et&quot;,
+        ///    &quot;officia&quot;,
+        ///    &quot;minim&quot;,
+        ///    &quot;quis&quot;,
+        ///    &quot;est&quot;,
+        ///    &quot;ullamco&quot;,
+        ///    &quot;consequat&quot;,
+        ///    &quot;id&quot;,
+        ///    &quot;esse&quot;,
+        ///    &quot;irure&quot;,
+        ///    &quot;reprehenderit&quot;,
+        ///    &quot;proident&quot;,
+        ///    &quot;labore&quot;,
+        ///    &quot;et&quot;,
+        ///    &quot;in&quot;,
+        ///    &quot;consequat&quot;,
+        ///    &quot;officia&quot;,
+        ///    &quot;exercitation&quot;,
+        ///    &quot;aute&quot;,
+        ///    &quot;do&quot;,
+        ///    &quot;consequat&quot;,
+        ///    &quot;laborum&quot;,
+        ///    &quot;officia&quot;,
+        ///    &quot;consectetu [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LotsOfStrings {
             get {
