@@ -91,7 +91,7 @@ namespace System.Text
         public int Length => _length;
 
         public ScalarSequence Scalars => throw null;
-        
+
         public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
 
         public static Utf8String Concat(Utf8String str0, Utf8String str1)
@@ -707,19 +707,64 @@ namespace System.Text
 
         public Utf8String ToUpperInvariant() => throw null;
 
-        public Utf8String Trim() => throw null;
+        public Utf8String Trim()
+        {
+            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimStartUtf8(WhitespaceHelpers.TrimEndUtf8(Bytes));
+
+            if (trimmed.Length == _length)
+            {
+                return this; // common case - nothing trimmed
+            }
+
+            if (trimmed.Length == 0)
+            {
+                return Empty; // less common case - everything trimmed
+            }
+
+            return DangerousCreateWithoutValidation(trimmed);
+        }
 
         public Utf8String Trim(Utf8Char trimChar) => throw null;
 
         public Utf8String Trim(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
-        public Utf8String TrimEnd() => throw null;
+        public Utf8String TrimEnd()
+        {
+            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimEndUtf8(Bytes);
+
+            if (trimmed.Length == _length)
+            {
+                return this; // common case - nothing trimmed
+            }
+
+            if (trimmed.Length == 0)
+            {
+                return Empty; // less common case - everything trimmed
+            }
+
+            return DangerousCreateWithoutValidation(trimmed);
+        }
 
         public Utf8String TrimEnd(Utf8Char trimChar) => throw null;
 
         public Utf8String TrimEnd(ReadOnlySpan<Utf8Char> trimChars) => throw null;
 
-        public Utf8String TrimStart() => throw null;
+        public Utf8String TrimStart()
+        {
+            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimStartUtf8(Bytes);
+
+            if (trimmed.Length == _length)
+            {
+                return this; // common case - nothing trimmed
+            }
+
+            if (trimmed.Length == 0)
+            {
+                return Empty; // less common case - everything trimmed
+            }
+
+            return DangerousCreateWithoutValidation(trimmed);
+        }
 
         public Utf8String TrimStart(Utf8Char trimChar) => throw null;
 
