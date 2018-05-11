@@ -98,7 +98,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
             string str = "{\"RememberMe\":true,\"Email\":\"name.familyname@not.com\",\"Password\":\"abcdefgh123456!@\"}";
             byte[] data = Encoding.UTF8.GetBytes(str);
 
-            LoginViewModel model = JsonDynamicObject.Deserialize<LoginViewModel>(data);
+            LoginViewModel model = JsonSerializer.Deserialize<LoginViewModel>(data);
 
             Assert.Equal(new Utf8String("name.familyname@not.com"), model.Email);
             Assert.Equal(new Utf8String("abcdefgh123456!@"), model.Password);
@@ -111,7 +111,7 @@ namespace System.Text.JsonLab.Dynamic.Tests
             string str = "{\"Email1\":1,\"Email2\":2,\"Email3\":3,\"RememberMe\":true}";
             byte[] data = Encoding.UTF8.GetBytes(str);
 
-            LoginViewModel_NoUtf8 model = JsonDynamicObject.Deserialize<LoginViewModel_NoUtf8>(data);
+            LoginViewModel_NoUtf8 model = JsonSerializer.Deserialize<LoginViewModel_NoUtf8>(data);
 
             Assert.Equal(1, model.Email1);
             Assert.Equal(2, model.Email2);

@@ -5,13 +5,13 @@ using System.Reflection;
 
 namespace System.Text.JsonLab
 {
-    public class PropertyInfoNode
+    internal class PropertyInfoNode
     {
         public PropertyInfoNode Next;
         public (byte[] encodedName, PropertyInfo propertyInfo) Value;
     }
 
-    public class PropertyInfoLinkedList
+    internal class PropertyInfoLinkedList
     {
         public int Count;
 
