@@ -182,15 +182,6 @@ namespace Benchmarks {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Json3MB {
-            get {
-                return ResourceManager.GetString("Json3MB", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {&quot;+testZero+&quot; : 0,&quot;+testSmallNum+&quot; : 0.1,&quot;+testeZero+&quot; : 0.1e0,&quot;+testENegtiveWithZero+&quot; : 0E-1,&quot;+testeNegativeWithInt+&quot; : 2155e-5,&quot;+testEPositiveWithDecimal+&quot; : 2152.1541E+2,&quot;+testePositiveWithLargeInt+&quot; : 18446744073709551615E109,&quot;+testeNegativeWithLargeDecimal+&quot; : 125125612512512.512512e-0123,&quot;-testZero-&quot; : -0,&quot;-testSmallNum-&quot; : -0.1,&quot;-testeZero-&quot; : -0.1e0,&quot;-testENegtiveWithZero-&quot; : -0E-1,&quot;-testeNegativeWithInt-&quot; : -2155e-5,&quot;-testEPositiveWithDecimal-&quot; : -2152.1541E+2,&quot;-testePositiveWithLargeInt-&quot; :-18446 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string JsonWithSpecialNumFormat {

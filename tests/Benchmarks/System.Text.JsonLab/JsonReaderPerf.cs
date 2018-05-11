@@ -26,8 +26,7 @@ namespace System.Text.JsonLab.Benchmarks
         Json300B,
         Json3KB,
         Json30KB,
-        Json300KB,
-        Json3MB,
+        Json300KB
     }
 
     [MemoryDiagnoser]
@@ -99,9 +98,6 @@ namespace System.Text.JsonLab.Benchmarks
                     break;
                 case TestCaseType.Json300KB:
                     _jsonString = JsonStrings.Json300KB;
-                    break;
-                case TestCaseType.Json3MB:
-                    _jsonString = JsonStrings.Json3MB;
                     break;
             }
 

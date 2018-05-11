@@ -33,8 +33,7 @@ namespace System.Text.JsonLab.Tests
                     new object[] { TestCaseType.Json300B, TestJson.Json300B},
                     new object[] { TestCaseType.Json3KB, TestJson.Json3KB},
                     new object[] { TestCaseType.Json30KB, TestJson.Json30KB},
-                    new object[] { TestCaseType.Json300KB, TestJson.Json300KB},
-                    new object[] { TestCaseType.Json3MB, TestJson.Json3MB}
+                    new object[] { TestCaseType.Json300KB, TestJson.Json300KB}
                 };
             }
         }
@@ -57,7 +56,6 @@ namespace System.Text.JsonLab.Tests
             Json3KB,
             Json30KB,
             Json300KB,
-            Json3MB,
         }
 
         // TestCaseType is only used to give the json strings a descriptive name.
