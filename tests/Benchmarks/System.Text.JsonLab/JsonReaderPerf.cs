@@ -16,7 +16,6 @@ namespace System.Text.JsonLab.Benchmarks
         Basic,
         BasicLargeNum,
         SpecialNumForm,
-        //SpecialStrings,
         ProjectLockJson,
         FullSchema1,
         FullSchema2,
@@ -177,9 +176,9 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
+            byte[] outputArray = new byte[IsUTF8Encoded ? _dataUtf8.Length : _dataUtf16.Length]; 
             if (IsUTF8Encoded)
             {
-                byte[] outputArray = new byte[_dataUtf8.Length];
                 Span<byte> destination = outputArray;
                 var json = new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8);
                 while (json.Read())
@@ -228,7 +227,6 @@ namespace System.Text.JsonLab.Benchmarks
             }
             else
             {
-                byte[] outputArray = new byte[_dataUtf16.Length];
                 Span<byte> destination = outputArray;
                 var json = new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
                 while (json.Read())
