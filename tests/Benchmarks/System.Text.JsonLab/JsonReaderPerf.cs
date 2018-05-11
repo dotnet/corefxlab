@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 using Benchmarks;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace System.Text.JsonLab.Benchmarks
         Basic,
         BasicLargeNum,
         SpecialNumForm,
-        SpecialStrings,
+        //SpecialStrings,
         ProjectLockJson,
         FullSchema1,
         FullSchema2,
@@ -29,6 +30,8 @@ namespace System.Text.JsonLab.Benchmarks
         Json300KB
     }
 
+    // Since there are 120 tests here (4 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
+    [SimpleJob(-1, 3, 5, 1024)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
@@ -63,9 +66,6 @@ namespace System.Text.JsonLab.Benchmarks
                 case TestCaseType.SpecialNumForm:
                     _jsonString = JsonStrings.JsonWithSpecialNumFormat;
                     break;
-                //case TestCaseType.SpecialStrings:
-                //    _jsonString = JsonStrings.JsonWithSpecialStrings;
-                //    break;
                 case TestCaseType.ProjectLockJson:
                     _jsonString = JsonStrings.ProjectLockJson;
                     break;
