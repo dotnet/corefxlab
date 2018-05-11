@@ -15,7 +15,7 @@ namespace System.Text
     /// <summary>
     /// A UTF-8 string.
     /// </summary>
-    public sealed class Utf8String : IConvertible, IEnumerable<Utf8Char>, IEquatable<Utf8String>
+    public sealed partial class Utf8String : IEnumerable<Utf8Char>, IEquatable<Utf8String>
     {
         private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
         private readonly DataFlags _flags; // any interesting characteristics about this instance
@@ -742,40 +742,6 @@ namespace System.Text
         {
             Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, length, ParamName.length, _length);
         }
-
-        TypeCode IConvertible.GetTypeCode() => throw null;
-        
-        bool IConvertible.ToBoolean(IFormatProvider provider) => throw null;
-
-        byte IConvertible.ToByte(IFormatProvider provider) => throw null;
-
-        char IConvertible.ToChar(IFormatProvider provider) => throw null;
-
-        DateTime IConvertible.ToDateTime(IFormatProvider provider) => throw null;
-
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => throw null;
-
-        double IConvertible.ToDouble(IFormatProvider provider) => throw null;
-
-        short IConvertible.ToInt16(IFormatProvider provider) => throw null;
-
-        int IConvertible.ToInt32(IFormatProvider provider) => throw null;
-
-        long IConvertible.ToInt64(IFormatProvider provider) => throw null;
-
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => throw null;
-
-        float IConvertible.ToSingle(IFormatProvider provider) => throw null;
-
-        string IConvertible.ToString(IFormatProvider provider) => throw null;
-
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => throw null;
-
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => throw null;
-
-        uint IConvertible.ToUInt32(IFormatProvider provider) => throw null;
-
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => throw null;
 
         IEnumerator IEnumerable.GetEnumerator() => throw null;
 
