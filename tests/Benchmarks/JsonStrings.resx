@@ -133,7 +133,7 @@
    }
 }</value>
   </data>
-  <data name="BasicJsonWithLargeNum" xml:space="preserve">
+  <data name="BasicLargeNum" xml:space="preserve">
     <value>{"age":30,"first":"John","last":"Smith","phoneNumbers":["425-000-1212","425-000-1213"],"address":{"street":"1MicrosoftWay","city":"Redmond","zip":98052},"IDs":[425,-70,9223372036854775807]}</value>
   </data>
   <data name="BroadTree" xml:space="preserve">
@@ -495,10 +495,10 @@
   }
 ]</value>
   </data>
-  <data name="FullJsonSchema1" xml:space="preserve">
+  <data name="FullSchema1" xml:space="preserve">
     <value>{"age":30,"first":"John","last":"Smith","phoneNumbers":["425-000-1212","425-000-1213"],"address":{"street":"1MicrosoftWay","city":"Redmond","zip":98052},"IDs":[425,-70,9223372036854776000],"arrayWithObjects":["text",14,[],null,false,{},{"time":24},["1","2","3"]],"boolean":false,"null":null,"objectName":{"group":{"array":[false],"field":"simple","anotherFieldNum":5,"anotherFieldBool":true,"lastField":null}},"emptyObject":{}}</value>
   </data>
-  <data name="FullJsonSchema2" xml:space="preserve">
+  <data name="FullSchema2" xml:space="preserve">
     <value>{"string":"string","number":5,"decimal":3516512.13512,"long":9223372036854776000.1200,"notLong":922854776000.1200,"boolean":false,"object":{},"array":[],"null":null,"emptyArray":[],"emptyObject":{},"arrayString":["alpha","beta"],"arrayNum":[1,212512.01,3.00],"arrayBool":[false,true,true],"arrayNull":[null,null],"arrayObject":[{"firstName":"name1","lastName":"name"},{"firstName":"name1","lastName":"name"},{"firstName":"name2","lastName":"name"},{"firstName":"name3","lastName":"name1"}],"arrayArray":[[null,false,5,"-0215.512501",9223372036854776000],[{},true,null,125651,"simple"],[{"field":null},"hi"]]}</value>
   </data>
   <data name="HeavyNestedJson" xml:space="preserve">
@@ -15522,7 +15522,7 @@
   }
 ]</value>
   </data>
-  <data name="JsonWithSpecialNumFormat" xml:space="preserve">
+  <data name="SpecialNumForm" xml:space="preserve">
     <value>{"+testZero+" : 0,"+testSmallNum+" : 0.1,"+testeZero+" : 0.1e0,"+testENegtiveWithZero+" : 0E-1,"+testeNegativeWithInt+" : 2155e-5,"+testEPositiveWithDecimal+" : 2152.1541E+2,"+testePositiveWithLargeInt+" : 18446744073709551615E109,"+testeNegativeWithLargeDecimal+" : 125125612512512.512512e-0123,"-testZero-" : -0,"-testSmallNum-" : -0.1,"-testeZero-" : -0.1e0,"-testENegtiveWithZero-" : -0E-1,"-testeNegativeWithInt-" : -2155e-5,"-testEPositiveWithDecimal-" : -2152.1541E+2,"-testePositiveWithLargeInt-" :-18446744073709551615E109,"-testeNegativeWithLargeDecimal-" : -125125612512512.512512e-0123}</value>
   </data>
   <data name="JsonWithSpecialStrings" xml:space="preserve">

@@ -85,9 +85,9 @@ namespace Benchmarks {
         /// <summary>
         ///   Looks up a localized string similar to {&quot;age&quot;:30,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Smith&quot;,&quot;phoneNumbers&quot;:[&quot;425-000-1212&quot;,&quot;425-000-1213&quot;],&quot;address&quot;:{&quot;street&quot;:&quot;1MicrosoftWay&quot;,&quot;city&quot;:&quot;Redmond&quot;,&quot;zip&quot;:98052},&quot;IDs&quot;:[425,-70,9223372036854775807]}.
         /// </summary>
-        internal static string BasicJsonWithLargeNum {
+        internal static string BasicLargeNum {
             get {
-                return ResourceManager.GetString("BasicJsonWithLargeNum", resourceCulture);
+                return ResourceManager.GetString("BasicLargeNum", resourceCulture);
             }
         }
         
@@ -144,18 +144,18 @@ namespace Benchmarks {
         /// <summary>
         ///   Looks up a localized string similar to {&quot;age&quot;:30,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Smith&quot;,&quot;phoneNumbers&quot;:[&quot;425-000-1212&quot;,&quot;425-000-1213&quot;],&quot;address&quot;:{&quot;street&quot;:&quot;1MicrosoftWay&quot;,&quot;city&quot;:&quot;Redmond&quot;,&quot;zip&quot;:98052},&quot;IDs&quot;:[425,-70,9223372036854776000],&quot;arrayWithObjects&quot;:[&quot;text&quot;,14,[],null,false,{},{&quot;time&quot;:24},[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;]],&quot;boolean&quot;:false,&quot;null&quot;:null,&quot;objectName&quot;:{&quot;group&quot;:{&quot;array&quot;:[false],&quot;field&quot;:&quot;simple&quot;,&quot;anotherFieldNum&quot;:5,&quot;anotherFieldBool&quot;:true,&quot;lastField&quot;:null}},&quot;emptyObject&quot;:{}}.
         /// </summary>
-        internal static string FullJsonSchema1 {
+        internal static string FullSchema1 {
             get {
-                return ResourceManager.GetString("FullJsonSchema1", resourceCulture);
+                return ResourceManager.GetString("FullSchema1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {&quot;string&quot;:&quot;string&quot;,&quot;number&quot;:5,&quot;decimal&quot;:3516512.13512,&quot;long&quot;:9223372036854776000.1200,&quot;notLong&quot;:922854776000.1200,&quot;boolean&quot;:false,&quot;object&quot;:{},&quot;array&quot;:[],&quot;null&quot;:null,&quot;emptyArray&quot;:[],&quot;emptyObject&quot;:{},&quot;arrayString&quot;:[&quot;alpha&quot;,&quot;beta&quot;],&quot;arrayNum&quot;:[1,212512.01,3.00],&quot;arrayBool&quot;:[false,true,true],&quot;arrayNull&quot;:[null,null],&quot;arrayObject&quot;:[{&quot;firstName&quot;:&quot;name1&quot;,&quot;lastName&quot;:&quot;name&quot;},{&quot;firstName&quot;:&quot;name1&quot;,&quot;lastName&quot;:&quot;name&quot;},{&quot;firstName&quot;:&quot;name2&quot;,&quot;lastName&quot;:&quot;name&quot;},{&quot;firstName&quot;:&quot;name3&quot;,&quot;lastName&quot;:&quot;name1&quot;}],&quot;arrayArray&quot;:[[null,fa [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string FullJsonSchema2 {
+        internal static string FullSchema2 {
             get {
-                return ResourceManager.GetString("FullJsonSchema2", resourceCulture);
+                return ResourceManager.GetString("FullSchema2", resourceCulture);
             }
         }
         
@@ -279,9 +279,9 @@ namespace Benchmarks {
         /// <summary>
         ///   Looks up a localized string similar to {&quot;+testZero+&quot; : 0,&quot;+testSmallNum+&quot; : 0.1,&quot;+testeZero+&quot; : 0.1e0,&quot;+testENegtiveWithZero+&quot; : 0E-1,&quot;+testeNegativeWithInt+&quot; : 2155e-5,&quot;+testEPositiveWithDecimal+&quot; : 2152.1541E+2,&quot;+testePositiveWithLargeInt+&quot; : 18446744073709551615E109,&quot;+testeNegativeWithLargeDecimal+&quot; : 125125612512512.512512e-0123,&quot;-testZero-&quot; : -0,&quot;-testSmallNum-&quot; : -0.1,&quot;-testeZero-&quot; : -0.1e0,&quot;-testENegtiveWithZero-&quot; : -0E-1,&quot;-testeNegativeWithInt-&quot; : -2155e-5,&quot;-testEPositiveWithDecimal-&quot; : -2152.1541E+2,&quot;-testePositiveWithLargeInt-&quot; :-18446 [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string JsonWithSpecialNumFormat {
+        internal static string SpecialNumForm {
             get {
-                return ResourceManager.GetString("JsonWithSpecialNumFormat", resourceCulture);
+                return ResourceManager.GetString("SpecialNumForm", resourceCulture);
             }
         }
         

@@ -10,10 +10,11 @@ using System.IO;
 
 namespace System.Text.JsonLab.Benchmarks
 {
+    // Keep the JsonStrings resource names in sync with TestCaseType enum values.
     public enum TestCaseType
     {
         HelloWorld,
-        Basic,
+        BasicJson,
         BasicLargeNum,
         SpecialNumForm,
         ProjectLockJson,
@@ -51,55 +52,7 @@ namespace System.Text.JsonLab.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            switch (TestCase)
-            {
-                case TestCaseType.HelloWorld:
-                    _jsonString = JsonStrings.HelloWorld;
-                    break;
-                case TestCaseType.Basic:
-                    _jsonString = JsonStrings.BasicJson;
-                    break;
-                case TestCaseType.BasicLargeNum:
-                    _jsonString = JsonStrings.BasicJsonWithLargeNum;
-                    break;
-                case TestCaseType.SpecialNumForm:
-                    _jsonString = JsonStrings.JsonWithSpecialNumFormat;
-                    break;
-                case TestCaseType.ProjectLockJson:
-                    _jsonString = JsonStrings.ProjectLockJson;
-                    break;
-                case TestCaseType.FullSchema1:
-                    _jsonString = JsonStrings.FullJsonSchema1;
-                    break;
-                case TestCaseType.FullSchema2:
-                    _jsonString = JsonStrings.FullJsonSchema2;
-                    break;
-                case TestCaseType.DeepTree:
-                    _jsonString = JsonStrings.DeepTree;
-                    break;
-                case TestCaseType.BroadTree:
-                    _jsonString = JsonStrings.BroadTree;
-                    break;
-                case TestCaseType.LotsOfNumbers:
-                    _jsonString = JsonStrings.LotsOfNumbers;
-                    break;
-                case TestCaseType.LotsOfStrings:
-                    _jsonString = JsonStrings.LotsOfStrings;
-                    break;
-                case TestCaseType.Json400B:
-                    _jsonString = JsonStrings.Json400B;
-                    break;
-                case TestCaseType.Json4KB:
-                    _jsonString = JsonStrings.Json4KB;
-                    break;
-                case TestCaseType.Json40KB:
-                    _jsonString = JsonStrings.Json40KB;
-                    break;
-                case TestCaseType.Json400KB:
-                    _jsonString = JsonStrings.Json400KB;
-                    break;
-            }
-
+            _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
             if (IsUTF8Encoded)
             {
                 _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
@@ -115,164 +68,120 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
+            TextReader reader;
             if (IsUTF8Encoded)
             {
                 _stream.Seek(0, SeekOrigin.Begin);
-                using (var json = new Newtonsoft.Json.JsonTextReader(_reader))
-                    while (json.Read()) ;
+                reader = _reader;
             }
             else
             {
-                var json = new Newtonsoft.Json.JsonTextReader(new StringReader(_jsonString));
-                while (json.Read()) ;
+                reader = new StringReader(_jsonString);
             }
+            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            while (json.Read()) ;
         }
 
         [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
-            StringBuilder sb = new StringBuilder();
+            TextReader reader;
             if (IsUTF8Encoded)
             {
                 _stream.Seek(0, SeekOrigin.Begin);
-                using (var json = new Newtonsoft.Json.JsonTextReader(_reader))
-                    while (json.Read())
-                    {
-                        if (json.Value != null)
-                        {
-                            sb.Append(json.Value + ", ");
-                        }
-                    }
+                reader = _reader;
             }
             else
             {
-                var json = new Newtonsoft.Json.JsonTextReader(new StringReader(_jsonString));
-                while (json.Read())
-                {
-                    if (json.Value != null)
-                    {
-                        sb.Append(json.Value + ", ");
-                    }
-                }
+                reader = new StringReader(_jsonString);
             }
-            return sb.ToString();
+
+            return NewtonsoftReturnStringHelper(reader);
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabEmptyLoop()
         {
-            if (IsUTF8Encoded)
-            {
-                var json = new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8);
-                while (json.Read()) ;
-            }
-            else
-            {
-                var json = new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
-                while (json.Read()) ;
-            }
+            JsonReader json = IsUTF8Encoded ?
+                new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8) :
+                new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
+
+            while (json.Read()) ;
         }
 
         [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
-            byte[] outputArray = new byte[IsUTF8Encoded ? _dataUtf8.Length : _dataUtf16.Length]; 
-            if (IsUTF8Encoded)
+            return IsUTF8Encoded ?
+                    JsonLabReturnBytesHelper(_dataUtf8, SymbolTable.InvariantUtf8) :
+                    JsonLabReturnBytesHelper(_dataUtf16, SymbolTable.InvariantUtf16, 2);
+        }
+
+        private string NewtonsoftReturnStringHelper(TextReader reader)
+        {
+            StringBuilder sb = new StringBuilder();
+            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            while (json.Read())
             {
-                Span<byte> destination = outputArray;
-                var json = new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8);
-                while (json.Read())
+                if (json.Value != null)
                 {
-                    var tokenType = json.TokenType;
-                    switch (tokenType)
-                    {
-                        case JsonTokenType.PropertyName:
-                            json.Value.CopyTo(destination);
-                            destination[json.Value.Length] = (byte)',';
-                            destination[json.Value.Length + 1] = (byte)' ';
-                            destination = destination.Slice(json.Value.Length + 2);
-                            break;
-                        case JsonTokenType.Value:
-                            var valueType = json.ValueType;
-
-                            switch (valueType)
-                            {
-                                case JsonValueType.True:
-                                    destination[0] = (byte)'T';
-                                    destination[1] = (byte)'r';
-                                    destination[2] = (byte)'u';
-                                    destination[3] = (byte)'e';
-                                    destination = destination.Slice(4);
-                                    break;
-                                case JsonValueType.False:
-                                    destination[0] = (byte)'F';
-                                    destination[1] = (byte)'a';
-                                    destination[2] = (byte)'l';
-                                    destination[3] = (byte)'s';
-                                    destination[4] = (byte)'e';
-                                    destination = destination.Slice(5);
-                                    break;
-                            }
-
-                            json.Value.CopyTo(destination);
-                            destination[json.Value.Length] = (byte)',';
-                            destination[json.Value.Length + 1] = (byte)' ';
-                            destination = destination.Slice(json.Value.Length + 2);
-                            break;
-                        default:
-                            break;
-                    }
+                    sb.Append(json.Value).Append(", ");
                 }
-                return outputArray;
             }
-            else
+
+            return sb.ToString();
+        }
+
+        private byte[] JsonLabReturnBytesHelper(byte[] data, SymbolTable symbolTable, int utf16Multiplier = 1)
+        {
+            byte[] outputArray = new byte[data.Length];
+
+            Span<byte> destination = outputArray;
+            var json = new JsonReader(data, symbolTable);
+            while (json.Read())
             {
-                Span<byte> destination = outputArray;
-                var json = new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
-                while (json.Read())
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
                 {
-                    var tokenType = json.TokenType;
-                    switch (tokenType)
-                    {
-                        case JsonTokenType.PropertyName:
-                            json.Value.CopyTo(destination);
-                            destination[json.Value.Length] = (byte)',';
-                            destination[json.Value.Length + 2] = (byte)' ';
-                            destination = destination.Slice(json.Value.Length + 4);
-                            break;
-                        case JsonTokenType.Value:
-                            var valueType = json.ValueType;
+                    case JsonTokenType.PropertyName:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
+                        break;
+                    case JsonTokenType.Value:
+                        var valueType = json.ValueType;
 
-                            switch (valueType)
-                            {
-                                case JsonValueType.True:
-                                    destination[0] = (byte)'T';
-                                    destination[2] = (byte)'r';
-                                    destination[4] = (byte)'u';
-                                    destination[6] = (byte)'e';
-                                    destination = destination.Slice(8);
-                                    break;
-                                case JsonValueType.False:
-                                    destination[0] = (byte)'F';
-                                    destination[2] = (byte)'a';
-                                    destination[4] = (byte)'l';
-                                    destination[6] = (byte)'s';
-                                    destination[8] = (byte)'e';
-                                    destination = destination.Slice(10);
-                                    break;
-                            }
+                        switch (valueType)
+                        {
+                            case JsonValueType.True:
+                                destination[0] = (byte)'T';
+                                destination[1 * utf16Multiplier] = (byte)'r';
+                                destination[2 * utf16Multiplier] = (byte)'u';
+                                destination[3 * utf16Multiplier] = (byte)'e';
+                                destination = destination.Slice(4 * utf16Multiplier);
+                                break;
+                            case JsonValueType.False:
+                                destination[0] = (byte)'F';
+                                destination[1 * utf16Multiplier] = (byte)'a';
+                                destination[2 * utf16Multiplier] = (byte)'l';
+                                destination[3 * utf16Multiplier] = (byte)'s';
+                                destination[4 * utf16Multiplier] = (byte)'e';
+                                destination = destination.Slice(5 * utf16Multiplier);
+                                break;
+                        }
 
-                            json.Value.CopyTo(destination);
-                            destination[json.Value.Length] = (byte)',';
-                            destination[json.Value.Length + 2] = (byte)' ';
-                            destination = destination.Slice(json.Value.Length + 4);
-                            break;
-                        default:
-                            break;
-                    }
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
+                        break;
+                    default:
+                        break;
                 }
-                return outputArray;
             }
+            return outputArray;
         }
     }
 }

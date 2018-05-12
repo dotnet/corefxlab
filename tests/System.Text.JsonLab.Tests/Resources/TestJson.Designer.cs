@@ -92,7 +92,23 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to a.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5af4c006873ec87e12466553&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;cce48618-6953-4907-b641-288a68f2bd75&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,677.14&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 22,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Hampton Guerra&quot;,
+        ///    &quot;gender&quot;: &quot;male&quot;,
+        ///    &quot;company&quot;: &quot;GAPTEC&quot;,
+        ///    &quot;email&quot;: &quot;hamptonguerra@gaptec.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (858) 595-2071&quot;,
+        ///    &quot;address&quot;: &quot;282 Harden Street, Orason, Nebraska, 3912&quot;,
+        ///    &quot;about&quot;: &quot;Tempor ullamco eu anim d [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BroadTree {
             get {
@@ -101,7 +117,23 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to b.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5af4bfbe93ba383385d9047a&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;1a4244ab-960b-4937-872d-d0b00882a99d&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,377.20&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 30,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Ferguson Avery&quot;,
+        ///    &quot;gender&quot;: &quot;male&quot;,
+        ///    &quot;company&quot;: &quot;PHARMACON&quot;,
+        ///    &quot;email&quot;: &quot;fergusonavery@pharmacon.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (904) 438-2218&quot;,
+        ///    &quot;address&quot;: &quot;732 Falmouth Street, Riviera, Mississippi, 4550&quot;,
+        ///    &quot;about&quot;: &quot;Pariatur adi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DeepTree {
             get {
@@ -258,7 +290,22 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to c.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671ebcfd88de5e8dac53641&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,951.98&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 36,
+        ///    &quot;email&quot;: &quot;clementsvillarreal@daycore.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (882) 479-2331&quot;,
+        ///    &quot;address&quot;: &quot;488 Grand Street, Hackneyville, Vermont, 5344&quot;,
+        ///    &quot;registered&quot;: &quot;2015-04-12T05:27:22 +07:00&quot;,
+        ///    &quot;latitude&quot;: -57.256693,
+        ///    &quot;longitude&quot;: 49.961028
+        ///  }
+        ///].
         /// </summary>
         internal static string Json400B {
             get {
@@ -267,7 +314,23 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to d.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eaf1eb61139592ea92ff&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;b825474f-3855-434e-930c-c3015f3b39ee&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$2,100.09&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 20,
+        ///    &quot;eyeColor&quot;: &quot;green&quot;,
+        ///    &quot;name&quot;: &quot;Zelma Blackburn&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;AUTOMON&quot;,
+        ///    &quot;email&quot;: &quot;zelmablackburn@automon.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (935) 411-3028&quot;,
+        ///    &quot;address&quot;: &quot;358 Catherine Street, Takilma, New Hampshire, 9061&quot;,
+        ///    &quot;about&quot;: &quot;Ad ea o [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Json400KB {
             get {
@@ -276,7 +339,23 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb0737b18866984067ac&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;3cfa77d7-29be-467f-a967-16bae78767e8&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$1,223.37&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 34,
+        ///    &quot;eyeColor&quot;: &quot;brown&quot;,
+        ///    &quot;name&quot;: &quot;Josephine Snider&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;SYBIXTEX&quot;,
+        ///    &quot;email&quot;: &quot;josephinesnider@sybixtex.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (936) 525-3324&quot;,
+        ///    &quot;address&quot;: &quot;905 Marconi Place, Motley, Oregon, 3159&quot;,
+        ///    &quot;about&quot;: &quot;Ut id id conse [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Json40KB {
             get {
@@ -285,7 +364,23 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to f.
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb1b60a382ffb56b3946&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;8938d485-7ea7-4b57-ab02-cd7ff698a57e&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,138.66&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 28,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Susanne Wright&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;VIXO&quot;,
+        ///    &quot;email&quot;: &quot;susannewright@vixo.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (836) 581-2698&quot;,
+        ///    &quot;address&quot;: &quot;367 Clifford Place, Benson, Northern Mariana Islands, 4627&quot;,
+        ///    &quot;about&quot;: &quot;Irure off [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Json4KB {
             get {
@@ -325,7 +420,45 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id1&quot;: 1970097990,
+        ///    &quot;_id2&quot;: 9666
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 5632677389,
+        ///    &quot;_id2&quot;: 2356
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 7930277137,
+        ///    &quot;_id2&quot;: 1130
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 6964942657,
+        ///    &quot;_id2&quot;: 3348
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 2504939563,
+        ///    &quot;_id2&quot;: 3501
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 5993828171,
+        ///    &quot;_id2&quot;: 4462
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 6829429877,
+        ///    &quot;_id2&quot;: 3502
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 9526593666,
+        ///    &quot;_id2&quot;: 5752
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 7980793185,
+        ///    &quot;_id2&quot;: 9376
+        ///  },
+        ///  {
+        ///    &quot;_id1&quot;: 747666 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LotsOfNumbers {
             get {
@@ -334,7 +467,33 @@ namespace System.Text.JsonLab.Tests.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;email&quot;: &quot;3388 hooversexton@nitracyr.com 6241&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;9999 hooversexton@nitracyr.com 445&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;7601 hooversexton@nitracyr.com 4879&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;1913 hooversexton@nitracyr.com 4301&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;9541 hooversexton@nitracyr.com 403&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;4363 hooversexton@nitracyr.com 9040&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;7105 hooversexton@nitracyr.com 4676&quot;
+        ///  },
+        ///  {
+        ///    &quot;email&quot;: &quot;2558 hooversexton@nitracyr.com 8668&quot;
+        ///  },
+        ///  {
+        ///   [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LotsOfStrings {
             get {
