@@ -31,5 +31,8 @@ namespace JsonBenchmarks
 
         [Benchmark(Description = "Manatee")]
         public string Manatee_() => new Manatee.Json.Serialization.JsonSerializer().Serialize(value).ToString();
+
+        [Benchmark(Description = "SpanJsonUtf16")]
+        public string SpanJsonUtf16() => SpanJson.JsonSerializer.Generic.Utf16.Serialize(value);
     }
 }
