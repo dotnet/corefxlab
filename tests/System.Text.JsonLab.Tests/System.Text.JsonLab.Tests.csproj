@@ -27,6 +27,19 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.JsonLab\System.Text.JsonLab.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\TestJson.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestJson.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\TestJson.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestJson.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
