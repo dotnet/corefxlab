@@ -48,6 +48,10 @@ if (!(Test-Path "$PSScriptRoot\..\dotnetcli")) {
             exit -1
         }
     }
+    else
+    {
+        Write-Host "Newest version of dotnet cli is already installed."
+    }
 }
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1

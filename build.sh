@@ -65,10 +65,12 @@ else
     echo "Newest version of dotnet cli not installed, downloading and installing."
     ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
     ret=$?
-	if [ $ret -ne 0 ]; then
+	  if [ $ret -ne 0 ]; then
       echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
       exit -1
     fi
+  else
+    echo "Newest version of dotnet cli is already installed."
   fi
 fi
 
