@@ -91,6 +91,50 @@ namespace System.Text.JsonLab.Dynamic.Tests
             Assert.Equal("John", json.First().ToString());
             Assert.Equal(25U, json.Age());
         }
+
+        [Fact]
+        public void DeserializeWithUtf8Strings()
+        {
+            string str = "{\"RememberMe\":true,\"Email\":\"name.familyname@not.com\",\"Password\":\"abcdefgh123456!@\"}";
+            byte[] data = Encoding.UTF8.GetBytes(str);
+
+            LoginViewModel model = JsonSerializer.Deserialize<LoginViewModel>(data);
+
+            Assert.Equal(new Utf8String("name.familyname@not.com"), model.Email);
+            Assert.Equal(new Utf8String("abcdefgh123456!@"), model.Password);
+            Assert.Equal(true, model.RememberMe);
+        }
+
+        [Fact]
+        public void DeserializeWithoutUtf8Strings()
+        {
+            string str = "{\"Email1\":1,\"Email2\":2,\"Email3\":3,\"RememberMe\":true}";
+            byte[] data = Encoding.UTF8.GetBytes(str);
+
+            LoginViewModel_NoUtf8 model = JsonSerializer.Deserialize<LoginViewModel_NoUtf8>(data);
+
+            Assert.Equal(1, model.Email1);
+            Assert.Equal(2, model.Email2);
+            Assert.Equal(3, model.Email3);
+            Assert.Equal(true, model.RememberMe);
+        }
+    }
+
+    [Serializable]
+    public class LoginViewModel
+    {
+        public virtual Utf8String Email { get; set; }
+        public virtual Utf8String Password { get; set; }
+        public virtual bool RememberMe { get; set; }
+    }
+
+    [Serializable]
+    public class LoginViewModel_NoUtf8
+    {
+        public virtual int Email1 { get; set; }
+        public virtual int Email2 { get; set; }
+        public virtual int Email3 { get; set; }
+        public virtual bool RememberMe { get; set; }
     }
 
     static class SchemaExtensions
