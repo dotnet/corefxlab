@@ -62,7 +62,7 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark(Description = "YSharp")]
+        [Benchmark]
         public T YSharp()
         {
             T deserialized = new System.Text.Json.JsonParser().Parse<T>(serialized);
@@ -70,7 +70,7 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark(Description = "FastJson")]
+        [Benchmark]
         public T FastJson()
         {
             T deserialized = fastJSON.JSON.ToObject<T>(serialized);
@@ -96,7 +96,7 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark(Description = "SpanJsonUtf16")]
+        [Benchmark]
         public T SpanJsonUtf16()
         {
             T deserialized = SpanJson.JsonSerializer.Generic.Utf16.Deserialize<T>(serialized);

@@ -22,7 +22,7 @@ namespace JsonBenchmarks
         [Benchmark(Description = "Utf8Json")]
         public string Utf8Json_() => Utf8Json.JsonSerializer.ToJsonString(value);
 
-        [Benchmark(Description = "FastJson")]
+        [Benchmark]
         public string FastJson() => fastJSON.JSON.ToJSON(value);
 
         // This benchmarks fails to run for IndexViewModel and MyEventsListerViewModel.
@@ -32,7 +32,7 @@ namespace JsonBenchmarks
         [Benchmark(Description = "Manatee")]
         public string Manatee_() => new Manatee.Json.Serialization.JsonSerializer().Serialize(value).ToString();
 
-        [Benchmark(Description = "SpanJsonUtf16")]
+        [Benchmark]
         public string SpanJsonUtf16() => SpanJson.JsonSerializer.Generic.Utf16.Serialize(value);
     }
 }
