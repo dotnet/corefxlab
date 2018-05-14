@@ -5,6 +5,7 @@ using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Formatting;
+using System.Text.Utf8;
 
 namespace System.Text.JsonLab
 {
@@ -52,9 +53,24 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteObjectStart()
         {
-            WriteItemSeperator();
-            WriteSpacing(false);
-            WriteControl(JsonConstants.OpenBrace);
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                WriteSpacingUtf8(false);
+                WriteControlUtf8(JsonConstants.OpenBrace);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                WriteSpacingUtf16(false);
+                WriteControlUtf16(JsonConstants.OpenBrace);
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                WriteSpacingSlow(false);
+                WriteControlSlow(JsonConstants.OpenBrace);
+            }
 
             _firstItem = true;
             _indent++;
@@ -68,8 +84,43 @@ namespace System.Text.JsonLab
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         public void WriteObjectStart(string name)
         {
-            WriteStartAttribute(name);
-            WriteControl(JsonConstants.OpenBrace);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+                WriteControlUtf8(JsonConstants.OpenBrace);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+                WriteControlUtf16(JsonConstants.OpenBrace);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+                WriteControlSlow(JsonConstants.OpenBrace);
+            }
+
+            _firstItem = true;
+            _indent++;
+        }
+
+        public void WriteObjectStart(Utf8String name)
+        {
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+                WriteControlUtf8(JsonConstants.OpenBrace);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+                WriteControlUtf16(JsonConstants.OpenBrace);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+                WriteControlSlow(JsonConstants.OpenBrace);
+            }
 
             _firstItem = true;
             _indent++;
@@ -82,8 +133,22 @@ namespace System.Text.JsonLab
         {
             _firstItem = false;
             _indent--;
-            WriteSpacing();
-            WriteControl(JsonConstants.CloseBrace);
+
+            if (UseFastUtf8)
+            {
+                WriteSpacingUtf8();
+                WriteControlUtf8(JsonConstants.CloseBrace);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteSpacingUtf16();
+                WriteControlUtf16(JsonConstants.CloseBrace);
+            }
+            else
+            {
+                WriteSpacingSlow();
+                WriteControlSlow(JsonConstants.CloseBrace);
+            }
         }
 
         /// <summary>
@@ -93,9 +158,24 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteArrayStart()
         {
-            WriteItemSeperator();
-            WriteSpacing();
-            WriteControl(JsonConstants.OpenBracket);
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                WriteSpacingUtf8(false);
+                WriteControlUtf8(JsonConstants.OpenBracket);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                WriteSpacingUtf16(false);
+                WriteControlUtf16(JsonConstants.OpenBracket);
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                WriteSpacingSlow(false);
+                WriteControlSlow(JsonConstants.OpenBracket);
+            }
 
             _firstItem = true;
             _indent++;
@@ -109,8 +189,21 @@ namespace System.Text.JsonLab
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         public void WriteArrayStart(string name)
         {
-            WriteStartAttribute(name);
-            WriteControl(JsonConstants.OpenBracket);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+                WriteControlUtf8(JsonConstants.OpenBracket);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+                WriteControlUtf16(JsonConstants.OpenBracket);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+                WriteControlSlow(JsonConstants.OpenBracket);
+            }
 
             _firstItem = true;
             _indent++;
@@ -123,8 +216,22 @@ namespace System.Text.JsonLab
         {
             _firstItem = false;
             _indent--;
-            WriteSpacing();
-            WriteControl(JsonConstants.CloseBracket);
+
+            if (UseFastUtf8)
+            {
+                WriteSpacingUtf8();
+                WriteControlUtf8(JsonConstants.CloseBracket);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteSpacingUtf16();
+                WriteControlUtf16(JsonConstants.CloseBracket);
+            }
+            else
+            {
+                WriteSpacingSlow();
+                WriteControlSlow(JsonConstants.CloseBracket);
+            }
         }
 
         /// <summary>
@@ -134,8 +241,21 @@ namespace System.Text.JsonLab
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteAttribute(string name, string value)
         {
-            WriteStartAttribute(name);
-            WriteQuotedString(value);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+                WriteQuotedStringUtf8(value);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+                WriteQuotedStringUtf16(value);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+                WriteQuotedStringSlow(value);
+            }
         }
 
         /// <summary>
@@ -145,7 +265,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The signed integer value to be written to JSON data.</param>
         public void WriteAttribute(string name, long value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteNumber(value);
         }
 
@@ -156,7 +287,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The unsigned integer value to be written to JSON data.</param>
         public void WriteAttribute(string name, ulong value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteNumber(value);
         }
 
@@ -167,7 +309,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The boolean value to be written to JSON data.</param>
         public void WriteAttribute(string name, bool value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             if (value)
                 WriteJsonValue(JsonConstants.TrueValue);
             else
@@ -181,7 +334,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="DateTime"/> value to be written to JSON data.</param>
         public void WriteAttribute(string name, DateTime value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteDateTime(value);
         }
 
@@ -192,7 +356,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="DateTimeOffset"/> value to be written to JSON data.</param>
         public void WriteAttribute(string name, DateTimeOffset value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteDateTimeOffset(value);
         }
 
@@ -203,7 +378,18 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="Guid"/> value to be written to JSON data.</param>
         public void WriteAttribute(string name, Guid value)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteGuid(value);
         }
 
@@ -213,7 +399,18 @@ namespace System.Text.JsonLab
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         public void WriteAttributeNull(string name)
         {
-            WriteStartAttribute(name);
+            if (UseFastUtf8)
+            {
+                WriteStartAttributeUtf8(name);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteStartAttributeUtf16(name);
+            }
+            else
+            {
+                WriteStartAttributeSlow(name);
+            }
             WriteJsonValue(JsonConstants.NullValue);
         }
 
@@ -223,10 +420,27 @@ namespace System.Text.JsonLab
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteValue(string value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
-            WriteQuotedString(value);
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+                WriteQuotedStringUtf8(value);
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+                WriteQuotedStringUtf16(value);
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+                WriteQuotedStringSlow(value);
+            }
         }
 
         /// <summary>
@@ -235,9 +449,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The signed integer value to be written to JSON data.</param>
         public void WriteValue(long value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+            
             WriteNumber(value);
         }
 
@@ -247,9 +477,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The unsigned integer value to be written to JSON data.</param>
         public void WriteValue(ulong value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             WriteNumber(value);
         }
 
@@ -259,9 +505,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The boolean value to be written to JSON data.</param>
         public void WriteValue(bool value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             if (value)
                 WriteJsonValue(JsonConstants.TrueValue);
             else
@@ -274,9 +536,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="DateTime"/> value to be written to JSON data.</param>
         public void WriteValue(DateTime value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             WriteDateTime(value);
         }
 
@@ -286,9 +564,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="DateTimeOffset"/> value to be written to JSON data.</param>
         public void WriteValue(DateTimeOffset value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             WriteDateTimeOffset(value);
         }
 
@@ -298,9 +592,25 @@ namespace System.Text.JsonLab
         /// <param name="value">The <see cref="Guid"/> value to be written to JSON data.</param>
         public void WriteValue(Guid value)
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             WriteGuid(value);
         }
 
@@ -309,58 +619,144 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteNull()
         {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
+            if (UseFastUtf8)
+            {
+                WriteItemSeperatorUtf8();
+                _firstItem = false;
+                WriteSpacingUtf8();
+            }
+            else if (UseFastUtf16)
+            {
+                WriteItemSeperatorUtf16();
+                _firstItem = false;
+                WriteSpacingUtf16();
+            }
+            else
+            {
+                WriteItemSeperatorSlow();
+                _firstItem = false;
+                WriteSpacingSlow();
+            }
+
             WriteJsonValue(JsonConstants.NullValue);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteStartAttribute(string name)
+        private void WriteStartAttributeUtf8(Utf8String name)
         {
-            WriteItemSeperator();
+            WriteItemSeperatorUtf8();
             _firstItem = false;
 
-            WriteSpacing();
-            WriteQuotedString(name);
-            WriteControl(JsonConstants.KeyValueSeperator);
+            WriteSpacingUtf8();
+            WriteQuotedStringUtf8(name);
+            WriteControlUtf8(JsonConstants.KeyValueSeperator);
 
             if (_prettyPrint)
-                WriteControl(JsonConstants.Space);
+                WriteControlUtf8(JsonConstants.Space);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteControl(byte value)
+        private void WriteStartAttributeUtf8(string name)
         {
-            if (UseFastUtf8)
-            {
-                MemoryMarshal.GetReference(EnsureBuffer(1)) = value;
-                _bufferWriter.Advance(1);
-            }
-            else if (UseFastUtf16)
-            {
-                var buffer = EnsureBuffer(2);
-                Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(buffer)) = (char)value;
-                _bufferWriter.Advance(2);
-            }
-            else
-            {
-                var buffer = _bufferWriter.GetSpan();
-                int written;
-                while (!_bufferWriter.SymbolTable.TryEncode(value, buffer, out written))
-                    buffer = EnsureBuffer();
+            WriteItemSeperatorUtf8();
+            _firstItem = false;
 
-                _bufferWriter.Advance(written);
-            }
+            WriteSpacingUtf8();
+            WriteQuotedStringUtf8(name);
+            WriteControlUtf8(JsonConstants.KeyValueSeperator);
+
+            if (_prettyPrint)
+                WriteControlUtf8(JsonConstants.Space);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteQuotedString(string value)
+        private void WriteStartAttributeUtf16(string name)
         {
-            WriteControl(JsonConstants.Quote);
+            WriteItemSeperatorUtf16();
+            _firstItem = false;
+
+            WriteSpacingUtf16();
+            WriteQuotedStringUtf16(name);
+            WriteControlUtf16(JsonConstants.KeyValueSeperator);
+
+            if (_prettyPrint)
+                WriteControlUtf16(JsonConstants.Space);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteStartAttributeSlow(string name)
+        {
+            WriteItemSeperatorSlow();
+            _firstItem = false;
+
+            WriteSpacingSlow();
+            WriteQuotedStringSlow(name);
+            WriteControlSlow(JsonConstants.KeyValueSeperator);
+
+            if (_prettyPrint)
+                WriteControlSlow(JsonConstants.Space);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteControlUtf8(byte value)
+        {
+            MemoryMarshal.GetReference(EnsureBuffer(1)) = value;
+            _bufferWriter.Advance(1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteControlUtf16(byte value)
+        {
+            var buffer = EnsureBuffer(2);
+            Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(buffer)) = (char)value;
+            _bufferWriter.Advance(2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteControlSlow(byte value)
+        {
+            var buffer = _bufferWriter.GetSpan();
+            int written;
+            while (!_bufferWriter.SymbolTable.TryEncode(value, buffer, out written))
+                buffer = EnsureBuffer();
+
+            _bufferWriter.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteQuotedStringUtf8(Utf8String value)
+        {
+            WriteControlUtf8(JsonConstants.Quote);
             // TODO: We need to handle escaping.
-            Write(value.AsSpan());
-            WriteControl(JsonConstants.Quote);
+            WriteUtf8(value.Bytes);
+            WriteControlUtf8(JsonConstants.Quote);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteQuotedStringUtf8(string value)
+        {
+            WriteControlUtf8(JsonConstants.Quote);
+            // TODO: We need to handle escaping.
+            WriteUtf8(value.AsSpan());
+            WriteControlUtf8(JsonConstants.Quote);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteQuotedStringUtf16(string value)
+        {
+            WriteControlUtf16(JsonConstants.Quote);
+            // TODO: We need to handle escaping.
+            WriteUtf16(value.AsSpan());
+            WriteControlUtf16(JsonConstants.Quote);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteQuotedStringSlow(string value)
+        {
+            WriteControlSlow(JsonConstants.Quote);
+            // TODO: We need to handle escaping.
+            WriteSlow(value.AsSpan());
+            WriteControlSlow(JsonConstants.Quote);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -419,47 +815,58 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Write(ReadOnlySpan<char> value)
+        private void WriteUtf8(ReadOnlySpan<char> value)
         {
             ReadOnlySpan<byte> source = MemoryMarshal.AsBytes(value);
 
-            if (UseFastUtf8)
-            {
-                Span<byte> destination = _bufferWriter.GetSpan();
+            Span<byte> destination = _bufferWriter.GetSpan();
 
-                while (true)
+            while (true)
+            {
+                var status = Encodings.Utf16.ToUtf8(source, destination, out int consumed, out int written);
+                if (status == Buffers.OperationStatus.Done)
                 {
-                    var status = Encodings.Utf16.ToUtf8(source, destination, out int consumed, out int written);
-                    if (status == Buffers.OperationStatus.Done)
-                    {
-                        _bufferWriter.Advance(written);
-                        return;
-                    }
-
-                    if (status == Buffers.OperationStatus.DestinationTooSmall)
-                    {
-                        destination = EnsureBuffer();
-                        continue;
-                    }
-
-                    // This is a failure due to bad input. This shouldn't happen under normal circumstances.
-                    throw new FormatException();
+                    _bufferWriter.Advance(written);
+                    return;
                 }
-            }
-            else if (UseFastUtf16)
-            {
-                Span<byte> destination = EnsureBuffer(source.Length);
-                source.CopyTo(destination);
-                _bufferWriter.Advance(source.Length);
-            }
-            else
-            {
-                Span<byte> destination = _bufferWriter.GetSpan();
-                if (!_bufferWriter.SymbolTable.TryEncode(source, destination, out int consumed, out int written))
-                    destination = EnsureBuffer();
 
-                _bufferWriter.Advance(written);
+                if (status == Buffers.OperationStatus.DestinationTooSmall)
+                {
+                    destination = EnsureBuffer();
+                    continue;
+                }
+
+                // This is a failure due to bad input. This shouldn't happen under normal circumstances.
+                throw new FormatException();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteUtf8(ReadOnlySpan<byte> value)
+        {
+            Span<byte> destination = EnsureBuffer(value.Length);
+            value.CopyTo(destination);
+            _bufferWriter.Advance(value.Length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteUtf16(ReadOnlySpan<char> value)
+        {
+            ReadOnlySpan<byte> source = MemoryMarshal.AsBytes(value);
+            Span<byte> destination = EnsureBuffer(source.Length);
+            source.CopyTo(destination);
+            _bufferWriter.Advance(source.Length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSlow(ReadOnlySpan<char> value)
+        {
+            ReadOnlySpan<byte> source = MemoryMarshal.AsBytes(value);
+            Span<byte> destination = _bufferWriter.GetSpan();
+            if (!_bufferWriter.SymbolTable.TryEncode(source, destination, out int consumed, out int written))
+                destination = EnsureBuffer();
+
+            _bufferWriter.Advance(written);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -474,46 +881,53 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteItemSeperator()
+        private void WriteItemSeperatorUtf8()
         {
             if (_firstItem) return;
 
-            WriteControl(JsonConstants.ListSeperator);
+            WriteControlUtf8(JsonConstants.ListSeperator);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteSpacing(bool newLine = true)
+        private void WriteItemSeperatorUtf16()
+        {
+            if (_firstItem) return;
+
+            WriteControlUtf16(JsonConstants.ListSeperator);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteItemSeperatorSlow()
+        {
+            if (_firstItem) return;
+
+            WriteControlSlow(JsonConstants.ListSeperator);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSpacingSlow(bool newLine = true)
         {
             if (!_prettyPrint) return;
 
-            if (UseFastUtf8)
-                WriteSpacingUtf8(newLine);
-            else if (UseFastUtf16)
-                WriteSpacingUtf16(newLine);
-            else
-                WriteSpacingSlow(newLine);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteSpacingSlow(bool newLine)
-        {
             if (newLine)
             {
-                WriteControl(JsonConstants.CarriageReturn);
-                WriteControl(JsonConstants.LineFeed);
+                WriteControlSlow(JsonConstants.CarriageReturn);
+                WriteControlSlow(JsonConstants.LineFeed);
             }
 
             int indent = _indent;
             while (indent-- >= 0)
             {
-                WriteControl(JsonConstants.Space);
-                WriteControl(JsonConstants.Space);
+                WriteControlSlow(JsonConstants.Space);
+                WriteControlSlow(JsonConstants.Space);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteSpacingUtf8(bool newline)
+        private void WriteSpacingUtf8(bool newline = true)
         {
+            if (!_prettyPrint) return;
+
             var indent = _indent;
             var bytesNeeded = newline ? 2 : 0;
             bytesNeeded += (indent + 1) * 2;
@@ -538,8 +952,10 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteSpacingUtf16(bool newline)
+        private void WriteSpacingUtf16(bool newline = true)
         {
+            if (!_prettyPrint) return;
+
             var indent = _indent;
             var bytesNeeded = newline ? 2 : 0;
             bytesNeeded += (indent + 1) * 2;
