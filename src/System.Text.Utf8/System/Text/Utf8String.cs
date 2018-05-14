@@ -15,7 +15,7 @@ namespace System.Text
     /// <summary>
     /// A UTF-8 string.
     /// </summary>
-    public sealed partial class Utf8String : IEnumerable<Utf8Char>, IEquatable<Utf8String>
+    public sealed partial class Utf8String : IEnumerable<UnicodeScalar>, IEquatable<Utf8String>
     {
         private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
         private readonly DataFlags _flags; // any interesting characteristics about this instance
@@ -53,11 +53,6 @@ namespace System.Text
         public static bool operator !=(Utf8String a, Utf8String b) => !Equals(a, b);
 
         public static implicit operator ReadOnlySpan<Utf8Char>(Utf8String value) => (value != null) ? value.Chars : default;
-
-        public ref readonly Utf8Char this[int index]
-        {
-            get => ref Chars[index];
-        }
 
         public ReadOnlySpan<byte> Bytes
         {
@@ -420,7 +415,7 @@ namespace System.Text
             return a.Bytes.SequenceEqual(b.Bytes);
         }
 
-        public Enumerator GetEnumerator() => throw null;
+        public Enumerator GetEnumerator() => new Enumerator(_data);
 
         public override int GetHashCode() => Marvin.ComputeHash32(Bytes, Marvin.Utf8StringSeed);
 
@@ -788,21 +783,50 @@ namespace System.Text
             Validation.ThrowIfStartIndexOrCountOutOfRange(startIndex, length, ParamName.length, _length);
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => throw null;
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        IEnumerator<Utf8Char> IEnumerable<Utf8Char>.GetEnumerator() => throw null;
+        IEnumerator<UnicodeScalar> IEnumerable<UnicodeScalar>.GetEnumerator() => GetEnumerator();
 
-        public struct Enumerator : IEnumerator<Utf8Char>
+        public struct Enumerator : IEnumerator<UnicodeScalar>
         {
-            public Utf8Char Current => throw null;
+            private readonly byte[] _bytes;
+            private int _currentOffset;
+            private uint _currentValue;
 
-            public void Dispose() => throw null;
+            internal Enumerator(byte[] bytes)
+            {
+                _bytes = bytes;
+                _currentOffset = 0;
+                _currentValue = default;
+            }
 
-            public bool MoveNext() => throw null;
+            public UnicodeScalar Current => UnicodeScalar.DangerousCreateWithoutValidation(_currentValue);
 
-            public void Reset() => throw null;
+            public void Dispose()
+            {
+                // no-op
+            }
 
-            object IEnumerator.Current => throw null;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                bool retVal = false;
+                if (_currentOffset < _bytes.Length - 1)
+                {
+                    _currentValue = Utf8Enumeration.ReadFirstScalar(new ReadOnlySpan<byte>(_bytes).Slice(_currentOffset), out int stride);
+                    retVal = (stride != 0);
+                    _currentOffset += stride;
+                }
+                return retVal;
+            }
+
+            public void Reset()
+            {
+                _currentOffset = 0;
+                _currentValue = default;
+            }
+
+            object IEnumerator.Current => Current;
         }
 
         public struct ScalarSequence : IEnumerable<UnicodeScalar>
