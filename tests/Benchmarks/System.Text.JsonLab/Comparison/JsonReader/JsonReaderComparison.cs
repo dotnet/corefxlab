@@ -90,17 +90,6 @@ namespace JsonBenchmarks
         }
 
         [Benchmark]
-        public void ReaderSpanJsonUtf16()
-        {
-            SpanJson.JsonReader<char> json = new SpanJson.JsonReader<char>(_str);
-            SpanJson.JsonToken token;
-            while ((token = json.ReadUtf16NextToken()) != SpanJson.JsonToken.None)
-            {
-                json.SkipNextUtf16Value(token);
-            }
-        }
-
-        [Benchmark]
         public void ReaderSpanJsonUtf8()
         {
             SpanJson.JsonReader<byte> json = new SpanJson.JsonReader<byte>(_data);
