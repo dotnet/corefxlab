@@ -35,6 +35,9 @@ namespace JsonBenchmarks
         [IterationSetup(Target = nameof(Manatee_))]
         public void SerializeManatee() => jsonValue = Manatee.Json.JsonValue.Parse(new Manatee.Json.Serialization.JsonSerializer().Serialize(value).ToString());
 
+        [IterationSetup(Target = nameof(SpanJsonUtf16))]
+        public void SerializeSpanJsonUtf16() => serialized = SpanJson.JsonSerializer.Generic.Utf16.Serialize(value);
+
         [Benchmark(Baseline = true, Description = "Newtonsoft")]
         public T Newtonsoft_()
         {
@@ -59,7 +62,7 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark(Description = "YSharp")]
+        [Benchmark]
         public T YSharp()
         {
             T deserialized = new System.Text.Json.JsonParser().Parse<T>(serialized);
@@ -67,7 +70,7 @@ namespace JsonBenchmarks
             return deserialized;
         }
 
-        [Benchmark(Description = "FastJson")]
+        [Benchmark]
         public T FastJson()
         {
             T deserialized = fastJSON.JSON.ToObject<T>(serialized);
@@ -89,6 +92,14 @@ namespace JsonBenchmarks
         public T Manatee_()
         {
             T deserialized = new Manatee.Json.Serialization.JsonSerializer().Deserialize<T>(jsonValue);
+            ((IVerifiable)deserialized).TouchEveryProperty();
+            return deserialized;
+        }
+
+        [Benchmark]
+        public T SpanJsonUtf16()
+        {
+            T deserialized = SpanJson.JsonSerializer.Generic.Utf16.Deserialize<T>(serialized);
             ((IVerifiable)deserialized).TouchEveryProperty();
             return deserialized;
         }
