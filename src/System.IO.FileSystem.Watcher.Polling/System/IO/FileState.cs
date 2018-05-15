@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace System.IO
 {
     [Serializable]
-    struct FileState
+    internal struct FileState
     {
         internal long _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
         public string Path;

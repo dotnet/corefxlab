@@ -11,7 +11,7 @@ namespace System.IO
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
     [Serializable]
-    class PathToFileStateHashtable
+    internal class PathToFileStateHashtable
     {
         int _nextValuesIndex = 1; // the first Values slot is reserved so that default(Bucket) knows that it is not pointing to any value.
         public FileState[] Values { get; private set; }
@@ -37,7 +37,7 @@ namespace System.IO
             }
 
             Values[_nextValuesIndex] = value;
-            var bucket = ComputeBucket(file);
+            int bucket = ComputeBucket(file);
 
             while (true)
             {
@@ -54,7 +54,7 @@ namespace System.IO
 
         public void Remove(string directory, string file)
         {
-            var index = IndexOf(directory, file);
+            int index = IndexOf(directory, file);
             Debug.Assert(index != -1, "this should never happen");
 
             Values[index].Path = null;
@@ -67,7 +67,7 @@ namespace System.IO
             int bucket = ComputeBucket(file);
             while (true)
             {
-                var valueIndex = Buckets[bucket].ValuesIndex;
+                int valueIndex = Buckets[bucket].ValuesIndex;
                 if (valueIndex == 0)
                 {
                     return -1; // not found
@@ -122,21 +122,21 @@ namespace System.IO
 
         private int ComputeBucket(ReadOnlySpan<char> file)
         {
-            var hash = GetHashCode(file);
+            int hash = GetHashCode(file);
             if (hash == Int32.MinValue) hash = Int32.MaxValue;
 
-            var bucket = Math.Abs(hash) % Buckets.Length;
+            int bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
 
         private void Resize()
         {
             // this is because sometimes we just need to garbade collect instead of increase size
-            var newSize = Math.Max(Count * 2, 4);
+            int newSize = Math.Max(Count * 2, 4);
 
-            var bigger = new PathToFileStateHashtable(newSize);
+            PathToFileStateHashtable bigger = new PathToFileStateHashtable(newSize);
 
-            foreach (var existingValue in this)
+            foreach (FileState existingValue in this)
             {
                 bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
             }
