@@ -10,7 +10,7 @@ using Xunit;
 
 namespace System.Text.JsonLab.Tests
 {
-    public class JsonReaderTests
+    public class JsonParserTests
     {
         [Fact]
         public void ParseBasicJson()
