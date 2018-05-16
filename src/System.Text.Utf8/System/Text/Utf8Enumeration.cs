@@ -111,6 +111,114 @@ namespace System.Text
             return UnicodeHelpers.ReplacementChar;
         }
 
+        /// <summary>
+        /// Returns the last Unicode scalar value from a UTF-8 string. If the input is malformed,
+        /// returns U+FFFD and the number of invalid code units to skip. If the input is empty, returns U+0000.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ReadLastScalar(ReadOnlySpan<byte> input, out int bytesConsumed)
+        {
+            bytesConsumed = 0;
+            uint retVal = 0;
+
+            if (input.Length > 0)
+            {
+                // Optimistically assume ASCII data.
+                bytesConsumed = 1;
+                retVal = input[input.Length - 1];
+                if (retVal > 0x7FU)
+                {
+                    // Turns out the assumption was wrong.
+                    retVal = ReadLastScalarSlow(input, retVal, out bytesConsumed);
+                }
+            }
+
+            return retVal;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static uint ReadLastScalarSlow(ReadOnlySpan<byte> input, uint lastByte, out int bytesConsumed)
+        {
+            if (input.Length < 2)
+            {
+                goto BadData; // not enough data for multi-byte sequence, which means last byte invaild
+            }
+
+            if (!UnicodeHelpers.IsUtf8ContinuationByte(lastByte))
+            {
+                goto BadData; // expected a continuation byte
+            }
+
+            uint scalar = ((uint)input[input.Length - 2] << 6) + lastByte; // n.b. still has UTF-8 header bits at this point
+            if (UnicodeHelpers.IsInRangeInclusive(scalar, 0x80U + 0x3080U, 0x7FFU + 0x3080U))
+            {
+                // Valid 2-byte sequence, not overlong.
+                bytesConsumed = 2;
+                return scalar - 0x3080U; // remove UTF-8 header bits
+            }
+
+            // At this point, not a valid standalone 2-byte sequence. Make sure they're both continuation bytes.
+            // Then try a 3-byte sequence.
+
+            if (!UnicodeHelpers.IsInRangeInclusive(scalar, 0U + 0x2080U, 0xFFFU + 0x2080U) || input.Length < 3)
+            {
+                goto BadData; // observed a non-continuation byte or ran out of data to backtrack
+            }
+
+            scalar += (uint)input[input.Length - 3] << 6; // still has UTF-8 header bits at this point
+            if (UnicodeHelpers.IsInRangeInclusive(scalar, 0x800U + 0xE2080U, 0xFFFFU + 0xE2080U)
+                && !UnicodeHelpers.IsSurrogateCodePoint(scalar - 0xE2080U))
+            {
+                // Valid 3-byte sequence, not overlong or surrogate
+                bytesConsumed = 3;
+                return scalar - 0xE2080U;
+            }
+
+            // At this point, not a valid standalone 3-byte sequence. Make sure they're all continuation bytes.
+            // Then try a 4-byte sequence.
+
+            if (!UnicodeHelpers.IsInRangeInclusive(scalar, 0U + 0x82080U, 0x3FFFFU + 0x82080U) || input.Length < 4)
+            {
+                goto BadData; // observed a non-continuation byte or ran out of data to backtrack
+            }
+
+            scalar += (uint)input[input.Length - 4] << 6; // still has UTF-8 header bits at this point
+            if (UnicodeHelpers.IsInRangeInclusive(scalar, 0x10000U + 0x3C82080U, 0x10FFFFU + 0x3C82080U))
+            {
+                // Value 4-byte sequence, not overlong or out-of-range
+                bytesConsumed = 4;
+                return scalar - 0x3C82080U;
+            }
+
+        BadData:
+
+            // If we reached this point, there's not a valid scalar sequence at the end of the input.
+            // In order to keep forward and reverse enumeration consistent with respect to each other,
+            // we need to (from the end) find the longest possible "invalid scalar" sequence that isn't
+            // itself a subsequence of a longer "invalid scalar" sequence. Since invalid sequences can
+            // be at most length 3 bytes, we start reading *forward* near the end of the input buffer
+            // to see what the last forward-iterated sequence would have been.
+
+            if (input.Length > 3)
+            {
+                input = input.Slice(input.Length - 3);
+            }
+
+            while (input.Length > 1)
+            {
+                ReadFirstScalar(input, out int innerBytesConsumed); // ignore whatever scalar we got back
+                if (innerBytesConsumed == input.Length)
+                {
+                    break; // This is the longest possible sequence.
+                }
+
+                input = input.Slice(innerBytesConsumed);
+            }
+
+            bytesConsumed = input.Length;
+            return UnicodeHelpers.ReplacementChar;
+        }
+
         private static int GetNumberOfBytesToSkipForInvalidSequence(ReadOnlySpan<byte> input)
         {
             /*
