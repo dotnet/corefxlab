@@ -331,5 +331,8 @@ namespace System.Text
                 UnicodeScalar.DangerousCreateWithoutValidation(UnicodeHelpers.GetScalarFromUtf16SurrogateCodePoints(thisCodePoint, nextCodePoint)),
                 charsConsumed: 2);
         }
+
+        // TODO: Implement me.
+        internal static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekLastScalar(ReadOnlySpan<Utf8Char> utf8Data) => throw null;
     }
 }

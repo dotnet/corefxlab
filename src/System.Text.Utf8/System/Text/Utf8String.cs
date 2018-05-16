@@ -322,6 +322,21 @@ namespace System.Text
             return retVal;
         }
 
+        private Utf8String CreateFromTrimmedCommon(ReadOnlySpan<byte> trimmed)
+        {
+            if (trimmed.Length == _length)
+            {
+                return this; // common case - no data trimmed
+            }
+
+            if (trimmed.Length == 0)
+            {
+                return Empty; // less common case - all data trimmed
+            }
+
+            return DangerousCreateWithoutValidation(trimmed);
+        }
+
         private static Utf8String CreateFromUserInputCommon<TState, TCodeUnit>(int length, TState state, SpanAction<TCodeUnit, TState> action, bool validateInput)
             where TCodeUnit : struct
         {
@@ -509,7 +524,7 @@ namespace System.Text
 
         public static bool IsNullOrEmpty(Utf8String value) => (value == null || value.Length == 0);
 
-        public static bool IsNullOrWhiteSpace(Utf8String value) => (value == null || WhitespaceHelpers.TrimStartUtf8(value.Bytes).Length == 0);
+        public static bool IsNullOrWhiteSpace(Utf8String value) => (value == null || Utf8TrimHelpers.TrimWhiteSpace(value.Bytes, TrimType.Start).Length == 0);
 
         internal bool IsWellFormed() => throw null;
 
@@ -770,66 +785,48 @@ namespace System.Text
 
         public Utf8String Trim()
         {
-            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimUtf8(Bytes);
-
-            if (trimmed.Length == _length)
-            {
-                return this; // common case - nothing trimmed
-            }
-
-            if (trimmed.Length == 0)
-            {
-                return Empty; // less common case - everything trimmed
-            }
-
-            return DangerousCreateWithoutValidation(trimmed);
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimWhiteSpace(Bytes, TrimType.Both));
         }
 
-        public Utf8String Trim(Utf8Char trimChar) => throw null;
+        public Utf8String Trim(UnicodeScalar trimScalar)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimSingleScalar(Bytes, trimScalar, TrimType.Both));
+        }
 
-        public Utf8String Trim(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+        public Utf8String Trim(ReadOnlySpan<UnicodeScalar> trimScalars)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimMultipleScalars(Bytes, trimScalars, TrimType.Both));
+        }
 
         public Utf8String TrimEnd()
         {
-            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimEndUtf8(Bytes);
-
-            if (trimmed.Length == _length)
-            {
-                return this; // common case - nothing trimmed
-            }
-
-            if (trimmed.Length == 0)
-            {
-                return Empty; // less common case - everything trimmed
-            }
-
-            return DangerousCreateWithoutValidation(trimmed);
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimWhiteSpace(Bytes, TrimType.End));
         }
 
-        public Utf8String TrimEnd(Utf8Char trimChar) => throw null;
+        public Utf8String TrimEnd(UnicodeScalar trimScalar)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimSingleScalar(Bytes, trimScalar, TrimType.End));
+        }
 
-        public Utf8String TrimEnd(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+        public Utf8String TrimEnd(ReadOnlySpan<UnicodeScalar> trimScalars)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimMultipleScalars(Bytes, trimScalars, TrimType.End));
+        }
 
         public Utf8String TrimStart()
         {
-            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimStartUtf8(Bytes);
-
-            if (trimmed.Length == _length)
-            {
-                return this; // common case - nothing trimmed
-            }
-
-            if (trimmed.Length == 0)
-            {
-                return Empty; // less common case - everything trimmed
-            }
-
-            return DangerousCreateWithoutValidation(trimmed);
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimWhiteSpace(Bytes, TrimType.Start));
         }
 
-        public Utf8String TrimStart(Utf8Char trimChar) => throw null;
+        public Utf8String TrimStart(UnicodeScalar trimScalar)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimSingleScalar(Bytes, trimScalar, TrimType.Start));
+        }
 
-        public Utf8String TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+        public Utf8String TrimStart(ReadOnlySpan<UnicodeScalar> trimScalars)
+        {
+            return CreateFromTrimmedCommon(Utf8TrimHelpers.TrimMultipleScalars(Bytes, trimScalars, TrimType.Start));
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidateStartIndex(int startIndex)
