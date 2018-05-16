@@ -16,11 +16,9 @@ namespace System.Text.JsonLab.Benchmarks
     public class JsonWriterPerf
     {
         private const int ExtraArraySize = 500;
-
-        public const int BufferSize = 1024 + (ExtraArraySize * 64);
+        private const int BufferSize = 1024 + (ExtraArraySize * 64);
 
         private ArrayFormatter _arrayFormatter;
-        private SymbolTable _symbolTable;
         private MemoryStream _stream;
         private StreamWriter _writer;
 
@@ -37,15 +35,17 @@ namespace System.Text.JsonLab.Benchmarks
             var buffer = new byte[BufferSize];
             _stream = new MemoryStream(buffer);
             _writer = new StreamWriter(_stream, enc, BufferSize, true);
-            _symbolTable = GetTargetEncoder(Target);
-            _arrayFormatter = new ArrayFormatter(BufferSize, _symbolTable);
+            _arrayFormatter = new ArrayFormatter(BufferSize, GetTargetEncoder(Target));
         }
 
         [Benchmark]
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
-            WriterSystemTextJsonBasic(Formatted, _arrayFormatter);
+            if (Target == EncoderTarget.InvariantUtf8)
+                WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatter);
+            else
+                WriterSystemTextJsonBasicUtf16(Formatted, _arrayFormatter);
         }
 
         [Benchmark]
@@ -59,7 +59,11 @@ namespace System.Text.JsonLab.Benchmarks
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
-            WriterSystemTextJsonHelloWorld(Formatted, _arrayFormatter);
+
+            if (Target == EncoderTarget.InvariantUtf8)
+                WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatter);
+            else
+                WriterSystemTextJsonHelloWorldUtf16(Formatted, _arrayFormatter);
         }
 
         [Benchmark]
@@ -69,52 +73,38 @@ namespace System.Text.JsonLab.Benchmarks
             WriterNewtonsoftHelloWorld(Formatted, _writer);
         }
 
-        // Skipping this test for now since it results in too many extra permutations
-        // The Target Param is redundant here so we end up running this test twice.
-        //[Benchmark]
-        [ArgumentsSource(nameof(GetWriterSystemTextJsonParameters))]
-        public void WriterSlowSystemTextJsonHelloWorld(ArrayFormatter formatter)
+        private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output)
         {
-            formatter.Clear();
-            WriterSystemTextJsonHelloWorld(Formatted, formatter);
-        }
+            var json = new JsonWriterUtf8(output, formatted);
 
-        // Skipping this test for now since it results in too many extra permutations
-        // The Target Param is redundant here so we end up running this test twice.
-        //[Benchmark]
-        [ArgumentsSource(nameof(GetWriterSystemTextJsonParameters))]
-        public void WriterSlowSystemTextJsonBasic(ArrayFormatter formatter)
-        {
-            formatter.Clear();
-            WriterSystemTextJsonBasic(Formatted, formatter);
-        }
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteArrayEnd();
+            json.WriteObjectStart("address");
+            json.WriteAttribute("street", "1 Microsoft Way");
+            json.WriteAttribute("city", "Redmond");
+            json.WriteAttribute("zip", 98052);
+            json.WriteObjectEnd();
 
-        public IEnumerable<object[]> GetWriterSystemTextJsonParameters()
-        {
-            yield return new object[] { new ArrayFormatterParam(EncoderTarget.SlowUtf8) };
-            yield return new object[] { new ArrayFormatterParam(EncoderTarget.SlowUtf16) };
-        }
-
-        public class ArrayFormatterParam : IParam
-        {
-            private readonly EncoderTarget _target;
-
-            public ArrayFormatterParam(EncoderTarget target)
+            // Add a large array of values
+            json.WriteArrayStart("ExtraArray");
+            for (var i = 0; i < ExtraArraySize; i++)
             {
-                _target = target;
+                json.WriteValue(i);
             }
+            json.WriteArrayEnd();
 
-            public object Value => new ArrayFormatter(BufferSize, GetTargetEncoder(_target));
-
-            public string DisplayText => $"({_target})";
-
-            public string ToSourceCode()
-                => $"new System.Text.Formatting.ArrayFormatter(BufferSize, System.Text.Json.Benchmarks.Helper.GetTargetEncoder(System.Text.Json.Benchmarks.Helper.EncoderTarget.{_target}))";
+            json.WriteObjectEnd();
         }
 
-        private static void WriterSystemTextJsonBasic(bool formatted, ArrayFormatter output)
+        private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, formatted);
+            var json = new JsonWriterUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -182,9 +172,18 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        private static void WriterSystemTextJsonHelloWorld(bool formatted, ArrayFormatter output)
+        private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, formatted);
+            var json = new JsonWriterUtf8(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("message", "Hello, World!");
+            json.WriteObjectEnd();
+        }
+
+        private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatter output)
+        {
+            var json = new JsonWriterUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
