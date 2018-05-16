@@ -56,7 +56,6 @@ namespace System.Text.JsonLab.Tests
             json.WriteObjectEnd();
         }
 
-
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -96,7 +95,6 @@ namespace System.Text.JsonLab.Tests
 
             Assert.Equal(expectedStr, actualStr);
         }
-
 
         [Theory]
         [InlineData(true)]
