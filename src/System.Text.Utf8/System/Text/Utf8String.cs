@@ -690,7 +690,13 @@ namespace System.Text
             return (_data.Length > 1) && (_data[0] == (byte)value);
         }
 
-        public bool StartsWith(Utf8String value) => throw null;
+        public bool StartsWith(Utf8String value, StringComparison comparisonType)
+        {
+            // TODO: Support other comparison types
+            Validation.ThrowIfNotOrdinal(comparisonType);
+
+            return this.Bytes.StartsWith(value.Bytes);
+        }
 
         public Utf8String Substring(int startIndex)
         {
