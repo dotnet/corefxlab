@@ -717,13 +717,13 @@ namespace System.Text.JsonLab
             if (UseFastUtf8)
             {
                 ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
-                int bytesNeeded = CalculateBytesNeeded(valueSpan, sizeof(byte), 2);
+                int bytesNeeded = CalculateValueBytesNeeded(valueSpan, sizeof(byte), 2);
                 WriteValueUtf8(valueSpan, bytesNeeded);
             }
             else if (UseFastUtf16)
             {
                 ReadOnlySpan<char> valueSpan = value.AsSpan();
-                int bytesNeeded = CalculateBytesNeeded(valueSpan, sizeof(char), 2);
+                int bytesNeeded = CalculateValueBytesNeeded(valueSpan, sizeof(char), 2);
                 WriteValueUtf16(valueSpan, bytesNeeded);
             }
             else
@@ -1565,7 +1565,7 @@ namespace System.Text.JsonLab
             return bytesNeeded;
         }
 
-        private int CalculateBytesNeeded(ReadOnlySpan<byte> span, int numBytes, int extraCharacterCount)
+        private int CalculateValueBytesNeeded(ReadOnlySpan<byte> span, int numBytes, int extraCharacterCount)
         {
             int bytesNeeded = 0;
             if (!_firstItem)
@@ -1588,6 +1588,49 @@ namespace System.Text.JsonLab
             return bytesNeeded;
         }
 
+        private int CalculateBytesNeeded(ReadOnlySpan<byte> span, int numBytes, int extraCharacterCount)
+        {
+            int bytesNeeded = 0;
+            if (!_firstItem)
+                bytesNeeded = numBytes;
+
+            if (_prettyPrint)
+            {
+                int bytesNeededForPrettyPrint = 3;    // For the new line, \r\n, and the space after the colon
+                bytesNeededForPrettyPrint += (_indent + 1) * 2;
+                bytesNeeded += numBytes * bytesNeededForPrettyPrint;
+            }
+
+            bytesNeeded += numBytes * extraCharacterCount;
+
+            if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+            }
+            bytesNeeded += bytesNeededValue;
+            return bytesNeeded;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int CalculateValueBytesNeeded(ReadOnlySpan<char> span, int numBytes, int extraCharacterCount)
+        {
+            int bytesNeeded = 0;
+            if (!_firstItem)
+                bytesNeeded = numBytes;
+
+            if (_prettyPrint)
+            {
+                int bytesNeededForPrettyPrint = 2;    // For the new line, \r\n
+                bytesNeededForPrettyPrint += (_indent + 1) * 2;
+                bytesNeeded += numBytes * bytesNeededForPrettyPrint;
+            }
+
+            bytesNeeded += numBytes * extraCharacterCount;
+            bytesNeeded += MemoryMarshal.AsBytes(span).Length;
+
+            return bytesNeeded;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int CalculateBytesNeeded(ReadOnlySpan<char> span, int numBytes, int extraCharacterCount)
         {
@@ -1597,7 +1640,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = 2;    // For the new line, \r\n
+                int bytesNeededForPrettyPrint = 3;    // For the new line, \r\n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
