@@ -29,10 +29,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static InvalidOperationException InvalidOperation_SubstringWouldCreateIllFormedUtf8String()
+        public static InvalidOperationException InvalidOperation_WouldCreateIllFormedUtf8String()
         {
             return new InvalidOperationException(
-                message: Strings.InvalidOperation_SubstringWouldCreateIllFormedUtf8String);
+                message: Strings.InvalidOperation_WouldCreateIllFormedUtf8String);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

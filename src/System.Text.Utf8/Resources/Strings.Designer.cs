@@ -108,9 +108,9 @@ namespace System.Text.Utf8.Resources {
         /// <summary>
         ///   Looks up a localized string similar to This operation would create a Utf8String that is not well-formed..
         /// </summary>
-        internal static string InvalidOperation_SubstringWouldCreateIllFormedUtf8String {
+        internal static string InvalidOperation_WouldCreateIllFormedUtf8String {
             get {
-                return ResourceManager.GetString("InvalidOperation_SubstringWouldCreateIllFormedUtf8String", resourceCulture);
+                return ResourceManager.GetString("InvalidOperation_WouldCreateIllFormedUtf8String", resourceCulture);
             }
         }
         

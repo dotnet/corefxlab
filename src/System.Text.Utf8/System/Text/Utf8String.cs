@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8.Resources;
@@ -87,7 +88,11 @@ namespace System.Text
 
         public ScalarSequence Scalars => throw null;
 
-        public static Utf8String Concat(IEnumerable<Utf8String> values) => throw null;
+        public static Utf8String Concat(IEnumerable<Utf8String> values)
+        {
+            // TODO: Optimize me
+            return Concat(values?.ToArray());
+        }
 
         public static Utf8String Concat(Utf8String str0, Utf8String str1)
         {
@@ -292,7 +297,19 @@ namespace System.Text
             return (IndexOf(value) >= 0);
         }
 
-        public bool Contains(Utf8String value) => throw null;
+        public bool Contains(Utf8String value, StringComparison comparisonType)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            // TODO: Allow more comparison types
+            Validation.ThrowIfNotOrdinal(comparisonType);
+
+            // TODO: Use MemoryExtensions.Contains<T> when it's available.
+            return (this.Bytes.IndexOf(value.Bytes) >= 0);
+        }
 
         public static Utf8String Create<TState>(int length, TState state, SpanAction<byte, TState> action) => CreateFromUserInputCommon(length, state, action, validateInput: true);
 
@@ -576,9 +593,47 @@ namespace System.Text
             });
         }
 
-        public Utf8String Remove(int startIndex) => throw null;
+        public Utf8String Remove(int startIndex)
+        {
+            ValidateStartIndex(startIndex);
 
-        public Utf8String Remove(int startIndex, int count) => throw null;
+            // TODO: Avoid performing input validation multiple times.
+            return Substring(0, startIndex);
+        }
+
+        public Utf8String Remove(int startIndex, int count)
+        {
+            ValidateStartIndexAndCount(startIndex, count);
+
+            if (count == 0)
+            {
+                return this;
+            }
+
+            if (count == _length)
+            {
+                return Empty;
+            }
+
+            // TODO: Consider whether we really need to validate that we're not slicing in the middle of a multi-byte sequence.
+            // If we assume that Utf8String instances are already well-formed, then we only need to check that the string isn't
+            // being sliced in the middle of a multi-byte sequence. If that check passes then the rest of the data is also good.
+
+            // n.b. Second byte being compared in below check could be the null terminator.
+
+            if (UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex))
+                || UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex + count)))
+            {
+                throw Exceptions.InvalidOperation_WouldCreateIllFormedUtf8String();
+            }
+
+            return CreateInternal(_length - count, (value: this, startIndex, count), (span, state) =>
+            {
+                var rawOriginalData = state.value.Bytes;
+                rawOriginalData.Slice(0, startIndex).CopyTo(span);
+                rawOriginalData.Slice(startIndex + count).CopyTo(span.Slice(startIndex));
+            });
+        }
 
         public Utf8String Replace(ReadOnlySpan<Utf8Char> oldValue, ReadOnlySpan<Utf8Char> newValue) => throw null;
 
@@ -659,7 +714,7 @@ namespace System.Text
 
             if (UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex)))
             {
-                throw Exceptions.InvalidOperation_SubstringWouldCreateIllFormedUtf8String();
+                throw Exceptions.InvalidOperation_WouldCreateIllFormedUtf8String();
             }
 
             return DangerousCreateWithoutValidation(Bytes.DangerousSliceWithoutValidation(startIndex));
@@ -688,7 +743,7 @@ namespace System.Text
             if (UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex))
                 || UnicodeHelpers.IsUtf8ContinuationByte(DangerousGetByteAtWithoutValidation(startIndex + length)))
             {
-                throw Exceptions.InvalidOperation_SubstringWouldCreateIllFormedUtf8String();
+                throw Exceptions.InvalidOperation_WouldCreateIllFormedUtf8String();
             }
 
             return DangerousCreateWithoutValidation(Bytes.DangerousSliceWithoutValidation(startIndex, length));
