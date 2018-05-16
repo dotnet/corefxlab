@@ -8,6 +8,39 @@ namespace System.Text.JsonLab
 {
     internal static class JsonThrowHelper
     {
+        public static void ThrowArgumentException(string message)
+        {
+            throw GetArgumentException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArgumentException GetArgumentException(string message)
+        {
+            return new ArgumentException(message);
+        }
+
+        public static void ThrowFormatException()
+        {
+            throw GetFormatException();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static FormatException GetFormatException()
+        {
+            return new FormatException();
+        }
+
+        public static void ThrowOutOfMemoryException()
+        {
+            throw GetOutOfMemoryException();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static OutOfMemoryException GetOutOfMemoryException()
+        {
+            return new OutOfMemoryException();
+        }
+
         public static void ThrowNotImplementedException()
         {
             throw GetNotImplementedException();

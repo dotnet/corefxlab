@@ -4,15 +4,15 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     // this is a quick an dirty hashtable optimized for the PollingFileSystemWatcher
     // It allows mutating struct values (FileState) contained in the hashtable
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
-    class PathToFileStateHashtable
+    [Serializable]
+    internal class PathToFileStateHashtable
     {
-        int _count;
         int _nextValuesIndex = 1; // the first Values slot is reserved so that default(Bucket) knows that it is not pointing to any value.
         public FileState[] Values { get; private set; }
         private Bucket[] Buckets;
@@ -27,13 +27,7 @@ namespace System.IO.FileSystem
             Buckets = new Bucket[GetPrime(capacity + 1)];
         }
 
-        public int Count
-        {
-            get
-            {
-                return _count;
-            }
-        }
+        public int Count { get; private set; }
 
         public void Add(string directory, string file, FileState value)
         {
@@ -43,14 +37,14 @@ namespace System.IO.FileSystem
             }
 
             Values[_nextValuesIndex] = value;
-            var bucket = ComputeBucket(file);
+            int bucket = ComputeBucket(file);
 
             while (true)
             {
                 if (Buckets[bucket].IsEmpty)
                 {
                     Buckets[bucket] = new Bucket(directory, file, _nextValuesIndex);
-                    _count++;
+                    Count++;
                     _nextValuesIndex++;
                     return;
                 }
@@ -60,12 +54,12 @@ namespace System.IO.FileSystem
 
         public void Remove(string directory, string file)
         {
-            var index = IndexOf(directory, file);
+            int index = IndexOf(directory, file);
             Debug.Assert(index != -1, "this should never happen");
 
             Values[index].Path = null;
             Values[index].Directory = null;
-            _count--;
+            Count--;
         }
 
         public int IndexOf(string directory, ReadOnlySpan<char> file)
@@ -73,7 +67,7 @@ namespace System.IO.FileSystem
             int bucket = ComputeBucket(file);
             while (true)
             {
-                var valueIndex = Buckets[bucket].ValuesIndex;
+                int valueIndex = Buckets[bucket].ValuesIndex;
                 if (valueIndex == 0)
                 {
                     return -1; // not found
@@ -128,28 +122,28 @@ namespace System.IO.FileSystem
 
         private int ComputeBucket(ReadOnlySpan<char> file)
         {
-            var hash = GetHashCode(file);
+            int hash = GetHashCode(file);
             if (hash == Int32.MinValue) hash = Int32.MaxValue;
 
-            var bucket = Math.Abs(hash) % Buckets.Length;
+            int bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
 
         private void Resize()
         {
             // this is because sometimes we just need to garbade collect instead of increase size
-            var newSize = Math.Max(_count * 2, 4);
+            int newSize = Math.Max(Count * 2, 4);
 
-            var bigger = new PathToFileStateHashtable(newSize);
+            PathToFileStateHashtable bigger = new PathToFileStateHashtable(newSize);
 
-            foreach (var existingValue in this)
+            foreach (FileState existingValue in this)
             {
                 bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
             }
             Values = bigger.Values;
             Buckets = bigger.Buckets;
             this._nextValuesIndex = bigger._nextValuesIndex;
-            this._count = bigger._count;
+            this.Count = bigger.Count;
         }
 
         private static readonly int[] primes = {
@@ -228,9 +222,10 @@ namespace System.IO.FileSystem
 
         public override string ToString()
         {
-            return _count.ToString();
+            return Count.ToString();
         }
 
+        [Serializable]
         struct Bucket
         {
             public FullPath Key;
@@ -251,6 +246,7 @@ namespace System.IO.FileSystem
             }
         }
 
+        [Serializable]
         struct FullPath
         {
             public string Directory;

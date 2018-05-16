@@ -65,18 +65,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void WriterNewtonsoftBasic()
         {
-            TextWriter writer;
-            if (IsUTF8Encoded)
-            {
-                _memoryStream.Seek(0, SeekOrigin.Begin);
-                writer = _streamWriter;
-            }
-            else
-            {
-                _stringBuilder.Clear();
-                writer = new StringWriter(_stringBuilder);
-            }
-            WriterNewtonsoftBasic(Formatted, writer, _data);
+            WriterNewtonsoftBasic(Formatted, GetWriter(), _data);
         }
 
         [Benchmark]
@@ -92,6 +81,11 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
+            WriterNewtonsoftHelloWorld(Formatted, GetWriter());
+        }
+
+        private TextWriter GetWriter()
+        {
             TextWriter writer;
             if (IsUTF8Encoded)
             {
@@ -103,7 +97,7 @@ namespace System.Text.JsonLab.Benchmarks
                 _stringBuilder.Clear();
                 writer = new StringWriter(_stringBuilder);
             }
-            WriterNewtonsoftHelloWorld(Formatted, writer);
+            return writer;
         }
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)

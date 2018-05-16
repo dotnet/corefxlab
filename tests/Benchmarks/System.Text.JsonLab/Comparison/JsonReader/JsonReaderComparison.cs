@@ -88,5 +88,16 @@ namespace JsonBenchmarks
             var json = new LitJson.JsonReader(_reader);
             while (json.Read()) ;
         }
+
+        [Benchmark]
+        public void ReaderSpanJsonUtf8()
+        {
+            SpanJson.JsonReader<byte> json = new SpanJson.JsonReader<byte>(_data);
+            SpanJson.JsonToken token;
+            while ((token = json.ReadUtf8NextToken()) != SpanJson.JsonToken.None)
+            {
+                json.SkipNextUtf8Value(token);
+            }
+        }
     }
 }

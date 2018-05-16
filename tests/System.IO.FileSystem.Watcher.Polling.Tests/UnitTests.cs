@@ -3,12 +3,13 @@
 
 using System;
 using System.IO;
-using System.IO.FileSystem;
 using System.Threading;
 using Xunit;
 
 public partial class PollingFileSystemWatcherUnitTests
 {
+    private const int MillisecondsTimeout = 1000;
+
     [Fact]
     public static void FileSystemWatcher_ctor_Defaults()
     {
@@ -18,7 +19,7 @@ public partial class PollingFileSystemWatcherUnitTests
         Assert.Equal(path, watcher.Path);
         Assert.Equal("*", watcher.Filter);
         Assert.NotNull(watcher.EnumerationOptions);
-        Assert.Equal(1000, watcher.PollingIntervalInMilliseconds);
+        Assert.Equal(1000, watcher.PollingInterval);
     }
 
     [Fact]
@@ -54,11 +55,12 @@ public partial class PollingFileSystemWatcherUnitTests
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -66,17 +68,17 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
             watcher.Start();
-            using (FileStream file = File.Create(fileName)) { }
-            signal.WaitOne(1000);
+            using (FileStream file = File.Create(fullName)) { }
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         try
@@ -85,18 +87,19 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public static void FileSystemWatcher_Deleted_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -104,31 +107,34 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Deleted, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Deleted, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             watcher.Start();
-            File.Delete(fileName);
-            signal.WaitOne(1000);
+            File.Delete(fullName);
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         Assert.True(eventRaised);
+
+        Directory.Delete(currentDir, true);
     }
 
     [Fact]
     public static void FileSystemWatcher_Changed_File()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = 0 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -136,18 +142,18 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Changed, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Changed, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             watcher.Start();
-            File.AppendAllText(fileName, ".");
-            signal.WaitOne(1000);
+            File.AppendAllText(fullName, ".");
+            signal.WaitOne(MillisecondsTimeout);
         }
 
         try
@@ -156,18 +162,19 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public static void FileSystemWatcher_Filter()
     {
-        string currentDir = Directory.GetCurrentDirectory();
+        string currentDir = Utility.GetRandomDirectory();
         string fileName = $"{Path.GetRandomFileName()}.csv";
+        string fullName = Path.Combine(currentDir, fileName);
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, filter: "*.csv") { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, filter: "*.csv") { PollingInterval = 1 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -175,17 +182,17 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(currentDir, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
             watcher.Start();
 
-            using (FileStream file = File.Create(fileName)) { }
+            using (FileStream file = File.Create(fullName)) { }
             signal.WaitOne(1000);
         }
 
@@ -195,7 +202,79 @@ public partial class PollingFileSystemWatcherUnitTests
         }
         finally
         {
-            File.Delete(fileName);
+            Directory.Delete(currentDir, true);
+        }
+    }
+
+    [Fact]
+    public static void FileSystemWatcher_PollingInterval_ChangeBeforeStart()
+    {
+        string currentDir = Utility.GetRandomDirectory();
+        string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
+        bool eventRaised = false;
+
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = Timeout.Infinite })
+        {
+            AutoResetEvent signal = new AutoResetEvent(false);
+
+            watcher.Changed += (e, changes) =>
+            {
+                eventRaised = true;
+                watcher.PollingInterval = Timeout.Infinite;
+                signal.Set();
+            };
+
+            watcher.PollingInterval = 0;
+            watcher.Start();
+
+            using (FileStream file = File.Create(fullName)) { }
+            signal.WaitOne(1000);
+        }
+
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            Directory.Delete(currentDir, true);
+        }
+    }
+
+    [Fact]
+    public static void FileSystemWatcher_PollingInterval_ChangeAfterStart()
+    {
+        string currentDir = Utility.GetRandomDirectory();
+        string fileName = Path.GetRandomFileName();
+        string fullName = Path.Combine(currentDir, fileName);
+        bool eventRaised = false;
+
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir) { PollingInterval = Timeout.Infinite })
+        {
+            AutoResetEvent signal = new AutoResetEvent(false);
+
+            watcher.Changed += (e, changes) =>
+            {
+                eventRaised = true;
+                watcher.PollingInterval = Timeout.Infinite;
+                signal.Set();
+            };
+
+            watcher.Start();
+
+            using (FileStream file = File.Create(fullName)) { }
+            watcher.PollingInterval = 0;
+            signal.WaitOne(1000);
+        }
+
+        try
+        {
+            Assert.True(eventRaised);
+        }
+        finally
+        {
+            Directory.Delete(currentDir, true);
         }
     }
 
@@ -209,7 +288,7 @@ public partial class PollingFileSystemWatcherUnitTests
 
         bool eventRaised = false;
 
-        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true }) { PollingIntervalInMilliseconds = 1 })
+        using (PollingFileSystemWatcher watcher = new PollingFileSystemWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true }) { PollingInterval = 1 })
         {
             AutoResetEvent signal = new AutoResetEvent(false);
 
@@ -222,11 +301,11 @@ public partial class PollingFileSystemWatcherUnitTests
             {
                 Assert.Equal(1, changes.Changes.Length);
                 FileChange change = changes.Changes[0];
-                Assert.Equal(ChangeType.Created, change.ChangeType);
+                Assert.Equal(WatcherChangeTypes.Created, change.ChangeType);
                 Assert.Equal(fileName, change.Name);
                 Assert.Equal(subDirectory, change.Directory);
                 eventRaised = true;
-                watcher.PollingIntervalInMilliseconds = Timeout.Infinite;
+                watcher.PollingInterval = Timeout.Infinite;
                 signal.Set();
             };
 
@@ -297,7 +376,7 @@ public partial class PollingFileSystemWatcherUnitTests
     public static void FileSystemWatcher_DisposeAfterStartWithWaitHandle()
     {
         ManualResetEvent resetEvent = new ManualResetEvent(false);
-        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingIntervalInMilliseconds = 1 };
+        var watcher = new PollingFileSystemWatcher(Environment.CurrentDirectory) { PollingInterval = 1 };
         watcher.Start();
         var isSuccessful = watcher.Dispose(resetEvent);
         Assert.True(isSuccessful);

@@ -9,6 +9,11 @@ namespace System.Buffers.Text
     {
         private static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, StandardFormat format, SymbolTable symbolTable)
         {
+            if (format.IsDefault)
+            {
+                format = 'G';
+            }
+
             if (value >= 0)
             {
                 return TryFormatUInt64(unchecked((ulong)value), buffer, out bytesWritten, format, symbolTable);
@@ -37,6 +42,11 @@ namespace System.Buffers.Text
 
         private static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format, SymbolTable symbolTable)
         {
+            if (format.IsDefault)
+            {
+                format = 'G';
+            }
+
             switch (format.Symbol)
             {
                 case 'x':
