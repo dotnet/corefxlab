@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text.Utf8.Resources;
 
 namespace System.Text
 {
@@ -30,14 +28,14 @@ namespace System.Text
 
                 // TODO: On full framework, figure out a replacement to GetUnicodeCategory(int)
 
-                UnicodeScalar currentScalar = ReadLastScalar(data);
+                uint currentScalar = Utf8Enumeration.ReadLastScalar(data, out int sequenceLength);
 
                 if (UnicodeHelpers.IsInRangeInclusive(
-                    (uint)CharUnicodeInfo.GetUnicodeCategory((int)currentScalar.Value),
+                    (uint)CharUnicodeInfo.GetUnicodeCategory((int)currentScalar),
                     (uint)UnicodeCategory.SpaceSeparator,
                     (uint)UnicodeCategory.ParagraphSeparator))
                 {
-                    data = data.Slice(0, data.Length - currentScalar.Utf8SequenceLength);
+                    data = data.Slice(0, data.Length - sequenceLength);
                     continue;
                 }
 
@@ -75,14 +73,14 @@ namespace System.Text
 
                 // TODO: On full framework, figure out a replacement to GetUnicodeCategory(int)
 
-                UnicodeScalar currentScalar = ReadFirstScalar(data);
+                uint nextScalar = Utf8Enumeration.ReadFirstScalar(data, out int sequenceLength);
 
                 if (UnicodeHelpers.IsInRangeInclusive(
-                    (uint)CharUnicodeInfo.GetUnicodeCategory((int)currentScalar.Value),
+                    (uint)CharUnicodeInfo.GetUnicodeCategory((int)nextScalar),
                     (uint)UnicodeCategory.SpaceSeparator,
                     (uint)UnicodeCategory.ParagraphSeparator))
                 {
-                    data = data.Slice(currentScalar.Utf8SequenceLength);
+                    data = data.Slice(sequenceLength);
                     continue;
                 }
 
@@ -93,10 +91,7 @@ namespace System.Text
             return data;
         }
 
-        // TODO: Implement me
-        private static UnicodeScalar ReadFirstScalar(ReadOnlySpan<byte> data) => throw null;
-
-        // TODO: Implement me
-        private static UnicodeScalar ReadLastScalar(ReadOnlySpan<byte> data) => throw null;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<byte> TrimUtf8(ReadOnlySpan<byte> data) => TrimStartUtf8(TrimEndUtf8(data));
     }
 }

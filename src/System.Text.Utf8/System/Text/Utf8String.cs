@@ -509,7 +509,7 @@ namespace System.Text
 
         public static bool IsNullOrEmpty(Utf8String value) => (value == null || value.Length == 0);
 
-        public static bool IsNullOrWhiteSpace(Utf8String value) => throw null;
+        public static bool IsNullOrWhiteSpace(Utf8String value) => (value == null || WhitespaceHelpers.TrimStartUtf8(value.Bytes).Length == 0);
 
         internal bool IsWellFormed() => throw null;
 
@@ -770,7 +770,7 @@ namespace System.Text
 
         public Utf8String Trim()
         {
-            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimStartUtf8(WhitespaceHelpers.TrimEndUtf8(Bytes));
+            ReadOnlySpan<byte> trimmed = WhitespaceHelpers.TrimUtf8(Bytes);
 
             if (trimmed.Length == _length)
             {
