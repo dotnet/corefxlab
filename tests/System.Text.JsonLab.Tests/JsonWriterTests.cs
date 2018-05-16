@@ -34,7 +34,7 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
         }
 
-        static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052}}";
+        static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
         static void Write(ref JsonWriter json)
         {
             json.WriteObjectStart();
@@ -50,6 +50,11 @@ namespace System.Text.JsonLab.Tests
             json.WriteAttribute("city", "Redmond");
             json.WriteAttribute("zip", 98052);
             json.WriteObjectEnd();
+            json.WriteArrayStart("values");
+            json.WriteValue(425121);
+            json.WriteValue(-425122);
+            json.WriteValue(425123);
+            json.WriteArrayEnd();
             json.WriteObjectEnd();
         }
     }
