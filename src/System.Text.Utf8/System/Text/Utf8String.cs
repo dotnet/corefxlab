@@ -751,9 +751,14 @@ namespace System.Text
 
         public Utf8String ToLowerInvariant() => throw null;
 
-        public override string ToString() => throw null;
+        public override string ToString()
+        {
+            // TODO: Use optimized UTF-8 to UTF-16 transcoder.
+            // TODO: Cache this value?
+            return Encoding.UTF8.GetString(Bytes);
+        }
 
-        public string ToString(IFormatProvider provider) => throw null;
+        public string ToString(IFormatProvider provider) => ToString();
 
         public Utf8String ToUpperInvariant() => throw null;
 
