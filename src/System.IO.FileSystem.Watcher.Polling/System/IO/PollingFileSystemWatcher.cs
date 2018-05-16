@@ -3,9 +3,10 @@
 
 using System.IO.Enumeration;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Threading;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     /// <summary>
     /// PollingFileSystemWatcher can be used to monitor changes to a file system directory
@@ -20,12 +21,15 @@ namespace System.IO.FileSystem
     /// Note: When a watched file is renamed, one or two notifications will be made.
     /// Note: When no changes are detected, PollingFileSystemWatcher will not allocate memory on the GC heap.
     /// </remarks>
-    public class PollingFileSystemWatcher : IDisposable
+    [Serializable]
+    public class PollingFileSystemWatcher : IDisposable, ISerializable
     {
         private Timer _timer;
         private PathToFileStateHashtable _state; // stores state of the directory
-        private byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        private long _version; // this is used to keep track of removals. // TODO: describe the algorithm
+        private bool _started = false;
         private bool _disposed = false;
+        private long _pollingInterval = 1000;
 
         /// <summary>
         /// Creates an instance of a watcher
@@ -47,17 +51,39 @@ namespace System.IO.FileSystem
             _timer = new Timer(new TimerCallback(TimerHandler));
         }
 
+        private void Initialize()
+        {
+            _timer = new Timer(new TimerCallback(TimerHandler));
+            if (!_started) return;
+
+            _timer.Change(PollingInterval, Timeout.Infinite);
+        }
+
         public EnumerationOptions EnumerationOptions { get; set; } = new EnumerationOptions();
         public string Filter { get; set; }
         public string Path { get; set; }
-        public int PollingIntervalInMilliseconds { get; set; } = 1000;
+
+        /// <summary>
+        /// The number of milliseconds to wait until checking the file system again
+        /// </summary>
+        public long PollingInterval
+        {
+            get { return _pollingInterval; }
+            set
+            {
+                _pollingInterval = value;
+                if (_started) _timer.Change(PollingInterval, Timeout.Infinite);
+            }
+        }
 
         public void Start()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(PollingFileSystemWatcher));
+            if (_started) return;
 
+            _started = true;
             ComputeChangesAndUpdateState(); // captures the initial state
-            _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer.Change(PollingInterval, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
@@ -178,7 +204,39 @@ namespace System.IO.FileSystem
             }
 
             if (!_disposed)
-                _timer.Change(PollingIntervalInMilliseconds, Timeout.Infinite);
+                _timer.Change(PollingInterval, Timeout.Infinite);
         }
+
+        #region Serializable
+
+        protected PollingFileSystemWatcher(SerializationInfo info, StreamingContext context)
+        {
+            _state = (PathToFileStateHashtable)info.GetValue(nameof(_state), typeof(PathToFileStateHashtable));
+            _version = info.GetInt64(nameof(_version));
+            _started = info.GetBoolean(nameof(_started));
+            _disposed = info.GetBoolean(nameof(_disposed));
+
+            Path = info.GetString(nameof(Path));
+            Filter = info.GetString(nameof(Filter));
+            EnumerationOptions = new EnumerationOptions { RecurseSubdirectories = info.GetBoolean(nameof(EnumerationOptions.RecurseSubdirectories)) };
+
+            _timer = new Timer(new TimerCallback(TimerHandler));
+            PollingInterval = info.GetInt32(nameof(PollingInterval));
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(_state), _state);
+            info.AddValue(nameof(_version), _version);
+            info.AddValue(nameof(_started), _started);
+            info.AddValue(nameof(_disposed), _disposed);
+
+            info.AddValue(nameof(Path), Path);
+            info.AddValue(nameof(Filter), Filter);
+            info.AddValue(nameof(EnumerationOptions.RecurseSubdirectories), EnumerationOptions.RecurseSubdirectories);
+            info.AddValue(nameof(PollingInterval), PollingInterval);
+        }
+
+        #endregion
     }
 }

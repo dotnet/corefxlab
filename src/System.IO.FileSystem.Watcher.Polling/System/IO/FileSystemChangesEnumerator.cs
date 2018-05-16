@@ -1,6 +1,9 @@
-﻿using System.IO.Enumeration;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.IO.FileSystem
+using System.IO.Enumeration;
+
+namespace System.IO
 {
     internal class FileSystemChangeEnumerator: FileSystemEnumerator<string>
     {

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
     internal struct FileChangeList
     {
@@ -20,7 +20,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Created);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Created);
         }
 
         internal void AddChanged(string directory, string path)
@@ -28,7 +28,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Changed);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Changed);
         }
 
         internal void AddRemoved(string directory, string path)
@@ -36,7 +36,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(directory, path, ChangeType.Deleted);
+            _changes[_count++] = new FileChange(directory, path, WatcherChangeTypes.Deleted);
         }
 
         void EnsureCapacity()
@@ -84,25 +84,4 @@ namespace System.IO.FileSystem
             }
         }
     }
-
-    struct FileState
-    {
-        internal byte _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
-        public string Path;
-        public string Directory;
-        public DateTimeOffset LastWriteTimeUtc;
-        public long Length;
-
-        public FileState(string directory, string path) : this()
-        {
-            Debug.Assert(path != null);
-            Directory = directory;
-            Path = path;
-        }
-
-        public override string ToString()
-        {
-            return Path;
-        }
-    }
-}    
+}

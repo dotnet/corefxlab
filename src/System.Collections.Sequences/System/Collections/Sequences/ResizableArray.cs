@@ -100,7 +100,7 @@ namespace System.Collections.Sequences
             }
 
             T[] newArray = new T[newSize];
-            _array.AsSpan(0, _count).CopyTo(newArray.AsSpan(0, _count));    // AsSpan will throw if newArray.Length < _count
+            _array.AsSpan(0, _count).CopyTo(newArray);    // CopyTo will throw if newArray.Length < _count
             _array = newArray;
             return oldArray;
         }
@@ -108,7 +108,7 @@ namespace System.Collections.Sequences
         public T[] Resize(T[] newArray)
         {
             T[] oldArray = _array;
-            _array.AsSpan(0, _count).CopyTo(newArray.AsSpan(0, _count));  // AsSpan will throw if newArray.Length < _count
+            _array.AsSpan(0, _count).CopyTo(newArray);  // CopyTo will throw if newArray.Length < _count
             _array = newArray;
             return oldArray;
         }

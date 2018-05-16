@@ -1,7 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System.IO;
 using System.IO.Enumeration;
-using System.IO.FileSystem;
 using Xunit;
 
 
@@ -10,12 +11,12 @@ public partial class PollingFileSystemWatcherDerivedTests
     [Fact]
     public static void ShouldIncludeEntryTest()
     {
-        string currentDir = Environment.CurrentDirectory;
+        string currentDir = Utility.GetRandomDirectory();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
 
         DerivedWatcher watcher2 = new DerivedWatcher(currentDir)
         {
-            PollingIntervalInMilliseconds = 1
+            PollingInterval = 1
         };
         watcher2.Start();
 
@@ -26,19 +27,19 @@ public partial class PollingFileSystemWatcherDerivedTests
         }
         finally
         {
-            Directory.Delete(subDirectory, true);
+            Directory.Delete(currentDir, true);
         }
     }
 
     [Fact]
     public static void ShouldRecurseIntoEntryTest()
     {
-        string currentDir = Environment.CurrentDirectory;
+        string currentDir = Utility.GetRandomDirectory();
         string subDirectory = new DirectoryInfo(currentDir).CreateSubdirectory("sub").FullName;
 
         DerivedWatcher watcher2 = new DerivedWatcher(currentDir, options: new EnumerationOptions { RecurseSubdirectories = true })
         {
-            PollingIntervalInMilliseconds = 1
+            PollingInterval = 1
         };
         watcher2.Start();
 
@@ -49,11 +50,10 @@ public partial class PollingFileSystemWatcherDerivedTests
         }
         finally
         {
-            Directory.Delete(subDirectory, true);
+            Directory.Delete(currentDir, true);
         }
     }
 }
-
 
 public class DerivedWatcher : PollingFileSystemWatcher
 {
