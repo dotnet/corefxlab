@@ -72,7 +72,7 @@ namespace System.IO
             set
             {
                 _pollingInterval = value;
-                AttemptRestart();
+                if (_started) _timer.Change(PollingInterval, Timeout.Infinite);
             }
         }
 
@@ -84,11 +84,6 @@ namespace System.IO
             _started = true;
             ComputeChangesAndUpdateState(); // captures the initial state
             _timer.Change(PollingInterval, Timeout.Infinite);
-        }
-
-        private void AttemptRestart()
-        {
-            if (_started) _timer.Change(PollingInterval, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
