@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <CoreFxStableVersion>4.3.0</CoreFxStableVersion>
-    <RoslynVersion>2.8.2-beta6-62916-08</RoslynVersion>
+    <RoslynVersion>2.8.0-beta4</RoslynVersion>
     <SystemMemoryVersion>4.6.0-preview1-26517-01</SystemMemoryVersion>
     <SystemCompilerServicesUnsafeVersion>4.6.0-preview1-26517-01</SystemCompilerServicesUnsafeVersion>
     <SystemNumericsVectorsVersion>4.6.0-preview1-26517-01</SystemNumericsVectorsVersion>
