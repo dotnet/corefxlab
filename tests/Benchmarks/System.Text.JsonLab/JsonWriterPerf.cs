@@ -2,13 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Code;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Formatting;
-
-using static System.Text.JsonLab.Benchmarks.Helper;
 
 namespace System.Text.JsonLab.Benchmarks
 {
@@ -19,11 +15,14 @@ namespace System.Text.JsonLab.Benchmarks
         private const int BufferSize = 1024 + (ExtraArraySize * 64);
 
         private ArrayFormatter _arrayFormatter;
-        private MemoryStream _stream;
-        private StreamWriter _writer;
+        private MemoryStream _memoryStream;
+        private StreamWriter _streamWriter;
+        private StringBuilder _stringBuilder;
 
-        [Params(EncoderTarget.InvariantUtf8, EncoderTarget.InvariantUtf16)]
-        public EncoderTarget Target;
+        private int[] _data;
+
+        [Params(true, false)]
+        public bool IsUTF8Encoded;
 
         [Params(true, false)]
         public bool Formatted;
@@ -31,36 +30,49 @@ namespace System.Text.JsonLab.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var enc = Target == EncoderTarget.InvariantUtf8 ? Encoding.UTF8 : Encoding.Unicode;
-            var buffer = new byte[BufferSize];
-            _stream = new MemoryStream(buffer);
-            _writer = new StreamWriter(_stream, enc, BufferSize, true);
-            _arrayFormatter = new ArrayFormatter(BufferSize, GetTargetEncoder(Target));
+            _data = new int[ExtraArraySize];
+            Random rand = new Random(42);
+
+            for (int i = 0; i < ExtraArraySize; i++)
+            {
+                _data[i] = rand.Next(-10000, 10000);
+            }
+
+            if (IsUTF8Encoded)
+            {
+                var buffer = new byte[BufferSize];
+                _memoryStream = new MemoryStream(buffer);
+                _streamWriter = new StreamWriter(_memoryStream, new UTF8Encoding(false), BufferSize, true);
+                _arrayFormatter = new ArrayFormatter(BufferSize, SymbolTable.InvariantUtf8);
+            }
+            else
+            {
+                _stringBuilder = new StringBuilder();
+                _arrayFormatter = new ArrayFormatter(BufferSize, SymbolTable.InvariantUtf16);
+            }
         }
 
         [Benchmark]
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
-            if (Target == EncoderTarget.InvariantUtf8)
-                WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatter);
+            if (IsUTF8Encoded)
+                WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatter, _data);
             else
-                WriterSystemTextJsonBasicUtf16(Formatted, _arrayFormatter);
+                WriterSystemTextJsonBasicUtf16(Formatted, _arrayFormatter, _data);
         }
 
         [Benchmark]
         public void WriterNewtonsoftBasic()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            WriterNewtonsoftBasic(Formatted, _writer);
+            WriterNewtonsoftBasic(Formatted, GetWriter(), _data);
         }
 
         [Benchmark]
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
-
-            if (Target == EncoderTarget.InvariantUtf8)
+            if (IsUTF8Encoded)
                 WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatter);
             else
                 WriterSystemTextJsonHelloWorldUtf16(Formatted, _arrayFormatter);
@@ -69,11 +81,26 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
-            _stream.Seek(0, SeekOrigin.Begin);
-            WriterNewtonsoftHelloWorld(Formatted, _writer);
+            WriterNewtonsoftHelloWorld(Formatted, GetWriter());
         }
 
-        private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output)
+        private TextWriter GetWriter()
+        {
+            TextWriter writer;
+            if (IsUTF8Encoded)
+            {
+                _memoryStream.Seek(0, SeekOrigin.Begin);
+                writer = _streamWriter;
+            }
+            else
+            {
+                _stringBuilder.Clear();
+                writer = new StringWriter(_stringBuilder);
+            }
+            return writer;
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)
         {
             var json = new JsonWriterUtf8(output, formatted);
 
@@ -95,14 +122,14 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < ExtraArraySize; i++)
             {
-                json.WriteValue(i);
+                json.WriteValue(data[i]);
             }
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
         }
 
-        private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output)
+        private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output, int[] data)
         {
             var json = new JsonWriterUtf16(output, formatted);
 
@@ -124,14 +151,14 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < ExtraArraySize; i++)
             {
-                json.WriteValue(i);
+                json.WriteValue(data[i]);
             }
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
         }
 
-        private static void WriterNewtonsoftBasic(bool formatted, StreamWriter writer)
+        private static void WriterNewtonsoftBasic(bool formatted, TextWriter writer, int[] data)
         {
             using (var json = new Newtonsoft.Json.JsonTextWriter(writer))
             {
@@ -164,7 +191,7 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteStartArray();
                 for (var i = 0; i < ExtraArraySize; i++)
                 {
-                    json.WriteValue(i);
+                    json.WriteValue(data[i]);
                 }
                 json.WriteEnd();
 
@@ -190,7 +217,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectEnd();
         }
 
-        private static void WriterNewtonsoftHelloWorld(bool formatted, StreamWriter writer)
+        private static void WriterNewtonsoftHelloWorld(bool formatted, TextWriter writer)
         {
             using (var json = new Newtonsoft.Json.JsonTextWriter(writer))
             {
