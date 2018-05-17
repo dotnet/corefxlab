@@ -122,7 +122,65 @@ namespace System.Text
 
         // IConvertible.ToString(IFormatProvider) is implicitly implemented.
 
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => throw null;
+        object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+        {
+            switch (Type.GetTypeCode(conversionType))
+            {
+                case TypeCode.Boolean:
+                    return ((IConvertible)this).ToBoolean(provider);
+
+                case TypeCode.Char:
+                    return ((IConvertible)this).ToChar(provider);
+
+                case TypeCode.SByte:
+                    return ((IConvertible)this).ToSByte(provider);
+
+                case TypeCode.Byte:
+                    return ((IConvertible)this).ToByte(provider);
+
+                case TypeCode.Int16:
+                    return ((IConvertible)this).ToInt16(provider);
+
+                case TypeCode.UInt16:
+                    return ((IConvertible)this).ToUInt16(provider);
+
+                case TypeCode.Int32:
+                    return ((IConvertible)this).ToInt32(provider);
+
+                case TypeCode.UInt32:
+                    return ((IConvertible)this).ToUInt32(provider);
+
+                case TypeCode.Int64:
+                    return ((IConvertible)this).ToInt64(provider);
+
+                case TypeCode.UInt64:
+                    return ((IConvertible)this).ToUInt64(provider);
+
+                case TypeCode.Single:
+                    return ((IConvertible)this).ToSingle(provider);
+
+                case TypeCode.Double:
+                    return ((IConvertible)this).ToDouble(provider);
+
+                case TypeCode.Decimal:
+                    return ((IConvertible)this).ToDecimal(provider);
+
+                case TypeCode.DateTime:
+                    return ((IConvertible)this).ToDateTime(provider);
+
+                case TypeCode.String:
+                    return ((IConvertible)this).ToString(provider);
+
+                default:
+                    if (conversionType == typeof(object) || conversionType == typeof(Utf8String))
+                    {
+                        return this;
+                    }
+
+                    // TODO: What's an appropriate exception message?
+                    throw new InvalidOperationException("Unsupported conversion type.");
+            }
+        }
 
         ushort IConvertible.ToUInt16(IFormatProvider provider) => throw null;
 
