@@ -30,7 +30,7 @@ namespace System.Text.JsonLab.Tests
 
             formatted = formatter.Formatted;
             str = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expected, str.Replace("\r\n", "").Replace(" ", ""));
+            Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace System.Text.JsonLab.Tests
 
             formatted = formatter.Formatted;
             str = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expected, str.Replace("\r\n", "").Replace(" ", ""));
+            Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
         }
 
         static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";

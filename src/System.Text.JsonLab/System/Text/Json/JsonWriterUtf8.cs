@@ -806,7 +806,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = 3;    // For the new line, \r\n, and the space after the colon
+                int bytesNeededForPrettyPrint = s_newLine.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -829,7 +829,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = 3;    // For the new line, \r\n, and the space after the colon
+                int bytesNeededForPrettyPrint = s_newLine.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -852,7 +852,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = 3;    // For the new line, \r\n,  and the space after the colon
+                int bytesNeededForPrettyPrint = s_newLine.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
