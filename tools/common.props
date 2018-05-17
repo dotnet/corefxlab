@@ -13,9 +13,9 @@
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
     <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(RoslynVersion)" PrivateAssets="All" />
   </ItemGroup>
 </Project>
