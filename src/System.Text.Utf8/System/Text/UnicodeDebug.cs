@@ -9,6 +9,12 @@ namespace System.Text
     internal static class UnicodeDebug
     {
         [Conditional("DEBUG")]
+        public static void AssertContainsOnlyAsciiBytes(uint value)
+        {
+            Debug.Assert((value & 0x80808080U) == 0, "Input value does not consist of only ASCII bytes.");
+        }
+
+        [Conditional("DEBUG")]
         public static void AssertIsHighSurrogteCodePoint(uint codePoint)
         {
             Debug.Assert(UnicodeHelpers.IsHighSurrogateCodePoint(codePoint), $"The value {ToHexString(codePoint)} is not a UTF-16 high surrogate code point.");
