@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Text
 {
@@ -50,6 +51,102 @@ namespace System.Text
             // This will convert lowercase <-> uppercase.
 
             return packedBytes ^ (mask >> 2);
+        }
+
+        /// <summary>
+        /// Returns the index of the first lowercase ASCII character in the buffer,
+        /// or -1 if the buffer does not contain any lowercase ASCII characters. The input
+        /// must be ASCII-only. The return value may eagerly return an index *before* the
+        /// real first lowercase character, but it will never return an index *after* the
+        /// first such character. For example, if the first lowercase character is at
+        /// index 7, this function may return 4, but it will not return 8.
+        /// </summary>
+        public static unsafe int GetIndexOfFirstLowercaseAsciiChar(ReadOnlySpan<byte> buffer)
+        {
+            // Try checking 32-bit blocks first.
+            // TODO: Use real vectorization if available.
+
+            uint chunkCount = (uint)buffer.Length / 4; // round down
+            IntPtr i = IntPtr.Zero;
+            for (; (uint)(void*)i < chunkCount; i += 1)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref MemoryMarshal.GetReference(buffer));
+                uint originalData = Unsafe.ReadUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                if (PackedBytesContainsLowercaseAsciiChar(originalData))
+                {
+                    return 4 * (int)(void*)i;
+                }
+            }
+
+            // Now for the last three bytes.
+
+            if ((buffer.Length & 2) != 0)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref MemoryMarshal.GetReference(buffer));
+                uint originalData = Unsafe.ReadUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                if (PackedBytesContainsLowercaseAsciiChar(originalData))
+                {
+                    return 4 * (int)(void*)i;
+                }
+            }
+
+            if ((buffer.Length & 1) != 0)
+            {
+                if (UnicodeHelpers.IsInRangeInclusive(Unsafe.Add(ref Unsafe.Add(ref MemoryMarshal.GetReference(buffer), buffer.Length), -1), 'a', 'z'))
+                {
+                    return buffer.Length - 1;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns the index of the first uppercase ASCII character in the buffer,
+        /// or -1 if the buffer does not contain any uppercase ASCII characters. The input
+        /// must be ASCII-only. The return value may eagerly return an index *before* the
+        /// real first uppercase character, but it will never return an index *after* the
+        /// first such character. For example, if the first uppercase character is at
+        /// index 7, this function may return 4, but it will not return 8.
+        /// </summary>
+        public static unsafe int GetIndexOfFirstUppercaseAsciiChar(ReadOnlySpan<byte> buffer)
+        {
+            // Try checking 32-bit blocks first.
+            // TODO: Use real vectorization if available.
+
+            uint chunkCount = (uint)buffer.Length / 4; // round down
+            IntPtr i = IntPtr.Zero;
+            for (; (uint)(void*)i < chunkCount; i += 1)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref MemoryMarshal.GetReference(buffer));
+                uint originalData = Unsafe.ReadUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                if (PackedBytesContainsUppercaseAsciiChar(originalData))
+                {
+                    return 4 * (int)(void*)i;
+                }
+            }
+
+            // Now for the last three bytes.
+
+            if ((buffer.Length & 2) != 0)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref MemoryMarshal.GetReference(buffer));
+                uint originalData = Unsafe.ReadUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                if (PackedBytesContainsUppercaseAsciiChar(originalData))
+                {
+                    return 4 * (int)(void*)i;
+                }
+            }
+
+            if ((buffer.Length & 1) != 0)
+            {
+                if (UnicodeHelpers.IsInRangeInclusive(Unsafe.Add(ref Unsafe.Add(ref MemoryMarshal.GetReference(buffer), buffer.Length), -1), 'A', 'Z'))
+                {
+                    return buffer.Length - 1;
+                }
+            }
+
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -104,6 +201,92 @@ namespace System.Text
             uint p = packedBytes + 0x80808080U - 0x41414141U;
             uint q = packedBytes + 0x80808080U - 0x5B5B5B5BU;
             return (((p ^ q) & 0x80808080U) != 0);
+        }
+
+        /// <summary>
+        /// Copies ASCII data from the source to the destination, converting uppercase characters
+        /// to lowercase during the copy. The input buffers may not overlap, and the input data
+        /// must be ASCII.
+        /// </summary>
+        public static unsafe void ToLowerInvariant(ref byte source, ref byte destination, uint length)
+        {
+            UnicodeDebug.AssertDoesNotOverlap(ref source, ref destination, length);
+
+            // Try converting in 32-bit blocks first.
+            // TODO: Use real vectorization if available.
+
+            uint chunkCount = length / 4; // round down
+            IntPtr i = IntPtr.Zero;
+            for (; (uint)(void*)i < chunkCount; i += 1)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref source);
+                uint originalData = Unsafe.ReadUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                uint modifiedData = ConvertPackedBytesToLowercase(originalData);
+                ref uint destinationAsDwordPtr = ref Unsafe.As<byte, uint>(ref destination);
+                Unsafe.WriteUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref destinationAsDwordPtr, i)), modifiedData);
+            }
+
+            // Now for the last three bytes.
+
+            if ((length & 2) != 0)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref source);
+                uint originalData = Unsafe.ReadUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                uint modifiedData = ConvertPackedBytesToLowercase(originalData);
+                ref uint destinationAsDwordPtr = ref Unsafe.As<byte, uint>(ref destination);
+                Unsafe.WriteUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref destinationAsDwordPtr, i)), (ushort)modifiedData);
+            }
+
+            if ((length & 1) != 0)
+            {
+                IntPtr naturalLength = (IntPtr)(void*)length;
+                uint originalData = Unsafe.Add(ref Unsafe.Add(ref source, naturalLength), -1);
+                uint modifiedData = ConvertPackedBytesToLowercase(originalData);
+                Unsafe.Add(ref Unsafe.Add(ref destination, naturalLength), -1) = (byte)modifiedData;
+            }
+        }
+
+        /// <summary>
+        /// Copies ASCII data from the source to the destination, converting lowercase characters
+        /// to uppercase during the copy. The input buffers may not overlap, and the input data
+        /// must be ASCII.
+        /// </summary>
+        public static unsafe void ToUpperInvariant(ref byte source, ref byte destination, uint length)
+        {
+            UnicodeDebug.AssertDoesNotOverlap(ref source, ref destination, length);
+
+            // Try converting in 32-bit blocks first.
+            // TODO: Use real vectorization if available.
+
+            uint chunkCount = length / 4; // round down
+            IntPtr i = IntPtr.Zero;
+            for (; (uint)(void*)i < chunkCount; i += 1)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref source);
+                uint originalData = Unsafe.ReadUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                uint modifiedData = ConvertPackedBytesToUppercase(originalData);
+                ref uint destinationAsDwordPtr = ref Unsafe.As<byte, uint>(ref destination);
+                Unsafe.WriteUnaligned<uint>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref destinationAsDwordPtr, i)), modifiedData);
+            }
+
+            // Now for the last three bytes.
+
+            if ((length & 2) != 0)
+            {
+                ref uint sourceAsDwordPtr = ref Unsafe.As<byte, uint>(ref source);
+                uint originalData = Unsafe.ReadUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref sourceAsDwordPtr, i)));
+                uint modifiedData = ConvertPackedBytesToUppercase(originalData);
+                ref uint destinationAsDwordPtr = ref Unsafe.As<byte, uint>(ref destination);
+                Unsafe.WriteUnaligned<ushort>(ref Unsafe.As<uint, byte>(ref Unsafe.Add(ref destinationAsDwordPtr, i)), (ushort)modifiedData);
+            }
+
+            if ((length & 1) != 0)
+            {
+                IntPtr naturalLength = (IntPtr)(void*)length;
+                uint originalData = Unsafe.Add(ref Unsafe.Add(ref source, naturalLength), -1);
+                uint modifiedData = ConvertPackedBytesToUppercase(originalData);
+                Unsafe.Add(ref Unsafe.Add(ref destination, naturalLength), -1) = (byte)modifiedData;
+            }
         }
     }
 }

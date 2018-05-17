@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace System.Text
 {
@@ -12,6 +13,13 @@ namespace System.Text
         public static void AssertContainsOnlyAsciiBytes(uint value)
         {
             Debug.Assert((value & 0x80808080U) == 0, "Input value does not consist of only ASCII bytes.");
+        }
+
+        [Conditional("DEBUG")]
+        public static void AssertDoesNotOverlap(ref byte a, ref byte b, uint length)
+        {
+            Debug.Assert(length <= Int32.MaxValue);
+            Debug.Assert(!MemoryMarshal.CreateSpan(ref a, (int)length).Overlaps(MemoryMarshal.CreateSpan(ref b, (int)length)), "Buffers may not overlap.");
         }
 
         [Conditional("DEBUG")]

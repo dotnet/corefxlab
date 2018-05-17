@@ -16,7 +16,7 @@ namespace System.Text
     /// <summary>
     /// A UTF-8 string.
     /// </summary>
-    public sealed partial class Utf8String : IEnumerable<UnicodeScalar>, IEquatable<Utf8String>
+    public sealed unsafe partial class Utf8String : IEnumerable<UnicodeScalar>, IEquatable<Utf8String>
     {
         private readonly int _length; // the length in 8-bit code units of this string; guaranteed non-negative
         private readonly DataFlags _flags; // any interesting characteristics about this instance
@@ -770,7 +770,42 @@ namespace System.Text
             return DangerousCreateWithoutValidation(Bytes.DangerousSliceWithoutValidation(startIndex, length));
         }
 
-        public Utf8String ToLowerInvariant() => throw null;
+        public Utf8String ToLowerInvariant()
+        {
+            if (_length == 0)
+            {
+                return this; // already empty
+            }
+
+            if (ContainsOnlyAsciiData)
+            {
+                int indexOfFirstUppercaseChar = AsciiInvariantHelpers.GetIndexOfFirstUppercaseAsciiChar(Bytes);
+                if (indexOfFirstUppercaseChar < 0)
+                {
+                    return this; // no uppercase characters
+                }
+                else
+                {
+                    return CreateInternal(_length, (indexOfFirstUppercaseChar, data: _data), (span, state) =>
+                    {
+                        var source = state.data.AsSpan();
+
+                        // First copy characters that don't need to be converted to lowercase
+                        source.Slice(0, state.indexOfFirstUppercaseChar).CopyTo(span);
+
+                        // Then copy characters that do need to be converted to lowercase
+                        IntPtr elementOffset = (IntPtr)(void*)state.indexOfFirstUppercaseChar;
+                        AsciiInvariantHelpers.ToLowerInvariant(
+                             source: ref Unsafe.Add(ref MemoryMarshal.GetReference(source), elementOffset),
+                             destination: ref Unsafe.Add(ref MemoryMarshal.GetReference(span), elementOffset),
+                             (uint)(void*)elementOffset);
+                    });
+                }
+            }
+
+            // TODO: Optimize me.
+            return DangerousCreateWithoutValidation(Encoding.UTF8.GetBytes(ToString().ToLowerInvariant()));
+        }
 
         public override string ToString()
         {
@@ -781,7 +816,42 @@ namespace System.Text
 
         public string ToString(IFormatProvider provider) => ToString();
 
-        public Utf8String ToUpperInvariant() => throw null;
+        public Utf8String ToUpperInvariant()
+        {
+            if (_length == 0)
+            {
+                return this; // already empty
+            }
+
+            if (ContainsOnlyAsciiData)
+            {
+                int indexOfFirstLowercaseChar = AsciiInvariantHelpers.GetIndexOfFirstLowercaseAsciiChar(Bytes);
+                if (indexOfFirstLowercaseChar < 0)
+                {
+                    return this; // no lowercase characters
+                }
+                else
+                {
+                    return CreateInternal(_length, (indexOfFirstLowercaseChar, data: _data), (span, state) =>
+                    {
+                        var source = state.data.AsSpan();
+
+                        // First copy characters that don't need to be converted to lowercase
+                        source.Slice(0, state.indexOfFirstLowercaseChar).CopyTo(span);
+
+                        // Then copy characters that do need to be converted to lowercase
+                        IntPtr elementOffset = (IntPtr)(void*)state.indexOfFirstLowercaseChar;
+                        AsciiInvariantHelpers.ToUpperInvariant(
+                             source: ref Unsafe.Add(ref MemoryMarshal.GetReference(source), elementOffset),
+                             destination: ref Unsafe.Add(ref MemoryMarshal.GetReference(span), elementOffset),
+                             (uint)(void*)elementOffset);
+                    });
+                }
+            }
+
+            // TODO: Optimize me.
+            return DangerousCreateWithoutValidation(Encoding.UTF8.GetBytes(ToString().ToUpperInvariant()));
+        }
 
         public Utf8String Trim()
         {
