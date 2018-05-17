@@ -93,7 +93,7 @@ namespace System.Text.JsonLab
                 charBuffer[idx++] = (char)JsonConstants.ListSeperator;
 
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             charBuffer[idx++] = (char)JsonConstants.Quote;
 
@@ -131,7 +131,7 @@ namespace System.Text.JsonLab
             int idx = 0;
 
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             charBuffer[idx] = (char)token;
             _bufferWriter.Advance(bytesNeeded);
@@ -199,7 +199,7 @@ namespace System.Text.JsonLab
                 charBuffer[idx++] = (char)JsonConstants.ListSeperator;
 
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             charBuffer[idx++] = (char)JsonConstants.Quote;
 
@@ -337,7 +337,7 @@ namespace System.Text.JsonLab
                 charBuffer[idx++] = (char)JsonConstants.ListSeperator;
 
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             charBuffer[idx++] = (char)JsonConstants.Quote;
 
@@ -380,7 +380,7 @@ namespace System.Text.JsonLab
 
             _firstItem = false;
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             if (insertNegationSign)
                 charBuffer[idx++] = '-';
@@ -560,7 +560,7 @@ namespace System.Text.JsonLab
                 charBuffer[idx++] = (char)JsonConstants.ListSeperator;
 
             if (_prettyPrint)
-                AddNewLineAndIndentation(charBuffer, ref idx);
+                idx += AddNewLineAndIndentation(charBuffer.Slice(idx));
 
             charBuffer[idx++] = (char)JsonConstants.Quote;
 
@@ -832,26 +832,25 @@ namespace System.Text.JsonLab
             return bytesNeeded;
         }
 
-        private void AddNewLineAndIndentation(Span<char> buffer, ref int idx)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int AddNewLineAndIndentation(Span<char> buffer)
         {
+            int offset = 0;
             // \r\n versus \n, depending on OS
             if (s_newLine.Length == 2)
-            {
-                buffer[idx++] = s_newLine[0];   // \r
-                buffer[idx++] = s_newLine[1];   // \n
-            }
-            else
-            {
-                buffer[idx++] = s_newLine[0];   // \n
-            }
+                buffer[offset++] = (char)JsonConstants.CarriageReturn;
+
+            buffer[offset++] = (char)JsonConstants.LineFeed;
 
             int indent = _indent;
 
             while (indent-- >= 0)
             {
-                buffer[idx++] = (char)JsonConstants.Space;
-                buffer[idx++] = (char)JsonConstants.Space;
+                buffer[offset++] = (char)JsonConstants.Space;
+                buffer[offset++] = (char)JsonConstants.Space;
             }
+
+            return offset;
         }
     }
 }
