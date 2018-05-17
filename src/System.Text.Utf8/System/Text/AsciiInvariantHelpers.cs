@@ -63,8 +63,10 @@ namespace System.Text
         /// </summary>
         public static unsafe int GetIndexOfFirstLowercaseAsciiChar(ReadOnlySpan<byte> buffer)
         {
+            // TODO: Consider whether real vectorization would make a difference here.
+            // Are typical inputs to this function long enough to benefit from vectorization?
+
             // Try checking 32-bit blocks first.
-            // TODO: Use real vectorization if available.
 
             uint chunkCount = (uint)buffer.Length / 4; // round down
             IntPtr i = IntPtr.Zero;
@@ -111,8 +113,10 @@ namespace System.Text
         /// </summary>
         public static unsafe int GetIndexOfFirstUppercaseAsciiChar(ReadOnlySpan<byte> buffer)
         {
+            // TODO: Consider whether real vectorization would make a difference here.
+            // Are typical inputs to this function long enough to benefit from vectorization?
+
             // Try checking 32-bit blocks first.
-            // TODO: Use real vectorization if available.
 
             uint chunkCount = (uint)buffer.Length / 4; // round down
             IntPtr i = IntPtr.Zero;
@@ -212,8 +216,10 @@ namespace System.Text
         {
             UnicodeDebug.AssertDoesNotOverlap(ref source, ref destination, length);
 
-            // Try converting in 32-bit blocks first.
-            // TODO: Use real vectorization if available.
+            // TODO: Consider whether real vectorization would make a difference here.
+            // Are typical inputs to this function long enough to benefit from vectorization?
+
+            // Try checking 32-bit blocks first.
 
             uint chunkCount = length / 4; // round down
             IntPtr i = IntPtr.Zero;
@@ -255,8 +261,10 @@ namespace System.Text
         {
             UnicodeDebug.AssertDoesNotOverlap(ref source, ref destination, length);
 
-            // Try converting in 32-bit blocks first.
-            // TODO: Use real vectorization if available.
+            // TODO: Consider whether real vectorization would make a difference here.
+            // Are typical inputs to this function long enough to benefit from vectorization?
+
+            // Try checking 32-bit blocks first.
 
             uint chunkCount = length / 4; // round down
             IntPtr i = IntPtr.Zero;
