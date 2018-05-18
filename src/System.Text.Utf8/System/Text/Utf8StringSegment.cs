@@ -5,6 +5,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 // Open question: should this type have APIs which manufacture System.Utf8String instances,
 // e.g., PadLeft(int), Replace(Utf8Char, Utf8Char), etc.? How about APIs which
@@ -15,13 +18,74 @@ namespace System.Text
     /// <summary>
     /// A segment of a <see cref="Utf8String"/>.
     /// </summary>
-    public readonly struct Utf8StringSegment : IComparable<Utf8StringSegment>, IEnumerable<Utf8Char>, IEquatable<Utf8StringSegment>
+    public readonly struct Utf8StringSegment : IEquatable<Utf8StringSegment>
     {
-        public Utf8StringSegment(Utf8String value) => throw null;
+        private readonly Utf8String _value;
+        private readonly int _offset;
+        private readonly int _count;
 
-        public Utf8StringSegment(Utf8String value, int startIndex) => throw null;
+        public Utf8StringSegment(Utf8String value)
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
 
-        public Utf8StringSegment(Utf8String value, int startIndex, int length) => throw null;
+            _value = value;
+            _offset = 0;
+            _count = value.Length;
+        }
+
+        public Utf8StringSegment(Utf8String value, int startIndex)
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if ((uint)startIndex > (uint)value.Length)
+            {
+                // TODO: Real error message
+                throw new ArgumentOutOfRangeException(paramName: nameof(startIndex));
+            }
+
+            _value = value;
+            _offset = startIndex;
+            _count = value.Length - startIndex;
+        }
+
+        public Utf8StringSegment(Utf8String value, int startIndex, int length)
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if ((uint)startIndex > (uint)value.Length)
+            {
+                // TODO: Real error message
+                throw new ArgumentOutOfRangeException(paramName: nameof(startIndex));
+            }
+
+            if ((uint)length > (uint)(value.Length - startIndex))
+            {
+                // TODO: Real error message
+                throw new ArgumentOutOfRangeException(paramName: nameof(length));
+            }
+
+            _value = value;
+            _offset = startIndex;
+            _count = length;
+        }
+
+        // non-validating ctor for internal use
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Utf8StringSegment(Utf8String value, int startIndex, int length, object unused)
+        {
+            _value = value;
+            _offset = startIndex;
+            _count = length;
+        }
 
         public static bool operator ==(Utf8StringSegment a, Utf8StringSegment b) => throw null;
 
@@ -33,11 +97,9 @@ namespace System.Text
 
         public static implicit operator Utf8StringSegment(Utf8String value) => throw null;
 
-        public Utf8Char this[int index] => throw null;
-
         public static Utf8StringSegment Empty => default;
 
-        public int Length => throw null;
+        public int Length => _count;
 
         public ScalarSequence Scalars => throw null;
 
@@ -54,6 +116,23 @@ namespace System.Text
         public bool Contains(Utf8String value) => throw null;
 
         public bool Contains(Utf8StringSegment value) => throw null;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Utf8StringSegment CreateWithoutValidation(Utf8String value, int startIndex, int length)
+        {
+            if (value is null)
+            {
+                Debug.Assert(startIndex == 0);
+                Debug.Assert(length == 0);
+            }
+            else
+            {
+                Debug.Assert((uint)startIndex <= (uint)value.Length);
+                Debug.Assert((uint)length <= (uint)(value.Length - startIndex));
+            }
+
+            return new Utf8StringSegment(value, startIndex, length, null /* unused */);
+        }
 
         public void CopyTo(Span<Utf8Char> destination) => throw null;
 
@@ -90,7 +169,7 @@ namespace System.Text
 
         public int IndexOfAny(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public static bool IsEmpty(Utf8StringSegment value) => throw null;
+        public static bool IsEmpty(Utf8StringSegment value) => (value.Length == 0);
 
         public static bool IsEmptyOrWhiteSpace(Utf8StringSegment value) => throw null;
 
@@ -120,31 +199,37 @@ namespace System.Text
 
         public Utf8Char[] ToUtf8CharArray() => throw null;
 
-        public Utf8String ToUtf8String() => throw null;
+        public Utf8String ToUtf8String() => (_value != null) ? _value.Substring(_offset, _count) : Utf8String.Empty;
 
-        public Utf8StringSegment Trim() => throw null;
+        public Utf8StringSegment Trim() => TrimInternal(TrimType.Both);
 
-        public Utf8StringSegment Trim(Utf8Char trimChar) => throw null;
+        public Utf8StringSegment TrimEnd() => TrimInternal(TrimType.End);
 
-        public Utf8StringSegment Trim(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+        private Utf8StringSegment TrimInternal(TrimType trimType)
+        {
+            if (_count == 0)
+            {
+                return this; // nothing to trim
+            }
 
-        public Utf8StringSegment TrimEnd() => throw null;
+            ReadOnlySpan<byte> untrimmed = _value.Bytes;
+            ReadOnlySpan<byte> trimmed = Utf8TrimHelpers.TrimWhiteSpace(untrimmed.Slice(_offset, _count), trimType);
 
-        public Utf8StringSegment TrimEnd(Utf8Char trimChar) => throw null;
+            if (trimmed.Length != 0)
+            {
+                // Use the span's memory address offset to determine how much data was trimmed from the front.
+                return CreateWithoutValidation(
+                    value: _value,
+                    startIndex: _offset + (int)(nuint)Unsafe.ByteOffset(ref MemoryMarshal.GetReference(untrimmed), ref MemoryMarshal.GetReference(trimmed)),
+                    length: trimmed.Length);
+            }
 
-        public Utf8StringSegment TrimEnd(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+            return Empty;
+        }
 
-        public Utf8StringSegment TrimStart() => throw null;
-
-        public Utf8StringSegment TrimStart(Utf8Char trimChar) => throw null;
-
-        public Utf8StringSegment TrimStart(ReadOnlySpan<Utf8Char> trimChars) => throw null;
+        public Utf8StringSegment TrimStart() => TrimInternal(TrimType.Start);
 
         public static bool TryCreateFromMemory(ReadOnlyMemory<Utf8Char> memory, out Utf8StringSegment segment) => throw null;
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        IEnumerator<Utf8Char> IEnumerable<Utf8Char>.GetEnumerator() => GetEnumerator();
 
         public readonly struct Enumerator : IEnumerator<Utf8Char>
         {
