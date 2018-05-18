@@ -171,7 +171,7 @@ namespace System.Text
 
         public static bool IsEmpty(Utf8StringSegment value) => (value.Length == 0);
 
-        public static bool IsEmptyOrWhiteSpace(Utf8StringSegment value) => throw null;
+        public static bool IsEmptyOrWhiteSpace(Utf8StringSegment value) => (value._value == null) || (Utf8TrimHelpers.TrimWhiteSpace(value._value.Bytes.Slice(value._offset, value._count), TrimType.Both).Length == 0);
 
         public int LastIndexOf(UnicodeScalar value) => throw null;
 
