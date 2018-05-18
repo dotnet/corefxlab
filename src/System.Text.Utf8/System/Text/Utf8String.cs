@@ -461,17 +461,10 @@ namespace System.Text
                 return false;
             }
 
-            // Optimize ASCII strings
+            // TODO: There should be a switch statement below directing to the
+            // correct comparison method.
 
-            if (a.ContainsOnlyAsciiData)
-            {
-                return AsciiInvariantHelpers.EqualsCaseSensitive(a.Bytes, b);
-            }
-
-            // TODO: What if we're asked to compare a non-ASCII UTF-8 string?
-            // Need to fill in a code path that also handles malformed string data.
-
-            throw new NotSupportedException();
+            return EqualsOrdinal(a, b);
         }
 
         public Enumerator GetEnumerator() => new Enumerator(_data);

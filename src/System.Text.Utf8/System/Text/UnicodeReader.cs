@@ -28,7 +28,7 @@ namespace System.Text
         /// </returns>
         public static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekFirstScalar(ReadOnlySpan<Utf8Char> utf8Data) => PeekFirstScalarUtf8(MemoryMarshal.Cast<Utf8Char, byte>(utf8Data));
 
-        private static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekFirstScalarUtf8(ReadOnlySpan<byte> buffer)
+        internal static (SequenceValidity status, UnicodeScalar scalar, int charsConsumed) PeekFirstScalarUtf8(ReadOnlySpan<byte> buffer)
         {
             // This method is implemented to match the behavior of System.Text.Encoding.UTF8 in terms of
             // how many bytes it consumes when reporting invalid sequences. The behavior is as follows:

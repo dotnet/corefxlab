@@ -15,6 +15,11 @@ namespace System.Text
         public const uint ReplacementChar = 0xFFFDU;
 
         /// <summary>
+        /// The first UTF-16 low surrogate code point U+DC00.
+        /// </summary>
+        public const uint FirstLowSurrogateCodePoint = 0xDC00U;
+
+        /// <summary>
         /// Returns the Unicode plane (0 through 16, inclusive) which contains this code point.
         /// </summary>
         public static int GetPlane(uint codePoint)
