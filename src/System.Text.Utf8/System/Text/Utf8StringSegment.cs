@@ -191,9 +191,53 @@ namespace System.Text
 
         public bool StartsWith(Utf8StringSegment value) => throw null;
 
-        public Utf8StringSegment Substring(int startIndex) => throw null;
+        public Utf8StringSegment Substring(int startIndex)
+        {
+            if ((uint)startIndex >= _count)
+            {
+                if (startIndex == _count)
+                {
+                    return Empty;
+                }
+                else
+                {
+                    // TODO: Real exception message
+                    throw new ArgumentOutOfRangeException(paramName: nameof(startIndex));
+                }
+            }
 
-        public Utf8StringSegment Substring(int startIndex, int length) => throw null;
+            // TODO: Should this validate that we're not substringing in the middle of a multi-byte sequence?
+            // Utf8String.Substring will perform this check, and we may want to be consistent.
+
+            return CreateWithoutValidation(_value, _offset + startIndex, _count - startIndex);
+        }
+
+        public Utf8StringSegment Substring(int startIndex, int length)
+        {
+            if ((uint)startIndex > _count)
+            {
+                // TODO: Real exception message
+                throw new ArgumentOutOfRangeException(paramName: nameof(startIndex));
+            }
+
+            if ((uint)length > (uint)(_count - _offset))
+            {
+                // TODO: Real exception message
+                throw new ArgumentOutOfRangeException(paramName: nameof(length));
+            }
+
+            if (length != 0)
+            {
+                // TODO: Should this validate that we're not substringing in the middle of a multi-byte sequence?
+                // Utf8String.Substring will perform this check, and we may want to be consistent.
+
+                return CreateWithoutValidation(_value, _offset + startIndex, length);
+            }
+            else
+            {
+                return Empty;
+            }
+        }
 
         public override string ToString() => throw null;
 
