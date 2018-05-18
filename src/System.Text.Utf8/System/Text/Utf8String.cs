@@ -447,6 +447,33 @@ namespace System.Text
             return a.Bytes.SequenceEqual(b.Bytes);
         }
 
+        public static bool Equals(Utf8String a, string b, StringComparison comparisonType)
+        {
+            // TODO: Support more comparison types
+            Validation.ThrowIfNotOrdinal(comparisonType);
+
+            if (ReferenceEquals(a, null))
+            {
+                return ReferenceEquals(b, null);
+            }
+            else if (ReferenceEquals(b, null))
+            {
+                return false;
+            }
+
+            // Optimize ASCII strings
+
+            if (a.ContainsOnlyAsciiData)
+            {
+                return AsciiInvariantHelpers.EqualsCaseSensitive(a.Bytes, b);
+            }
+
+            // TODO: What if we're asked to compare a non-ASCII UTF-8 string?
+            // Need to fill in a code path that also handles malformed string data.
+
+            throw new NotSupportedException();
+        }
+
         public Enumerator GetEnumerator() => new Enumerator(_data);
 
         public override int GetHashCode() => Marvin.ComputeHash32(Bytes, Marvin.Utf8StringSeed);

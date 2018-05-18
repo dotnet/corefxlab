@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -51,6 +52,62 @@ namespace System.Text
             // This will convert lowercase <-> uppercase.
 
             return packedBytes ^ (mask >> 2);
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> iff <paramref name="utf16"/> is a valid UTF-16 represention
+        /// of the ASCII buffer <paramref name="ascii"/>. The <paramref name="ascii"/> parameter must
+        /// contain only ASCII data.
+        /// </summary>
+        public static bool EqualsCaseSensitive(ReadOnlySpan<byte> ascii, ReadOnlySpan<char> utf16)
+        {
+            // Assuming the input is all-ASCII, the UTF-16 representation should have the same code unit count.
+
+            if (ascii.Length != utf16.Length)
+            {
+                return false;
+            }
+
+            return EqualsCaseSensitiveCore(ref MemoryMarshal.GetReference(ascii), ref MemoryMarshal.GetReference(utf16), (nuint)ascii.Length);
+        }
+
+        private static bool EqualsCaseSensitiveCore(ref byte ascii, ref char utf16, nuint length)
+        {
+            // Use vectorization if available
+
+            if (Vector.IsHardwareAccelerated)
+            {
+                nuint tooFarPosition = length & ~(Vector<byte>.Count - 1);
+                for (nuint i = 0; i < tooFarPosition; i += Vector<byte>.Count)
+                {
+                    Vector.Widen(
+                        Unsafe.ReadUnaligned<Vector<byte>>(ref Unsafe.Add(ref ascii, i)),
+                        out Vector<ushort> widenedAscii1,
+                        out Vector<ushort> widenedAscii2);
+
+                    if ((widenedAscii1 != Unsafe.ReadUnaligned<Vector<ushort>>(ref Unsafe.As<char, byte>(ref Unsafe.Add(ref utf16, i))))
+                        || (widenedAscii1 != Unsafe.ReadUnaligned<Vector<ushort>>(ref Unsafe.Add(ref Unsafe.As<char, byte>(ref Unsafe.Add(ref utf16, i)), Vector<byte>.Count))))
+                    {
+                        return false; // found a block that didn't match
+                    }
+                }
+
+                ascii = ref Unsafe.Add(ref ascii, tooFarPosition);
+                utf16 = ref Unsafe.Add(ref utf16, tooFarPosition);
+                length &= Vector<byte>.Count - 1;
+            }
+
+            // Now work with remaining data, non-vectorized
+
+            for (nuint i = 0; i < length; i++)
+            {
+                if (Unsafe.Add(ref ascii, i) != Unsafe.Add(ref utf16, i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
