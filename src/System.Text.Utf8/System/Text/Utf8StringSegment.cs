@@ -87,9 +87,26 @@ namespace System.Text
             _count = length;
         }
 
-        public static bool operator ==(Utf8StringSegment a, Utf8StringSegment b) => throw null;
+        public static bool operator ==(Utf8StringSegment a, Utf8StringSegment b)
+        {
+            // Ordinal equality check.
 
-        public static bool operator !=(Utf8StringSegment a, Utf8StringSegment b) => throw null;
+            if (IsEmpty(a))
+            {
+                return IsEmpty(b);
+            }
+            else if (IsEmpty(b))
+            {
+                return false;
+            }
+            else
+            {
+                // Both 'a' and 'b' are non-empty, so dereferencing shouldn't throw unless we've been torn.
+                return a._value.Bytes.Slice(a._offset, a._count).SequenceEqual(b._value.Bytes.Slice(b._offset, b._count));
+            }
+        }
+
+        public static bool operator !=(Utf8StringSegment a, Utf8StringSegment b) => !(a == b);
 
         public static implicit operator ReadOnlyMemory<Utf8Char>(Utf8StringSegment value) => throw null;
 
@@ -144,20 +161,25 @@ namespace System.Text
 
         public bool EndsWith(Utf8StringSegment value) => throw null;
 
-        public override bool Equals(object value) => throw null;
+        public override bool Equals(object value) => (value is Utf8StringSegment other) && (this == other);
 
         public bool Equals(Utf8String value) => throw null;
 
-        public bool Equals(Utf8StringSegment value) => throw null;
+        public bool Equals(Utf8StringSegment value) => (this == value);
 
-        public static bool Equals(Utf8StringSegment a, Utf8StringSegment b) => throw null;
+        public static bool Equals(Utf8StringSegment a, Utf8StringSegment b) => (a == b);
 
         public Enumerator GetEnumerator() => throw null;
 
-        public override int GetHashCode() => throw null;
+        public override int GetHashCode() => Marvin.ComputeHash32((_count != 0) ? _value.Bytes.Slice(_offset, _count) : ReadOnlySpan<byte>.Empty, Marvin.Utf8StringSeed);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void GetUtf8String(out Utf8String value, out int startIndex, out int length) => throw null;
+        public void GetUtf8String(out Utf8String value, out int startIndex, out int length)
+        {
+            value = _value;
+            startIndex = _offset;
+            length = _count;
+        }
 
         public int IndexOf(UnicodeScalar value) => throw null;
 
@@ -169,7 +191,7 @@ namespace System.Text
 
         public int IndexOfAny(ReadOnlySpan<Utf8Char> value) => throw null;
 
-        public static bool IsEmpty(Utf8StringSegment value) => (value.Length == 0);
+        public static bool IsEmpty(Utf8StringSegment value) => (value._count == 0);
 
         public static bool IsEmptyOrWhiteSpace(Utf8StringSegment value) => (value._value == null) || (Utf8TrimHelpers.TrimWhiteSpace(value._value.Bytes.Slice(value._offset, value._count), TrimType.Both).Length == 0);
 
