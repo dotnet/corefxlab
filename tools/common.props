@@ -15,7 +15,4 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-    <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(RoslynVersion)" PrivateAssets="All" />
-  </ItemGroup>
 </Project>
