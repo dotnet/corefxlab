@@ -15,5 +15,4 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
 </Project>
