@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Reflection.Metadata.Cil.Instructions;
-using System.Reflection.Metadata.Decoding;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
@@ -501,7 +500,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             var returnType = GetMethodReturnType(signature);
             var parameters = provider.GetParameterList(signature);
             var parentType = SignatureDecoder.DecodeType(parent, provider, null);
-            return string.Format("{0} {1}::{2}{3}{4}",returnType, parentType.ToString(false), GetString(metadataReader, definition.Name), genericParameters, parameters);
+            return string.Format("{0} {1}::{2}{3}{4}", returnType, parentType.ToString(false), GetString(metadataReader, definition.Name), genericParameters, parameters);
         }
 
         private static string GetGenericParametersSignature(MethodSpecification methodSpec, CilTypeProvider provider)
