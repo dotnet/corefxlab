@@ -124,7 +124,7 @@ To build the projects in this repo, here is what you need to do:
    - The NuGet packages for the `corefxlab.sln` solution are restored
       - To skip this step, add `-Restore false` as an argument (`build.cmd` only)
    - The `corefxlab.sln` solution (which contains all the active source and test projects) is built
-   - Tests are run for each project in the `tests` folder
+   - All the unit tests witin the test projects (that live inside the `tests` folder) are executed.
       - To skip this step, add `-SkipTests true` as an argument (`build.cmd` only)
 2. After you have have run build at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
 
@@ -136,7 +136,7 @@ There are two main reasons for receiving this error:
 
  1. You don't have the latest version. Run `build` to install the latest versions.
  2. The wrong `dotnet.exe` is being located. 
-    - From the command line, ensure that you are running `dotnet.exe` from the  `dotnetcli` directory.
+    - From the command line, ensure that you are running `dotnet.exe` from the  `dotnetcli` directory (run `dotnet --info`).
     - Alternatively, you can add `[RepoPath]\corefxlab\dotnetcli` to you system path, "ahead" of `C:\Program Files\dotnet`.
     - For building and running tests within VS, you'll need to use this latter option.
 
