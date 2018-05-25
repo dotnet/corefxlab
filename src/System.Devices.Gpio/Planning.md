@@ -298,6 +298,17 @@ namespace System.Devices.Gpio
         // we could add basic functionality like read/write/open/close without the weight of the Windows
         // implementation
     }
+    
+    public class HomeAutomation
+    {
+        // It'd be cool if we could have a library to enable easy interactions with common household IoT automation devies.
+        // Some possible scenarios for this:
+        // - Raspberry Pi Twitter Bot (reads sensor data -> tweets; receives tweets -> adjusts gpio devices)
+        // - Raspberry Pi Weather Station using Sensors
+        // - Raspberry Pi Stock Market Orb (glow green or red based on stock market data)
+        // - Raspberry Pi Google Voice Assistant / Cortana Voice Assistant / Amazon Echo
+        // - Raspberry Pi Vending Machine / Badge Reader (possible collaboration with Scott Wadsworth)
+    }
 }
 ```
 
