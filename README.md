@@ -119,14 +119,15 @@ There are many .NET related projects on GitHub.
 
 To build the projects in this repo, here is what you need to do:
 
-1. The easiest way to build the repo is to invoke `build.cmd` (on Windows) or `build.sh` (on Linux) via the command line after you clone it.
+1. The easiest way to build the repo is to invoke `build.cmd` (on Windows) or `build.sh` (on Linux) via the command line after you clone it. When you run `build.cmd` or `build.sh`, the following happens:
    - The latest .NET cli and runtime are downloaded and installed (under the `dotnetcli` folder)
    - The NuGet packages for the `corefxlab.sln` solution are restored
       - To skip this step, add `-Restore false` as an argument (`build.cmd` only)
    - The `corefxlab.sln` solution (which contains all the active source and test projects) is built
    - All the unit tests witin the test projects (that live inside the `tests` folder) are executed.
       - To skip this step, add `-SkipTests true` as an argument (`build.cmd` only)
-2. After you have have run build at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
+2. After you have have run `build` at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
+   - If you cannot change the system path, download or install the [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system at the default global location `C:\Program Files\dotnet`, for VS to reference.
 
 ## Troubleshooting
 
