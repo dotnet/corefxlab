@@ -117,14 +117,30 @@ There are many .NET related projects on GitHub.
 
 ## Building and Testing
 
-To build the projects in this repo, you have a few options:
+To build the projects in this repo, here is what you need to do:
 
-* Download or install a [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
-* (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
-* (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
-Using VS Code, see https://aka.ms/vscclrdogfood.
-* If using Visual Studio, install the following VSIX to have IDE support for C#7.2 features that this project uses. - https://dotnet.myget.org/F/roslyn/vsix/0b48e25b-9903-4d8b-ad39-d4cca196e3c7-2.6.0.6221102.vsix
+1. The easiest way to build the repo is to invoke `build.cmd` (on Windows) or `build.sh` (on Linux) via the command line after you clone it. When you run `build.cmd` or `build.sh`, the following happens:
+   - The latest .NET cli and runtime are downloaded and installed (under the `dotnetcli` folder)
+   - The NuGet packages for the `corefxlab.sln` solution are restored
+      - To skip this step, add `-Restore false` as an argument (`build.cmd` only)
+   - The `corefxlab.sln` solution (which contains all the active source and test projects) is built
+   - All the unit tests witin the test projects (that live inside the `tests` folder) are executed.
+      - To skip this step, add `-SkipTests true` as an argument (`build.cmd` only)
+2. After you have have run `build` at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
+   - If you cannot change the system path, download or install the [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system at the default global location `C:\Program Files\dotnet`, for VS to reference.
+
+## Troubleshooting
+
+### It was not possible to find any compatible framework version
+
+There are two main reasons for receiving this error:
+
+ 1. You don't have the latest version. Run `build` to install the latest versions.
+ 2. The wrong `dotnet.exe` is being located. 
+    - From the command line, ensure that you are running `dotnet.exe` from the  `dotnetcli` directory (run `dotnet --info`).
+    - Alternatively, you can add `[RepoPath]\corefxlab\dotnetcli` to you system path, "ahead" of `C:\Program Files\dotnet`.
+    - For building and running tests within VS, you'll need to use this latter option.
 
 ## Measuring Performance
 
-For details, please refer to the [PerfHarness documentation](scripts/PerfHarness/README.md).
+All the performance tests live in the `tests\Benchmarks` directory. To run them via the command line, navigate to that folder and run `dotnet run -c Release`. This will give you the list of benchmarks that you can select to run. The results of the benchmark are displayed on the console and all the artifacts (including the results) are placed in the BenchmarkDotNet.Artifacts folder. For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).
