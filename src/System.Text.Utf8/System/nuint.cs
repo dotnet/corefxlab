@@ -11,7 +11,7 @@ namespace System
     /// Casts exist to convert this to / from other integral types.
     /// None of the conversions is checked.
     /// </summary>
-    internal unsafe struct nuint
+    internal unsafe struct nuint : IComparable<nuint>, IEquatable<nuint>
     {
         private readonly void* _value;
 
@@ -87,5 +87,23 @@ namespace System
                 return new nuint((void*)((uint)value._value & (uint)andWith));
             }
         }
+
+        public int CompareTo(nuint other)
+        {
+            if (IntPtr.Size >= 8)
+            {
+                return ((ulong)this).CompareTo((ulong)other);
+            }
+            else
+            {
+                return ((uint)this).CompareTo((uint)other);
+            }
+        }
+
+        public bool Equals(nuint other) => (this._value == other._value);
+
+        public override bool Equals(object obj) => (obj is nuint other) && this.Equals(other);
+
+        public override int GetHashCode() => ((IntPtr)this).GetHashCode();
     }
 }
