@@ -57,11 +57,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(byte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -72,11 +67,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(sbyte value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -87,11 +77,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(ushort value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -102,11 +87,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(short value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -117,11 +97,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(uint value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -132,11 +107,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(int value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -147,11 +117,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(ulong value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)
@@ -162,11 +127,6 @@ namespace System.Buffers.Text
 
         public static bool TryFormat(long value, Span<byte> buffer, out int bytesWritten, StandardFormat format = default, SymbolTable symbolTable = null)
         {
-            if (format.IsDefault)
-            {
-                format = 'G';
-            }
-
             if (symbolTable == null || symbolTable == SymbolTable.InvariantUtf8)
                 return Utf8Formatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (symbolTable == SymbolTable.InvariantUtf16)

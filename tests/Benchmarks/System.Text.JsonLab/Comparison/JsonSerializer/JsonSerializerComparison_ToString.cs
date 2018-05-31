@@ -13,16 +13,16 @@ namespace JsonBenchmarks
 
         public JsonSerializerComparison_ToString() => value = DataGenerator.Generate<T>();
 
-        [Benchmark(Description = "Jil")]
-        public string Jil_() => Jil.JSON.Serialize(value);
-
         [Benchmark(Baseline = true, Description = "Newtonsoft")]
         public string Newtonsoft_() => Newtonsoft.Json.JsonConvert.SerializeObject(value);
+
+        [Benchmark(Description = "Jil")]
+        public string Jil_() => Jil.JSON.Serialize(value);
 
         [Benchmark(Description = "Utf8Json")]
         public string Utf8Json_() => Utf8Json.JsonSerializer.ToJsonString(value);
 
-        [Benchmark(Description = "FastJson")]
+        [Benchmark]
         public string FastJson() => fastJSON.JSON.ToJSON(value);
 
         // This benchmarks fails to run for IndexViewModel and MyEventsListerViewModel.
@@ -31,5 +31,8 @@ namespace JsonBenchmarks
 
         [Benchmark(Description = "Manatee")]
         public string Manatee_() => new Manatee.Json.Serialization.JsonSerializer().Serialize(value).ToString();
+
+        [Benchmark]
+        public string SpanJsonUtf16() => SpanJson.JsonSerializer.Generic.Utf16.Serialize(value);
     }
 }

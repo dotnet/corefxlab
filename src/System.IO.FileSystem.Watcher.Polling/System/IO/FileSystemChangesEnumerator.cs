@@ -1,6 +1,9 @@
-﻿using System.IO.Enumeration;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.IO.FileSystem
+using System.IO.Enumeration;
+
+namespace System.IO
 {
     internal class FileSystemChangeEnumerator: FileSystemEnumerator<string>
     {
@@ -8,7 +11,7 @@ namespace System.IO.FileSystem
         private string _currentDirectory;
         private PollingFileSystemWatcher _watcher;
 
-        public FileSystemChangeEnumerator(PollingFileSystemWatcher watcher, string directory, EnumerationOptions options = null)
+        internal FileSystemChangeEnumerator(PollingFileSystemWatcher watcher, string directory, EnumerationOptions options = null)
             : base(directory, options)
         {
             _watcher = watcher;
@@ -32,7 +35,10 @@ namespace System.IO.FileSystem
             if (_currentDirectory == null)
                 _currentDirectory = entry.Directory.ToString();
 
-            return _watcher.IsWatched(ref entry);
+            return _watcher.ShouldIncludeEntry(ref entry);
         }
+
+        protected override bool ShouldRecurseIntoEntry(ref FileSystemEntry entry)
+            => _watcher.ShouldRecurseIntoEntry(ref entry);
     }
 }

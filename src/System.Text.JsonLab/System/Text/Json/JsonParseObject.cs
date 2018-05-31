@@ -214,6 +214,17 @@ namespace System.Text.JsonLab
             return new Utf8Span(json._values.Slice(record.Location, record.Length));
         }
 
+        public static explicit operator Utf8String(JsonObject json)
+        {
+            DbRow record = json.Record;
+            if (!record.IsSimpleValue)
+            {
+                throw new InvalidCastException();
+            }
+
+            return new Utf8String(json._values.Slice(record.Location, record.Length));
+        }
+
         public static explicit operator bool(JsonObject json)
         {
             var record = json.Record;

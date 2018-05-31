@@ -7,12 +7,12 @@ export PATH=$PATH:$dotnet_path
 
 usage()
 {
-    echo "build.sh [ Debug(default) | Release ]"
+  echo "build.sh [ Debug(default) | Release ]"
 }
 
 if [ "$1" == "-?" ] || [ "$1" == "-h" ]; then
-    usage
-	exit
+  usage
+  exit
 fi
 
 if [ $# -eq 0 ]
@@ -65,10 +65,12 @@ else
     echo "Newest version of dotnet cli not installed, downloading and installing."
     ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
     ret=$?
-	if [ $ret -ne 0 ]; then
+    if [ $ret -ne 0 ]; then
       echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
       exit -1
     fi
+  else
+    echo "Newest version of dotnet cli is already installed."
   fi
 fi
 
@@ -107,7 +109,7 @@ do
   if [ $ret -ne 0 ]; then
     echo "Some tests failed in project $testFile"
     projectsFailed[${#projectsFailed[@]}]="$testFile"
-	((errorsEncountered=errorsEncountered+1))
+  ((errorsEncountered=errorsEncountered+1))
   fi
 done < <(find tests -name "*Tests*.csproj")
 
@@ -119,7 +121,7 @@ if [ $errorsEncountered -ne 0 ]; then
   echo -e "${RED}** Build failed. $errorsEncountered projects failed to build or test. **${NC}"
   for i in "${projectsFailed[@]}"
   do
-   echo -e "${RED}    $i${NC}"
+    echo -e "${RED}    $i${NC}"
   done
 else
   echo -e "${GREEN}** Build succeeded. **${NC}"

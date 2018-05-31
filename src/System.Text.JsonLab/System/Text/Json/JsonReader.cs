@@ -508,7 +508,9 @@ namespace System.Text.JsonLab
             while (idx < length)
             {
                 ref byte b = ref Unsafe.Add(ref src, idx);
-                if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket)
+                // TODO: Fix terminating condition
+                if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket || b == JsonConstants.CarriageReturn
+                    || b == JsonConstants.LineFeed || b == JsonConstants.Space)
                     break;
                 idx++;
             }
@@ -531,7 +533,9 @@ namespace System.Text.JsonLab
             while (idx < length)
             {
                 ref char b = ref Unsafe.Add(ref chars, idx);
-                if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket)
+                // TODO: Fix terminating condition
+                if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket || b == JsonConstants.CarriageReturn
+                    || b == JsonConstants.LineFeed || b == JsonConstants.Space)
                     break;
                 idx++;
             }
