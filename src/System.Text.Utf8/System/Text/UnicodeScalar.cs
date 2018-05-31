@@ -275,5 +275,27 @@ namespace System.Text
             Span<Utf8Char> utf8Chars = stackalloc Utf8Char[4]; // worst case
             return Utf8String.DangerousCreateWithoutValidation(utf8Chars.Slice(0, ToUtf8(utf8Chars)));
         }
+
+        /// <summary>
+        /// Attempts to create a <see cref="UnicodeScalar"/> from the provided input value.
+        /// </summary>
+        public static bool TryCreate(int value, out UnicodeScalar result) => TryCreate((uint)value, out result);
+
+        /// <summary>
+        /// Attempts to create a <see cref="UnicodeScalar"/> from the provided input value.
+        /// </summary>
+        public static bool TryCreate(uint value, out UnicodeScalar result)
+        {
+            if (UnicodeHelpers.IsValidUnicodeScalar(value))
+            {
+                result = DangerousCreateWithoutValidation(value);
+                return true;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
+        }
     }
 }
