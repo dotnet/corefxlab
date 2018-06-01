@@ -68,7 +68,7 @@ public class Tests
     public void TwoSpansCreatedOverSameStringsAreEqual()
     {
         var str = "Hello, Slice!";
-        ReadOnlySpan<char> slice = str.AsReadOnlySpan();
+        ReadOnlySpan<char> slice = str.AsSpan();
         Assert.Equal(str.Length, slice.Length);
 
         for (int j = 0; j < str.Length; j++)

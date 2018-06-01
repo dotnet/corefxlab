@@ -6,6 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 using static System.Buffers.Binary.BinaryPrimitives;
+using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Slices.Tests
 {
@@ -44,22 +45,22 @@ namespace System.Slices.Tests
 
             for (int i = 0; i < span.Length; i++)
             {
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
 
                 array[i] = unchecked((byte)(array[i] + 1));
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
 
                 var byteValue = unchecked((byte)(array[i] + 1));
-                WriteMachineEndian(span.Slice(i), ref byteValue);
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Write(span.Slice(i), ref byteValue);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
 
                 var myByteValue = unchecked(new MyByte((byte)(array[i] + 1)));
-                WriteMachineEndian(span.Slice(i), ref myByteValue);
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Write(span.Slice(i), ref myByteValue);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
             }
         }
 
@@ -79,12 +80,12 @@ namespace System.Slices.Tests
 
             for (int i = 0; i < span.Length; i++)
             {
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
 
                 array[i] = unchecked((byte)(array[i] + 1));
-                Assert.Equal(array[i], ReadMachineEndian<byte>(span.Slice(i)));
-                Assert.Equal(array[i], ReadMachineEndian<MyByte>(span.Slice(i)).Value);
+                Assert.Equal(array[i], Read<byte>(span.Slice(i)));
+                Assert.Equal(array[i], Read<MyByte>(span.Slice(i)).Value);
             }
         }
 

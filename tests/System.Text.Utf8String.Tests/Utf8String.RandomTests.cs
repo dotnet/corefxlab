@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Utf8.Tests
 {
@@ -165,7 +166,7 @@ namespace System.Text.Utf8.Tests
 
         private byte[] GetUtf8BytesFromCodePoints(List<uint> codePoints)
         {
-            ReadOnlySpan<byte> utf32 = codePoints.ToArray().AsSpan().AsBytes();
+            ReadOnlySpan<byte> utf32 = MemoryMarshal.AsBytes(codePoints.ToArray().AsSpan());
             Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf8Length(utf32, out int needed));
 
             byte[] utf8 = new byte[needed];

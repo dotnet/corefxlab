@@ -15,7 +15,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public static async Task WriteAsync(this Stream stream, ReadOnlySequence<byte> buffer)
         {
-            for (var position = buffer.Start; buffer.TryGet(ref position, out var memory);)
+            for (SequencePosition position = buffer.Start; buffer.TryGet(ref position, out var memory);)
             {
                 await stream.WriteAsync(memory).ConfigureAwait(false);
             }
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
         {
             while (bytes > 0)
             {
-                var result = await reader.ReadAsync();
+                ReadResult result = await reader.ReadAsync();
                 ReadOnlySequence<byte> bodyBuffer = result.Buffer;
                 if (bytes < (ulong)bodyBuffer.Length)
                 {
@@ -44,16 +44,21 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Copies bytes from Stream to PipeWriter 
         /// </summary>
-        public static async Task WriteAsync(this PipeWriter writer, Stream stream)
+        public static async Task WriteAsync(this PipeWriter writer, Stream stream, long bytesToWrite)
         {
             if (!stream.CanRead) throw new ArgumentException("Stream.CanRead returned false", nameof(stream));
-            while (true)
+            while (bytesToWrite > 0)
             {
-                var buffer = writer.GetMemory();
+                Memory<byte> buffer = writer.GetMemory();
+                if (buffer.Length > bytesToWrite)
+                {
+                    buffer = buffer.Slice(0, (int)bytesToWrite);
+                }
                 if (buffer.Length == 0) throw new NotSupportedException("PipeWriter.GetMemory returned an empty buffer.");
                 int read = await stream.ReadAsync(buffer).ConfigureAwait(false);
                 if (read == 0) return;
                 writer.Advance(read);
+                bytesToWrite -= read;
                 await writer.FlushAsync();
             }
         }

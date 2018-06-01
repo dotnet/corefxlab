@@ -4,24 +4,21 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.IO.FileSystem
+namespace System.IO
 {
-    // this is a quick an dirty hashtable optimized for the PollingWatcher
+    // this is a quick an dirty hashtable optimized for the PollingFileSystemWatcher
     // It allows mutating struct values (FileState) contained in the hashtable
-    // It allows both string and char* (filenames from WIN32_FIND_DATA) lookups
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
-    class PathToFileStateHashtable
+    [Serializable]
+    internal class PathToFileStateHashtable
     {
-        TraceSource _trace;
-        int _count;
         int _nextValuesIndex = 1; // the first Values slot is reserved so that default(Bucket) knows that it is not pointing to any value.
         public FileState[] Values { get; private set; }
         private Bucket[] Buckets;
 
-        public PathToFileStateHashtable(TraceSource trace, int capacity = 4)
+        public PathToFileStateHashtable(int capacity = 4)
         {
-            _trace = trace;
             Values = new FileState[capacity];
 
             // +1 is needed so that there are always more buckets than values.
@@ -30,13 +27,7 @@ namespace System.IO.FileSystem
             Buckets = new Bucket[GetPrime(capacity + 1)];
         }
 
-        public int Count
-        {
-            get
-            {
-                return _count;
-            }
-        }
+        public int Count { get; private set; }
 
         public void Add(string directory, string file, FileState value)
         {
@@ -46,14 +37,14 @@ namespace System.IO.FileSystem
             }
 
             Values[_nextValuesIndex] = value;
-            var bucket = ComputeBucket(file);
+            int bucket = ComputeBucket(file);
 
             while (true)
             {
                 if (Buckets[bucket].IsEmpty)
                 {
                     Buckets[bucket] = new Bucket(directory, file, _nextValuesIndex);
-                    _count++;
+                    Count++;
                     _nextValuesIndex++;
                     return;
                 }
@@ -63,39 +54,20 @@ namespace System.IO.FileSystem
 
         public void Remove(string directory, string file)
         {
-            var index = IndexOf(directory, file);
+            int index = IndexOf(directory, file);
             Debug.Assert(index != -1, "this should never happen");
 
             Values[index].Path = null;
             Values[index].Directory = null;
-            _count--;
+            Count--;
         }
 
-        public int IndexOf(string directory, string file)
+        public int IndexOf(string directory, ReadOnlySpan<char> file)
         {
             int bucket = ComputeBucket(file);
             while (true)
             {
-                var valueIndex = Buckets[bucket].ValuesIndex;
-                if (valueIndex == 0)
-                {
-                    return -1; // not found
-                }
-
-                if (Equal(Buckets[bucket].Key, directory, file))
-                {
-                    if (Values[valueIndex].Path != null) return valueIndex;
-                }
-                bucket = NextCandidateBucket(bucket);
-            }
-        }
-
-        public unsafe int IndexOf(string directory, char* file)
-        {
-            int bucket = ComputeBucket(file);
-            while (true)
-            {
-                var valueIndex = Buckets[bucket].ValuesIndex;
+                int valueIndex = Buckets[bucket].ValuesIndex;
                 if (valueIndex == 0)
                 {
                     return -1; // not found
@@ -121,41 +93,21 @@ namespace System.IO.FileSystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(FullPath fullPath, string directory, char* file)
-        {
-
-            if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            int index;
-            for (index = 0; index < fullPath.File.Length; index++)
-            {
-                if (file[index] == 0) return false;
-                if (file[index] != fullPath.File[index]) return false;
-            }
-            if (file[index] != 0) return false;
-            return true;
-
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(FullPath fullPath, string directory, string file)
+        private unsafe bool Equal(FullPath fullPath, string directory, ReadOnlySpan<char> file)
         {
             if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (!String.Equals(fullPath.File, file, StringComparison.Ordinal))
+            if (!file.Equals((ReadOnlySpan<char>)fullPath.File, StringComparison.Ordinal))
             {
                 return false;
             }
             return true;
         }
 
-        private unsafe int GetHashCode(string path)
+        private unsafe int GetHashCode(ReadOnlySpan<char> path)
         {
             int code = 0;
             for (int index = 0; index < path.Length; index++)
@@ -168,66 +120,30 @@ namespace System.IO.FileSystem
             return code;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe int GetHashCode(char* nullTerminatedString)
+        private int ComputeBucket(ReadOnlySpan<char> file)
         {
-            int code = 0;
-            int index = 0;
-            while (true)
-            {
-                char next = *nullTerminatedString;
-                if (next == 0)
-                {
-                    break;
-                }
-                nullTerminatedString++;
-                code |= next;
-                code <<= 8;
-                if (index > 8) break;
-                index++;
-            }
-            return code;
-        }
-
-        private int ComputeBucket(string file)
-        {
-            var hash = GetHashCode(file);
+            int hash = GetHashCode(file);
             if (hash == Int32.MinValue) hash = Int32.MaxValue;
 
-            var bucket = Math.Abs(hash) % Buckets.Length;
-            return bucket;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe int ComputeBucket(char* file)
-        {
-            var hash = GetHashCode(file);
-            if (hash == Int32.MinValue) hash = Int32.MaxValue;
-
-            var bucket = Math.Abs(hash) % Buckets.Length;
+            int bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
 
         private void Resize()
         {
             // this is because sometimes we just need to garbade collect instead of increase size
-            var newSize = Math.Max(_count * 2, 4);
+            int newSize = Math.Max(Count * 2, 4);
 
-            if (_trace.Switch.ShouldTrace(TraceEventType.Verbose))
-            {
-                _trace.TraceEvent(TraceEventType.Verbose, 5, "Resizing hashtable from {0} to {1}", Values.Length, newSize);
-            }
+            PathToFileStateHashtable bigger = new PathToFileStateHashtable(newSize);
 
-            var bigger = new PathToFileStateHashtable(_trace, newSize);
-
-            foreach (var existingValue in this)
+            foreach (FileState existingValue in this)
             {
                 bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
             }
             Values = bigger.Values;
             Buckets = bigger.Buckets;
             this._nextValuesIndex = bigger._nextValuesIndex;
-            this._count = bigger._count;
+            this.Count = bigger.Count;
         }
 
         private static readonly int[] primes = {
@@ -306,9 +222,10 @@ namespace System.IO.FileSystem
 
         public override string ToString()
         {
-            return _count.ToString();
+            return Count.ToString();
         }
 
+        [Serializable]
         struct Bucket
         {
             public FullPath Key;
@@ -329,6 +246,7 @@ namespace System.IO.FileSystem
             }
         }
 
+        [Serializable]
         struct FullPath
         {
             public string Directory;

@@ -4,6 +4,7 @@
 
 using System.Buffers.Text;
 using Xunit;
+using System.Runtime.InteropServices;
 
 namespace System.Text.Primitives.Tests
 {
@@ -38,7 +39,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
-            ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
+            ReadOnlySpan<byte> utf16ByteSpan = MemoryMarshal.AsBytes(charSpan);
             result = CustomParser.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, SymbolTable.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);

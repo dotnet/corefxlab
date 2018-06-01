@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.InteropServices;
+
 namespace System.Numerics
 {
     /// <summary>
@@ -109,13 +111,13 @@ namespace System.Numerics
                 throw new ArgumentException("The number of elements in the Tensor is greater than the available space from index to the end of the destination array.", nameof(array));
             }
 
-            Buffer.Span.CopyTo(array.AsSpan().Slice(arrayIndex));
+            Buffer.Span.CopyTo(array.AsSpan(arrayIndex));
         }
 
         protected override int IndexOf(T item)
         {
             // TODO: use Span.IndexOf when/if it removes the IEquatable type constraint
-            if (Buffer.TryGetArray(out var arraySegment))
+            if (MemoryMarshal.TryGetArray<T>(Buffer, out var arraySegment))
             {
                 var result = Array.IndexOf(arraySegment.Array, item, arraySegment.Offset, arraySegment.Count);
                 if (result != -1)

@@ -7,12 +7,12 @@ export PATH=$PATH:$dotnet_path
 
 usage()
 {
-    echo "build.sh [ Debug(default) | Release ]"
+  echo "build.sh [ Debug(default) | Release ]"
 }
 
 if [ "$1" == "-?" ] || [ "$1" == "-h" ]; then
-    usage
-	exit
+  usage
+  exit
 fi
 
 if [ $# -eq 0 ]
@@ -30,24 +30,18 @@ echo "Restore=$Restore."
 echo "Version=$Version."
 echo "BuildVersion=$BuildVersion."
 
+dotnetExePath="dotnetcli/dotnet"
+
+if [ "$Version" = "<default>" ]; then
+  Version=$(head -n 1 "DotnetCLIVersion.txt")
+fi
+
 if [ ! -d "dotnetcli" ]; then
   echo "dotnet.exe not installed, downloading and installing."
-  if [ "$Version" = "<default>" ]; then
-    Version=$(head -n 1 "DotnetCLIVersion.txt")
-  fi
   ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
   ret=$?
   if [ $ret -ne 0 ]; then
     echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
-    exit -1
-  fi
-
-  # Temporary workaround until CLI, Core-Setup, CoreFx are all in sync with the shared runtime.
-  SharedVersion=$(head -n 1 "SharedRuntimeVersion.txt")
-  ./scripts/install-dotnet.sh -Channel master -Version "$SharedVersion" -InstallDir "dotnetcli" -SharedRuntime
-  ret=$?
-  if [ $ret -ne 0 ]; then
-    echo "Failed to install latest 2.1.0 shared runtime (version $SharedVersion), exit code $ret, aborting build."
     exit -1
   fi
 
@@ -64,12 +58,24 @@ if [ ! -d "dotnetcli" ]; then
     echo "Failed to install framework version 2.0.0, exit code $ret, aborting build."
     exit -1
   fi
+else
+  echo "dotnet.exe is installed, checking for latest."
+  cliVersion=$(./$dotnetExePath --version)
+  if [ $cliVersion != $Version ]; then
+    echo "Newest version of dotnet cli not installed, downloading and installing."
+    ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnetcli"
+    ret=$?
+    if [ $ret -ne 0 ]; then
+      echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
+      exit -1
+    fi
+  else
+    echo "Newest version of dotnet cli is already installed."
+  fi
 fi
 
 export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 export DOTNET_MULTILEVEL_LOOKUP=0
-
-dotnetExePath="dotnetcli/dotnet"
 
 myFile="corefxlab.sln"
 
@@ -85,7 +91,7 @@ fi
 
 echo "Building solution $myFile..."
 
-./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion"
+./$dotnetExePath build $myFile -c "$Configuration" /p:VersionSuffix="$BuildVersion" --no-restore
 ret=$?
 if [ $ret -ne 0 ]; then
   echo "Failed to build solution $myFile"
@@ -103,9 +109,9 @@ do
   if [ $ret -ne 0 ]; then
     echo "Some tests failed in project $testFile"
     projectsFailed[${#projectsFailed[@]}]="$testFile"
-	((errorsEncountered=errorsEncountered+1))
+  ((errorsEncountered=errorsEncountered+1))
   fi
-done < <(find tests -name "*.csproj")
+done < <(find tests -name "*Tests*.csproj")
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -115,7 +121,7 @@ if [ $errorsEncountered -ne 0 ]; then
   echo -e "${RED}** Build failed. $errorsEncountered projects failed to build or test. **${NC}"
   for i in "${projectsFailed[@]}"
   do
-   echo -e "${RED}    $i${NC}"
+    echo -e "${RED}    $i${NC}"
   done
 else
   echo -e "${GREEN}** Build succeeded. **${NC}"

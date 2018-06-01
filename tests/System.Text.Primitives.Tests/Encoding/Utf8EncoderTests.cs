@@ -54,7 +54,7 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("TryEncodeFromUnicodeMultipleCodePointsTestData")]
         public void TryEncodeFromUnicodeMultipleCodePoints(bool useUtf8Encoder, byte[] expectedBytes, uint[] codePointsArray, Buffers.OperationStatus expectedReturnVal)
         {
-            ReadOnlySpan<byte> codePoints = codePointsArray.AsSpan().AsBytes();
+            ReadOnlySpan<byte> codePoints = MemoryMarshal.AsBytes(codePointsArray.AsSpan());
             Span<byte> buffer = new byte[expectedBytes.Length];
             int written;
             int consumed;
@@ -88,7 +88,7 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("TryDecodeToUnicodeMultipleCodePointsTestData")]
         public void TryDecodeToUnicodeMultipleCodePoints(bool useUtf8Encoder, uint[] expectedCodePointsArray, byte[] inputBytesArray, OperationStatus expectedReturnVal)
         {
-            ReadOnlySpan<byte> expectedBytes = expectedCodePointsArray.AsSpan().AsBytes();
+            ReadOnlySpan<byte> expectedBytes = MemoryMarshal.AsBytes<uint>(expectedCodePointsArray);
             ReadOnlySpan<byte> inputBytes = inputBytesArray;
             Span<byte> codePoints = new byte[expectedBytes.Length];
             int written;
@@ -131,19 +131,19 @@ namespace System.Text.Primitives.Tests.Encoding
             int written;
 
             if (useUtf8Encoder)
-                Assert.Equal(OperationStatus.Done, Encodings.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf32.ToUtf8(MemoryMarshal.AsBytes(allCodePoints), buffer, out consumed, out written));
             else
-                Assert.Equal(OperationStatus.Done, Encodings.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf32.ToUtf16(MemoryMarshal.AsBytes(allCodePoints), buffer, out consumed, out written));
 
-            Assert.Equal(allCodePoints.AsBytes().Length, consumed);
+            Assert.Equal(MemoryMarshal.AsBytes(allCodePoints).Length, consumed);
             buffer = buffer.Slice(0, written);
 
             Span<uint> utf32 = new uint[maximumValidCodePoint + 1];
 
             if (useUtf8Encoder)
-                Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf8.ToUtf32(buffer, MemoryMarshal.AsBytes(utf32), out consumed, out written));
             else
-                Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf32(buffer, utf32.AsBytes(), out consumed, out written));
+                Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf32(buffer, MemoryMarshal.AsBytes(utf32), out consumed, out written));
 
             Assert.Equal(buffer.Length, consumed);
             Assert.Equal((maximumValidCodePoint + 1) * sizeof(uint), written);
@@ -188,14 +188,14 @@ namespace System.Text.Primitives.Tests.Encoding
             int consumed;
 
             if (useUtf8Encoder)
-                Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf8(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf8(MemoryMarshal.AsBytes(allCodePoints), buffer, out consumed, out written));
             else
-                Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf16(allCodePoints.AsBytes(), buffer, out consumed, out written));
+                Assert.Equal(Buffers.OperationStatus.Done, Encodings.Utf32.ToUtf16(MemoryMarshal.AsBytes(allCodePoints), buffer, out consumed, out written));
 
             buffer = buffer.Slice(0, written);
 
             string unicodeString = plainText.ToString();
-            ReadOnlySpan<char> characters = unicodeString.AsReadOnlySpan();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int byteCount = systemEncoder.GetByteCount(unicodeString);
             byte[] expectedBytes = new byte[byteCount];
 
@@ -279,7 +279,7 @@ namespace System.Text.Primitives.Tests.Encoding
         public void TryPartialUtf16ToUtf8EncodingTest(int outputSize, int expectedConsumed, char[] inputBytes, byte[] expected1, byte[] expected2)
         {
 
-            ReadOnlySpan<byte> input = inputBytes.AsSpan().AsBytes();
+            ReadOnlySpan<byte> input = MemoryMarshal.AsBytes(inputBytes.AsSpan());
             Span<byte> output = new byte[outputSize];
 
             Assert.Equal(Buffers.OperationStatus.DestinationTooSmall, Encodings.Utf16.ToUtf8(input, output, out int consumed, out int written));

@@ -38,11 +38,13 @@ namespace System.Collections.Sequences
 
         public T this[int index]
         {
-            get {
+            get
+            {
                 if (index > _count - 1) throw new IndexOutOfRangeException();
                 return _array[index];
             }
-            set {
+            set
+            {
                 if (index > _count - 1) throw new IndexOutOfRangeException();
                 _array[index] = value;
             }
@@ -50,7 +52,8 @@ namespace System.Collections.Sequences
 
         public void Add(T item)
         {
-            if (_array.Length == _count) {
+            if (_array.Length == _count)
+            {
                 Resize();
             }
             _array[_count++] = item;
@@ -58,7 +61,8 @@ namespace System.Collections.Sequences
 
         public void AddAll(T[] items)
         {
-            if (items.Length > _array.Length - _count) {
+            if (items.Length > _array.Length - _count)
+            {
                 Resize(items.Length + _count);
             }
             items.CopyTo(_array, _count);
@@ -67,7 +71,8 @@ namespace System.Collections.Sequences
 
         public void AddAll(ReadOnlySpan<T> items)
         {
-            if (items.Length > _array.Length - _count) {
+            if (items.Length > _array.Length - _count)
+            {
                 Resize(items.Length + _count);
             }
             items.CopyTo(new Span<T>(_array).Slice(_count));
@@ -81,37 +86,40 @@ namespace System.Collections.Sequences
 
         public T[] Resize(int newSize = -1)
         {
-            var oldArray = _array;
-            if (newSize == -1) {
-                if(_array == null || _array.Length == 0) {
+            T[] oldArray = _array;
+            if (newSize == -1)
+            {
+                if (_array == null || _array.Length == 0)
+                {
                     newSize = 4;
                 }
-                else {
+                else
+                {
                     newSize = _array.Length << 1;
                 }
             }
 
-            var newArray = new T[newSize];
-            new Span<T>(_array, 0, _count).CopyTo(newArray);
+            T[] newArray = new T[newSize];
+            _array.AsSpan(0, _count).CopyTo(newArray);    // CopyTo will throw if newArray.Length < _count
             _array = newArray;
             return oldArray;
         }
 
         public T[] Resize(T[] newArray)
         {
-            if (newArray.Length < _count) throw new ArgumentOutOfRangeException(nameof(newArray));
-            var oldArray = _array;
-            Array.Copy(_array, 0, newArray, 0, _count);
+            T[] oldArray = _array;
+            _array.AsSpan(0, _count).CopyTo(newArray);  // CopyTo will throw if newArray.Length < _count
             _array = newArray;
             return oldArray;
         }
 
         public bool TryGet(ref SequencePosition position, out T item, bool advance = true)
         {
-            int index = position.Index;
-            if (index < _count) {
+            int index = position.GetInteger();
+            if (index < _count)
+            {
                 item = _array[index];
-                if (advance) { position = new SequencePosition(null, index+1); }
+                if (advance) { position = new SequencePosition(null, index + 1); }
                 return true;
             }
 
@@ -124,5 +132,11 @@ namespace System.Collections.Sequences
 
         public ArraySegment<T> Full => new ArraySegment<T>(_array, 0, _count);
         public ArraySegment<T> Free => new ArraySegment<T>(_array, _count, _array.Length - _count);
+
+        public Span<T> FreeSpan => new Span<T>(_array, _count, _array.Length - _count);
+
+        public Memory<T> FreeMemory => new Memory<T>(_array, _count, _array.Length - _count);
+
+        public int FreeCount => _array.Length - _count;
     }
 }

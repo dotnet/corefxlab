@@ -231,7 +231,7 @@ namespace System.Text.Primitives.Tests
             for (var idx = 0; idx < length; idx++)
                 codePoints[idx] = Rnd.Next(minCodePoint, maxCodePoint + 1);
 
-            return codePoints.AsSpan().AsBytes().ToArray();
+            return MemoryMarshal.AsBytes(codePoints.AsSpan()).ToArray();
         }
 
         static char[] GenerateUtf16String(int length, int minCodePoint, int maxCodePoint)

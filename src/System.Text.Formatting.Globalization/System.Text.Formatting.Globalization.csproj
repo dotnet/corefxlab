@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <PackageTags>pl PL formatting globalization corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>

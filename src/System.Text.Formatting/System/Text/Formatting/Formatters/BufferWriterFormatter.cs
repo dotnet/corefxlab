@@ -7,7 +7,7 @@ using System.Buffers.Text;
 
 namespace System.Text.Formatting
 {
-    public struct BufferWriterFormatter<TOutput> : ITextBufferWriter where TOutput : IBufferWriter
+    public struct BufferWriterFormatter<TOutput> : ITextBufferWriter where TOutput : IBufferWriter<byte>
     {
         TOutput _output;
         SymbolTable _symbolTable;
@@ -31,6 +31,9 @@ namespace System.Text.Formatting
             return _output.GetMemory(minimumLength);
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        public Span<byte> GetSpan(int minimumLength)
+        {
+            return _output.GetSpan(minimumLength);
+        }
     }
 }

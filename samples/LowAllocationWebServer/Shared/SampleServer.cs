@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Json;
+using System.Text.JsonLab;
 using System.Buffers;
 using System.Threading;
 using System.Text.Http.Parser;
@@ -62,7 +62,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter(response, prettyPrint: false);
+            var jsonWriter = new JsonWriterUtf8(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < 5; i++)
@@ -94,7 +94,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter(response, prettyPrint: false);
+            var jsonWriter = new JsonWriterUtf8(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < requestedCount; i++)

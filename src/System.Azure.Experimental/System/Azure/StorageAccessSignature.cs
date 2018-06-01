@@ -5,9 +5,9 @@
 using System.Buffers.Cryptography;
 using System.Text.Utf8;
 using System.Binary.Base64Experimental;
-using System.Buffers.Text;
 using System.Buffers;
-using System.Buffers.Transformations;
+using System.Buffers.Operations;
+using System.Buffers.Writer;
 
 namespace System.Azure.Authentication
 {
@@ -20,7 +20,7 @@ namespace System.Azure.Authentication
         public ReadOnlyMemory<byte> HttpVerb;
         public string AccountName;
         public string CanonicalizedResource;
-        public WritableBytes CanonicalizedHeaders;
+        public ReadOnlyMemory<byte> CanonicalizedHeaders;
         public long ContentLength;
 
         public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)

@@ -57,7 +57,7 @@ namespace System.Text.Formatting
 
         public int TotalWritten => _totalWritten;
 
-        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter<byte>.GetMemory(int minimumLength)
         {
             if (minimumLength == 0) minimumLength = 1;
             if (minimumLength > Current.Length - _currentWrittenBytes)
@@ -76,9 +76,28 @@ namespace System.Text.Formatting
             return Current.Slice(_currentWrittenBytes);
         }
 
-        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter)this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength)
+        {
+            if (minimumLength == 0) minimumLength = 1;
+            if (minimumLength > Current.Length - _currentWrittenBytes)
+            {
+                if (NeedShift) throw new NotImplementedException("need to allocate temp array");
 
-        void IBufferWriter.Advance(int bytes)
+                _previousSequencePosition = _currentSequencePosition;
+                _previousWrittenBytes = _currentWrittenBytes;
+
+                if (!_buffers.TryGet(ref _currentSequencePosition, out Memory<byte> span))
+                {
+                    throw new InvalidOperationException();
+                }
+                _currentWrittenBytes = 0;
+            }
+            // Duplicating logic from GetMemory so we can slice the span rather than slicing the memory
+            return Current.Span.Slice(_currentWrittenBytes);
+        }
+
+
+        void IBufferWriter<byte>.Advance(int bytes)
         {
             var current = Current;
             if (NeedShift)
@@ -87,14 +106,14 @@ namespace System.Text.Formatting
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
                 if (spaceInPrevious < bytes)
                 {
-                    current.Slice(0, spaceInPrevious).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
-                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).Span.CopyTo(current.Span);
+                    current.Span.Slice(0, spaceInPrevious).CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Span.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current.Span);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
                 else
                 {
-                    current.Slice(0, bytes).Span.CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Span.Slice(0, bytes).CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     _currentSequencePosition = _previousSequencePosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }
@@ -108,5 +127,7 @@ namespace System.Text.Formatting
 
             _totalWritten += bytes;
         }
+
+        public int MaxBufferSize { get; } = Int32.MaxValue;
     }
 }

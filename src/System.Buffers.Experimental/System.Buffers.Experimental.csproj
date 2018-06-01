@@ -2,17 +2,15 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Pool of unmanaged Span&lt;byte&gt; values</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>Span Spans Pool corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
-    <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
-    <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Text.Utf8String\System.Text.Utf8String.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
+    <PackageReference Include="System.ValueTuple" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
 </Project>

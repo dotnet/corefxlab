@@ -60,7 +60,7 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Memory<byte> IBufferWriter.GetMemory(int minimumLength)
+        Memory<byte> IBufferWriter<byte>.GetMemory(int minimumLength)
         {
             if (minimumLength < 1) minimumLength = 1;
             if (_buffer.Free.Count < minimumLength)
@@ -74,11 +74,25 @@ namespace System.Text.Formatting
             return _buffer.Free;
         }
 
-        Span<byte> IBufferWriter.GetSpan(int minimumLength) => ((IBufferWriter) this).GetMemory(minimumLength).Span;
+        Span<byte> IBufferWriter<byte>.GetSpan(int minimumLength)
+        {
+            if (minimumLength < 1) minimumLength = 1;
+            if (_buffer.Free.Count < minimumLength)
+            {
+                var doubleCount = _buffer.Free.Count * 2;
+                int newSize = minimumLength > doubleCount ? minimumLength : doubleCount;
+                var newArray = _pool.Rent(newSize + _buffer.Count);
+                var oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            return _buffer.Free;
+        }
 
-        void IBufferWriter.Advance(int bytes)
+        void IBufferWriter<byte>.Advance(int bytes)
         {
             _buffer.Count += bytes;
         }
+
+        public int MaxBufferSize { get; } = Int32.MaxValue;
     }
 }

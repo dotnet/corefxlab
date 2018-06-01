@@ -5,6 +5,7 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Sequences;
+using System.Runtime.CompilerServices;
 
 namespace System.Text.Formatting
 {
@@ -23,7 +24,8 @@ namespace System.Text.Formatting
 
         public int CommitedByteCount => _buffer.Count;
 
-        public void Clear() {
+        public void Clear()
+        {
             _buffer.Count = 0;
         }
 
@@ -35,31 +37,46 @@ namespace System.Text.Formatting
         public Memory<byte> GetMemory(int minimumLength = 0)
         {
             if (minimumLength < 1) minimumLength = 1;
-            if (minimumLength > _buffer.Free.Count)
+            if (minimumLength > _buffer.FreeCount)
             {
-                var doubleCount = _buffer.Free.Count * 2;
-                int newSize = minimumLength>doubleCount?minimumLength:doubleCount;
-                var newArray = _pool.Rent(newSize + _buffer.Count);
-                var oldArray = _buffer.Resize(newArray);
+                int doubleCount = _buffer.FreeCount * 2;
+                int newSize = minimumLength > doubleCount ? minimumLength : doubleCount;
+                byte[] newArray = _pool.Rent(newSize + _buffer.Count);
+                byte[] oldArray = _buffer.Resize(newArray);
                 _pool.Return(oldArray);
             }
-            return _buffer.Free;
+            return _buffer.FreeMemory;
         }
 
-        public Span<byte> GetSpan(int minimumLength) => GetMemory(minimumLength).Span;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> GetSpan(int minimumLength = 0)
+        {
+            if (minimumLength < 1) minimumLength = 1;
+            if (minimumLength > _buffer.FreeCount)
+            {
+                int doubleCount = _buffer.FreeCount * 2;
+                int newSize = minimumLength > doubleCount ? minimumLength : doubleCount;
+                byte[] newArray = _pool.Rent(newSize + _buffer.Count);
+                byte[] oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            return _buffer.FreeSpan;
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(int bytes)
         {
             _buffer.Count += bytes;
-            if(_buffer.Count > _buffer.Count)
+            if (_buffer.Count > _buffer.Capacity)
             {
-                throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
+                FormatterThrowHelper.ThrowInvalidOperationException("More bytes commited than returned from FreeBuffer");
             }
         }
+        public int MaxBufferSize { get; } = Int32.MaxValue;
 
         public void Dispose()
         {
-            var array = _buffer.Items;
+            byte[] array = _buffer.Items;
             _buffer.Items = null;
             _pool.Return(array);
         }

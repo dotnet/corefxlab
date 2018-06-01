@@ -3,11 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Azure.Authentication;
-using System.Buffers.Text;
-using System.Buffers.Transformations;
+using System.Buffers.Writer;
 using System.IO;
 using System.IO.Pipelines;
-using System.Net.Experimental;
 using System.Text;
 using System.Text.Http.Formatter;
 using System.Text.Http.Parser;
@@ -22,7 +20,23 @@ namespace System.Azure.Storage.Requests
         string CanonicalizedResource { get; }
         long ContentLength { get; }
         bool ConsumeBody { get; }
-        
+
+    }
+
+    public abstract class RequestWriter<T> where T : IPipeWritable
+    {
+        public abstract Text.Http.Parser.Http.Method Verb { get; }
+
+        public async Task WriteAsync(PipeWriter writer, T request)
+        {
+            WriteRequestLineAndHeaders(writer, ref request);
+            await WriteBody(writer, request).ConfigureAwait(false);
+            await writer.FlushAsync();
+        }
+
+        // TODO (pri 2): writing the request line should not be abstract; writing headers should.
+        protected abstract void WriteRequestLineAndHeaders(PipeWriter writer, ref T request);
+        protected virtual Task WriteBody(PipeWriter writer, T request) { return Task.CompletedTask; }
     }
 
     // This is a helper class for impementing writers for various Storage requests.
@@ -35,7 +49,7 @@ namespace System.Azure.Storage.Requests
         // TODO (pri 2): it would be good if this could advance and flush instead demanding larger and larger buffers.
         protected override void WriteRequestLineAndHeaders(PipeWriter writer, ref T arguments)
         {
-            var memory = writer.GetSpan();
+            Span<byte> memory = writer.GetSpan();
             BufferWriter bufferWriter = memory.AsHttpWriter();
             bufferWriter.Enlarge = (int desiredSize) =>
             {
@@ -56,7 +70,7 @@ namespace System.Azure.Storage.Requests
                 AccountName = arguments.Client.AccountName,
                 CanonicalizedResource = arguments.CanonicalizedResource,
                 // TODO (pri 1): this allocation should be eliminated
-                CanonicalizedHeaders = new WritableBytes(headersBuffer.ToArray()),
+                CanonicalizedHeaders = headersBuffer.ToArray(),
                 ContentLength = arguments.ContentLength
             };
             // TODO (pri 3): the default should be defaulted
@@ -70,7 +84,8 @@ namespace System.Azure.Storage.Requests
 
         protected abstract void WriteXmsHeaders(ref BufferWriter writer, ref T arguments);
 
-        protected virtual void WriteOtherHeaders(ref BufferWriter writer, ref T arguments) {
+        protected virtual void WriteOtherHeaders(ref BufferWriter writer, ref T arguments)
+        {
             writer.WriteHeader("Content-Length", arguments.ContentLength);
             writer.WriteHeader("Host", arguments.Client.Host);
         }
@@ -87,23 +102,30 @@ namespace System.Azure.Storage.Requests
 
     public struct PutRangeRequest : IStorageRequest
     {
-        public Stream FileContent { get; set; } // TODO (pri 3): should there be a way to write from file handle or PipeReader?
-        public string FilePath { get; set; }
+        Stream _fileContent; // TODO (pri 3): should there be a way to write from file handle or PipeReader?
+        string _filePath;
+        long _offset;
+        int _length;
 
         // TODO (pri 3): I dont like how the client property is a public API
         public StorageClient Client { get; set; }
-        
-        public PutRangeRequest(string filePath, Stream fileContent)
+
+        public PutRangeRequest(string filePath, Stream fileContent, long offset, int length)
         {
-            FilePath = filePath;
-            FileContent = fileContent;
+            if (offset < 0 || offset > fileContent.Length - length) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 1) throw new ArgumentOutOfRangeException(nameof(length)); 
+
+            _filePath = filePath;
+            _fileContent = fileContent;
             Client = null;
+            _offset = offset;
+            _length = length;
         }
 
-        public long ContentLength => FileContent.Length;
+        public long ContentLength => _length;
         // TODO (pri 2): would be nice to elimnate these allocations
-        public string RequestPath => FilePath + "?comp=range";
-        public string CanonicalizedResource => FilePath + "\ncomp:range";
+        public string RequestPath => _filePath + "?comp=range";
+        public string CanonicalizedResource => _filePath + "\ncomp:range";
         public bool ConsumeBody => true;
 
         // TODO (pri 3): can this be an extension method? All implementations are the same.
@@ -116,14 +138,21 @@ namespace System.Azure.Storage.Requests
             public override Http.Method Verb => Http.Method.Put;
 
             protected override async Task WriteBody(PipeWriter writer, PutRangeRequest arguments)
-                => await writer.WriteAsync(arguments.FileContent);
+            {
+                Stream stream = arguments._fileContent;
+                stream.Seek(arguments._offset, SeekOrigin.Begin);
+                await writer.WriteAsync(stream, arguments._length);
+            }
 
             protected override void WriteXmsHeaders(ref BufferWriter writer, ref PutRangeRequest arguments)
             {
-                long size = arguments.FileContent.Length;
+                long size = arguments._fileContent.Length;
                 writer.WriteHeader("x-ms-date", Time, 'R');
                 // TODO (pri 3): this allocation should be eliminated
-                writer.WriteHeader("x-ms-range", $"bytes=0-{size-1}");
+
+                long start = arguments._offset;
+                long end = start + arguments._length - 1;
+                writer.WriteHeader("x-ms-range", $"bytes={start}-{end}");
                 writer.WriteHeader("x-ms-version", "2017-04-17");
                 writer.WriteHeader("x-ms-write", "update");
             }

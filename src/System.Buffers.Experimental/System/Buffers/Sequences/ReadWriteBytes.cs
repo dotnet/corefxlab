@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
@@ -27,7 +28,7 @@ namespace System.Buffers
 
         public ReadWriteBytes(Memory<byte> bytes)
         {
-            if (!bytes.TryGetArray(out var segment))
+            if (!MemoryMarshal.TryGetArray<byte>(bytes, out var segment))
             {
                 // TODO: once we are in System.Memory, this will get OwnedMemory out of the Memory
                 throw new NotImplementedException();
@@ -40,7 +41,7 @@ namespace System.Buffers
             Validate();
         }
 
-        public ReadWriteBytes(IMemoryList<byte> first, IMemoryList<byte> last)
+        public ReadWriteBytes(ReadOnlySequenceSegment<byte> first, ReadOnlySequenceSegment<byte> last)
         {
             _start = first;
             _startIndex = 0;
@@ -85,7 +86,7 @@ namespace System.Buffers
                 case Type.Array:
                     return new ReadWriteBytes((byte[])_start, (int)(_startIndex + index), (int)length);
                 case Type.MemoryList:
-                    var sl = (IMemoryList<byte>)_start;
+                    var sl = (ReadOnlySequenceSegment<byte>)_start;
                     index += _startIndex;
                     while (true)
                     {
@@ -139,7 +140,7 @@ namespace System.Buffers
                     var (array, index) = position.Get<byte[]>();
                     return new ReadWriteBytes(array, index, array.Length - index);
                 case Type.MemoryList:
-                    return Slice(position, new SequencePosition((IMemoryList<byte>)_end, _endIndex));
+                    return Slice(position, new SequencePosition((ReadOnlySequenceSegment<byte>)_end, _endIndex));
                 default: throw new NotImplementedException();
             }
         }
@@ -151,10 +152,10 @@ namespace System.Buffers
             {
                 case Type.Array:
                     var (array, index) = start.Get<byte[]>();
-                    return new ReadWriteBytes(array, index, end.Index - index);
+                    return new ReadWriteBytes(array, index, end.GetInteger() - index);
                 case Type.MemoryList:
-                    var (startList, startIndex) = start.Get<IMemoryList<byte>>();
-                    var (endList, endIndex) = end.Get<IMemoryList<byte>>();
+                    var (startList, startIndex) = start.Get<ReadOnlySequenceSegment<byte>>();
+                    var (endList, endIndex) = end.Get<ReadOnlySequenceSegment<byte>>();
                     return new ReadWriteBytes(startList, startIndex, endList, endIndex);
                 default:
                     throw new NotImplementedException();
@@ -174,7 +175,7 @@ namespace System.Buffers
                     case Type.Array:
                         return new ReadOnlyMemory<byte>((byte[])_start, _startIndex, _endIndex - _startIndex);
                     case Type.MemoryList:
-                        var list = (IMemoryList<byte>)_start;
+                        var list = (ReadOnlySequenceSegment<byte>)_start;
                         if (ReferenceEquals(list, _end))
                         {
                             return list.Memory.Slice(_startIndex, _endIndex - _startIndex);
@@ -199,8 +200,8 @@ namespace System.Buffers
                     case Type.Array:
                         return _endIndex - _startIndex;
                     case Type.MemoryList:
-                        var sl = (IMemoryList<byte>)_start;
-                        var el = (IMemoryList<byte>)_end;
+                        var sl = (ReadOnlySequenceSegment<byte>)_start;
+                        var el = (ReadOnlySequenceSegment<byte>)_end;
                         return (el.RunningIndex + _endIndex) - (sl.RunningIndex + _startIndex);
                     default:
                         throw new NotImplementedException();
@@ -214,7 +215,7 @@ namespace System.Buffers
             switch (kind)
             {
                 case Type.Array:
-                case Type.OwnedMemory:
+                case Type.MemoryOwner:
                     if (!ReferenceEquals(_start, _end) || _startIndex > _endIndex) { throw new NotSupportedException(); }
                     break;
                 case Type.MemoryList:
@@ -230,8 +231,8 @@ namespace System.Buffers
             get
             {
                 if (_start is byte[]) return Type.Array;
-                if (_start is OwnedMemory<byte>) return Type.OwnedMemory;
-                if (_start is IMemoryList<byte>) return Type.MemoryList;
+                if (_start is IMemoryOwner<byte>) return Type.MemoryOwner;
+                if (_start is ReadOnlySequenceSegment<byte>) return Type.MemoryList;
                 throw new NotSupportedException();
             }
         }
@@ -245,7 +246,7 @@ namespace System.Buffers
             {
                 int length = _endIndex - _startIndex;
                 if (buffer.Length < length) length = buffer.Length;
-                array.AsSpan().Slice(_startIndex, length).CopyTo(buffer);
+                array.AsSpan(_startIndex, length).CopyTo(buffer);
                 return length;
             }
 
@@ -272,7 +273,7 @@ namespace System.Buffers
 
         public bool TryGet(ref SequencePosition position, out Memory<byte> item, bool advance = true)
         {
-            if (position == default)
+            if (position.Equals(default))
             {
                 item = default;
                 return false;
@@ -281,8 +282,8 @@ namespace System.Buffers
             var array = _start as byte[];
             if (array != null)
             {
-                var start = _startIndex + position.Index;
-                var length = _endIndex - _startIndex - position.Index;
+                var start = _startIndex + position.GetInteger();
+                var length = _endIndex - _startIndex - position.GetInteger();
                 item = new Memory<byte>(array, start, length);
                 if (advance) position = default;
                 return true;
@@ -290,8 +291,8 @@ namespace System.Buffers
 
             if (Kind == Type.MemoryList)
             {
-                var (node, index) = position.Get<IMemoryList<byte>>();
-                item = node.Memory.Slice(index);
+                var (node, index) = position.Get<ReadOnlySequenceSegment<byte>>();
+                item = MemoryMarshal.AsMemory(node.Memory.Slice(index));
                 if (ReferenceEquals(node, _end))
                 {
                     item = item.Slice(0, _endIndex - index);
@@ -322,7 +323,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    var (segment, index) = origin.Get<IMemoryList<byte>>();
+                    var (segment, index) = origin.Get<ReadOnlySequenceSegment<byte>>();
                     return new SequencePosition(segment, (int)(index + offset));
                 }
             }
@@ -332,7 +333,7 @@ namespace System.Buffers
         enum Type : byte
         {
             Array,
-            OwnedMemory,
+            MemoryOwner,
             MemoryList,
         }
     }

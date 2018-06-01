@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>JSON dynamic object</Description>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET json non-allocating corefxlab</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxStableVersion)" />
+    <PackageReference Include="System.Reflection.Emit.LightWeight" Version="$(CoreFxStableVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System.Text.JsonLab\System.Text.JsonLab.csproj" />
+  </ItemGroup>
+</Project>

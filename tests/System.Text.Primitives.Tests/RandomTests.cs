@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -35,7 +36,7 @@ namespace System.Text.Primitives.Tests
             int expectedBytes = Text.Encoding.UTF8.GetByteCount(value);
 
             // test via string input
-            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(value.AsReadOnlySpan().AsBytes(), out int actual));
+            Assert.Equal(OperationStatus.Done, Encodings.Utf16.ToUtf8Length(MemoryMarshal.AsBytes(value.AsSpan()), out int actual));
             Assert.Equal(expectedBytes, actual);
 
             // test via utf16 input
@@ -70,7 +71,7 @@ namespace System.Text.Primitives.Tests
         public void TryComputeEncodedBytesIllegal_Utf8()
         {
             string text = Encoding.TextEncoderTestHelper.GenerateOnlyInvalidString(20);
-            Assert.Equal(Buffers.OperationStatus.InvalidData, Encodings.Utf16.ToUtf8Length(text.AsReadOnlySpan().AsBytes(), out int needed));
+            Assert.Equal(Buffers.OperationStatus.InvalidData, Encodings.Utf16.ToUtf8Length(MemoryMarshal.AsBytes(text.AsSpan()), out int needed));
         }
     }
 }

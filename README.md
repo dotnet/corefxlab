@@ -30,11 +30,13 @@ holes or issues with our platform without being drowned in large PRs.
 
 Currently, this repo contains the following experimental components:
 
-* **System.Slices**
-These APIs moved to System.Memory (a component in the CoreFx repo) and to System.Buffers.Primitives (a component in this repo)
-
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
+
+* **System.IO.FileSystem.Watcher.Polling**. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
+This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
+allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected.
 
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
@@ -49,14 +51,18 @@ The System.Text.Primitives library contains fast, non-allocating integral parsin
 and an index are accepted as input and a parsed value is desired as output (e.g. in a web server). These APIs present significant performance gains
 over converting the buffer to a string, indexing into the string, and then parsing.
 
-* **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
-This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
-allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected.
-
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
+
+More libraries are coming soon. Stay tuned!
+
+[blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
+
+## Archived Projects
+
+The following projects were moved to the archived_projects directory since they do not have any stewards and are no longer under active development.
+We will no longer publish new packages for these to MyGet and possibly remove them all together in the future.
 
 * **System.Collections.Generic.MultiValueDictionary**.
 The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
@@ -65,11 +71,10 @@ setting of the internal collections so that uniqueness of values can be chosen b
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 * **System.CommandLine**.
-The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](src/System.CommandLine/README.md) for more information.
+The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](archived_projects/src/System.CommandLine/README.md) for more information.
 
-More libraries are coming soon. Stay tuned!
-
-[blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
+* **System.Drawing.Graphics**.
+A prototype of .NET Framework's System.Drawing.Graphics on [LibGD](https://en.wikipedia.org/wiki/GD_Graphics_Library) (instead of using [GDIPlus](https://en.wikipedia.org/wiki/Graphics_Device_Interface)).  Some background information can be found [here](https://blogs.msdn.microsoft.com/dotnet/2017/01/19/net-core-image-processing/).  See the [README.txt](archived_projects/src/System.Drawing.Graphics/README.txt) for more information on building the archived project.
 
 ## Related Projects
 
@@ -112,14 +117,30 @@ There are many .NET related projects on GitHub.
 
 ## Building and Testing
 
-To build the projects in this repo, you have a few options:
+To build the projects in this repo, here is what you need to do:
 
-* Download or install a [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
-* (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
-* (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
-Using VS Code, see https://aka.ms/vscclrdogfood.
-* If using Visual Studio, install the following VSIX to have IDE support for C#7.2 features that this project uses. - https://dotnet.myget.org/F/roslyn/vsix/0b48e25b-9903-4d8b-ad39-d4cca196e3c7-2.6.0.6221102.vsix
+1. The easiest way to build the repo is to invoke `build.cmd` (on Windows) or `build.sh` (on Linux) via the command line after you clone it. When you run `build.cmd` or `build.sh`, the following happens:
+   - The latest .NET cli and runtime are downloaded and installed (under the `dotnetcli` folder)
+   - The NuGet packages for the `corefxlab.sln` solution are restored
+      - To skip this step, add `-Restore false` as an argument (`build.cmd` only)
+   - The `corefxlab.sln` solution (which contains all the active source and test projects) is built
+   - All the unit tests witin the test projects (that live inside the `tests` folder) are executed.
+      - To skip this step, add `-SkipTests true` as an argument (`build.cmd` only)
+2. After you have have run `build` at least once, you can open the `corefxlab.sln` solution file in [Visual Studio 2017](https://www.visualstudio.com/downloads/) (Community, Professional, or Enterprise), on Windows. Make sure you have the .NET Core workload installed (see [corefx windows build instructions](https://github.com/dotnet/corefx/blob/master/Documentation/building/windows-instructions.md) for more details). Also, make sure to add the `dotnetcli` folder path to your system path environment variable. If you are using VS Code, see https://aka.ms/vscclrdogfood.
+   - If you cannot change the system path, then download or install the [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system at the default global location `C:\Program Files\dotnet`, which is referenced by VS.
+
+## Troubleshooting
+
+### It was not possible to find any compatible framework version
+
+There are two main reasons for receiving this error:
+
+ 1. You don't have the latest version. Run `build` to install the latest versions.
+ 2. The wrong `dotnet.exe` is being located. 
+    - From the command line, ensure that you are running `dotnet.exe` from the  `dotnetcli` directory (run `dotnet --info`).
+    - Alternatively, you can add `[RepoPath]\corefxlab\dotnetcli` to you system path, "ahead" of `C:\Program Files\dotnet`.
+    - For building and running tests within VS, you'll need to use this latter option.
 
 ## Measuring Performance
 
-For details, please refer to the [PerfHarness documentation](scripts/PerfHarness/README.md).
+All the performance tests live in the `tests\Benchmarks` directory. To run them via the command line, navigate to that folder and run `dotnet run -c Release`. This will give you the list of benchmarks that you can select to run. The results of the benchmark are displayed on the console and all the artifacts (including the results) are placed in the BenchmarkDotNet.Artifacts folder. For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).

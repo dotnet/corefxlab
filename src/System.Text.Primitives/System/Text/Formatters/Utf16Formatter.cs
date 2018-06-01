@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Text
 {
@@ -223,7 +224,7 @@ namespace System.Buffers.Text
             else if (format.Symbol != 'G') throw new FormatException();
 
             var text = value.ToString("G");
-            if (text.AsReadOnlySpan().AsBytes().TryCopyTo(buffer))
+            if (MemoryMarshal.AsBytes(text.AsSpan()).TryCopyTo(buffer))
             {
                 bytesWritten = text.Length * 2;
                 return true;

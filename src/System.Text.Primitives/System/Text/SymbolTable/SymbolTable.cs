@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.InteropServices;
+
 namespace System.Buffers.Text
 {
     public abstract partial class SymbolTable
@@ -111,7 +113,7 @@ namespace System.Buffers.Text
 
         public bool TryEncode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
-            ReadOnlySpan<byte> srcBytes = source.AsBytes();
+            ReadOnlySpan<byte> srcBytes = MemoryMarshal.AsBytes(source);
 
             if (this == SymbolTable.InvariantUtf16)
                 return TryEncodeUtf16(srcBytes, destination, out bytesConsumed, out bytesWritten);

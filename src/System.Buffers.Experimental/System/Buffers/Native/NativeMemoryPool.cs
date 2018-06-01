@@ -48,7 +48,7 @@ namespace System.Buffers.Native
 
         public override int MaxBufferSize => 1024 * 1024 * 1024;
 
-        public override OwnedMemory<byte> Rent(int numberOfBytes = AnySize)
+        public override IMemoryOwner<byte> Rent(int numberOfBytes = AnySize)
         {
             if (numberOfBytes == AnySize) numberOfBytes = DefaultSize;
             if (numberOfBytes < 1 || numberOfBytes > MaxBufferSize) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
