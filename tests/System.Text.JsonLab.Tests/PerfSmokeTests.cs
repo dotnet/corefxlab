@@ -27,7 +27,7 @@ namespace System.Text.JsonLab.Tests
         // ReSharper disable once ConvertToConstant.Local
         private static readonly bool OutputResults = true;
 
-        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
+        [Fact]
         public void ReadBasicJson()
         {
             Output("====== TEST ReadBasicJson ======");
@@ -35,7 +35,7 @@ namespace System.Text.JsonLab.Tests
             RunTest(TestJson.BasicJson);
         }
 
-        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
+        [Fact]
         public void ReadProjectLockJson()
         {
             Output("====== TEST ReadProjectLockJson ======");
@@ -43,7 +43,7 @@ namespace System.Text.JsonLab.Tests
             RunTest(TestJson.ProjectLockJson);
         }
 
-        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
+        [Fact]
         public void ReadHeavyNestedJsonPerf()
         {
             Output("====== TEST ReadHeavyNestedJson ======");
@@ -58,15 +58,14 @@ namespace System.Text.JsonLab.Tests
 
             for (var j = 0; j < NumberOfSamples; j++)
             {
-                GC.Collect(2);
-                var memoryBefore = GC.GetTotalMemory(true);
+                long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
                 Timer.Restart();
                 for (var i = 0; i < NumberOfIterations; i++)
                 {
                     ReadJsonHelper(jsonStr);
                 }
                 var time = Timer.ElapsedMilliseconds;
-                var memoryAfter = GC.GetTotalMemory(true);
+                long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
                 var consumption = memoryAfter - memoryBefore;
                 timeIterReadResults.Add(time);
                 memoryIterReadResults.Add(consumption);
