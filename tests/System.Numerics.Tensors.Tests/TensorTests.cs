@@ -1964,6 +1964,38 @@ namespace System.Numerics.Tensors.Tests
             Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(actual, expected));
         }
 
+        [Theory]
+        [MemberData(nameof(GetSingleTensorConstructors))]
+        public void Clone(TensorConstructor constructor)
+        {
+            var arr = new[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            };
+
+            var tensor = constructor.CreateFromArray<int>(arr);
+            switch (constructor.TensorType)
+            {
+                case TensorType.Dense:
+                    DenseTensor<int> denseTensor = ((DenseTensor<int>) tensor).Clone();
+                    Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(denseTensor, tensor));
+                    break;
+                case TensorType.Sparse:
+                    SparseTensor<int> sparseTensor = ((SparseTensor<int>) tensor).Clone();
+                    Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(sparseTensor, tensor));
+                    break;
+                case TensorType.CompressedSparse:
+                    CompressedSparseTensor<int> compressedSparseTensor = ((CompressedSparseTensor<int>) tensor).Clone();
+                    Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(compressedSparseTensor, tensor));
+                    break;
+                default:
+                    throw new ArgumentException(nameof(constructor.TensorType));
+            }
+
+            var clone = tensor.Clone();
+            Assert.Equal(true, StructuralComparisons.StructuralEqualityComparer.Equals(clone, tensor));
+        }
 
         [Theory]
         [MemberData(nameof(GetDualTensorConstructors))]
