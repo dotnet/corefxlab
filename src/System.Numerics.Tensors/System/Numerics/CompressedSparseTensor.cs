@@ -386,10 +386,12 @@ namespace System.Numerics
         /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
         /// <returns>A shallow copy of this tensor.</returns>
-        public override Tensor<T> Clone()
+        public new CompressedSparseTensor<T> Clone()
         {
             return new CompressedSparseTensor<T>(values.ToArray(), compressedCounts.ToArray(), indices.ToArray(), nonZeroCount, dimensions, IsReversedStride);
         }
+
+        protected override Tensor<T> CloneTensor() => Clone();
 
         /// <summary>
         /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.

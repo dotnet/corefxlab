@@ -136,10 +136,12 @@ namespace System.Numerics
         /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
         /// <returns>A shallow copy of this tensor.</returns>
-        public override Tensor<T> Clone()
+        public new DenseTensor<T> Clone()
         {
             return new DenseTensor<T>(Buffer.ToArray(), dimensions, IsReversedStride);
         }
+
+        protected override Tensor<T> CloneTensor() => Clone();
 
         /// <summary>
         /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.
