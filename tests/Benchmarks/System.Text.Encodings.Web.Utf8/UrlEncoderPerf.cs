@@ -16,7 +16,7 @@ namespace System.Text.Encodings.Web.Utf8.Benchmarks
         {
             var random = new Random(42);
             var builder = new StringBuilder();
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
                 if (random.NextDouble() < 0.15)
                 {
