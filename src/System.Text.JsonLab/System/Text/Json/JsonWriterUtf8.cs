@@ -565,12 +565,35 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteNull()
         {
-            //TODO: Optimize, just like WriteValue(long value)
-            WriteItemSeperatorUtf8();
-            _firstItem = false;
-            WriteSpacingUtf8();
+            int bytesNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0) + JsonConstants.NullValue.Length;
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            int idx = 0;
+            if (_firstItem)
+            {
+                _firstItem = false;
+            }
+            else 
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
 
-            WriteJsonValue(JsonConstants.NullValue);
+            if (_prettyPrint) 
+            {
+                int indent = _indent;
+                byteBuffer[idx++] = JsonConstants.CarriageReturn;
+                byteBuffer[idx++] = JsonConstants.LineFeed;
+
+                while (indent-- >= 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.Space;
+                    byteBuffer[idx++] = JsonConstants.Space;
+                }
+            }
+
+            Debug.Assert(byteBuffer.Slice(idx).Length >= JsonConstants.NullValue.Length);
+            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
+
+            _bufferWriter.Advance(bytesNeeded);
         }
 
         private void WriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, int bytesNeeded)
