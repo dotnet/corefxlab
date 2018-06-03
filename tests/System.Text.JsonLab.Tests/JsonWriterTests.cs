@@ -53,7 +53,7 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
         }
 
-        static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
+        static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123,true,false]}";
         static void Write(ref JsonWriterUtf8 json)
         {
             json.WriteObjectStart();
@@ -74,6 +74,8 @@ namespace System.Text.JsonLab.Tests
             json.WriteValue(425121);
             json.WriteValue(-425122);
             json.WriteValue(425123);
+            json.WriteValue(true);
+            json.WriteValue(false);
             json.WriteArrayEnd();
             json.WriteObjectEnd();
         }
@@ -98,6 +100,8 @@ namespace System.Text.JsonLab.Tests
             json.WriteValue(425121);
             json.WriteValue(-425122);
             json.WriteValue(425123);
+            json.WriteValue(true);
+            json.WriteValue(false);
             json.WriteArrayEnd();
             json.WriteObjectEnd();
         }
