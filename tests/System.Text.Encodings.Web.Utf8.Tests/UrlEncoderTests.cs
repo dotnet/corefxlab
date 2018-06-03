@@ -65,6 +65,7 @@ namespace System.Text.Encodings.Web.Utf8.Tests
         [InlineData("%", "%")]
         [InlineData("%%", "%%")]
         [InlineData("%A", "%A")]
+        [InlineData("%AY", "%AY")]
         [InlineData("%Y", "%Y")]
         // Mixed
         [InlineData("%%32", "%2")]
