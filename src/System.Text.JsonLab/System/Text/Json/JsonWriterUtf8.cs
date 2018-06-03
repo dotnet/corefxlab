@@ -507,15 +507,23 @@ namespace System.Text.JsonLab
         /// <param name="value">The boolean value to be written to JSON data.</param>
         public void WriteValue(bool value)
         {
-            //TODO: Optimize, just like WriteValue(long value)
-            WriteItemSeperatorUtf8();
-            _firstItem = false;
-            WriteSpacingUtf8();
+            ReadOnlySpan<byte> literal = value ? JsonConstants.TrueValue : JsonConstants.FalseValue;
 
-            if (value)
-                WriteJsonValue(JsonConstants.TrueValue);
-            else
-                WriteJsonValue(JsonConstants.FalseValue);
+            int seperatorSize = ItemSeperatorSize();
+            int spacingSize = SpacingSize();
+            int literalSize = LiteralSize(literal);
+
+            int bytesNeeded = seperatorSize + spacingSize + literalSize;
+
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+
+            int idx = 0;
+            idx += this.WriteItemSeperator(byteBuffer.Slice(idx, seperatorSize));
+            idx += this.WriteSpacing(byteBuffer.Slice(idx, spacingSize));
+            idx += this.WriteLiteral(byteBuffer.Slice(idx, literalSize), literal);
+
+            Debug.Assert(idx == bytesNeeded);
+            _bufferWriter.Advance(bytesNeeded);
         }
 
         /// <summary>
@@ -565,34 +573,20 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteNull()
         {
-            int bytesNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0) + JsonConstants.NullValue.Length;
+            int seperatorSize = ItemSeperatorSize();
+            int spacingSize = SpacingSize();
+            int literalSize = LiteralSize(JsonConstants.NullValue);
+
+            int bytesNeeded = seperatorSize + spacingSize + literalSize;
+
             Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+
             int idx = 0;
-            if (_firstItem)
-            {
-                _firstItem = false;
-            }
-            else 
-            {
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
-            }
+            idx += this.WriteItemSeperator(byteBuffer.Slice(idx, seperatorSize));
+            idx += this.WriteSpacing(byteBuffer.Slice(idx, spacingSize));
+            idx += this.WriteLiteral(byteBuffer.Slice(idx, literalSize), JsonConstants.NullValue);
 
-            if (_prettyPrint) 
-            {
-                int indent = _indent;
-                byteBuffer[idx++] = JsonConstants.CarriageReturn;
-                byteBuffer[idx++] = JsonConstants.LineFeed;
-
-                while (indent-- >= 0)
-                {
-                    byteBuffer[idx++] = JsonConstants.Space;
-                    byteBuffer[idx++] = JsonConstants.Space;
-                }
-            }
-
-            Debug.Assert(byteBuffer.Slice(idx).Length >= JsonConstants.NullValue.Length);
-            JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
-
+            Debug.Assert(idx == bytesNeeded);
             _bufferWriter.Advance(bytesNeeded);
         }
 
@@ -914,6 +908,67 @@ namespace System.Text.JsonLab
                 buffer[offset++] = JsonConstants.Space;
             }
             return offset;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int ItemSeperatorSize()
+        {
+            return (_firstItem ? 0 : 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int WriteItemSeperator(Span<byte> byteBuffer)
+        {
+            int idx = 0;
+            if (_firstItem)
+            {
+                _firstItem = false;
+            }
+            else 
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            return idx;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int SpacingSize()
+        {
+            return (_prettyPrint ? 2 + (_indent + 1) * 2 : 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int WriteSpacing(Span<byte> byteBuffer)
+        {
+            int idx = 0;
+            if (_prettyPrint) 
+            {
+                int indent = _indent;
+                byteBuffer[idx++] = JsonConstants.CarriageReturn;
+                byteBuffer[idx++] = JsonConstants.LineFeed;
+
+                while (indent-- >= 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.Space;
+                    byteBuffer[idx++] = JsonConstants.Space;
+                }
+            }
+            return idx;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int LiteralSize(ReadOnlySpan<byte> literal)
+        {
+            return literal.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int WriteLiteral(Span<byte> byteBuffer, ReadOnlySpan<byte> literal)
+        {
+            Debug.Assert(byteBuffer.Length == literal.Length);
+            literal.CopyTo(byteBuffer);
+            return literal.Length;
         }
     }
 }
