@@ -10,8 +10,6 @@ namespace System.Text.Primitives.Benchmarks
 {
     public class GetUtf16CharCount
     {
-        private const int InnerCount = 10000;
-
         private static readonly UTF8Encoding _nonReplacingEncoder = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
         private static readonly byte[] _utf8BOM = new byte[] { 0xEF, 0xBB, 0xBF };
 
@@ -21,10 +19,7 @@ namespace System.Text.Primitives.Benchmarks
         static byte[] utf8Text;
 
         [GlobalSetup]
-        public void Setup()
-        {
-            utf8Text = ReadTestResource(FileName).ToArray();
-        }
+        public void Setup() => utf8Text = ReadTestResource(FileName).ToArray();
 
         [Benchmark(Baseline = true)]
         public int UsingInboxEncoder()
