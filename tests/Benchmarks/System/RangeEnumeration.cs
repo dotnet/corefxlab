@@ -4,9 +4,9 @@
 
 using BenchmarkDotNet.Attributes;
 
-namespace System.Benchmarks
+namespace System.Buffers.Experimental.Benchmarks
 {
-    public class RangePerf
+    public class RangeEnumeration
     {
         [Params(10, 100, 1000, 10_000)]
         public uint Length;
@@ -22,9 +22,8 @@ namespace System.Benchmarks
         [Benchmark]
         public void Enumeration()
         {
-            foreach (var value in _range)
+            foreach (int value in _range)
             {
-                
             }
         }
     }
