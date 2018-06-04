@@ -1,13 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
 using System.Buffers;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Primitives.Tests.Encoding;
-using static System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper;
+using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
-namespace Benchmarks.System.Text.Primitives.Benchmarks
+namespace System.Text.Primitives.Benchmarks
 {
     public class EncodeFromUtf32toUtf8
     {
@@ -53,7 +49,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus UsingTextEncoder()
         {
-            var status = Encodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
+            var status = Buffers.Text.Encodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

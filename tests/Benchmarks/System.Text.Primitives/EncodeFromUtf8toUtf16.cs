@@ -1,13 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
 using System.Buffers;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Primitives.Tests.Encoding;
-using static System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper;
+using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
-namespace Benchmarks.System.Text.Primitives.Benchmarks
+namespace System.Text.Primitives.Benchmarks
 {
     public class EncodeFromUtf8toUtf16
     {
@@ -37,7 +33,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
             _utf8Source = new byte[utf8Length];
             _utf8Encoding.GetBytes(_characters, 0, _characters.Length, _utf8Source, 0);
 
-            var status = Encodings.Utf8.ToUtf16Length(_utf8Source, out int needed);
+            var status = Buffers.Text.Encodings.Utf8.ToUtf16Length(_utf8Source, out int needed);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
@@ -53,7 +49,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus EncodeFromUtf8toUtf16UsingTextEncoder()
         {
-            var status = Encodings.Utf8.ToUtf16(_utf8Source, _utf16Destination, out int consumed, out int written);
+            var status = Buffers.Text.Encodings.Utf8.ToUtf16(_utf8Source, _utf16Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

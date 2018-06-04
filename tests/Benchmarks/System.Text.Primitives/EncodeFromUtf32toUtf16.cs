@@ -1,13 +1,13 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Buffers;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Primitives.Tests.Encoding;
-using static System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-namespace Benchmarks.System.Text.Primitives.Benchmarks
+using BenchmarkDotNet.Attributes;
+using System.Buffers;
+using System.Collections.Generic;
+using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
+
+namespace System.Text.Primitives.Benchmarks
 {
     public class EncodeFromUtf32toUtf16
     {
@@ -37,7 +37,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
             var utf8Source = new byte[utf8Length];
             _utf32Encoding = Encoding.UTF32;
 
-            var status = Encodings.Utf8.ToUtf16Length(utf8Source, out int needed);
+            var status = Buffers.Text.Encodings.Utf8.ToUtf16Length(utf8Source, out int needed);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
@@ -57,7 +57,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus EncodeFromUtf32toUtf16UsingTextEncoder()
         {
-            OperationStatus status = Encodings.Utf32.ToUtf16(_utf32Source, _utf16Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf16(_utf32Source, _utf16Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

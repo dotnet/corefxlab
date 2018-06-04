@@ -1,15 +1,14 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Code;
-using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using BenchmarkDotNet.Attributes;
 using System.Buffers;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Primitives.Tests.Encoding;
-using static System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper;
+using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
-namespace Benchmarks.System.Text.Primitives.Benchmarks
+namespace System.Text.Primitives.Benchmarks
 {
     public class EncodeFromUtf16toUtf8
     {
@@ -50,7 +49,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus UsingTextEncoder()
         {
-            OperationStatus status = Encodings.Utf16.ToUtf8(_utf16Source, _utf8Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf16.ToUtf8(_utf16Source, _utf8Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

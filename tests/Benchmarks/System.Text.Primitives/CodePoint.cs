@@ -1,10 +1,11 @@
-﻿using BenchmarkDotNet.Code;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
-namespace Benchmarks.System.Text.Primitives
+using BenchmarkDotNet.Code;
+using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
+
+namespace System.Text.Primitives.Benchmarks
 {
     public class CodePoint : IParam
     {
@@ -39,6 +40,6 @@ namespace Benchmarks.System.Text.Primitives
         public int MaxCodePoint { get; }
         public SpecialTestCases Special { get; }
 
-        public string ToSourceCode() => $"new Benchmarks.System.Text.Primitives.CodePoint({MinCodePoint}, {MaxCodePoint}, System.Text.Primitives.Tests.Encoding.TextEncoderTestHelper.SpecialTestCases.{Special})";
+        public string ToSourceCode() => $"new System.Text.Primitives.Benchmarks.CodePoint({MinCodePoint}, {MaxCodePoint}, System.Text.Primitives.Benchmarks.TextEncoderTestHelper.SpecialTestCases.{Special})";
     }
 }
