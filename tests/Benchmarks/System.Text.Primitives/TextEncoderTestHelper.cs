@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Benchmarks.System.Text.Primitives;
+using System.Collections.Generic;
+
 namespace System.Text.Primitives.Tests.Encoding
 {
     public static class TextEncoderTestHelper
@@ -549,6 +552,17 @@ namespace System.Text.Primitives.Tests.Encoding
             {
                 return TextEncoderTestHelper.GenerateValidString(length, minCodePoint, maxCodePoint);
             }
+        }
+
+        public static IEnumerable<CodePoint> GetEncodingPerformanceTestData()
+        {
+            yield return new CodePoint(0x0, TextEncoderConstants.Utf8OneByteLastCodePoint);
+            yield return new CodePoint(TextEncoderConstants.Utf8OneByteLastCodePoint + 1, TextEncoderConstants.Utf8TwoBytesLastCodePoint);
+            yield return new CodePoint(TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+            yield return new CodePoint(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+            yield return new CodePoint(0x0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+            yield return new CodePoint(0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII);
+            yield return new CodePoint(0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII);
         }
 
         public enum CodePointSubset

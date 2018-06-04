@@ -13,13 +13,7 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
     {
         public IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {
-            yield return new CodePoint(0x0, TextEncoderConstants.Utf8OneByteLastCodePoint);
-            yield return new CodePoint(TextEncoderConstants.Utf8OneByteLastCodePoint + 1, TextEncoderConstants.Utf8TwoBytesLastCodePoint);
-            yield return new CodePoint(TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            yield return new CodePoint(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
-            yield return new CodePoint(0x0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            yield return new CodePoint(0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII);
-            yield return new CodePoint(0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII);
+            return TextEncoderTestHelper.GetEncodingPerformanceTestData();
         }
 
         [Params(99, 999, 9999)]
@@ -28,45 +22,42 @@ namespace Benchmarks.System.Text.Primitives.Benchmarks
         [ParamsSource(nameof(GetEncodingPerformanceTestData))]
         public CodePoint CodePointInfo;
 
-        static string inputString;
-        static char[] characters;
-        static byte[] utf8Source;
-        static byte[] utf32Source;
-        static byte[] utf16Destination;
-        static Encoding utf8Encoding;
-        static Encoding utf32Encoding;
+        private static char[] _characters;
+        private static byte[] _utf32Source;
+        private static byte[] _utf16Destination;
+        private static Encoding _utf32Encoding;
 
         [GlobalSetup]
         public void Setup()
         {
-            inputString = GenerateStringData(Length, this.CodePointInfo.MinCodePoint, this.CodePointInfo.MaxCodePoint, this.CodePointInfo.Special);
-            characters = inputString.AsSpan().ToArray();
-            utf8Encoding = Encoding.UTF8;
-            int utf8Length = utf8Encoding.GetByteCount(characters);
-            utf8Source = new byte[utf8Length];
-            utf32Encoding = Encoding.UTF32;
+            var inputString = GenerateStringData(Length, this.CodePointInfo.MinCodePoint, this.CodePointInfo.MaxCodePoint, this.CodePointInfo.Special);
+            _characters = inputString.AsSpan().ToArray();
+            var utf8Encoding = Encoding.UTF8;
+            int utf8Length = utf8Encoding.GetByteCount(_characters);
+            var utf8Source = new byte[utf8Length];
+            _utf32Encoding = Encoding.UTF32;
 
             var status = Encodings.Utf8.ToUtf16Length(utf8Source, out int needed);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
-            utf16Destination = new byte[needed];
+            _utf16Destination = new byte[needed];
             
-            int utf32Length = utf32Encoding.GetByteCount(characters);
-            utf32Source = new byte[utf32Length];
-            utf32Encoding.GetBytes(characters, 0, characters.Length, utf32Source, 0);
+            int utf32Length = _utf32Encoding.GetByteCount(_characters);
+            _utf32Source = new byte[utf32Length];
+            _utf32Encoding.GetBytes(_characters, 0, _characters.Length, _utf32Source, 0);
         }
 
         [Benchmark(Baseline = true)]
-        public void EncodeFromUtf32toUtf16UsingEncoding()
+        public int EncodeFromUtf32toUtf16UsingEncoding()
         {
-            utf32Encoding.GetChars(utf32Source, 0, utf32Source.Length, characters, 0);
+            return _utf32Encoding.GetChars(_utf32Source, 0, _utf32Source.Length, _characters, 0);
         }
 
         [Benchmark]
         public OperationStatus EncodeFromUtf32toUtf16UsingTextEncoder()
         {
-            var status = Encodings.Utf32.ToUtf16(utf32Source, utf16Destination, out int consumed, out int written);
+            OperationStatus status = Encodings.Utf32.ToUtf16(_utf32Source, _utf16Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
