@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
-using System.Buffers.Text;
+using Base64Decoder = System.Buffers.Text.Base64; // This name problematic, since Base64 is part of namespace.
 
-namespace System.Binary.Base64Experimental
+namespace System.Binary.Base64.Benchmarks
 {
     public static class Base64TestHelper
     {
@@ -49,9 +49,9 @@ namespace System.Binary.Base64Experimental
         {
             bytesConsumed = 0;
             bytesWritten = 0;
-            if (Base64.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) == OperationStatus.Done)
+            if (Base64Decoder.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) == OperationStatus.Done)
             {
-                Base64.DecodeFromUtf8(source2, destination.Slice(written1), out int consumed2, out int written2);
+                Base64Decoder.DecodeFromUtf8(source2, destination.Slice(written1), out int consumed2, out int written2);
                 bytesConsumed = consumed2;
                 bytesWritten = written2;
             }
@@ -64,7 +64,7 @@ namespace System.Binary.Base64Experimental
             bytesConsumed = 0;
             bytesWritten = 0;
             int afterMergeSlice = 0;
-            if (Base64.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) != OperationStatus.Done)
+            if (Base64Decoder.DecodeFromUtf8(source1, destination, out int consumed1, out int written1) != OperationStatus.Done)
             {
                 int leftOverBytes = source1.Length - consumed1;
                 if (leftOverBytes < 4)
@@ -76,7 +76,7 @@ namespace System.Binary.Base64Experimental
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
                     amountOfData += amountToCopy;
 
-                    Base64.DecodeFromUtf8(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
+                    Base64Decoder.DecodeFromUtf8(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
                     bytesConsumed = consumed2;
                     bytesWritten = written2;
 
@@ -89,7 +89,7 @@ namespace System.Binary.Base64Experimental
             {
                 return;
             }
-            Base64.DecodeFromUtf8(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
+            Base64Decoder.DecodeFromUtf8(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
             bytesConsumed += consumed3;
             bytesWritten += written3;
         }

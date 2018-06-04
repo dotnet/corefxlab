@@ -1,43 +1,42 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
-using BenchmarkDotNet.Engines;
-using System;
-using System.Binary.Base64Experimental;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
+using BenchmarkDotNet.Attributes;
+using Base64Encoder = System.Binary.Base64Experimental.Base64Experimental; // This name problematic, since Base64Experimental is part of namespace.
 
-namespace Benchmarks.System.Binary.Base64.Benchmarks
+namespace System.Binary.Base64.Benchmarks
 {
     public class Base64Encode
     {
-        [Params(10, 100, 1000, 1000 * 1000)]
+        [Params(10, 100, 1_000, 1_000_000)]
         public int NumberOfBytes;
         private static readonly StandardFormat format = new StandardFormat('M');
 
-        static byte[] source;
-        static byte[] bytesDestination;
-        static char[] charDestination;
-        static int consumed;
-        static int written;
+        private static byte[] _source;
+        private static byte[] _bytesDestination;
+        private static char[] _charsDestination;
+        private static int _consumed;
+        private static int _written;
 
         [GlobalSetup]
         public void Setup()
         {
-            source = new byte[NumberOfBytes];
-            Base64TestHelper.InitalizeBytes(source.AsSpan());
-            bytesDestination = new byte[Base64Experimental.GetMaxEncodedToUtf8Length(NumberOfBytes, format)];
-            charDestination = new char[Base64Experimental.GetMaxEncodedToUtf8Length(NumberOfBytes, format)];
+            _source = new byte[NumberOfBytes];
+            Base64TestHelper.InitalizeBytes(_source);
+            _bytesDestination = new byte[Base64Encoder.GetMaxEncodedToUtf8Length(NumberOfBytes, format)];
+            _charsDestination = new char[Base64Encoder.GetMaxEncodedToUtf8Length(NumberOfBytes, format)];
         }
 
         [Benchmark]
-        public OperationStatus WithLineBreaks()
+        public OperationStatus Base64ExperimentalWithLineBreaks()
         {
-            return Base64Experimental.EncodeToUtf8(source, bytesDestination, out consumed, out written, format);
+            return Base64Encoder.EncodeToUtf8(_source, _bytesDestination, out _consumed, out _written, format);
         }
 
         [Benchmark(Baseline = true)]
-        public int ConvertWithLineBreaks()
+        public int Base64ExperimentalConvertWithLineBreaks()
         {
-            return Convert.ToBase64CharArray(source, 0, source.Length, charDestination, 0, Base64FormattingOptions.InsertLineBreaks);
+            return Convert.ToBase64CharArray(_source, 0, _source.Length, _charsDestination, 0, Base64FormattingOptions.InsertLineBreaks);
         }
     }
 }

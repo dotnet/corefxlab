@@ -1,52 +1,51 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Binary.Base64Experimental;
-using Base64Decoder = System.Buffers.Text.Base64;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using BenchmarkDotNet.Attributes;
+using Base64Decoder = System.Buffers.Text.Base64; // This name problematic, since Base64 is part of namespace.
 
-namespace Benchmarks.System.Binary.Base64.Benchmarks
+namespace System.Binary.Base64.Benchmarks
 {
     public class Stiching
     {
-        [Params(1000, 5000, 10000, 20000, 50000)]
+        [Params(1_000, 5_000, 10_000, 20_000, 50_000)]
         public int InputBufferSize;
 
-        static byte[] source;
-        static byte[] alignedSource1;
-        static byte[] alignedSource2;
-        static byte[] notAlignedSource1;
-        static byte[] notAlignedSource2;
-        static byte[] destination;
-        static byte[] expected;
-        static int bytesConsumed;
-        static int bytesWritten;
+        private static byte[] _source;
+        private static byte[] _alignedSource1;
+        private static byte[] _alignedSource2;
+        private static byte[] _notAlignedSource1;
+        private static byte[] _notAlignedSource2;
+        private static byte[] _destination;
+        private static byte[] _expected;
+        private static int _bytesConsumed;
+        private static int _bytesWritten;
 
         [GlobalSetup]
         public void Setup()
         {
-            source = new byte[InputBufferSize];
-            Base64TestHelper.InitalizeDecodableBytes(source);
-            expected = new byte[InputBufferSize];
-            Base64Decoder.DecodeFromUtf8(source, expected, out int expectedConsumed, out int expectedWritten);
+            _source = new byte[InputBufferSize];
+            Base64TestHelper.InitalizeDecodableBytes(_source);
+            _expected = new byte[InputBufferSize];
+            Base64Decoder.DecodeFromUtf8(_source, _expected, out int expectedConsumed, out int expectedWritten);
 
-            Base64TestHelper.SplitSourceIntoSpans(source, false, out ReadOnlySpan<byte> _alignedSource1, out ReadOnlySpan<byte> _alignedSource2);
-            alignedSource1 = _alignedSource1.ToArray();
-            alignedSource2 = _alignedSource2.ToArray();
+            Base64TestHelper.SplitSourceIntoSpans(_source, false, out ReadOnlySpan<byte> alignedSource1, out ReadOnlySpan<byte> alignedSource2);
+            _alignedSource1 = alignedSource1.ToArray();
+            _alignedSource2 = alignedSource2.ToArray();
 
-            Base64TestHelper.SplitSourceIntoSpans(source, false, out ReadOnlySpan<byte> _notAlignedSource1, out ReadOnlySpan<byte> _notAlignedSource2);
-            notAlignedSource1 = _notAlignedSource1.ToArray();
-            notAlignedSource2 = _notAlignedSource2.ToArray();
+            Base64TestHelper.SplitSourceIntoSpans(_source, false, out ReadOnlySpan<byte> notAlignedSource1, out ReadOnlySpan<byte> notAlignedSource2);
+            _notAlignedSource1 = notAlignedSource1.ToArray();
+            _notAlignedSource2 = notAlignedSource2.ToArray();
 
-            destination = new byte[InputBufferSize]; // Plenty of space
+            _destination = new byte[InputBufferSize]; // Plenty of space
 
-            bytesConsumed = 0;
-            bytesWritten = 0;
+            _bytesConsumed = 0;
+            _bytesWritten = 0;
         }
 
         [Benchmark(Baseline = true)]
-        [Arguments(0)]
-        public void NoStiching(int stackSize)
+        public void NoStiching()
         {
-            Base64TestHelper.DecodeNoNeedToStich(alignedSource1, alignedSource2, destination, out bytesConsumed, out bytesWritten);
+            Base64TestHelper.DecodeNoNeedToStich(_alignedSource1, _alignedSource2, _destination, out _bytesConsumed, out _bytesWritten);
         }
 
         [Benchmark]
@@ -59,15 +58,14 @@ namespace Benchmarks.System.Binary.Base64.Benchmarks
         public void StichingRequired(int stackSize)
         {
             Span<byte> stackSpan = stackalloc byte[stackSize];
-            Base64TestHelper.DecodeStichUsingStack(notAlignedSource1, notAlignedSource2, destination, stackSpan, out bytesConsumed, out bytesWritten);
+            Base64TestHelper.DecodeStichUsingStack(_notAlignedSource1, _notAlignedSource2, _destination, stackSpan, out _bytesConsumed, out _bytesWritten);
         }
 
         [Benchmark]
-        [Arguments(600)] // This would be actualy transformed to larger size.
-        public void StichingRequiredNoThirdCall(int stackSize)
+        public void StichingRequiredNoThirdCall()
         {
             Span<byte> stackSpan = stackalloc byte[600 * InputBufferSize / 1000];
-            Base64TestHelper.DecodeStichUsingStack(notAlignedSource1, notAlignedSource2, destination, stackSpan, out bytesConsumed, out bytesWritten);
+            Base64TestHelper.DecodeStichUsingStack(_notAlignedSource1, _notAlignedSource2, _destination, stackSpan, out _bytesConsumed, out _bytesWritten);
         }
     }
 }
