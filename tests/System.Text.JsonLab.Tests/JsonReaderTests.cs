@@ -72,6 +72,11 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(actualStr, expectedStr);
+
+            long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
+            JsonLabEmptyLoopHelper(dataUtf8, SymbolTable.InvariantUtf8);
+            long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
+            Assert.Equal(0, memoryAfter - memoryBefore);
         }
 
         // TestCaseType is only used to give the json strings a descriptive name.
@@ -87,6 +92,70 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(actualStr, expectedStr);
+
+            long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
+            JsonLabEmptyLoopHelper(dataUtf16, SymbolTable.InvariantUtf16);
+            long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
+            Assert.Equal(0, memoryAfter - memoryBefore);
+        }
+
+        private static void JsonLabEmptyLoopHelper(byte[] data, SymbolTable symbolTable)
+        {
+            var json = new JsonReader(data, symbolTable);
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                switch (tokenType)
+                {
+                    case JsonTokenType.StartObject:
+                    case JsonTokenType.EndObject:
+                    case JsonTokenType.StartArray:
+                    case JsonTokenType.EndArray:
+                        break;
+                    case JsonTokenType.PropertyName:
+                        break;
+                    case JsonTokenType.Value:
+                        JsonValueType valueType = json.ValueType;
+                        switch (valueType)
+                        {
+                            case JsonValueType.Unknown:
+                                break;
+                            case JsonValueType.Object:
+                                break;
+                            case JsonValueType.Array:
+                                break;
+                            case JsonValueType.Number:
+                                break;
+                            case JsonValueType.String:
+                                break;
+                            case JsonValueType.True:
+                                break;
+                            case JsonValueType.False:
+                                break;
+                            case JsonValueType.Null:
+                                break;
+                            case JsonValueType.Undefined:
+                                break;
+                            case JsonValueType.NaN:
+                                break;
+                            case JsonValueType.Infinity:
+                                break;
+                            case JsonValueType.NegativeInfinity:
+                                break;
+                        }
+                        break;
+                    case JsonTokenType.None:
+                        break;
+                    case JsonTokenType.Comment:
+                        break;
+                    case JsonTokenType.Null:
+                        break;
+                    case JsonTokenType.Undefined:
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
         }
 
         private static byte[] JsonLabReturnBytesHelper(byte[] data, SymbolTable symbolTable, out int length, int utf16Multiplier = 1)
@@ -108,7 +177,7 @@ namespace System.Text.JsonLab.Tests
                         destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
                         break;
                     case JsonTokenType.Value:
-                        var valueType = json.ValueType;
+                        JsonValueType valueType = json.ValueType;
 
                         switch (valueType)
                         {

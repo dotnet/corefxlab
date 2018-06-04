@@ -543,12 +543,37 @@ namespace System.Text.JsonLab
         /// </summary>
         public void WriteNull()
         {
-            //TODO: Optimize, just like WriteValue(long value)
-            WriteItemSeperatorUtf16();
-            _firstItem = false;
-            WriteSpacingUtf16();
+            int charsNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0);
+            int bytesNeeded = charsNeeded * 2 + JsonConstants.NullValueUtf16.Length;
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(byteBuffer);
+            int idx = 0;
+            if (_firstItem)
+            {
+                _firstItem = false;
+            }
+            else 
+            {
+                charBuffer[idx++] = (char)JsonConstants.ListSeperator;
+            }
 
-            WriteJsonValue(JsonConstants.NullValue);
+            if (_prettyPrint) 
+            {
+                int indent = _indent;
+                charBuffer[idx++] = (char)JsonConstants.CarriageReturn;
+                charBuffer[idx++] = (char)JsonConstants.LineFeed;
+
+                while (indent-- >= 0)
+                {
+                    charBuffer[idx++] = (char)JsonConstants.Space;
+                    charBuffer[idx++] = (char)JsonConstants.Space;
+                }
+            }
+
+            Debug.Assert(byteBuffer.Slice(idx * 2).Length >= JsonConstants.NullValueUtf16.Length);
+            JsonConstants.NullValueUtf16.CopyTo(byteBuffer.Slice(idx * 2));
+
+            _bufferWriter.Advance(bytesNeeded);
         }
 
         private void WriteAttributeUtf16(ReadOnlySpan<char> nameSpanChar, int bytesNeeded)
