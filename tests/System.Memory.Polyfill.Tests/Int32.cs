@@ -11,7 +11,7 @@ namespace System.Polyfill.Tests
         [Fact]
         public void Int32TryParse()
         {
-            ReadOnlySpan<char> span = int.MaxValue.ToString().ToCharArray().AsSpan();
+            ReadOnlySpan<char> span = int.MaxValue.ToString().AsSpan();
             Assert.True(Int32Polyfill.TryParse(span, out int value));
             Assert.Equal(int.MaxValue, value);
         }
