@@ -6,7 +6,6 @@ using BenchmarkDotNet.Attributes;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
 namespace System.Text.Primitives.Benchmarks
 {
@@ -14,7 +13,7 @@ namespace System.Text.Primitives.Benchmarks
     {
         public IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {
-            return TextEncoderTestHelper.GetEncodingPerformanceTestData();
+            return UtfEncoderHelper.GetEncodingPerformanceTestData();
         }
 
         [Params(99, 999, 9999)]
@@ -31,7 +30,7 @@ namespace System.Text.Primitives.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var inputString = GenerateStringData(Length, this.CodePointInfo.MinCodePoint, this.CodePointInfo.MaxCodePoint, this.CodePointInfo.Special);
+            string inputString = UtfEncoderHelper.GenerateStringData(Length, this.CodePointInfo.MinCodePoint, CodePointInfo.MaxCodePoint, CodePointInfo.Special);
             _characters = inputString.AsSpan().ToArray();
             _utf8Encoding = Encoding.UTF8;
             int utf8Length = _utf8Encoding.GetByteCount(_characters);

@@ -3,13 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using BenchmarkDotNet.Code;
-using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
 namespace System.Text.Primitives.Benchmarks
 {
     public class CodePoint : IParam
     {
-        public CodePoint(int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public CodePoint(int minCodePoint, int maxCodePoint, UtfEncoderHelper.SpecialTestCases special = UtfEncoderHelper.SpecialTestCases.None)
         {
             this.MinCodePoint = minCodePoint;
             this.MaxCodePoint = maxCodePoint;
@@ -24,11 +23,11 @@ namespace System.Text.Primitives.Benchmarks
             {
                 switch (Special)
                 {
-                    case SpecialTestCases.None:
+                    case UtfEncoderHelper.SpecialTestCases.None:
                         return $"({MinCodePoint},{MaxCodePoint},None)";
-                    case SpecialTestCases.AlternatingASCIIAndNonASCII:
+                    case UtfEncoderHelper.SpecialTestCases.AlternatingASCIIAndNonASCII:
                         return $"({MinCodePoint},{MaxCodePoint},Alternating)";
-                    case SpecialTestCases.MostlyASCIIAndSomeNonASCII:
+                    case UtfEncoderHelper.SpecialTestCases.MostlyASCIIAndSomeNonASCII:
                         return $"({MinCodePoint},{MaxCodePoint},Mostly)";
                     default:
                         return $"({MinCodePoint},{MaxCodePoint},{Special})";
@@ -38,8 +37,9 @@ namespace System.Text.Primitives.Benchmarks
 
         public int MinCodePoint { get; }
         public int MaxCodePoint { get; }
-        public SpecialTestCases Special { get; }
+        public UtfEncoderHelper.SpecialTestCases Special { get; }
 
-        public string ToSourceCode() => $"new System.Text.Primitives.Benchmarks.CodePoint({MinCodePoint}, {MaxCodePoint}, System.Text.Primitives.Benchmarks.TextEncoderTestHelper.SpecialTestCases.{Special})";
+        public string ToSourceCode() => $"new System.Text.Primitives.Benchmarks.CodePoint({MinCodePoint}, {MaxCodePoint}, System.Text.Primitives.Benchmarks.UtfEncoderHelper.SpecialTestCases.{Special})";
+
     }
 }

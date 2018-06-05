@@ -1,7 +1,10 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using BenchmarkDotNet.Attributes;
 using System.Buffers;
 using System.Collections.Generic;
-using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
 namespace System.Text.Primitives.Benchmarks
 {
@@ -9,7 +12,7 @@ namespace System.Text.Primitives.Benchmarks
     {
         public IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {
-            return TextEncoderTestHelper.GetEncodingPerformanceTestData();
+            return UtfEncoderHelper.GetEncodingPerformanceTestData();
         }
 
         [Params(99, 999, 9999)]
@@ -27,7 +30,7 @@ namespace System.Text.Primitives.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var inputString = GenerateStringData(Length, this.CodePointInfo.MinCodePoint, this.CodePointInfo.MaxCodePoint, this.CodePointInfo.Special);
+            string inputString = UtfEncoderHelper.GenerateStringData(Length, CodePointInfo.MinCodePoint, CodePointInfo.MaxCodePoint, CodePointInfo.Special);
             _characters = inputString.AsSpan().ToArray();
             _utf8Encoding = Encoding.UTF8;
             int utf8Length = _utf8Encoding.GetByteCount(_characters);
@@ -49,7 +52,7 @@ namespace System.Text.Primitives.Benchmarks
         [Benchmark]
         public OperationStatus UsingTextEncoder()
         {
-            var status = Buffers.Text.Encodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
+            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf8(_utf32Source, _utf8Destination, out int consumed, out int written);
             if (status != OperationStatus.Done)
                 throw new Exception();
 

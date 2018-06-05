@@ -5,7 +5,6 @@
 using BenchmarkDotNet.Attributes;
 using System.Buffers;
 using System.Collections.Generic;
-using static System.Text.Primitives.Benchmarks.TextEncoderTestHelper;
 
 namespace System.Text.Primitives.Benchmarks
 {
@@ -13,7 +12,7 @@ namespace System.Text.Primitives.Benchmarks
     {
         public IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {
-            return TextEncoderTestHelper.GetEncodingPerformanceTestData();
+            return UtfEncoderHelper.GetEncodingPerformanceTestData();
         }
 
         [Params(99, 999, 9999)]
@@ -30,22 +29,17 @@ namespace System.Text.Primitives.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var inputString = GenerateStringData(Length, this.CodePointInfo.MinCodePoint, this.CodePointInfo.MaxCodePoint, this.CodePointInfo.Special);
+            string inputString = UtfEncoderHelper.GenerateStringData(Length, CodePointInfo.MinCodePoint, CodePointInfo.MaxCodePoint, CodePointInfo.Special);
             _characters = inputString.AsSpan().ToArray();
-            var utf8Encoding = Encoding.UTF8;
-            int utf8Length = utf8Encoding.GetByteCount(_characters);
-            var utf8Source = new byte[utf8Length];
-            _utf32Encoding = Encoding.UTF32;
 
-            var status = Buffers.Text.Encodings.Utf8.ToUtf16Length(utf8Source, out int needed);
+            _utf32Encoding = Encoding.UTF32;
+            _utf32Source = Text.Encoding.UTF32.GetBytes(inputString);
+
+            OperationStatus status = Buffers.Text.Encodings.Utf32.ToUtf16Length(_utf32Source, out int needed);
             if (status != OperationStatus.Done)
                 throw new Exception();
 
             _utf16Destination = new byte[needed];
-            
-            int utf32Length = _utf32Encoding.GetByteCount(_characters);
-            _utf32Source = new byte[utf32Length];
-            _utf32Encoding.GetBytes(_characters, 0, _characters.Length, _utf32Source, 0);
         }
 
         [Benchmark(Baseline = true)]
