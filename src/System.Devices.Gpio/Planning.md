@@ -346,46 +346,46 @@ namespace System.Devices.Gpio
 
 # 12-Week Completion Plan
 Our goal should be to hit the ground running and check-in on the first day and every subsequent day. No matter how small, every day should have a code check-in.
-### Sprint 1: 5/28 - 06/15
-#### Week 1: 5/28 - 06/01
+### Sprint 1: 06/04 - 06/22
+#### Week 1: 06/04 - 06/08
 - First check-in of an example usage or test case to corefxlab on Day1.
 - Write a basic blinking LED program in any language by Day2
 - First-Round API review for all GPIO phases by first Friday. 
-#### Week 2: 06/04 - 06/08
+#### Week 2: 06/11 - 06/15
 - Check-in functional tests for 100% of the "Basic Implementation" APIs
 - Check-in a Windows "Basic Implementation" that successfully passes all new tests
 - All "Basic Implementation" public APIs have accompanying doc comments
-#### Week 3: 06/11 - 06/15
+#### Week 3: 06/18 - 06/22
 - Check-in a Unix "Basic Implementation" that successfully passes all new tests
 - Write a blog post or instructional guide on how to blink an LED using .net core on a Raspberry pi 3 (Scenario 1 above)
-### Sprint 2: 06/18 - 07/06
-#### Week 4: 06/18 - 06/22
+### Sprint 2: 06/25 - 07/13
+#### Week 4: 06/25 - 06/29
 - Check-in functional tests for 100% of the "Intermediate Implementation" APIs
 - Check-in a Windows "Intermediate Implementation" that successfully passes all new tests
 - All "Intermediate Implementation" public APIs have accompanying doc comments
-#### Week 5: 06/25 - 06/29
+#### Week 5: 07/02 - 07/06
 - Check-in a Unix "Intermediate Implementation" that successfully passes all new tests
 - Write a blog post or instructional guide on how to listen for temperature changes on a sensor using .net core on a Raspberry pi 3 (Scenario 2 above)
-#### Week 6: 07/02 - 07/06
+#### Week 6: 07/09 - 07/13
 - BenchmarkDotNet performance tests written for 100% of Basic and Intermediate Public APIs.
 - Share performance results with the team in either a detailed email or a blog post.
-### Sprint 3: 07/09 - 07/27
-#### Week 7: 07/09 - 07/13
+### Sprint 3: 07/16 - 08/03
+#### Week 7: 07/16 - 07/20
 - Check-in functional tests for 100% of the "Advanced Implementation" APIs
 - Check-in a Windows "Advanced Implementation" that successfully passes all new tests
 - All "Advanced Implementation" public APIs have accompanying doc comments
-#### Week 8: 07/16 - 07/20
+#### Week 8: 07/23 - 07/27
 - Check-in a Unix "Advanced Implementation" that successfully passes all new tests
-#### Week 9: 07/23 - 07/27
+#### Week 9: 07/30 - 08/03
 - Write a blog post or instructional guide on how to integrate a rpi app into Azure tools using .net core on a Raspberry pi 3 (Scenario 3 above). There's a lot of room for flexibility and creativity here to make something cool to show off to the team.
-### Sprint 4: 07/30 - 08/17
-#### Week 10: 07/30 - 08/03
+### Sprint 4: 08/06 - 08/24
+#### Week 10: 08/06 - 08/10
 - (Stretch Goal) Design and plan an API for one of the multi-pin connection types and take it through an API review meeting.
-#### Week 11: 08/06 - 08/10
+#### Week 11: 08/13 - 08/17
 - (Stretch Goal) Check-in functional tests for 100% of the public multi-pin type APIs
 - (Stretch Goal) Check-in a Windows multi-pin implementation that successfully passes all new tests
 - (Stretch Goal) All multi-pin implementation public APIs have accompanying doc comments
-#### Week 12: 08/13 - 08/17
+#### Week 12: 08/20 - 08/24
 - (Stretch Goal) Check-in a Unix multi-pin implementation that successfully passes all new tests
 - (Stretch Goal) Write a blog post or instructional guide on how to use the new multi-pin APIs, maybe doing something interesting with an RFID reader for example (Scenario 4 above).
 - Do any final cleanup necessary and close out remaining bugs/issues assigned
