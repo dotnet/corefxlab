@@ -44,7 +44,7 @@ They are designed to format values into text streams and to build complex string
 But these APIs are optimized for creating text for the Web. 
 They do formatting with minimum GC heap allocations (1/6 of allocations in some scenarios) and can format directly to UTF8 streams. 
 This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
-See more information on this component and code samples at the [Wiki]( https://github.com/dotnet/corefxlab/wiki). 
+See more information on this component and code samples at the [Wiki](https://github.com/dotnet/corefxlab/wiki). 
 
 * **System.Text.Primitives**
 The System.Text.Primitives library contains fast, non-allocating integral parsing APIs. They are designed for scenarios in which a byte buffer
@@ -54,6 +54,9 @@ over converting the buffer to a string, indexing into the string, and then parsi
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
+
+* **System.Devices.Gpio**.
+This GPIO library contains usefull APIs to support .NET development for IoT devices like Raspberry Pi and BeagleBone Black. See more information about the features at [Planning.md](src/System.Devices.Gpio/Planning.md).
 
 More libraries are coming soon. Stay tuned!
 
