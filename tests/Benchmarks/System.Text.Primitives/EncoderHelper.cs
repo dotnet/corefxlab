@@ -7,7 +7,7 @@ using System.Text.Primitives.Tests.Encoding;
 
 namespace System.Text.Primitives.Benchmarks
 {
-    public class UtfEncoderHelper
+    public class EncoderHelper
     {
         public static IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {

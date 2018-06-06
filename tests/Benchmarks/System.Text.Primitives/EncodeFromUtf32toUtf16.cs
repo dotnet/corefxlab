@@ -12,7 +12,7 @@ namespace System.Text.Primitives.Benchmarks
     {
         public IEnumerable<CodePoint> GetEncodingPerformanceTestData()
         {
-            return UtfEncoderHelper.GetEncodingPerformanceTestData();
+            return EncoderHelper.GetEncodingPerformanceTestData();
         }
 
         [Params(99, 999, 9999)]
@@ -29,7 +29,7 @@ namespace System.Text.Primitives.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            string inputString = UtfEncoderHelper.GenerateStringData(Length, CodePointInfo.MinCodePoint, CodePointInfo.MaxCodePoint, CodePointInfo.Special);
+            string inputString = EncoderHelper.GenerateStringData(Length, CodePointInfo.MinCodePoint, CodePointInfo.MaxCodePoint, CodePointInfo.Special);
             _characters = inputString.AsSpan().ToArray();
 
             _utf32Encoding = Encoding.UTF32;
