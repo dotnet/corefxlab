@@ -8,7 +8,7 @@ namespace System.Text.Primitives.Benchmarks
 {
     public class CodePoint : IParam
     {
-        public CodePoint(int minCodePoint, int maxCodePoint, UtfEncoderHelper.SpecialTestCases special = UtfEncoderHelper.SpecialTestCases.None)
+        public CodePoint(int minCodePoint, int maxCodePoint, EncoderHelper.SpecialTestCases special = EncoderHelper.SpecialTestCases.None)
         {
             this.MinCodePoint = minCodePoint;
             this.MaxCodePoint = maxCodePoint;
@@ -23,11 +23,11 @@ namespace System.Text.Primitives.Benchmarks
             {
                 switch (Special)
                 {
-                    case UtfEncoderHelper.SpecialTestCases.None:
+                    case EncoderHelper.SpecialTestCases.None:
                         return $"({MinCodePoint},{MaxCodePoint},None)";
-                    case UtfEncoderHelper.SpecialTestCases.AlternatingASCIIAndNonASCII:
+                    case EncoderHelper.SpecialTestCases.AlternatingASCIIAndNonASCII:
                         return $"({MinCodePoint},{MaxCodePoint},Alternating)";
-                    case UtfEncoderHelper.SpecialTestCases.MostlyASCIIAndSomeNonASCII:
+                    case EncoderHelper.SpecialTestCases.MostlyASCIIAndSomeNonASCII:
                         return $"({MinCodePoint},{MaxCodePoint},Mostly)";
                     default:
                         return $"({MinCodePoint},{MaxCodePoint},{Special})";
@@ -37,7 +37,7 @@ namespace System.Text.Primitives.Benchmarks
 
         public int MinCodePoint { get; }
         public int MaxCodePoint { get; }
-        public UtfEncoderHelper.SpecialTestCases Special { get; }
+        public EncoderHelper.SpecialTestCases Special { get; }
 
         public string ToSourceCode() => $"new System.Text.Primitives.Benchmarks.CodePoint({MinCodePoint}, {MaxCodePoint}, System.Text.Primitives.Benchmarks.UtfEncoderHelper.SpecialTestCases.{Special})";
 
