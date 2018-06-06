@@ -12,15 +12,33 @@ namespace System.Buffers.Experimental.Benchmarks
         public uint Length;
 
         private Range _range;
+        private int[] _array;
 
         [GlobalSetup]
         public void Setup()
         {
             _range = new Range(0, Length);
+            _array = new int[Length];
+        }
+
+        [Benchmark(Baseline = true)]
+        public void RegularForLoop()
+        {
+            for (int i = 0; i < Length; i++)
+            {
+            }
         }
 
         [Benchmark]
-        public void Enumeration()
+        public void EnumerationArray()
+        {
+            foreach (int value in _array)
+            {
+            }
+        }
+
+        [Benchmark]
+        public void EnumerationRange()
         {
             foreach (int value in _range)
             {
