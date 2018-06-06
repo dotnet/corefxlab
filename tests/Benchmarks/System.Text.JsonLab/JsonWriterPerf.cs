@@ -102,7 +102,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriterUtf8(output, formatted);
+            var json = new JsonWriterUtf8(output, true, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -131,7 +131,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriterUtf16(output, formatted);
+            var json = new JsonWriterUtf8(output, false, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -201,7 +201,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriterUtf8(output, formatted);
+            var json = new JsonWriterUtf8(output, true, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -210,7 +210,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriterUtf16(output, formatted);
+            var json = new JsonWriterUtf8(output, false, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
