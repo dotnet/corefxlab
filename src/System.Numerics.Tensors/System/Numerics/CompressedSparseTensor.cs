@@ -391,7 +391,7 @@ namespace System.Numerics
             return new CompressedSparseTensor<T>(values.ToArray(), compressedCounts.ToArray(), indices.ToArray(), nonZeroCount, dimensions, IsReversedStride);
         }
 
-        protected override Tensor<T> CloneTensor() => Clone();
+        protected override Tensor<T> CloneInternal() => Clone();
 
         /// <summary>
         /// Creates a new Tensor of a different type with the specified dimensions and the same layout as this tensor with elements initialized to their default value.

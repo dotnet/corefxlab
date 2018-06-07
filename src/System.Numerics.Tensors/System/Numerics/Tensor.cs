@@ -462,13 +462,13 @@ namespace System.Numerics
         /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
         /// <returns>A shallow copy of this tensor.</returns>
-        public Tensor<T> Clone() => CloneTensor();
+        public Tensor<T> Clone() => CloneInternal();
 
         /// <summary>
         /// Creates a shallow copy of this tensor, with new backing storage.
         /// </summary>
         /// <returns>A shallow copy of this tensor.</returns>
-        protected abstract Tensor<T> CloneTensor();
+        protected abstract Tensor<T> CloneInternal();
 
         /// <summary>
         /// Creates a new Tensor with the same layout and dimensions as this tensor with elements initialized to their default value.

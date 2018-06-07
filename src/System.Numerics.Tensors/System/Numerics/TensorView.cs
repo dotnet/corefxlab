@@ -74,7 +74,7 @@ namespace System.Numerics
             this[indices] = value;
         }
 
-        protected override Tensor<T> CloneTensor()
+        protected override Tensor<T> CloneInternal()
         {
             Tensor<T> result = _backingTensor.CloneEmpty(Dimensions);
 
