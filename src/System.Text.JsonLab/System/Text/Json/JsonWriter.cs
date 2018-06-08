@@ -3,30 +3,31 @@
 
 using System.Buffers;
 using System.Buffers.Text;
+using System.Buffers.Writer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public struct JsonWriter
+    public ref struct JsonWriter
     {
         private static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
         private static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
 
-        readonly bool _prettyPrint;
-        readonly IBufferWriter<byte> _bufferWriter;
-        readonly bool _isUtf8;
+        private readonly bool _prettyPrint;
+        private BufferWriter<IBufferWriter<byte>> _bufferWriter;
+        private readonly bool _isUtf8;
 
-        int _indent;
-        bool _firstItem;
+        private int _indent;
+        private bool _firstItem;
 
         /// <summary>
         /// Constructs a JSON writer with a specified <paramref name="bufferWriter"/>.
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public JsonWriter(IBufferWriter<byte> bufferWriter, bool isUtf8, bool prettyPrint = false)
+        public JsonWriter(BufferWriter<IBufferWriter<byte>> bufferWriter, bool isUtf8, bool prettyPrint = false)
         {
             _bufferWriter = bufferWriter;
             _prettyPrint = prettyPrint;
@@ -58,7 +59,8 @@ namespace System.Text.JsonLab
 
         private void WriteStartUtf8(int bytesNeeded, byte token)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
 
             int idx = 0;
             if (!_firstItem)
@@ -77,11 +79,13 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx] = token;
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         private void WriteStartUtf16(int bytesNeeded, byte token)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
 
             int idx = 0;
             if (!_firstItem)
@@ -100,6 +104,7 @@ namespace System.Text.JsonLab
 
             charBuffer[idx] = (char)token;
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         /// <summary>
@@ -129,7 +134,8 @@ namespace System.Text.JsonLab
 
         private void WriteStartUtf8(ReadOnlySpan<byte> nameSpanByte, int bytesNeeded, byte token)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
             int idx = 0;
 
             if (!_firstItem)
@@ -159,12 +165,14 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = token;
 
             _bufferWriter.Advance(idx);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
         private void WriteStartUtf16(ReadOnlySpan<char> nameSpanChar, int bytesNeeded, byte token)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
             int idx = 0;
 
             if (!_firstItem)
@@ -189,6 +197,7 @@ namespace System.Text.JsonLab
             charBuffer[idx] = (char)token;
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -211,7 +220,8 @@ namespace System.Text.JsonLab
 
         private void WriteEndUtf8(int bytesNeeded, byte token)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
             int idx = 0;
 
             if (_prettyPrint)
@@ -219,11 +229,13 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx] = token;
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         private void WriteEndUtf16(int bytesNeeded, byte token)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
             int idx = 0;
 
             if (_prettyPrint)
@@ -231,6 +243,7 @@ namespace System.Text.JsonLab
 
             charBuffer[idx] = (char)token;
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         /// <summary>
@@ -321,7 +334,8 @@ namespace System.Text.JsonLab
 
         private void WriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
             int idx = 0;
 
             if (!_firstItem)
@@ -361,12 +375,14 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Quote;
 
             _bufferWriter.Advance(idx);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
         private void WriteAttributeUtf16(ReadOnlySpan<char> nameSpanChar, ReadOnlySpan<char> valueSpanChar, int bytesNeeded)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
             int idx = 0;
 
             if (!_firstItem)
@@ -395,6 +411,7 @@ namespace System.Text.JsonLab
             charBuffer[idx + valueSpanChar.Length] = (char)JsonConstants.Quote;
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -566,7 +583,8 @@ namespace System.Text.JsonLab
 
         private void WriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, int bytesNeeded)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
             int idx = 0;
 
             if (!_firstItem)
@@ -594,12 +612,14 @@ namespace System.Text.JsonLab
                 byteBuffer[idx++] = JsonConstants.Space;
 
             _bufferWriter.Advance(idx);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
         private void WriteAttributeUtf16(ReadOnlySpan<char> nameSpanChar, int bytesNeeded)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
             int idx = 0;
 
             if (!_firstItem)
@@ -622,6 +642,7 @@ namespace System.Text.JsonLab
                 charBuffer[idx] = (char)JsonConstants.Space;
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -647,7 +668,8 @@ namespace System.Text.JsonLab
 
         private void WriteValueUtf8(ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
             int idx = 0;
 
             if (!_firstItem)
@@ -671,12 +693,14 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Quote;
 
             _bufferWriter.Advance(idx);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
         
         private void WriteValueUtf16(ReadOnlySpan<char> valueSpanChar, int bytesNeeded)
         {
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
             int idx = 0;
 
             if (!_firstItem)
@@ -694,6 +718,7 @@ namespace System.Text.JsonLab
             charBuffer[idx] = (char)JsonConstants.Quote;
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -725,7 +750,8 @@ namespace System.Text.JsonLab
 
             int digitCount = CountDigits((ulong)value);
             bytesNeeded += sizeof(byte) * digitCount;
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
 
             int idx = 0;
             if (!_firstItem)
@@ -741,6 +767,7 @@ namespace System.Text.JsonLab
             WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         private void WriteValueUtf16(long value, int bytesNeeded)
@@ -755,7 +782,8 @@ namespace System.Text.JsonLab
 
             int digitCount = CountDigits((ulong)value);
             bytesNeeded += sizeof(char) * digitCount;
-            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
+            EnsureBuffer(bytesNeeded);
+            Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(_bufferWriter.Buffer);
 
             int idx = 0;
             if (!_firstItem)
@@ -771,6 +799,7 @@ namespace System.Text.JsonLab
             WriteDigitsUInt64D((ulong)value, charBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1011,7 +1040,8 @@ namespace System.Text.JsonLab
             if (_isUtf8)
             {
                 int bytesNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0) + JsonConstants.NullValue.Length;
-                Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+                EnsureBuffer(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
                 int idx = 0;
                 if (_firstItem)
                 {
@@ -1039,12 +1069,14 @@ namespace System.Text.JsonLab
                 JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
 
                 _bufferWriter.Advance(bytesNeeded);
+                _bufferWriter.Flush();
             }
             else
             {
                 int charsNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0);
                 int bytesNeeded = charsNeeded * 2 + JsonConstants.NullValueUtf16.Length;
-                Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+                EnsureBuffer(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
                 Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(byteBuffer);
                 int idx = 0;
                 if (_firstItem)
@@ -1073,6 +1105,7 @@ namespace System.Text.JsonLab
                 JsonConstants.NullValueUtf16.CopyTo(byteBuffer.Slice(idx * 2));
 
                 _bufferWriter.Advance(bytesNeeded);
+                _bufferWriter.Flush();
             }
         }
 
@@ -1080,105 +1113,141 @@ namespace System.Text.JsonLab
         private void WriteNumberUtf8(long value)
         {
             //TODO: Optimize, this is too slow
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, SymbolTable.InvariantUtf8))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumberUtf16(long value)
         {
             //TODO: Optimize, this is too slow
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, SymbolTable.InvariantUtf16))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumber(ulong value)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.NumberFormat, SymbolTable.InvariantUtf8))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTime(DateTime value)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, SymbolTable.InvariantUtf8))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTimeOffset(DateTimeOffset value)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.DateTimeFormat, SymbolTable.InvariantUtf8))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteGuid(Guid value)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!CustomFormatter.TryFormat(value, buffer, out written, JsonConstants.GuidFormat, SymbolTable.InvariantUtf8))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteJsonValueUtf8(ReadOnlySpan<byte> values)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!SymbolTable.InvariantUtf8.TryEncode(values, buffer, out int consumed, out written))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteJsonValueUtf16(ReadOnlySpan<byte> values)
         {
-            var buffer = _bufferWriter.GetSpan();
+            Span<byte> buffer = _bufferWriter.Buffer;
             int written;
             while (!SymbolTable.InvariantUtf16.TryEncode(values, buffer, out int consumed, out written))
-                buffer = EnsureBuffer();
+            {
+                EnsureBuffer();
+                buffer = _bufferWriter.Buffer;
+            }
 
             _bufferWriter.Advance(written);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteControlUtf8(byte value)
         {
-            MemoryMarshal.GetReference(EnsureBuffer(1)) = value;
+            EnsureBuffer(1);
+            MemoryMarshal.GetReference(_bufferWriter.Buffer) = value;
             _bufferWriter.Advance(1);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteControlUtf16(byte value)
         {
-            var buffer = EnsureBuffer(2);
+            EnsureBuffer(2);
+            Span<byte> buffer = _bufferWriter.Buffer;
             Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(buffer)) = (char)value;
             _bufferWriter.Advance(2);
+            _bufferWriter.Flush();
         }
 
         // TODO: Once public methods are optimized, remove this.
@@ -1209,7 +1278,8 @@ namespace System.Text.JsonLab
             var bytesNeeded = newline ? 2 : 0;
             bytesNeeded += (indent + 1) * 2;
 
-            var buffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> buffer = _bufferWriter.Buffer;
             ref byte utf8Bytes = ref MemoryMarshal.GetReference(buffer);
             int idx = 0;
 
@@ -1226,6 +1296,7 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         // TODO: Once public methods are optimized, remove this.
@@ -1239,7 +1310,8 @@ namespace System.Text.JsonLab
             bytesNeeded += (indent + 1) * 2;
             bytesNeeded *= sizeof(char);
 
-            var buffer = EnsureBuffer(bytesNeeded);
+            EnsureBuffer(bytesNeeded);
+            Span<byte> buffer = _bufferWriter.Buffer;
             var span = MemoryMarshal.Cast<byte, char>(buffer);
             ref char utf16Bytes = ref MemoryMarshal.GetReference(span);
             int idx = 0;
@@ -1257,16 +1329,18 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(bytesNeeded);
+            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Span<byte> EnsureBuffer(int needed = 256)
+        private void EnsureBuffer(int needed = 256)
         {
-            Span<byte> buffer = _bufferWriter.GetSpan(needed);
+            _bufferWriter.Ensure(needed);
+            /*Span<byte> buffer = _bufferWriter.GetSpan(needed);
             if (buffer.Length < needed)
                 JsonThrowHelper.ThrowOutOfMemoryException();
 
-            return buffer;
+            return buffer;*/
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

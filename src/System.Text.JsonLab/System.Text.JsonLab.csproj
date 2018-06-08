@@ -13,5 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
+    <ProjectReference Include="..\System.Buffers.ReaderWriter\System.Buffers.ReaderWriter.csproj" />
   </ItemGroup>
 </Project>
