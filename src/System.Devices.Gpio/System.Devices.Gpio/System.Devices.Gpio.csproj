@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\common.props" />
+  <Import Project="..\..\..\tools\common.props" />
   <PropertyGroup>
     <Description></Description>
     <TargetFramework>netstandard1.5</TargetFramework>
@@ -9,5 +9,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\**\*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Devices\GPIODeviceInfo.cs" />
+    <Compile Include="Devices\RaspberryPiInfo.cs" />
+    <Compile Include="GPIOPin.cs" />
+    <Compile Include="Platforms\GPIOPinUnix.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\GPIORef.cs" />
+    <None Include="Documentation\GPIOSamples.cs" />
   </ItemGroup>
 </Project>
