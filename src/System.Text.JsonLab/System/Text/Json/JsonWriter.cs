@@ -769,7 +769,6 @@ namespace System.Text.JsonLab
 
             int digitCount = CountDigits((ulong)value);
             bytesNeeded += sizeof(char) * digitCount;
-            
             Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
 
             int idx = 0;
@@ -1061,7 +1060,6 @@ namespace System.Text.JsonLab
             {
                 int charsNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0);
                 int bytesNeeded = charsNeeded * 2 + JsonConstants.NullValueUtf16.Length;
-
                 Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
                 Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(byteBuffer);
                 int idx = 0;
