@@ -338,14 +338,14 @@ namespace System.Text.JsonLab
                 idx += AddNewLineAndIndentation(byteBuffer.Slice(idx));
 
             byteBuffer[idx++] = JsonConstants.Quote;
-            
+
             OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
             Debug.Assert(consumed == nameSpanByte.Length);
             if (status != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowFormatException();
             }
-            
+
             idx += written;
 
             byteBuffer[idx++] = JsonConstants.Quote;
@@ -685,7 +685,7 @@ namespace System.Text.JsonLab
             _bufferWriter.Flush();
             _firstItem = false;
         }
-        
+
         private void WriteValueUtf16(ReadOnlySpan<char> valueSpanChar, int bytesNeeded)
         {
             Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
@@ -1058,8 +1058,9 @@ namespace System.Text.JsonLab
             }
             else
             {
+                ReadOnlySpan<byte> nullLiteral = (BitConverter.IsLittleEndian ? JsonConstants.NullValueUtf16LE : JsonConstants.NullValueUtf16BE);
                 int charsNeeded = (_firstItem ? 0 : 1) + (_prettyPrint ? 2 + (_indent + 1) * 2 : 0);
-                int bytesNeeded = charsNeeded * 2 + JsonConstants.NullValueUtf16.Length;
+                int bytesNeeded = charsNeeded * 2 + nullLiteral.Length;
                 Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
                 Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(byteBuffer);
                 int idx = 0;
@@ -1085,8 +1086,8 @@ namespace System.Text.JsonLab
                     }
                 }
 
-                Debug.Assert(byteBuffer.Slice(idx * 2).Length >= JsonConstants.NullValueUtf16.Length);
-                JsonConstants.NullValueUtf16.CopyTo(byteBuffer.Slice(idx * 2));
+                Debug.Assert(byteBuffer.Slice(idx * 2).Length >= nullLiteral.Length);
+                nullLiteral.CopyTo(byteBuffer.Slice(idx * 2));
 
                 _bufferWriter.Advance(bytesNeeded);
                 _bufferWriter.Flush();
