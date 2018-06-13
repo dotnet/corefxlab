@@ -82,6 +82,7 @@ namespace System.Text.JsonLab.Tests
             json.WriteValue(425123);
             json.WriteArrayEnd();
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         [Theory]
@@ -98,6 +99,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf16.WriteObjectStart();
             jsonUtf16.WriteAttribute("message", "Hello, World!");
             jsonUtf16.WriteObjectEnd();
+            jsonUtf16.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
@@ -119,6 +121,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
             jsonUtf8.WriteObjectEnd();
+            jsonUtf8.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
@@ -163,6 +166,8 @@ namespace System.Text.JsonLab.Tests
 
             jsonUtf16.WriteObjectEnd();
 
+            jsonUtf16.Flush();
+
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
 
@@ -205,6 +210,8 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteArrayEnd();
 
             jsonUtf8.WriteObjectEnd();
+
+            jsonUtf8.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);

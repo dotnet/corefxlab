@@ -63,7 +63,6 @@ namespace System.Text.JsonLab.Benchmarks
                 WriterSystemTextJsonBasicUtf8(Formatted, bufferWriter, _data);
             else
                 WriterSystemTextJsonBasicUtf16(Formatted, bufferWriter, _data);
-            bufferWriter.Flush();
         }
 
         [Benchmark]
@@ -81,7 +80,6 @@ namespace System.Text.JsonLab.Benchmarks
                 WriterSystemTextJsonHelloWorldUtf8(Formatted, bufferWriter);
             else
                 WriterSystemTextJsonHelloWorldUtf16(Formatted, bufferWriter);
-            bufferWriter.Flush();
         }
 
         [Benchmark]
@@ -133,6 +131,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonBasicUtf16(bool formatted, BufferWriter<IBufferWriter<byte>> output, int[] data)
@@ -162,6 +161,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftBasic(bool formatted, TextWriter writer, int[] data)
@@ -212,6 +212,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, BufferWriter<IBufferWriter<byte>> output)
@@ -221,6 +222,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftHelloWorld(bool formatted, TextWriter writer)

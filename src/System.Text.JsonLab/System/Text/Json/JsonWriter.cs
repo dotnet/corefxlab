@@ -1078,6 +1078,8 @@ namespace System.Text.JsonLab
             }
         }
 
+        public void Flush() => _bufferWriter.Flush();
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumberUtf8(long value)
         {
