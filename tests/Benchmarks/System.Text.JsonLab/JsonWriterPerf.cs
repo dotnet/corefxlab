@@ -58,10 +58,12 @@ namespace System.Text.JsonLab.Benchmarks
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
             if (IsUTF8Encoded)
-                WriterSystemTextJsonBasicUtf8(Formatted, new BufferWriter<IBufferWriter<byte>>(_arrayFormatter), _data);
+                WriterSystemTextJsonBasicUtf8(Formatted, bufferWriter, _data);
             else
-                WriterSystemTextJsonBasicUtf16(Formatted, new BufferWriter<IBufferWriter<byte>>(_arrayFormatter), _data);
+                WriterSystemTextJsonBasicUtf16(Formatted, bufferWriter, _data);
+            bufferWriter.Flush();
         }
 
         [Benchmark]
@@ -74,10 +76,12 @@ namespace System.Text.JsonLab.Benchmarks
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
             if (IsUTF8Encoded)
-                WriterSystemTextJsonHelloWorldUtf8(Formatted, new BufferWriter<IBufferWriter<byte>>(_arrayFormatter));
+                WriterSystemTextJsonHelloWorldUtf8(Formatted, bufferWriter);
             else
-                WriterSystemTextJsonHelloWorldUtf16(Formatted, new BufferWriter<IBufferWriter<byte>>(_arrayFormatter));
+                WriterSystemTextJsonHelloWorldUtf16(Formatted, bufferWriter);
+            bufferWriter.Flush();
         }
 
         [Benchmark]
