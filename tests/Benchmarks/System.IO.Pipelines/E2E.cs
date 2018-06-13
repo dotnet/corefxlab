@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.Buffers.Text;
-using System.Buffers.Writer;
 using System.IO.Pipelines.Samples;
 using System.Text;
 using System.Text.Formatting;
@@ -61,7 +59,7 @@ namespace System.IO.Pipelines.Benchmarks
                 formatter.Append("\r\n\r\n");
 
                 // write body
-                var writer = new JsonWriter(new BufferWriter<IBufferWriter<byte>>(formatter), true, true);
+                JsonWriter<BufferWriterFormatter<PipeWriter>> writer = JsonWriter.Create(formatter, true, true);
                 writer.WriteObjectStart();
                 writer.WriteAttribute("message", "Hello, World!");
                 writer.WriteObjectEnd();
