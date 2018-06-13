@@ -78,7 +78,6 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx] = token;
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         private void WriteStartUtf16(int bytesNeeded, byte token)
@@ -102,7 +101,6 @@ namespace System.Text.JsonLab
 
             charBuffer[idx] = (char)token;
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         /// <summary>
@@ -162,7 +160,6 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = token;
 
             _bufferWriter.Advance(idx);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -193,7 +190,6 @@ namespace System.Text.JsonLab
             charBuffer[idx] = (char)token;
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -224,7 +220,6 @@ namespace System.Text.JsonLab
 
             byteBuffer[idx] = token;
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         private void WriteEndUtf16(int bytesNeeded, byte token)
@@ -237,7 +232,6 @@ namespace System.Text.JsonLab
 
             charBuffer[idx] = (char)token;
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         /// <summary>
@@ -368,7 +362,6 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Quote;
 
             _bufferWriter.Advance(idx);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -403,7 +396,6 @@ namespace System.Text.JsonLab
             charBuffer[idx + valueSpanChar.Length] = (char)JsonConstants.Quote;
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -603,7 +595,6 @@ namespace System.Text.JsonLab
                 byteBuffer[idx++] = JsonConstants.Space;
 
             _bufferWriter.Advance(idx);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -632,7 +623,6 @@ namespace System.Text.JsonLab
                 charBuffer[idx] = (char)JsonConstants.Space;
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -682,7 +672,6 @@ namespace System.Text.JsonLab
             byteBuffer[idx++] = JsonConstants.Quote;
 
             _bufferWriter.Advance(idx);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -706,7 +695,6 @@ namespace System.Text.JsonLab
             charBuffer[idx] = (char)JsonConstants.Quote;
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
             _firstItem = false;
         }
 
@@ -754,7 +742,6 @@ namespace System.Text.JsonLab
             WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         private void WriteValueUtf16(long value, int bytesNeeded)
@@ -785,7 +772,6 @@ namespace System.Text.JsonLab
             WriteDigitsUInt64D((ulong)value, charBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1054,7 +1040,6 @@ namespace System.Text.JsonLab
                 JsonConstants.NullValue.CopyTo(byteBuffer.Slice(idx));
 
                 _bufferWriter.Advance(bytesNeeded);
-                _bufferWriter.Flush();
             }
             else
             {
@@ -1090,7 +1075,6 @@ namespace System.Text.JsonLab
                 nullLiteral.CopyTo(byteBuffer.Slice(idx * 2));
 
                 _bufferWriter.Advance(bytesNeeded);
-                _bufferWriter.Flush();
             }
         }
 
@@ -1106,7 +1090,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1121,7 +1104,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1135,7 +1117,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1149,7 +1130,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1163,7 +1143,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1177,7 +1156,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1191,7 +1169,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1205,7 +1182,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(written);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1214,7 +1190,6 @@ namespace System.Text.JsonLab
             Span<byte> buffer = EnsureBuffer(1);
             MemoryMarshal.GetReference(buffer) = value;
             _bufferWriter.Advance(1);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1223,7 +1198,6 @@ namespace System.Text.JsonLab
             Span<byte> buffer = EnsureBuffer(2);
             Unsafe.As<byte, char>(ref MemoryMarshal.GetReference(buffer)) = (char)value;
             _bufferWriter.Advance(2);
-            _bufferWriter.Flush();
         }
 
         // TODO: Once public methods are optimized, remove this.
@@ -1271,7 +1245,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         // TODO: Once public methods are optimized, remove this.
@@ -1303,7 +1276,6 @@ namespace System.Text.JsonLab
             }
 
             _bufferWriter.Advance(bytesNeeded);
-            _bufferWriter.Flush();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
