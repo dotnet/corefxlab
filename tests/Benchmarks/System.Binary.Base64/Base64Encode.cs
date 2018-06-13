@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Binary.Base64Experimental.Tests;
 using System.Buffers;
 using BenchmarkDotNet.Attributes;
 using Base64Encoder = System.Binary.Base64Experimental.Base64Experimental; // This name problematic, since Base64Experimental is part of namespace.
@@ -15,8 +17,6 @@ namespace System.Binary.Base64.Benchmarks
         private static byte[] _source;
         private static byte[] _bytesDestination;
         private static char[] _charsDestination;
-        private static int _consumed;
-        private static int _written;
 
         [GlobalSetup]
         public void Setup()
@@ -30,7 +30,7 @@ namespace System.Binary.Base64.Benchmarks
         [Benchmark]
         public OperationStatus Base64ExperimentalWithLineBreaks()
         {
-            return Base64Encoder.EncodeToUtf8(_source, _bytesDestination, out _consumed, out _written, format);
+            return Base64Encoder.EncodeToUtf8(_source, _bytesDestination, out _, out _, format);
         }
 
         [Benchmark(Baseline = true)]
