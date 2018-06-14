@@ -34,7 +34,7 @@ namespace System.Binary.Base64.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        public int Base64ExperimentalConvertWithLineBreaks()
+        public int Base64ConvertWithLineBreaks()
         {
             return Convert.ToBase64CharArray(_source, 0, _source.Length, _charsDestination, 0, Base64FormattingOptions.InsertLineBreaks);
         }
