@@ -9,6 +9,7 @@ using System.Buffers;
 using System.Threading;
 using System.Text.Http.Parser;
 using Microsoft.Net;
+using System.Buffers.Writer;
 
 namespace LowAllocationWebServer
 {
@@ -62,7 +63,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            JsonWriter<TcpConnectionFormatter> jsonWriter = JsonWriter.Create(response, true, prettyPrint: false);
+            var jsonWriter = new JsonWriter(new BufferWriter<IBufferWriter<byte>>(response), true, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < 5; i++)
@@ -94,7 +95,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            JsonWriter<TcpConnectionFormatter> jsonWriter = JsonWriter.Create(response, true, prettyPrint: false);
+            var jsonWriter = new JsonWriter(new BufferWriter<IBufferWriter<byte>>(response), true, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < requestedCount; i++)

@@ -10,13 +10,13 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref struct JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    public ref struct JsonWriter
     {
         private static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
         private static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
 
         private readonly bool _prettyPrint;
-        private BufferWriter<TBufferWriter> _bufferWriter;
+        private BufferWriter<IBufferWriter<byte>> _bufferWriter;
         private readonly bool _isUtf8;
 
         private int _indent;
@@ -27,7 +27,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public JsonWriter(BufferWriter<TBufferWriter> bufferWriter, bool isUtf8, bool prettyPrint = false)
+        public JsonWriter(BufferWriter<IBufferWriter<byte>> bufferWriter, bool isUtf8, bool prettyPrint = false)
         {
             _bufferWriter = bufferWriter;
             _prettyPrint = prettyPrint;
@@ -1555,26 +1555,6 @@ namespace System.Text.JsonLab
             }
 
             return offset;
-        }
-    }
-
-    //TODO: Move to a separate file
-    public static class JsonWriter
-    {
-        public static JsonWriter<TBufferWriter> Create<TBufferWriter>(
-            TBufferWriter bufferWriter,
-            bool isUtf8,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
-        {
-            return new JsonWriter<TBufferWriter>(BufferWriter.Create(bufferWriter), isUtf8, prettyPrint);
-        }
-
-        public static JsonWriter<TBufferWriter> Create<TBufferWriter>(
-            BufferWriter<TBufferWriter> bufferWriter,
-            bool isUtf8,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
-        {
-            return new JsonWriter<TBufferWriter>(bufferWriter, isUtf8, prettyPrint);
         }
     }
 }

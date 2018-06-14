@@ -6,6 +6,8 @@ using Xunit;
 using System.Text.Formatting;
 using System.Buffers.Text;
 using System.IO;
+using System.Buffers.Writer;
+using System.Buffers;
 
 namespace System.Text.JsonLab.Tests
 {
@@ -17,7 +19,8 @@ namespace System.Text.JsonLab.Tests
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
-            JsonWriter<ArrayFormatter> json = JsonWriter.Create(formatter, true, prettyPrint: false);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(formatter);
+            var json = new JsonWriter(bufferWriter, true, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -25,7 +28,8 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
 
             formatter.Clear();
-            json = JsonWriter.Create(formatter, true, prettyPrint: true);
+            bufferWriter = new BufferWriter<IBufferWriter<byte>>(formatter);
+            json = new JsonWriter(bufferWriter, true, prettyPrint: true);
             Write(ref json);
 
             formatted = formatter.Formatted;
@@ -37,7 +41,8 @@ namespace System.Text.JsonLab.Tests
         public void WriteJsonUtf16()
         {
             var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf16);
-            JsonWriter<ArrayFormatter> json = JsonWriter.Create(formatter, false, prettyPrint: false);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(formatter);
+            var json = new JsonWriter(bufferWriter, false, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -45,7 +50,8 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
 
             formatter.Clear();
-            json = JsonWriter.Create(formatter, false, prettyPrint: true);
+            bufferWriter = new BufferWriter<IBufferWriter<byte>>(formatter);
+            json = new JsonWriter(bufferWriter, false, prettyPrint: true);
             Write(ref json);
 
             formatted = formatter.Formatted;
@@ -54,7 +60,7 @@ namespace System.Text.JsonLab.Tests
         }
 
         static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
-        static void Write(ref JsonWriter<ArrayFormatter> json)
+        static void Write(ref JsonWriter json)
         {
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
@@ -87,7 +93,8 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: false);
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf16);
-            JsonWriter<ArrayFormatter> jsonUtf16 = JsonWriter.Create(output, false, prettyPrint);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
+            var jsonUtf16 = new JsonWriter(bufferWriter, false, prettyPrint);
 
             jsonUtf16.WriteObjectStart();
             jsonUtf16.WriteAttribute("message", "Hello, World!");
@@ -108,7 +115,8 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: true);
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
-            JsonWriter<ArrayFormatter> jsonUtf8 = JsonWriter.Create(output, true, prettyPrint);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
+            var jsonUtf8 = new JsonWriter(bufferWriter, true, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
@@ -131,7 +139,8 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: false, data);
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf16);
-            JsonWriter<ArrayFormatter> jsonUtf16 = JsonWriter.Create(output, false, prettyPrint);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
+            var jsonUtf16 = new JsonWriter(bufferWriter, false, prettyPrint);
 
             jsonUtf16.WriteObjectStart();
             jsonUtf16.WriteAttribute("age", 42);
@@ -175,7 +184,8 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: true, data);
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
-            JsonWriter<ArrayFormatter> jsonUtf8 = JsonWriter.Create(output, true, prettyPrint);
+            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
+            var jsonUtf8 = new JsonWriter(bufferWriter, true, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
