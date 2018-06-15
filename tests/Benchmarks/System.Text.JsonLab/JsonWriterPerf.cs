@@ -58,11 +58,11 @@ namespace System.Text.JsonLab.Benchmarks
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
-            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
+            //var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
             if (IsUTF8Encoded)
-                WriterSystemTextJsonBasicUtf8(Formatted, bufferWriter, _data);
+                WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatter, _data);
             else
-                WriterSystemTextJsonBasicUtf16(Formatted, bufferWriter, _data);
+                WriterSystemTextJsonBasicUtf16(Formatted, _arrayFormatter, _data);
         }
 
         //[Benchmark]
@@ -104,9 +104,9 @@ namespace System.Text.JsonLab.Benchmarks
             return writer;
         }
 
-        private static void WriterSystemTextJsonBasicUtf8(bool formatted, BufferWriter<IBufferWriter<byte>> output, int[] data)
+        private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriter(output, true, formatted);
+            var json = JsonWriterFactory.Create(output, true, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -134,9 +134,9 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        private static void WriterSystemTextJsonBasicUtf16(bool formatted, BufferWriter<IBufferWriter<byte>> output, int[] data)
+        private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriter(output, false, formatted);
+            var json = JsonWriterFactory.Create(output, false, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
