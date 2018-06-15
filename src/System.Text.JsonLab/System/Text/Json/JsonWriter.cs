@@ -12,9 +12,6 @@ namespace System.Text.JsonLab
 {
     public ref struct JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
-        private static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
-        private static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
-
         private readonly bool _prettyPrint;
         private BufferWriter<TBufferWriter> _bufferWriter;
         private readonly bool _isUtf8;
@@ -202,11 +199,11 @@ namespace System.Text.JsonLab
             _indent--;
             if (_isUtf8)
             {
-                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), s_newLineUtf8.Length), JsonConstants.CloseBrace);
+                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), JsonWriter.s_newLineUtf8.Length), JsonConstants.CloseBrace);
             }
             else
             {
-                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), s_newLineUtf16.Length), JsonConstants.CloseBrace);
+                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), JsonWriter.s_newLineUtf16.Length), JsonConstants.CloseBrace);
             }
         }
 
@@ -289,11 +286,11 @@ namespace System.Text.JsonLab
 
             if (_isUtf8)
             {
-                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), s_newLineUtf8.Length), JsonConstants.CloseBracket);
+                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), JsonWriter.s_newLineUtf8Length), JsonConstants.CloseBracket);
             }
             else
             {
-                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), s_newLineUtf16.Length), JsonConstants.CloseBracket);
+                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), JsonWriter.s_newLineUtf16Length), JsonConstants.CloseBracket);
             }
         }
 
@@ -706,11 +703,11 @@ namespace System.Text.JsonLab
         {
             if (_isUtf8)
             {
-                WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), s_newLineUtf8.Length));
+                WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), JsonWriter.s_newLineUtf8Length));
             }
             else
             {
-                WriteValueUtf16(value, CalculateValueBytesNeeded(sizeof(char), s_newLineUtf16.Length));
+                WriteValueUtf16(value, CalculateValueBytesNeeded(sizeof(char), JsonWriter.s_newLineUtf16Length));
             }
         }
 
@@ -1345,7 +1342,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length;    // For the new line, \r\n or \n
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf8Length;    // For the new line, \r\n or \n
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1368,7 +1365,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf8Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1391,7 +1388,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf8Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1414,7 +1411,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf8Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1444,7 +1441,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length;    // For the new line, \r\n or \n
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf16Length;    // For the new line, \r\n or \n
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1464,7 +1461,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf16Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1484,7 +1481,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf16Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1504,7 +1501,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriter.s_newLineUtf16Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1521,7 +1518,7 @@ namespace System.Text.JsonLab
         {
             int offset = 0;
             // \r\n versus \n, depending on OS
-            if (s_newLineUtf8.Length == 2)
+            if (JsonWriter.s_newLineUtf8Length == 2)
                 buffer[offset++] = JsonConstants.CarriageReturn;
 
             buffer[offset++] = JsonConstants.LineFeed;
@@ -1541,7 +1538,7 @@ namespace System.Text.JsonLab
         {
             int offset = 0;
             // \r\n versus \n, depending on OS
-            if (s_newLineUtf16.Length == 2)
+            if (JsonWriter.s_newLineUtf16Length == 2)
                 buffer[offset++] = (char)JsonConstants.CarriageReturn;
 
             buffer[offset++] = (char)JsonConstants.LineFeed;
@@ -1561,6 +1558,11 @@ namespace System.Text.JsonLab
     //TODO: Move to a separate file
     public static class JsonWriter
     {
+        internal static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
+        internal static readonly int s_newLineUtf8Length = s_newLineUtf8.Length;
+        internal static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
+        internal static readonly int s_newLineUtf16Length = s_newLineUtf16.Length;
+
         public static JsonWriter<TBufferWriter> Create<TBufferWriter>(
             TBufferWriter bufferWriter,
             bool isUtf8,
