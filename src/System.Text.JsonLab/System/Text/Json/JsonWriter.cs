@@ -12,9 +12,6 @@ namespace System.Text.JsonLab
 {
     public ref struct JsonWriter
     {
-        private static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
-        private static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
-
         private readonly bool _prettyPrint;
         private BufferWriter<IBufferWriter<byte>> _bufferWriter;
         private readonly bool _isUtf8;
@@ -202,11 +199,11 @@ namespace System.Text.JsonLab
             _indent--;
             if (_isUtf8)
             {
-                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), s_newLineUtf8.Length), JsonConstants.CloseBrace);
+                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), JsonWriterHelper.s_newLineUtf8.Length), JsonConstants.CloseBrace);
             }
             else
             {
-                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), s_newLineUtf16.Length), JsonConstants.CloseBrace);
+                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), JsonWriterHelper.s_newLineUtf16.Length), JsonConstants.CloseBrace);
             }
         }
 
@@ -289,11 +286,11 @@ namespace System.Text.JsonLab
 
             if (_isUtf8)
             {
-                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), s_newLineUtf8.Length), JsonConstants.CloseBracket);
+                WriteEndUtf8(CalculateEndBytesNeeded(sizeof(byte), JsonWriterHelper.s_newLineUtf8.Length), JsonConstants.CloseBracket);
             }
             else
             {
-                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), s_newLineUtf16.Length), JsonConstants.CloseBracket);
+                WriteEndUtf16(CalculateEndBytesNeeded(sizeof(char), JsonWriterHelper.s_newLineUtf16.Length), JsonConstants.CloseBracket);
             }
         }
 
@@ -706,11 +703,11 @@ namespace System.Text.JsonLab
         {
             if (_isUtf8)
             {
-                WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), s_newLineUtf8.Length));
+                WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), JsonWriterHelper.s_newLineUtf8.Length));
             }
             else
             {
-                WriteValueUtf16(value, CalculateValueBytesNeeded(sizeof(char), s_newLineUtf16.Length));
+                WriteValueUtf16(value, CalculateValueBytesNeeded(sizeof(char), JsonWriterHelper.s_newLineUtf16.Length));
             }
         }
 
@@ -724,7 +721,7 @@ namespace System.Text.JsonLab
                 bytesNeeded += sizeof(byte);
             }
 
-            int digitCount = CountDigits((ulong)value);
+            int digitCount = JsonWriterHelper.CountDigits((ulong)value);
             bytesNeeded += sizeof(byte) * digitCount;
             Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
 
@@ -739,7 +736,7 @@ namespace System.Text.JsonLab
             if (insertNegationSign)
                 byteBuffer[idx++] = (byte)'-';
 
-            WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
+            JsonWriterHelper.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
         }
@@ -754,7 +751,7 @@ namespace System.Text.JsonLab
                 bytesNeeded += sizeof(char);
             }
 
-            int digitCount = CountDigits((ulong)value);
+            int digitCount = JsonWriterHelper.CountDigits((ulong)value);
             bytesNeeded += sizeof(char) * digitCount;
             Span<char> charBuffer = MemoryMarshal.Cast<byte, char>(EnsureBuffer(bytesNeeded));
 
@@ -769,104 +766,12 @@ namespace System.Text.JsonLab
             if (insertNegationSign)
                 charBuffer[idx++] = '-';
 
-            WriteDigitsUInt64D((ulong)value, charBuffer.Slice(idx, digitCount));
+            JsonWriterHelper.WriteDigitsUInt64D((ulong)value, charBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
-        {
-            // We can mutate the 'value' parameter since it's a copy-by-value local.
-            // It'll be used to represent the value left over after each division by 10.
-
-            Debug.Assert(CountDigits(value) == buffer.Length);
-
-            for (int i = buffer.Length - 1; i >= 1; i--)
-            {
-                ulong temp = '0' + value;
-                value /= 10;
-                buffer[i] = (byte)(temp - (value * 10));
-            }
-
-            Debug.Assert(value < 10);
-            buffer[0] = (byte)('0' + value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteDigitsUInt64D(ulong value, Span<char> buffer)
-        {
-            // We can mutate the 'value' parameter since it's a copy-by-value local.
-            // It'll be used to represent the value left over after each division by 10.
-
-            Debug.Assert(CountDigits(value) == buffer.Length);
-
-            for (int i = buffer.Length - 1; i >= 1; i--)
-            {
-                ulong temp = '0' + value;
-                value /= 10;
-                buffer[i] = (char)(temp - (value * 10));
-            }
-
-            Debug.Assert(value < 10);
-            buffer[0] = (char)('0' + value);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CountDigits(ulong value)
-        {
-            int digits = 1;
-            uint part;
-            if (value >= 10000000)
-            {
-                if (value >= 100000000000000)
-                {
-                    part = (uint)(value / 100000000000000);
-                    digits += 14;
-                }
-                else
-                {
-                    part = (uint)(value / 10000000);
-                    digits += 7;
-                }
-            }
-            else
-            {
-                part = (uint)value;
-            }
-
-            if (part < 10)
-            {
-                // no-op
-            }
-            else if (part < 100)
-            {
-                digits += 1;
-            }
-            else if (part < 1000)
-            {
-                digits += 2;
-            }
-            else if (part < 10000)
-            {
-                digits += 3;
-            }
-            else if (part < 100000)
-            {
-                digits += 4;
-            }
-            else if (part < 1000000)
-            {
-                digits += 5;
-            }
-            else
-            {
-                Debug.Assert(part < 10000000);
-                digits += 6;
-            }
-
-            return digits;
-        }
+        
 
         /// <summary>
         /// Write a unsigned integer value into the current array.
@@ -1345,7 +1250,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length;    // For the new line, \r\n or \n
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf8.Length;    // For the new line, \r\n or \n
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1368,7 +1273,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1391,7 +1296,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1414,7 +1319,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf8.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1444,7 +1349,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length;    // For the new line, \r\n or \n
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf16.Length;    // For the new line, \r\n or \n
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1464,7 +1369,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n, and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1484,7 +1389,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1504,7 +1409,7 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                int bytesNeededForPrettyPrint = s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
+                int bytesNeededForPrettyPrint = JsonWriterHelper.s_newLineUtf16.Length + 1;    // For the new line, \r\n or \n,  and the space after the colon
                 bytesNeededForPrettyPrint += (_indent + 1) * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
             }
@@ -1521,7 +1426,7 @@ namespace System.Text.JsonLab
         {
             int offset = 0;
             // \r\n versus \n, depending on OS
-            if (s_newLineUtf8.Length == 2)
+            if (JsonWriterHelper.s_newLineUtf8.Length == 2)
                 buffer[offset++] = JsonConstants.CarriageReturn;
 
             buffer[offset++] = JsonConstants.LineFeed;
@@ -1541,7 +1446,7 @@ namespace System.Text.JsonLab
         {
             int offset = 0;
             // \r\n versus \n, depending on OS
-            if (s_newLineUtf16.Length == 2)
+            if (JsonWriterHelper.s_newLineUtf16.Length == 2)
                 buffer[offset++] = (char)JsonConstants.CarriageReturn;
 
             buffer[offset++] = (char)JsonConstants.LineFeed;
@@ -1557,4 +1462,105 @@ namespace System.Text.JsonLab
             return offset;
         }
     }
+
+    internal static class JsonWriterHelper
+    {
+        public static readonly byte[] s_newLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
+        public static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
+        {
+            // We can mutate the 'value' parameter since it's a copy-by-value local.
+            // It'll be used to represent the value left over after each division by 10.
+
+            Debug.Assert(JsonWriterHelper.CountDigits(value) == buffer.Length);
+
+            for (int i = buffer.Length - 1; i >= 1; i--)
+            {
+                ulong temp = '0' + value;
+                value /= 10;
+                buffer[i] = (byte)(temp - (value * 10));
+            }
+
+            Debug.Assert(value < 10);
+            buffer[0] = (byte)('0' + value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteDigitsUInt64D(ulong value, Span<char> buffer)
+        {
+            // We can mutate the 'value' parameter since it's a copy-by-value local.
+            // It'll be used to represent the value left over after each division by 10.
+
+            Debug.Assert(JsonWriterHelper.CountDigits(value) == buffer.Length);
+
+            for (int i = buffer.Length - 1; i >= 1; i--)
+            {
+                ulong temp = '0' + value;
+                value /= 10;
+                buffer[i] = (char)(temp - (value * 10));
+            }
+
+            Debug.Assert(value < 10);
+            buffer[0] = (char)('0' + value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(ulong value)
+        {
+            int digits = 1;
+            uint part;
+            if (value >= 10000000)
+            {
+                if (value >= 100000000000000)
+                {
+                    part = (uint)(value / 100000000000000);
+                    digits += 14;
+                }
+                else
+                {
+                    part = (uint)(value / 10000000);
+                    digits += 7;
+                }
+            }
+            else
+            {
+                part = (uint)value;
+            }
+
+            if (part < 10)
+            {
+                // no-op
+            }
+            else if (part < 100)
+            {
+                digits += 1;
+            }
+            else if (part < 1000)
+            {
+                digits += 2;
+            }
+            else if (part < 10000)
+            {
+                digits += 3;
+            }
+            else if (part < 100000)
+            {
+                digits += 4;
+            }
+            else if (part < 1000000)
+            {
+                digits += 5;
+            }
+            else
+            {
+                Debug.Assert(part < 10000000);
+                digits += 6;
+            }
+
+            return digits;
+        }
+    }
+
 }

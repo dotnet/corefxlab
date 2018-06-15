@@ -65,13 +65,13 @@ namespace System.Text.JsonLab.Benchmarks
                 WriterSystemTextJsonBasicUtf16(Formatted, bufferWriter, _data);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
@@ -82,7 +82,7 @@ namespace System.Text.JsonLab.Benchmarks
                 WriterSystemTextJsonHelloWorldUtf16(Formatted, bufferWriter);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
