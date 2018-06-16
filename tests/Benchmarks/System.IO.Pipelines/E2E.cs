@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.Benchmarks
                 formatter.Append("\r\n\r\n");
 
                 // write body
-                JsonWriter<BufferWriterFormatter<PipeWriter>> writer = JsonWriter.Create(formatter, true, true);
+                JsonWriterUtf8<BufferWriterFormatter<PipeWriter>> writer = JsonWriter.CreateUtf8(formatter, prettyPrint: true);
                 writer.WriteObjectStart();
                 writer.WriteAttribute("message", "Hello, World!");
                 writer.WriteObjectEnd();
