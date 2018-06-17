@@ -102,7 +102,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)
         {
-            JsonWriterUtf8<ArrayFormatter> json = JsonWriter.CreateUtf8(output, formatted);
+            JsonWriterUtf8 json = JsonWriter.CreateUtf8(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -132,7 +132,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output, int[] data)
         {
-            JsonWriterUtf16<ArrayFormatter> json = JsonWriter.CreateUtf16(output, formatted);
+            JsonWriterUtf16 json = JsonWriter.CreateUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -203,7 +203,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatter output)
         {
-            JsonWriterUtf8<ArrayFormatter> json = JsonWriter.CreateUtf8(output, formatted);
+            JsonWriterUtf8 json = JsonWriter.CreateUtf8(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -213,7 +213,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatter output)
         {
-            JsonWriterUtf16<ArrayFormatter> json = JsonWriter.CreateUtf16(output, formatted);
+            JsonWriterUtf16 json = JsonWriter.CreateUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");

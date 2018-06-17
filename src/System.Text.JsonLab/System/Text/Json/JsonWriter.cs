@@ -18,32 +18,45 @@ namespace System.Text.JsonLab
 
         public static JsonWriterUtf8<TBufferWriter> CreateUtf8<TBufferWriter>(
             TBufferWriter bufferWriter,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
+            bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
         {
             return new JsonWriterUtf8<TBufferWriter>(BufferWriter.Create(bufferWriter), prettyPrint);
         }
 
-        public static JsonWriterUtf8<TBufferWriter> Create<TBufferWriter>(
+        public static JsonWriterUtf8<TBufferWriter> CreateUtf8<TBufferWriter>(
             BufferWriter<TBufferWriter> bufferWriter,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
+            bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
         {
             return new JsonWriterUtf8<TBufferWriter>(bufferWriter, prettyPrint);
         }
 
+        public static JsonWriterUtf8 CreateUtf8(
+            IBufferWriter<byte> bufferWriter,
+            bool prettyPrint = false)
+        {
+            return new JsonWriterUtf8(BufferWriter.Create(new IBufferWriter(bufferWriter)), prettyPrint);
+        }
+
         public static JsonWriterUtf16<TBufferWriter> CreateUtf16<TBufferWriter>(
             TBufferWriter bufferWriter,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
+            bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
         {
             return new JsonWriterUtf16<TBufferWriter>(BufferWriter.Create(bufferWriter), prettyPrint);
         }
 
         public static JsonWriterUtf16<TBufferWriter> CreateUtf16<TBufferWriter>(
             BufferWriter<TBufferWriter> bufferWriter,
-            bool prettyPrint = false) where TBufferWriter : IBufferWriter<byte>
+            bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
         {
             return new JsonWriterUtf16<TBufferWriter>(bufferWriter, prettyPrint);
         }
 
+        public static JsonWriterUtf16 CreateUtf16(
+            IBufferWriter<byte> bufferWriter,
+            bool prettyPrint = false)
+        {
+            return new JsonWriterUtf16(BufferWriter.Create(new IBufferWriter(bufferWriter)), prettyPrint);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int CountDigits(ulong value)
@@ -100,5 +113,90 @@ namespace System.Text.JsonLab
 
             return digits;
         }
+    }
+
+    public ref struct JsonWriterUtf8
+    {
+        JsonWriterUtf8<IBufferWriter> _jsonWriter;
+
+        internal JsonWriterUtf8(BufferWriter<IBufferWriter> bufferWriter, bool prettyPrint = false)
+        {
+            _jsonWriter = new JsonWriterUtf8<IBufferWriter>(bufferWriter, prettyPrint);
+        }
+
+        public void WriteArrayStart() => _jsonWriter.WriteArrayStart();
+        public void WriteArrayStart(string name) => _jsonWriter.WriteArrayStart(name);
+        public void WriteArrayEnd() => _jsonWriter.WriteArrayEnd();
+        public void WriteAttributeNull(string name) => _jsonWriter.WriteAttributeNull(name);
+        public void WriteNull() => _jsonWriter.WriteNull();
+        public void WriteObjectStart() => _jsonWriter.WriteObjectStart();
+        public void WriteObjectStart(string name) => _jsonWriter.WriteObjectStart(name);
+        public void WriteObjectEnd() => _jsonWriter.WriteObjectEnd();
+        public void WriteAttribute(string name, string value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, bool value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, long value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, ulong value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, DateTime value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, DateTimeOffset value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, Guid value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteValue(string value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(bool value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(long value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(ulong value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(DateTime value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(DateTimeOffset value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(Guid value) => _jsonWriter.WriteValue(value);
+        public void Flush() => _jsonWriter.Flush();
+    }
+
+
+    public ref struct JsonWriterUtf16
+    {
+        JsonWriterUtf16<IBufferWriter> _jsonWriter;
+
+        internal JsonWriterUtf16(BufferWriter<IBufferWriter> bufferWriter, bool prettyPrint = false)
+        {
+            _jsonWriter = new JsonWriterUtf16<IBufferWriter>(bufferWriter, prettyPrint);
+        }
+
+        public void WriteArrayStart() => _jsonWriter.WriteArrayStart();
+        public void WriteArrayStart(string name) => _jsonWriter.WriteArrayStart(name);
+        public void WriteArrayEnd() => _jsonWriter.WriteArrayEnd();
+        public void WriteAttributeNull(string name) => _jsonWriter.WriteAttributeNull(name);
+        public void WriteNull() => _jsonWriter.WriteNull();
+        public void WriteObjectStart() => _jsonWriter.WriteObjectStart();
+        public void WriteObjectStart(string name) => _jsonWriter.WriteObjectStart(name);
+        public void WriteObjectEnd() => _jsonWriter.WriteObjectEnd();
+        public void WriteAttribute(string name, string value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, bool value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, long value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, ulong value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, DateTime value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, DateTimeOffset value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteAttribute(string name, Guid value) => _jsonWriter.WriteAttribute(name, value);
+        public void WriteValue(string value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(bool value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(long value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(ulong value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(DateTime value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(DateTimeOffset value) => _jsonWriter.WriteValue(value);
+        public void WriteValue(Guid value) => _jsonWriter.WriteValue(value);
+        public void Flush() => _jsonWriter.Flush();
+    }
+
+    internal struct IBufferWriter : IBufferWriter<byte>
+    {
+        public IBufferWriter<byte> _writer;
+
+        public IBufferWriter(IBufferWriter<byte> writer)
+        {
+            _writer = writer;
+        }
+
+        public void Advance(int count) => _writer.Advance(count);
+
+        public Memory<byte> GetMemory(int sizeHint = 0) => _writer.GetMemory(sizeHint);
+
+        public Span<byte> GetSpan(int sizeHint = 0) => _writer.GetSpan(sizeHint);
     }
 }
