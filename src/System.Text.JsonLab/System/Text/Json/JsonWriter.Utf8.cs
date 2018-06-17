@@ -851,7 +851,7 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
             }
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8Length(valueSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
             }
