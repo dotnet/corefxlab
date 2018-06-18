@@ -3,9 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Writer
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
     {
         private T _output;

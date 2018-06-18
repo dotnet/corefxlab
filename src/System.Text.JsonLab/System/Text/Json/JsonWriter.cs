@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Buffers.Writer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
@@ -158,6 +159,7 @@ namespace System.Text.JsonLab
         }
     }
 
+    [StructLayout(LayoutKind.Auto)]
     public ref struct JsonWriterUtf8
     {
         JsonWriterUtf8<IBufferWriter> _jsonWriter;
@@ -192,7 +194,7 @@ namespace System.Text.JsonLab
         public void Flush() => _jsonWriter.Flush();
     }
 
-
+    [StructLayout(LayoutKind.Auto)]
     public ref struct JsonWriterUtf16
     {
         JsonWriterUtf16<IBufferWriter> _jsonWriter;

@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Reader
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref struct BufferReader
     {
         private SequencePosition _currentSequencePosition;

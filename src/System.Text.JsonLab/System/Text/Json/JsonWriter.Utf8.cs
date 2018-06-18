@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref struct JsonWriterUtf8<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;

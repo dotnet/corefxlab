@@ -4,9 +4,11 @@
 
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Writer
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref partial struct BufferWriter
     {
         private Span<byte> _buffer;

@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
 using static System.Buffers.Binary.BinaryPrimitives;
@@ -11,6 +12,7 @@ using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref struct JsonObject
     {
         private MemoryPool<byte> _pool;
