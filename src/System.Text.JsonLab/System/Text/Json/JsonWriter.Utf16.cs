@@ -795,26 +795,6 @@ namespace System.Text.JsonLab
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int AddNewLineAndIndentation(Span<byte> buffer)
-        {
-            int offset = 0;
-            // \r\n versus \n, depending on OS
-            if (JsonWriter.s_newLineUtf8Length == 2)
-                buffer[offset++] = JsonConstants.CarriageReturn;
-
-            buffer[offset++] = JsonConstants.LineFeed;
-
-            int indent = _indent;
-
-            while (indent-- >= 0)
-            {
-                buffer[offset++] = JsonConstants.Space;
-                buffer[offset++] = JsonConstants.Space;
-            }
-            return offset;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int AddNewLineAndIndentation(Span<char> buffer)
         {
             int offset = 0;
