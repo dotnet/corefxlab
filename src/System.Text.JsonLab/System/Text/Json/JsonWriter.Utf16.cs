@@ -23,6 +23,8 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public JsonWriterUtf16(BufferWriter<TBufferWriter> bufferWriter, bool prettyPrint = false)
         {
             _bufferWriter = bufferWriter;

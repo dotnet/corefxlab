@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Buffers.Writer;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
@@ -16,6 +15,7 @@ namespace System.Text.JsonLab
         internal static readonly char[] s_newLineUtf16 = Environment.NewLine.ToCharArray();
         internal static readonly int s_newLineUtf16Length = s_newLineUtf16.Length;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf8<TBufferWriter> CreateUtf8<TBufferWriter>(
             TBufferWriter bufferWriter,
             bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
@@ -23,6 +23,7 @@ namespace System.Text.JsonLab
             return new JsonWriterUtf8<TBufferWriter>(BufferWriter.Create(bufferWriter), prettyPrint);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf8<TBufferWriter> CreateUtf8<TBufferWriter>(
             BufferWriter<TBufferWriter> bufferWriter,
             bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
@@ -30,6 +31,7 @@ namespace System.Text.JsonLab
             return new JsonWriterUtf8<TBufferWriter>(bufferWriter, prettyPrint);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf8 CreateUtf8(
             IBufferWriter<byte> bufferWriter,
             bool prettyPrint = false)
@@ -37,6 +39,7 @@ namespace System.Text.JsonLab
             return new JsonWriterUtf8(BufferWriter.Create(new IBufferWriter(bufferWriter)), prettyPrint);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf16<TBufferWriter> CreateUtf16<TBufferWriter>(
             TBufferWriter bufferWriter,
             bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
@@ -44,6 +47,7 @@ namespace System.Text.JsonLab
             return new JsonWriterUtf16<TBufferWriter>(BufferWriter.Create(bufferWriter), prettyPrint);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf16<TBufferWriter> CreateUtf16<TBufferWriter>(
             BufferWriter<TBufferWriter> bufferWriter,
             bool prettyPrint = false) where TBufferWriter : struct, IBufferWriter<byte>
@@ -51,6 +55,7 @@ namespace System.Text.JsonLab
             return new JsonWriterUtf16<TBufferWriter>(bufferWriter, prettyPrint);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static JsonWriterUtf16 CreateUtf16(
             IBufferWriter<byte> bufferWriter,
             bool prettyPrint = false)
@@ -226,6 +231,7 @@ namespace System.Text.JsonLab
     {
         public IBufferWriter<byte> _writer;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IBufferWriter(IBufferWriter<byte> writer)
         {
             _writer = writer;
