@@ -378,13 +378,8 @@ namespace System.Text.JsonLab
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteValue(string value)
         {
-            ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
-            int bytesNeeded = CalculateValueBytesNeeded(valueSpan, sizeof(byte), 2);
-            WriteValue(valueSpan, bytesNeeded);
-        }
-
-        private void WriteValue(ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
-        {
+            ReadOnlySpan<byte> valueSpanByte = MemoryMarshal.AsBytes(value.AsSpan());
+            int bytesNeeded = CalculateValueBytesNeeded(valueSpanByte, sizeof(byte), 2);
             Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
             int idx = 0;
 
@@ -418,11 +413,7 @@ namespace System.Text.JsonLab
         /// <param name="value">The signed integer value to be written to JSON data.</param>
         public void WriteValue(long value)
         {
-            WriteValue(value, CalculateValueBytesNeeded(sizeof(byte), JsonWriter.s_newLineUtf8Length));
-        }
-
-        private void WriteValue(long value, int bytesNeeded)
-        {
+            int bytesNeeded = CalculateValueBytesNeeded(sizeof(byte), JsonWriter.s_newLineUtf8Length);
             bool insertNegationSign = false;
             if (value < 0)
             {
@@ -446,28 +437,9 @@ namespace System.Text.JsonLab
             if (insertNegationSign)
                 byteBuffer[idx++] = (byte)'-';
 
-            WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
+            JsonWriter.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
-        {
-            // We can mutate the 'value' parameter since it's a copy-by-value local.
-            // It'll be used to represent the value left over after each division by 10.
-
-            Debug.Assert(JsonWriter.CountDigits(value) == buffer.Length);
-
-            for (int i = buffer.Length - 1; i >= 1; i--)
-            {
-                ulong temp = '0' + value;
-                value /= 10;
-                buffer[i] = (byte)(temp - (value * 10));
-            }
-
-            Debug.Assert(value < 10);
-            buffer[0] = (byte)('0' + value);
         }
 
         /// <summary>
@@ -711,7 +683,7 @@ namespace System.Text.JsonLab
         {
             _bufferWriter.Ensure(needed);
             Span<byte> buffer = _bufferWriter.Buffer;
-            if (buffer.Length < needed)
+            if ((uint)needed > (uint)buffer.Length)
                 JsonThrowHelper.ThrowOutOfMemoryException();
             return buffer;
         }
@@ -780,7 +752,7 @@ namespace System.Text.JsonLab
 
             if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
             {
-                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             bytesNeeded += bytesNeededValue;
             return bytesNeeded;
@@ -803,7 +775,7 @@ namespace System.Text.JsonLab
 
             if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
             {
-                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             bytesNeeded += bytesNeededValue;
             return bytesNeeded;
@@ -826,7 +798,7 @@ namespace System.Text.JsonLab
 
             if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
-                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             bytesNeeded += bytesNeededValue;
             return bytesNeeded;
@@ -849,11 +821,11 @@ namespace System.Text.JsonLab
 
             if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
             {
-                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             if (Encodings.Utf16.ToUtf8Length(valueSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
-                JsonThrowHelper.ThrowArgumentException("Invalid or incomplete UTF-8 string");
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             bytesNeeded += bytesNeededName;
             bytesNeeded += bytesNeededValue;

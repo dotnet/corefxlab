@@ -19,6 +19,17 @@ namespace System.Text.JsonLab
             return new ArgumentException(message);
         }
 
+        public static void ThrowArgumentExceptionInvalidUtf8String()
+        {
+            throw GetArgumentExceptionInvalidUtf8String();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArgumentException GetArgumentExceptionInvalidUtf8String()
+        {
+            return new ArgumentException("Invalid or incomplete UTF-8 string");
+        }
+
         public static void ThrowFormatException()
         {
             throw GetFormatException();

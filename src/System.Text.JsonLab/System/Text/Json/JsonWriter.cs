@@ -113,6 +113,44 @@ namespace System.Text.JsonLab
 
             return digits;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
+        {
+            // We can mutate the 'value' parameter since it's a copy-by-value local.
+            // It'll be used to represent the value left over after each division by 10.
+
+            Debug.Assert(JsonWriter.CountDigits(value) == buffer.Length);
+
+            for (int i = buffer.Length - 1; i >= 1; i--)
+            {
+                ulong temp = '0' + value;
+                value /= 10;
+                buffer[i] = (byte)(temp - (value * 10));
+            }
+
+            Debug.Assert(value < 10);
+            buffer[0] = (byte)('0' + value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteDigitsUInt64D(ulong value, Span<char> buffer)
+        {
+            // We can mutate the 'value' parameter since it's a copy-by-value local.
+            // It'll be used to represent the value left over after each division by 10.
+
+            Debug.Assert(JsonWriter.CountDigits(value) == buffer.Length);
+
+            for (int i = buffer.Length - 1; i >= 1; i--)
+            {
+                ulong temp = '0' + value;
+                value /= 10;
+                buffer[i] = (char)(temp - (value * 10));
+            }
+
+            Debug.Assert(value < 10);
+            buffer[0] = (char)('0' + value);
+        }
     }
 
     public ref struct JsonWriterUtf8
