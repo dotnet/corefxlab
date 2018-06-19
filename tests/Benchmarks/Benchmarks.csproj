@@ -5,6 +5,8 @@
     <OutputType>Exe</OutputType>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
     <NoWarn>$(NoWarn);CS0618</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="BenchmarkDotNet.Artifacts\**" />

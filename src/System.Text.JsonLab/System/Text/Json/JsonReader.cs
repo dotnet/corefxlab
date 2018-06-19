@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
+
+    [StructLayout(LayoutKind.Auto)]
     public ref struct JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.

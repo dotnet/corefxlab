@@ -5,9 +5,13 @@ using BenchmarkDotNet.Attributes;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
+using BenchmarkDotNet.Diagnostics.Windows;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace System.Text.JsonLab.Benchmarks
 {
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [InliningDiagnoser()]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -102,7 +106,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriter(output, true, formatted);
+            JsonWriterUtf8 json = JsonWriter.CreateUtf8(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -127,11 +131,12 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatter output, int[] data)
         {
-            var json = new JsonWriter(output, false, formatted);
+            JsonWriterUtf16 json = JsonWriter.CreateUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -156,6 +161,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftBasic(bool formatted, TextWriter writer, int[] data)
@@ -201,20 +207,22 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, true, formatted);
+            JsonWriterUtf8 json = JsonWriter.CreateUtf8(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, false, formatted);
+            JsonWriterUtf16 json = JsonWriter.CreateUtf16(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftHelloWorld(bool formatted, TextWriter writer)

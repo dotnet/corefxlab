@@ -76,9 +76,9 @@ namespace System.Buffers.Tests
         {
             _sink.Reset();
             var writer = BufferWriter.Create(_sink);
-            writer.NewLine = new byte[] { (byte)'X', (byte)'Y' };
-            writer.WriteLine("hello world");
-            writer.WriteLine("!");
+            var newLine = new ReadOnlySpan<byte>(new byte[] { (byte)'X', (byte)'Y' });
+            writer.WriteLine("hello world", newLine);
+            writer.WriteLine("!", newLine);
 
             writer.Flush();
             var result = _sink.ToString();
@@ -90,9 +90,9 @@ namespace System.Buffers.Tests
         {
             _sink.Reset();
             var writer = BufferWriter.Create(_sink);
-            writer.NewLine = new byte[] { (byte)'X', (byte)'Y' };
-            writer.WriteLine((Utf8String)"hello world");
-            writer.WriteLine((Utf8String)"!");
+            var newLine = new ReadOnlySpan<byte>(new byte[] { (byte)'X', (byte)'Y' });
+            writer.WriteLine((Utf8String)"hello world", newLine);
+            writer.WriteLine((Utf8String)"!", newLine);
 
             writer.Flush();
             var result = _sink.ToString();

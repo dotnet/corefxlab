@@ -3,26 +3,29 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace System.Buffers.Writer
 {
+    [StructLayout(LayoutKind.Auto)]
     public ref partial struct BufferWriter<T> where T : IBufferWriter<byte>
     {
         private T _output;
         private Span<byte> _span;
         private int _buffered;
 
-        private static readonly byte[] s_newLine = new byte[] { (byte)'\r', (byte)'\n' };
+        private static readonly byte[] s_newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BufferWriter(T output)
         {
             _buffered = 0;
             _output = output;
             _span = output.GetSpan();
-            NewLine = s_newLine;
         }
 
-        public ReadOnlySpan<byte> NewLine { get; set; }
+        private static ReadOnlySpan<byte> NewLine => new ReadOnlySpan<byte>(s_newLine);
 
         public Span<byte> Buffer => _span;
 
@@ -56,12 +59,7 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EnsureMore(int count = 0)
         {
-            var buffered = _buffered;
-            if (buffered > 0)
-            {
-                _buffered = 0;
-                _output.Advance(buffered);
-            }
+            Flush();
             _span = _output.GetSpan(count);
         }
 

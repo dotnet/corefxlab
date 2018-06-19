@@ -4,9 +4,11 @@
 
 using System.Buffers.Operations;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Writer
 {
+    [StructLayout(LayoutKind.Auto)]
     public readonly struct TransformationFormat
     {
         private readonly IBufferTransformation _first;

@@ -44,6 +44,12 @@ namespace System.Buffers.Writer
             Write(NewLine);
         }
 
+        public void WriteLine(string value, ReadOnlySpan<byte> newLine)
+        {
+            Write(value);
+            Write(newLine);
+        }
+
         //public void WriteLine(string value, TransformationFormat format);
 
         public void Write(Utf8String value) => Write(value.Bytes);
@@ -54,6 +60,12 @@ namespace System.Buffers.Writer
         {
             Write(value.Bytes);
             Write(NewLine);
+        }
+
+        public void WriteLine(Utf8String value, ReadOnlySpan<byte> newLine)
+        {
+            Write(value.Bytes);
+            Write(newLine);
         }
 
         //public void WriteLine(Utf8String value, TransformationFormat format);

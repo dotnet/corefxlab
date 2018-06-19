@@ -38,6 +38,7 @@ namespace System.Text.JsonLab
         }
     }
 
+    [StructLayout(LayoutKind.Auto)]
     internal ref struct TwoStacks
     {
         Span<byte> _span;
@@ -112,6 +113,7 @@ namespace System.Text.JsonLab
         }
     }
 
+    [StructLayout(LayoutKind.Auto)]
     internal ref struct JsonParser
     {
         private Span<byte> _db;
