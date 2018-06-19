@@ -4,6 +4,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace System.Buffers.Writer
 {
@@ -14,7 +15,7 @@ namespace System.Buffers.Writer
         private Span<byte> _span;
         private int _buffered;
 
-        private static readonly byte[] s_newLine = new byte[] { (byte)'\r', (byte)'\n' };
+        private static readonly byte[] s_newLine = Encoding.UTF8.GetBytes(Environment.NewLine);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BufferWriter(T output)
@@ -22,10 +23,9 @@ namespace System.Buffers.Writer
             _buffered = 0;
             _output = output;
             _span = output.GetSpan();
-            NewLine = s_newLine;
         }
 
-        public ReadOnlySpan<byte> NewLine { get; set; }
+        private static ReadOnlySpan<byte> NewLine => new ReadOnlySpan<byte>(s_newLine);
 
         public Span<byte> Buffer => _span;
 
