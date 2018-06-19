@@ -5,9 +5,13 @@ using BenchmarkDotNet.Attributes;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
+using BenchmarkDotNet.Diagnostics.Windows;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace System.Text.JsonLab.Benchmarks
 {
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [InliningDiagnoser()]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {

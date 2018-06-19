@@ -7,6 +7,8 @@
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\**\*.cs" Exclude="experiments\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />

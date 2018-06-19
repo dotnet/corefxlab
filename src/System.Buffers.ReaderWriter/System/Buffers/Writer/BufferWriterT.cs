@@ -16,6 +16,7 @@ namespace System.Buffers.Writer
 
         private static readonly byte[] s_newLine = new byte[] { (byte)'\r', (byte)'\n' };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BufferWriter(T output)
         {
             _buffered = 0;
