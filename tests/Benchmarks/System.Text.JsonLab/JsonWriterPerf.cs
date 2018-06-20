@@ -56,7 +56,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
@@ -73,7 +73,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
@@ -125,12 +125,12 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectEnd();
 
             // Add a large array of values
-            /*json.WriteArrayStart("ExtraArray");
+            json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < ExtraArraySize; i++)
             {
                 json.WriteValue(data[i]);
-            }*/
-            json.WriteArrayStart("ExtraArray", data);
+            }
+            //json.WriteArrayStart("ExtraArray", data);
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();

@@ -1758,8 +1758,8 @@ namespace System.Text.JsonLab
 
     struct Customer : IWritable
     {
-        readonly string _name;
-        readonly string _value;
+        //readonly string _name;
+        readonly long _value;
         readonly int _indent;
         readonly bool _isFirst;
         readonly bool _prettyPrint;
@@ -1773,9 +1773,17 @@ namespace System.Text.JsonLab
             _prettyPrint = prettyPrint;
         }*/
 
-        public Customer(string name, string value, int indent, bool isFirst, bool prettyPrint)
+        /*public Customer(string name, string value, int indent, bool isFirst, bool prettyPrint)
         {
             _name = name;
+            _value = value;
+            _indent = indent;
+            _isFirst = isFirst;
+            _prettyPrint = prettyPrint;
+        }*/
+
+        public Customer(long value, int indent, bool isFirst, bool prettyPrint)
+        {
             _value = value;
             _indent = indent;
             _isFirst = isFirst;
@@ -1784,9 +1792,9 @@ namespace System.Text.JsonLab
 
         public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
         {
-            return JsonWriterHelper.TryWriteValueUtf8(buffer, MemoryMarshal.AsBytes(_name.AsSpan()), MemoryMarshal.AsBytes(_value.AsSpan()), out written, _indent, _isFirst, _prettyPrint);
+            //return JsonWriterHelper.TryWriteValueUtf8(buffer, MemoryMarshal.AsBytes(_name.AsSpan()), MemoryMarshal.AsBytes(_value.AsSpan()), out written, _indent, _isFirst, _prettyPrint);
             //return JsonWriterHelper.TryWriteValueUtf8(buffer, MemoryMarshal.AsBytes(_name.AsSpan()), _value, out written, _indent, _isFirst, _prettyPrint);
-            //return JsonWriterHelper.TryWriteValueUtf8(buffer, _value, out written, _indent, _isFirst, _prettyPrint);
+            return JsonWriterHelper.TryWriteValueUtf8(buffer, _value, out written, _indent, _isFirst, _prettyPrint);
         }
     }
 
@@ -2144,13 +2152,13 @@ namespace System.Text.JsonLab
         {
             if (_isUtf8)
             {
-                /*ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
+                ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
                 ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
                 int bytesNeeded = CalculateAttributeBytesNeeded(nameSpan, valueSpan, sizeof(byte));
-                WriteAttributeUtf8(nameSpan, valueSpan, bytesNeeded);*/
-                Customer customer = new Customer(name, value, _indent, _firstItem, _prettyPrint);
+                WriteAttributeUtf8(nameSpan, valueSpan, bytesNeeded);
+                /*Customer customer = new Customer(name, value, _indent, _firstItem, _prettyPrint);
                 _bufferWriter.Write(customer, default(StandardFormat));
-                _firstItem = false;
+                _firstItem = false;*/
             }
             else
             {
@@ -2588,17 +2596,17 @@ namespace System.Text.JsonLab
 
         private void WriteValueUtf8(long value)
         {
-            if (!_firstItem)
+            /*if (!_firstItem)
                 _bufferWriter.Write(JsonConstants.ListSeperator);
 
             _firstItem = false;
             if (_prettyPrint)
                 AddNewLineAndIndentation();
 
-            _bufferWriter.Write(value);
-            /*Customer customer = new Customer(value, _indent, _firstItem, _prettyPrint);
+            _bufferWriter.Write(value);*/
+            Customer customer = new Customer(value, _indent, _firstItem, _prettyPrint);
             _bufferWriter.Write(customer, default(StandardFormat));
-            _firstItem = false;*/
+            _firstItem = false;
         }
 
         private void WriteValueUtf16(long value, int bytesNeeded)
