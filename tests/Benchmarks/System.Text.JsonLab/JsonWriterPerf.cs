@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Buffers.Writer;
@@ -10,7 +11,8 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [MemoryDiagnoser]
+    [SimpleJob(-1, 10, 50, 40960)]
+    //[MemoryDiagnoser]
     public class JsonWriterPerf
     {
         private const int ExtraArraySize = 500;
@@ -23,7 +25,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private int[] _data;
 
-        [Params(true, false)]
+        [Params(true)]
         public bool IsUTF8Encoded;
 
         [Params(true, false)]
@@ -54,7 +56,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatter.Clear();
@@ -71,15 +73,15 @@ namespace System.Text.JsonLab.Benchmarks
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatter.Clear();
-            var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
+            //var bufferWriter = new BufferWriter<IBufferWriter<byte>>(_arrayFormatter);
             if (IsUTF8Encoded)
-                WriterSystemTextJsonHelloWorldUtf8(Formatted, bufferWriter);
+                WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatter);
             else
-                WriterSystemTextJsonHelloWorldUtf16(Formatted, bufferWriter);
+                WriterSystemTextJsonHelloWorldUtf16(Formatted, _arrayFormatter);
         }
 
         //[Benchmark]
@@ -123,11 +125,12 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectEnd();
 
             // Add a large array of values
-            json.WriteArrayStart("ExtraArray");
+            /*json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < ExtraArraySize; i++)
             {
                 json.WriteValue(data[i]);
-            }
+            }*/
+            json.WriteArrayStart("ExtraArray", data);
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
@@ -205,9 +208,9 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, BufferWriter<IBufferWriter<byte>> output)
+        private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, true, formatted);
+            var json = JsonWriterFactory.Create(output, true, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -215,9 +218,9 @@ namespace System.Text.JsonLab.Benchmarks
             json.Flush();
         }
 
-        private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, BufferWriter<IBufferWriter<byte>> output)
+        private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatter output)
         {
-            var json = new JsonWriter(output, false, formatted);
+            var json = JsonWriterFactory.Create(output, false, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");

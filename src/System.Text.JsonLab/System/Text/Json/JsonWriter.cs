@@ -1561,7 +1561,235 @@ namespace System.Text.JsonLab
 
             return digits;
         }
+
+        public static bool TryWriteValueUtf8(Span<byte> buffer, long value, out int written, int indent, bool isFirst, bool prettyPrint = false)
+        {
+            int idx = 0;
+            written = default;
+            try
+            {
+                if (!isFirst)
+                    buffer[idx++] = JsonConstants.ListSeperator;
+
+                if (prettyPrint)
+                {
+                    if (s_newLineUtf8.Length == 2)
+                        buffer[idx++] = JsonConstants.CarriageReturn;
+
+                    buffer[idx++] = JsonConstants.LineFeed;
+
+                    while (indent-- >= 0)
+                    {
+                        buffer[idx++] = JsonConstants.Space;
+                        buffer[idx++] = JsonConstants.Space;
+                    }
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                written = default;
+                return false;
+            }
+
+            bool result = Utf8Formatter.TryFormat(value, buffer.Slice(idx), out written, default);
+            written += idx;
+            return result;
+        }
+
+        public static bool TryWriteValueUtf8(Span<byte> byteBuffer, ReadOnlySpan<byte> nameSpanByte, int[] value, out int written, int indent, bool isFirst, bool prettyPrint = false)
+        {
+            int idx = 0;
+            written = default;
+
+            try
+            {
+                if (!isFirst)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                if (prettyPrint)
+                {
+                    if (s_newLineUtf8.Length == 2)
+                        byteBuffer[idx++] = JsonConstants.CarriageReturn;
+
+                    byteBuffer[idx++] = JsonConstants.LineFeed;
+                    int indentCopy = indent - 1;
+                    while (indentCopy-- >= 0)
+                    {
+                        byteBuffer[idx++] = JsonConstants.Space;
+                        byteBuffer[idx++] = JsonConstants.Space;
+                    }
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                if (prettyPrint)
+                    byteBuffer[idx++] = JsonConstants.Space;
+
+                byteBuffer[idx++] = JsonConstants.OpenBracket;
+
+
+                if (prettyPrint)
+                {
+                    if (s_newLineUtf8.Length == 2)
+                        byteBuffer[idx++] = JsonConstants.CarriageReturn;
+
+                    byteBuffer[idx++] = JsonConstants.LineFeed;
+                    int indentCopy = indent;
+                    while (indentCopy-- >= 0)
+                    {
+                        byteBuffer[idx++] = JsonConstants.Space;
+                        byteBuffer[idx++] = JsonConstants.Space;
+                    }
+                }
+                if (value.Length == 0) goto Done;
+                bool result = Utf8Formatter.TryFormat(value[0], byteBuffer.Slice(idx), out written, default);
+                idx += written;
+                if (!result) return false;
+
+                for (int i = 1; i < value.Length; i++)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                    if (prettyPrint)
+                    {
+                        if (s_newLineUtf8.Length == 2)
+                            byteBuffer[idx++] = JsonConstants.CarriageReturn;
+
+                        byteBuffer[idx++] = JsonConstants.LineFeed;
+                        int indentCopy = indent;
+                        while (indentCopy-- >= 0)
+                        {
+                            byteBuffer[idx++] = JsonConstants.Space;
+                            byteBuffer[idx++] = JsonConstants.Space;
+                        }
+                    }
+
+                    result = Utf8Formatter.TryFormat(value[i], byteBuffer.Slice(idx), out written, default);
+                    idx += written;
+                    if (!result) return false;
+                }
+            Done:
+                written = idx;
+                return true;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                written = default;
+                return false;
+            }
+        }
+
+        public static bool TryWriteValueUtf8(Span<byte> byteBuffer, ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte, out int written, int indent, bool isFirst, bool prettyPrint = false)
+        {
+            int idx = 0;
+            written = default;
+
+            try
+            {
+                if (!isFirst)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                if (prettyPrint)
+                {
+                    if (s_newLineUtf8.Length == 2)
+                        byteBuffer[idx++] = JsonConstants.CarriageReturn;
+
+                    byteBuffer[idx++] = JsonConstants.LineFeed;
+                    int indentCopy = indent - 1;
+                    while (indentCopy-- >= 0)
+                    {
+                        byteBuffer[idx++] = JsonConstants.Space;
+                        byteBuffer[idx++] = JsonConstants.Space;
+                    }
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                if (prettyPrint)
+                    byteBuffer[idx++] = JsonConstants.Space;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                written = idx;
+                return true;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                written = default;
+                return false;
+            }
+        }
     }
+
+    struct Customer : IWritable
+    {
+        readonly string _name;
+        readonly string _value;
+        readonly int _indent;
+        readonly bool _isFirst;
+        readonly bool _prettyPrint;
+
+        /*public Customer(string name, int[] value, int indent, bool isFirst, bool prettyPrint)
+        {
+            _name = name;
+            _value = value;
+            _indent = indent;
+            _isFirst = isFirst;
+            _prettyPrint = prettyPrint;
+        }*/
+
+        public Customer(string name, string value, int indent, bool isFirst, bool prettyPrint)
+        {
+            _name = name;
+            _value = value;
+            _indent = indent;
+            _isFirst = isFirst;
+            _prettyPrint = prettyPrint;
+        }
+
+        public bool TryWrite(Span<byte> buffer, out int written, StandardFormat format = default)
+        {
+            return JsonWriterHelper.TryWriteValueUtf8(buffer, MemoryMarshal.AsBytes(_name.AsSpan()), MemoryMarshal.AsBytes(_value.AsSpan()), out written, _indent, _isFirst, _prettyPrint);
+            //return JsonWriterHelper.TryWriteValueUtf8(buffer, MemoryMarshal.AsBytes(_name.AsSpan()), _value, out written, _indent, _isFirst, _prettyPrint);
+            //return JsonWriterHelper.TryWriteValueUtf8(buffer, _value, out written, _indent, _isFirst, _prettyPrint);
+        }
+    }
+
 
     public ref struct JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
@@ -1829,6 +2057,66 @@ namespace System.Text.JsonLab
             _indent++;
         }
 
+        public void WriteArrayStart(string name, int[] data)
+        {
+            /*_indent++;
+            Customer customer = new Customer(name, data, _indent, _firstItem, _prettyPrint);
+            _bufferWriter.Write(customer, default(StandardFormat));
+            _firstItem = false;*/
+
+            ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
+            int bytesNeeded = CalculateBytesNeeded(nameSpan, sizeof(byte), 4);
+            WriteStartUtf8(nameSpan, bytesNeeded, JsonConstants.OpenBracket);
+
+            _firstItem = true;
+            _indent++;
+
+            /*for (int i = 0; i < data.Length; i++)
+            {
+                if (!_firstItem)
+                    _bufferWriter.Write(JsonConstants.ListSeperator);
+
+                _firstItem = false;
+                if (_prettyPrint)
+                    AddNewLineAndIndentation();
+
+                _bufferWriter.Write(data[i]);
+            }*/
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                bytesNeeded = _firstItem ? 0 : 1;
+                int value = data[i];
+
+                bool insertNegationSign = false;
+                if (value < 0)
+                {
+                    insertNegationSign = true;
+                    value = -value;
+                    bytesNeeded += sizeof(byte);
+                }
+
+                int digitCount = JsonWriterHelper.CountDigits((ulong)value);
+                bytesNeeded += sizeof(byte) * digitCount;
+                Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+
+                int idx = 0;
+                if (!_firstItem)
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+
+                _firstItem = false;
+                if (_prettyPrint)
+                    idx += AddNewLineAndIndentation(byteBuffer.Slice(idx));
+
+                if (insertNegationSign)
+                    byteBuffer[idx++] = (byte)'-';
+
+                JsonWriterHelper.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
+
+                _bufferWriter.Advance(bytesNeeded);
+            }
+        }
+
         /// <summary>
         /// Writes the end tag for an array.
         /// </summary>
@@ -1856,10 +2144,13 @@ namespace System.Text.JsonLab
         {
             if (_isUtf8)
             {
-                ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
+                /*ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
                 ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
                 int bytesNeeded = CalculateAttributeBytesNeeded(nameSpan, valueSpan, sizeof(byte));
-                WriteAttributeUtf8(nameSpan, valueSpan, bytesNeeded);
+                WriteAttributeUtf8(nameSpan, valueSpan, bytesNeeded);*/
+                Customer customer = new Customer(name, value, _indent, _firstItem, _prettyPrint);
+                _bufferWriter.Write(customer, default(StandardFormat));
+                _firstItem = false;
             }
             else
             {
@@ -2256,7 +2547,8 @@ namespace System.Text.JsonLab
         {
             if (_isUtf8)
             {
-                WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), JsonWriterHelper.s_newLineUtf8.Length));
+                //WriteValueUtf8(value, CalculateValueBytesNeeded(sizeof(byte), JsonWriterHelper.s_newLineUtf8.Length));
+                WriteValueUtf8(value);
             }
             else
             {
@@ -2292,6 +2584,21 @@ namespace System.Text.JsonLab
             JsonWriterHelper.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
+        }
+
+        private void WriteValueUtf8(long value)
+        {
+            if (!_firstItem)
+                _bufferWriter.Write(JsonConstants.ListSeperator);
+
+            _firstItem = false;
+            if (_prettyPrint)
+                AddNewLineAndIndentation();
+
+            _bufferWriter.Write(value);
+            /*Customer customer = new Customer(value, _indent, _firstItem, _prettyPrint);
+            _bufferWriter.Write(customer, default(StandardFormat));
+            _firstItem = false;*/
         }
 
         private void WriteValueUtf16(long value, int bytesNeeded)
@@ -2970,6 +3277,23 @@ namespace System.Text.JsonLab
             bytesNeeded += MemoryMarshal.AsBytes(valueSpan).Length;
 
             return bytesNeeded;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AddNewLineAndIndentation()
+        {
+            if (JsonWriterHelper.s_newLineUtf8.Length == 2)
+                _bufferWriter.Write(JsonConstants.CarriageReturn);
+
+            _bufferWriter.Write(JsonConstants.LineFeed);
+
+            int indent = _indent;
+
+            while (indent-- >= 0)
+            {
+                _bufferWriter.Write(JsonConstants.Space);
+                _bufferWriter.Write(JsonConstants.Space);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

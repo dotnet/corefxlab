@@ -116,7 +116,7 @@ namespace System.Text.JsonLab.Tests
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
-            var jsonUtf8 = new JsonWriter(bufferWriter, true, prettyPrint);
+            var jsonUtf8 = JsonWriterFactory.Create(bufferWriter, true, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
@@ -185,7 +185,7 @@ namespace System.Text.JsonLab.Tests
 
             var output = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
             var bufferWriter = new BufferWriter<IBufferWriter<byte>>(output);
-            var jsonUtf8 = new JsonWriter(bufferWriter, true, prettyPrint);
+            var jsonUtf8 = JsonWriterFactory.Create(bufferWriter, true, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
@@ -202,11 +202,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteObjectEnd();
 
             // Add a large array of values
-            jsonUtf8.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < ExtraArraySize; i++)
-            {
-                jsonUtf8.WriteValue(data[i]);
-            }
+            jsonUtf8.WriteArrayStart("ExtraArray", data);
             jsonUtf8.WriteArrayEnd();
 
             jsonUtf8.WriteObjectEnd();
