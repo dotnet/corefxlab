@@ -6,20 +6,20 @@ using System.Text;
 
 namespace System.Devices.Gpio
 {
-    internal class GPIOPinUnix : GPIOPin
+    internal class GpioPinUnix : GpioPin
     {
         private const string gpioPath = "/sys/class/gpio";
 
         private readonly int bcmNumber;
         private readonly string pinPath;
 
-        public override GPIOPinStatus Status { get; protected set; }
+        public override GpioPinStatus Status { get; protected set; }
 
-        public override GPIOPinMode Mode
+        public override GpioPinMode Mode
         {
             get
             {
-                if (this.Status != GPIOPinStatus.Open)
+                if (this.Status != GpioPinStatus.Open)
                 {
                     throw new InvalidOperationException("The pin is not open");
                 }
@@ -30,7 +30,7 @@ namespace System.Devices.Gpio
             }
             set
             {
-                if (this.Status != GPIOPinStatus.Open)
+                if (this.Status != GpioPinStatus.Open)
                 {
                     throw new InvalidOperationException("The pin is not open");
                 }
@@ -40,27 +40,27 @@ namespace System.Devices.Gpio
             }
         }
 
-        public GPIOPinUnix(GPIODeviceInfo deviceInfo, GPIOScheme numbering, int number)
+        public GpioPinUnix(GpioDeviceInfo deviceInfo, GpioScheme numbering, int number)
             : base(deviceInfo, number, numbering)
         {
-            bcmNumber = deviceInfo.ConvertPinNumber(number, numbering, GPIOScheme.BCM);
+            bcmNumber = deviceInfo.ConvertPinNumber(number, numbering, GpioScheme.BCM);
             pinPath = $"{gpioPath}/gpio{bcmNumber}";
         }
 
         public override void Open()
         {
-            if (this.Status == GPIOPinStatus.Open) return;
+            if (this.Status == GpioPinStatus.Open) return;
 
             File.WriteAllText($"{gpioPath}/export", Convert.ToString(bcmNumber));
-            this.Status = GPIOPinStatus.Open;
+            this.Status = GpioPinStatus.Open;
         }
 
         public override void Close()
         {
-            if (this.Status == GPIOPinStatus.Closed) return;
+            if (this.Status == GpioPinStatus.Closed) return;
 
             File.WriteAllText($"{gpioPath}/unexport", Convert.ToString(bcmNumber));
-            this.Status = GPIOPinStatus.Closed;
+            this.Status = GpioPinStatus.Closed;
         }
 
         public override bool Read()
@@ -101,28 +101,28 @@ namespace System.Devices.Gpio
 
         #region Private Methods
 
-        private GPIOPinMode StringModeToPinMode(string value)
+        private GpioPinMode StringModeToPinMode(string value)
         {
-            GPIOPinMode result;
+            GpioPinMode result;
 
             switch (value)
             {
-                case "in": result = GPIOPinMode.Input; break;
-                case "out": result = GPIOPinMode.Output; break;
+                case "in": result = GpioPinMode.Input; break;
+                case "out": result = GpioPinMode.Output; break;
                 default: throw new Exception("Invalid GPIO Pin mode");
             }
 
             return result;
         }
 
-        private string ModeToStringMode(GPIOPinMode value)
+        private string ModeToStringMode(GpioPinMode value)
         {
             string result;
 
             switch (value)
             {
-                case GPIOPinMode.Input: result = "in"; break;
-                case GPIOPinMode.Output: result = "out"; break;
+                case GpioPinMode.Input: result = "in"; break;
+                case GpioPinMode.Output: result = "out"; break;
                 default: throw new Exception("Invalid GPIO Pin mode");
             }
 

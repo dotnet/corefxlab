@@ -6,46 +6,46 @@ using System.Text;
 
 namespace System.Devices.Gpio
 {
-    public enum GPIOPinMode
+    public enum GpioPinMode
     {
-        Input,
-        Output
+        Input = 0,
+        Output = 1
     }
 
-    public enum GPIOPinStatus
+    public enum GpioPinStatus
     {
         Closed,
         Open
     }
 
-    public enum GPIOScheme
+    public enum GpioScheme
     {
         Board,
         BCM
     }
 
-    public enum GPIODeviceKind
+    public enum GpioDeviceKind
     {
         RaspberryPi
     }
 
-    public abstract class GPIOPin : IDisposable
+    public abstract class GpioPin : IDisposable
     {
-        private readonly GPIODeviceInfo deviceInfo;
+        private readonly GpioDeviceInfo deviceInfo;
 
         public int BoardNumber { get; }
-        public abstract GPIOPinStatus Status { get; protected set; }
-        public abstract GPIOPinMode Mode { get; set; }
+        public abstract GpioPinStatus Status { get; protected set; }
+        public abstract GpioPinMode Mode { get; set; }
 
-        public static GPIOPin Create(GPIODeviceKind deviceKind, GPIOScheme numbering, int number)
+        public static GpioPin Create(GpioDeviceKind deviceKind, GpioScheme numbering, int number)
         {
-            GPIOPin pin;
+            GpioPin pin;
 
-            var deviceInfo = GPIODeviceInfo.Create(deviceKind);
+            var deviceInfo = GpioDeviceInfo.Create(deviceKind);
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                pin = new GPIOPinUnix(deviceInfo, numbering, number);
+                pin = new GpioPinUnix(deviceInfo, numbering, number);
             }
             else
             {
@@ -55,18 +55,18 @@ namespace System.Devices.Gpio
             return pin;
         }
 
-        protected private GPIOPin(GPIODeviceInfo deviceInfo, int number, GPIOScheme numberKind)
+        protected private GpioPin(GpioDeviceInfo deviceInfo, int number, GpioScheme numberKind)
         {
             this.deviceInfo = deviceInfo;
-            this.BoardNumber = deviceInfo.ConvertPinNumber(number, numberKind, GPIOScheme.Board);
+            this.BoardNumber = deviceInfo.ConvertPinNumber(number, numberKind, GpioScheme.Board);
         }
 
-        public int GetNumber(GPIOScheme kind)
+        public int GetNumber(GpioScheme kind)
         {
-            return deviceInfo.ConvertPinNumber(this.BoardNumber, GPIOScheme.Board, kind);
+            return deviceInfo.ConvertPinNumber(this.BoardNumber, GpioScheme.Board, kind);
         }
 
-        public void Open(GPIOPinMode mode)
+        public void Open(GpioPinMode mode)
         {
             this.Open();
             this.Mode = mode;

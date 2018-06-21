@@ -4,24 +4,24 @@ using System.Text;
 
 namespace System.Devices.Gpio.Devices
 {
-    internal class RaspberryPiInfo : GPIODeviceInfo
+    internal class RaspberryPiInfo : GpioDeviceInfo
     {
         public override int PinCount => 40;
 
-        public override int ConvertPinNumber(int number, GPIOScheme from, GPIOScheme to)
+        public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
         {
             int result = -1;
 
             switch (from)
             {
-                case GPIOScheme.BCM:
+                case GpioScheme.BCM:
                     switch (to)
                     {
-                        case GPIOScheme.BCM:
+                        case GpioScheme.BCM:
                             result = number;
                             break;
 
-                        case GPIOScheme.Board:
+                        case GpioScheme.Board:
                             //throw new NotImplementedException();
                             break;
 
@@ -29,14 +29,14 @@ namespace System.Devices.Gpio.Devices
                     }
                     break;
 
-                case GPIOScheme.Board:
+                case GpioScheme.Board:
                     switch (to)
                     {
-                        case GPIOScheme.Board:
+                        case GpioScheme.Board:
                             result = number;
                             break;
 
-                        case GPIOScheme.BCM:
+                        case GpioScheme.BCM:
                             //throw new NotImplementedException();
                             break;
 

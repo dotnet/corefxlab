@@ -2,7 +2,7 @@
   <Import Project="..\..\..\tools\common.props" />
   <PropertyGroup>
     <Description></Description>
-    <TargetFramework>netstandard1.5</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>Command line parsing support corefxlab</PackageTags>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -11,10 +11,12 @@
     <Compile Include="System\**\*.*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Devices\GPIODeviceInfo.cs" />
+    <Compile Include="Devices\GpioDeviceInfo.cs" />
     <Compile Include="Devices\RaspberryPiInfo.cs" />
-    <Compile Include="GPIOPin.cs" />
-    <Compile Include="Platforms\GPIOPinUnix.cs" />
+    <Compile Include="RaspberryPiDriver.cs" />
+    <Compile Include="GpioDriver.cs" />
+    <Compile Include="GpioPin.cs" />
+    <Compile Include="Platforms\GpioPinUnix.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Documentation\GPIORef.cs" />

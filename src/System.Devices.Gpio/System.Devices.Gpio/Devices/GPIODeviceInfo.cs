@@ -4,15 +4,15 @@ using System.Text;
 
 namespace System.Devices.Gpio.Devices
 {
-    internal abstract class GPIODeviceInfo
+    internal abstract class GpioDeviceInfo
     {
-        public static GPIODeviceInfo Create(GPIODeviceKind deviceKind)
+        public static GpioDeviceInfo Create(GpioDeviceKind deviceKind)
         {
-            GPIODeviceInfo result;
+            GpioDeviceInfo result;
 
             switch (deviceKind)
             {
-                case GPIODeviceKind.RaspberryPi:
+                case GpioDeviceKind.RaspberryPi:
                     result = new RaspberryPiInfo();
                     break;
 
@@ -24,6 +24,6 @@ namespace System.Devices.Gpio.Devices
 
         public abstract int PinCount { get; }
 
-        public abstract int ConvertPinNumber(int number, GPIOScheme from, GPIOScheme to);
+        public abstract int ConvertPinNumber(int number, GpioScheme from, GpioScheme to);
     }
 }
