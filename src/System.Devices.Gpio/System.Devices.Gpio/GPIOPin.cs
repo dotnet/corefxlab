@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Devices.Gpio.Devices;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace System.Devices.Gpio
@@ -12,10 +10,10 @@ namespace System.Devices.Gpio
         Output = 1
     }
 
-    public enum GpioPinStatus
+    public enum GpioPinValue
     {
-        Closed,
-        Open
+        Low = 0,
+        High = 1
     }
 
     public enum GpioScheme
@@ -24,78 +22,44 @@ namespace System.Devices.Gpio
         BCM
     }
 
-    public enum GpioDeviceKind
+    public class GpioPin
     {
-        RaspberryPi
-    }
+        protected GpioDriver Driver;
 
-    public abstract class GpioPin : IDisposable
-    {
-        private readonly GpioDeviceInfo deviceInfo;
+        public int Number { get; }
 
-        public int BoardNumber { get; }
-        public abstract GpioPinStatus Status { get; protected set; }
-        public abstract GpioPinMode Mode { get; set; }
-
-        public static GpioPin Create(GpioDeviceKind deviceKind, GpioScheme numbering, int number)
+        public GpioPinMode Mode
         {
-            GpioPin pin;
-
-            var deviceInfo = GpioDeviceInfo.Create(deviceKind);
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            get
             {
-                pin = new GpioPinUnix(deviceInfo, numbering, number);
+                return Driver.GetPinMode(Number);
             }
-            else
+            set
             {
-                throw new Exception("Unsupported OS platform");
+                Driver.SetPinMode(Number, value);
             }
-
-            return pin;
         }
 
-        protected private GpioPin(GpioDeviceInfo deviceInfo, int number, GpioScheme numberKind)
+        public GpioPin(GpioDriver driver, GpioScheme numberKind, int number, GpioPinMode mode)
         {
-            this.deviceInfo = deviceInfo;
-            this.BoardNumber = deviceInfo.ConvertPinNumber(number, numberKind, GpioScheme.Board);
+            Driver = driver;
+            Number = driver.ConvertPinNumber(number, numberKind, GpioScheme.BCM);
+            Mode = mode;
         }
 
         public int GetNumber(GpioScheme kind)
         {
-            return deviceInfo.ConvertPinNumber(this.BoardNumber, GpioScheme.Board, kind);
+            return Driver.ConvertPinNumber(Number, GpioScheme.BCM, kind);
         }
 
-        public void Open(GpioPinMode mode)
+        public GpioPinValue Read()
         {
-            this.Open();
-            this.Mode = mode;
+            return Driver.Input(Number);
         }
 
-        public abstract void Open();
-        public abstract void Close();
-        public abstract bool Read();
-        public abstract void Write(bool value);
-
-        #region IDisposable Support
-
-        protected abstract void Dispose(bool disposing);
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~GPIOPin() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
+        public void Write(GpioPinValue value)
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            Driver.Output(Number, value);
         }
-
-        #endregion
     }
 }

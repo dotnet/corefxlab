@@ -11,12 +11,10 @@
     <Compile Include="System\**\*.*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Devices\GpioDeviceInfo.cs" />
-    <Compile Include="Devices\RaspberryPiInfo.cs" />
+    <Compile Include="UnixDriver.cs" />
     <Compile Include="RaspberryPiDriver.cs" />
     <Compile Include="GpioDriver.cs" />
     <Compile Include="GpioPin.cs" />
-    <Compile Include="Platforms\GpioPinUnix.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Documentation\GPIORef.cs" />

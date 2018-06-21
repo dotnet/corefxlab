@@ -3,16 +3,35 @@ using System.Threading;
 
 namespace System.Devices.Gpio.Samples
 {
-    internal unsafe class Program
+    internal class Program
     {
         private static void Main(string[] args)
         {
             try
             {
-                //BlinkingLED();
-                //ButtonLED();
-                //Driver_BlinkingLED();
-                Driver_ButtonLED();
+                var option = -1;
+
+                if (args.Length > 0)
+                {
+                    option = Convert.ToInt32(args[0]);
+                }
+
+                switch (option)
+                {
+                    case 0: Unix_BlinkingLED(); break;
+                    case 1: Unix_ButtonLED(); break;
+
+                    case 2: RaspberryPi_BlinkingLED(); break;
+                    case 3: RaspberryPi_ButtonLED(); break;
+
+                    case 4: UnixDriver_BlinkingLED(); break;
+                    case 5: UnixDriver_ButtonLED(); break;
+
+                    case 6: RaspberryPiDriver_BlinkingLED(); break;
+                    case 7: RaspberryPiDriver_ButtonLED(); break;
+
+                    default: RaspberryPiDriver_ButtonLED(); break;
+                }
             }
             catch (Exception ex)
             {
@@ -22,30 +41,53 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine("Done!");
         }
 
-        private static void BlinkingLED()
+        private static void Unix_BlinkingLED()
         {
-            using (var led = GpioPin.Create(GpioDeviceKind.RaspberryPi, GpioScheme.BCM, 26))
+            Console.WriteLine(nameof(Unix_BlinkingLED));
+            BlinkingLED(new UnixDriver());
+        }
+
+        private static void Unix_ButtonLED()
+        {
+            Console.WriteLine(nameof(Unix_ButtonLED));
+            ButtonLED(new UnixDriver());
+        }
+
+        private static void RaspberryPi_BlinkingLED()
+        {
+            Console.WriteLine(nameof(RaspberryPi_BlinkingLED));
+            BlinkingLED(new RaspberryPiDriver());
+        }
+
+        private static void RaspberryPi_ButtonLED()
+        {
+            Console.WriteLine(nameof(RaspberryPi_ButtonLED));
+            ButtonLED(new RaspberryPiDriver());
+        }
+
+        private static void BlinkingLED(GpioDriver driver)
+        {
+            using (driver)
             {
-                led.Open(GpioPinMode.Output);
+                var led = new GpioPin(driver, GpioScheme.BCM, 26, GpioPinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
-                    led.Write(true);
+                    led.Write(GpioPinValue.High);
                     Thread.Sleep(1 * 1000);
 
-                    led.Write(false);
+                    led.Write(GpioPinValue.Low);
                     Thread.Sleep(1 * 1000);
                 }
             }
         }
 
-        private static void ButtonLED()
+        private static void ButtonLED(GpioDriver driver)
         {
-            using (var button = GpioPin.Create(GpioDeviceKind.RaspberryPi, GpioScheme.BCM, 18))
-            using (var led = GpioPin.Create(GpioDeviceKind.RaspberryPi, GpioScheme.BCM, 26))
+            using (driver)
             {
-                button.Open(GpioPinMode.Input);
-                led.Open(GpioPinMode.Output);
+                var button = new GpioPin(driver, GpioScheme.BCM, 18, GpioPinMode.Input);
+                var led = new GpioPin(driver, GpioScheme.BCM, 26, GpioPinMode.Output);
 
                 var watch = Stopwatch.StartNew();
 
@@ -57,11 +99,35 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Driver_BlinkingLED()
+        private static void UnixDriver_BlinkingLED()
+        {
+            Console.WriteLine(nameof(UnixDriver_BlinkingLED));
+            Driver_BlinkingLED(new UnixDriver());
+        }
+
+        private static void UnixDriver_ButtonLED()
+        {
+            Console.WriteLine(nameof(UnixDriver_ButtonLED));
+            Driver_ButtonLED(new UnixDriver());
+        }
+
+        private static void RaspberryPiDriver_BlinkingLED()
+        {
+            Console.WriteLine(nameof(RaspberryPiDriver_BlinkingLED));
+            Driver_BlinkingLED(new RaspberryPiDriver());
+        }
+
+        private static void RaspberryPiDriver_ButtonLED()
+        {
+            Console.WriteLine(nameof(RaspberryPiDriver_ButtonLED));
+            Driver_ButtonLED(new RaspberryPiDriver());
+        }
+
+        private static void Driver_BlinkingLED(GpioDriver driver)
         {
             const int led = 26;
 
-            using (var driver = new RaspberryPiDriver())
+            using (driver)
             {
                 driver.SetPinMode(led, GpioPinMode.Output);
 
@@ -76,12 +142,12 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Driver_ButtonLED()
+        private static void Driver_ButtonLED(GpioDriver driver)
         {
             const int button = 18;
             const int led = 26;
 
-            using (var driver = new RaspberryPiDriver())
+            using (driver)
             {
                 driver.SetPinMode(button, GpioPinMode.Input);
                 driver.SetPinMode(led, GpioPinMode.Output);

@@ -225,8 +225,8 @@ namespace System.Devices.Gpio
         [Flags]
         private enum FileOpenFlags
         {
-            O_RDWR = 0x02,
-            O_SYNC = 0x1000
+            O_RDWR = 0x0002,
+            O_SYNC = 0x0100
         }
 
         [DllImport(LibraryName, SetLastError = true)]
@@ -270,12 +270,13 @@ namespace System.Devices.Gpio
         {
             FileDescriptor = open(GpioMemoryFilePath, FileOpenFlags.O_RDWR | FileOpenFlags.O_SYNC);
 
-            //Console.WriteLine($"file descriptor = {FileDescriptor}");
+            Console.WriteLine($"open error num = {Marshal.GetLastWin32Error()}");
+            Console.WriteLine($"file descriptor = {FileDescriptor}");
 
             var mapPointer = mmap(IntPtr.Zero, (IntPtr)Environment.SystemPageSize, MemoryMappedProtections.PROT_READ | MemoryMappedProtections.PROT_WRITE, MemoryMappedFlags.MAP_SHARED, FileDescriptor, GpioBaseOffset);
 
-            //Console.WriteLine($"mmap error num = {Marshal.GetLastWin32Error()}");
-            //Console.WriteLine($"mmap returned address = {(long)mapPointer:X16}");
+            Console.WriteLine($"mmap error num = {Marshal.GetLastWin32Error()}");
+            Console.WriteLine($"mmap returned address = {(long)mapPointer:X16}");
 
             RegisterViewPointer = (RegisterView*)mapPointer;
         }
@@ -304,16 +305,16 @@ namespace System.Devices.Gpio
             var shift = (pin % 10) * 3;
             uint* registerPointer = &RegisterViewPointer->GPFSEL[index];
 
-            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
+            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
 
             var register = *registerPointer;
 
-            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} original register value = {register:X8}");
+            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} original register value = {register:X8}");
 
             register &= ~(0b111U << shift);
             register |= (uint)mode << shift;
 
-            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} new register value = {register:X8}");
+            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} new register value = {register:X8}");
 
             *registerPointer = register;
         }
@@ -396,6 +397,50 @@ namespace System.Devices.Gpio
             var value = (register >> shift) & 1;
 
             var result = Convert.ToBoolean(value) ? GpioPinValue.High : GpioPinValue.Low;
+            return result;
+        }
+
+        public override int PinCount => 40;
+
+        public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
+        {
+            int result = -1;
+
+            switch (from)
+            {
+                case GpioScheme.BCM:
+                    switch (to)
+                    {
+                        case GpioScheme.BCM:
+                            result = number;
+                            break;
+
+                        case GpioScheme.Board:
+                            //throw new NotImplementedException();
+                            break;
+
+                        default: throw new Exception($"Unsupported GPIO scheme '{to}'");
+                    }
+                    break;
+
+                case GpioScheme.Board:
+                    switch (to)
+                    {
+                        case GpioScheme.Board:
+                            result = number;
+                            break;
+
+                        case GpioScheme.BCM:
+                            //throw new NotImplementedException();
+                            break;
+
+                        default: throw new Exception($"Unsupported GPIO scheme '{to}'");
+                    }
+                    break;
+
+                default: throw new Exception($"Unsupported GPIO Pin scheme '{from}'");
+            }
+
             return result;
         }
 
