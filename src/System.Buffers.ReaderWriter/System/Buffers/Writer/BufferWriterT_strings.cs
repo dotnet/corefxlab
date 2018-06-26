@@ -56,6 +56,17 @@ namespace System.Buffers.Writer
             Write(NewLine);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(byte value)
+        {
+            if (_span.Length >= 1)
+            {
+                Enlarge();
+            }
+            _span[0] = value;
+            Advance(1);
+        }
+
         //public void WriteLine(Utf8String value, TransformationFormat format);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
