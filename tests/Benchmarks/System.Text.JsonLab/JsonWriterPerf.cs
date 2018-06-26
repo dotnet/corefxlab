@@ -9,7 +9,7 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(-1, 5, 10, 8192)]
+    [SimpleJob(-1, 5, 10, 32768)]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
