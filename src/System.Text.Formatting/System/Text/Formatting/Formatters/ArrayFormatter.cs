@@ -9,6 +9,44 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Formatting
 {
+    public struct ArrayFormatterWrapper : ITextBufferWriter, IDisposable
+    {
+        private ArrayFormatter _arrayFormatter;
+
+        public ArrayFormatterWrapper(int capacity, SymbolTable symbolTable, ArrayPool<byte> pool = null)
+        {
+            _arrayFormatter = new ArrayFormatter(capacity, symbolTable, pool);
+        }
+
+        public int CommitedByteCount => _arrayFormatter.CommitedByteCount;
+
+        public void Clear()
+        {
+            _arrayFormatter.Clear();
+        }
+
+        public ArraySegment<byte> Free => _arrayFormatter.Free;
+        public ArraySegment<byte> Formatted => _arrayFormatter.Formatted;
+
+        public SymbolTable SymbolTable => _arrayFormatter.SymbolTable;
+
+        public Memory<byte> GetMemory(int minimumLength = 0) => _arrayFormatter.GetMemory(minimumLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> GetSpan(int minimumLength = 0) => _arrayFormatter.GetSpan(minimumLength);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Advance(int bytes)
+        {
+            _arrayFormatter.Advance(bytes);
+        }
+
+        public void Dispose()
+        {
+            _arrayFormatter.Dispose();
+        }
+    }
+
     public class ArrayFormatter : ITextBufferWriter, IDisposable
     {
         ResizableArray<byte> _buffer;
@@ -30,6 +68,7 @@ namespace System.Text.Formatting
         }
 
         public ArraySegment<byte> Free => _buffer.Free;
+
         public ArraySegment<byte> Formatted => _buffer.Full;
 
         public SymbolTable SymbolTable => _symbolTable;
@@ -72,7 +111,6 @@ namespace System.Text.Formatting
                 FormatterThrowHelper.ThrowInvalidOperationException("More bytes commited than returned from FreeBuffer");
             }
         }
-        public int MaxBufferSize { get; } = Int32.MaxValue;
 
         public void Dispose()
         {

@@ -16,7 +16,7 @@ namespace System.Text.JsonLab.Tests
         [Fact]
         public void WriteJsonUtf8()
         {
-            var formatter = new ArrayFormatter(1024, SymbolTable.InvariantUtf8);
+            var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
             var json = new JsonWriter(formatter, true, prettyPrint: false);
             Write(ref json);
 
