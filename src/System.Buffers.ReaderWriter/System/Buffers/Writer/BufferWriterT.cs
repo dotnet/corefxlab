@@ -56,12 +56,7 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EnsureMore(int count = 0)
         {
-            var buffered = _buffered;
-            if (buffered > 0)
-            {
-                _buffered = 0;
-                _output.Advance(buffered);
-            }
+            Flush();
             _span = _output.GetSpan(count);
         }
 

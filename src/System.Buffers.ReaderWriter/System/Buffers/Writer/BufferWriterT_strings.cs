@@ -72,6 +72,17 @@ namespace System.Buffers.Writer
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Write(byte value)
+        {
+            if (_span.Length < 1)
+            {
+                Enlarge();
+            }
+            _span[0] = value;
+            Advance(1);
+        }
+
         //public void Write(ReadOnlySpan<byte> value, TransformationFormat format)
 
         private void WriteMultiBuffer(ReadOnlySpan<byte> source)
