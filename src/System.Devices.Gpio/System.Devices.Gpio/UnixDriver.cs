@@ -77,7 +77,7 @@ namespace System.Devices.Gpio
         {
             var pinPath = $"{GpioPath}/gpio{pin}";
 
-            if (!File.Exists(pinPath))
+            if (!Directory.Exists(pinPath))
             {
                 File.WriteAllText($"{GpioPath}/export", Convert.ToString(pin));
             }
@@ -89,7 +89,7 @@ namespace System.Devices.Gpio
         {
             var pinPath = $"{GpioPath}/gpio{pin}";
 
-            if (File.Exists(pinPath))
+            if (Directory.Exists(pinPath))
             {
                 File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(pin));
             }

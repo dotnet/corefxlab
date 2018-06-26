@@ -225,8 +225,8 @@ namespace System.Devices.Gpio
         [Flags]
         private enum FileOpenFlags
         {
-            O_RDWR = 0x0002,
-            O_SYNC = 0x0100
+            O_RDWR = 0x02,
+            O_SYNC = 0x101000
         }
 
         [DllImport(LibraryName, SetLastError = true)]
@@ -253,30 +253,39 @@ namespace System.Devices.Gpio
         }
 
         [DllImport(LibraryName, SetLastError = true)]
-        private static extern IntPtr mmap(IntPtr addr, IntPtr length, MemoryMappedProtections prot, MemoryMappedFlags flags, int fd, long offset);
+        private static extern IntPtr mmap(IntPtr addr, int length, MemoryMappedProtections prot, MemoryMappedFlags flags, int fd, int offset);
 
         [DllImport(LibraryName, SetLastError = true)]
-        private static extern int munmap(IntPtr addr, IntPtr length);
+        private static extern int munmap(IntPtr addr, int length);
 
         #endregion
 
         private const string GpioMemoryFilePath = "/dev/gpiomem";
-        private const long GpioBaseOffset = 0;
+        private const int GpioBaseOffset = 0;
 
-        private int FileDescriptor;
         private RegisterView* RegisterViewPointer = null;
 
         public RaspberryPiDriver()
         {
-            FileDescriptor = open(GpioMemoryFilePath, FileOpenFlags.O_RDWR | FileOpenFlags.O_SYNC);
+            var fileDescriptor = open(GpioMemoryFilePath, FileOpenFlags.O_RDWR | FileOpenFlags.O_SYNC);
 
-            Console.WriteLine($"open error num = {Marshal.GetLastWin32Error()}");
-            Console.WriteLine($"file descriptor = {FileDescriptor}");
+            if (fileDescriptor < 0)
+            {
+                throw new IOException($"open error number: {Marshal.GetLastWin32Error()}");
+            }
 
-            var mapPointer = mmap(IntPtr.Zero, (IntPtr)Environment.SystemPageSize, MemoryMappedProtections.PROT_READ | MemoryMappedProtections.PROT_WRITE, MemoryMappedFlags.MAP_SHARED, FileDescriptor, GpioBaseOffset);
+            Console.WriteLine($"file descriptor = {fileDescriptor}");
 
-            Console.WriteLine($"mmap error num = {Marshal.GetLastWin32Error()}");
-            Console.WriteLine($"mmap returned address = {(long)mapPointer:X16}");
+            var mapPointer = mmap(IntPtr.Zero, Environment.SystemPageSize, MemoryMappedProtections.PROT_READ | MemoryMappedProtections.PROT_WRITE, MemoryMappedFlags.MAP_SHARED, fileDescriptor, GpioBaseOffset);
+
+            if (mapPointer.ToInt32() < 0)
+            {
+                throw new IOException($"mmap error number: {Marshal.GetLastWin32Error()}");
+            }
+
+            Console.WriteLine($"mmap returned address = {mapPointer.ToInt32():X16}");
+
+            close(fileDescriptor);
 
             RegisterViewPointer = (RegisterView*)mapPointer;
         }
@@ -285,12 +294,7 @@ namespace System.Devices.Gpio
         {
             if (RegisterViewPointer != null)
             {
-                munmap((IntPtr)RegisterViewPointer, IntPtr.Zero);
-            }
-
-            if (FileDescriptor >= 0)
-            {
-                close(FileDescriptor);
+                munmap((IntPtr)RegisterViewPointer, 0);
             }
         }
 
@@ -305,16 +309,16 @@ namespace System.Devices.Gpio
             var shift = (pin % 10) * 3;
             uint* registerPointer = &RegisterViewPointer->GPFSEL[index];
 
-            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
+            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
 
             var register = *registerPointer;
 
-            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} original register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} original register value = {register:X8}");
 
             register &= ~(0b111U << shift);
             register |= (uint)mode << shift;
 
-            Console.WriteLine($"{nameof(RegisterView.GPFSEL)} new register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} new register value = {register:X8}");
 
             *registerPointer = register;
         }
