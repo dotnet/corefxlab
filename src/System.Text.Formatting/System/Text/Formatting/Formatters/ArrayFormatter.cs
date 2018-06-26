@@ -20,31 +20,24 @@ namespace System.Text.Formatting
 
         public int CommitedByteCount => _arrayFormatter.CommitedByteCount;
 
-        public void Clear()
-        {
-            _arrayFormatter.Clear();
-        }
+        public void Clear() => _arrayFormatter.Clear();
 
         public ArraySegment<byte> Free => _arrayFormatter.Free;
+
         public ArraySegment<byte> Formatted => _arrayFormatter.Formatted;
 
         public SymbolTable SymbolTable => _arrayFormatter.SymbolTable;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<byte> GetMemory(int minimumLength = 0) => _arrayFormatter.GetMemory(minimumLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<byte> GetSpan(int minimumLength = 0) => _arrayFormatter.GetSpan(minimumLength);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int bytes)
-        {
-            _arrayFormatter.Advance(bytes);
-        }
+        public void Advance(int bytes) => _arrayFormatter.Advance(bytes);
 
-        public void Dispose()
-        {
-            _arrayFormatter.Dispose();
-        }
+        public void Dispose() => _arrayFormatter.Dispose();
     }
 
     public class ArrayFormatter : ITextBufferWriter, IDisposable
