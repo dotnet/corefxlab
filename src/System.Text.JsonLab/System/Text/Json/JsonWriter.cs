@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public struct JsonWriter
+    public struct JsonWriter<T> where T : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;
-        private readonly IBufferWriter<byte> _bufferWriter;
+        private readonly T _bufferWriter;
         private readonly bool _isUtf8;
 
         private int _indent;
@@ -23,7 +23,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public JsonWriter(IBufferWriter<byte> bufferWriter, bool isUtf8, bool prettyPrint = false)
+        public JsonWriter(T bufferWriter, bool isUtf8, bool prettyPrint = false)
         {
             _bufferWriter = bufferWriter;
             _prettyPrint = prettyPrint;
