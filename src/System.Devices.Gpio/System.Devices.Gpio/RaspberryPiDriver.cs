@@ -2,6 +2,7 @@
 using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace System.Devices.Gpio
 {
@@ -163,15 +164,15 @@ namespace System.Devices.Gpio
             //[FieldOffset(0x78)]
             //- Reserved - - 
 
-            ///<summary>GPIO Pin Async.Rising Edge Detect, 2x32 bits, R/W</summary>
+            ///<summary>GPIO Pin Async. Rising Edge Detect, 2x32 bits, R/W</summary>
             [FieldOffset(0x7C)]
             public fixed UInt32 GPAREN[2];
 
-            /////<summary>GPIO Pin Async.Rising Edge Detect 0, 32 bits, R/W</summary>
+            /////<summary>GPIO Pin Async. Rising Edge Detect 0, 32 bits, R/W</summary>
             //[FieldOffset(0x7C)]
             //public UInt32 GPAREN0;
 
-            /////<summary>GPIO Pin Async.Rising Edge Detect 1, 32 bits, R/W</summary>
+            /////<summary>GPIO Pin Async. Rising Edge Detect 1, 32 bits, R/W</summary>
             //[FieldOffset(0x80)]
             //public UInt32 GPAREN1;
 
@@ -300,10 +301,77 @@ namespace System.Devices.Gpio
 
         public override void SetPinMode(int pin, GpioPinMode mode)
         {
-            if (pin < 0 || pin > 53) throw new ArgumentOutOfRangeException(nameof(pin));
-            if (mode < 0 || mode > GpioPinMode.Output) throw new ArgumentOutOfRangeException(nameof(mode));
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (mode < 0 || mode > GpioPinMode.InputPullUp) throw new ArgumentOutOfRangeException(nameof(mode));
 
-            //SetBits(RegisterViewPointer->GPFSEL, pin, 10, 3, (uint)mode);
+            switch (mode)
+            {
+                case GpioPinMode.Input:
+                case GpioPinMode.InputPullDown:
+                case GpioPinMode.InputPullUp:
+                    SetInputPullMode(pin, PinModeToGPPUD(mode));
+                    break;
+            }                
+
+            SetPinMode(pin, PinModeToGPFSEL(mode));
+        }
+
+        private void SetInputPullMode(int pin, uint mode)
+        {
+            //SetBits(RegisterViewPointer->GPPUD, pin, 1, 2, mode);
+            //Thread.SpinWait(150);
+            //SetBit(RegisterViewPointer->GPPUDCLK, pin);
+            //Thread.SpinWait(150);
+            //SetBit(RegisterViewPointer->GPPUDCLK, pin, 0U);
+
+            uint* gppudPointer = &RegisterViewPointer->GPPUD;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUD)} register address = {(long)gppudPointer:X16}");
+
+            var register = *gppudPointer;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUD)} original register value = {register:X8}");
+
+            register &= ~0b11U;
+            register |= mode;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
+
+            *gppudPointer = register;
+
+            Thread.SpinWait(150);
+
+            var index = pin / 32;
+            var shift = pin % 32;
+            uint* gppudclkPointer = &RegisterViewPointer->GPPUDCLK[index];
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} register address = {(long)gppudclkPointer:X16}");
+
+            register = *gppudclkPointer;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} original register value = {register:X8}");
+
+            register |= 1U << shift;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {register:X8}");
+
+            *gppudclkPointer = register;
+
+            Thread.SpinWait(150);
+
+            register = *gppudPointer;
+            register &= ~0b11U;
+
+            Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
+            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {0:X8}");
+
+            *gppudPointer = register;
+            *gppudclkPointer = 0;
+        }
+
+        private void SetPinMode(int pin, uint mode)
+        {
+            //SetBits(RegisterViewPointer->GPFSEL, pin, 10, 3, mode);
 
             var index = pin / 10;
             var shift = (pin % 10) * 3;
@@ -316,7 +384,7 @@ namespace System.Devices.Gpio
             //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} original register value = {register:X8}");
 
             register &= ~(0b111U << shift);
-            register |= (uint)mode << shift;
+            register |= mode << shift;
 
             //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} new register value = {register:X8}");
 
@@ -325,7 +393,7 @@ namespace System.Devices.Gpio
 
         public override GpioPinMode GetPinMode(int pin)
         {
-            if (pin < 0 || pin > 53) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
 
             //var mode = GetBits(RegisterViewPointer->GPFSEL, pin, 10, 3);
 
@@ -334,13 +402,65 @@ namespace System.Devices.Gpio
             var register = RegisterViewPointer->GPFSEL[index];
             var mode = (register >> shift) & 0b111U;
 
-            var result = (GpioPinMode)mode;
+            var result = GPFSELToPinMode(mode);
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private uint PinModeToGPPUD(GpioPinMode mode)
+        {
+            uint result;
+
+            switch (mode)
+            {
+                case GpioPinMode.Input: result = 0; break;
+                case GpioPinMode.InputPullDown: result = 1; break;
+                case GpioPinMode.InputPullUp: result = 2; break;
+
+                default: throw new ArgumentOutOfRangeException(nameof(mode));
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private uint PinModeToGPFSEL(GpioPinMode mode)
+        {
+            uint result;
+
+            switch (mode)
+            {
+                case GpioPinMode.Input:
+                case GpioPinMode.InputPullDown:
+                case GpioPinMode.InputPullUp: result = 0; break;
+                
+                case GpioPinMode.Output: result = 1; break;
+
+                default: throw new ArgumentOutOfRangeException(nameof(mode));
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private GpioPinMode GPFSELToPinMode(uint gpfselValue)
+        {
+            GpioPinMode result;
+
+            switch (gpfselValue)
+            {
+                case 0: result = GpioPinMode.Input; break;
+                case 1: result = GpioPinMode.Output; break;
+
+                default: throw new ArgumentOutOfRangeException(nameof(gpfselValue));
+            }
+
             return result;
         }
 
         public override void Output(int pin, GpioPinValue value)
         {
-            if (pin < 0 || pin > 53) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
             if (value < 0 || value > GpioPinValue.High) throw new ArgumentOutOfRangeException(nameof(value));
 
             //switch (value)
@@ -391,7 +511,7 @@ namespace System.Devices.Gpio
 
         public override GpioPinValue Input(int pin)
         {
-            if (pin < 0 || pin > 53) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
 
             //var value = GetBit(RegisterViewPointer->GPLEV, pin);
 
@@ -404,7 +524,227 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override int PinCount => 40;
+        public override void ClearDetectedEvent(int pin)
+        {
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
+
+            //SetBit(RegisterViewPointer->GPEDS, pin);
+
+            var index = pin / 32;
+            var shift = pin % 32;
+            uint* registerPointer = &RegisterViewPointer->GPEDS[index];
+
+            Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
+
+            var register = *registerPointer;
+
+            Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
+
+            register |= 1U << shift;
+
+            Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
+
+            *registerPointer = register;
+
+            Thread.SpinWait(150);
+
+            *registerPointer = 0;
+        }
+
+        public override bool EventWasDetected(int pin)
+        {
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
+
+            //var value = GetBit(RegisterViewPointer->GPEDS, pin);
+
+            var index = pin / 32;
+            var shift = pin % 32;
+            var register = RegisterViewPointer->GPEDS[index];
+            var value = (register >> shift) & 1;
+
+            var result = Convert.ToBoolean(value);
+
+            if (result)
+            {
+                ClearDetectedEvent(pin);
+            }
+
+            return result;
+        }
+
+        public override void SetEventDetection(int pin, GpioEventKind kind, bool enabled)
+        {
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (kind < 0 || kind > GpioEventKind.AsyncRisingEdge) throw new ArgumentOutOfRangeException(nameof(kind));
+
+            //switch (kind)
+            //{
+            //    case GpioEventKind.High:
+            //        SetBit(RegisterViewPointer->GPHEN, pin);
+            //        break;
+
+            //    case GpioEventKind.Low:
+            //        SetBit(RegisterViewPointer->GPLEN, pin);
+            //        break;
+
+            //    case GpioEventKind.SyncRisingEdge:
+            //        SetBit(RegisterViewPointer->GPREN, pin);
+            //        break;
+
+            //    case GpioEventKind.SyncFallingEdge:
+            //        SetBit(RegisterViewPointer->GPFEN, pin);
+            //        break;
+
+            //    case GpioEventKind.AsyncRisingEdge:
+            //        SetBit(RegisterViewPointer->GPAREN, pin);
+            //        break;
+
+            //    case GpioEventKind.AsyncFallingEdge:
+            //        SetBit(RegisterViewPointer->GPAFEN, pin);
+            //        break;
+
+            //    default: throw new ArgumentOutOfRangeException(nameof(kind));
+            //}
+
+            var index = pin / 32;
+            var shift = pin % 32;
+            uint* registerPointer = null;
+            var registerName = string.Empty;
+
+            switch (kind)
+            {
+                case GpioEventKind.High:
+                    registerPointer = &RegisterViewPointer->GPHEN[index];
+                    registerName = nameof(RegisterView.GPHEN);
+                    break;
+
+                case GpioEventKind.Low:
+                    registerPointer = &RegisterViewPointer->GPLEN[index];
+                    registerName = nameof(RegisterView.GPLEN);
+                    break;
+
+                case GpioEventKind.SyncRisingEdge:
+                    registerPointer = &RegisterViewPointer->GPREN[index];
+                    registerName = nameof(RegisterView.GPREN);
+                    break;
+
+                case GpioEventKind.SyncFallingEdge:
+                    registerPointer = &RegisterViewPointer->GPFEN[index];
+                    registerName = nameof(RegisterView.GPFEN);
+                    break;
+
+                case GpioEventKind.AsyncRisingEdge:
+                    registerPointer = &RegisterViewPointer->GPAREN[index];
+                    registerName = nameof(RegisterView.GPAREN);
+                    break;
+
+                case GpioEventKind.AsyncFallingEdge:
+                    registerPointer = &RegisterViewPointer->GPAFEN[index];
+                    registerName = nameof(RegisterView.GPAFEN);
+                    break;
+
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+
+            Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
+
+            var register = *registerPointer;
+
+            Console.WriteLine($"{registerName} original register value = {register:X8}");
+
+            if (enabled)
+            {
+                register |= 1U << shift;
+            }
+            else
+            {
+                register &= ~(1U << shift);
+            }
+
+            Console.WriteLine($"{registerName} new register value = {register:X8}");
+
+            *registerPointer = register;
+
+            ClearDetectedEvent(pin);
+        }
+
+        public override bool GetEventDetection(int pin, GpioEventKind kind)
+        {
+            if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
+            if (kind < 0 || kind > GpioEventKind.AsyncRisingEdge) throw new ArgumentOutOfRangeException(nameof(kind));
+
+            //switch (kind)
+            //{
+            //    case GpioEventKind.High:
+            //        value = GetBit(RegisterViewPointer->GPHEN, pin);
+            //        break;
+
+            //    case GpioEventKind.Low:
+            //        value = GetBit(RegisterViewPointer->GPLEN, pin);
+            //        break;
+
+            //    case GpioEventKind.SyncRisingEdge:
+            //        value = GetBit(RegisterViewPointer->GPREN, pin);
+            //        break;
+
+            //    case GpioEventKind.SyncFallingEdge:
+            //        value = GetBit(RegisterViewPointer->GPFEN, pin);
+            //        break;
+
+            //    case GpioEventKind.AsyncRisingEdge:
+            //        value = GetBit(RegisterViewPointer->GPAREN, pin);
+            //        break;
+
+            //    case GpioEventKind.AsyncFallingEdge:
+            //        value = GetBit(RegisterViewPointer->GPAFEN, pin);
+            //        break;
+
+            //    default: throw new ArgumentOutOfRangeException(nameof(kind));
+            //}
+
+            var index = pin / 32;
+            var shift = pin % 32;
+            var registerName = string.Empty;
+            var register = 0U;
+
+            switch (kind)
+            {
+                case GpioEventKind.High:
+                    register = RegisterViewPointer->GPHEN[index];
+                    break;
+
+                case GpioEventKind.Low:
+                    register = RegisterViewPointer->GPLEN[index];
+                    break;
+
+                case GpioEventKind.SyncRisingEdge:
+                    register = RegisterViewPointer->GPREN[index];
+                    break;
+
+                case GpioEventKind.SyncFallingEdge:
+                    register = RegisterViewPointer->GPFEN[index];
+                    break;
+
+                case GpioEventKind.AsyncRisingEdge:
+                    register = RegisterViewPointer->GPAREN[index];
+                    break;
+
+                case GpioEventKind.AsyncFallingEdge:
+                    register = RegisterViewPointer->GPAFEN[index];
+                    break;
+
+                default: throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+
+            var value = (register >> shift) & 1;
+
+            var result = Convert.ToBoolean(value);
+            return result;
+        }
+
+        
+
+        public override int PinCount => 54;
 
         public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
         {
@@ -449,9 +789,9 @@ namespace System.Devices.Gpio
         }
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //private static void SetBit(UInt32* pointer, int bit)
+        //private static void SetBit(UInt32* pointer, int bit, uint value = 1)
         //{
-        //    SetBits(pointer, bit, 32, 1, 1);
+        //    SetBits(pointer, bit, 32, 1, value);
         //}
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -19,6 +19,14 @@ namespace System.Devices.Gpio
 
         public abstract GpioPinValue Input(int pin);
 
+        public abstract void ClearDetectedEvent(int pin);
+
+        public abstract bool EventWasDetected(int pin);
+
+        public abstract void SetEventDetection(int pin, GpioEventKind kind, bool enabled);
+
+        public abstract bool GetEventDetection(int pin, GpioEventKind kind);
+
         public abstract void Dispose();
     }
 }

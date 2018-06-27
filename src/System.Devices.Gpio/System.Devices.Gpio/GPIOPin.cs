@@ -6,14 +6,26 @@ namespace System.Devices.Gpio
 {
     public enum GpioPinMode
     {
-        Input = 0,
-        Output = 1
+        Input,
+        Output,
+        InputPullDown,
+        InputPullUp
     }
 
     public enum GpioPinValue
     {
         Low = 0,
         High = 1
+    }
+
+    public enum GpioEventKind
+    {
+        Low,
+        High,
+        SyncFallingEdge,
+        SyncRisingEdge,
+        AsyncFallingEdge,
+        AsyncRisingEdge
     }
 
     public enum GpioScheme

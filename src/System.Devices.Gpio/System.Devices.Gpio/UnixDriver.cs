@@ -61,6 +61,26 @@ namespace System.Devices.Gpio
             File.WriteAllText(valuePath, stringValue);
         }
 
+        public override void ClearDetectedEvent(int pin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool EventWasDetected(int pin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetEventDetection(int pin, GpioEventKind kind, bool enabled)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool GetEventDetection(int pin, GpioEventKind kind)
+        {
+            throw new NotImplementedException();
+        }
+
         public override int PinCount => throw new NotSupportedException();
 
         public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
