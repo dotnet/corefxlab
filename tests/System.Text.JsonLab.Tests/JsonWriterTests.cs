@@ -53,7 +53,8 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
         }
 
-        static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
+        static readonly string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
+
         static void Write(ref JsonWriter<ArrayFormatterWrapper> json)
         {
             json.WriteObjectStart();
@@ -76,6 +77,7 @@ namespace System.Text.JsonLab.Tests
             json.WriteValue(425123);
             json.WriteArrayEnd();
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         [Theory]
@@ -91,6 +93,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf16.WriteObjectStart();
             jsonUtf16.WriteAttribute("message", "Hello, World!");
             jsonUtf16.WriteObjectEnd();
+            jsonUtf16.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
@@ -111,6 +114,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
             jsonUtf8.WriteObjectEnd();
+            jsonUtf8.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
@@ -153,6 +157,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf16.WriteArrayEnd();
 
             jsonUtf16.WriteObjectEnd();
+            jsonUtf16.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
@@ -195,6 +200,7 @@ namespace System.Text.JsonLab.Tests
             jsonUtf8.WriteArrayEnd();
 
             jsonUtf8.WriteObjectEnd();
+            jsonUtf8.Flush();
 
             ArraySegment<byte> formatted = output.Formatted;
             string actualStr = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);

@@ -29,7 +29,8 @@ namespace System.IO.Pipelines.Benchmarks
         [Arguments(10000, 256)]
         public void TechEmpowerHelloWorldNoIO(int numberOfRequests, int concurrentConnections)
         {
-            RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
+            RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) =>
+            {
                 var formatter = new BufferWriterFormatter<PipeWriter>(response, SymbolTable.InvariantUtf8);
                 formatter.Append("HTTP/1.1 200 OK");
                 formatter.Append("\r\nContent-Length: 13");
@@ -47,7 +48,8 @@ namespace System.IO.Pipelines.Benchmarks
         [Arguments(10000, 256)]
         public void TechEmpowerJsonNoIO(int numberOfRequests, int concurrentConnections)
         {
-            RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
+            RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) =>
+            {
                 var formatter = new BufferWriterFormatter<PipeWriter>(response, SymbolTable.InvariantUtf8);
                 formatter.Append("HTTP/1.1 200 OK");
                 formatter.Append("\r\nContent-Length: 25");
@@ -61,6 +63,7 @@ namespace System.IO.Pipelines.Benchmarks
                 writer.WriteObjectStart();
                 writer.WriteAttribute("message", "Hello, World!");
                 writer.WriteObjectEnd();
+                writer.Flush();
             });
         }
     }
