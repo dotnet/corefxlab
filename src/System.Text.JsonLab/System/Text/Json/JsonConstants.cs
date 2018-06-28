@@ -6,7 +6,7 @@ using System.Buffers;
 
 namespace System.Text.JsonLab
 {
-    static class JsonConstants
+    internal static class JsonConstants
     {
         #region Formatting constants
 
