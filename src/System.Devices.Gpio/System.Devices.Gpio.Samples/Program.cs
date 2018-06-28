@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Diagnostics;
 using System.Threading;
 
 namespace System.Devices.Gpio.Samples
@@ -30,7 +33,11 @@ namespace System.Devices.Gpio.Samples
                     case 6: RaspberryPiDriver_BlinkingLED(); break;
                     case 7: RaspberryPiDriver_ButtonLED(); break;
 
-                    default: RaspberryPiDriver_ButtonLED(); break;
+                    case 8: RaspberryPiDriver_ButtonPullDown(); break;
+                    case 9: RaspberryPiDriver_DetectButton(); break;
+                    case 10: RaspberryPiDriver_DetectButtonLED(); break;
+
+                    default: ShowUsage(); break;
                 }
             }
             catch (Exception ex)
@@ -39,6 +46,31 @@ namespace System.Devices.Gpio.Samples
             }
 
             Console.WriteLine("Done!");
+        }
+
+        private static void ShowUsage()
+        {
+            var assemblyName = Reflection.Assembly.GetEntryAssembly().GetName().Name;
+
+            Console.WriteLine($"Usage: {assemblyName} <arg>");
+            Console.WriteLine("       where <arg> can be any of the following options:");
+            Console.WriteLine();
+            Console.WriteLine($"        0 -> {nameof(Unix_BlinkingLED)}");
+            Console.WriteLine($"        1 -> {nameof(Unix_ButtonLED)}");
+            Console.WriteLine();
+            Console.WriteLine($"        2 -> {nameof(RaspberryPi_BlinkingLED)}");
+            Console.WriteLine($"        3 -> {nameof(RaspberryPi_ButtonLED)}");
+            Console.WriteLine();
+            Console.WriteLine($"        4 -> {nameof(UnixDriver_BlinkingLED)}");
+            Console.WriteLine($"        5 -> {nameof(UnixDriver_ButtonLED)}");
+            Console.WriteLine();
+            Console.WriteLine($"        6 -> {nameof(RaspberryPiDriver_BlinkingLED)}");
+            Console.WriteLine($"        7 -> {nameof(RaspberryPiDriver_ButtonLED)}");
+            Console.WriteLine();
+            Console.WriteLine($"        8 -> {nameof(RaspberryPiDriver_ButtonPullDown)}");
+            Console.WriteLine($"        9 -> {nameof(RaspberryPiDriver_DetectButton)}");
+            Console.WriteLine($"       10 -> {nameof(RaspberryPiDriver_DetectButtonLED)}");
+            Console.WriteLine();
         }
 
         private static void Unix_BlinkingLED()
@@ -69,7 +101,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (driver)
             {
-                var led = new GpioPin(driver, GpioScheme.BCM, 26, GpioPinMode.Output);
+                var led = new GpioPin(driver, GpioNumberingScheme.BCM, 26, GpioPinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
@@ -86,14 +118,14 @@ namespace System.Devices.Gpio.Samples
         {
             using (driver)
             {
-                var button = new GpioPin(driver, GpioScheme.BCM, 18, GpioPinMode.Input);
-                var led = new GpioPin(driver, GpioScheme.BCM, 26, GpioPinMode.Output);
+                var button = new GpioPin(driver, GpioNumberingScheme.BCM, 18, GpioPinMode.Input);
+                var led = new GpioPin(driver, GpioNumberingScheme.BCM, 26, GpioPinMode.Output);
 
                 var watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    var value = button.Read();
+                    GpioPinValue value = button.Read();
                     led.Write(value);
                 }
             }
@@ -156,8 +188,129 @@ namespace System.Devices.Gpio.Samples
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    var value = driver.Input(button);
+                    GpioPinValue value = driver.Input(button);
                     driver.Output(led, value);
+                }
+            }
+        }
+
+        private static void RaspberryPiDriver_ButtonPullDown()
+        {
+            Console.WriteLine(nameof(RaspberryPiDriver_ButtonPullDown));
+            Driver_ButtonPullDown(new RaspberryPiDriver());
+        }
+
+        private static void Driver_ButtonPullDown(GpioDriver driver)
+        {
+            const int button = 18;
+            const int led = 26;
+
+            using (driver)
+            {
+                driver.SetPinMode(button, GpioPinMode.InputPullDown);
+                driver.SetPinMode(led, GpioPinMode.Output);
+
+                var watch = Stopwatch.StartNew();
+
+                while (watch.Elapsed.TotalSeconds < 15)
+                {
+                    GpioPinValue value = driver.Input(button);
+                    driver.Output(led, value);
+                }
+            }
+        }
+
+        private static void RaspberryPiDriver_DetectButton()
+        {
+            Console.WriteLine(nameof(RaspberryPiDriver_DetectButton));
+            Driver_DetectButton(new RaspberryPiDriver());
+        }
+
+        private static void Driver_DetectButton(GpioDriver driver)
+        {
+            const int button = 18;
+
+            using (driver)
+            {
+                driver.SetPinMode(button, GpioPinMode.InputPullDown);
+
+                driver.SetEventDetection(button, GpioEventKind.SyncRisingEdge, true);
+                driver.SetEventDetection(button, GpioEventKind.SyncFallingEdge, true);
+                driver.SetEventDetection(button, GpioEventKind.AsyncRisingEdge, false);
+                driver.SetEventDetection(button, GpioEventKind.AsyncFallingEdge, false);
+                driver.SetEventDetection(button, GpioEventKind.High, false);
+                driver.SetEventDetection(button, GpioEventKind.Low, false);
+
+                var watch = Stopwatch.StartNew();
+                var buttonPressed = false;
+
+                while (watch.Elapsed.TotalSeconds < 15)
+                {
+                    Thread.Sleep(1 * 100);
+                    bool eventDetected = driver.EventWasDetected(button);
+
+                    if (eventDetected)
+                    {
+                        if (buttonPressed)
+                        {
+                            Console.WriteLine($"Button up!");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Button down!");
+                        }
+
+                        buttonPressed = !buttonPressed;
+                    }
+                    else if (buttonPressed)
+                    {
+                        Console.WriteLine($"Button press!");
+                    }
+                }
+            }
+        }
+
+        private static void RaspberryPiDriver_DetectButtonLED()
+        {
+            Console.WriteLine(nameof(RaspberryPiDriver_DetectButtonLED));
+            Driver_DetectButtonLED(new RaspberryPiDriver());
+        }
+
+        private static void Driver_DetectButtonLED(GpioDriver driver)
+        {
+            const int button = 18;
+            const int led = 26;
+
+            using (driver)
+            {
+                driver.SetPinMode(button, GpioPinMode.InputPullDown);
+                driver.SetPinMode(led, GpioPinMode.Output);
+
+                driver.SetEventDetection(button, GpioEventKind.SyncRisingEdge, true);
+                driver.SetEventDetection(button, GpioEventKind.SyncFallingEdge, false);
+                driver.SetEventDetection(button, GpioEventKind.AsyncRisingEdge, false);
+                driver.SetEventDetection(button, GpioEventKind.AsyncFallingEdge, false);
+                driver.SetEventDetection(button, GpioEventKind.High, false);
+                driver.SetEventDetection(button, GpioEventKind.Low, false);
+
+                var eventDetectionEnabled = driver.GetEventDetection(button, GpioEventKind.SyncRisingEdge);
+                Console.WriteLine($"Is event detection enabled? {eventDetectionEnabled}");
+
+                var watch = Stopwatch.StartNew();
+                var currentLedValue = GpioPinValue.Low;
+
+                while (watch.Elapsed.TotalSeconds < 15)
+                {
+                    Thread.Sleep(1 * 1000);
+                    bool buttonPressed = driver.EventWasDetected(button);
+
+                    if (buttonPressed)
+                    {
+                        currentLedValue = currentLedValue == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
+                        Console.WriteLine($"Button pressed! LED value {currentLedValue}");
+
+                        driver.Output(led, currentLedValue);
+                    }
                 }
             }
         }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
@@ -11,18 +14,18 @@ namespace System.Devices.Gpio
     {
         private const string GpioPath = "/sys/class/gpio";
 
-        private ISet<int> ExportedPins;
+        private ISet<int> _exportedPins;
 
         public UnixDriver()
         {
-            ExportedPins = new HashSet<int>();
+            _exportedPins = new HashSet<int>();
         }
 
         public override void Dispose()
         {
-            while (ExportedPins.Count > 0)
+            while (_exportedPins.Count > 0)
             {
-                var pin = ExportedPins.First();
+                var pin = _exportedPins.First();
                 UnexportPin(pin);
             }
         }
@@ -83,9 +86,9 @@ namespace System.Devices.Gpio
 
         public override int PinCount => throw new NotSupportedException();
 
-        public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
+        public override int ConvertPinNumber(int number, GpioNumberingScheme from, GpioNumberingScheme to)
         {
-            if (from != GpioScheme.BCM || to != GpioScheme.BCM)
+            if (from != GpioNumberingScheme.BCM || to != GpioNumberingScheme.BCM)
                 throw new NotSupportedException("Only BCM numbering scheme is supported");
 
             return number;
@@ -102,7 +105,7 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/export", Convert.ToString(pin));
             }
 
-            ExportedPins.Add(pin);
+            _exportedPins.Add(pin);
         }
 
         private void UnexportPin(int pin)
@@ -114,7 +117,7 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(pin));
             }
 
-            ExportedPins.Remove(pin);
+            _exportedPins.Remove(pin);
         }
 
         private GpioPinMode StringModeToPinMode(string value)

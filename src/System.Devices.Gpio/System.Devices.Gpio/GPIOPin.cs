@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,7 +31,7 @@ namespace System.Devices.Gpio
         AsyncRisingEdge
     }
 
-    public enum GpioScheme
+    public enum GpioNumberingScheme
     {
         Board,
         BCM
@@ -36,7 +39,7 @@ namespace System.Devices.Gpio
 
     public class GpioPin
     {
-        protected GpioDriver Driver;
+        protected GpioDriver _driver;
 
         public int Number { get; }
 
@@ -44,34 +47,34 @@ namespace System.Devices.Gpio
         {
             get
             {
-                return Driver.GetPinMode(Number);
+                return _driver.GetPinMode(Number);
             }
             set
             {
-                Driver.SetPinMode(Number, value);
+                _driver.SetPinMode(Number, value);
             }
         }
 
-        public GpioPin(GpioDriver driver, GpioScheme numberKind, int number, GpioPinMode mode)
+        public GpioPin(GpioDriver driver, GpioNumberingScheme numbering, int number, GpioPinMode mode)
         {
-            Driver = driver;
-            Number = driver.ConvertPinNumber(number, numberKind, GpioScheme.BCM);
+            _driver = driver;
+            Number = driver.ConvertPinNumber(number, numbering, GpioNumberingScheme.BCM);
             Mode = mode;
         }
 
-        public int GetNumber(GpioScheme kind)
+        public int GetNumber(GpioNumberingScheme numbering)
         {
-            return Driver.ConvertPinNumber(Number, GpioScheme.BCM, kind);
+            return _driver.ConvertPinNumber(Number, GpioNumberingScheme.BCM, numbering);
         }
 
         public GpioPinValue Read()
         {
-            return Driver.Input(Number);
+            return _driver.Input(Number);
         }
 
         public void Write(GpioPinValue value)
         {
-            Driver.Output(Number, value);
+            _driver.Output(Number, value);
         }
     }
 }

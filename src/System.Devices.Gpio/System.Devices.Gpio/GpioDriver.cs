@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -9,7 +12,7 @@ namespace System.Devices.Gpio
     {
         public abstract int PinCount { get; }
 
-        public abstract int ConvertPinNumber(int number, GpioScheme from, GpioScheme to);
+        public abstract int ConvertPinNumber(int number, GpioNumberingScheme from, GpioNumberingScheme to);
 
         public abstract void SetPinMode(int pin, GpioPinMode mode);
 

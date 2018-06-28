@@ -1,5 +1,7 @@
-﻿using System.IO;
-using System.IO.MemoryMappedFiles;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -264,7 +266,7 @@ namespace System.Devices.Gpio
         private const string GpioMemoryFilePath = "/dev/gpiomem";
         private const int GpioBaseOffset = 0;
 
-        private RegisterView* RegisterViewPointer = null;
+        private RegisterView* _registerViewPointer = null;
 
         public RaspberryPiDriver()
         {
@@ -275,7 +277,7 @@ namespace System.Devices.Gpio
                 throw new IOException($"open error number: {Marshal.GetLastWin32Error()}");
             }
 
-            Console.WriteLine($"file descriptor = {fileDescriptor}");
+            //Console.WriteLine($"file descriptor = {fileDescriptor}");
 
             var mapPointer = mmap(IntPtr.Zero, Environment.SystemPageSize, MemoryMappedProtections.PROT_READ | MemoryMappedProtections.PROT_WRITE, MemoryMappedFlags.MAP_SHARED, fileDescriptor, GpioBaseOffset);
 
@@ -284,25 +286,25 @@ namespace System.Devices.Gpio
                 throw new IOException($"mmap error number: {Marshal.GetLastWin32Error()}");
             }
 
-            Console.WriteLine($"mmap returned address = {mapPointer.ToInt32():X16}");
+            //Console.WriteLine($"mmap returned address = {mapPointer.ToInt32():X16}");
 
             close(fileDescriptor);
 
-            RegisterViewPointer = (RegisterView*)mapPointer;
+            _registerViewPointer = (RegisterView*)mapPointer;
         }
 
         public override void Dispose()
         {
-            if (RegisterViewPointer != null)
+            if (_registerViewPointer != null)
             {
-                munmap((IntPtr)RegisterViewPointer, 0);
+                munmap((IntPtr)_registerViewPointer, 0);
             }
         }
 
         public override void SetPinMode(int pin, GpioPinMode mode)
         {
             if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
-            if (mode < 0 || mode > GpioPinMode.InputPullUp) throw new ArgumentOutOfRangeException(nameof(mode));
+            if (!Enum.IsDefined(typeof(GpioPinMode), mode)) throw new ArgumentOutOfRangeException(nameof(mode));
 
             switch (mode)
             {
@@ -324,18 +326,18 @@ namespace System.Devices.Gpio
             //Thread.SpinWait(150);
             //SetBit(RegisterViewPointer->GPPUDCLK, pin, 0U);
 
-            uint* gppudPointer = &RegisterViewPointer->GPPUD;
+            uint* gppudPointer = &_registerViewPointer->GPPUD;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUD)} register address = {(long)gppudPointer:X16}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUD)} register address = {(long)gppudPointer:X16}");
 
             var register = *gppudPointer;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUD)} original register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUD)} original register value = {register:X8}");
 
             register &= ~0b11U;
             register |= mode;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
 
             *gppudPointer = register;
 
@@ -343,17 +345,17 @@ namespace System.Devices.Gpio
 
             var index = pin / 32;
             var shift = pin % 32;
-            uint* gppudclkPointer = &RegisterViewPointer->GPPUDCLK[index];
+            uint* gppudclkPointer = &_registerViewPointer->GPPUDCLK[index];
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} register address = {(long)gppudclkPointer:X16}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} register address = {(long)gppudclkPointer:X16}");
 
             register = *gppudclkPointer;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} original register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} original register value = {register:X8}");
 
             register |= 1U << shift;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {register:X8}");
 
             *gppudclkPointer = register;
 
@@ -362,8 +364,8 @@ namespace System.Devices.Gpio
             register = *gppudPointer;
             register &= ~0b11U;
 
-            Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
-            Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {0:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUD)} new register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} new register value = {0:X8}");
 
             *gppudPointer = register;
             *gppudclkPointer = 0;
@@ -375,7 +377,7 @@ namespace System.Devices.Gpio
 
             var index = pin / 10;
             var shift = (pin % 10) * 3;
-            uint* registerPointer = &RegisterViewPointer->GPFSEL[index];
+            uint* registerPointer = &_registerViewPointer->GPFSEL[index];
 
             //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
 
@@ -399,7 +401,7 @@ namespace System.Devices.Gpio
 
             var index = pin / 10;
             var shift = (pin % 10) * 3;
-            var register = RegisterViewPointer->GPFSEL[index];
+            var register = _registerViewPointer->GPFSEL[index];
             var mode = (register >> shift) & 0b111U;
 
             var result = GPFSELToPinMode(mode);
@@ -461,7 +463,7 @@ namespace System.Devices.Gpio
         public override void Output(int pin, GpioPinValue value)
         {
             if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
-            if (value < 0 || value > GpioPinValue.High) throw new ArgumentOutOfRangeException(nameof(value));
+            if (!Enum.IsDefined(typeof(GpioPinValue), value)) throw new ArgumentOutOfRangeException(nameof(value));
 
             //switch (value)
             //{
@@ -484,12 +486,12 @@ namespace System.Devices.Gpio
             switch (value)
             {
                 case GpioPinValue.High:
-                    registerPointer = &RegisterViewPointer->GPSET[index];
+                    registerPointer = &_registerViewPointer->GPSET[index];
                     registerName = nameof(RegisterView.GPSET);
                     break;
 
                 case GpioPinValue.Low:
-                    registerPointer = &RegisterViewPointer->GPCLR[index];
+                    registerPointer = &_registerViewPointer->GPCLR[index];
                     registerName = nameof(RegisterView.GPCLR);
                     break;
 
@@ -517,7 +519,7 @@ namespace System.Devices.Gpio
 
             var index = pin / 32;
             var shift = pin % 32;
-            var register = RegisterViewPointer->GPLEV[index];
+            var register = _registerViewPointer->GPLEV[index];
             var value = (register >> shift) & 1;
 
             var result = Convert.ToBoolean(value) ? GpioPinValue.High : GpioPinValue.Low;
@@ -532,17 +534,17 @@ namespace System.Devices.Gpio
 
             var index = pin / 32;
             var shift = pin % 32;
-            uint* registerPointer = &RegisterViewPointer->GPEDS[index];
+            uint* registerPointer = &_registerViewPointer->GPEDS[index];
 
-            Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
 
             var register = *registerPointer;
 
-            Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
 
             register |= 1U << shift;
 
-            Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
 
             *registerPointer = register;
 
@@ -559,7 +561,7 @@ namespace System.Devices.Gpio
 
             var index = pin / 32;
             var shift = pin % 32;
-            var register = RegisterViewPointer->GPEDS[index];
+            var register = _registerViewPointer->GPEDS[index];
             var value = (register >> shift) & 1;
 
             var result = Convert.ToBoolean(value);
@@ -575,7 +577,7 @@ namespace System.Devices.Gpio
         public override void SetEventDetection(int pin, GpioEventKind kind, bool enabled)
         {
             if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
-            if (kind < 0 || kind > GpioEventKind.AsyncRisingEdge) throw new ArgumentOutOfRangeException(nameof(kind));
+            if (!Enum.IsDefined(typeof(GpioEventKind), kind)) throw new ArgumentOutOfRangeException(nameof(kind));
 
             //switch (kind)
             //{
@@ -614,43 +616,43 @@ namespace System.Devices.Gpio
             switch (kind)
             {
                 case GpioEventKind.High:
-                    registerPointer = &RegisterViewPointer->GPHEN[index];
+                    registerPointer = &_registerViewPointer->GPHEN[index];
                     registerName = nameof(RegisterView.GPHEN);
                     break;
 
                 case GpioEventKind.Low:
-                    registerPointer = &RegisterViewPointer->GPLEN[index];
+                    registerPointer = &_registerViewPointer->GPLEN[index];
                     registerName = nameof(RegisterView.GPLEN);
                     break;
 
                 case GpioEventKind.SyncRisingEdge:
-                    registerPointer = &RegisterViewPointer->GPREN[index];
+                    registerPointer = &_registerViewPointer->GPREN[index];
                     registerName = nameof(RegisterView.GPREN);
                     break;
 
                 case GpioEventKind.SyncFallingEdge:
-                    registerPointer = &RegisterViewPointer->GPFEN[index];
+                    registerPointer = &_registerViewPointer->GPFEN[index];
                     registerName = nameof(RegisterView.GPFEN);
                     break;
 
                 case GpioEventKind.AsyncRisingEdge:
-                    registerPointer = &RegisterViewPointer->GPAREN[index];
+                    registerPointer = &_registerViewPointer->GPAREN[index];
                     registerName = nameof(RegisterView.GPAREN);
                     break;
 
                 case GpioEventKind.AsyncFallingEdge:
-                    registerPointer = &RegisterViewPointer->GPAFEN[index];
+                    registerPointer = &_registerViewPointer->GPAFEN[index];
                     registerName = nameof(RegisterView.GPAFEN);
                     break;
 
                 default: throw new ArgumentOutOfRangeException(nameof(kind));
             }
 
-            Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
+            //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
 
             var register = *registerPointer;
 
-            Console.WriteLine($"{registerName} original register value = {register:X8}");
+            //Console.WriteLine($"{registerName} original register value = {register:X8}");
 
             if (enabled)
             {
@@ -661,7 +663,7 @@ namespace System.Devices.Gpio
                 register &= ~(1U << shift);
             }
 
-            Console.WriteLine($"{registerName} new register value = {register:X8}");
+            //Console.WriteLine($"{registerName} new register value = {register:X8}");
 
             *registerPointer = register;
 
@@ -671,7 +673,7 @@ namespace System.Devices.Gpio
         public override bool GetEventDetection(int pin, GpioEventKind kind)
         {
             if (pin < 0 || pin >= PinCount) throw new ArgumentOutOfRangeException(nameof(pin));
-            if (kind < 0 || kind > GpioEventKind.AsyncRisingEdge) throw new ArgumentOutOfRangeException(nameof(kind));
+            if (!Enum.IsDefined(typeof(GpioEventKind), kind)) throw new ArgumentOutOfRangeException(nameof(kind));
 
             //switch (kind)
             //{
@@ -710,27 +712,27 @@ namespace System.Devices.Gpio
             switch (kind)
             {
                 case GpioEventKind.High:
-                    register = RegisterViewPointer->GPHEN[index];
+                    register = _registerViewPointer->GPHEN[index];
                     break;
 
                 case GpioEventKind.Low:
-                    register = RegisterViewPointer->GPLEN[index];
+                    register = _registerViewPointer->GPLEN[index];
                     break;
 
                 case GpioEventKind.SyncRisingEdge:
-                    register = RegisterViewPointer->GPREN[index];
+                    register = _registerViewPointer->GPREN[index];
                     break;
 
                 case GpioEventKind.SyncFallingEdge:
-                    register = RegisterViewPointer->GPFEN[index];
+                    register = _registerViewPointer->GPFEN[index];
                     break;
 
                 case GpioEventKind.AsyncRisingEdge:
-                    register = RegisterViewPointer->GPAREN[index];
+                    register = _registerViewPointer->GPAREN[index];
                     break;
 
                 case GpioEventKind.AsyncFallingEdge:
-                    register = RegisterViewPointer->GPAFEN[index];
+                    register = _registerViewPointer->GPAFEN[index];
                     break;
 
                 default: throw new ArgumentOutOfRangeException(nameof(kind));
@@ -742,47 +744,45 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        
-
         public override int PinCount => 54;
 
-        public override int ConvertPinNumber(int number, GpioScheme from, GpioScheme to)
+        public override int ConvertPinNumber(int number, GpioNumberingScheme from, GpioNumberingScheme to)
         {
             int result = -1;
 
             switch (from)
             {
-                case GpioScheme.BCM:
+                case GpioNumberingScheme.BCM:
                     switch (to)
                     {
-                        case GpioScheme.BCM:
+                        case GpioNumberingScheme.BCM:
                             result = number;
                             break;
 
-                        case GpioScheme.Board:
+                        case GpioNumberingScheme.Board:
                             //throw new NotImplementedException();
                             break;
 
-                        default: throw new Exception($"Unsupported GPIO scheme '{to}'");
+                        default: throw new Exception($"Unsupported numbering scheme '{to}'");
                     }
                     break;
 
-                case GpioScheme.Board:
+                case GpioNumberingScheme.Board:
                     switch (to)
                     {
-                        case GpioScheme.Board:
+                        case GpioNumberingScheme.Board:
                             result = number;
                             break;
 
-                        case GpioScheme.BCM:
+                        case GpioNumberingScheme.BCM:
                             //throw new NotImplementedException();
                             break;
 
-                        default: throw new Exception($"Unsupported GPIO scheme '{to}'");
+                        default: throw new Exception($"Unsupported numbering scheme '{to}'");
                     }
                     break;
 
-                default: throw new Exception($"Unsupported GPIO Pin scheme '{from}'");
+                default: throw new Exception($"Unsupported numbering scheme '{from}'");
             }
 
             return result;

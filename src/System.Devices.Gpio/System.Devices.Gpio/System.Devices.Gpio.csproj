@@ -1,20 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\tools\common.props" />
   <PropertyGroup>
     <Description></Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageTags>Command line parsing support corefxlab</PackageTags>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageTags>.NET Core GPIO API IoT device</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\**\*.*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="UnixDriver.cs" />
-    <Compile Include="RaspberryPiDriver.cs" />
-    <Compile Include="GpioDriver.cs" />
-    <Compile Include="GpioPin.cs" />
+    <Compile Remove="Documentation\GPIORef.cs" />
+    <Compile Remove="Documentation\GPIOSamples.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Documentation\GPIORef.cs" />
