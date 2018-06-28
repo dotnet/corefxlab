@@ -9,7 +9,6 @@ namespace System.Text.JsonLab
     internal static class JsonWriterHelper
     {
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
-        public static readonly char[] NewLineUtf16 = Environment.NewLine.ToCharArray();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
