@@ -124,8 +124,30 @@ namespace System.Text.JsonLab
         public void WriteObjectStart(string name)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
-            int bytesNeeded = CalculateBytesNeeded(nameSpan, sizeof(byte), 4);  // quote {name} quote colon open-brace, hence 4
-            WriteStartUtf8(nameSpan, bytesNeeded, JsonConstants.OpenBrace);
+
+            // quote {name} quote colon open-brace, hence 4
+            int bytesNeeded = 4;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
+            }
+            bytesNeeded += bytesNeededValue;
+
+            if (_prettyPrint)
+            {
+                // For the new line, \r\n or \n, and the space after the colon
+                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
+                WriteStartUtf8Pretty(nameSpan, bytesNeeded, JsonConstants.OpenBrace);
+            }
+            else
+            {
+                WriteStartUtf8(nameSpan, bytesNeeded, JsonConstants.OpenBrace);
+            }
 
             _indent &= RemoveFlagsBitMask;
             _indent++;
@@ -281,6 +303,7 @@ namespace System.Text.JsonLab
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
 
+            // quote {name} quote colon open-brace, hence 4
             int bytesNeeded = 4;
             if (_indent < 0)
             {
@@ -1006,24 +1029,6 @@ namespace System.Text.JsonLab
                 int bytesNeededForPrettyPrint = JsonWriterHelper.NewLineUtf8.Length;    // For the new line, \r\n or \n
                 bytesNeededForPrettyPrint += _indent * 2;
                 bytesNeeded += numBytes * bytesNeededForPrettyPrint;
-            }
-
-            bytesNeeded += numBytes * extraCharacterCount;
-
-            if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
-            {
-                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
-            }
-            bytesNeeded += bytesNeededValue;
-            return bytesNeeded;
-        }
-
-        private int CalculateBytesNeeded(ReadOnlySpan<byte> span, int numBytes, int extraCharacterCount)
-        {
-            int bytesNeeded = 0;
-            if (_indent < 0)
-            {
-                bytesNeeded = numBytes;
             }
 
             bytesNeeded += numBytes * extraCharacterCount;
