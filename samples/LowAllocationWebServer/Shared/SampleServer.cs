@@ -71,6 +71,7 @@ namespace LowAllocationWebServer
             }
             jsonWriter.WriteArrayEnd();
             jsonWriter.WriteObjectEnd();
+            jsonWriter.Flush();
         }
 
         static void WriteResponseForPostJson(HttpRequest request, ReadOnlySequence<byte> body, TcpConnectionFormatter response)
@@ -103,6 +104,7 @@ namespace LowAllocationWebServer
             }
             jsonWriter.WriteArrayEnd();
             jsonWriter.WriteObjectEnd();
+            jsonWriter.Flush();
         }
     }
 }

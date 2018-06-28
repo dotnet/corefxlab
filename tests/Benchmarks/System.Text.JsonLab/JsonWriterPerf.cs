@@ -3,6 +3,7 @@
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using System.Buffers.Text;
 using System.IO;
 using System.Text.Formatting;
@@ -10,6 +11,8 @@ using System.Text.Formatting;
 namespace System.Text.JsonLab.Benchmarks
 {
     [SimpleJob(-1, 5, 10, 32768)]
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [InliningDiagnoser(filterByNamespace: false)]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -144,6 +147,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
@@ -172,6 +176,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteArrayEnd();
 
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftBasic(bool formatted, TextWriter writer, ReadOnlySpan<int> data)
@@ -221,6 +226,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatterWrapper output)
@@ -230,6 +236,7 @@ namespace System.Text.JsonLab.Benchmarks
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
             json.WriteObjectEnd();
+            json.Flush();
         }
 
         private static void WriterNewtonsoftHelloWorld(bool formatted, TextWriter writer)
@@ -255,6 +262,7 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteValue(data[i]);
             }
             json.WriteArrayEnd();
+            json.Flush();
         }
 
         private static void WriterSystemTextJsonArrayOnlyUtf16(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
@@ -267,6 +275,7 @@ namespace System.Text.JsonLab.Benchmarks
                 json.WriteValue(data[i]);
             }
             json.WriteArrayEnd();
+            json.Flush();
         }
     }
 }

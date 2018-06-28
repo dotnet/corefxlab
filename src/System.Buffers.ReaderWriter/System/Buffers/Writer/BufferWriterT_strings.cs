@@ -44,6 +44,12 @@ namespace System.Buffers.Writer
             Write(NewLine);
         }
 
+        public void WriteLine(string value, ReadOnlySpan<byte> newLine)
+        {
+            Write(value);
+            Write(newLine);
+        }
+
         //public void WriteLine(string value, TransformationFormat format);
 
         public void Write(Utf8String value) => Write(value.Bytes);
@@ -59,12 +65,18 @@ namespace System.Buffers.Writer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Write(byte value)
         {
-            if (_span.Length >= 1)
+            if (_span.Length < 1)
             {
                 Enlarge();
             }
             _span[0] = value;
             Advance(1);
+        }
+
+        public void WriteLine(Utf8String value, ReadOnlySpan<byte> newLine)
+        {
+            Write(value.Bytes);
+            Write(newLine);
         }
 
         //public void WriteLine(Utf8String value, TransformationFormat format);
