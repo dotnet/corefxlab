@@ -10,9 +10,9 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(-1, 5, 10, 32768)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [InliningDiagnoser(filterByNamespace: false)]
+    //[SimpleJob(-1, 5, 10, 32768)]
+    //[DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    //[InliningDiagnoser(filterByNamespace: false)]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -22,14 +22,10 @@ namespace System.Text.JsonLab.Benchmarks
         private ArrayFormatterWrapper _arrayFormatterWrapper;
         private MemoryStream _memoryStream;
         private StreamWriter _streamWriter;
-        private StringBuilder _stringBuilder;
 
         private int[] _data;
 
-        [Params(true, false)]
-        public bool IsUTF8Encoded;
-
-        [Params(true, false)]
+        [Params(false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -43,31 +39,20 @@ namespace System.Text.JsonLab.Benchmarks
                 _data[i] = rand.Next(-10000, 10000);
             }
 
-            if (IsUTF8Encoded)
-            {
-                var buffer = new byte[BufferSize];
-                _memoryStream = new MemoryStream(buffer);
-                _streamWriter = new StreamWriter(_memoryStream, new UTF8Encoding(false), BufferSize, true);
-                _arrayFormatterWrapper = new ArrayFormatterWrapper(BufferSize, SymbolTable.InvariantUtf8);
-            }
-            else
-            {
-                _stringBuilder = new StringBuilder();
-                _arrayFormatterWrapper = new ArrayFormatterWrapper(BufferSize, SymbolTable.InvariantUtf16);
-            }
+            var buffer = new byte[BufferSize];
+            _memoryStream = new MemoryStream(buffer);
+            _streamWriter = new StreamWriter(_memoryStream, new UTF8Encoding(false), BufferSize, true);
+            _arrayFormatterWrapper = new ArrayFormatterWrapper(BufferSize, SymbolTable.InvariantUtf8);
         }
 
         [Benchmark]
         public void WriterSystemTextJsonBasic()
         {
             _arrayFormatterWrapper.Clear();
-            if (IsUTF8Encoded)
-                WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
-            else
-                WriterSystemTextJsonBasicUtf16(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+            WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
@@ -77,13 +62,10 @@ namespace System.Text.JsonLab.Benchmarks
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatterWrapper.Clear();
-            if (IsUTF8Encoded)
-                WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
-            else
-                WriterSystemTextJsonHelloWorldUtf16(Formatted, _arrayFormatterWrapper);
+            WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
@@ -91,68 +73,26 @@ namespace System.Text.JsonLab.Benchmarks
 
         [Benchmark]
         [Arguments(1)]
-        [Arguments(2)]
-        [Arguments(5)]
+        //[Arguments(2)]
+        //[Arguments(5)]
         [Arguments(10)]
-        [Arguments(100)]
+        //[Arguments(100)]
         [Arguments(1000)]
         public void WriterSystemTextJsonArrayOnly(int size)
         {
             _arrayFormatterWrapper.Clear();
-            if (IsUTF8Encoded)
-                WriterSystemTextJsonArrayOnlyUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, size));
-            else
-                WriterSystemTextJsonArrayOnlyUtf16(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, size));
+            WriterSystemTextJsonArrayOnlyUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, size));
         }
 
         private TextWriter GetWriter()
         {
-            TextWriter writer;
-            if (IsUTF8Encoded)
-            {
-                _memoryStream.Seek(0, SeekOrigin.Begin);
-                writer = _streamWriter;
-            }
-            else
-            {
-                _stringBuilder.Clear();
-                writer = new StringWriter(_stringBuilder);
-            }
-            return writer;
+            _memoryStream.Seek(0, SeekOrigin.Begin);
+            return _streamWriter;
         }
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, true, formatted);
-
-            json.WriteObjectStart();
-            json.WriteAttribute("age", 42);
-            json.WriteAttribute("first", "John");
-            json.WriteAttribute("last", "Smith");
-            json.WriteArrayStart("phoneNumbers");
-            json.WriteValue("425-000-1212");
-            json.WriteValue("425-000-1213");
-            json.WriteArrayEnd();
-            json.WriteObjectStart("address");
-            json.WriteAttribute("street", "1 Microsoft Way");
-            json.WriteAttribute("city", "Redmond");
-            json.WriteAttribute("zip", 98052);
-            json.WriteObjectEnd();
-
-            json.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < data.Length; i++)
-            {
-                json.WriteValue(data[i]);
-            }
-            json.WriteArrayEnd();
-
-            json.WriteObjectEnd();
-            json.Flush();
-        }
-
-        private static void WriterSystemTextJsonBasicUtf16(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
-        {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, false, formatted);
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -221,17 +161,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatterWrapper output)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, true, formatted);
-
-            json.WriteObjectStart();
-            json.WriteAttribute("message", "Hello, World!");
-            json.WriteObjectEnd();
-            json.Flush();
-        }
-
-        private static void WriterSystemTextJsonHelloWorldUtf16(bool formatted, ArrayFormatterWrapper output)
-        {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, false, formatted);
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -254,20 +184,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonArrayOnlyUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, true, formatted);
-
-            json.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < data.Length; i++)
-            {
-                json.WriteValue(data[i]);
-            }
-            json.WriteArrayEnd();
-            json.Flush();
-        }
-
-        private static void WriterSystemTextJsonArrayOnlyUtf16(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
-        {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, false, formatted);
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
 
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < data.Length; i++)
