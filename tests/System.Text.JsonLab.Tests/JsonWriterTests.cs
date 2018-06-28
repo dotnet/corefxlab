@@ -17,7 +17,7 @@ namespace System.Text.JsonLab.Tests
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var json = new JsonWriter<ArrayFormatterWrapper>(formatter, true, prettyPrint: false);
+            var json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -25,31 +25,11 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
 
             formatter.Clear();
-            json = new JsonWriter<ArrayFormatterWrapper>(formatter, true, prettyPrint: true);
+            json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: true);
             Write(ref json);
 
             formatted = formatter.Formatted;
             str = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
-        }
-
-        [Fact]
-        public void WriteJsonUtf16()
-        {
-            var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf16);
-            var json = new JsonWriter<ArrayFormatterWrapper>(formatter, false, prettyPrint: false);
-            Write(ref json);
-
-            var formatted = formatter.Formatted;
-            var str = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expected, str.Replace(" ", ""));
-
-            formatter.Clear();
-            json = new JsonWriter<ArrayFormatterWrapper>(formatter, false, prettyPrint: true);
-            Write(ref json);
-
-            formatted = formatter.Formatted;
-            str = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
             Assert.Equal(expected, str.Replace("\r\n", "").Replace("\n", "").Replace(" ", ""));
         }
 
@@ -83,33 +63,12 @@ namespace System.Text.JsonLab.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void WriteHelloWorldJsonUtf16(bool prettyPrint)
-        {
-            string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: false);
-
-            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf16);
-            var jsonUtf16 = new JsonWriter<ArrayFormatterWrapper>(output, false, prettyPrint);
-
-            jsonUtf16.WriteObjectStart();
-            jsonUtf16.WriteAttribute("message", "Hello, World!");
-            jsonUtf16.WriteObjectEnd();
-            jsonUtf16.Flush();
-
-            ArraySegment<byte> formatted = output.Formatted;
-            string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
-
-            Assert.Equal(expectedStr, actualStr);
-        }
-
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
         public void WriteHelloWorldJsonUtf8(bool prettyPrint)
         {
             string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: true);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, true, prettyPrint);
+            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
@@ -125,49 +84,6 @@ namespace System.Text.JsonLab.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void WriteBasicJsonUtf16(bool prettyPrint)
-        {
-            int[] data = GetData(ExtraArraySize, 42, -10000, 10000);
-
-            string expectedStr = GetExpectedString(prettyPrint, isUtf8: false, data);
-
-            var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf16);
-            var jsonUtf16 = new JsonWriter<ArrayFormatterWrapper>(output, false, prettyPrint);
-
-            jsonUtf16.WriteObjectStart();
-            jsonUtf16.WriteAttribute("age", 42);
-            jsonUtf16.WriteAttribute("first", "John");
-            jsonUtf16.WriteAttribute("last", "Smith");
-            jsonUtf16.WriteArrayStart("phoneNumbers");
-            jsonUtf16.WriteValue("425-000-1212");
-            jsonUtf16.WriteValue("425-000-1213");
-            jsonUtf16.WriteArrayEnd();
-            jsonUtf16.WriteObjectStart("address");
-            jsonUtf16.WriteAttribute("street", "1 Microsoft Way");
-            jsonUtf16.WriteAttribute("city", "Redmond");
-            jsonUtf16.WriteAttribute("zip", 98052);
-            jsonUtf16.WriteObjectEnd();
-
-            // Add a large array of values
-            jsonUtf16.WriteArrayStart("ExtraArray");
-            for (var i = 0; i < ExtraArraySize; i++)
-            {
-                jsonUtf16.WriteValue(data[i]);
-            }
-            jsonUtf16.WriteArrayEnd();
-
-            jsonUtf16.WriteObjectEnd();
-            jsonUtf16.Flush();
-
-            ArraySegment<byte> formatted = output.Formatted;
-            string actualStr = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
-
-            Assert.Equal(expectedStr, actualStr);
-        }
-
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
         public void WriteBasicJsonUtf8(bool prettyPrint)
         {
             int[] data = GetData(ExtraArraySize, 42, -10000, 10000);
@@ -175,7 +91,7 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: true, data);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, true, prettyPrint);
+            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
