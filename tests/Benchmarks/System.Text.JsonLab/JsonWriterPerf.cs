@@ -10,9 +10,9 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(-1, 5, 10, 32768)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [InliningDiagnoser()]
+    //[SimpleJob(-1, 5, 10, 32768)]
+    //[DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    //[InliningDiagnoser()]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -26,7 +26,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(true, false)]
+        [Params(false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -51,49 +51,77 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        public void WriterSystemTextJsonBasic()
+        public void WriterSystemTextJsonBasic1()
         {
             _arrayFormatterWrapper.Clear();
-            WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+            WriterSystemTextJsonBasicUtf8_1(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
         [Benchmark]
+        public void WriterSystemTextJsonBasic2()
+        {
+            _arrayFormatterWrapper.Clear();
+            WriterSystemTextJsonBasicUtf8_2(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+        }
+
+        [Benchmark]
+        public void WriterSystemTextJsonBasic3()
+        {
+            _arrayFormatterWrapper.Clear();
+            WriterSystemTextJsonBasicUtf8_3(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+        }
+
+        [Benchmark]
+        public void WriterSystemTextJsonBasic4()
+        {
+            _arrayFormatterWrapper.Clear();
+            WriterSystemTextJsonBasicUtf8_4(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+        }
+
+        [Benchmark]
+        public void WriterSystemTextJsonBasic5()
+        {
+            _arrayFormatterWrapper.Clear();
+            WriterSystemTextJsonBasicUtf8_5(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
+        }
+
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterUtf8JsonBasic()
         {
             WriterUtf8JsonBasic(_data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterSystemTextJsonHelloWorld()
         {
             _arrayFormatterWrapper.Clear();
             WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterUtf8JsonHelloWorld()
         {
             WriterUtf8JsonHelloWorldHelper(_output);
         }
 
-        [Benchmark]
+        //[Benchmark]
         [Arguments(1)]
-        [Arguments(2)]
-        [Arguments(5)]
+        //[Arguments(2)]
+        //[Arguments(5)]
         [Arguments(10)]
-        [Arguments(100)]
+        //[Arguments(100)]
         [Arguments(1000)]
         public void WriterSystemTextJsonArrayOnly(int size)
         {
@@ -101,7 +129,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonArrayOnlyUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, size));
         }
 
-        [Benchmark]
+        //[Benchmark]
         [Arguments(1)]
         [Arguments(2)]
         [Arguments(5)]
@@ -120,6 +148,151 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteArrayEnd();
+            json.WriteObjectStart("address");
+            json.WriteAttribute("street", "1 Microsoft Way");
+            json.WriteAttribute("city", "Redmond");
+            json.WriteAttribute("zip", 98052);
+            json.WriteObjectEnd();
+
+            json.WriteArrayStart("ExtraArray");
+            for (var i = 0; i < data.Length; i++)
+            {
+                json.WriteValue(data[i]);
+            }
+            json.WriteArrayEnd();
+
+            json.WriteObjectEnd();
+            json.Flush();
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8_1(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            //json.WriteArrayStart("phoneNumbers");
+            //json.WriteValue("425-000-1212");
+            //json.WriteValue("425-000-1213");
+            //json.WriteArrayEnd();
+            //json.WriteObjectStart("address");
+            //json.WriteAttribute("street", "1 Microsoft Way");
+            //json.WriteAttribute("city", "Redmond");
+            //json.WriteAttribute("zip", 98052);
+            //json.WriteObjectEnd();
+
+            //json.WriteArrayStart("ExtraArray");
+            //for (var i = 0; i < data.Length; i++)
+            //{
+            //    json.WriteValue(data[i]);
+            //}
+            //json.WriteArrayEnd();
+
+            json.WriteObjectEnd();
+            json.Flush();
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8_2(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteArrayEnd();
+            //json.WriteObjectStart("address");
+            //json.WriteAttribute("street", "1 Microsoft Way");
+            //json.WriteAttribute("city", "Redmond");
+            //json.WriteAttribute("zip", 98052);
+            //json.WriteObjectEnd();
+
+            //json.WriteArrayStart("ExtraArray");
+            //for (var i = 0; i < data.Length; i++)
+            //{
+            //    json.WriteValue(data[i]);
+            //}
+            //json.WriteArrayEnd();
+
+            json.WriteObjectEnd();
+            json.Flush();
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8_3(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteArrayEnd();
+            json.WriteObjectStart("address");
+            json.WriteAttribute("street", "1 Microsoft Way");
+            json.WriteAttribute("city", "Redmond");
+            json.WriteAttribute("zip", 98052);
+            json.WriteObjectEnd();
+
+            //json.WriteArrayStart("ExtraArray");
+            //for (var i = 0; i < data.Length; i++)
+            //{
+            //    json.WriteValue(data[i]);
+            //}
+            //json.WriteArrayEnd();
+
+            json.WriteObjectEnd();
+            json.Flush();
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8_4(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
+        {
+            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+
+            json.WriteObjectStart();
+            json.WriteAttribute("age", 42);
+            json.WriteAttribute("first", "John");
+            json.WriteAttribute("last", "Smith");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
+            json.WriteArrayEnd();
+            json.WriteObjectStart("address");
+            json.WriteAttribute("street", "1 Microsoft Way");
+            json.WriteAttribute("city", "Redmond");
+            json.WriteAttribute("zip", 98052);
+            json.WriteObjectEnd();
+
+            json.WriteArrayStart("ExtraArray");
+            //for (var i = 0; i < data.Length; i++)
+            //{
+            //    json.WriteValue(data[i]);
+            //}
+            json.WriteArrayEnd();
+
+            json.WriteObjectEnd();
+            json.Flush();
+        }
+
+        private static void WriterSystemTextJsonBasicUtf8_5(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
             var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
 
