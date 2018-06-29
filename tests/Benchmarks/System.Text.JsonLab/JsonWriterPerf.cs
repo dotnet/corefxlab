@@ -45,7 +45,9 @@ namespace System.Text.JsonLab.Benchmarks
             _streamWriter = new StreamWriter(_memoryStream, new UTF8Encoding(false), BufferSize, true);
             _arrayFormatterWrapper = new ArrayFormatterWrapper(BufferSize, SymbolTable.InvariantUtf8);
 
-            _output = new byte[BufferSize];
+            // To pass an initialBuffer to Utf8Json:
+            // _output = new byte[BufferSize];
+            _output = null;
         }
 
         [Benchmark]
