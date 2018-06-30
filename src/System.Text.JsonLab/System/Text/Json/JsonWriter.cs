@@ -140,7 +140,6 @@ namespace System.Text.JsonLab
 
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteStartUtf8Pretty(ReadOnlySpan<byte> nameSpanByte, byte token)
         {
             // quote {name} quote colon open-brace, hence 4
@@ -631,7 +630,6 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteAttributeUtf8Pretty(ReadOnlySpan<byte> nameSpan, long value)
         {
             // quote {name} quote colon, hence 3
