@@ -273,6 +273,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
 
+                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                    idx += EscapeString(byteBuffer);
+
                 byteBuffer[idx++] = JsonConstants.Quote;
 
                 byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
@@ -553,6 +556,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == valueSpanByte.Length);
                 idx += written;
 
+                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                    idx += EscapeString(byteBuffer);
+
                 byteBuffer[idx++] = JsonConstants.Quote;
             }
             catch (IndexOutOfRangeException)
@@ -563,6 +569,15 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
             _indent |= 1 << 31;
             return true;
+        }
+
+        //TODO: Implement escaping logic, assume buffer is large enough
+        private int EscapeString(Span<byte> buffer)
+        {
+            // Find characters that need escaping, add reverse solidus and shift data over
+
+            //return the amount of characters that were escaped (i.e. # of '\' added)
+            return 0;
         }
 
         /// <summary>
@@ -606,6 +621,9 @@ namespace System.Text.JsonLab
                 }
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
+
+                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                    idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
@@ -889,6 +907,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == valueSpanByte.Length);
 
                 idx += written;
+
+                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                    idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
             }
@@ -1356,7 +1377,7 @@ namespace System.Text.JsonLab
             }
 
             // For the new line, \r\n or \n, and the space after the colon
-            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1  + (_indent & RemoveFlagsBitMask) * 2;
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
 
             if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {

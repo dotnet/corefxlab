@@ -10,6 +10,11 @@ namespace System.Text.JsonLab
     {
         public static readonly byte[] NewLineUtf8 = Encoding.UTF8.GetBytes(Environment.NewLine);
 
+        // TODO: Add any other characters that need escaping, control characters 0x0 to 0x1F
+        // https://tools.ietf.org/html/rfc8259
+        public static readonly byte[] ValuesToEscape = { (byte)'"', (byte)'\\', (byte)'\b', (byte)'\f', (byte)'\n', (byte)'\r', (byte)'\t' };
+        public static readonly byte[] EscapedValues = { (byte)'"', (byte)'\\', (byte)'b', (byte)'f', (byte)'n', (byte)'r', (byte)'t' };
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteDigitsUInt64D(ulong value, Span<byte> buffer)
         {
