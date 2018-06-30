@@ -26,7 +26,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
         [GlobalSetup]
