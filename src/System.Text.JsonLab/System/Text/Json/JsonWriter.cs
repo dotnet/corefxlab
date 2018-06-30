@@ -72,7 +72,6 @@ namespace System.Text.JsonLab
             _indent++;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteStartUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
@@ -340,7 +339,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteEndUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
@@ -448,7 +446,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteAttributeUtf8Pretty(ReadOnlySpan<byte> nameSpan, ReadOnlySpan<byte> valueSpan)
         {
             //quote {name} quote colon quote {value} quote, hence 5
@@ -838,7 +835,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteValueUtf8Pretty(ReadOnlySpan<byte> valueSpanByte)
         {
             int bytesNeeded = CalculateValueBytesNeededPretty(valueSpanByte);
@@ -950,7 +946,6 @@ namespace System.Text.JsonLab
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteValueUtf8Pretty(long value)
         {
             int bytesNeeded = 0;
