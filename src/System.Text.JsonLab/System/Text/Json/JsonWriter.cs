@@ -41,7 +41,6 @@ namespace System.Text.JsonLab
         /// array of other items. If this is used while inside a nested object, the property
         /// name will be missing and result in invalid JSON.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteObjectStart()
         {
             if (_prettyPrint)
@@ -122,7 +121,6 @@ namespace System.Text.JsonLab
         /// name will be written and result in invalid JSON.
         /// </summary>
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteObjectStart(string name)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
@@ -325,7 +323,6 @@ namespace System.Text.JsonLab
         /// <summary>
         /// Writes the end tag for an object.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteObjectEnd()
         {
             _indent |= 1 << 31;
@@ -392,7 +389,6 @@ namespace System.Text.JsonLab
         /// name will be written and result in invalid JSON.
         /// </summary>
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteArrayStart(string name)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
@@ -414,7 +410,6 @@ namespace System.Text.JsonLab
         /// <summary>
         /// Writes the end tag for an array.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteArrayEnd()
         {
             _indent |= 1 << 31;
@@ -438,7 +433,6 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteAttribute(string name, string value)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
@@ -580,7 +574,6 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         /// <param name="value">The signed integer value to be written to JSON data.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteAttribute(string name, long value)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
@@ -832,7 +825,6 @@ namespace System.Text.JsonLab
         /// Writes a quoted string value into the current array.
         /// </summary>
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteValue(string value)
         {
             ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
@@ -947,7 +939,6 @@ namespace System.Text.JsonLab
         /// Write a signed integer value into the current array.
         /// </summary>
         /// <param name="value">The signed integer value to be written to JSON data.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteValue(long value)
         {
             if (_prettyPrint)
