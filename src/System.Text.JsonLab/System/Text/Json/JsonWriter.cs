@@ -41,7 +41,6 @@ namespace System.Text.JsonLab
         /// array of other items. If this is used while inside a nested object, the property
         /// name will be missing and result in invalid JSON.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteObjectStart()
         {
             if (_prettyPrint)
@@ -57,7 +56,8 @@ namespace System.Text.JsonLab
                     bytesNeeded = 2;
                 }
 
-                Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+                _bufferWriter.Ensure(bytesNeeded);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
 
                 if (_indent < 0)
                 {
@@ -72,7 +72,6 @@ namespace System.Text.JsonLab
             _indent++;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteStartUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
@@ -125,6 +124,23 @@ namespace System.Text.JsonLab
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
 
+            if (_prettyPrint)
+            {
+                WriteStartUtf8Pretty(nameSpan, JsonConstants.OpenBrace);
+            }
+            else
+            {
+                while (!TryWriteStartUtf8(nameSpan, JsonConstants.OpenBrace))
+                    EnsureBuffer();
+            }
+
+            _indent &= RemoveFlagsBitMask;
+            _indent++;
+
+        }
+
+        private void WriteStartUtf8Pretty(ReadOnlySpan<byte> nameSpanByte, byte token)
+        {
             // quote {name} quote colon open-brace, hence 4
             int bytesNeeded = 4;
             if (_indent < 0)
@@ -132,25 +148,59 @@ namespace System.Text.JsonLab
                 bytesNeeded++;
             }
 
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
+            if (Encodings.Utf16.ToUtf8Length(nameSpanByte, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
             bytesNeeded += bytesNeededValue;
 
-            if (_prettyPrint)
+            int indent = _indent & RemoveFlagsBitMask;
+
+            // For the new line, \r\n or \n, and the space after the colon
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + indent * 2;
+
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            int idx = 0;
+
+            if (_indent < 0)
             {
-                // For the new line, \r\n or \n, and the space after the colon
-                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
-                WriteStartUtf8Pretty(nameSpan, bytesNeeded, JsonConstants.OpenBrace);
-            }
-            else
-            {
-                WriteStartUtf8(nameSpan, bytesNeeded, JsonConstants.OpenBrace);
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
             }
 
-            _indent &= RemoveFlagsBitMask;
-            _indent++;
+            // \r\n versus \n, depending on OS
+            if (JsonWriterHelper.NewLineUtf8.Length == 2)
+            {
+                byteBuffer[idx++] = JsonConstants.CarriageReturn;
+            }
+
+            byteBuffer[idx++] = JsonConstants.LineFeed;
+
+            while (indent-- > 0)
+            {
+                byteBuffer[idx++] = JsonConstants.Space;
+                byteBuffer[idx++] = JsonConstants.Space;
+            }
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            Debug.Assert(consumed == nameSpanByte.Length);
+            if (status != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowFormatException();
+            }
+
+            idx += written;
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            byteBuffer[idx++] = JsonConstants.Space;
+
+            byteBuffer[idx++] = token;
+
+            _bufferWriter.Advance(idx);
         }
 
         private void WriteStartUtf8Pretty(ReadOnlySpan<byte> nameSpanByte, int bytesNeeded, byte token)
@@ -200,6 +250,44 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
         }
 
+        private bool TryWriteStartUtf8(ReadOnlySpan<byte> nameSpanByte, byte token)
+        {
+            int idx = 0;
+
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                Debug.Assert(consumed == nameSpanByte.Length);
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                byteBuffer[idx++] = token;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            return true;
+        }
+
         private void WriteStartUtf8(ReadOnlySpan<byte> nameSpanByte, int bytesNeeded, byte token)
         {
             Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
@@ -233,7 +321,6 @@ namespace System.Text.JsonLab
         /// <summary>
         /// Writes the end tag for an object.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteObjectEnd()
         {
             _indent |= 1 << 31;
@@ -245,13 +332,13 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Span<byte> byteBuffer = EnsureBuffer(1);
+                _bufferWriter.Ensure(1);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
                 byteBuffer[0] = JsonConstants.CloseBrace;
                 _bufferWriter.Advance(1);
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private void WriteEndUtf8Pretty(byte token)
         {
             int indent = _indent & RemoveFlagsBitMask;
@@ -303,28 +390,14 @@ namespace System.Text.JsonLab
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
 
-            // quote {name} quote colon open-brace, hence 4
-            int bytesNeeded = 4;
-            if (_indent < 0)
-            {
-                bytesNeeded++;
-            }
-
-            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
-            {
-                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
-            }
-            bytesNeeded += bytesNeededValue;
-
             if (_prettyPrint)
             {
-                // For the new line, \r\n or \n, and the space after the colon
-                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
-                WriteStartUtf8Pretty(nameSpan, bytesNeeded, JsonConstants.OpenBracket);
+                WriteStartUtf8Pretty(nameSpan, JsonConstants.OpenBracket);
             }
             else
             {
-                WriteStartUtf8(nameSpan, bytesNeeded, JsonConstants.OpenBracket);
+                while (!TryWriteStartUtf8(nameSpan, JsonConstants.OpenBracket))
+                    EnsureBuffer();
             }
 
             _indent &= RemoveFlagsBitMask;
@@ -334,7 +407,6 @@ namespace System.Text.JsonLab
         /// <summary>
         /// Writes the end tag for an array.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteArrayEnd()
         {
             _indent |= 1 << 31;
@@ -346,7 +418,8 @@ namespace System.Text.JsonLab
             }
             else
             {
-                Span<byte> byteBuffer = EnsureBuffer(1);
+                _bufferWriter.Ensure(1);
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
                 byteBuffer[0] = JsonConstants.CloseBracket;
                 _bufferWriter.Advance(1);
             }
@@ -362,6 +435,19 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
             ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
 
+            if (_prettyPrint)
+            {
+                WriteAttributeUtf8Pretty(nameSpan, valueSpan);
+            }
+            else
+            {
+                while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
+                    EnsureBuffer();
+            }
+        }
+
+        private void WriteAttributeUtf8Pretty(ReadOnlySpan<byte> nameSpan, ReadOnlySpan<byte> valueSpan)
+        {
             //quote {name} quote colon quote {value} quote, hence 5
             int bytesNeeded = 5;
             if (_indent < 0)
@@ -380,15 +466,8 @@ namespace System.Text.JsonLab
             bytesNeeded += bytesNeededName;
             bytesNeeded += bytesNeededValue;
 
-            if (_prettyPrint)
-            {
-                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
-                WriteAttributeUtf8Pretty(nameSpan, valueSpan, bytesNeeded);
-            }
-            else
-            {
-                WriteAttributeUtf8(nameSpan, valueSpan, bytesNeeded);
-            }
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
+            WriteAttributeUtf8Pretty(nameSpan, valueSpan, bytesNeeded);
         }
 
         private void WriteAttributeUtf8Pretty(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
@@ -436,44 +515,54 @@ namespace System.Text.JsonLab
             _indent |= 1 << 31;
         }
 
-        private void WriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
+        private bool TryWriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, ReadOnlySpan<byte> valueSpanByte)
         {
-            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
             int idx = 0;
-
-            if (_indent < 0)
+            try
             {
-                byteBuffer[idx++] = JsonConstants.ListSeperator;
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                Debug.Assert(consumed == nameSpanByte.Length);
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                Debug.Assert(consumed == valueSpanByte.Length);
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
             }
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
-            Debug.Assert(consumed == nameSpanByte.Length);
-            if (status != OperationStatus.Done)
+            catch (IndexOutOfRangeException)
             {
-                JsonThrowHelper.ThrowFormatException();
+                return false;
             }
-            idx += written;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
-
-            status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out consumed, out written);
-            Debug.Assert(consumed == valueSpanByte.Length);
-            if (status != OperationStatus.Done)
-            {
-                JsonThrowHelper.ThrowFormatException();
-            }
-            idx += written;
-
-            byteBuffer[idx++] = JsonConstants.Quote;
 
             _bufferWriter.Advance(idx);
             _indent |= 1 << 31;
+            return true;
         }
 
         /// <summary>
@@ -484,9 +573,124 @@ namespace System.Text.JsonLab
         public void WriteAttribute(string name, long value)
         {
             ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
-            int bytesNeeded = CalculateStartAttributeBytesNeeded(nameSpan, sizeof(byte));
-            WriteAttributeUtf8(nameSpan, bytesNeeded);
-            WriteNumberUtf8(value); //TODO: attempt to optimize by combining this with WriteAttributeUtf8
+            if (_prettyPrint)
+            {
+                WriteAttributeUtf8Pretty(nameSpan, value);
+            }
+            else
+            {
+                while (!TryWriteAttributeUtf8(nameSpan, value))
+                    EnsureBuffer();
+            }
+        }
+
+        private bool TryWriteAttributeUtf8(ReadOnlySpan<byte> nameSpanByte, long value)
+        {
+            int idx = 0;
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(nameSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                Debug.Assert(consumed == nameSpanByte.Length);
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                if (!JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten)) return false;
+                // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+                // See: https://github.com/dotnet/corefx/issues/25425
+                //if (!Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten)) return false;
+                idx += bytesWritten;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
+        }
+
+        private void WriteAttributeUtf8Pretty(ReadOnlySpan<byte> nameSpan, long value)
+        {
+            // quote {name} quote colon, hence 3
+            int bytesNeeded = 3;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededName) != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
+            }
+            bytesNeeded += bytesNeededName;
+
+            // For the new line, \r\n or \n, and the space after the colon
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
+
+            bool insertNegationSign = false;
+            if (value < 0)
+            {
+                insertNegationSign = true;
+                value = -value;
+                bytesNeeded += 1;
+            }
+
+            int digitCount = JsonWriterHelper.CountDigits((ulong)value);
+            bytesNeeded += digitCount;
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+
+            int idx = 0;
+            if (_indent < 0)
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            idx += AddNewLineAndIndentation(byteBuffer.Slice(idx));
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            OperationStatus status = Encodings.Utf16.ToUtf8(nameSpan, byteBuffer.Slice(idx), out int consumed, out int written);
+            if (status != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowFormatException();
+            }
+            Debug.Assert(consumed == nameSpan.Length);
+            idx += written;
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            byteBuffer[idx++] = JsonConstants.Space;
+
+            _indent |= 1 << 31;
+
+            if (insertNegationSign)
+            {
+                byteBuffer[idx++] = (byte)'-';
+            }
+
+            JsonWriterHelper.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
+
+            _bufferWriter.Advance(bytesNeeded);
         }
 
         /// <summary>
@@ -619,8 +823,83 @@ namespace System.Text.JsonLab
         public void WriteValue(string value)
         {
             ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
-            int bytesNeeded = CalculateValueBytesNeeded(valueSpan, sizeof(byte), 2);
-            WriteValueUtf8(valueSpan, bytesNeeded);
+
+            if (_prettyPrint)
+            {
+                WriteValueUtf8Pretty(valueSpan);
+            }
+            else
+            {
+                while (!TryWriteValueUtf8(valueSpan))
+                    EnsureBuffer();
+            }
+        }
+
+        private void WriteValueUtf8Pretty(ReadOnlySpan<byte> valueSpanByte)
+        {
+            int bytesNeeded = CalculateValueBytesNeededPretty(valueSpanByte);
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            int idx = 0;
+
+            if (_indent < 0)
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            idx += AddNewLineAndIndentation(byteBuffer.Slice(idx));
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+            if (status != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowFormatException();
+            }
+            Debug.Assert(consumed == valueSpanByte.Length);
+
+            idx += written;
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+        }
+
+        private bool TryWriteValueUtf8(ReadOnlySpan<byte> valueSpanByte)
+        {
+            int idx = 0;
+
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
+                if (status == OperationStatus.DestinationTooSmall) return false;
+                if (status != OperationStatus.Done)
+                {
+                    JsonThrowHelper.ThrowFormatException();
+                }
+                Debug.Assert(consumed == valueSpanByte.Length);
+
+                idx += written;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
         }
 
         private void WriteValueUtf8(ReadOnlySpan<byte> valueSpanByte, int bytesNeeded)
@@ -633,20 +912,14 @@ namespace System.Text.JsonLab
                 byteBuffer[idx++] = JsonConstants.ListSeperator;
             }
 
-            if (_prettyPrint)
-            {
-                idx += AddNewLineAndIndentation(byteBuffer.Slice(idx));
-            }
-
             byteBuffer[idx++] = JsonConstants.Quote;
 
-
             OperationStatus status = Encodings.Utf16.ToUtf8(valueSpanByte, byteBuffer.Slice(idx), out int consumed, out int written);
-            Debug.Assert(consumed == valueSpanByte.Length);
             if (status != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowFormatException();
             }
+            Debug.Assert(consumed == valueSpanByte.Length);
 
             idx += written;
 
@@ -660,29 +933,28 @@ namespace System.Text.JsonLab
         /// Write a signed integer value into the current array.
         /// </summary>
         /// <param name="value">The signed integer value to be written to JSON data.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteValue(long value)
+        {
+            if (_prettyPrint)
+            {
+                WriteValueUtf8Pretty(value);
+            }
+            else
+            {
+                while (!TryWriteValueUtf8(value))
+                    EnsureBuffer();
+            }
+        }
+
+        private void WriteValueUtf8Pretty(long value)
         {
             int bytesNeeded = 0;
             if (_indent < 0)
             {
                 bytesNeeded = 1;
             }
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + (_indent & RemoveFlagsBitMask) * 2;
 
-            if (_prettyPrint)
-            {
-                bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + (_indent & RemoveFlagsBitMask) * 2;
-                WriteValueUtf8Pretty(value, bytesNeeded);
-            }
-            else
-            {
-                WriteValueUtf8(value, bytesNeeded);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void WriteValueUtf8Pretty(long value, int bytesNeeded)
-        {
             bool insertNegationSign = false;
             if (value < 0)
             {
@@ -713,6 +985,29 @@ namespace System.Text.JsonLab
             JsonWriterHelper.WriteDigitsUInt64D((ulong)value, byteBuffer.Slice(idx, digitCount));
 
             _bufferWriter.Advance(bytesNeeded);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteValueUtf8(long value)
+        {
+            int idx = 0;
+
+            Span<byte> byteBuffer = _bufferWriter.Buffer;
+            if (_indent < 0)
+            {
+                if (byteBuffer.Length == 0) return false;
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            if (!JsonWriterHelper.TryFormatInt64Default(value, byteBuffer.Slice(idx), out int bytesWritten)) return false;
+            // Using Utf8Formatter with default StandardFormat is roughly 30% slower (17 ns versus 12 ns)
+            // See: https://github.com/dotnet/corefx/issues/25425
+            //if (!Utf8Formatter.TryFormat(value, byteBuffer.Slice(idx), out int bytesWritten)) return false;
+            idx += bytesWritten;
+
+            _bufferWriter.Advance(idx);
+            _indent |= 1 << 31;
+            return true;
         }
 
         private void WriteValueUtf8(long value, int bytesNeeded)
@@ -1016,24 +1311,54 @@ namespace System.Text.JsonLab
             return bytesNeeded;
         }
 
-        private int CalculateValueBytesNeeded(ReadOnlySpan<byte> span, int numBytes, int extraCharacterCount)
+        private int CalculateValueBytesNeededPretty(ReadOnlySpan<byte> span)
         {
-            int bytesNeeded = 0;
+            int bytesNeeded = 2;
             if (_indent < 0)
             {
-                bytesNeeded = numBytes;
+                bytesNeeded++;
             }
 
-            if (_prettyPrint)
-            {
-                int bytesNeededForPrettyPrint = JsonWriterHelper.NewLineUtf8.Length;    // For the new line, \r\n or \n
-                bytesNeededForPrettyPrint += _indent * 2;
-                bytesNeeded += numBytes * bytesNeededForPrettyPrint;
-            }
-
-            bytesNeeded += numBytes * extraCharacterCount;
+            // For the new line, \r\n or \n
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + (_indent & RemoveFlagsBitMask) * 2;
 
             if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
+            }
+            bytesNeeded += bytesNeededValue;
+            return bytesNeeded;
+        }
+
+        private int CalculateValueBytesNeeded(ReadOnlySpan<byte> span)
+        {
+            int bytesNeeded = 2;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            if (Encodings.Utf16.ToUtf8Length(span, out int bytesNeededValue) != OperationStatus.Done)
+            {
+                JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
+            }
+            bytesNeeded += bytesNeededValue;
+            return bytesNeeded;
+        }
+
+        private int CalculateStartAttributeBytesNeededPretty(ReadOnlySpan<byte> nameSpan)
+        {
+            // quote {name} quote colon, hence 3
+            int bytesNeeded = 3;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            // For the new line, \r\n or \n, and the space after the colon
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1  + (_indent & RemoveFlagsBitMask) * 2;
+
+            if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
                 JsonThrowHelper.ThrowArgumentExceptionInvalidUtf8String();
             }
