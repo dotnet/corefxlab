@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.Formatting;
 using System.Text.JsonLab;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Engines;
 
 namespace System.IO.Pipelines.Benchmarks
