@@ -12,7 +12,7 @@ namespace System.Devices.Gpio.Samples
         {
             try
             {
-                var option = -1;
+                int option = -1;
 
                 if (args.Length > 0)
                 {
@@ -50,7 +50,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ShowUsage()
         {
-            var assemblyName = Reflection.Assembly.GetEntryAssembly().GetName().Name;
+            string assemblyName = Reflection.Assembly.GetEntryAssembly().GetName().Name;
 
             Console.WriteLine($"Usage: {assemblyName} <arg>");
             Console.WriteLine("       where <arg> can be any of the following options:");
@@ -121,7 +121,7 @@ namespace System.Devices.Gpio.Samples
                 var button = new GpioPin(driver, GpioNumberingScheme.BCM, 18, GpioPinMode.Input);
                 var led = new GpioPin(driver, GpioNumberingScheme.BCM, 26, GpioPinMode.Output);
 
-                var watch = Stopwatch.StartNew();
+                Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
@@ -184,7 +184,7 @@ namespace System.Devices.Gpio.Samples
                 driver.SetPinMode(button, GpioPinMode.Input);
                 driver.SetPinMode(led, GpioPinMode.Output);
 
-                var watch = Stopwatch.StartNew();
+                Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
@@ -210,7 +210,7 @@ namespace System.Devices.Gpio.Samples
                 driver.SetPinMode(button, GpioPinMode.InputPullDown);
                 driver.SetPinMode(led, GpioPinMode.Output);
 
-                var watch = Stopwatch.StartNew();
+                Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
@@ -241,8 +241,8 @@ namespace System.Devices.Gpio.Samples
                 driver.SetEventDetection(button, GpioEventKind.High, false);
                 driver.SetEventDetection(button, GpioEventKind.Low, false);
 
-                var watch = Stopwatch.StartNew();
-                var buttonPressed = false;
+                Stopwatch watch = Stopwatch.StartNew();
+                bool buttonPressed = false;
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
@@ -293,11 +293,11 @@ namespace System.Devices.Gpio.Samples
                 driver.SetEventDetection(button, GpioEventKind.High, false);
                 driver.SetEventDetection(button, GpioEventKind.Low, false);
 
-                var eventDetectionEnabled = driver.GetEventDetection(button, GpioEventKind.SyncRisingEdge);
+                bool eventDetectionEnabled = driver.GetEventDetection(button, GpioEventKind.SyncRisingEdge);
                 Console.WriteLine($"Is event detection enabled? {eventDetectionEnabled}");
 
-                var watch = Stopwatch.StartNew();
-                var currentLedValue = GpioPinValue.Low;
+                Stopwatch watch = Stopwatch.StartNew();
+                GpioPinValue currentLedValue = GpioPinValue.Low;
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {

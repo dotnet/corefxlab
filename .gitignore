@@ -268,4 +268,4 @@ binaries/
 !external/**/*
 
 # Do not include these files
-/src/System.Devices.Gpio/publish.zip
+*.zip
