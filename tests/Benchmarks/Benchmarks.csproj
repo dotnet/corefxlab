@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNetVersion)" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="4.5.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="$(CoreFxStableVersion)" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
