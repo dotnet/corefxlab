@@ -78,7 +78,6 @@ namespace System
             void IEnumerator.Reset() => throw new NotSupportedException();
         }
 
-        // TODO: write benchmark for this
         public Enumerator GetEnumerator()
         {
             if(IsBound) return new Enumerator(First, End);
