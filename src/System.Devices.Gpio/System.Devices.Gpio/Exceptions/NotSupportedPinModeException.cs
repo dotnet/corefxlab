@@ -3,19 +3,19 @@
 
 namespace System.Devices.Gpio
 {
-    public class NotSupportedGpioPinModeException : GpioException
+    public class NotSupportedPinModeException : GpioException
     {
-        public NotSupportedGpioPinModeException(GpioPinMode mode)
+        public NotSupportedPinModeException(PinMode mode)
             : base($"Not supported GPIO pin mode '{mode}'")
         {
         }
 
-        public NotSupportedGpioPinModeException(string mode)
+        public NotSupportedPinModeException(string mode)
             : base($"Not supported GPIO pin mode '{mode}'")
         {
         }
 
-        public NotSupportedGpioPinModeException(uint mode)
+        public NotSupportedPinModeException(uint mode)
             : base($"Not supported GPIO pin mode '{mode}'")
         {
         }

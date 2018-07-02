@@ -3,9 +3,9 @@
 
 namespace System.Devices.Gpio
 {
-    public class InvalidGpioEventKindException : GpioException
+    public class InvalidEventKindException : GpioException
     {
-        public InvalidGpioEventKindException(GpioEventKind kind)
+        public InvalidEventKindException(EventKind kind)
             : base($"Invalid GPIO event kind '{kind}'")
         {
 

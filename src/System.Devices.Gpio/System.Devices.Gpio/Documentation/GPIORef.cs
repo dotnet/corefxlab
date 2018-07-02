@@ -107,8 +107,8 @@ namespace System.Devices.Gpio
     public partial class GPIOPin
     {
         // Waiters
-        public void ReadWait(bool value, TimeSpan timeout) { throw new NotImplementedException(); }
-        public void AnalogReadWait(int value, TimeSpan timeout) { throw new NotImplementedException(); }
+        public bool ReadWait(TimeSpan timeout) { throw new NotImplementedException(); }
+        public int AnalogReadWait(TimeSpan timeout) { throw new NotImplementedException(); }
 
         // Bit-Shifts and writer helpers
         // TODO

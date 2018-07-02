@@ -54,7 +54,7 @@ namespace System.Devices.Gpio
             using (GPIOController controller = new GPIOController()) // BOARD numbering by default
             using (GPIOPin pollPin = controller.OpenPin(7, GPIOPinMode.Input))
             {
-                pollPin.ReadWait(true, new TimeSpan(0, 1, 0));
+                pollPin.ReadWait(new TimeSpan(0, 1, 0));
             }
         }
 

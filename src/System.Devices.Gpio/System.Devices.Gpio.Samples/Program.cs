@@ -8,6 +8,8 @@ namespace System.Devices.Gpio.Samples
 {
     internal class Program
     {
+        private const int RaspberryPiPinCount = 54;
+
         private static void Main(string[] args)
         {
             try
@@ -76,13 +78,13 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_BlinkingLED()
         {
             Console.WriteLine(nameof(Unix_BlinkingLED));
-            BlinkingLED(new UnixDriver());
+            BlinkingLED(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void Unix_ButtonLED()
         {
             Console.WriteLine(nameof(Unix_ButtonLED));
-            ButtonLED(new UnixDriver());
+            ButtonLED(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPi_BlinkingLED()
@@ -101,14 +103,14 @@ namespace System.Devices.Gpio.Samples
         {
             using (driver)
             {
-                var led = new GpioPin(driver, GpioNumberingScheme.BCM, 26, GpioPinMode.Output);
+                var led = new Pin(driver, PinNumberingScheme.BCM, 26, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
-                    led.Write(GpioPinValue.High);
+                    led.Write(PinValue.High);
                     Thread.Sleep(1 * 1000);
 
-                    led.Write(GpioPinValue.Low);
+                    led.Write(PinValue.Low);
                     Thread.Sleep(1 * 1000);
                 }
             }
@@ -118,14 +120,14 @@ namespace System.Devices.Gpio.Samples
         {
             using (driver)
             {
-                var button = new GpioPin(driver, GpioNumberingScheme.BCM, 18, GpioPinMode.Input);
-                var led = new GpioPin(driver, GpioNumberingScheme.BCM, 26, GpioPinMode.Output);
+                var button = new Pin(driver, PinNumberingScheme.BCM, 18, PinMode.Input);
+                var led = new Pin(driver, PinNumberingScheme.BCM, 26, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    GpioPinValue value = button.Read();
+                    PinValue value = button.Read();
                     led.Write(value);
                 }
             }
@@ -134,13 +136,13 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_BlinkingLED()
         {
             Console.WriteLine(nameof(UnixDriver_BlinkingLED));
-            Driver_BlinkingLED(new UnixDriver());
+            Driver_BlinkingLED(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void UnixDriver_ButtonLED()
         {
             Console.WriteLine(nameof(UnixDriver_ButtonLED));
-            Driver_ButtonLED(new UnixDriver());
+            Driver_ButtonLED(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPiDriver_BlinkingLED()
@@ -161,14 +163,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(led, GpioPinMode.Output);
+                driver.SetPinMode(led, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
-                    driver.Output(led, GpioPinValue.High);
+                    driver.Output(led, PinValue.High);
                     Thread.Sleep(1 * 1000);
 
-                    driver.Output(led, GpioPinValue.Low);
+                    driver.Output(led, PinValue.Low);
                     Thread.Sleep(1 * 1000);
                 }
             }
@@ -181,14 +183,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, GpioPinMode.Input);
-                driver.SetPinMode(led, GpioPinMode.Output);
+                driver.SetPinMode(button, PinMode.Input);
+                driver.SetPinMode(led, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    GpioPinValue value = driver.Input(button);
+                    PinValue value = driver.Input(button);
                     driver.Output(led, value);
                 }
             }
@@ -207,14 +209,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, GpioPinMode.InputPullDown);
-                driver.SetPinMode(led, GpioPinMode.Output);
+                driver.SetPinMode(button, PinMode.InputPullDown);
+                driver.SetPinMode(led, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    GpioPinValue value = driver.Input(button);
+                    PinValue value = driver.Input(button);
                     driver.Output(led, value);
                 }
             }
@@ -232,14 +234,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, GpioPinMode.InputPullDown);
+                driver.SetPinMode(button, PinMode.InputPullDown);
 
-                driver.SetEventDetection(button, GpioEventKind.SyncRisingEdge, true);
-                driver.SetEventDetection(button, GpioEventKind.SyncFallingEdge, true);
-                driver.SetEventDetection(button, GpioEventKind.AsyncRisingEdge, false);
-                driver.SetEventDetection(button, GpioEventKind.AsyncFallingEdge, false);
-                driver.SetEventDetection(button, GpioEventKind.High, false);
-                driver.SetEventDetection(button, GpioEventKind.Low, false);
+                driver.SetEventDetection(button, EventKind.SyncRisingEdge, true);
+                driver.SetEventDetection(button, EventKind.SyncFallingEdge, true);
+                driver.SetEventDetection(button, EventKind.AsyncRisingEdge, false);
+                driver.SetEventDetection(button, EventKind.AsyncFallingEdge, false);
+                driver.SetEventDetection(button, EventKind.High, false);
+                driver.SetEventDetection(button, EventKind.Low, false);
 
                 Stopwatch watch = Stopwatch.StartNew();
                 bool buttonPressed = false;
@@ -283,21 +285,21 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, GpioPinMode.InputPullDown);
-                driver.SetPinMode(led, GpioPinMode.Output);
+                driver.SetPinMode(button, PinMode.InputPullDown);
+                driver.SetPinMode(led, PinMode.Output);
 
-                driver.SetEventDetection(button, GpioEventKind.SyncRisingEdge, true);
-                driver.SetEventDetection(button, GpioEventKind.SyncFallingEdge, false);
-                driver.SetEventDetection(button, GpioEventKind.AsyncRisingEdge, false);
-                driver.SetEventDetection(button, GpioEventKind.AsyncFallingEdge, false);
-                driver.SetEventDetection(button, GpioEventKind.High, false);
-                driver.SetEventDetection(button, GpioEventKind.Low, false);
+                driver.SetEventDetection(button, EventKind.SyncRisingEdge, true);
+                driver.SetEventDetection(button, EventKind.SyncFallingEdge, false);
+                driver.SetEventDetection(button, EventKind.AsyncRisingEdge, false);
+                driver.SetEventDetection(button, EventKind.AsyncFallingEdge, false);
+                driver.SetEventDetection(button, EventKind.High, false);
+                driver.SetEventDetection(button, EventKind.Low, false);
 
-                bool eventDetectionEnabled = driver.GetEventDetection(button, GpioEventKind.SyncRisingEdge);
+                bool eventDetectionEnabled = driver.GetEventDetection(button, EventKind.SyncRisingEdge);
                 Console.WriteLine($"Is event detection enabled? {eventDetectionEnabled}");
 
                 Stopwatch watch = Stopwatch.StartNew();
-                GpioPinValue currentLedValue = GpioPinValue.Low;
+                PinValue currentLedValue = PinValue.Low;
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
@@ -306,7 +308,7 @@ namespace System.Devices.Gpio.Samples
 
                     if (buttonPressed)
                     {
-                        currentLedValue = currentLedValue == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
+                        currentLedValue = currentLedValue == PinValue.High ? PinValue.Low : PinValue.High;
                         Console.WriteLine($"Button pressed! LED value {currentLedValue}");
 
                         driver.Output(led, currentLedValue);

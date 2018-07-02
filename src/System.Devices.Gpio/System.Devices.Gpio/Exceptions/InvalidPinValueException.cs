@@ -3,14 +3,14 @@
 
 namespace System.Devices.Gpio
 {
-    public class InvalidGpioPinValueException : GpioException
+    public class InvalidPinValueException : GpioException
     {
-        public InvalidGpioPinValueException(GpioPinValue value)
+        public InvalidPinValueException(PinValue value)
             : base($"Invalid GPIO pin value '{value}'")
         {
         }
 
-        public InvalidGpioPinValueException(string value)
+        public InvalidPinValueException(string value)
             : base($"Invalid GPIO pin value '{value}'")
         {
         }

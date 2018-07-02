@@ -149,23 +149,25 @@ namespace System.Devices.Gpio
             }
         }
 
-        public override void SetPinMode(int pin, GpioPinMode mode)
+        public override int PinCount => 54;
+
+        public override void SetPinMode(int pin, PinMode mode)
         {
             if (pin < 0 || pin >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(pin));
             }
 
-            if (!Enum.IsDefined(typeof(GpioPinMode), mode))
+            if (!Enum.IsDefined(typeof(PinMode), mode))
             {
-                throw new NotSupportedGpioPinModeException(mode);
+                throw new NotSupportedPinModeException(mode);
             }
 
             switch (mode)
             {
-                case GpioPinMode.Input:
-                case GpioPinMode.InputPullDown:
-                case GpioPinMode.InputPullUp:
+                case PinMode.Input:
+                case PinMode.InputPullDown:
+                case PinMode.InputPullUp:
                     SetInputPullMode(pin, PinModeToGPPUD(mode));
                     break;
             }
@@ -264,7 +266,7 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        public override GpioPinMode GetPinMode(int pin)
+        public override PinMode GetPinMode(int pin)
         {
             if (pin < 0 || pin >= PinCount)
             {
@@ -278,89 +280,89 @@ namespace System.Devices.Gpio
             uint register = _registerViewPointer->GPFSEL[index];
             uint mode = (register >> shift) & 0b111U;
 
-            GpioPinMode result = GPFSELToPinMode(mode);
+            PinMode result = GPFSELToPinMode(mode);
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private uint PinModeToGPPUD(GpioPinMode mode)
+        private uint PinModeToGPPUD(PinMode mode)
         {
             uint result;
 
             switch (mode)
             {
-                case GpioPinMode.Input:
+                case PinMode.Input:
                     result = 0;
                     break;
-                case GpioPinMode.InputPullDown:
+                case PinMode.InputPullDown:
                     result = 1;
                     break;
-                case GpioPinMode.InputPullUp:
+                case PinMode.InputPullUp:
                     result = 2;
                     break;
 
                 default:
-                    throw new NotSupportedGpioPinModeException(mode);
+                    throw new NotSupportedPinModeException(mode);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private uint PinModeToGPFSEL(GpioPinMode mode)
+        private uint PinModeToGPFSEL(PinMode mode)
         {
             uint result;
 
             switch (mode)
             {
-                case GpioPinMode.Input:
-                case GpioPinMode.InputPullDown:
-                case GpioPinMode.InputPullUp:
+                case PinMode.Input:
+                case PinMode.InputPullDown:
+                case PinMode.InputPullUp:
                     result = 0;
                     break;
 
-                case GpioPinMode.Output:
+                case PinMode.Output:
                     result = 1;
                     break;
 
                 default:
-                    throw new NotSupportedGpioPinModeException(mode);
+                    throw new NotSupportedPinModeException(mode);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private GpioPinMode GPFSELToPinMode(uint gpfselValue)
+        private PinMode GPFSELToPinMode(uint gpfselValue)
         {
-            GpioPinMode result;
+            PinMode result;
 
             switch (gpfselValue)
             {
                 case 0:
-                    result = GpioPinMode.Input;
+                    result = PinMode.Input;
                     break;
                 case 1:
-                    result = GpioPinMode.Output;
+                    result = PinMode.Output;
                     break;
 
                 default:
-                    throw new NotSupportedGpioPinModeException(gpfselValue);
+                    throw new NotSupportedPinModeException(gpfselValue);
             }
 
             return result;
         }
 
-        public override void Output(int pin, GpioPinValue value)
+        public override void Output(int pin, PinValue value)
         {
             if (pin < 0 || pin >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(pin));
             }
 
-            if (!Enum.IsDefined(typeof(GpioPinValue), value))
+            if (!Enum.IsDefined(typeof(PinValue), value))
             {
-                throw new InvalidGpioPinValueException(value);
+                throw new InvalidPinValueException(value);
             }
 
             //switch (value)
@@ -383,18 +385,18 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case GpioPinValue.High:
+                case PinValue.High:
                     registerPointer = &_registerViewPointer->GPSET[index];
                     registerName = nameof(RegisterView.GPSET);
                     break;
 
-                case GpioPinValue.Low:
+                case PinValue.Low:
                     registerPointer = &_registerViewPointer->GPCLR[index];
                     registerName = nameof(RegisterView.GPCLR);
                     break;
 
                 default:
-                    throw new InvalidGpioPinValueException(value);
+                    throw new InvalidPinValueException(value);
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -410,7 +412,7 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        public override GpioPinValue Input(int pin)
+        public override PinValue Input(int pin)
         {
             if (pin < 0 || pin >= PinCount)
             {
@@ -424,7 +426,7 @@ namespace System.Devices.Gpio
             uint register = _registerViewPointer->GPLEV[index];
             uint value = (register >> shift) & 1;
 
-            GpioPinValue result = Convert.ToBoolean(value) ? GpioPinValue.High : GpioPinValue.Low;
+            PinValue result = Convert.ToBoolean(value) ? PinValue.High : PinValue.Low;
             return result;
         }
 
@@ -483,16 +485,16 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override void SetEventDetection(int pin, GpioEventKind kind, bool enabled)
+        public override void SetEventDetection(int pin, EventKind kind, bool enabled)
         {
             if (pin < 0 || pin >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(pin));
             }
 
-            if (!Enum.IsDefined(typeof(GpioEventKind), kind))
+            if (!Enum.IsDefined(typeof(EventKind), kind))
             {
-                throw new InvalidGpioEventKindException(kind);
+                throw new InvalidEventKindException(kind);
             }
 
             //switch (kind)
@@ -531,38 +533,38 @@ namespace System.Devices.Gpio
 
             switch (kind)
             {
-                case GpioEventKind.High:
+                case EventKind.High:
                     registerPointer = &_registerViewPointer->GPHEN[index];
                     registerName = nameof(RegisterView.GPHEN);
                     break;
 
-                case GpioEventKind.Low:
+                case EventKind.Low:
                     registerPointer = &_registerViewPointer->GPLEN[index];
                     registerName = nameof(RegisterView.GPLEN);
                     break;
 
-                case GpioEventKind.SyncRisingEdge:
+                case EventKind.SyncRisingEdge:
                     registerPointer = &_registerViewPointer->GPREN[index];
                     registerName = nameof(RegisterView.GPREN);
                     break;
 
-                case GpioEventKind.SyncFallingEdge:
+                case EventKind.SyncFallingEdge:
                     registerPointer = &_registerViewPointer->GPFEN[index];
                     registerName = nameof(RegisterView.GPFEN);
                     break;
 
-                case GpioEventKind.AsyncRisingEdge:
+                case EventKind.AsyncRisingEdge:
                     registerPointer = &_registerViewPointer->GPAREN[index];
                     registerName = nameof(RegisterView.GPAREN);
                     break;
 
-                case GpioEventKind.AsyncFallingEdge:
+                case EventKind.AsyncFallingEdge:
                     registerPointer = &_registerViewPointer->GPAFEN[index];
                     registerName = nameof(RegisterView.GPAFEN);
                     break;
 
                 default:
-                    throw new InvalidGpioEventKindException(kind);
+                    throw new InvalidEventKindException(kind);
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -587,16 +589,16 @@ namespace System.Devices.Gpio
             ClearDetectedEvent(pin);
         }
 
-        public override bool GetEventDetection(int pin, GpioEventKind kind)
+        public override bool GetEventDetection(int pin, EventKind kind)
         {
             if (pin < 0 || pin >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(pin));
             }
 
-            if (!Enum.IsDefined(typeof(GpioEventKind), kind))
+            if (!Enum.IsDefined(typeof(EventKind), kind))
             {
-                throw new InvalidGpioEventKindException(kind);
+                throw new InvalidEventKindException(kind);
             }
 
             //switch (kind)
@@ -635,32 +637,32 @@ namespace System.Devices.Gpio
 
             switch (kind)
             {
-                case GpioEventKind.High:
+                case EventKind.High:
                     register = _registerViewPointer->GPHEN[index];
                     break;
 
-                case GpioEventKind.Low:
+                case EventKind.Low:
                     register = _registerViewPointer->GPLEN[index];
                     break;
 
-                case GpioEventKind.SyncRisingEdge:
+                case EventKind.SyncRisingEdge:
                     register = _registerViewPointer->GPREN[index];
                     break;
 
-                case GpioEventKind.SyncFallingEdge:
+                case EventKind.SyncFallingEdge:
                     register = _registerViewPointer->GPFEN[index];
                     break;
 
-                case GpioEventKind.AsyncRisingEdge:
+                case EventKind.AsyncRisingEdge:
                     register = _registerViewPointer->GPAREN[index];
                     break;
 
-                case GpioEventKind.AsyncFallingEdge:
+                case EventKind.AsyncFallingEdge:
                     register = _registerViewPointer->GPAFEN[index];
                     break;
 
                 default:
-                    throw new InvalidGpioEventKindException(kind);
+                    throw new InvalidEventKindException(kind);
             }
 
             uint value = (register >> shift) & 1;
@@ -669,48 +671,46 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override int PinCount => 54;
-
-        public override int ConvertPinNumber(int number, GpioNumberingScheme from, GpioNumberingScheme to)
+        public override int ConvertPinNumber(int number, PinNumberingScheme from, PinNumberingScheme to)
         {
             int result = -1;
 
             switch (from)
             {
-                case GpioNumberingScheme.BCM:
+                case PinNumberingScheme.BCM:
                     switch (to)
                     {
-                        case GpioNumberingScheme.BCM:
+                        case PinNumberingScheme.BCM:
                             result = number;
                             break;
 
-                        case GpioNumberingScheme.Board:
+                        case PinNumberingScheme.Board:
                             //throw new NotImplementedException();
                             break;
 
                         default:
-                            throw new NotSupportedGpioNumberingSchemeException(to);
+                            throw new NotSupportedPinNumberingSchemeException(to);
                     }
                     break;
 
-                case GpioNumberingScheme.Board:
+                case PinNumberingScheme.Board:
                     switch (to)
                     {
-                        case GpioNumberingScheme.Board:
+                        case PinNumberingScheme.Board:
                             result = number;
                             break;
 
-                        case GpioNumberingScheme.BCM:
+                        case PinNumberingScheme.BCM:
                             //throw new NotImplementedException();
                             break;
 
                         default:
-                            throw new NotSupportedGpioNumberingSchemeException(to);
+                            throw new NotSupportedPinNumberingSchemeException(to);
                     }
                     break;
 
                 default:
-                    throw new NotSupportedGpioNumberingSchemeException(from);
+                    throw new NotSupportedPinNumberingSchemeException(from);
             }
 
             return result;

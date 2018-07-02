@@ -3,9 +3,9 @@
 
 namespace System.Devices.Gpio
 {
-    public class NotSupportedGpioNumberingSchemeException : GpioException
+    public class NotSupportedPinNumberingSchemeException : GpioException
     {
-        public NotSupportedGpioNumberingSchemeException(GpioNumberingScheme numbering)
+        public NotSupportedPinNumberingSchemeException(PinNumberingScheme numbering)
             : base($"Unsupported GPIO pin numbering scheme {numbering}")
         {
         }

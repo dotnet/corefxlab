@@ -3,7 +3,7 @@
 
 namespace System.Devices.Gpio
 {
-    public enum GpioPinMode
+    public enum PinMode
     {
         Input,
         Output,
@@ -11,13 +11,13 @@ namespace System.Devices.Gpio
         InputPullUp
     }
 
-    public enum GpioPinValue
+    public enum PinValue
     {
         Low = 0,
         High = 1
     }
 
-    public enum GpioEventKind
+    public enum EventKind
     {
         Low,
         High,
@@ -27,42 +27,42 @@ namespace System.Devices.Gpio
         AsyncRisingEdge
     }
 
-    public enum GpioNumberingScheme
+    public enum PinNumberingScheme
     {
         Board,
         BCM
     }
 
-    public class GpioPin
+    public class Pin
     {
         protected GpioDriver _driver;
 
         public int Number { get; }
 
-        public GpioPinMode Mode
+        public PinMode Mode
         {
             get => _driver.GetPinMode(Number);
             set => _driver.SetPinMode(Number, value);
         }
 
-        public GpioPin(GpioDriver driver, GpioNumberingScheme numbering, int number, GpioPinMode mode)
+        public Pin(GpioDriver driver, PinNumberingScheme numbering, int number, PinMode mode)
         {
             _driver = driver;
-            Number = driver.ConvertPinNumber(number, numbering, GpioNumberingScheme.BCM);
+            Number = driver.ConvertPinNumber(number, numbering, PinNumberingScheme.BCM);
             Mode = mode;
         }
 
-        public int GetNumber(GpioNumberingScheme numbering)
+        public int GetNumber(PinNumberingScheme numbering)
         {
-            return _driver.ConvertPinNumber(Number, GpioNumberingScheme.BCM, numbering);
+            return _driver.ConvertPinNumber(Number, PinNumberingScheme.BCM, numbering);
         }
 
-        public GpioPinValue Read()
+        public PinValue Read()
         {
             return _driver.Input(Number);
         }
 
-        public void Write(GpioPinValue value)
+        public void Write(PinValue value)
         {
             _driver.Output(Number, value);
         }

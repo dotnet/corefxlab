@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,34 +13,49 @@ namespace System.Devices.Gpio
     {
         private const string GpioPath = "/sys/class/gpio";
 
-        private ISet<int> _exportedPins;
+        private BitArray _exportedPins;
 
-        public UnixDriver()
+        public UnixDriver(int pinCount)
         {
-            _exportedPins = new HashSet<int>();
+            PinCount = pinCount;
+            _exportedPins = new BitArray(pinCount);
         }
 
         public override void Dispose()
         {
-            while (_exportedPins.Count > 0)
+            for (int i = 0; i < _exportedPins.Length; ++i)
             {
-                int pin = _exportedPins.First();
-                UnexportPin(pin);
+                if (_exportedPins[i])
+                {
+                    UnexportPin(i);
+                }
             }
         }
 
-        public override GpioPinMode GetPinMode(int pin)
+        public override int PinCount { get; }
+
+        public override PinMode GetPinMode(int pin)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             ExportPin(pin);
 
             string directionPath = $"{GpioPath}/gpio{pin}/direction";
             string stringMode = File.ReadAllText(directionPath);
-            GpioPinMode mode = StringModeToPinMode(stringMode);
+            PinMode mode = StringModeToPinMode(stringMode);
             return mode;
         }
 
-        public override void SetPinMode(int pin, GpioPinMode mode)
+        public override void SetPinMode(int pin, PinMode mode)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             ExportPin(pin);
 
             string directionPath = $"{GpioPath}/gpio{pin}/direction";
@@ -47,18 +63,28 @@ namespace System.Devices.Gpio
             File.WriteAllText(directionPath, stringMode);
         }
 
-        public override GpioPinValue Input(int pin)
+        public override PinValue Input(int pin)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             ExportPin(pin);
 
             string valuePath = $"{GpioPath}/gpio{pin}/value";
             string stringValue = File.ReadAllText(valuePath);
-            GpioPinValue value = StringValueToPinValue(stringValue);
+            PinValue value = StringValueToPinValue(stringValue);
             return value;
         }
 
-        public override void Output(int pin, GpioPinValue value)
+        public override void Output(int pin, PinValue value)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             ExportPin(pin);
 
             string valuePath = $"{GpioPath}/gpio{pin}/value";
@@ -68,32 +94,55 @@ namespace System.Devices.Gpio
 
         public override void ClearDetectedEvent(int pin)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             throw new NotImplementedException();
         }
 
         public override bool EventWasDetected(int pin)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             throw new NotImplementedException();
         }
 
-        public override void SetEventDetection(int pin, GpioEventKind kind, bool enabled)
+        public override void SetEventDetection(int pin, EventKind kind, bool enabled)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             throw new NotImplementedException();
         }
 
-        public override bool GetEventDetection(int pin, GpioEventKind kind)
+        public override bool GetEventDetection(int pin, EventKind kind)
         {
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
             throw new NotImplementedException();
         }
 
-        public override int PinCount => throw new NotSupportedException();
-
-        public override int ConvertPinNumber(int number, GpioNumberingScheme from, GpioNumberingScheme to)
+        public override int ConvertPinNumber(int pin, PinNumberingScheme from, PinNumberingScheme to)
         {
-            if (from != GpioNumberingScheme.BCM || to != GpioNumberingScheme.BCM)
+            if (pin < 0 || pin >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pin));
+            }
+
+            if (from != PinNumberingScheme.BCM || to != PinNumberingScheme.BCM)
                 throw new NotSupportedException("Only BCM numbering scheme is supported");
 
-            return number;
+            return pin;
         }
 
         #region Private Methods
@@ -107,7 +156,7 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/export", Convert.ToString(pin));
             }
 
-            _exportedPins.Add(pin);
+            _exportedPins.Set(pin, true);
         }
 
         private void UnexportPin(int pin)
@@ -119,65 +168,65 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(pin));
             }
 
-            _exportedPins.Remove(pin);
+            _exportedPins.Set(pin, false);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private GpioPinMode StringModeToPinMode(string value)
+        private PinMode StringModeToPinMode(string value)
         {
-            GpioPinMode result;
+            PinMode result;
 
             switch (value)
             {
-                case "in": result = GpioPinMode.Input; break;
-                case "out": result = GpioPinMode.Output; break;
-                default: throw new NotSupportedGpioPinModeException(value);
+                case "in": result = PinMode.Input; break;
+                case "out": result = PinMode.Output; break;
+                default: throw new NotSupportedPinModeException(value);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string ModeToStringMode(GpioPinMode value)
+        private string ModeToStringMode(PinMode value)
         {
             string result;
 
             switch (value)
             {
-                case GpioPinMode.Input: result = "in"; break;
-                case GpioPinMode.Output: result = "out"; break;
-                default: throw new NotSupportedGpioPinModeException(value);
+                case PinMode.Input: result = "in"; break;
+                case PinMode.Output: result = "out"; break;
+                default: throw new NotSupportedPinModeException(value);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private GpioPinValue StringValueToPinValue(string value)
+        private PinValue StringValueToPinValue(string value)
         {
-            GpioPinValue result;
+            PinValue result;
             value = value.Trim();
 
             switch (value)
             {
-                case "0": result = GpioPinValue.Low; break;
-                case "1": result = GpioPinValue.High; break;
-                default: throw new InvalidGpioPinValueException(value);
+                case "0": result = PinValue.Low; break;
+                case "1": result = PinValue.High; break;
+                default: throw new InvalidPinValueException(value);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string PinValueToStringValue(GpioPinValue value)
+        private string PinValueToStringValue(PinValue value)
         {
             string result;
 
             switch (value)
             {
-                case GpioPinValue.Low: result = "0"; break;
-                case GpioPinValue.High: result = "1"; break;
-                default: throw new InvalidGpioPinValueException(value);
+                case PinValue.Low: result = "0"; break;
+                case PinValue.High: result = "1"; break;
+                default: throw new InvalidPinValueException(value);
             }
 
             return result;
