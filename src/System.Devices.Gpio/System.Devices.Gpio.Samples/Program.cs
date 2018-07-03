@@ -235,13 +235,7 @@ namespace System.Devices.Gpio.Samples
             using (driver)
             {
                 driver.SetPinMode(button, PinMode.InputPullDown);
-
-                driver.SetEventDetection(button, EventKind.SyncRisingEdge, true);
-                driver.SetEventDetection(button, EventKind.SyncFallingEdge, true);
-                driver.SetEventDetection(button, EventKind.AsyncRisingEdge, false);
-                driver.SetEventDetection(button, EventKind.AsyncFallingEdge, false);
-                driver.SetEventDetection(button, EventKind.High, false);
-                driver.SetEventDetection(button, EventKind.Low, false);
+                driver.SetEventsToDetect(button, EventKind.SyncBoth);
 
                 Stopwatch watch = Stopwatch.StartNew();
                 bool buttonPressed = false;
@@ -249,7 +243,7 @@ namespace System.Devices.Gpio.Samples
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
                     Thread.Sleep(1 * 100);
-                    bool eventDetected = driver.EventWasDetected(button);
+                    bool eventDetected = driver.WasEventDetected(button);
 
                     if (eventDetected)
                     {
@@ -288,15 +282,10 @@ namespace System.Devices.Gpio.Samples
                 driver.SetPinMode(button, PinMode.InputPullDown);
                 driver.SetPinMode(led, PinMode.Output);
 
-                driver.SetEventDetection(button, EventKind.SyncRisingEdge, true);
-                driver.SetEventDetection(button, EventKind.SyncFallingEdge, false);
-                driver.SetEventDetection(button, EventKind.AsyncRisingEdge, false);
-                driver.SetEventDetection(button, EventKind.AsyncFallingEdge, false);
-                driver.SetEventDetection(button, EventKind.High, false);
-                driver.SetEventDetection(button, EventKind.Low, false);
+                driver.SetEventsToDetect(button, EventKind.SyncRisingEdge);
 
-                bool eventDetectionEnabled = driver.GetEventDetection(button, EventKind.SyncRisingEdge);
-                Console.WriteLine($"Is event detection enabled? {eventDetectionEnabled}");
+                EventKind events = driver.GetEventsToDetect(button);
+                Console.WriteLine($"Events to detect: {events}");
 
                 Stopwatch watch = Stopwatch.StartNew();
                 PinValue currentLedValue = PinValue.Low;
@@ -304,7 +293,7 @@ namespace System.Devices.Gpio.Samples
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
                     Thread.Sleep(1 * 1000);
-                    bool buttonPressed = driver.EventWasDetected(button);
+                    bool buttonPressed = driver.WasEventDetected(button);
 
                     if (buttonPressed)
                     {

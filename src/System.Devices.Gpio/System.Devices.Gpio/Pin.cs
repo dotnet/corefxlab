@@ -17,14 +17,20 @@ namespace System.Devices.Gpio
         High = 1
     }
 
+    [Flags]
     public enum EventKind
     {
-        Low,
-        High,
-        SyncFallingEdge,
-        SyncRisingEdge,
-        AsyncFallingEdge,
-        AsyncRisingEdge
+        None = 0,
+        Low = 1,
+        High = 2,
+        SyncFallingEdge = 4,
+        SyncRisingEdge = 8,
+        AsyncFallingEdge = 16,
+        AsyncRisingEdge = 32,
+
+        Both = Low | High,
+        SyncBoth = SyncFallingEdge | SyncRisingEdge,
+        AsyncBoth = AsyncFallingEdge | AsyncRisingEdge,
     }
 
     public enum PinNumberingScheme
@@ -37,34 +43,34 @@ namespace System.Devices.Gpio
     {
         protected GpioDriver _driver;
 
-        public int Number { get; }
+        public int BCMNumber { get; }
 
         public PinMode Mode
         {
-            get => _driver.GetPinMode(Number);
-            set => _driver.SetPinMode(Number, value);
+            get => _driver.GetPinMode(BCMNumber);
+            set => _driver.SetPinMode(BCMNumber, value);
         }
 
         public Pin(GpioDriver driver, PinNumberingScheme numbering, int number, PinMode mode)
         {
             _driver = driver;
-            Number = driver.ConvertPinNumber(number, numbering, PinNumberingScheme.BCM);
+            BCMNumber = driver.ConvertPinNumber(number, numbering, PinNumberingScheme.BCM);
             Mode = mode;
         }
 
         public int GetNumber(PinNumberingScheme numbering)
         {
-            return _driver.ConvertPinNumber(Number, PinNumberingScheme.BCM, numbering);
+            return _driver.ConvertPinNumber(BCMNumber, PinNumberingScheme.BCM, numbering);
         }
 
         public PinValue Read()
         {
-            return _driver.Input(Number);
+            return _driver.Input(BCMNumber);
         }
 
         public void Write(PinValue value)
         {
-            _driver.Output(Number, value);
+            _driver.Output(BCMNumber, value);
         }
     }
 }

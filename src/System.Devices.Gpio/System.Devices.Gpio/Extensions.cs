@@ -15,7 +15,7 @@ namespace System.Devices.Gpio
             pin.Write(PinValue.Low);
         }
 
-        public static void Toogle(this Pin pin)
+        public static void Toggle(this Pin pin)
         {
             PinValue value = pin.Read();
 

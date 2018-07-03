@@ -34,141 +34,143 @@ namespace System.Devices.Gpio
 
         public override int PinCount { get; }
 
-        public override PinMode GetPinMode(int pin)
+        public override PinMode GetPinMode(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            ExportPin(pin);
+            ExportPin(bcmPinNumber);
 
-            string directionPath = $"{GpioPath}/gpio{pin}/direction";
+            string directionPath = $"{GpioPath}/gpio{bcmPinNumber}/direction";
             string stringMode = File.ReadAllText(directionPath);
             PinMode mode = StringModeToPinMode(stringMode);
             return mode;
         }
 
-        public override void SetPinMode(int pin, PinMode mode)
+        public override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            ExportPin(pin);
+            ExportPin(bcmPinNumber);
 
-            string directionPath = $"{GpioPath}/gpio{pin}/direction";
+            string directionPath = $"{GpioPath}/gpio{bcmPinNumber}/direction";
             string stringMode = ModeToStringMode(mode);
             File.WriteAllText(directionPath, stringMode);
         }
 
-        public override PinValue Input(int pin)
+        public override PinValue Input(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            ExportPin(pin);
+            ExportPin(bcmPinNumber);
 
-            string valuePath = $"{GpioPath}/gpio{pin}/value";
+            string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
             string stringValue = File.ReadAllText(valuePath);
             PinValue value = StringValueToPinValue(stringValue);
             return value;
         }
 
-        public override void Output(int pin, PinValue value)
+        public override void Output(int bcmPinNumber, PinValue value)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            ExportPin(pin);
+            ExportPin(bcmPinNumber);
 
-            string valuePath = $"{GpioPath}/gpio{pin}/value";
+            string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
             string stringValue = PinValueToStringValue(value);
             File.WriteAllText(valuePath, stringValue);
         }
 
-        public override void ClearDetectedEvent(int pin)
+        public override void ClearDetectedEvent(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             throw new NotImplementedException();
         }
 
-        public override bool EventWasDetected(int pin)
+        public override bool WasEventDetected(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             throw new NotImplementedException();
         }
 
-        public override void SetEventDetection(int pin, EventKind kind, bool enabled)
+        public override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             throw new NotImplementedException();
         }
 
-        public override bool GetEventDetection(int pin, EventKind kind)
+        public override EventKind GetEventsToDetect(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             throw new NotImplementedException();
         }
 
-        public override int ConvertPinNumber(int pin, PinNumberingScheme from, PinNumberingScheme to)
+        public override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             if (from != PinNumberingScheme.BCM || to != PinNumberingScheme.BCM)
+            {
                 throw new NotSupportedException("Only BCM numbering scheme is supported");
+            }
 
-            return pin;
+            return bcmPinNumber;
         }
 
         #region Private Methods
 
-        private void ExportPin(int pin)
+        private void ExportPin(int bcmPinNumber)
         {
-            string pinPath = $"{GpioPath}/gpio{pin}";
+            string pinPath = $"{GpioPath}/gpio{bcmPinNumber}";
 
             if (!Directory.Exists(pinPath))
             {
-                File.WriteAllText($"{GpioPath}/export", Convert.ToString(pin));
+                File.WriteAllText($"{GpioPath}/export", Convert.ToString(bcmPinNumber));
             }
 
-            _exportedPins.Set(pin, true);
+            _exportedPins.Set(bcmPinNumber, true);
         }
 
-        private void UnexportPin(int pin)
+        private void UnexportPin(int bcmPinNumber)
         {
-            string pinPath = $"{GpioPath}/gpio{pin}";
+            string pinPath = $"{GpioPath}/gpio{bcmPinNumber}";
 
             if (Directory.Exists(pinPath))
             {
-                File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(pin));
+                File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(bcmPinNumber));
             }
 
-            _exportedPins.Set(pin, false);
+            _exportedPins.Set(bcmPinNumber, false);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

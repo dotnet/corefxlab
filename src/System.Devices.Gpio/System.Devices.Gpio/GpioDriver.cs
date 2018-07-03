@@ -7,23 +7,23 @@ namespace System.Devices.Gpio
     {
         public abstract int PinCount { get; }
 
-        public abstract int ConvertPinNumber(int number, PinNumberingScheme from, PinNumberingScheme to);
+        public abstract int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to);
 
-        public abstract void SetPinMode(int pin, PinMode mode);
+        public abstract void SetPinMode(int bcmPinNumber, PinMode mode);
 
-        public abstract PinMode GetPinMode(int pin);
+        public abstract PinMode GetPinMode(int bcmPinNumber);
 
-        public abstract void Output(int pin, PinValue value);
+        public abstract void Output(int bcmPinNumber, PinValue value);
 
-        public abstract PinValue Input(int pin);
+        public abstract PinValue Input(int bcmPinNumber);
 
-        public abstract void ClearDetectedEvent(int pin);
+        public abstract void ClearDetectedEvent(int bcmPinNumber);
 
-        public abstract bool EventWasDetected(int pin);
+        public abstract bool WasEventDetected(int bcmPinNumber);
 
-        public abstract void SetEventDetection(int pin, EventKind kind, bool enabled);
+        public abstract void SetEventsToDetect(int bcmPinNumber, EventKind events);
 
-        public abstract bool GetEventDetection(int pin, EventKind kind);
+        public abstract EventKind GetEventsToDetect(int bcmPinNumber);
 
         public abstract void Dispose();
     }

@@ -117,7 +117,13 @@ namespace System.Devices.Gpio
         private RegisterView* _registerViewPointer = null;
 
         public RaspberryPiDriver()
+        {           
+        }
+
+        private void Initialize()
         {
+            if (_registerViewPointer != null) return;
+
             int fileDescriptor = open(GpioMemoryFilePath, FileOpenFlags.O_RDWR | FileOpenFlags.O_SYNC);
 
             if (fileDescriptor < 0)
@@ -146,16 +152,17 @@ namespace System.Devices.Gpio
             if (_registerViewPointer != null)
             {
                 munmap((IntPtr)_registerViewPointer, 0);
+                _registerViewPointer = null;
             }
         }
 
         public override int PinCount => 54;
 
-        public override void SetPinMode(int pin, PinMode mode)
+        public override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             if (!Enum.IsDefined(typeof(PinMode), mode))
@@ -163,19 +170,21 @@ namespace System.Devices.Gpio
                 throw new NotSupportedPinModeException(mode);
             }
 
+            Initialize();
+
             switch (mode)
             {
                 case PinMode.Input:
                 case PinMode.InputPullDown:
                 case PinMode.InputPullUp:
-                    SetInputPullMode(pin, PinModeToGPPUD(mode));
+                    SetInputPullMode(bcmPinNumber, PinModeToGPPUD(mode));
                     break;
             }
 
-            SetPinMode(pin, PinModeToGPFSEL(mode));
+            SetPinMode(bcmPinNumber, PinModeToGPFSEL(mode));
         }
 
-        private void SetInputPullMode(int pin, uint mode)
+        private void SetInputPullMode(int bcmPinNumber, uint mode)
         {
             /*
              * The GPIO Pull - up/down Clock Registers control the actuation of internal pull-downs on the respective GPIO pins.
@@ -215,8 +224,8 @@ namespace System.Devices.Gpio
             // Wait 150 cycles – this provides the required set-up time for the control signal
             Thread.SpinWait(150);
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint* gppudclkPointer = &_registerViewPointer->GPPUDCLK[index];
 
             //Console.WriteLine($"{nameof(RegisterView.GPPUDCLK)} register address = {(long)gppudclkPointer:X16}");
@@ -244,12 +253,12 @@ namespace System.Devices.Gpio
             *gppudclkPointer = 0;
         }
 
-        private void SetPinMode(int pin, uint mode)
+        private void SetPinMode(int bcmPinNumber, uint mode)
         {
             //SetBits(RegisterViewPointer->GPFSEL, pin, 10, 3, mode);
 
-            int index = pin / 10;
-            int shift = (pin % 10) * 3;
+            int index = bcmPinNumber / 10;
+            int shift = (bcmPinNumber % 10) * 3;
             uint* registerPointer = &_registerViewPointer->GPFSEL[index];
 
             //Console.WriteLine($"{nameof(RegisterView.GPFSEL)} register address = {(long)registerPointer:X16}");
@@ -266,17 +275,19 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        public override PinMode GetPinMode(int pin)
+        public override PinMode GetPinMode(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
+
+            Initialize();
 
             //var mode = GetBits(RegisterViewPointer->GPFSEL, pin, 10, 3);
 
-            int index = pin / 10;
-            int shift = (pin % 10) * 3;
+            int index = bcmPinNumber / 10;
+            int shift = (bcmPinNumber % 10) * 3;
             uint register = _registerViewPointer->GPFSEL[index];
             uint mode = (register >> shift) & 0b111U;
 
@@ -353,17 +364,19 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override void Output(int pin, PinValue value)
+        public override void Output(int bcmPinNumber, PinValue value)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
             if (!Enum.IsDefined(typeof(PinValue), value))
             {
                 throw new InvalidPinValueException(value);
             }
+
+            Initialize();
 
             //switch (value)
             //{
@@ -378,8 +391,8 @@ namespace System.Devices.Gpio
             //    default: throw new InvalidGpioPinValueException(value);
             //}
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint* registerPointer = null;
             string registerName = string.Empty;
 
@@ -411,18 +424,20 @@ namespace System.Devices.Gpio
 
             *registerPointer = register;
         }
-
-        public override PinValue Input(int pin)
+        
+        public override PinValue Input(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
+
+            Initialize();
 
             //var value = GetBit(RegisterViewPointer->GPLEV, pin);
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint register = _registerViewPointer->GPLEV[index];
             uint value = (register >> shift) & 1;
 
@@ -430,17 +445,19 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override void ClearDetectedEvent(int pin)
+        public override void ClearDetectedEvent(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
+
+            Initialize();
 
             //SetBit(RegisterViewPointer->GPEDS, pin);
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint* registerPointer = &_registerViewPointer->GPEDS[index];
 
             //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
@@ -461,17 +478,19 @@ namespace System.Devices.Gpio
             *registerPointer = 0;
         }
 
-        public override bool EventWasDetected(int pin)
+        public override bool WasEventDetected(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
+
+            Initialize();
 
             //var value = GetBit(RegisterViewPointer->GPEDS, pin);
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint register = _registerViewPointer->GPEDS[index];
             uint value = (register >> shift) & 1;
 
@@ -479,24 +498,50 @@ namespace System.Devices.Gpio
 
             if (result)
             {
-                ClearDetectedEvent(pin);
+                ClearDetectedEvent(bcmPinNumber);
             }
 
             return result;
         }
 
-        public override void SetEventDetection(int pin, EventKind kind, bool enabled)
+        public override void SetEventsToDetect(int bcmPinNumber, EventKind events)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            if (!Enum.IsDefined(typeof(EventKind), kind))
-            {
-                throw new InvalidEventKindException(kind);
-            }
+            Initialize();
 
+            EventKind kind = EventKind.Low;
+            bool enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            kind = EventKind.High;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            kind = EventKind.SyncRisingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            kind = EventKind.SyncFallingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            kind = EventKind.AsyncRisingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            kind = EventKind.AsyncFallingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
+
+            ClearDetectedEvent(bcmPinNumber);
+        }
+
+        private void SetEventDetection(int bcmPinNumber, EventKind kind, bool enabled)
+        {
             //switch (kind)
             //{
             //    case GpioEventKind.High:
@@ -526,8 +571,8 @@ namespace System.Devices.Gpio
             //    default: throw new InvalidGpioEventKindException(kind);
             //}
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             uint* registerPointer = null;
             string registerName = string.Empty;
 
@@ -585,22 +630,47 @@ namespace System.Devices.Gpio
             //Console.WriteLine($"{registerName} new register value = {register:X8}");
 
             *registerPointer = register;
-
-            ClearDetectedEvent(pin);
         }
 
-        public override bool GetEventDetection(int pin, EventKind kind)
+        public override EventKind GetEventsToDetect(int bcmPinNumber)
         {
-            if (pin < 0 || pin >= PinCount)
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(pin));
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            if (!Enum.IsDefined(typeof(EventKind), kind))
-            {
-                throw new InvalidEventKindException(kind);
-            }
+            Initialize();
 
+            EventKind result = EventKind.None;
+            EventKind kind = EventKind.Low;
+            bool enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            kind = EventKind.High;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            kind = EventKind.SyncRisingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            kind = EventKind.SyncFallingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            kind = EventKind.AsyncRisingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            kind = EventKind.AsyncFallingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
+
+            return result;
+        }
+
+        private bool GetEventDetection(int bcmPinNumber, EventKind kind)
+        {
             //switch (kind)
             //{
             //    case GpioEventKind.High:
@@ -630,8 +700,8 @@ namespace System.Devices.Gpio
             //    default: throw new InvalidGpioEventKindException(kind);
             //}
 
-            int index = pin / 32;
-            int shift = pin % 32;
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
             string registerName = string.Empty;
             uint register = 0U;
 
@@ -671,7 +741,8 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override int ConvertPinNumber(int number, PinNumberingScheme from, PinNumberingScheme to)
+
+        public override int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to)
         {
             int result = -1;
 
@@ -681,7 +752,7 @@ namespace System.Devices.Gpio
                     switch (to)
                     {
                         case PinNumberingScheme.BCM:
-                            result = number;
+                            result = pinNumber;
                             break;
 
                         case PinNumberingScheme.Board:
@@ -697,7 +768,7 @@ namespace System.Devices.Gpio
                     switch (to)
                     {
                         case PinNumberingScheme.Board:
-                            result = number;
+                            result = pinNumber;
                             break;
 
                         case PinNumberingScheme.BCM:
