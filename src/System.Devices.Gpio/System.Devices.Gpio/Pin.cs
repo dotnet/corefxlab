@@ -31,6 +31,10 @@ namespace System.Devices.Gpio
         Both = Low | High,
         SyncBoth = SyncFallingEdge | SyncRisingEdge,
         AsyncBoth = AsyncFallingEdge | AsyncRisingEdge,
+        EdgeBoth = SyncBoth | AsyncBoth,
+
+        RisingEdge = SyncRisingEdge | AsyncRisingEdge,
+        FallingEdge = SyncFallingEdge | AsyncFallingEdge,
     }
 
     public enum PinNumberingScheme

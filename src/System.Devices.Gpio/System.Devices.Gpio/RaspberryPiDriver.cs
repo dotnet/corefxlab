@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -115,9 +116,13 @@ namespace System.Devices.Gpio
         private const int GpioBaseOffset = 0;
 
         private RegisterView* _registerViewPointer = null;
+        private int _pinsToDetectEventsCount;
+        private BitArray _pinsToDetectEvents;
+        private Thread _eventDetectionThread;
+        private DateTime[] _lastEvent;
 
         public RaspberryPiDriver()
-        {           
+        {
         }
 
         private void Initialize()
@@ -145,6 +150,13 @@ namespace System.Devices.Gpio
             close(fileDescriptor);
 
             _registerViewPointer = (RegisterView*)mapPointer;
+
+            _lastEvent = new DateTime[PinCount];
+            _pinsToDetectEvents = new BitArray(PinCount);
+            _eventDetectionThread = new Thread(DetectEvents)
+            {
+                IsBackground = true
+            };
         }
 
         public override void Dispose()
@@ -156,9 +168,11 @@ namespace System.Devices.Gpio
             }
         }
 
-        public override int PinCount => 54;
+        protected internal override int PinCount => 54;
 
-        public override void SetPinMode(int bcmPinNumber, PinMode mode)
+        protected internal override TimeSpan Debounce { get; set; }
+
+        protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -275,7 +289,7 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        public override PinMode GetPinMode(int bcmPinNumber)
+        protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -364,7 +378,7 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override void Output(int bcmPinNumber, PinValue value)
+        protected internal override void Output(int bcmPinNumber, PinValue value)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -424,8 +438,8 @@ namespace System.Devices.Gpio
 
             *registerPointer = register;
         }
-        
-        public override PinValue Input(int bcmPinNumber)
+
+        protected internal override PinValue Input(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -445,15 +459,8 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        public override void ClearDetectedEvent(int bcmPinNumber)
+        private void ClearDetectedEvent(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            Initialize();
-
             //SetBit(RegisterViewPointer->GPEDS, pin);
 
             int index = bcmPinNumber / 32;
@@ -478,7 +485,7 @@ namespace System.Devices.Gpio
             *registerPointer = 0;
         }
 
-        public override bool WasEventDetected(int bcmPinNumber)
+        protected internal override bool WasEventDetected(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -499,12 +506,24 @@ namespace System.Devices.Gpio
             if (result)
             {
                 ClearDetectedEvent(bcmPinNumber);
+
+                DateTime now = DateTime.UtcNow;
+                DateTime last = _lastEvent[bcmPinNumber];
+
+                if (now.Subtract(last) > Debounce)
+                {
+                    _lastEvent[bcmPinNumber] = now;
+                }
+                else
+                {
+                    result = false;
+                }
             }
 
             return result;
         }
 
-        public override void SetEventsToDetect(int bcmPinNumber, EventKind events)
+        protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind events)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -538,6 +557,52 @@ namespace System.Devices.Gpio
             SetEventDetection(bcmPinNumber, kind, enabled);
 
             ClearDetectedEvent(bcmPinNumber);
+
+            bool eventDetectionEnabled = _pinsToDetectEvents[bcmPinNumber];
+
+            if (events == EventKind.None)
+            {
+                if (eventDetectionEnabled)
+                {
+                    _pinsToDetectEvents.Set(bcmPinNumber, false);
+                    _pinsToDetectEventsCount--;
+                }
+            }
+            else
+            {
+                if (!eventDetectionEnabled)
+                {
+                    _pinsToDetectEvents.Set(bcmPinNumber, true);
+                    _pinsToDetectEventsCount++;
+
+                    if (_eventDetectionThread.ThreadState != ThreadState.Running)
+                    {
+                        _eventDetectionThread.Start();
+                    }
+                }
+            }
+        }
+
+        private void DetectEvents()
+        {
+            while (_pinsToDetectEventsCount > 0)
+            {
+                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
+                {
+                    bool eventDetectionEnabled = _pinsToDetectEvents[i];
+
+                    if (eventDetectionEnabled)
+                    {
+                        bool eventDetected = WasEventDetected(i);
+
+                        if (eventDetected)
+                        {
+                            //Console.WriteLine($"Event detected for pin {i}");
+                            OnPinValueChanged(i);
+                        }
+                    }
+                }
+            }
         }
 
         private void SetEventDetection(int bcmPinNumber, EventKind kind, bool enabled)
@@ -632,7 +697,7 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        public override EventKind GetEventsToDetect(int bcmPinNumber)
+        protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -741,8 +806,7 @@ namespace System.Devices.Gpio
             return result;
         }
 
-
-        public override int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to)
+        protected internal override int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to)
         {
             int result = -1;
 

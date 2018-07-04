@@ -32,9 +32,11 @@ namespace System.Devices.Gpio
             }
         }
 
-        public override int PinCount { get; }
+        protected internal override int PinCount { get; }
 
-        public override PinMode GetPinMode(int bcmPinNumber)
+        protected internal override TimeSpan Debounce { get; set; }
+
+        protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -49,7 +51,7 @@ namespace System.Devices.Gpio
             return mode;
         }
 
-        public override void SetPinMode(int bcmPinNumber, PinMode mode)
+        protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -59,11 +61,11 @@ namespace System.Devices.Gpio
             ExportPin(bcmPinNumber);
 
             string directionPath = $"{GpioPath}/gpio{bcmPinNumber}/direction";
-            string stringMode = ModeToStringMode(mode);
+            string stringMode = PinModeToStringMode(mode);
             File.WriteAllText(directionPath, stringMode);
         }
 
-        public override PinValue Input(int bcmPinNumber)
+        protected internal override PinValue Input(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -78,7 +80,7 @@ namespace System.Devices.Gpio
             return value;
         }
 
-        public override void Output(int bcmPinNumber, PinValue value)
+        protected internal override void Output(int bcmPinNumber, PinValue value)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -92,47 +94,52 @@ namespace System.Devices.Gpio
             File.WriteAllText(valuePath, stringValue);
         }
 
-        public override void ClearDetectedEvent(int bcmPinNumber)
+        protected internal override bool WasEventDetected(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            throw new NotImplementedException();
+            ExportPin(bcmPinNumber);
+
+            string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
+            string stringValue = File.ReadAllText(valuePath);
+            PinValue value = StringValueToPinValue(stringValue);
+            bool result = value == PinValue.High;
+            return result;
         }
 
-        public override bool WasEventDetected(int bcmPinNumber)
+        protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            throw new NotImplementedException();
+            ExportPin(bcmPinNumber);
+
+            string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
+            string stringValue = EventKindToStringValue(kind);
+            File.WriteAllText(edgePath, stringValue);
         }
 
-        public override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
+        protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
 
-            throw new NotImplementedException();
+            ExportPin(bcmPinNumber);
+
+            string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
+            string stringValue = File.ReadAllText(edgePath);
+            EventKind value = StringValueToEventKind(stringValue);
+            return value;
         }
 
-        public override EventKind GetEventsToDetect(int bcmPinNumber)
-        {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)
+        protected internal override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -189,7 +196,7 @@ namespace System.Devices.Gpio
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string ModeToStringMode(PinMode value)
+        private string PinModeToStringMode(PinMode value)
         {
             string result;
 
@@ -229,6 +236,62 @@ namespace System.Devices.Gpio
                 case PinValue.Low: result = "0"; break;
                 case PinValue.High: result = "1"; break;
                 default: throw new InvalidPinValueException(value);
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string EventKindToStringValue(EventKind kind)
+        {
+            string result;
+
+            if (kind == EventKind.None)
+            {
+                result = "none";
+            }
+            else if (kind.HasFlag(EventKind.EdgeBoth))
+            {
+                result = "both";
+            }
+            else if (kind.HasFlag(EventKind.RisingEdge))
+            {
+                result = "rising";
+            }
+            else if (kind.HasFlag(EventKind.FallingEdge))
+            {
+                result = "falling";
+            }
+            else
+            {
+                throw new NotSupportedEventKindException(kind);
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EventKind StringValueToEventKind(string kind)
+        {
+            EventKind result;
+            kind = kind.Trim();
+
+            switch (kind)
+            {
+                case "none":
+                    result = EventKind.None;
+                    break;
+                case "rising":
+                    result = EventKind.RisingEdge;
+                    break;
+                case "falling":
+                    result = EventKind.FallingEdge;
+                    break;
+                case "both":
+                    result = EventKind.EdgeBoth;
+                    break;
+                default:
+                    throw new NotSupportedEventKindException(kind);
             }
 
             return result;
