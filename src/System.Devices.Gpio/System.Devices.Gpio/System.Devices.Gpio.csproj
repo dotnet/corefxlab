@@ -2,9 +2,11 @@
   <Import Project="..\..\..\tools\common.props" />
   <PropertyGroup>
     <Description>This library contains usefull APIs to support .NET development for IoT devices.</Description>
+    <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET Core GPIO API IoT device</PackageTags>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Documentation\GPIORef.cs" />
