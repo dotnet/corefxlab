@@ -33,6 +33,9 @@ Currently, this repo contains the following experimental components:
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
+* **System.Devices.Gpio**.
+This GPIO library contains usefull APIs to support .NET development for IoT devices like Raspberry Pi and BeagleBone Black. See more information about the features at [Planning.md](src/System.Devices.Gpio/Planning.md).
+
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
 This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
@@ -54,9 +57,6 @@ over converting the buffer to a string, indexing into the string, and then parsi
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
-
-* **System.Devices.Gpio**.
-This GPIO library contains usefull APIs to support .NET development for IoT devices like Raspberry Pi and BeagleBone Black. See more information about the features at [Planning.md](src/System.Devices.Gpio/Planning.md).
 
 More libraries are coming soon. Stay tuned!
 
