@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description></Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageTags>.NET Core GPIO API IoT device</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Documentation\GPIORef.cs" />
+    <Compile Remove="Documentation\GPIOSamples.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\GPIORef.cs" />
+    <None Include="Documentation\GPIOSamples.cs" />
+  </ItemGroup>
+</Project>
