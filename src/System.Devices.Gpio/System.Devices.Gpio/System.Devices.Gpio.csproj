@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\tools\common.props" />
   <PropertyGroup>
-    <Description></Description>
+    <Description>This library contains usefull APIs to support .NET development for IoT devices.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET Core GPIO API IoT device</PackageTags>
