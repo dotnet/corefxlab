@@ -6,7 +6,7 @@ namespace System.Devices.Gpio
     public class InvalidPinEventException : GpioException
     {
         public InvalidPinEventException(PinEvent pinEvent)
-            : base($"GPIO pin event '{pinEvent}' invalid")
+            : base($"Invalid GPIO pin event '{pinEvent}'")
         {
         }
     }

@@ -3,15 +3,15 @@
 
 namespace System.Devices.Gpio
 {
-    public class PinEventNotSupportedException : GpioException
+    public class NotSupportedPinEventException : GpioException
     {
-        public PinEventNotSupportedException(PinEvent pinEvent)
-            : base($"GPIO pin event '{pinEvent}' not supported")
+        public NotSupportedPinEventException(PinEvent pinEvent)
+            : base($"Not supported GPIO pin event '{pinEvent}'")
         {
         }
 
-        public PinEventNotSupportedException(string pinEvent)
-            : base($"GPIO pin event '{pinEvent}' not supported")
+        public NotSupportedPinEventException(string pinEvent)
+            : base($"Not supported GPIO pin event '{pinEvent}'")
         {
         }
     }
