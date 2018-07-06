@@ -290,9 +290,9 @@ namespace System.Devices.Gpio.Samples
             {
                 driver.SetPinMode(button, PinMode.Input);
 
-                driver.Debounce = TimeSpan.FromMilliseconds(100);
-                driver.PinValueChanged += OnPinValueChanged1;
+                driver.SetDebounce(button, TimeSpan.FromMilliseconds(100));
                 driver.SetPinEventsToDetect(button, PinEvent.SyncBoth);
+                driver.PinValueChanged += OnPinValueChanged1;
                 driver.EnableEventsDetection = true;
 
                 Stopwatch watch = Stopwatch.StartNew();
@@ -347,9 +347,9 @@ namespace System.Devices.Gpio.Samples
                 driver.SetPinMode(button, PinMode.Input);
                 driver.SetPinMode(led, PinMode.Output);
 
-                driver.Debounce = TimeSpan.FromSeconds(1);
-                driver.PinValueChanged += OnPinValueChanged2;
+                driver.SetDebounce(button, TimeSpan.FromSeconds(1));
                 driver.SetPinEventsToDetect(button, PinEvent.SyncFallingEdge);
+                driver.PinValueChanged += OnPinValueChanged2;
                 driver.EnableEventsDetection = true;
 
                 PinEvent events = driver.GetPinEventsToDetect(button);
@@ -395,9 +395,9 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, PinMode.Input);
+                driver.SetPinMode(button, PinMode.InputPullDown);
 
-                driver.Debounce = TimeSpan.FromSeconds(1);
+                driver.SetDebounce(button, TimeSpan.FromSeconds(1));
                 driver.SetPinEventsToDetect(button, PinEvent.SyncRisingEdge);
 
                 Stopwatch watch = Stopwatch.StartNew();

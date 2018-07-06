@@ -120,6 +120,7 @@ namespace System.Devices.Gpio
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
+        private TimeSpan[] _debounceTimeouts;
         private DateTime[] _lastEvent;
 
         public RaspberryPiDriver()
@@ -152,8 +153,9 @@ namespace System.Devices.Gpio
 
             _registerViewPointer = (RegisterView*)mapPointer;
 
-            _lastEvent = new DateTime[PinCount];
             _pinsToDetectEvents = new BitArray(PinCount);
+            _debounceTimeouts = new TimeSpan[PinCount];
+            _lastEvent = new DateTime[PinCount];
         }
 
         public override void Dispose()
@@ -167,18 +169,11 @@ namespace System.Devices.Gpio
 
         protected internal override int PinCount => 54;
 
-        protected internal override TimeSpan Debounce { get; set; }
-
         protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            if (!Enum.IsDefined(typeof(PinMode), mode))
-            {
-                throw new NotSupportedPinModeException(mode);
             }
 
             Initialize();
@@ -190,6 +185,13 @@ namespace System.Devices.Gpio
                 case PinMode.InputPullUp:
                     SetInputPullMode(bcmPinNumber, PinModeToGPPUD(mode));
                     break;
+
+                case PinMode.Output:
+                    // Do nothing
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             SetPinMode(bcmPinNumber, PinModeToGPFSEL(mode));
@@ -324,7 +326,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(mode);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -348,7 +350,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(mode);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -369,7 +371,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(gpfselValue);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{gpfselValue}'");
             }
 
             return result;
@@ -380,11 +382,6 @@ namespace System.Devices.Gpio
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            if (!Enum.IsDefined(typeof(PinValue), value))
-            {
-                throw new InvalidPinValueException(value);
             }
 
             Initialize();
@@ -420,7 +417,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinValueException(value);
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -454,6 +451,27 @@ namespace System.Devices.Gpio
 
             PinValue result = Convert.ToBoolean(value) ? PinValue.High : PinValue.Low;
             return result;
+        }
+
+        protected internal override void SetDebounce(int bcmPinNumber, TimeSpan timeout)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            _debounceTimeouts[bcmPinNumber] = timeout;
+        }
+
+        protected internal override TimeSpan GetDebounce(int bcmPinNumber)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
+            return timeout;
         }
 
         protected internal override void SetPinEventsToDetect(int bcmPinNumber, PinEvent events)
@@ -580,7 +598,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinEventException(kind);
+                    throw new ArgumentException($"Invalid GPIO event kind '{kind}'");
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -703,7 +721,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinEventException(kind);
+                    throw new ArgumentException($"Invalid GPIO event kind '{kind}'");
             }
 
             uint value = (register >> shift) & 1;
@@ -804,10 +822,11 @@ namespace System.Devices.Gpio
             {
                 ClearDetectedEvent(bcmPinNumber);
 
+                TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
                 DateTime last = _lastEvent[bcmPinNumber];
                 DateTime now = DateTime.UtcNow;
 
-                if (now.Subtract(last) > Debounce)
+                if (now.Subtract(last) > timeout)
                 {
                     _lastEvent[bcmPinNumber] = now;
                 }
@@ -864,7 +883,7 @@ namespace System.Devices.Gpio
                             break;
 
                         default:
-                            throw new NotSupportedPinNumberingSchemeException(to);
+                            throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {to}");
                     }
                     break;
 
@@ -880,12 +899,12 @@ namespace System.Devices.Gpio
                             break;
 
                         default:
-                            throw new NotSupportedPinNumberingSchemeException(to);
+                            throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {to}");
                     }
                     break;
 
                 default:
-                    throw new NotSupportedPinNumberingSchemeException(from);
+                    throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {from}");
             }
 
             return result;
