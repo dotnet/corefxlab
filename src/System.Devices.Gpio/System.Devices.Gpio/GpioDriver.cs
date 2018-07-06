@@ -21,8 +21,6 @@ namespace System.Devices.Gpio
 
         protected internal abstract int PinCount { get; }
 
-        protected internal abstract TimeSpan Debounce { get; set; }
-
         protected internal abstract bool EnableEventsDetection { get; set; }
 
         protected internal abstract int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to);
@@ -34,6 +32,10 @@ namespace System.Devices.Gpio
         protected internal abstract void Output(int bcmPinNumber, PinValue value);
 
         protected internal abstract PinValue Input(int bcmPinNumber);
+
+        protected internal abstract void SetDebounce(int bcmPinNumber, TimeSpan timeout);
+
+        protected internal abstract TimeSpan GetDebounce(int bcmPinNumber);
 
         protected internal abstract void SetEventsToDetect(int bcmPinNumber, EventKind events);
 

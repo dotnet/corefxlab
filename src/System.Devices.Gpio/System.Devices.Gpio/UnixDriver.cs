@@ -15,11 +15,13 @@ namespace System.Devices.Gpio
 
         private BitArray _exportedPins;
         private bool _eventDetectionEnabled;
+        private TimeSpan[] _debounceTimeouts;
 
         public UnixDriver(int pinCount)
         {
             PinCount = pinCount;
             _exportedPins = new BitArray(pinCount);
+            _debounceTimeouts = new TimeSpan[pinCount];
         }
 
         public override void Dispose()
@@ -34,8 +36,6 @@ namespace System.Devices.Gpio
         }
 
         protected internal override int PinCount { get; }
-
-        protected internal override TimeSpan Debounce { get; set; }
 
         protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
@@ -93,6 +93,27 @@ namespace System.Devices.Gpio
             string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
             string stringValue = PinValueToStringValue(value);
             File.WriteAllText(valuePath, stringValue);
+        }
+
+        protected internal override void SetDebounce(int bcmPinNumber, TimeSpan timeout)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            _debounceTimeouts[bcmPinNumber] = timeout;
+        }
+
+        protected internal override TimeSpan GetDebounce(int bcmPinNumber)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
+            return timeout;
         }
 
         protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
@@ -222,30 +243,30 @@ namespace System.Devices.Gpio
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private PinMode StringModeToPinMode(string value)
+        private PinMode StringModeToPinMode(string mode)
         {
             PinMode result;
 
-            switch (value)
+            switch (mode)
             {
                 case "in": result = PinMode.Input; break;
                 case "out": result = PinMode.Output; break;
-                default: throw new NotSupportedPinModeException(value);
+                default: throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string PinModeToStringMode(PinMode value)
+        private string PinModeToStringMode(PinMode mode)
         {
             string result;
 
-            switch (value)
+            switch (mode)
             {
                 case PinMode.Input: result = "in"; break;
                 case PinMode.Output: result = "out"; break;
-                default: throw new NotSupportedPinModeException(value);
+                default: throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -261,7 +282,7 @@ namespace System.Devices.Gpio
             {
                 case "0": result = PinValue.Low; break;
                 case "1": result = PinValue.High; break;
-                default: throw new InvalidPinValueException(value);
+                default: throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             return result;
@@ -276,7 +297,7 @@ namespace System.Devices.Gpio
             {
                 case PinValue.Low: result = "0"; break;
                 case PinValue.High: result = "1"; break;
-                default: throw new InvalidPinValueException(value);
+                default: throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             return result;
@@ -308,7 +329,7 @@ namespace System.Devices.Gpio
             }
             else
             {
-                throw new NotSupportedEventKindException(kind);
+                throw new NotSupportedException($"Not supported GPIO event kind '{kind}'");
             }
 
             return result;
@@ -335,7 +356,7 @@ namespace System.Devices.Gpio
                     result = EventKind.SyncBoth | EventKind.AsyncBoth;
                     break;
                 default:
-                    throw new NotSupportedEventKindException(kind);
+                    throw new NotSupportedException($"Not supported GPIO event kind '{kind}'");
             }
 
             return result;
