@@ -14,6 +14,7 @@ namespace System.Devices.Gpio
         private const string GpioPath = "/sys/class/gpio";
 
         private BitArray _exportedPins;
+        private bool _eventDetectionEnabled;
 
         public UnixDriver(int pinCount)
         {
@@ -94,22 +95,6 @@ namespace System.Devices.Gpio
             File.WriteAllText(valuePath, stringValue);
         }
 
-        protected internal override bool WasEventDetected(int bcmPinNumber)
-        {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            ExportPin(bcmPinNumber);
-
-            string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
-            string stringValue = File.ReadAllText(valuePath);
-            PinValue value = StringValueToPinValue(stringValue);
-            bool result = value == PinValue.High;
-            return result;
-        }
-
         protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
@@ -137,6 +122,62 @@ namespace System.Devices.Gpio
             string stringValue = File.ReadAllText(edgePath);
             EventKind value = StringValueToEventKind(stringValue);
             return value;
+        }
+
+        protected internal override bool EnableEventsDetection
+        {
+            get => _eventDetectionEnabled;
+            set => EnableEvents(value);
+        }
+
+        private void EnableEvents(bool value)
+        {
+            if (!_eventDetectionEnabled && value)
+            {
+                // Enable events detection
+                _eventDetectionEnabled = true;
+            }
+            else if (_eventDetectionEnabled && !value)
+            {
+                // Disable events detection
+                _eventDetectionEnabled = false;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        protected internal override bool WaitForEvent(int bcmPinNumber, TimeSpan timeout)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            ExportPin(bcmPinNumber);
+
+            DateTime initial = DateTime.UtcNow;
+            TimeSpan elapsed;
+            bool eventDetected;
+
+            do
+            {
+                eventDetected = WasEventDetected(bcmPinNumber);
+                elapsed = DateTime.UtcNow.Subtract(initial);
+            }
+            while (!eventDetected && elapsed < timeout);
+
+            return eventDetected;
+        }
+
+        private bool WasEventDetected(int bcmPinNumber)
+        {
+            //string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
+            //string stringValue = File.ReadAllText(valuePath);
+            //PinValue value = StringValueToPinValue(stringValue);
+            //bool result = value == PinValue.High;
+            //return result;
+
+            throw new NotImplementedException();
         }
 
         protected internal override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)
@@ -250,15 +291,18 @@ namespace System.Devices.Gpio
             {
                 result = "none";
             }
-            else if (kind.HasFlag(EventKind.EdgeBoth))
+            else if (kind.HasFlag(EventKind.SyncBoth) ||
+                     kind.HasFlag(EventKind.AsyncBoth))
             {
                 result = "both";
             }
-            else if (kind.HasFlag(EventKind.RisingEdge))
+            else if (kind.HasFlag(EventKind.SyncRisingEdge) ||
+                     kind.HasFlag(EventKind.AsyncRisingEdge))
             {
                 result = "rising";
             }
-            else if (kind.HasFlag(EventKind.FallingEdge))
+            else if (kind.HasFlag(EventKind.SyncFallingEdge) ||
+                     kind.HasFlag(EventKind.AsyncFallingEdge))
             {
                 result = "falling";
             }
@@ -282,13 +326,13 @@ namespace System.Devices.Gpio
                     result = EventKind.None;
                     break;
                 case "rising":
-                    result = EventKind.RisingEdge;
+                    result = EventKind.SyncRisingEdge | EventKind.AsyncRisingEdge;
                     break;
                 case "falling":
-                    result = EventKind.FallingEdge;
+                    result = EventKind.SyncFallingEdge | EventKind.AsyncFallingEdge;
                     break;
                 case "both":
-                    result = EventKind.EdgeBoth;
+                    result = EventKind.SyncBoth | EventKind.AsyncBoth;
                     break;
                 default:
                     throw new NotSupportedEventKindException(kind);

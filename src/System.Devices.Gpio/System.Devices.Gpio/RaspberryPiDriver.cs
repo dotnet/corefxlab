@@ -116,6 +116,7 @@ namespace System.Devices.Gpio
         private const int GpioBaseOffset = 0;
 
         private RegisterView* _registerViewPointer = null;
+        private bool _eventDetectionEnabled;
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
@@ -153,10 +154,6 @@ namespace System.Devices.Gpio
 
             _lastEvent = new DateTime[PinCount];
             _pinsToDetectEvents = new BitArray(PinCount);
-            _eventDetectionThread = new Thread(DetectEvents)
-            {
-                IsBackground = true
-            };
         }
 
         public override void Dispose()
@@ -459,70 +456,6 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        private void ClearDetectedEvent(int bcmPinNumber)
-        {
-            //SetBit(RegisterViewPointer->GPEDS, pin);
-
-            int index = bcmPinNumber / 32;
-            int shift = bcmPinNumber % 32;
-            uint* registerPointer = &_registerViewPointer->GPEDS[index];
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
-
-            uint register = *registerPointer;
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
-
-            register |= 1U << shift;
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
-
-            *registerPointer = register;
-
-            // Wait 150 cycles
-            Thread.SpinWait(150);
-
-            *registerPointer = 0;
-        }
-
-        protected internal override bool WasEventDetected(int bcmPinNumber)
-        {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            Initialize();
-
-            //var value = GetBit(RegisterViewPointer->GPEDS, pin);
-
-            int index = bcmPinNumber / 32;
-            int shift = bcmPinNumber % 32;
-            uint register = _registerViewPointer->GPEDS[index];
-            uint value = (register >> shift) & 1;
-
-            bool result = Convert.ToBoolean(value);
-
-            if (result)
-            {
-                ClearDetectedEvent(bcmPinNumber);
-
-                DateTime now = DateTime.UtcNow;
-                DateTime last = _lastEvent[bcmPinNumber];
-
-                if (now.Subtract(last) > Debounce)
-                {
-                    _lastEvent[bcmPinNumber] = now;
-                }
-                else
-                {
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
         protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind events)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
@@ -558,11 +491,11 @@ namespace System.Devices.Gpio
 
             ClearDetectedEvent(bcmPinNumber);
 
-            bool eventDetectionEnabled = _pinsToDetectEvents[bcmPinNumber];
+            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
 
             if (events == EventKind.None)
             {
-                if (eventDetectionEnabled)
+                if (pinEventsEnabled)
                 {
                     _pinsToDetectEvents.Set(bcmPinNumber, false);
                     _pinsToDetectEventsCount--;
@@ -570,37 +503,10 @@ namespace System.Devices.Gpio
             }
             else
             {
-                if (!eventDetectionEnabled)
+                if (!pinEventsEnabled)
                 {
                     _pinsToDetectEvents.Set(bcmPinNumber, true);
                     _pinsToDetectEventsCount++;
-
-                    if (_eventDetectionThread.ThreadState != ThreadState.Running)
-                    {
-                        _eventDetectionThread.Start();
-                    }
-                }
-            }
-        }
-
-        private void DetectEvents()
-        {
-            while (_pinsToDetectEventsCount > 0)
-            {
-                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
-                {
-                    bool eventDetectionEnabled = _pinsToDetectEvents[i];
-
-                    if (eventDetectionEnabled)
-                    {
-                        bool eventDetected = WasEventDetected(i);
-
-                        if (eventDetected)
-                        {
-                            //Console.WriteLine($"Event detected for pin {i}");
-                            OnPinValueChanged(i);
-                        }
-                    }
                 }
             }
         }
@@ -804,6 +710,140 @@ namespace System.Devices.Gpio
 
             bool result = Convert.ToBoolean(value);
             return result;
+        }
+
+        protected internal override bool EnableEventsDetection
+        {
+            get => _eventDetectionEnabled;
+            set => EnableEvents(value);
+        }
+
+        private void EnableEvents(bool value)
+        {
+            if (!_eventDetectionEnabled && value)
+            {
+                // Enable events detection
+                _eventDetectionEnabled = true;
+
+                if (_eventDetectionThread == null)
+                {
+                    _eventDetectionThread = new Thread(DetectEvents)
+                    {
+                        IsBackground = true
+                    };
+
+                    _eventDetectionThread.Start();
+                }
+            }
+            else if (_eventDetectionEnabled && !value)
+            {
+                // Disable events detection
+                _eventDetectionEnabled = false;
+            }
+        }
+
+        private void DetectEvents()
+        {
+            while (_eventDetectionEnabled && _pinsToDetectEventsCount > 0)
+            {
+                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
+                {
+                    bool pinEventsEnabled = _pinsToDetectEvents[i];
+
+                    if (pinEventsEnabled)
+                    {
+                        bool eventDetected = WasEventDetected(i);
+
+                        if (eventDetected)
+                        {
+                            //Console.WriteLine($"Event detected for pin {i}");
+                            OnPinValueChanged(i);
+                        }
+                    }
+                }
+            }
+
+            _eventDetectionThread = null;
+        }
+
+        protected internal override bool WaitForEvent(int bcmPinNumber, TimeSpan timeout)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
+
+            Initialize();
+
+            DateTime initial = DateTime.UtcNow;
+            TimeSpan elapsed;
+            bool eventDetected;
+
+            do
+            {
+                eventDetected = WasEventDetected(bcmPinNumber);
+                elapsed = DateTime.UtcNow.Subtract(initial);
+            }
+            while (!eventDetected && elapsed < timeout);
+
+            return eventDetected;
+        }
+
+        private bool WasEventDetected(int bcmPinNumber)
+        {
+            //var value = GetBit(RegisterViewPointer->GPEDS, pin);
+
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
+            uint register = _registerViewPointer->GPEDS[index];
+            uint value = (register >> shift) & 1;
+
+            bool result = Convert.ToBoolean(value);
+
+            if (result)
+            {
+                ClearDetectedEvent(bcmPinNumber);
+
+                DateTime last = _lastEvent[bcmPinNumber];
+                DateTime now = DateTime.UtcNow;
+
+                if (now.Subtract(last) > Debounce)
+                {
+                    _lastEvent[bcmPinNumber] = now;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private void ClearDetectedEvent(int bcmPinNumber)
+        {
+            //SetBit(RegisterViewPointer->GPEDS, pin);
+
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
+            uint* registerPointer = &_registerViewPointer->GPEDS[index];
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
+
+            uint register = *registerPointer;
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
+
+            register |= 1U << shift;
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
+
+            *registerPointer = register;
+
+            // Wait 150 cycles
+            Thread.SpinWait(150);
+
+            *registerPointer = 0;
         }
 
         protected internal override int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to)
