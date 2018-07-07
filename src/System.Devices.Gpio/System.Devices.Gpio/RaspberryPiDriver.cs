@@ -169,13 +169,31 @@ namespace System.Devices.Gpio
 
         protected internal override int PinCount => 54;
 
-        protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
+        protected internal override bool IsPinModeSupported(PinMode mode)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            bool result;
+
+            switch (mode)
             {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+                case PinMode.Input:
+                case PinMode.Output:
+                case PinMode.InputPullDown:
+                case PinMode.InputPullUp:
+                    result = true;
+                    break;
+
+                default:
+                    result = false;
+                    break;
             }
 
+            return result;
+        }
+
+        protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
+        {
+            ValidatePinNumber(bcmPinNumber);
+            ValidatePinMode(mode);
             Initialize();
 
             switch (mode)
@@ -185,13 +203,6 @@ namespace System.Devices.Gpio
                 case PinMode.InputPullUp:
                     SetInputPullMode(bcmPinNumber, PinModeToGPPUD(mode));
                     break;
-
-                case PinMode.Output:
-                    // Do nothing
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             SetPinMode(bcmPinNumber, PinModeToGPFSEL(mode));
@@ -290,11 +301,7 @@ namespace System.Devices.Gpio
 
         protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
+            ValidatePinNumber(bcmPinNumber);
             Initialize();
 
             //var mode = GetBits(RegisterViewPointer->GPFSEL, pin, 10, 3);
@@ -379,11 +386,8 @@ namespace System.Devices.Gpio
 
         protected internal override void Output(int bcmPinNumber, PinValue value)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
+            ValidatePinNumber(bcmPinNumber);
+            ValidatePinValue(value);
             Initialize();
 
             //switch (value)
@@ -435,11 +439,7 @@ namespace System.Devices.Gpio
 
         protected internal override PinValue Input(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
+            ValidatePinNumber(bcmPinNumber);
             Initialize();
 
             //var value = GetBit(RegisterViewPointer->GPLEV, pin);
@@ -455,20 +455,14 @@ namespace System.Devices.Gpio
 
         protected internal override void SetDebounce(int bcmPinNumber, TimeSpan timeout)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
+            ValidatePinNumber(bcmPinNumber);
 
             _debounceTimeouts[bcmPinNumber] = timeout;
         }
 
         protected internal override TimeSpan GetDebounce(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
+            ValidatePinNumber(bcmPinNumber);
 
             TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
             return timeout;
@@ -476,10 +470,7 @@ namespace System.Devices.Gpio
 
         protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind events)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
+            ValidatePinNumber(bcmPinNumber);
 
             Initialize();
 
@@ -623,11 +614,7 @@ namespace System.Devices.Gpio
 
         protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
+            ValidatePinNumber(bcmPinNumber);
             Initialize();
 
             EventKind result = EventKind.None;
@@ -786,11 +773,7 @@ namespace System.Devices.Gpio
 
         protected internal override bool WaitForEvent(int bcmPinNumber, TimeSpan timeout)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
+            ValidatePinNumber(bcmPinNumber);
             Initialize();
 
             DateTime initial = DateTime.UtcNow;
@@ -908,6 +891,41 @@ namespace System.Devices.Gpio
             }
 
             return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinMode(PinMode mode)
+        {
+            bool supportedPinMode = IsPinModeSupported(mode);
+
+            if (!supportedPinMode)
+            {
+                throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinValue(PinValue value)
+        {
+            switch (value)
+            {
+                case PinValue.Low:
+                case PinValue.High:
+                    // Do nothing
+                    break;
+
+                default:
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinNumber(int bcmPinNumber)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
         }
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
