@@ -18,7 +18,7 @@ namespace System.Devices.Gpio
     }
 
     [Flags]
-    public enum EventKind
+    public enum PinEvent
     {
         None = 0,
         Low = 1,

@@ -94,7 +94,7 @@ namespace System.Devices.Gpio
             File.WriteAllText(valuePath, stringValue);
         }
 
-        protected internal override bool WasEventDetected(int bcmPinNumber)
+        protected internal override bool WasPinEventDetected(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -110,7 +110,7 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind kind)
+        protected internal override void SetPinEventsToDetect(int bcmPinNumber, PinEvent pinEvent)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -120,11 +120,11 @@ namespace System.Devices.Gpio
             ExportPin(bcmPinNumber);
 
             string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
-            string stringValue = EventKindToStringValue(kind);
+            string stringValue = PinEventToStringValue(pinEvent);
             File.WriteAllText(edgePath, stringValue);
         }
 
-        protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
+        protected internal override PinEvent GetPinEventsToDetect(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -135,8 +135,8 @@ namespace System.Devices.Gpio
 
             string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
             string stringValue = File.ReadAllText(edgePath);
-            EventKind value = StringValueToEventKind(stringValue);
-            return value;
+            PinEvent pinEvent = StringValueToPinEvent(stringValue);
+            return pinEvent;
         }
 
         protected internal override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)
@@ -187,9 +187,14 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case "in": result = PinMode.Input; break;
-                case "out": result = PinMode.Output; break;
-                default: throw new NotSupportedPinModeException(value);
+                case "in":
+                    result = PinMode.Input;
+                    break;
+                case "out":
+                    result = PinMode.Output;
+                    break;
+                default:
+                    throw new NotSupportedPinModeException(value);
             }
 
             return result;
@@ -202,9 +207,14 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case PinMode.Input: result = "in"; break;
-                case PinMode.Output: result = "out"; break;
-                default: throw new NotSupportedPinModeException(value);
+                case PinMode.Input:
+                    result = "in";
+                    break;
+                case PinMode.Output:
+                    result = "out";
+                    break;
+                default:
+                    throw new NotSupportedPinModeException(value);
             }
 
             return result;
@@ -218,9 +228,14 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case "0": result = PinValue.Low; break;
-                case "1": result = PinValue.High; break;
-                default: throw new InvalidPinValueException(value);
+                case "0":
+                    result = PinValue.Low;
+                    break;
+                case "1":
+                    result = PinValue.High;
+                    break;
+                default:
+                    throw new InvalidPinValueException(value);
             }
 
             return result;
@@ -233,65 +248,70 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case PinValue.Low: result = "0"; break;
-                case PinValue.High: result = "1"; break;
-                default: throw new InvalidPinValueException(value);
+                case PinValue.Low:
+                    result = "0";
+                    break;
+                case PinValue.High:
+                    result = "1";
+                    break;
+                default:
+                    throw new InvalidPinValueException(value);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string EventKindToStringValue(EventKind kind)
+        private string PinEventToStringValue(PinEvent pinEvent)
         {
             string result;
 
-            if (kind == EventKind.None)
+            if (pinEvent == PinEvent.None)
             {
                 result = "none";
             }
-            else if (kind.HasFlag(EventKind.EdgeBoth))
+            else if (pinEvent.HasFlag(PinEvent.EdgeBoth))
             {
                 result = "both";
             }
-            else if (kind.HasFlag(EventKind.RisingEdge))
+            else if (pinEvent.HasFlag(PinEvent.RisingEdge))
             {
                 result = "rising";
             }
-            else if (kind.HasFlag(EventKind.FallingEdge))
+            else if (pinEvent.HasFlag(PinEvent.FallingEdge))
             {
                 result = "falling";
             }
             else
             {
-                throw new NotSupportedEventKindException(kind);
+                throw new PinEventNotSupportedException(pinEvent);
             }
 
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventKind StringValueToEventKind(string kind)
+        private PinEvent StringValueToPinEvent(string pinEvent)
         {
-            EventKind result;
-            kind = kind.Trim();
+            PinEvent result;
+            pinEvent = pinEvent.Trim();
 
-            switch (kind)
+            switch (pinEvent)
             {
                 case "none":
-                    result = EventKind.None;
+                    result = PinEvent.None;
                     break;
                 case "rising":
-                    result = EventKind.RisingEdge;
+                    result = PinEvent.RisingEdge;
                     break;
                 case "falling":
-                    result = EventKind.FallingEdge;
+                    result = PinEvent.FallingEdge;
                     break;
                 case "both":
-                    result = EventKind.EdgeBoth;
+                    result = PinEvent.EdgeBoth;
                     break;
                 default:
-                    throw new NotSupportedEventKindException(kind);
+                    throw new PinEventNotSupportedException(pinEvent);
             }
 
             return result;
