@@ -288,7 +288,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, PinMode.Input);
+                PinMode buttonMode = PinMode.Input;
+
+                if (driver.IsPinModeSupported(PinMode.InputPullDown))
+                {
+                    buttonMode = PinMode.InputPullDown;
+                }
+
+                driver.SetPinMode(button, buttonMode);
 
                 driver.SetDebounce(button, TimeSpan.FromMilliseconds(100));
                 driver.SetPinEventsToDetect(button, PinEvent.SyncBoth);
@@ -344,7 +351,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, PinMode.Input);
+                PinMode buttonMode = PinMode.Input;
+
+                if (driver.IsPinModeSupported(PinMode.InputPullDown))
+                {
+                    buttonMode = PinMode.InputPullDown;
+                }
+
+                driver.SetPinMode(button, buttonMode);
                 driver.SetPinMode(led, PinMode.Output);
 
                 driver.SetDebounce(button, TimeSpan.FromSeconds(1));
@@ -395,7 +409,14 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
-                driver.SetPinMode(button, PinMode.InputPullDown);
+                PinMode buttonMode = PinMode.Input;
+
+                if (driver.IsPinModeSupported(PinMode.InputPullDown))
+                {
+                    buttonMode = PinMode.InputPullDown;
+                }
+
+                driver.SetPinMode(button, buttonMode);
 
                 driver.SetDebounce(button, TimeSpan.FromSeconds(1));
                 driver.SetPinEventsToDetect(button, PinEvent.SyncRisingEdge);

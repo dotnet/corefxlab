@@ -25,6 +25,8 @@ namespace System.Devices.Gpio
 
         protected internal abstract int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to);
 
+        protected internal abstract bool IsPinModeSupported(PinMode mode);
+
         protected internal abstract void SetPinMode(int bcmPinNumber, PinMode mode);
 
         protected internal abstract PinMode GetPinMode(int bcmPinNumber);
