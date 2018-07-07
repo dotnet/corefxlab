@@ -153,7 +153,7 @@ namespace System.Devices.Gpio
 
             _lastEvent = new DateTime[PinCount];
             _pinsToDetectEvents = new BitArray(PinCount);
-            _eventDetectionThread = new Thread(DetectEvents)
+            _eventDetectionThread = new Thread(DetectPinEvents)
             {
                 IsBackground = true
             };
@@ -485,7 +485,7 @@ namespace System.Devices.Gpio
             *registerPointer = 0;
         }
 
-        protected internal override bool WasEventDetected(int bcmPinNumber)
+        protected internal override bool WasPinEventDetected(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -523,7 +523,7 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind events)
+        protected internal override void SetPinEventsToDetect(int bcmPinNumber, PinEvent events)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -532,35 +532,35 @@ namespace System.Devices.Gpio
 
             Initialize();
 
-            EventKind kind = EventKind.Low;
-            bool enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            PinEvent pinEvent = PinEvent.Low;
+            bool enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
-            kind = EventKind.High;
-            enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            pinEvent = PinEvent.High;
+            enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
-            kind = EventKind.SyncRisingEdge;
-            enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            pinEvent = PinEvent.SyncRisingEdge;
+            enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
-            kind = EventKind.SyncFallingEdge;
-            enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            pinEvent = PinEvent.SyncFallingEdge;
+            enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
-            kind = EventKind.AsyncRisingEdge;
-            enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            pinEvent = PinEvent.AsyncRisingEdge;
+            enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
-            kind = EventKind.AsyncFallingEdge;
-            enabled = events.HasFlag(kind);
-            SetEventDetection(bcmPinNumber, kind, enabled);
+            pinEvent = PinEvent.AsyncFallingEdge;
+            enabled = events.HasFlag(pinEvent);
+            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
 
             ClearDetectedEvent(bcmPinNumber);
 
             bool eventDetectionEnabled = _pinsToDetectEvents[bcmPinNumber];
 
-            if (events == EventKind.None)
+            if (events == PinEvent.None)
             {
                 if (eventDetectionEnabled)
                 {
@@ -583,7 +583,7 @@ namespace System.Devices.Gpio
             }
         }
 
-        private void DetectEvents()
+        private void DetectPinEvents()
         {
             while (_pinsToDetectEventsCount > 0)
             {
@@ -593,7 +593,7 @@ namespace System.Devices.Gpio
 
                     if (eventDetectionEnabled)
                     {
-                        bool eventDetected = WasEventDetected(i);
+                        bool eventDetected = WasPinEventDetected(i);
 
                         if (eventDetected)
                         {
@@ -605,35 +605,35 @@ namespace System.Devices.Gpio
             }
         }
 
-        private void SetEventDetection(int bcmPinNumber, EventKind kind, bool enabled)
+        private void SetPinEventDetection(int bcmPinNumber, PinEvent pinEvent, bool enabled)
         {
-            //switch (kind)
+            //switch (pinEvent)
             //{
-            //    case GpioEventKind.High:
+            //    case PinEvent.High:
             //        SetBit(RegisterViewPointer->GPHEN, pin);
             //        break;
 
-            //    case GpioEventKind.Low:
+            //    case PinEvent.Low:
             //        SetBit(RegisterViewPointer->GPLEN, pin);
             //        break;
 
-            //    case GpioEventKind.SyncRisingEdge:
+            //    case PinEvent.SyncRisingEdge:
             //        SetBit(RegisterViewPointer->GPREN, pin);
             //        break;
 
-            //    case GpioEventKind.SyncFallingEdge:
+            //    case PinEvent.SyncFallingEdge:
             //        SetBit(RegisterViewPointer->GPFEN, pin);
             //        break;
 
-            //    case GpioEventKind.AsyncRisingEdge:
+            //    case PinEvent.AsyncRisingEdge:
             //        SetBit(RegisterViewPointer->GPAREN, pin);
             //        break;
 
-            //    case GpioEventKind.AsyncFallingEdge:
+            //    case PinEvent.AsyncFallingEdge:
             //        SetBit(RegisterViewPointer->GPAFEN, pin);
             //        break;
 
-            //    default: throw new InvalidGpioEventKindException(kind);
+            //    default: throw new InvalidPinEventException(pinEvent);
             //}
 
             int index = bcmPinNumber / 32;
@@ -641,40 +641,40 @@ namespace System.Devices.Gpio
             uint* registerPointer = null;
             string registerName = string.Empty;
 
-            switch (kind)
+            switch (pinEvent)
             {
-                case EventKind.High:
+                case PinEvent.High:
                     registerPointer = &_registerViewPointer->GPHEN[index];
                     registerName = nameof(RegisterView.GPHEN);
                     break;
 
-                case EventKind.Low:
+                case PinEvent.Low:
                     registerPointer = &_registerViewPointer->GPLEN[index];
                     registerName = nameof(RegisterView.GPLEN);
                     break;
 
-                case EventKind.SyncRisingEdge:
+                case PinEvent.SyncRisingEdge:
                     registerPointer = &_registerViewPointer->GPREN[index];
                     registerName = nameof(RegisterView.GPREN);
                     break;
 
-                case EventKind.SyncFallingEdge:
+                case PinEvent.SyncFallingEdge:
                     registerPointer = &_registerViewPointer->GPFEN[index];
                     registerName = nameof(RegisterView.GPFEN);
                     break;
 
-                case EventKind.AsyncRisingEdge:
+                case PinEvent.AsyncRisingEdge:
                     registerPointer = &_registerViewPointer->GPAREN[index];
                     registerName = nameof(RegisterView.GPAREN);
                     break;
 
-                case EventKind.AsyncFallingEdge:
+                case PinEvent.AsyncFallingEdge:
                     registerPointer = &_registerViewPointer->GPAFEN[index];
                     registerName = nameof(RegisterView.GPAFEN);
                     break;
 
                 default:
-                    throw new InvalidEventKindException(kind);
+                    throw new InvalidPinEventException(pinEvent);
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -697,7 +697,7 @@ namespace System.Devices.Gpio
             *registerPointer = register;
         }
 
-        protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
+        protected internal override PinEvent GetPinEventsToDetect(int bcmPinNumber)
         {
             if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
             {
@@ -706,63 +706,63 @@ namespace System.Devices.Gpio
 
             Initialize();
 
-            EventKind result = EventKind.None;
-            EventKind kind = EventKind.Low;
-            bool enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            PinEvent result = PinEvent.None;
+            PinEvent pinEvent = PinEvent.Low;
+            bool enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
-            kind = EventKind.High;
-            enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            pinEvent = PinEvent.High;
+            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
-            kind = EventKind.SyncRisingEdge;
-            enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            pinEvent = PinEvent.SyncRisingEdge;
+            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
-            kind = EventKind.SyncFallingEdge;
-            enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            pinEvent = PinEvent.SyncFallingEdge;
+            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
-            kind = EventKind.AsyncRisingEdge;
-            enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            pinEvent = PinEvent.AsyncRisingEdge;
+            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
-            kind = EventKind.AsyncFallingEdge;
-            enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            pinEvent = PinEvent.AsyncFallingEdge;
+            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
+            if (enabled) result |= pinEvent;
 
             return result;
         }
 
-        private bool GetEventDetection(int bcmPinNumber, EventKind kind)
+        private bool GetPinEventDetection(int bcmPinNumber, PinEvent pinEvent)
         {
-            //switch (kind)
+            //switch (pinEvent)
             //{
-            //    case GpioEventKind.High:
+            //    case PinEvent.High:
             //        value = GetBit(RegisterViewPointer->GPHEN, pin);
             //        break;
 
-            //    case GpioEventKind.Low:
+            //    case PinEvent.Low:
             //        value = GetBit(RegisterViewPointer->GPLEN, pin);
             //        break;
 
-            //    case GpioEventKind.SyncRisingEdge:
+            //    case PinEvent.SyncRisingEdge:
             //        value = GetBit(RegisterViewPointer->GPREN, pin);
             //        break;
 
-            //    case GpioEventKind.SyncFallingEdge:
+            //    case PinEvent.SyncFallingEdge:
             //        value = GetBit(RegisterViewPointer->GPFEN, pin);
             //        break;
 
-            //    case GpioEventKind.AsyncRisingEdge:
+            //    case PinEvent.AsyncRisingEdge:
             //        value = GetBit(RegisterViewPointer->GPAREN, pin);
             //        break;
 
-            //    case GpioEventKind.AsyncFallingEdge:
+            //    case PinEvent.AsyncFallingEdge:
             //        value = GetBit(RegisterViewPointer->GPAFEN, pin);
             //        break;
 
-            //    default: throw new InvalidGpioEventKindException(kind);
+            //    default: throw new InvalidPinEventException(pinEvent);
             //}
 
             int index = bcmPinNumber / 32;
@@ -770,34 +770,34 @@ namespace System.Devices.Gpio
             string registerName = string.Empty;
             uint register = 0U;
 
-            switch (kind)
+            switch (pinEvent)
             {
-                case EventKind.High:
+                case PinEvent.High:
                     register = _registerViewPointer->GPHEN[index];
                     break;
 
-                case EventKind.Low:
+                case PinEvent.Low:
                     register = _registerViewPointer->GPLEN[index];
                     break;
 
-                case EventKind.SyncRisingEdge:
+                case PinEvent.SyncRisingEdge:
                     register = _registerViewPointer->GPREN[index];
                     break;
 
-                case EventKind.SyncFallingEdge:
+                case PinEvent.SyncFallingEdge:
                     register = _registerViewPointer->GPFEN[index];
                     break;
 
-                case EventKind.AsyncRisingEdge:
+                case PinEvent.AsyncRisingEdge:
                     register = _registerViewPointer->GPAREN[index];
                     break;
 
-                case EventKind.AsyncFallingEdge:
+                case PinEvent.AsyncFallingEdge:
                     register = _registerViewPointer->GPAFEN[index];
                     break;
 
                 default:
-                    throw new InvalidEventKindException(kind);
+                    throw new InvalidPinEventException(pinEvent);
             }
 
             uint value = (register >> shift) & 1;

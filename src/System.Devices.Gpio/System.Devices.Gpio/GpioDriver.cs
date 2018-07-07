@@ -23,11 +23,11 @@ namespace System.Devices.Gpio
 
         protected internal abstract PinValue Input(int bcmPinNumber);
 
-        protected internal abstract bool WasEventDetected(int bcmPinNumber);
+        protected internal abstract bool WasPinEventDetected(int bcmPinNumber);
 
-        protected internal abstract void SetEventsToDetect(int bcmPinNumber, EventKind events);
+        protected internal abstract void SetPinEventsToDetect(int bcmPinNumber, PinEvent pinEvents);
 
-        protected internal abstract EventKind GetEventsToDetect(int bcmPinNumber);
+        protected internal abstract PinEvent GetPinEventsToDetect(int bcmPinNumber);
 
         protected internal void OnPinValueChanged(int bcmPinNumber)
         {

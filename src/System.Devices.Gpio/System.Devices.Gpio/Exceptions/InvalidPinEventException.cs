@@ -3,12 +3,11 @@
 
 namespace System.Devices.Gpio
 {
-    public class InvalidEventKindException : GpioException
+    public class InvalidPinEventException : GpioException
     {
-        public InvalidEventKindException(EventKind kind)
-            : base($"Invalid GPIO event kind '{kind}'")
+        public InvalidPinEventException(PinEvent pinEvent)
+            : base($"GPIO pin event '{pinEvent}' invalid")
         {
-
         }
     }
 }
