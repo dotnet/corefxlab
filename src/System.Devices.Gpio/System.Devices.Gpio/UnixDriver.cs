@@ -13,9 +13,9 @@ namespace System.Devices.Gpio
     {
         private const string GpioPath = "/sys/class/gpio";
 
-        private BitArray _exportedPins;
+        private readonly BitArray _exportedPins;
+        private readonly TimeSpan[] _debounceTimeouts;
         private bool _eventDetectionEnabled;
-        private TimeSpan[] _debounceTimeouts;
 
         public UnixDriver(int pinCount)
         {
