@@ -39,38 +39,56 @@ namespace System.Devices.Gpio
         BCM
     }
 
-    public class Pin
+    public class Pin : IDisposable
     {
-        protected GpioDriver _driver;
+        internal Pin(GpioController controller, int bcmNumber)
+        {
+            Controller = controller;
+            BcmNumber = bcmNumber;
+        }
+
+        public void Dispose()
+        {
+            Controller.ClosePin(this);
+        }
+
+        public event EventHandler<PinValueChangedEventArgs> ValueChanged;
+
+        public GpioController Controller { get; }
 
         public int BcmNumber { get; }
 
+        public TimeSpan DebounceTimeout
+        {
+            get => Controller.Driver.GetDebounce(BcmNumber);
+            set => Controller.Driver.SetDebounce(BcmNumber, value);
+        }
+
         public PinMode Mode
         {
-            get => _driver.GetPinMode(BcmNumber);
-            set => _driver.SetPinMode(BcmNumber, value);
+            get => Controller.Driver.GetPinMode(BcmNumber);
+            set => Controller.Driver.SetPinMode(BcmNumber, value);
         }
 
-        public Pin(GpioDriver driver, PinNumberingScheme numbering, int number, PinMode mode)
+        public PinEvent DetectedEvents
         {
-            _driver = driver;
-            BcmNumber = driver.ConvertPinNumber(number, numbering, PinNumberingScheme.BCM);
-            Mode = mode;
+            get => Controller.Driver.GetPinEventsToDetect(BcmNumber);
+            set => Controller.Driver.SetPinEventsToDetect(BcmNumber, value);
         }
 
-        public int GetNumber(PinNumberingScheme numbering)
-        {
-            return _driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.BCM, numbering);
-        }
+        public bool IsModeSupported(PinMode mode) => Controller.Driver.IsPinModeSupported(mode);
 
-        public PinValue Read()
-        {
-            return _driver.Input(BcmNumber);
-        }
+        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.BCM, numbering);
 
-        public void Write(PinValue value)
+        public PinValue Read() => Controller.Driver.Input(BcmNumber);
+
+        public void Write(PinValue value) => Controller.Driver.Output(BcmNumber, value);
+
+        public bool WaitForEvent(TimeSpan timeout) => Controller.Driver.WaitForPinEvent(BcmNumber, timeout);
+
+        internal void OnValueChanged(PinValueChangedEventArgs e)
         {
-            _driver.Output(BcmNumber, value);
+            ValueChanged?.Invoke(this, e);
         }
     }
 }

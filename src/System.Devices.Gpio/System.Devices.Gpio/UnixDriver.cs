@@ -56,10 +56,25 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        protected internal override PinMode GetPinMode(int bcmPinNumber)
+        protected internal override void OpenPin(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
             ExportPin(bcmPinNumber);
+        }
+
+        protected internal override void ClosePin(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
+            _debounceTimeouts[bcmPinNumber] = default;
+            //_lastEvent[bcmPinNumber] = default;
+            UnexportPin(bcmPinNumber);
+        }
+
+        protected internal override PinMode GetPinMode(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
 
             string directionPath = $"{GpioPath}/gpio{bcmPinNumber}/direction";
             string stringMode = File.ReadAllText(directionPath);
@@ -71,7 +86,6 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
             ValidatePinMode(mode);
-            ExportPin(bcmPinNumber);
 
             string directionPath = $"{GpioPath}/gpio{bcmPinNumber}/direction";
             string stringMode = PinModeToStringMode(mode);
@@ -81,7 +95,6 @@ namespace System.Devices.Gpio
         protected internal override PinValue Input(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
-            ExportPin(bcmPinNumber);
 
             string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
             string stringValue = File.ReadAllText(valuePath);
@@ -93,7 +106,6 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
             ValidatePinValue(value);
-            ExportPin(bcmPinNumber);
 
             string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
             string stringValue = PinValueToStringValue(value);
@@ -118,7 +130,6 @@ namespace System.Devices.Gpio
         protected internal override void SetPinEventsToDetect(int bcmPinNumber, PinEvent kind)
         {
             ValidatePinNumber(bcmPinNumber);
-            ExportPin(bcmPinNumber);
 
             string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
             string stringValue = EventKindToStringValue(kind);
@@ -128,7 +139,6 @@ namespace System.Devices.Gpio
         protected internal override PinEvent GetPinEventsToDetect(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
-            ExportPin(bcmPinNumber);
 
             string edgePath = $"{GpioPath}/gpio{bcmPinNumber}/edge";
             string stringValue = File.ReadAllText(edgePath);
@@ -161,7 +171,6 @@ namespace System.Devices.Gpio
         protected internal override bool WaitForPinEvent(int bcmPinNumber, TimeSpan timeout)
         {
             ValidatePinNumber(bcmPinNumber);
-            ExportPin(bcmPinNumber);
 
             DateTime initial = DateTime.UtcNow;
             TimeSpan elapsed;
