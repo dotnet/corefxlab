@@ -149,9 +149,9 @@ namespace System.Devices.Gpio.Samples
 
         private static void BlinkingLED(GpioDriver driver)
         {
-            using (driver)
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
-                var led = new Pin(driver, PinNumberingScheme.BCM, 26, PinMode.Output);
+                Pin led = controller.OpenPin(26, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
@@ -166,10 +166,10 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonLED(GpioDriver driver)
         {
-            using (driver)
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
-                var button = new Pin(driver, PinNumberingScheme.BCM, 18, PinMode.Input);
-                var led = new Pin(driver, PinNumberingScheme.BCM, 26, PinMode.Output);
+                Pin button = controller.OpenPin(18, PinMode.Input);
+                Pin led = controller.OpenPin(26, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -211,6 +211,7 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
+                driver.OpenPin(led);
                 driver.SetPinMode(led, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
@@ -231,7 +232,10 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
+                driver.OpenPin(button);
                 driver.SetPinMode(button, PinMode.Input);
+
+                driver.OpenPin(led);
                 driver.SetPinMode(led, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
@@ -257,7 +261,10 @@ namespace System.Devices.Gpio.Samples
 
             using (driver)
             {
+                driver.OpenPin(button);
                 driver.SetPinMode(button, PinMode.InputPullDown);
+
+                driver.OpenPin(led);
                 driver.SetPinMode(led, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
@@ -295,11 +302,12 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
+                driver.OpenPin(button);
                 driver.SetPinMode(button, buttonMode);
 
                 driver.SetDebounce(button, TimeSpan.FromMilliseconds(100));
                 driver.SetEventsToDetect(button, EventKind.SyncBoth);
-                driver.PinValueChanged += OnPinValueChanged1;
+                driver.ValueChanged += OnPinValueChanged1;
                 driver.EnableEventsDetection = true;
 
                 Stopwatch watch = Stopwatch.StartNew();
@@ -358,12 +366,15 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
+                driver.OpenPin(button);
                 driver.SetPinMode(button, buttonMode);
+
+                driver.OpenPin(led);
                 driver.SetPinMode(led, PinMode.Output);
 
                 driver.SetDebounce(button, TimeSpan.FromSeconds(1));
                 driver.SetEventsToDetect(button, EventKind.SyncFallingEdge);
-                driver.PinValueChanged += OnPinValueChanged2;
+                driver.ValueChanged += OnPinValueChanged2;
                 driver.EnableEventsDetection = true;
 
                 EventKind events = driver.GetEventsToDetect(button);
@@ -416,6 +427,7 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
+                driver.OpenPin(button);
                 driver.SetPinMode(button, buttonMode);
 
                 driver.SetDebounce(button, TimeSpan.FromSeconds(1));

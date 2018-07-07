@@ -190,11 +190,25 @@ namespace System.Devices.Gpio
             return result;
         }
 
+        protected internal override void OpenPin(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+            Initialize();
+        }
+
+        protected internal override void ClosePin(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            SetEventsToDetect(bcmPinNumber, EventKind.None);
+            _debounceTimeouts[bcmPinNumber] = default;
+            _lastEvent[bcmPinNumber] = default;
+        }
+
         protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
             ValidatePinNumber(bcmPinNumber);
             ValidatePinMode(mode);
-            Initialize();
 
             switch (mode)
             {
@@ -302,7 +316,6 @@ namespace System.Devices.Gpio
         protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
-            Initialize();
 
             //var mode = GetBits(RegisterViewPointer->GPFSEL, pin, 10, 3);
 
@@ -388,7 +401,6 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
             ValidatePinValue(value);
-            Initialize();
 
             //switch (value)
             //{
@@ -440,7 +452,6 @@ namespace System.Devices.Gpio
         protected internal override PinValue Input(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
-            Initialize();
 
             //var value = GetBit(RegisterViewPointer->GPLEV, pin);
 
@@ -471,8 +482,6 @@ namespace System.Devices.Gpio
         protected internal override void SetEventsToDetect(int bcmPinNumber, EventKind events)
         {
             ValidatePinNumber(bcmPinNumber);
-
-            Initialize();
 
             EventKind kind = EventKind.Low;
             bool enabled = events.HasFlag(kind);
@@ -615,7 +624,6 @@ namespace System.Devices.Gpio
         protected internal override EventKind GetEventsToDetect(int bcmPinNumber)
         {
             ValidatePinNumber(bcmPinNumber);
-            Initialize();
 
             EventKind result = EventKind.None;
             EventKind kind = EventKind.Low;
@@ -774,7 +782,6 @@ namespace System.Devices.Gpio
         protected internal override bool WaitForEvent(int bcmPinNumber, TimeSpan timeout)
         {
             ValidatePinNumber(bcmPinNumber);
-            Initialize();
 
             DateTime initial = DateTime.UtcNow;
             TimeSpan elapsed;

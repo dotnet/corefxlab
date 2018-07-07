@@ -3,8 +3,6 @@
 
 namespace System.Devices.Gpio
 {
-    public delegate void PinValueChangedEventHandler(GpioDriver driver, int bcmPinNumber);
-
     public class PinValueChangedEventArgs : EventArgs
     {
         public PinValueChangedEventArgs(int bcmPinNumber) => BcmPinNumber = bcmPinNumber;
@@ -14,7 +12,7 @@ namespace System.Devices.Gpio
 
     public abstract class GpioDriver : IDisposable
     {
-        public event EventHandler<PinValueChangedEventArgs> PinValueChanged;
+        public event EventHandler<PinValueChangedEventArgs> ValueChanged;
 
         protected internal abstract int PinCount { get; }
 
@@ -23,6 +21,10 @@ namespace System.Devices.Gpio
         protected internal abstract int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to);
 
         protected internal abstract bool IsPinModeSupported(PinMode mode);
+
+        protected internal abstract void OpenPin(int bcmPinNumber);
+
+        protected internal abstract void ClosePin(int bcmPinNumber);
 
         protected internal abstract void SetPinMode(int bcmPinNumber, PinMode mode);
 
@@ -44,8 +46,8 @@ namespace System.Devices.Gpio
 
         protected internal void OnPinValueChanged(int bcmPinNumber)
         {
-            var args = new PinValueChangedEventArgs(bcmPinNumber);
-            PinValueChanged?.Invoke(this, args);
+            var e = new PinValueChangedEventArgs(bcmPinNumber);
+            ValueChanged?.Invoke(this, e);
         }
 
         public abstract void Dispose();
