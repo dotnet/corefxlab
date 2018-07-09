@@ -16,8 +16,6 @@ namespace System.Devices.Gpio
 
         protected internal abstract int PinCount { get; }
 
-        protected internal abstract bool EnableEventsDetection { get; set; }
-
         protected internal abstract int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to);
 
         protected internal abstract bool IsPinModeSupported(PinMode mode);
@@ -41,6 +39,10 @@ namespace System.Devices.Gpio
         protected internal abstract void SetPinEventsToDetect(int bcmPinNumber, PinEvent events);
 
         protected internal abstract PinEvent GetPinEventsToDetect(int bcmPinNumber);
+
+        protected internal abstract void SetEnableRaisingPinEvents(int bcmPinNumber, bool enable);
+
+        protected internal abstract bool GetEnableRaisingPinEvents(int bcmPinNumber);
 
         protected internal abstract bool WaitForPinEvent(int bcmPinNumber, TimeSpan timeout);
 

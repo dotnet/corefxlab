@@ -70,10 +70,16 @@ namespace System.Devices.Gpio
             set => Controller.Driver.SetPinMode(BcmNumber, value);
         }
 
-        public PinEvent DetectedEvents
+        public PinEvent NotifyEvents
         {
             get => Controller.Driver.GetPinEventsToDetect(BcmNumber);
             set => Controller.Driver.SetPinEventsToDetect(BcmNumber, value);
+        }
+
+        public bool EnableRaisingEvents
+        {
+            get => Controller.Driver.GetEnableRaisingPinEvents(BcmNumber);
+            set => Controller.Driver.SetEnableRaisingPinEvents(BcmNumber, value);
         }
 
         public bool IsModeSupported(PinMode mode) => Controller.Driver.IsPinModeSupported(mode);

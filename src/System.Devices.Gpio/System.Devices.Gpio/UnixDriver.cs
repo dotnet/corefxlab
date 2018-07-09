@@ -2,10 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace System.Devices.Gpio
 {
@@ -14,8 +13,11 @@ namespace System.Devices.Gpio
         private const string GpioPath = "/sys/class/gpio";
 
         private readonly BitArray _exportedPins;
-        private readonly TimeSpan[] _debounceTimeouts;
-        private bool _eventDetectionEnabled;
+        private int _pinsToDetectEventsCount;
+        private BitArray _pinsToDetectEvents;
+        private Thread _eventDetectionThread;
+        private TimeSpan[] _debounceTimeouts;
+        private DateTime[] _lastEvent;
 
         public UnixDriver(int pinCount)
         {
@@ -146,26 +148,51 @@ namespace System.Devices.Gpio
             return value;
         }
 
-        protected internal override bool EnableEventsDetection
+        protected internal override void SetEnableRaisingPinEvents(int bcmPinNumber, bool enable)
         {
-            get => _eventDetectionEnabled;
-            set => EnableEvents(value);
+            ValidatePinNumber(bcmPinNumber);
+
+            bool wasEnabled = _pinsToDetectEvents[bcmPinNumber];
+            _pinsToDetectEvents[bcmPinNumber] = enable;
+
+            if (enable && !wasEnabled)
+            {
+                // Enable pin events detection
+                _pinsToDetectEventsCount++;
+
+                if (_eventDetectionThread == null)
+                {
+                    _eventDetectionThread = new Thread(DetectEvents)
+                    {
+                        IsBackground = true
+                    };
+
+                    _eventDetectionThread.Start();
+                }
+            }
+            else if (!enable && wasEnabled)
+            {
+                // Disable pin events detection
+                _pinsToDetectEventsCount--;
+            }
         }
 
-        private void EnableEvents(bool value)
+        protected internal override bool GetEnableRaisingPinEvents(int bcmPinNumber)
         {
-            if (!_eventDetectionEnabled && value)
+            ValidatePinNumber(bcmPinNumber);
+
+            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
+            return pinEventsEnabled;
+        }
+
+        private void DetectEvents()
+        {
+            while (_pinsToDetectEventsCount > 0)
             {
-                // Enable events detection
-                _eventDetectionEnabled = true;
-            }
-            else if (_eventDetectionEnabled && !value)
-            {
-                // Disable events detection
-                _eventDetectionEnabled = false;
+                throw new NotImplementedException();
             }
 
-            throw new NotImplementedException();
+            _eventDetectionThread = null;
         }
 
         protected internal override bool WaitForPinEvent(int bcmPinNumber, TimeSpan timeout)

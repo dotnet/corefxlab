@@ -116,7 +116,6 @@ namespace System.Devices.Gpio
         private const int GpioBaseOffset = 0;
 
         private RegisterView* _registerViewPointer = null;
-        private bool _eventDetectionEnabled;
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
@@ -508,25 +507,6 @@ namespace System.Devices.Gpio
             SetEventDetection(bcmPinNumber, kind, enabled);
 
             ClearDetectedEvent(bcmPinNumber);
-
-            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
-
-            if (events == PinEvent.None)
-            {
-                if (pinEventsEnabled)
-                {
-                    _pinsToDetectEvents.Set(bcmPinNumber, false);
-                    _pinsToDetectEventsCount--;
-                }
-            }
-            else
-            {
-                if (!pinEventsEnabled)
-                {
-                    _pinsToDetectEvents.Set(bcmPinNumber, true);
-                    _pinsToDetectEventsCount++;
-                }
-            }
         }
 
         private void SetEventDetection(int bcmPinNumber, PinEvent kind, bool enabled)
@@ -725,18 +705,17 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        protected internal override bool EnableEventsDetection
+        protected internal override void SetEnableRaisingPinEvents(int bcmPinNumber, bool enable)
         {
-            get => _eventDetectionEnabled;
-            set => EnableEvents(value);
-        }
+            ValidatePinNumber(bcmPinNumber);
 
-        private void EnableEvents(bool value)
-        {
-            if (!_eventDetectionEnabled && value)
+            bool wasEnabled = _pinsToDetectEvents[bcmPinNumber];
+            _pinsToDetectEvents[bcmPinNumber] = enable;
+
+            if (enable && !wasEnabled)
             {
-                // Enable events detection
-                _eventDetectionEnabled = true;
+                // Enable pin events detection
+                _pinsToDetectEventsCount++;
 
                 if (_eventDetectionThread == null)
                 {
@@ -748,16 +727,24 @@ namespace System.Devices.Gpio
                     _eventDetectionThread.Start();
                 }
             }
-            else if (_eventDetectionEnabled && !value)
+            else if (!enable && wasEnabled)
             {
-                // Disable events detection
-                _eventDetectionEnabled = false;
+                // Disable pin events detection
+                _pinsToDetectEventsCount--;
             }
+        }
+
+        protected internal override bool GetEnableRaisingPinEvents(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
+            return pinEventsEnabled;
         }
 
         private void DetectEvents()
         {
-            while (_eventDetectionEnabled && _pinsToDetectEventsCount > 0)
+            while (_pinsToDetectEventsCount > 0)
             {
                 for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
                 {
