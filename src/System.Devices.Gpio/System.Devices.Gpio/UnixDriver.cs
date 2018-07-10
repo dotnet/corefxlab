@@ -4,12 +4,141 @@
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace System.Devices.Gpio
 {
     public class UnixDriver : GpioDriver
     {
+        #region Interop
+
+        private const string LibraryName = "libc";
+
+        [Flags]
+        private enum FileOpenFlags
+        {
+            O_RDONLY = 0x00,
+            O_NONBLOCK = 0x800,
+            O_RDWR = 0x02,
+            O_SYNC = 0x101000
+        }
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int open([MarshalAs(UnmanagedType.LPStr)] string pathname, FileOpenFlags flags);
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int close(int fd);
+
+        private enum PollOperations
+        {
+            EPOLL_CTL_ADD = 1
+        }
+
+        private enum PollEvents : uint
+        {
+            EPOLLIN = 0x01,
+            EPOLLET = 0x80000000,
+            EPOLLPRI = 0x02
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        private struct epoll_data
+        {
+            [FieldOffset(0)]
+            public IntPtr ptr;
+
+            [FieldOffset(0)]
+            public int fd;
+
+            [FieldOffset(0)]
+            public uint u32;
+
+            [FieldOffset(0)]
+            public ulong u64;
+        }
+
+        private struct epoll_event
+        {
+            public PollEvents events;
+            public epoll_data data;
+        }
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int epoll_create(int size);
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int epoll_ctl(int epfd, PollOperations op, int fd, ref epoll_event events);
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int epoll_wait(int epfd, out epoll_event events, int maxevents, int timeout);
+
+        private enum SeekFlags
+        {
+            SEEK_SET = 0
+        }
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int lseek(int fd, int offset, SeekFlags whence);
+
+        [DllImport(LibraryName, SetLastError = true)]
+        private static extern int read(int fd, IntPtr buf, int count);
+
+
+        public static unsafe int TestingPoll()
+        {
+            int epfd = epoll_create(1);
+            if (epfd == -1) return 1;
+
+            string filename = "/sys/class/gpio/gpio18/value";
+
+            int fd = open(filename, FileOpenFlags.O_RDONLY | FileOpenFlags.O_NONBLOCK);
+            if (fd < 0) return 2;
+
+            epoll_event ev = new epoll_event
+            {
+                events = PollEvents.EPOLLIN | PollEvents.EPOLLET | PollEvents.EPOLLPRI,
+                data = new epoll_data()
+                {
+                    fd = fd
+                }
+            };
+
+            int r = epoll_ctl(epfd, PollOperations.EPOLL_CTL_ADD, fd, ref ev);
+            if (r == -1) return 3;
+
+            char buf;
+            IntPtr bufPtr = new IntPtr(&buf);
+
+            for (int i = 0; i < 5; ++i)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"iteration: '{i}'");
+
+                epoll_event events;
+                int n = epoll_wait(epfd, out events, 1, -1);
+                if (n == -1) return 4;
+
+                if (n > 0)
+                {
+                    lseek(events.data.fd, 0, SeekFlags.SEEK_SET);
+                    r = read(events.data.fd, bufPtr, 1);
+
+                    if (r != 1) return 5;
+                    if (events.data.fd != fd) return 6;
+
+                    Console.WriteLine("Success!");
+                    Console.WriteLine($"value read: '{buf}'");
+                }
+            }
+
+            close(fd);
+            close(epfd);
+            return 0;
+        }
+
+        #endregion
+
         private const string GpioPath = "/sys/class/gpio";
 
         private readonly BitArray _exportedPins;
@@ -304,9 +433,14 @@ namespace System.Devices.Gpio
 
             switch (mode)
             {
-                case "in": result = PinMode.Input; break;
-                case "out": result = PinMode.Output; break;
-                default: throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
+                case "in":
+                    result = PinMode.Input;
+                    break;
+                case "out":
+                    result = PinMode.Output;
+                    break;
+                default:
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -319,9 +453,14 @@ namespace System.Devices.Gpio
 
             switch (mode)
             {
-                case PinMode.Input: result = "in"; break;
-                case PinMode.Output: result = "out"; break;
-                default: throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
+                case PinMode.Input:
+                    result = "in";
+                    break;
+                case PinMode.Output:
+                    result = "out";
+                    break;
+                default:
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -335,9 +474,14 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case "0": result = PinValue.Low; break;
-                case "1": result = PinValue.High; break;
-                default: throw new ArgumentException($"Invalid GPIO pin value '{value}'");
+                case "0":
+                    result = PinValue.Low;
+                    break;
+                case "1":
+                    result = PinValue.High;
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             return result;
@@ -350,9 +494,14 @@ namespace System.Devices.Gpio
 
             switch (value)
             {
-                case PinValue.Low: result = "0"; break;
-                case PinValue.High: result = "1"; break;
-                default: throw new ArgumentException($"Invalid GPIO pin value '{value}'");
+                case PinValue.Low:
+                    result = "0";
+                    break;
+                case PinValue.High:
+                    result = "1";
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             return result;

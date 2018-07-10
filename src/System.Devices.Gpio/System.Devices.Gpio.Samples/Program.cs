@@ -14,6 +14,10 @@ namespace System.Devices.Gpio.Samples
         {
             try
             {
+                //var result = UnixDriver.TestingPoll();
+                //Console.WriteLine($"result value: {result}");
+                //return;
+
                 int option = -1;
 
                 if (args.Length > 0)
