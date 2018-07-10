@@ -32,7 +32,8 @@ namespace System.Devices.Gpio
 
         private enum PollOperations
         {
-            EPOLL_CTL_ADD = 1
+            EPOLL_CTL_ADD = 1,
+            EPOLL_CTL_DEL = 2
         }
 
         private enum PollEvents : uint
@@ -56,6 +57,9 @@ namespace System.Devices.Gpio
 
             [FieldOffset(0)]
             public ulong u64;
+
+            [FieldOffset(0)]
+            public int bcmPinNumber;
         }
 
         private struct epoll_event
@@ -84,79 +88,51 @@ namespace System.Devices.Gpio
         [DllImport(LibraryName, SetLastError = true)]
         private static extern int read(int fd, IntPtr buf, int count);
 
-
-        public static unsafe int TestingPoll()
-        {
-            int epfd = epoll_create(1);
-            if (epfd == -1) return 1;
-
-            string filename = "/sys/class/gpio/gpio18/value";
-
-            int fd = open(filename, FileOpenFlags.O_RDONLY | FileOpenFlags.O_NONBLOCK);
-            if (fd < 0) return 2;
-
-            epoll_event ev = new epoll_event
-            {
-                events = PollEvents.EPOLLIN | PollEvents.EPOLLET | PollEvents.EPOLLPRI,
-                data = new epoll_data()
-                {
-                    fd = fd
-                }
-            };
-
-            int r = epoll_ctl(epfd, PollOperations.EPOLL_CTL_ADD, fd, ref ev);
-            if (r == -1) return 3;
-
-            char buf;
-            IntPtr bufPtr = new IntPtr(&buf);
-
-            for (int i = 0; i < 5; ++i)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"iteration: '{i}'");
-
-                epoll_event events;
-                int n = epoll_wait(epfd, out events, 1, -1);
-                if (n == -1) return 4;
-
-                if (n > 0)
-                {
-                    lseek(events.data.fd, 0, SeekFlags.SEEK_SET);
-                    r = read(events.data.fd, bufPtr, 1);
-
-                    if (r != 1) return 5;
-                    if (events.data.fd != fd) return 6;
-
-                    Console.WriteLine("Success!");
-                    Console.WriteLine($"value read: '{buf}'");
-                }
-            }
-
-            close(fd);
-            close(epfd);
-            return 0;
-        }
-
         #endregion
 
         private const string GpioPath = "/sys/class/gpio";
 
         private readonly BitArray _exportedPins;
+
+        private int _pollFileDescriptor = -1;
+        private int[] _pinValueFileDescriptors;
+
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
         private TimeSpan[] _debounceTimeouts;
-        private DateTime[] _lastEvent;
+        private DateTime[] _lastEvents;
 
         public UnixDriver(int pinCount)
         {
             PinCount = pinCount;
             _exportedPins = new BitArray(pinCount);
+            _pinsToDetectEvents = new BitArray(pinCount);
             _debounceTimeouts = new TimeSpan[pinCount];
+            _lastEvents = new DateTime[pinCount];
+            _pinValueFileDescriptors = new int[pinCount];
         }
 
         public override void Dispose()
         {
+            _pinsToDetectEventsCount = 0;
+
+            for (int i = 0; i < _pinValueFileDescriptors.Length; ++i)
+            {
+                int fd = _pinValueFileDescriptors[i];
+
+                if (fd != -1)
+                {
+                    close(fd);
+                }
+            }
+
+            if (_pollFileDescriptor != -1)
+            {
+                close(_pollFileDescriptor);
+                _pollFileDescriptor = -1;
+            }
+
             for (int i = 0; i < _exportedPins.Length; ++i)
             {
                 if (_exportedPins[i])
@@ -199,7 +175,7 @@ namespace System.Devices.Gpio
 
             SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
             _debounceTimeouts[bcmPinNumber] = default;
-            //_lastEvent[bcmPinNumber] = default;
+            _lastEvents[bcmPinNumber] = default;
             UnexportPin(bcmPinNumber);
         }
 
@@ -289,6 +265,8 @@ namespace System.Devices.Gpio
                 // Enable pin events detection
                 _pinsToDetectEventsCount++;
 
+                AddPinToPoll(bcmPinNumber, ref _pollFileDescriptor, out _);
+
                 if (_eventDetectionThread == null)
                 {
                     _eventDetectionThread = new Thread(DetectEvents)
@@ -303,6 +281,98 @@ namespace System.Devices.Gpio
             {
                 // Disable pin events detection
                 _pinsToDetectEventsCount--;
+
+                bool closePollFileDescriptor = (_pinsToDetectEventsCount == 0);
+                RemovePinFromPoll(bcmPinNumber, ref _pollFileDescriptor, closePinValueFileDescriptor: true, closePollFileDescriptor);
+            }
+        }
+
+        private void AddPinToPoll(int bcmPinNumber, ref int pollFileDescriptor, out bool closePinValueFileDescriptor)
+        {
+            //Console.WriteLine($"Adding pin to poll: {bcmPinNumber}");
+
+            if (pollFileDescriptor == -1)
+            {
+                pollFileDescriptor = epoll_create(1);
+
+                if (pollFileDescriptor < 0)
+                {
+                    throw new GpioException($"epoll_create error number: {Marshal.GetLastWin32Error()}");
+                }
+            }
+
+            closePinValueFileDescriptor = false;
+            int fd = _pinValueFileDescriptors[bcmPinNumber];
+
+            if (fd <= 0)
+            {
+                string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
+                fd = open(valuePath, FileOpenFlags.O_RDONLY | FileOpenFlags.O_NONBLOCK);
+
+                //Console.WriteLine($"{valuePath} open result: {fd}");
+
+                if (fd < 0)
+                {
+                    throw new GpioException($"open error number: {Marshal.GetLastWin32Error()}");
+                }
+
+                _pinValueFileDescriptors[bcmPinNumber] = fd;
+                closePinValueFileDescriptor = true;
+            }
+
+            var ev = new epoll_event
+            {
+                events = PollEvents.EPOLLIN | PollEvents.EPOLLET | PollEvents.EPOLLPRI,
+                data = new epoll_data()
+                {
+                    //fd = fd
+                    bcmPinNumber = bcmPinNumber
+                }
+            };
+
+            //Console.WriteLine($"poll_fd = {pollFileDescriptor}, pin_value_fd = {fd}");
+
+            int r = epoll_ctl(pollFileDescriptor, PollOperations.EPOLL_CTL_ADD, fd, ref ev);
+
+            if (r == -1)
+            {
+                throw new GpioException($"epoll_ctl error number: {Marshal.GetLastWin32Error()}");
+            }
+
+            // Ignore first time because it returns the current state
+            epoll_wait(pollFileDescriptor, out _, 1, 0);
+        }
+
+        private void RemovePinFromPoll(int bcmPinNumber, ref int pollFileDescriptor, bool closePinValueFileDescriptor, bool closePollFileDescriptor)
+        {
+            //Console.WriteLine($"Removing pin from poll: {bcmPinNumber}");
+
+            int fd = _pinValueFileDescriptors[bcmPinNumber];
+
+            var ev = new epoll_event
+            {
+                events = PollEvents.EPOLLIN | PollEvents.EPOLLET | PollEvents.EPOLLPRI,
+            };
+
+            //Console.WriteLine($"poll_fd = {pollFileDescriptor}, pin_value_fd = {fd}");
+
+            int r = epoll_ctl(pollFileDescriptor, PollOperations.EPOLL_CTL_DEL, fd, ref ev);
+
+            if (r == -1)
+            {
+                throw new GpioException($"epoll_ctl error number: {Marshal.GetLastWin32Error()}");
+            }
+
+            if (closePinValueFileDescriptor)
+            {
+                close(fd);
+                _pinValueFileDescriptors[bcmPinNumber] = -1;
+            }
+
+            if (closePollFileDescriptor)
+            {
+                close(pollFileDescriptor);
+                pollFileDescriptor = -1;
             }
         }
 
@@ -314,11 +384,20 @@ namespace System.Devices.Gpio
             return pinEventsEnabled;
         }
 
-        private void DetectEvents()
+        private unsafe void DetectEvents()
         {
+            char buf;
+            IntPtr bufPtr = new IntPtr(&buf);
+
             while (_pinsToDetectEventsCount > 0)
             {
-                throw new NotImplementedException();
+                bool eventDetected = WasEventDetected(_pollFileDescriptor, out int bcmPinNumber, timeout: -1);
+
+                if (eventDetected)
+                {
+                    //Console.WriteLine($"Event detected for pin {bcmPinNumber}");
+                    OnPinValueChanged(bcmPinNumber);
+                }
             }
 
             _eventDetectionThread = null;
@@ -328,29 +407,78 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            DateTime initial = DateTime.UtcNow;
-            TimeSpan elapsed;
-            bool eventDetected;
+            int pollFileDescriptor = -1;
+            AddPinToPoll(bcmPinNumber, ref pollFileDescriptor, out bool closePinValueFileDescriptor);
 
-            do
-            {
-                eventDetected = WasEventDetected(bcmPinNumber);
-                elapsed = DateTime.UtcNow.Subtract(initial);
-            }
-            while (!eventDetected && elapsed < timeout);
+            int timeoutInMilliseconds = Convert.ToInt32(timeout.TotalMilliseconds);
+            bool eventDetected = WasEventDetected(pollFileDescriptor, out _, timeoutInMilliseconds);
 
+            RemovePinFromPoll(bcmPinNumber, ref pollFileDescriptor, closePinValueFileDescriptor, closePollFileDescriptor: true);
             return eventDetected;
         }
 
-        private bool WasEventDetected(int bcmPinNumber)
+        private bool WasEventDetected(int pollFileDescriptor, out int bcmPinNumber, int timeout)
         {
-            //string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
-            //string stringValue = File.ReadAllText(valuePath);
-            //PinValue value = StringValueToPinValue(stringValue);
-            //bool result = value == PinValue.High;
-            //return result;
+            bool result = PollForPin(pollFileDescriptor, out bcmPinNumber, timeout);
 
-            throw new NotImplementedException();
+            if (result)
+            {
+                TimeSpan debounce = _debounceTimeouts[bcmPinNumber];
+                DateTime last = _lastEvents[bcmPinNumber];
+                DateTime now = DateTime.UtcNow;
+
+                if (now.Subtract(last) > debounce)
+                {
+                    _lastEvents[bcmPinNumber] = now;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private unsafe bool PollForPin(int pollFileDescriptor, out int bcmPinNumber, int timeout)
+        {
+            char buf;
+            IntPtr bufPtr = new IntPtr(&buf);
+            bool result;
+
+            //Console.WriteLine($"Before epoll_wait: poll_fd = {pollFileDescriptor}");
+
+            int n = epoll_wait(pollFileDescriptor, out epoll_event events, 1, timeout);
+
+            //Console.WriteLine($"After epoll_wait: resut = {n}");
+
+            if (n == -1)
+            {
+                throw new GpioException($"epoll_wait error number: {Marshal.GetLastWin32Error()}");
+            }
+
+            if (n > 0)
+            {
+                bcmPinNumber = events.data.bcmPinNumber;
+                int fd = _pinValueFileDescriptors[bcmPinNumber];
+
+                lseek(fd, 0, SeekFlags.SEEK_SET);
+                int r = read(fd, bufPtr, 1);
+
+                if (r != 1)
+                {
+                    throw new GpioException($"read error number: {Marshal.GetLastWin32Error()}");
+                }
+
+                result = true;
+            }
+            else
+            {
+                bcmPinNumber = -1;
+                result = false;
+            }
+
+            return result;
         }
 
         protected internal override int ConvertPinNumber(int bcmPinNumber, PinNumberingScheme from, PinNumberingScheme to)

@@ -116,11 +116,12 @@ namespace System.Devices.Gpio
         private const int GpioBaseOffset = 0;
 
         private RegisterView* _registerViewPointer = null;
+
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
         private TimeSpan[] _debounceTimeouts;
-        private DateTime[] _lastEvent;
+        private DateTime[] _lastEvents;
 
         public RaspberryPiDriver()
         {
@@ -154,11 +155,13 @@ namespace System.Devices.Gpio
 
             _pinsToDetectEvents = new BitArray(PinCount);
             _debounceTimeouts = new TimeSpan[PinCount];
-            _lastEvent = new DateTime[PinCount];
+            _lastEvents = new DateTime[PinCount];
         }
 
         public override void Dispose()
         {
+            _pinsToDetectEventsCount = 0;
+
             if (_registerViewPointer != null)
             {
                 munmap((IntPtr)_registerViewPointer, 0);
@@ -201,7 +204,7 @@ namespace System.Devices.Gpio
 
             SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
             _debounceTimeouts[bcmPinNumber] = default;
-            _lastEvent[bcmPinNumber] = default;
+            _lastEvents[bcmPinNumber] = default;
         }
 
         protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
@@ -799,13 +802,13 @@ namespace System.Devices.Gpio
             {
                 ClearDetectedEvent(bcmPinNumber);
 
-                TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
-                DateTime last = _lastEvent[bcmPinNumber];
+                TimeSpan debounce = _debounceTimeouts[bcmPinNumber];
+                DateTime last = _lastEvents[bcmPinNumber];
                 DateTime now = DateTime.UtcNow;
 
-                if (now.Subtract(last) > timeout)
+                if (now.Subtract(last) > debounce)
                 {
-                    _lastEvent[bcmPinNumber] = now;
+                    _lastEvents[bcmPinNumber] = now;
                 }
                 else
                 {
