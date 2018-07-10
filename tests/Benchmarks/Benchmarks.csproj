@@ -30,8 +30,8 @@
     <PackageReference Include="jayrock-json" Version="0.9.16530.1" />
     <PackageReference Include="LitJson" Version="0.13.0" />
     <PackageReference Include="codetitans-json" Version="1.8.3" />
-    <PackageReference Include="Manatee.Json" Version="9.9.1" />
-    <PackageReference Include="SpanJson" Version="1.0.3" />
+    <PackageReference Include="Manatee.Json" Version="9.9.2" />
+    <PackageReference Include="SpanJson" Version="1.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Azure.Experimental\System.Azure.Experimental.csproj" />
