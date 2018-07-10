@@ -34,7 +34,7 @@ Currently, this repo contains the following experimental components:
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
 * **System.Devices.Gpio**.
-This experimental package (will eventually) allow projects to access GPIO pins for the Raspberry Pi 3 (Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9). See more information about the features at [Planning.md](src/System.Devices.Gpio/Planning.md).
+This experimental package (will eventually) allow projects to access GPIO pins for the Raspberry Pi 3 (Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9). See more information about the features at [gpio.md](docs/specs/gpio.md).
 
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
