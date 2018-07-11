@@ -44,26 +44,16 @@ namespace System.Reflection.Metadata.Cil
             return NewDecoder(provider).DecodeMethodSpecificationSignature(ref blobReader);
         }
 
-        internal static CilType DecodeType(EntityHandle handle, CilTypeProvider provider, byte? isValueType)
+        internal static CilType DecodeType(EntityHandle handle, CilTypeProvider provider, byte rawTypeKind)
         {
-            byte code;
-            if (isValueType.HasValue)
-            {
-                code = isValueType.Value;
-            }
-            else
-            {
-                code = 0;
-            }
-
             switch (handle.Kind)
             {
                 case HandleKind.TypeDefinition:
-                    return provider.GetTypeFromDefinition(provider.Reader, (TypeDefinitionHandle)handle, code);
+                    return provider.GetTypeFromDefinition(provider.Reader, (TypeDefinitionHandle)handle, rawTypeKind);
                 case HandleKind.TypeReference:
-                    return provider.GetTypeFromReference(provider.Reader, (TypeReferenceHandle)handle, code);
+                    return provider.GetTypeFromReference(provider.Reader, (TypeReferenceHandle)handle, rawTypeKind);
                 case HandleKind.TypeSpecification:
-                    return provider.GetTypeFromSpecification(provider.Reader, null, (TypeSpecificationHandle)handle, code);
+                    return provider.GetTypeFromSpecification(provider.Reader, null, (TypeSpecificationHandle)handle, rawTypeKind);
                 default:
                     throw new ArgumentException("Handle is not a type definition, reference, or specification.", nameof(handle));
             }

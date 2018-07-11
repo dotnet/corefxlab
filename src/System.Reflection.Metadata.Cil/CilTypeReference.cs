@@ -43,7 +43,7 @@ namespace System.Reflection.Metadata.Cil
             {
                 if(_fullName == null)
                 {
-                    _fullName = SignatureDecoder.DecodeType(MetadataTokens.TypeReferenceHandle(_token), _readers.Provider, null).ToString(false);
+                    _fullName = SignatureDecoder.DecodeType(MetadataTokens.TypeReferenceHandle(_token), _readers.Provider, 0).ToString(false);
                 }
                 return _fullName;
             }

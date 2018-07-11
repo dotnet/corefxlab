@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace System.Reflection.Metadata.Cil.Decoder
@@ -196,10 +197,15 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return elementType;
         }
 
+        public (bool isValueType, bool isClass) GetTypeKind(EntityHandle handle, byte rawTypeKind)
+        {
+            return (isValueType: Reader.ResolveSignatureTypeKind(handle, rawTypeKind) == SignatureTypeKind.ValueType,
+                    isClass: Reader.ResolveSignatureTypeKind(handle, rawTypeKind) == SignatureTypeKind.Class);
+        }
+
         public CilType GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind)
         {
-            bool _isValueType = rawTypeKind == 1;
-            bool _isClass = rawTypeKind == 0;
+            (bool _isValueType, bool _isClass) = GetTypeKind(handle, rawTypeKind);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeDefinition(handle)), _isValueType, _isClass);
             return type;
@@ -207,8 +213,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
 
         public CilType GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind)
         {
-            bool _isValueType = rawTypeKind == 1;
-            bool _isClass = rawTypeKind == 0;
+            (bool _isValueType, bool _isClass) = GetTypeKind(handle, rawTypeKind);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeReference(handle)), _isValueType, _isClass);
             return type;
