@@ -4,7 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Reflection.Metadata.Cil.Decoder;
-using System.Reflection.Metadata.Decoding;
+using System.Reflection.Metadata.Ecma335;
 
 namespace System.Reflection.Metadata.Cil
 {
@@ -13,9 +13,9 @@ namespace System.Reflection.Metadata.Cil
     //       a build off the ground.
     internal static class SignatureDecoder
     {
-        private static SignatureDecoder<CilType> NewDecoder(CilTypeProvider provider)
+        private static SignatureDecoder<CilType, object> NewDecoder(CilTypeProvider provider)
         {
-            return new SignatureDecoder<CilType>(provider, provider.Reader, SignatureDecoderOptions.DifferentiateClassAndValueTypes);
+            return new SignatureDecoder<CilType, object>(provider, provider.Reader, null);
         }
 
         internal static MethodSignature<CilType> DecodeMethodSignature(BlobHandle handle, CilTypeProvider provider)
@@ -44,26 +44,16 @@ namespace System.Reflection.Metadata.Cil
             return NewDecoder(provider).DecodeMethodSpecificationSignature(ref blobReader);
         }
 
-        internal static CilType DecodeType(EntityHandle handle, CilTypeProvider provider, bool? isValueType)
+        internal static CilType DecodeType(EntityHandle handle, CilTypeProvider provider, byte rawTypeKind)
         {
-            SignatureTypeHandleCode code;
-            if (isValueType.HasValue)
-            {
-                code = isValueType.Value ? SignatureTypeHandleCode.ValueType : SignatureTypeHandleCode.Class;
-            }
-            else
-            {
-                code = SignatureTypeHandleCode.Unresolved;
-            }
-
             switch (handle.Kind)
             {
                 case HandleKind.TypeDefinition:
-                    return provider.GetTypeFromDefinition(provider.Reader, (TypeDefinitionHandle)handle, code);
+                    return provider.GetTypeFromDefinition(provider.Reader, (TypeDefinitionHandle)handle, rawTypeKind);
                 case HandleKind.TypeReference:
-                    return provider.GetTypeFromReference(provider.Reader, (TypeReferenceHandle)handle, code);
+                    return provider.GetTypeFromReference(provider.Reader, (TypeReferenceHandle)handle, rawTypeKind);
                 case HandleKind.TypeSpecification:
-                    return provider.GetTypeFromSpecification(provider.Reader, (TypeSpecificationHandle)handle, code);
+                    return provider.GetTypeFromSpecification(provider.Reader, null, (TypeSpecificationHandle)handle, rawTypeKind);
                 default:
                     throw new ArgumentException("Handle is not a type definition, reference, or specification.", nameof(handle));
             }
