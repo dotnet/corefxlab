@@ -7,25 +7,41 @@ namespace System.Buffers.Reader
 {
     public ref struct BufferReader
     {
-        private SequencePosition _currentSequencePosition;
-        private SequencePosition _nextSequencePosition;
+        private SequencePosition _currentPosition;
+        private SequencePosition _nextPosition;
 
-        private BufferReader(ReadOnlySequence<byte> buffer)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private BufferReader(in ReadOnlySequence<byte> buffer)
         {
-            End = false;
             CurrentSegmentIndex = 0;
             ConsumedBytes = 0;
             Sequence = buffer;
-            _currentSequencePosition = Sequence.Start;
-            _nextSequencePosition = _currentSequencePosition;
-            CurrentSegment = ReadOnlySpan<byte>.Empty;
-            GetNextSegment();
+            _currentPosition = Sequence.Start;
+            _nextPosition = _currentPosition;
+
+            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, true))
+            {
+                End = false;
+                CurrentSegment = memory.Span;
+                if (CurrentSegment.Length == 0)
+                {
+                    // No space in the first span, move to one with space
+                    GetNextSegment();
+                }
+            }
+            else
+            {
+                // No space in any spans and at end of sequence
+                End = true;
+                CurrentSegment = default;
+            }
         }
 
         /// <summary>
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{byte}"/>./>
         /// </summary>
-        public static BufferReader Create(ReadOnlySequence<byte> buffer)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BufferReader Create(in ReadOnlySequence<byte> buffer)
         {
             return new BufferReader(buffer);
         }
@@ -43,7 +59,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The current position in the <see cref="Sequence"/>.
         /// </summary>
-        public SequencePosition Position => Sequence.GetPosition(CurrentSegmentIndex, _currentSequencePosition);
+        public SequencePosition Position => Sequence.GetPosition(CurrentSegmentIndex, _currentPosition);
 
         /// <summary>
         /// The current segment in the <see cref="Sequence"/>.
@@ -99,13 +115,16 @@ namespace System.Buffers.Reader
             return value;
         }
 
+        /// <summary>
+        /// Get the next segment with available space, if any.
+        /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void GetNextSegment()
         {
-            SequencePosition previous = _nextSequencePosition;
-            while (Sequence.TryGet(ref _nextSequencePosition, out ReadOnlyMemory<byte> memory, advance: true))
+            SequencePosition previousNextPosition = _nextPosition;
+            while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
             {
-                _currentSequencePosition = previous;
+                _currentPosition = previousNextPosition;
                 CurrentSegment = memory.Span;
                 CurrentSegmentIndex = 0;
                 if (CurrentSegment.Length > 0)
@@ -119,15 +138,35 @@ namespace System.Buffers.Reader
         /// <summary>
         /// Move the reader ahead the specified number of bytes.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Advance(int byteCount)
         {
-            if (byteCount < 0)
+            if (byteCount == 0)
+            {
+                return;
+            }
+
+            if (byteCount < 0 || End)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
             ConsumedBytes += byteCount;
 
+            if ((CurrentSegmentIndex + byteCount) < CurrentSegment.Length)
+            {
+                CurrentSegmentIndex += byteCount;
+            }
+            else
+            {
+                // Current segment doesn't have enough space, scan forward through segments
+                AdvanceNextSegment(byteCount);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AdvanceNextSegment(int byteCount)
+        {
             while (!End && byteCount > 0)
             {
                 if ((CurrentSegmentIndex + byteCount) < CurrentSegment.Length)
@@ -169,7 +208,7 @@ namespace System.Buffers.Reader
                 firstSpan.CopyTo(destination);
                 int copied = firstSpan.Length;
 
-                SequencePosition next = buffer._nextSequencePosition;
+                SequencePosition next = buffer._nextPosition;
                 while (buffer.Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
                 {
                     ReadOnlySpan<byte> nextSpan = nextSegment.Span;
@@ -182,6 +221,7 @@ namespace System.Buffers.Reader
                             break;
                     }
                 }
+
                 return copied;
             }
         }
