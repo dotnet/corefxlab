@@ -14,6 +14,17 @@ namespace System.Devices.Gpio.Samples
         {
             try
             {
+                //var ret = UnixDriver.TestingSPI();
+
+                //if (ret > 0)
+                //{
+                //    var errnum = Runtime.InteropServices.Marshal.GetLastWin32Error();
+
+                //    Console.WriteLine($"ret = {ret}");
+                //    Console.WriteLine($"error number: {errnum}");
+                //}
+                //return;
+
                 int option = -1;
 
                 if (args.Length > 0)
