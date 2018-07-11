@@ -10,7 +10,7 @@ namespace System.Buffers.Reader
         private SequencePosition _currentSequencePosition;
         private SequencePosition _nextSequencePosition;
 
-        public BufferReader(ReadOnlySequence<byte> buffer)
+        private BufferReader(ReadOnlySequence<byte> buffer)
         {
             End = false;
             CurrentSegmentIndex = 0;
@@ -19,37 +19,66 @@ namespace System.Buffers.Reader
             _currentSequencePosition = Sequence.Start;
             _nextSequencePosition = _currentSequencePosition;
             CurrentSegment = ReadOnlySpan<byte>.Empty;
-            MoveNext();
+            GetNextSegment();
         }
 
+        /// <summary>
+        /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{byte}"/>./>
+        /// </summary>
         public static BufferReader Create(ReadOnlySequence<byte> buffer)
         {
             return new BufferReader(buffer);
         }
 
+        /// <summary>
+        /// True when there is no more data in the <see cref="Sequence"/>.
+        /// </summary>
         public bool End { get; private set; }
-        public int CurrentSegmentIndex { get; private set; }
 
+        /// <summary>
+        /// The underlying <see cref="ReadOnlySequence{byte}"/> for the reader.
+        /// </summary>
         public ReadOnlySequence<byte> Sequence { get; }
 
+        /// <summary>
+        /// The current position in the <see cref="Sequence"/>.
+        /// </summary>
         public SequencePosition Position => Sequence.GetPosition(CurrentSegmentIndex, _currentSequencePosition);
 
+        /// <summary>
+        /// The current segment in the <see cref="Sequence"/>.
+        /// </summary>
         public ReadOnlySpan<byte> CurrentSegment { get; private set; }
 
+        /// <summary>
+        /// The index in the <see cref="CurrentSegment"/>.
+        /// </summary>
+        public int CurrentSegmentIndex { get; private set; }
+
+        /// <summary>
+        /// The unread portion of the <see cref="CurrentSegment"/>.
+        /// </summary>
         public ReadOnlySpan<byte> UnreadSegment => CurrentSegment.Slice(CurrentSegmentIndex);
 
+        /// <summary>
+        /// The total number of bytes processed by the reader.
+        /// </summary>
         public int ConsumedBytes { get; private set; }
 
+        /// <summary>
+        /// Peeks at the next byte value without advancing the reader.
+        /// </summary>
+        /// <returns>The next byte or -1 if at the end of the buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (End)
-            {
-                return -1;
-            }
-            return CurrentSegment[CurrentSegmentIndex];
+            return End ? -1 : CurrentSegment[CurrentSegmentIndex];
         }
 
+        /// <summary>
+        /// Read the next byte value.
+        /// </summary>
+        /// <returns>The next byte or -1 if at the end of the buffer.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Read()
         {
@@ -58,23 +87,23 @@ namespace System.Buffers.Reader
                 return -1;
             }
 
-            var value = CurrentSegment[CurrentSegmentIndex];
+            byte value = CurrentSegment[CurrentSegmentIndex];
             CurrentSegmentIndex++;
             ConsumedBytes++;
 
             if (CurrentSegmentIndex >= CurrentSegment.Length)
             {
-                MoveNext();
+                GetNextSegment();
             }
 
             return value;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void MoveNext()
+        private void GetNextSegment()
         {
-            var previous = _nextSequencePosition;
-            while (Sequence.TryGet(ref _nextSequencePosition, out var memory, true))
+            SequencePosition previous = _nextSequencePosition;
+            while (Sequence.TryGet(ref _nextSequencePosition, out ReadOnlyMemory<byte> memory, advance: true))
             {
                 _currentSequencePosition = previous;
                 CurrentSegment = memory.Span;
@@ -87,6 +116,9 @@ namespace System.Buffers.Reader
             End = true;
         }
 
+        /// <summary>
+        /// Move the reader ahead the specified number of bytes.
+        /// </summary>
         public void Advance(int byteCount)
         {
             if (byteCount < 0)
@@ -105,12 +137,12 @@ namespace System.Buffers.Reader
                     break;
                 }
 
-                var remaining = (CurrentSegment.Length - CurrentSegmentIndex);
+                int remaining = (CurrentSegment.Length - CurrentSegmentIndex);
 
                 CurrentSegmentIndex += remaining;
                 byteCount -= remaining;
 
-                MoveNext();
+                GetNextSegment();
             }
 
             if (byteCount > 0)
@@ -119,34 +151,35 @@ namespace System.Buffers.Reader
             }
         }
 
-        internal static int Peek(BufferReader bytes, Span<byte> destination)
+        internal static int Peek(in BufferReader buffer, Span<byte> destination)
         {
-            var first = bytes.UnreadSegment;
-            if (first.Length > destination.Length)
+            ReadOnlySpan<byte> firstSpan = buffer.UnreadSegment;
+            if (firstSpan.Length > destination.Length)
             {
-                first.Slice(0, destination.Length).CopyTo(destination);
+                firstSpan.Slice(0, destination.Length).CopyTo(destination);
                 return destination.Length;
             }
-            else if (first.Length == destination.Length)
+            else if (firstSpan.Length == destination.Length)
             {
-                first.CopyTo(destination);
+                firstSpan.CopyTo(destination);
                 return destination.Length;
             }
             else
             {
-                first.CopyTo(destination);
-                int copied = first.Length;
+                firstSpan.CopyTo(destination);
+                int copied = firstSpan.Length;
 
-                var next = bytes._nextSequencePosition;
-                while (bytes.Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+                SequencePosition next = buffer._nextSequencePosition;
+                while (buffer.Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
                 {
-                    var nextSpan = nextSegment.Span;
+                    ReadOnlySpan<byte> nextSpan = nextSegment.Span;
                     if (nextSpan.Length > 0)
                     {
-                        var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
+                        int toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
                         nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
                         copied += toCopy;
-                        if (copied >= destination.Length) break;
+                        if (copied >= destination.Length)
+                            break;
                     }
                 }
                 return copied;
