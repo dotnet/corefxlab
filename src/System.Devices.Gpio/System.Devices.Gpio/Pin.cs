@@ -31,10 +31,6 @@ namespace System.Devices.Gpio
         Both = Low | High,
         SyncBoth = SyncFallingEdge | SyncRisingEdge,
         AsyncBoth = AsyncFallingEdge | AsyncRisingEdge,
-        EdgeBoth = SyncBoth | AsyncBoth,
-
-        RisingEdge = SyncRisingEdge | AsyncRisingEdge,
-        FallingEdge = SyncFallingEdge | AsyncFallingEdge,
     }
 
     public enum PinNumberingScheme
@@ -43,38 +39,62 @@ namespace System.Devices.Gpio
         BCM
     }
 
-    public class Pin
+    public class Pin : IDisposable
     {
-        protected GpioDriver _driver;
+        internal Pin(GpioController controller, int bcmNumber)
+        {
+            Controller = controller;
+            BcmNumber = bcmNumber;
+        }
 
-        public int BCMNumber { get; }
+        public void Dispose()
+        {
+            Controller.ClosePin(this);
+        }
+
+        public event EventHandler<PinValueChangedEventArgs> ValueChanged;
+
+        public GpioController Controller { get; }
+
+        public int BcmNumber { get; }
+
+        public TimeSpan DebounceTimeout
+        {
+            get => Controller.Driver.GetDebounce(BcmNumber);
+            set => Controller.Driver.SetDebounce(BcmNumber, value);
+        }
 
         public PinMode Mode
         {
-            get => _driver.GetPinMode(BCMNumber);
-            set => _driver.SetPinMode(BCMNumber, value);
+            get => Controller.Driver.GetPinMode(BcmNumber);
+            set => Controller.Driver.SetPinMode(BcmNumber, value);
         }
 
-        public Pin(GpioDriver driver, PinNumberingScheme numbering, int number, PinMode mode)
+        public PinEvent NotifyEvents
         {
-            _driver = driver;
-            BCMNumber = driver.ConvertPinNumber(number, numbering, PinNumberingScheme.BCM);
-            Mode = mode;
+            get => Controller.Driver.GetPinEventsToDetect(BcmNumber);
+            set => Controller.Driver.SetPinEventsToDetect(BcmNumber, value);
         }
 
-        public int GetNumber(PinNumberingScheme numbering)
+        public bool EnableRaisingEvents
         {
-            return _driver.ConvertPinNumber(BCMNumber, PinNumberingScheme.BCM, numbering);
+            get => Controller.Driver.GetEnableRaisingPinEvents(BcmNumber);
+            set => Controller.Driver.SetEnableRaisingPinEvents(BcmNumber, value);
         }
 
-        public PinValue Read()
-        {
-            return _driver.Input(BCMNumber);
-        }
+        public bool IsModeSupported(PinMode mode) => Controller.Driver.IsPinModeSupported(mode);
 
-        public void Write(PinValue value)
+        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.BCM, numbering);
+
+        public PinValue Read() => Controller.Driver.Input(BcmNumber);
+
+        public void Write(PinValue value) => Controller.Driver.Output(BcmNumber, value);
+
+        public bool WaitForEvent(TimeSpan timeout) => Controller.Driver.WaitForPinEvent(BcmNumber, timeout);
+
+        internal void OnValueChanged(PinValueChangedEventArgs e)
         {
-            _driver.Output(BCMNumber, value);
+            ValueChanged?.Invoke(this, e);
         }
     }
 }

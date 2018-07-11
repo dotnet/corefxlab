@@ -116,10 +116,12 @@ namespace System.Devices.Gpio
         private const int GpioBaseOffset = 0;
 
         private RegisterView* _registerViewPointer = null;
+
         private int _pinsToDetectEventsCount;
         private BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
-        private DateTime[] _lastEvent;
+        private TimeSpan[] _debounceTimeouts;
+        private DateTime[] _lastEvents;
 
         public RaspberryPiDriver()
         {
@@ -151,16 +153,15 @@ namespace System.Devices.Gpio
 
             _registerViewPointer = (RegisterView*)mapPointer;
 
-            _lastEvent = new DateTime[PinCount];
             _pinsToDetectEvents = new BitArray(PinCount);
-            _eventDetectionThread = new Thread(DetectPinEvents)
-            {
-                IsBackground = true
-            };
+            _debounceTimeouts = new TimeSpan[PinCount];
+            _lastEvents = new DateTime[PinCount];
         }
 
         public override void Dispose()
         {
+            _pinsToDetectEventsCount = 0;
+
             if (_registerViewPointer != null)
             {
                 munmap((IntPtr)_registerViewPointer, 0);
@@ -170,21 +171,46 @@ namespace System.Devices.Gpio
 
         protected internal override int PinCount => 54;
 
-        protected internal override TimeSpan Debounce { get; set; }
+        protected internal override bool IsPinModeSupported(PinMode mode)
+        {
+            bool result;
+
+            switch (mode)
+            {
+                case PinMode.Input:
+                case PinMode.Output:
+                case PinMode.InputPullDown:
+                case PinMode.InputPullUp:
+                    result = true;
+                    break;
+
+                default:
+                    result = false;
+                    break;
+            }
+
+            return result;
+        }
+
+        protected internal override void OpenPin(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+            Initialize();
+        }
+
+        protected internal override void ClosePin(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
+            _debounceTimeouts[bcmPinNumber] = default;
+            _lastEvents[bcmPinNumber] = default;
+        }
 
         protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            if (!Enum.IsDefined(typeof(PinMode), mode))
-            {
-                throw new NotSupportedPinModeException(mode);
-            }
-
-            Initialize();
+            ValidatePinNumber(bcmPinNumber);
+            ValidatePinMode(mode);
 
             switch (mode)
             {
@@ -291,12 +317,7 @@ namespace System.Devices.Gpio
 
         protected internal override PinMode GetPinMode(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            Initialize();
+            ValidatePinNumber(bcmPinNumber);
 
             //var mode = GetBits(RegisterViewPointer->GPFSEL, pin, 10, 3);
 
@@ -327,7 +348,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(mode);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -351,7 +372,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(mode);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
             }
 
             return result;
@@ -372,7 +393,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new NotSupportedPinModeException(gpfselValue);
+                    throw new NotSupportedException($"Not supported GPIO pin mode '{gpfselValue}'");
             }
 
             return result;
@@ -380,17 +401,8 @@ namespace System.Devices.Gpio
 
         protected internal override void Output(int bcmPinNumber, PinValue value)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            if (!Enum.IsDefined(typeof(PinValue), value))
-            {
-                throw new InvalidPinValueException(value);
-            }
-
-            Initialize();
+            ValidatePinNumber(bcmPinNumber);
+            ValidatePinValue(value);
 
             //switch (value)
             //{
@@ -423,7 +435,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinValueException(value);
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -441,12 +453,7 @@ namespace System.Devices.Gpio
 
         protected internal override PinValue Input(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            Initialize();
+            ValidatePinNumber(bcmPinNumber);
 
             //var value = GetBit(RegisterViewPointer->GPLEV, pin);
 
@@ -459,181 +466,81 @@ namespace System.Devices.Gpio
             return result;
         }
 
-        private void ClearDetectedEvent(int bcmPinNumber)
+        protected internal override void SetDebounce(int bcmPinNumber, TimeSpan timeout)
         {
-            //SetBit(RegisterViewPointer->GPEDS, pin);
+            ValidatePinNumber(bcmPinNumber);
 
-            int index = bcmPinNumber / 32;
-            int shift = bcmPinNumber % 32;
-            uint* registerPointer = &_registerViewPointer->GPEDS[index];
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
-
-            uint register = *registerPointer;
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
-
-            register |= 1U << shift;
-
-            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
-
-            *registerPointer = register;
-
-            // Wait 150 cycles
-            Thread.SpinWait(150);
-
-            *registerPointer = 0;
+            _debounceTimeouts[bcmPinNumber] = timeout;
         }
 
-        protected internal override bool WasPinEventDetected(int bcmPinNumber)
+        protected internal override TimeSpan GetDebounce(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
+            ValidatePinNumber(bcmPinNumber);
 
-            Initialize();
-
-            //var value = GetBit(RegisterViewPointer->GPEDS, pin);
-
-            int index = bcmPinNumber / 32;
-            int shift = bcmPinNumber % 32;
-            uint register = _registerViewPointer->GPEDS[index];
-            uint value = (register >> shift) & 1;
-
-            bool result = Convert.ToBoolean(value);
-
-            if (result)
-            {
-                ClearDetectedEvent(bcmPinNumber);
-
-                DateTime now = DateTime.UtcNow;
-                DateTime last = _lastEvent[bcmPinNumber];
-
-                if (now.Subtract(last) > Debounce)
-                {
-                    _lastEvent[bcmPinNumber] = now;
-                }
-                else
-                {
-                    result = false;
-                }
-            }
-
-            return result;
+            TimeSpan timeout = _debounceTimeouts[bcmPinNumber];
+            return timeout;
         }
 
         protected internal override void SetPinEventsToDetect(int bcmPinNumber, PinEvent events)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
+            ValidatePinNumber(bcmPinNumber);
 
-            Initialize();
+            PinEvent kind = PinEvent.Low;
+            bool enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
-            PinEvent pinEvent = PinEvent.Low;
-            bool enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
+            kind = PinEvent.High;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
-            pinEvent = PinEvent.High;
-            enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
+            kind = PinEvent.SyncRisingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
-            pinEvent = PinEvent.SyncRisingEdge;
-            enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
+            kind = PinEvent.SyncFallingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
-            pinEvent = PinEvent.SyncFallingEdge;
-            enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
+            kind = PinEvent.AsyncRisingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
-            pinEvent = PinEvent.AsyncRisingEdge;
-            enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
-
-            pinEvent = PinEvent.AsyncFallingEdge;
-            enabled = events.HasFlag(pinEvent);
-            SetPinEventDetection(bcmPinNumber, pinEvent, enabled);
+            kind = PinEvent.AsyncFallingEdge;
+            enabled = events.HasFlag(kind);
+            SetEventDetection(bcmPinNumber, kind, enabled);
 
             ClearDetectedEvent(bcmPinNumber);
-
-            bool eventDetectionEnabled = _pinsToDetectEvents[bcmPinNumber];
-
-            if (events == PinEvent.None)
-            {
-                if (eventDetectionEnabled)
-                {
-                    _pinsToDetectEvents.Set(bcmPinNumber, false);
-                    _pinsToDetectEventsCount--;
-                }
-            }
-            else
-            {
-                if (!eventDetectionEnabled)
-                {
-                    _pinsToDetectEvents.Set(bcmPinNumber, true);
-                    _pinsToDetectEventsCount++;
-
-                    if (_eventDetectionThread.ThreadState != ThreadState.Running)
-                    {
-                        _eventDetectionThread.Start();
-                    }
-                }
-            }
         }
 
-        private void DetectPinEvents()
+        private void SetEventDetection(int bcmPinNumber, PinEvent kind, bool enabled)
         {
-            while (_pinsToDetectEventsCount > 0)
-            {
-                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
-                {
-                    bool eventDetectionEnabled = _pinsToDetectEvents[i];
-
-                    if (eventDetectionEnabled)
-                    {
-                        bool eventDetected = WasPinEventDetected(i);
-
-                        if (eventDetected)
-                        {
-                            //Console.WriteLine($"Event detected for pin {i}");
-                            OnPinValueChanged(i);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void SetPinEventDetection(int bcmPinNumber, PinEvent pinEvent, bool enabled)
-        {
-            //switch (pinEvent)
+            //switch (kind)
             //{
-            //    case PinEvent.High:
+            //    case GpioEventKind.High:
             //        SetBit(RegisterViewPointer->GPHEN, pin);
             //        break;
 
-            //    case PinEvent.Low:
+            //    case GpioEventKind.Low:
             //        SetBit(RegisterViewPointer->GPLEN, pin);
             //        break;
 
-            //    case PinEvent.SyncRisingEdge:
+            //    case GpioEventKind.SyncRisingEdge:
             //        SetBit(RegisterViewPointer->GPREN, pin);
             //        break;
 
-            //    case PinEvent.SyncFallingEdge:
+            //    case GpioEventKind.SyncFallingEdge:
             //        SetBit(RegisterViewPointer->GPFEN, pin);
             //        break;
 
-            //    case PinEvent.AsyncRisingEdge:
+            //    case GpioEventKind.AsyncRisingEdge:
             //        SetBit(RegisterViewPointer->GPAREN, pin);
             //        break;
 
-            //    case PinEvent.AsyncFallingEdge:
+            //    case GpioEventKind.AsyncFallingEdge:
             //        SetBit(RegisterViewPointer->GPAFEN, pin);
             //        break;
 
-            //    default: throw new InvalidPinEventException(pinEvent);
+            //    default: throw new InvalidGpioEventKindException(kind);
             //}
 
             int index = bcmPinNumber / 32;
@@ -641,7 +548,7 @@ namespace System.Devices.Gpio
             uint* registerPointer = null;
             string registerName = string.Empty;
 
-            switch (pinEvent)
+            switch (kind)
             {
                 case PinEvent.High:
                     registerPointer = &_registerViewPointer->GPHEN[index];
@@ -674,7 +581,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinEventException(pinEvent);
+                    throw new ArgumentException($"Invalid GPIO event kind '{kind}'");
             }
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
@@ -699,70 +606,65 @@ namespace System.Devices.Gpio
 
         protected internal override PinEvent GetPinEventsToDetect(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
-            }
-
-            Initialize();
+            ValidatePinNumber(bcmPinNumber);
 
             PinEvent result = PinEvent.None;
-            PinEvent pinEvent = PinEvent.Low;
-            bool enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            PinEvent kind = PinEvent.Low;
+            bool enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
-            pinEvent = PinEvent.High;
-            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            kind = PinEvent.High;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
-            pinEvent = PinEvent.SyncRisingEdge;
-            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            kind = PinEvent.SyncRisingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
-            pinEvent = PinEvent.SyncFallingEdge;
-            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            kind = PinEvent.SyncFallingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
-            pinEvent = PinEvent.AsyncRisingEdge;
-            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            kind = PinEvent.AsyncRisingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
-            pinEvent = PinEvent.AsyncFallingEdge;
-            enabled = GetPinEventDetection(bcmPinNumber, pinEvent);
-            if (enabled) result |= pinEvent;
+            kind = PinEvent.AsyncFallingEdge;
+            enabled = GetEventDetection(bcmPinNumber, kind);
+            if (enabled) result |= kind;
 
             return result;
         }
 
-        private bool GetPinEventDetection(int bcmPinNumber, PinEvent pinEvent)
+        private bool GetEventDetection(int bcmPinNumber, PinEvent kind)
         {
-            //switch (pinEvent)
+            //switch (kind)
             //{
-            //    case PinEvent.High:
+            //    case GpioEventKind.High:
             //        value = GetBit(RegisterViewPointer->GPHEN, pin);
             //        break;
 
-            //    case PinEvent.Low:
+            //    case GpioEventKind.Low:
             //        value = GetBit(RegisterViewPointer->GPLEN, pin);
             //        break;
 
-            //    case PinEvent.SyncRisingEdge:
+            //    case GpioEventKind.SyncRisingEdge:
             //        value = GetBit(RegisterViewPointer->GPREN, pin);
             //        break;
 
-            //    case PinEvent.SyncFallingEdge:
+            //    case GpioEventKind.SyncFallingEdge:
             //        value = GetBit(RegisterViewPointer->GPFEN, pin);
             //        break;
 
-            //    case PinEvent.AsyncRisingEdge:
+            //    case GpioEventKind.AsyncRisingEdge:
             //        value = GetBit(RegisterViewPointer->GPAREN, pin);
             //        break;
 
-            //    case PinEvent.AsyncFallingEdge:
+            //    case GpioEventKind.AsyncFallingEdge:
             //        value = GetBit(RegisterViewPointer->GPAFEN, pin);
             //        break;
 
-            //    default: throw new InvalidPinEventException(pinEvent);
+            //    default: throw new InvalidGpioEventKindException(kind);
             //}
 
             int index = bcmPinNumber / 32;
@@ -770,7 +672,7 @@ namespace System.Devices.Gpio
             string registerName = string.Empty;
             uint register = 0U;
 
-            switch (pinEvent)
+            switch (kind)
             {
                 case PinEvent.High:
                     register = _registerViewPointer->GPHEN[index];
@@ -797,13 +699,150 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new InvalidPinEventException(pinEvent);
+                    throw new ArgumentException($"Invalid GPIO event kind '{kind}'");
             }
 
             uint value = (register >> shift) & 1;
 
             bool result = Convert.ToBoolean(value);
             return result;
+        }
+
+        protected internal override void SetEnableRaisingPinEvents(int bcmPinNumber, bool enable)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            bool wasEnabled = _pinsToDetectEvents[bcmPinNumber];
+            _pinsToDetectEvents[bcmPinNumber] = enable;
+
+            if (enable && !wasEnabled)
+            {
+                // Enable pin events detection
+                _pinsToDetectEventsCount++;
+
+                if (_eventDetectionThread == null)
+                {
+                    _eventDetectionThread = new Thread(DetectEvents)
+                    {
+                        IsBackground = true
+                    };
+
+                    _eventDetectionThread.Start();
+                }
+            }
+            else if (!enable && wasEnabled)
+            {
+                // Disable pin events detection
+                _pinsToDetectEventsCount--;
+            }
+        }
+
+        protected internal override bool GetEnableRaisingPinEvents(int bcmPinNumber)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
+            return pinEventsEnabled;
+        }
+
+        private void DetectEvents()
+        {
+            while (_pinsToDetectEventsCount > 0)
+            {
+                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
+                {
+                    bool pinEventsEnabled = _pinsToDetectEvents[i];
+
+                    if (pinEventsEnabled)
+                    {
+                        bool eventDetected = WasEventDetected(i);
+
+                        if (eventDetected)
+                        {
+                            //Console.WriteLine($"Event detected for pin {i}");
+                            OnPinValueChanged(i);
+                        }
+                    }
+                }
+            }
+
+            _eventDetectionThread = null;
+        }
+
+        protected internal override bool WaitForPinEvent(int bcmPinNumber, TimeSpan timeout)
+        {
+            ValidatePinNumber(bcmPinNumber);
+
+            DateTime initial = DateTime.UtcNow;
+            TimeSpan elapsed;
+            bool eventDetected;
+
+            do
+            {
+                eventDetected = WasEventDetected(bcmPinNumber);
+                elapsed = DateTime.UtcNow.Subtract(initial);
+            }
+            while (!eventDetected && elapsed < timeout);
+
+            return eventDetected;
+        }
+
+        private bool WasEventDetected(int bcmPinNumber)
+        {
+            //var value = GetBit(RegisterViewPointer->GPEDS, pin);
+
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
+            uint register = _registerViewPointer->GPEDS[index];
+            uint value = (register >> shift) & 1;
+
+            bool result = Convert.ToBoolean(value);
+
+            if (result)
+            {
+                ClearDetectedEvent(bcmPinNumber);
+
+                TimeSpan debounce = _debounceTimeouts[bcmPinNumber];
+                DateTime last = _lastEvents[bcmPinNumber];
+                DateTime now = DateTime.UtcNow;
+
+                if (now.Subtract(last) > debounce)
+                {
+                    _lastEvents[bcmPinNumber] = now;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private void ClearDetectedEvent(int bcmPinNumber)
+        {
+            //SetBit(RegisterViewPointer->GPEDS, pin);
+
+            int index = bcmPinNumber / 32;
+            int shift = bcmPinNumber % 32;
+            uint* registerPointer = &_registerViewPointer->GPEDS[index];
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} register address = {(long)registerPointer:X16}");
+
+            uint register = *registerPointer;
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} original register value = {register:X8}");
+
+            register |= 1U << shift;
+
+            //Console.WriteLine($"{nameof(RegisterView.GPEDS)} new register value = {register:X8}");
+
+            *registerPointer = register;
+
+            // Wait 150 cycles
+            Thread.SpinWait(150);
+
+            *registerPointer = 0;
         }
 
         protected internal override int ConvertPinNumber(int pinNumber, PinNumberingScheme from, PinNumberingScheme to)
@@ -824,7 +863,7 @@ namespace System.Devices.Gpio
                             break;
 
                         default:
-                            throw new NotSupportedPinNumberingSchemeException(to);
+                            throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {to}");
                     }
                     break;
 
@@ -840,15 +879,50 @@ namespace System.Devices.Gpio
                             break;
 
                         default:
-                            throw new NotSupportedPinNumberingSchemeException(to);
+                            throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {to}");
                     }
                     break;
 
                 default:
-                    throw new NotSupportedPinNumberingSchemeException(from);
+                    throw new NotSupportedException($"Unsupported GPIO pin numbering scheme {from}");
             }
 
             return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinMode(PinMode mode)
+        {
+            bool supportedPinMode = IsPinModeSupported(mode);
+
+            if (!supportedPinMode)
+            {
+                throw new NotSupportedException($"Not supported GPIO pin mode '{mode}'");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinValue(PinValue value)
+        {
+            switch (value)
+            {
+                case PinValue.Low:
+                case PinValue.High:
+                    // Do nothing
+                    break;
+
+                default:
+                    throw new ArgumentException($"Invalid GPIO pin value '{value}'");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidatePinNumber(int bcmPinNumber)
+        {
+            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
+            }
         }
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
