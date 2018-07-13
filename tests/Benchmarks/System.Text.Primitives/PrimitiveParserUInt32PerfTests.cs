@@ -6,8 +6,8 @@ using System.Globalization;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Primitives.Tests;
 using BenchmarkDotNet.Attributes;
+using Benchmarks.System.Text.Primitives;
 
 namespace System.Text.Primitives.Benchmarks
 {
@@ -38,114 +38,76 @@ namespace System.Text.Primitives.Benchmarks
             "A29",
             "A294967"
         };
+
+        public IEnumerable<object> UInt32_VariableLength_Arguments()
+            => s_UInt32TextArray.Select(text => new Utf8ByteArrayArgument(text));
         
         [Benchmark]
-        [Arguments("2134567890")] // standard parse
-        [Arguments("4294967295")] // max value
-        [Arguments("0")] // min value
-        public bool BaselineSimpleByteStarToUInt32(string text) => uint.TryParse(text, out uint value);
-
+        [ArgumentsSource(nameof(UInt32_VariableLength_Arguments))]
+        public bool BaselineSimpleByteStarToUInt32_VariableLength(Utf8ByteArrayArgument text) 
+            => uint.TryParse(text.Text, out uint value);
+        
         [Benchmark]
-        public bool BaselineSimpleByteStarToUInt32_VariableLength()
+        [ArgumentsSource(nameof(UInt32_VariableLength_Arguments))]
+        public bool BaselineByteStarToUInt32_VariableLength(Utf8ByteArrayArgument text)
+            => uint.TryParse(text.Text, NumberStyles.None, CultureInfo.InvariantCulture, out uint value);
+        
+        [Benchmark]
+        [ArgumentsSource(nameof(UInt32_VariableLength_Arguments))]
+        public bool PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength(Utf8ByteArrayArgument text) 
+            => Utf8Parser.TryParse(text.CreateSpan(), out uint value, out int bytesConsumed);
+
+        public IEnumerable<object> Int32Hex_BytesConsumed_VariableLength_Arguments()
+            => s_UInt32TextArrayHex.Select(text => new Utf8ByteArrayArgument(text));
+        
+        [Benchmark]
+        [ArgumentsSource(nameof(Int32Hex_BytesConsumed_VariableLength_Arguments))]
+        public bool BaselineByteStarToUInt32Hex_VariableLength(Utf8ByteArrayArgument text)
+            => uint.TryParse(text.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value);
+        
+        [Benchmark]
+        [ArgumentsSource(nameof(Int32Hex_BytesConsumed_VariableLength_Arguments))]
+        public bool  PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength(Utf8ByteArrayArgument text) 
+            => Utf8Parser.TryParse(text.CreateSpan(), out uint value, out int bytesConsumed, 'X');
+        
+        public IEnumerable<object> PrimitiveParser_UIn32_Arguments()
         {
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                result = uint.TryParse(s_UInt32TextArray[i % 10], out uint value);
-            }
-            return result;
-        }
-
-        [Benchmark]
-        [Arguments("2134567890")] // standard parse
-        [Arguments("4294967295")] // max value
-        [Arguments("0")] // min value
-        public bool BaselineByteStarToUInt32(string text) => uint.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out uint value);
-
-        [Benchmark]
-        public bool BaselineByteStarToUInt32_VariableLength()
-        {
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                result = uint.TryParse(s_UInt32TextArray[i % 10], NumberStyles.None, CultureInfo.InvariantCulture, out uint value);
-            }
-            return result;
-        }
-
-        [Benchmark]
-        [Arguments("abcdef")] // standard parse
-        [Arguments("ffffffff")] // max value
-        [Arguments("0")] // min value
-        public bool BaselineByteStarToUInt32Hex(string text)
-        {
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                result =uint.TryParse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value);
-            }
-            return result;
-        }
-
-        [Benchmark]
-        public bool BaselineByteStarToUInt32Hex_VariableLength()
-        {
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                uint.TryParse(s_UInt32TextArrayHex[i % 8], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value);
-            }
-            return result;
-        }
-
-        [Benchmark]
-        [Arguments("2134567890")] // standard parse
-        [Arguments("4294967295")] // max value
-        [Arguments("0")] // min value
-        public bool PrimitiveParserByteSpanToUInt32_BytesConsumed(string text)
-        {
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                result = Utf8Parser.TryParse(utf8ByteSpan, out uint value, out int bytesConsumed);
-            }
-            return result;
-        }
-
-        public IEnumerable<object> PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength_Arguments()
-            => s_UInt32TextArray.Select(text => Encoding.UTF8.GetBytes(text));
-
-        [Benchmark]
-        [ArgumentsSource(nameof(PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength_Arguments))]
-        public bool PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength(byte[] utf8ByteArray) 
-            => Utf8Parser.TryParse(new ReadOnlySpan<byte>(utf8ByteArray), out uint value, out int bytesConsumed);
-
-        [Benchmark]
-        [Arguments("abcdef")] // standard parse
-        [Arguments("ffffffff")] // max value
-        [Arguments("0")] // min value
-        public bool PrimitiveParserByteSpanToUInt32Hex_BytesConsumed(string text)
-        {
-            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
-            var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-
-            bool result = false;
-            for (int i = 0; i < TestHelper.LoadIterations; i++)
-            {
-                Utf8Parser.TryParse(utf8ByteSpan, out uint value, out int bytesConsumed, 'X');
-            }
-
-            return result;
+            yield return new Utf8ByteArrayArgument("2134567890"); // standard parse
+            yield return new Utf8ByteArrayArgument("4294967295"); // max value
+            yield return new Utf8ByteArrayArgument("0"); // min value
         }
         
-        public IEnumerable<object> PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength_Arguments()
-            => s_UInt32TextArrayHex.Select(text => Encoding.UTF8.GetBytes(text));
+        [Benchmark]
+        [ArgumentsSource(nameof(PrimitiveParser_UIn32_Arguments))]
+        public bool BaselineSimpleByteStarToUInt32(Utf8ByteArrayArgument text) 
+            => uint.TryParse(text.Text, out uint value);
 
         [Benchmark]
-        [ArgumentsSource(nameof(PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength_Arguments))]
-        public bool  PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength(byte[] utf8ByteArray) 
-            => Utf8Parser.TryParse(new ReadOnlySpan<byte>(utf8ByteArray), out uint value, out int bytesConsumed, 'X');
+        [ArgumentsSource(nameof(PrimitiveParser_UIn32_Arguments))]
+        public bool BaselineByteStarToUInt32(Utf8ByteArrayArgument text) 
+            => uint.TryParse(text.Text, NumberStyles.None, CultureInfo.InvariantCulture, out uint value);
+
+        [Benchmark]
+        [ArgumentsSource(nameof(PrimitiveParser_UIn32_Arguments))]
+        public bool PrimitiveParserByteSpanToUInt32_BytesConsumed(Utf8ByteArrayArgument text)
+            => Utf8Parser.TryParse(text.CreateSpan(), out uint value, out int bytesConsumed);
+
+        public IEnumerable<object> PrimitiveParser_UIn32_Hex_Arguments()
+        {
+            yield return new Utf8ByteArrayArgument("abcdef"); // standard parse
+            yield return new Utf8ByteArrayArgument("ffffffff"); // max value
+            yield return new Utf8ByteArrayArgument("0"); // min value
+        }
+        
+        [Benchmark]
+        [ArgumentsSource(nameof(PrimitiveParser_UIn32_Hex_Arguments))]
+        public bool BaselineByteStarToUInt32Hex(Utf8ByteArrayArgument text)
+            => uint.TryParse(text.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint value);
+
+        [Benchmark]
+        [ArgumentsSource(nameof(PrimitiveParser_UIn32_Hex_Arguments))]
+        public bool PrimitiveParserByteSpanToUInt32Hex_BytesConsumed(Utf8ByteArrayArgument text)
+            => Utf8Parser.TryParse(text.CreateSpan(), out uint value, out int bytesConsumed, 'X');
+
     }
 }
