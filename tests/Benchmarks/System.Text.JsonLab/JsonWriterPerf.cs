@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using System.Buffers.Text;
 using System.IO;
@@ -26,7 +25,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
         [GlobalSetup]
