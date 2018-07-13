@@ -8,11 +8,9 @@ using System.Text;
 using System.Text.Formatting;
 using System.Text.JsonLab;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
 
 namespace System.IO.Pipelines.Benchmarks
 {
-    [SimpleJob(RunStrategy.Monitoring)] // the setting for benchmarks with not-steady state
     public class E2E
     {
         private static readonly byte[] s_genericRequest = Encoding.UTF8.GetBytes(_plaintextTechEmpowerRequest);
