@@ -59,7 +59,7 @@ namespace System.Devices.Gpio
             }
         }
 
-        public Pin OpenPin(int number, PinMode mode)
+        public Pin OpenPin(int number)
         {
             int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.BCM);
             Pin pin = _pins[bcmNumber];
@@ -70,11 +70,7 @@ namespace System.Devices.Gpio
             }
 
             Driver.OpenPin(bcmNumber);
-            pin = new Pin(this, bcmNumber)
-            {
-                Mode = mode
-            };
-
+            pin = new Pin(this, bcmNumber);
             _pins[bcmNumber] = pin;
             return pin;
         }
