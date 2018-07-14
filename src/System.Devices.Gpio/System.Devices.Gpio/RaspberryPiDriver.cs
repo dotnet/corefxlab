@@ -440,11 +440,7 @@ namespace System.Devices.Gpio
 
             //Console.WriteLine($"{registerName} register address = {(long)registerPointer:X16}");
 
-            uint register = *registerPointer;
-
-            //Console.WriteLine($"{registerName} original register value = {register:X8}");
-
-            register |= 1U << shift;
+            uint register = 1U << shift;
 
             //Console.WriteLine($"{registerName} new register value = {register:X8}");
 
