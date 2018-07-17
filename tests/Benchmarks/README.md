@@ -12,21 +12,23 @@ This project contains performance benchmarks.
 
 1. Navigate to the benchmarks directory (corefxlab\tests\Benchmarks\)
 
-2. Restore this project
-   
-   (`..\..\dotnetcli\dotnet.exe restore`)
+2. Run the benchmarks in Release, choose one of the benchmarks when prompted
 
-3a. Run the benchmarks in Release, choose one of the benchmarks when prompted
+```log
+    ..\..\dotnetcli\dotnet.exe run -c Release
+```
    
-   (`..\..\dotnetcli\dotnet.exe run -c Release`)
-   
-3b. To run specific tests only, pass in the filter to the harness:
-   
-   (`..\..\dotnetcli\dotnet.exe run -c Release -- --filter namespace*`)
-   (`..\..\dotnetcli\dotnet.exe run -c Release -- --filter *typeName*`)
-   (`..\..\dotnetcli\dotnet.exe run -c Release -- --filter *.methodName`)
-   (`..\..\dotnetcli\dotnet.exe run -c Release -- --filter namespace.typeName.methodName`)
-   
+3. To run specific tests only, pass in the filter to the harness:
+
+```log
+   ..\..\dotnetcli\dotnet.exe run -c Release -- --filter namespace*
+   ..\..\dotnetcli\dotnet.exe run -c Release -- --filter *typeName*
+   ..\..\dotnetcli\dotnet.exe run -c Release -- --filter *.methodName
+   ..\..\dotnetcli\dotnet.exe run -c Release -- --filter namespace.typeName.methodName
+```
+
 4. To find out more about supported command line arguments run
 
-   (`..\..\dotnetcli\dotnet.exe run -c Release -- --help`)
+```log
+   ..\..\dotnetcli\dotnet.exe run -c Release -- --help
+```

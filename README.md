@@ -146,4 +146,4 @@ There are two main reasons for receiving this error:
 
 ## Measuring Performance
 
-All the performance tests live in the `tests\Benchmarks` directory. To run them via the command line, navigate to that folder and run `dotnet run -c Release`. This will give you the list of benchmarks that you can select to run. The results of the benchmark are displayed on the console and all the artifacts (including the results) are placed in the BenchmarkDotNet.Artifacts folder. For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).
+All the performance tests live in the `tests\Benchmarks` directory. To learn how run them please go to the corresponding [README](tests/Benchmarks/README.md). For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).
