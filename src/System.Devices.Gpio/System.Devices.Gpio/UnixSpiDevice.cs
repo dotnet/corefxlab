@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace System.Devices.Gpio
@@ -107,7 +108,7 @@ namespace System.Devices.Gpio
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new GpioException($"open error number: {Marshal.GetLastWin32Error()}");
+                throw new IOException($"Cannot open Spi device file '{devicePath}'");
             }
 
             UnixSpiMode mode = SpiModeToUnixSpiMode(settings.Mode);
@@ -138,16 +139,54 @@ namespace System.Devices.Gpio
             }
         }
 
-        public override void Read(byte[] buffer)
+        public override unsafe void Read(byte[] buffer)
         {
-            byte[] writeBuffer = new byte[buffer.Length];
-            TransferFullDuplex(writeBuffer, buffer);
+            Initialize();
+            SpiConnectionSettings settings = ConnectionSettings;
+
+            fixed (byte* rxPtr = buffer)
+            {
+                var tr = new spi_ioc_transfer()
+                {
+                    tx_buf = 0,
+                    rx_buf = (ulong)rxPtr,
+                    len = (uint)buffer.Length,
+                    speed_hz = (uint)settings.ClockFrequency,
+                    bits_per_word = (byte)settings.DataBitLength,
+                    delay_usecs = 0,
+                };
+
+                int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
+                if (ret < 1)
+                {
+                    throw new GpioException("Error performing Spi data transfer");
+                }
+            }
         }
 
-        public override void Write(byte[] buffer)
+        public override unsafe void Write(byte[] buffer)
         {
-            byte[] readBuffer = new byte[buffer.Length];
-            TransferFullDuplex(buffer, readBuffer);
+            Initialize();
+            SpiConnectionSettings settings = ConnectionSettings;
+
+            fixed (byte* txPtr = buffer)
+            {
+                var tr = new spi_ioc_transfer()
+                {
+                    tx_buf = (ulong)txPtr,
+                    rx_buf = 0,
+                    len = (uint)buffer.Length,
+                    speed_hz = (uint)settings.ClockFrequency,
+                    bits_per_word = (byte)settings.DataBitLength,
+                    delay_usecs = 0,
+                };
+
+                int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
+                if (ret < 1)
+                {
+                    throw new GpioException("Error performing Spi data transfer");
+                }
+            }
         }
 
         public override unsafe void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer)

@@ -5,9 +5,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio.Samples
 {
-    // Ported from Microsoft.IoT.Lightning Nuget package
-    // https://github.com/ms-iot/lightning
-    // https://github.com/ms-iot/lightning/blob/develop/SDKFromArduino/source/LiquidCrystal.cpp
     public class LiquidCrystal
     {
         // Commands
