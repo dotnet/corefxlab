@@ -63,7 +63,7 @@ namespace System.Devices.Gpio.Samples
         //    I/D = 1; Increment by 1 
         //    S = 0; No shift 
         //
-        // Note, however, that resetting the Arduino doesn't reset the LCD, so we
+        // Note, however, that resetting the device doesn't reset the LCD, so we
         // can't assume that its in that state when a sketch starts (and the
         // LiquidCrystal constructor is called).
 
