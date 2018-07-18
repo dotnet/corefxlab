@@ -15,5 +15,7 @@ namespace System.Devices.Gpio
         public abstract void Dispose();
 
         public abstract void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer);
+        public abstract void Read(byte[] buffer);
+        public abstract void Write(byte[] buffer);
     }
 }

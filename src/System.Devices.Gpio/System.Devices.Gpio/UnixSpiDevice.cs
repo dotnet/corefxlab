@@ -138,6 +138,18 @@ namespace System.Devices.Gpio
             }
         }
 
+        public override void Read(byte[] buffer)
+        {
+            byte[] writeBuffer = new byte[buffer.Length];
+            TransferFullDuplex(writeBuffer, buffer);
+        }
+
+        public override void Write(byte[] buffer)
+        {
+            byte[] readBuffer = new byte[buffer.Length];
+            TransferFullDuplex(buffer, readBuffer);
+        }
+
         public override unsafe void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer)
         {
             if (writeBuffer.Length != readBuffer.Length)
