@@ -328,7 +328,7 @@ namespace System.Text.JsonLab
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
-                bool status= nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                bool status = nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
                 if (!status) return false;
 
                 idx += nameSpanByte.Length;
@@ -1533,7 +1533,7 @@ namespace System.Text.JsonLab
             }
 
             // For the new line, \r\n or \n, and the space after the colon
-            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1  + (_indent & RemoveFlagsBitMask) * 2;
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + (_indent & RemoveFlagsBitMask) * 2;
 
             if (Encodings.Utf16.ToUtf8Length(nameSpan, out int bytesNeededValue) != OperationStatus.Done)
             {
