@@ -9,9 +9,9 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(-1, 5, 10, 32768)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [InliningDiagnoser()]
+    //[SimpleJob(-1, 5, 10, 32768)]
+    //[DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    //[InliningDiagnoser()]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -25,7 +25,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(true, false)]
+        [Params(false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -56,7 +56,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
@@ -75,7 +75,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
@@ -89,11 +89,11 @@ namespace System.Text.JsonLab.Benchmarks
 
         [Benchmark]
         [Arguments(1)]
-        [Arguments(2)]
-        [Arguments(5)]
+        //[Arguments(2)]
+        //[Arguments(5)]
         [Arguments(10)]
         [Arguments(100)]
-        [Arguments(1000)]
+        //[Arguments(1000)]
         public void WriterSystemTextJsonArrayOnly(int size)
         {
             _arrayFormatterWrapper.Clear();
@@ -102,11 +102,11 @@ namespace System.Text.JsonLab.Benchmarks
 
         [Benchmark]
         [Arguments(1)]
-        [Arguments(2)]
-        [Arguments(5)]
+        //[Arguments(2)]
+        //[Arguments(5)]
         [Arguments(10)]
         [Arguments(100)]
-        [Arguments(1000)]
+        //[Arguments(1000)]
         public void WriterUtf8JsonArrayOnly(int size)
         {
             WriterUtf8JsonArrayOnly(_data.AsSpan(0, size), _output);
@@ -120,7 +120,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -237,7 +237,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatterWrapper output)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -270,7 +270,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonArrayOnlyUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < data.Length; i++)

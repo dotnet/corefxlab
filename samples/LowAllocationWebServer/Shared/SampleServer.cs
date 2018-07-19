@@ -62,7 +62,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
+            var jsonWriter = new Utf8JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < 5; i++)
@@ -95,7 +95,7 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
+            var jsonWriter = new Utf8JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < requestedCount; i++)

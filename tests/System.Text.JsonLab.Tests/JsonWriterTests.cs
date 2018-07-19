@@ -17,7 +17,7 @@ namespace System.Text.JsonLab.Tests
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: false);
+            var json = new Utf8JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -25,7 +25,7 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, str.Replace(" ", ""));
 
             formatter.Clear();
-            json = new JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: true);
+            json = new Utf8JsonWriter<ArrayFormatterWrapper>(formatter, prettyPrint: true);
             Write(ref json);
 
             formatted = formatter.Formatted;
@@ -35,7 +35,7 @@ namespace System.Text.JsonLab.Tests
 
         static readonly string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\",null],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"values\":[425121,-425122,425123]}";
 
-        static void Write(ref JsonWriter<ArrayFormatterWrapper> json)
+        static void Write(ref Utf8JsonWriter<ArrayFormatterWrapper> json)
         {
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
@@ -68,7 +68,7 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetHelloWorldExpectedString(prettyPrint, isUtf8: true);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("message", "Hello, World!");
@@ -91,7 +91,7 @@ namespace System.Text.JsonLab.Tests
             string expectedStr = GetExpectedString(prettyPrint, isUtf8: true, data);
 
             var output = new ArrayFormatterWrapper(1024, SymbolTable.InvariantUtf8);
-            var jsonUtf8 = new JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
+            var jsonUtf8 = new Utf8JsonWriter<ArrayFormatterWrapper>(output, prettyPrint);
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
