@@ -120,7 +120,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -237,7 +237,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatterWrapper output)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -270,7 +270,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonArrayOnlyUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < data.Length; i++)
