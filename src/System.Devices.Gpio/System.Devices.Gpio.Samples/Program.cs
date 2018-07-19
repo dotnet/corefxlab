@@ -103,6 +103,18 @@ namespace System.Devices.Gpio.Samples
                         RaspberryPi_ButtonWait();
                         break;
 
+                    case 22:
+                        Unix_LiquidCrystal();
+                        break;
+
+                    case 23:
+                        RaspberryPi_LiquidCrystal();
+                        break;
+
+                    case 24:
+                        SPI_Roundtrip();
+                        break;
+
                     default:
                         ShowUsage();
                         break;
@@ -158,6 +170,11 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       20 -> {nameof(Unix_ButtonWait)}");
             Console.WriteLine();
             Console.WriteLine($"       21 -> {nameof(RaspberryPi_ButtonWait)}");
+            Console.WriteLine();
+            Console.WriteLine($"       22 -> {nameof(Unix_LiquidCrystal)}");
+            Console.WriteLine($"       23 -> {nameof(RaspberryPi_LiquidCrystal)}");
+            Console.WriteLine();
+            Console.WriteLine($"       24 -> {nameof(SPI_Roundtrip)}");
             Console.WriteLine();
         }
 
@@ -651,6 +668,74 @@ namespace System.Devices.Gpio.Samples
                         Console.WriteLine("Timeout!");
                     }
                 }
+            }
+        }
+
+        private static void Unix_LiquidCrystal()
+        {
+            Console.WriteLine(nameof(Unix_LiquidCrystal));
+            LiquidCrystal(new UnixDriver(RaspberryPiPinCount));
+        }
+
+        private static void RaspberryPi_LiquidCrystal()
+        {
+            Console.WriteLine(nameof(RaspberryPi_LiquidCrystal));
+            LiquidCrystal(new RaspberryPiDriver());
+        }
+
+        private static void LiquidCrystal(GpioDriver driver)
+        {
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            {
+                Pin rs = controller.OpenPin(0);
+                Pin enable = controller.OpenPin(5);
+                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+
+                var lcd = new LiquidCrystal(rs, enable, dbs);
+                lcd.Begin(16, 2);
+                lcd.Print("hello, world!");
+
+                Stopwatch watch = Stopwatch.StartNew();
+
+                while (watch.Elapsed.TotalSeconds < 15)
+                {
+                    lcd.SetCursor(0, 1);
+                    lcd.Print($"{watch.Elapsed.TotalSeconds:0.00} seconds");
+                }
+            }
+        }
+
+        private static void SPI_Roundtrip()
+        {
+            // For this sample connect SPI0 MOSI with SPI0 MISO.
+            var settings = new SpiConnectionSettings(0);
+            using (var device = new UnixSpiDevice(settings))
+            {
+                var writeBuffer = new byte[]
+                {
+                    0xA, 0xB, 0xC, 0xD, 0xE, 0xF
+                };
+
+                var readBuffer = new byte[writeBuffer.Length];
+
+                device.TransferFullDuplex(writeBuffer, readBuffer);
+
+                Console.WriteLine("Sent data:");
+
+                foreach (byte b in writeBuffer)
+                {
+                    Console.Write("{0:X2} ", b);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Received data:");
+
+                foreach (byte b in readBuffer)
+                {
+                    Console.Write("{0:X2} ", b);
+                }
+
+                Console.WriteLine();
             }
         }
     }
