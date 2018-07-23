@@ -112,7 +112,11 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 24:
-                        SPI_Roundtrip();
+                        Spi_Roundtrip();
+                        break;
+
+                    case 25:
+                        Spi_Bme280();
                         break;
 
                     default:
@@ -174,7 +178,9 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       22 -> {nameof(Unix_LiquidCrystal)}");
             Console.WriteLine($"       23 -> {nameof(RaspberryPi_LiquidCrystal)}");
             Console.WriteLine();
-            Console.WriteLine($"       24 -> {nameof(SPI_Roundtrip)}");
+            Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
+            Console.WriteLine();
+            Console.WriteLine($"       25 -> {nameof(Spi_Bme280)}");
             Console.WriteLine();
         }
 
@@ -705,10 +711,10 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void SPI_Roundtrip()
+        private static void Spi_Roundtrip()
         {
             // For this sample connect SPI0 MOSI with SPI0 MISO.
-            var settings = new SpiConnectionSettings(0);
+            var settings = new SpiConnectionSettings(0, 0);
             using (var device = new UnixSpiDevice(settings))
             {
                 var writeBuffer = new byte[]
@@ -738,5 +744,62 @@ namespace System.Devices.Gpio.Samples
                 Console.WriteLine();
             }
         }
+
+        private static void Spi_Bme280()
+        {
+            var driver = new UnixDriver(RaspberryPiPinCount);
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            {
+                Pin csPin = controller.OpenPin(8);
+
+                var settings = new SpiConnectionSettings(0, 0);
+                using (var bme280 = new Bme280(csPin, settings))
+                {
+                    bool ok = bme280.Begin();
+
+                    Console.WriteLine($"Pressure\tHumdity\t\tTemp\tTemp");
+                    Console.WriteLine();
+
+                    for (var i = 0; i < 5; ++i)
+                    {
+                        bme280.ReadSensor();
+
+                        Console.WriteLine($"{bme280.PressureInHectapascals} hPa\t{bme280.PressureInMillibars} mb\t{bme280.Humidity} %\t{bme280.TemperatureInCelsius} *C\t{bme280.TemperatureInFahrenheit} *F");
+                        Thread.Sleep(1 * 1000);
+                    }
+                }
+            }
+        }
+
+        //private static void Spi_Bme280()
+        //{
+        //    var driver = new UnixDriver(RaspberryPiPinCount);
+        //    using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+        //    {
+        //        Pin csPin = controller.OpenPin(8);
+        //        Pin mosiPin = controller.OpenPin(10);
+        //        Pin misoPin = controller.OpenPin(9);
+        //        Pin sckPin = controller.OpenPin(11);
+
+        //        using (var bme280 = new Bme280(csPin, mosiPin, misoPin, sckPin))
+        //        {
+        //            bool ok = bme280.Begin();
+
+        //            Console.WriteLine($"Begin result: {ok}");
+        //            Console.WriteLine();
+        //            Console.WriteLine($"Pressure\tHumdity\tTemp\tTemp");
+        //            Console.WriteLine();
+
+        //            Stopwatch watch = Stopwatch.StartNew();
+
+        //            while (watch.Elapsed.TotalSeconds < 15)
+        //            {
+        //                bme280.ReadSensor();
+
+        //                Console.WriteLine($"{bme280.PressureInHectapascals} hPa\t{bme280.Humidity} %\t{bme280.TemperatureInCelsius} *C\t{bme280.TemperatureInFahrenheit} *F");
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

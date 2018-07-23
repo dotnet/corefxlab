@@ -27,7 +27,12 @@ namespace System.Devices.Gpio
     public sealed class SpiConnectionSettings
     {
         /// <summary>
-        /// Gets or sets the chip select line for the connection to the SPI device.
+        /// Gets or sets the Spi bus id for this connection.
+        /// </summary>
+        public int BusId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the chip select line for this connection.
         /// </summary>
         public int ChipSelectLine { get; set; }
 
@@ -53,13 +58,24 @@ namespace System.Devices.Gpio
         /// <summary>
         /// Initializes new instance of <see cref="SpiConnectionSettings"/>.
         /// </summary>
+        /// <param name="busId">The Spi bus id on which the connection will be made.</param>
         /// <param name="chipSelectLine">The chip select line on which the connection will be made.</param>
-        public SpiConnectionSettings(int chipSelectLine)
+        public SpiConnectionSettings(int busId, int chipSelectLine)
         {
+            BusId = busId;
             ChipSelectLine = chipSelectLine;
             DataBitLength = DefaultDataBitLength;
             ClockFrequency = DefaultClockFrequency;
             Mode = DefaultMode;
+        }
+
+        internal SpiConnectionSettings(SpiConnectionSettings other)
+        {
+            BusId = other.BusId;
+            ChipSelectLine = other.ChipSelectLine;
+            DataBitLength = other.DataBitLength;
+            ClockFrequency = other.ClockFrequency;
+            Mode = other.Mode;
         }
     }
 }

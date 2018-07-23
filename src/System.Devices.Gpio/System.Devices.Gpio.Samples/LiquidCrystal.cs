@@ -426,14 +426,14 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void DigitalWrite(Pin pin, int value)
+        private static void DigitalWrite(Pin pin, int value)
         {
             PinValue state = HasFlag(value, 0x01) ? PinValue.High : PinValue.Low;
             DigitalWrite(pin, state);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void DigitalWrite(Pin pin, PinValue state)
+        private static void DigitalWrite(Pin pin, PinValue state)
         {
             pin.Write(state);
         }
@@ -444,7 +444,7 @@ namespace System.Devices.Gpio.Samples
             return (value & flag) == flag;
         }
 
-        private void DelayMicroseconds(int microseconds)
+        private static void DelayMicroseconds(int microseconds)
         {
             var sw = Diagnostics.Stopwatch.StartNew();
             long v = (microseconds * Diagnostics.Stopwatch.Frequency) / 1000000;
