@@ -72,7 +72,6 @@ namespace System.Devices.Gpio.Samples
                     case 13:
                         UnixDriver_ButtonWait();
                         break;
-
                     case 14:
                         RaspberryPiDriver_ButtonWait();
                         break;
@@ -98,7 +97,6 @@ namespace System.Devices.Gpio.Samples
                     case 20:
                         Unix_ButtonWait();
                         break;
-
                     case 21:
                         RaspberryPi_ButtonWait();
                         break;
@@ -106,7 +104,6 @@ namespace System.Devices.Gpio.Samples
                     case 22:
                         Unix_LCD();
                         break;
-
                     case 23:
                         RaspberryPi_LCD();
                         break;
@@ -116,24 +113,17 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 25:
-                        Unix_Hardware_Spi_Bme280();
+                        Unix_Spi_Bme280();
                         break;
                     case 26:
-                        Unix_Software_Spi_Bme280();
+                        RaspberryPi_Spi_Bme280();
                         break;
 
                     case 27:
-                        RaspberryPi_Hardware_Spi_Bme280();
+                        Unix_Spi_Bme280_LCD();
                         break;
                     case 28:
-                        RaspberryPi_Software_Spi_Bme280();
-                        break;
-
-                    case 29:
-                        Unix_Hardware_Spi_Bme280_LCD();
-                        break;
-                    case 30:
-                        RaspberryPi_Hardware_Spi_Bme280_LCD();
+                        RaspberryPi_Spi_Bme280_LCD();
                         break;
 
                     default:
@@ -177,7 +167,6 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       12 -> {nameof(RaspberryPiDriver_DetectButtonLED)}");
             Console.WriteLine();
             Console.WriteLine($"       13 -> {nameof(UnixDriver_ButtonWait)}");
-            Console.WriteLine();
             Console.WriteLine($"       14 -> {nameof(RaspberryPiDriver_ButtonWait)}");
             Console.WriteLine();
             Console.WriteLine($"       15 -> {nameof(RaspberryPi_ButtonPullDown)}");
@@ -189,7 +178,6 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       19 -> {nameof(RaspberryPi_DetectButtonLED)}");
             Console.WriteLine();
             Console.WriteLine($"       20 -> {nameof(Unix_ButtonWait)}");
-            Console.WriteLine();
             Console.WriteLine($"       21 -> {nameof(RaspberryPi_ButtonWait)}");
             Console.WriteLine();
             Console.WriteLine($"       22 -> {nameof(Unix_LCD)}");
@@ -197,14 +185,11 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
             Console.WriteLine();
-            Console.WriteLine($"       25 -> {nameof(Unix_Hardware_Spi_Bme280)}");
-            Console.WriteLine($"       26 -> {nameof(Unix_Software_Spi_Bme280)}");
+            Console.WriteLine($"       25 -> {nameof(Unix_Spi_Bme280)}");
+            Console.WriteLine($"       26 -> {nameof(RaspberryPi_Spi_Bme280)}");
             Console.WriteLine();
-            Console.WriteLine($"       27 -> {nameof(RaspberryPi_Hardware_Spi_Bme280)}");
-            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Software_Spi_Bme280)}");
-            Console.WriteLine();
-            Console.WriteLine($"       29 -> {nameof(Unix_Hardware_Spi_Bme280_LCD)}");
-            Console.WriteLine($"       30 -> {nameof(RaspberryPi_Hardware_Spi_Bme280_LCD)}");
+            Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_LCD)}");
+            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_LCD)}");
             Console.WriteLine();
         }
 
@@ -769,95 +754,63 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_Hardware_Spi_Bme280()
+        private static void Unix_Spi_Bme280()
         {
-            Console.WriteLine(nameof(Unix_Hardware_Spi_Bme280));
-            Hardware_Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_Spi_Bme280));
+            Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_Hardware_Spi_Bme280()
+        private static void RaspberryPi_Spi_Bme280()
         {
-            Console.WriteLine(nameof(RaspberryPi_Hardware_Spi_Bme280));
-            Hardware_Spi_Bme280(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280));
+            Spi_Bme280(new RaspberryPiDriver());
         }
 
-        private static void Unix_Software_Spi_Bme280()
-        {
-            Console.WriteLine(nameof(Unix_Software_Spi_Bme280));
-            Software_Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
-        }
-
-        private static void RaspberryPi_Software_Spi_Bme280()
-        {
-            Console.WriteLine(nameof(RaspberryPi_Software_Spi_Bme280));
-            Software_Spi_Bme280(new RaspberryPiDriver());
-        }
-
-        private static void Hardware_Spi_Bme280(GpioDriver driver)
+        private static void Spi_Bme280(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
                 Pin csPin = controller.OpenPin(8);
 
                 var settings = new SpiConnectionSettings(0, 0);
-                var bme280 = new Bme280(csPin, settings);
-                Bme280(bme280);
-            }
-        }
-
-        private static void Software_Spi_Bme280(GpioDriver driver)
-        {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
-            {
-                Pin csPin = controller.OpenPin(8);
-                Pin mosiPin = controller.OpenPin(10);
-                Pin misoPin = controller.OpenPin(9);
-                Pin sckPin = controller.OpenPin(11);
-
-                var bme280 = new Bme280(csPin, mosiPin, misoPin, sckPin);
-                Bme280(bme280);
-            }
-        }
-
-        private static void Bme280(Bme280 bme280)
-        {
-            using (bme280)
-            {
-                bool ok = bme280.Begin();
-
-                if (ok)
+                using (var bme280 = new Bme280(csPin, settings))
                 {
-                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                    Console.WriteLine();
+                    bool ok = bme280.Begin();
 
-                    for (var i = 0; i < 5; ++i)
+                    if (ok)
                     {
-                        bme280.ReadSensor();
+                        Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                        Console.WriteLine();
 
-                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
-                        Thread.Sleep(1 * 1000);
+                        for (var i = 0; i < 5; ++i)
+                        {
+                            bme280.ReadSensor();
+
+                            Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+                            Thread.Sleep(1 * 1000);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error initializing sensor");
                     }
                 }
-                else
-                {
-                    Console.WriteLine($"Error initializing sensor");
-                }
             }
         }
 
-        private static void Unix_Hardware_Spi_Bme280_LCD()
+        private static void Unix_Spi_Bme280_LCD()
         {
-            Console.WriteLine(nameof(Unix_Hardware_Spi_Bme280_LCD));
-            Hardware_Spi_Bme280_LCD(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_Spi_Bme280_LCD));
+            Spi_Bme280_LCD(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_Hardware_Spi_Bme280_LCD()
+        private static void RaspberryPi_Spi_Bme280_LCD()
         {
-            Console.WriteLine(nameof(RaspberryPi_Hardware_Spi_Bme280_LCD));
-            Hardware_Spi_Bme280_LCD(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_LCD));
+            Spi_Bme280_LCD(new RaspberryPiDriver());
         }
 
-        private static void Hardware_Spi_Bme280_LCD(GpioDriver driver)
+        private static void Spi_Bme280_LCD(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
