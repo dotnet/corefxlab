@@ -125,13 +125,15 @@ namespace System.Devices.Gpio.Samples
 
         public float TemperatureInCelsius => _temperature + TemperatureCalibrationOffset;
 
-        public float TemperatureInFahrenheit => TemperatureInCelsius * 1.8f + 32;
+        public float TemperatureInFahrenheit => TemperatureInCelsius * 1.8F + 32;
 
         public float Humidity => _humidity;
 
-        public float PressureInHectapascals => _pressure;
+        public float PressureInPascals => _pressure;
 
-        public float PressureInMillibars => PressureInHectapascals / 100.0f;
+        public float PressureInHectopascals => _pressure / 100;
+
+        public float PressureInMillibars => PressureInHectopascals;
 
         public bool Begin()
         {
@@ -161,7 +163,7 @@ namespace System.Devices.Gpio.Samples
 
             if (chipId != 0x60)
             {
-                //Console.WriteLine($"chipId = '{chipId:X2}'");
+                Console.WriteLine($"chipId = '{chipId:X2}'");
                 return false;
             }
 
@@ -205,24 +207,26 @@ namespace System.Devices.Gpio.Samples
             var2 = var2 + ((var1 * _cal_data.dig_P5) << 17);
             var2 = var2 + (((long)_cal_data.dig_P4) << 35);
             var1 = ((var1 * var1 * _cal_data.dig_P3) >> 8) +
-            ((var1 * _cal_data.dig_P2) << 12);
+                   ((var1 * _cal_data.dig_P2) << 12);
 
-            var1 = (((((long)1) << 47) + var1)) * _cal_data.dig_P1 >> 33;
+            var1 = (((((long)1) << 47) + var1) * _cal_data.dig_P1) >> 33;
 
             if (var1 == 0)
             {
-                // Avoid division by zero exception
+                // Avoid divide by zero exception
                 _pressure = 0;
             }
+            else
+            {
+                p = 1048576 - adc_P;
+                p = (((p << 31) - var2) * 3125) / var1;
 
-            p = 1048576 - adc_P;
-            p = (((p << 31) - var2) * 3125) / var1;
+                var1 = (_cal_data.dig_P9 * (p >> 13) * (p >> 13)) >> 25;
+                var2 = (_cal_data.dig_P8 * p) >> 19;
 
-            var1 = (_cal_data.dig_P9 * (p >> 13) * (p >> 13)) >> 25;
-            var2 = (_cal_data.dig_P8 * p) >> 19;
-
-            p = ((p + var1 + var2) >> 8) + (((long)_cal_data.dig_P7) << 4);
-            _pressure = (float)p / 256;
+                p = ((p + var1 + var2) >> 8) + (((long)_cal_data.dig_P7) << 4);
+                _pressure = (float)p / 256;
+            }
         }
 
         private void ReadHumidity()
@@ -230,21 +234,21 @@ namespace System.Devices.Gpio.Samples
             int adc_H = Read16(BME280_REGISTER_HUMIDDATA);
             int v_x1_u32r;
 
-            v_x1_u32r = (_tFine - 76800);
+            v_x1_u32r = _tFine - 76800;
 
-            v_x1_u32r = (((((adc_H << 14) - (_cal_data.dig_H4 << 20) -
-                            (_cal_data.dig_H5 * v_x1_u32r)) + 16384) >> 15) *
+            v_x1_u32r = (((adc_H << 14) - (_cal_data.dig_H4 << 20) -
+                            (_cal_data.dig_H5 * v_x1_u32r) + 16384) >> 15) *
                          (((((((v_x1_u32r * _cal_data.dig_H6) >> 10) *
                               (((v_x1_u32r * _cal_data.dig_H3) >> 11) + 32768)) >> 10) +
-                            2097152) * _cal_data.dig_H2 + 8192) >> 14));
+                            2097152) * _cal_data.dig_H2 + 8192) >> 14);
 
-            v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) *
-                                       _cal_data.dig_H1) >> 4));
+            v_x1_u32r = v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) *
+                                       _cal_data.dig_H1) >> 4);
 
             v_x1_u32r = (v_x1_u32r < 0) ? 0 : v_x1_u32r;
             v_x1_u32r = (v_x1_u32r > 419430400) ? 419430400 : v_x1_u32r;
 
-            float h = (v_x1_u32r >> 12);
+            float h = v_x1_u32r >> 12;
             _humidity = h / 1024.0f;
         }
 
@@ -276,20 +280,27 @@ namespace System.Devices.Gpio.Samples
         /// <summary>
         /// Transfers data over the SPI bus
         /// </summary>
-        private byte SpiTransfer(byte x)
+        private byte SpiTransfer(byte x = 0)
         {
             byte result;
 
             if (_spiSettings != null)
             {
                 // Hardware SPI
-                var writeBuffer = new byte[] { x };
-                var readBuffer = new byte[writeBuffer.Length];
+                var readBuffer = new byte[1];
 
-                _spiDevice.TransferFullDuplex(writeBuffer, readBuffer);
+                if (x == 0)
+                {
+                    _spiDevice.Read(readBuffer);
+                }
+                else
+                {
+                    var writeBuffer = new byte[] { x };
+
+                    _spiDevice.TransferFullDuplex(writeBuffer, readBuffer);
+                }
+
                 result = readBuffer[0];
-
-                // Console.WriteLine($"Spi transfer: {x:X2} sent, {result:X2} received");
             }
             else
             {
@@ -311,8 +322,6 @@ namespace System.Devices.Gpio.Samples
                         result |= 1;
                     }
                 }
-
-                // Console.WriteLine($"Spi transfer: {x:X2} sent, {result:X2} received");
             }
 
             return result;
@@ -330,7 +339,7 @@ namespace System.Devices.Gpio.Samples
         {
             DigitalWrite(_csPin, PinValue.Low);
             SpiTransfer((byte)(reg | 0x80)); // read, bit 7 high
-            byte value = SpiTransfer(0);
+            byte value = SpiTransfer();
             DigitalWrite(_csPin, PinValue.High);
             return value;
         }
@@ -344,7 +353,7 @@ namespace System.Devices.Gpio.Samples
 
             for (int i = 0; i < 2; ++i)
             {
-                byte value = SpiTransfer(0);
+                byte value = SpiTransfer();
                 result = (ushort)((result << 8) | value);
             }
 
@@ -352,19 +361,20 @@ namespace System.Devices.Gpio.Samples
             return result;
         }
 
-        // Little endian
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort Read16LittleEndian(byte reg)
         {
             ushort temp = Read16(reg);
             return (ushort)((temp >> 8) | (temp << 8));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private short ReadS16(byte reg)
         {
             return (short)Read16(reg);
         }
 
-        // Little endian
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private short ReadS16LittleEndian(byte reg)
         {
             return (short)Read16LittleEndian(reg);
@@ -377,9 +387,9 @@ namespace System.Devices.Gpio.Samples
             DigitalWrite(_csPin, PinValue.Low);
             SpiTransfer((byte)(reg | 0x80)); // read, bit 7 high
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 3; ++i)
             {
-                byte value = SpiTransfer(0);
+                byte value = SpiTransfer();
                 result = (result << 8) | value;
             }
 

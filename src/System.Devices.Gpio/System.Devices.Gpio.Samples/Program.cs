@@ -116,7 +116,17 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 25:
-                        Spi_Bme280();
+                        Unix_Hardware_Spi_Bme280();
+                        break;
+                    case 26:
+                        Unix_Software_Spi_Bme280();
+                        break;
+
+                    case 27:
+                        RaspberryPi_Hardware_Spi_Bme280();
+                        break;
+                    case 28:
+                        RaspberryPi_Software_Spi_Bme280();
                         break;
 
                     default:
@@ -180,7 +190,11 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
             Console.WriteLine();
-            Console.WriteLine($"       25 -> {nameof(Spi_Bme280)}");
+            Console.WriteLine($"       25 -> {nameof(Unix_Hardware_Spi_Bme280)}");
+            Console.WriteLine($"       26 -> {nameof(Unix_Software_Spi_Bme280)}");
+            Console.WriteLine();
+            Console.WriteLine($"       27 -> {nameof(RaspberryPi_Hardware_Spi_Bme280)}");
+            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Software_Spi_Bme280)}");
             Console.WriteLine();
         }
 
@@ -745,61 +759,80 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Spi_Bme280()
+        private static void Unix_Hardware_Spi_Bme280()
         {
-            var driver = new UnixDriver(RaspberryPiPinCount);
+            Console.WriteLine(nameof(Unix_Hardware_Spi_Bme280));
+            Hardware_Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
+        }
+
+        private static void RaspberryPi_Hardware_Spi_Bme280()
+        {
+            Console.WriteLine(nameof(RaspberryPi_Hardware_Spi_Bme280));
+            Hardware_Spi_Bme280(new RaspberryPiDriver());
+        }
+
+        private static void Unix_Software_Spi_Bme280()
+        {
+            Console.WriteLine(nameof(Unix_Software_Spi_Bme280));
+            Software_Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
+        }
+
+        private static void RaspberryPi_Software_Spi_Bme280()
+        {
+            Console.WriteLine(nameof(RaspberryPi_Software_Spi_Bme280));
+            Software_Spi_Bme280(new RaspberryPiDriver());
+        }
+
+        private static void Hardware_Spi_Bme280(GpioDriver driver)
+        {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
                 Pin csPin = controller.OpenPin(8);
 
                 var settings = new SpiConnectionSettings(0, 0);
-                using (var bme280 = new Bme280(csPin, settings))
-                {
-                    bool ok = bme280.Begin();
+                var bme280 = new Bme280(csPin, settings);
+                Bme280(bme280);
+            }
+        }
 
-                    Console.WriteLine($"Pressure\tHumdity\t\tTemp\tTemp");
+        private static void Software_Spi_Bme280(GpioDriver driver)
+        {
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            {
+                Pin csPin = controller.OpenPin(8);
+                Pin mosiPin = controller.OpenPin(10);
+                Pin misoPin = controller.OpenPin(9);
+                Pin sckPin = controller.OpenPin(11);
+
+                var bme280 = new Bme280(csPin, mosiPin, misoPin, sckPin);
+                Bme280(bme280);
+            }
+        }
+
+        private static void Bme280(Bme280 bme280)
+        {
+            using (bme280)
+            {
+                bool ok = bme280.Begin();
+
+                if (ok)
+                {
+                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
                     Console.WriteLine();
 
                     for (var i = 0; i < 5; ++i)
                     {
                         bme280.ReadSensor();
 
-                        Console.WriteLine($"{bme280.PressureInHectapascals} hPa\t{bme280.PressureInMillibars} mb\t{bme280.Humidity} %\t{bme280.TemperatureInCelsius} *C\t{bme280.TemperatureInFahrenheit} *F");
+                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
                         Thread.Sleep(1 * 1000);
                     }
                 }
+                else
+                {
+                    Console.WriteLine($"Error initializing sensor");
+                }
             }
         }
-
-        //private static void Spi_Bme280()
-        //{
-        //    var driver = new UnixDriver(RaspberryPiPinCount);
-        //    using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
-        //    {
-        //        Pin csPin = controller.OpenPin(8);
-        //        Pin mosiPin = controller.OpenPin(10);
-        //        Pin misoPin = controller.OpenPin(9);
-        //        Pin sckPin = controller.OpenPin(11);
-
-        //        using (var bme280 = new Bme280(csPin, mosiPin, misoPin, sckPin))
-        //        {
-        //            bool ok = bme280.Begin();
-
-        //            Console.WriteLine($"Begin result: {ok}");
-        //            Console.WriteLine();
-        //            Console.WriteLine($"Pressure\tHumdity\tTemp\tTemp");
-        //            Console.WriteLine();
-
-        //            Stopwatch watch = Stopwatch.StartNew();
-
-        //            while (watch.Elapsed.TotalSeconds < 15)
-        //            {
-        //                bme280.ReadSensor();
-
-        //                Console.WriteLine($"{bme280.PressureInHectapascals} hPa\t{bme280.Humidity} %\t{bme280.TemperatureInCelsius} *C\t{bme280.TemperatureInFahrenheit} *F");
-        //            }
-        //        }
-        //    }
-        //}
     }
 }
