@@ -4,24 +4,6 @@
 namespace System.Devices.Gpio
 {
     /// <summary>
-    /// Defines the SPI communication mode.
-    /// The communication mode defines the clock edge on which the master out line toggles,
-    /// the master in line samples, and the signal clock's signal steady level (named SCLK).
-    /// Each mode is defined with a pair of parameters called clock polarity (CPOL) and clock phase (CPHA).
-    /// </summary>
-    public enum SpiMode
-    {
-        /// <summary>CPOL = 0, CPHA = 0</summary>
-        Mode0 = 0,
-        /// <summary>CPOL = 0, CPHA = 1</summary>
-        Mode1 = 1,
-        /// <summary>CPOL = 1, CPHA = 0</summary>
-        Mode2 = 2,
-        /// <summary>CPOL = 1, CPHA = 1</summary>
-        Mode3 = 3
-    }
-
-    /// <summary>
     /// Represents the settings for the connection with an <see cref="SpiDevice"/>.
     /// </summary>
     public sealed class SpiConnectionSettings
