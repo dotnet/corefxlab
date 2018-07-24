@@ -104,11 +104,11 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 22:
-                        Unix_LiquidCrystal();
+                        Unix_LCD();
                         break;
 
                     case 23:
-                        RaspberryPi_LiquidCrystal();
+                        RaspberryPi_LCD();
                         break;
 
                     case 24:
@@ -127,6 +127,13 @@ namespace System.Devices.Gpio.Samples
                         break;
                     case 28:
                         RaspberryPi_Software_Spi_Bme280();
+                        break;
+
+                    case 29:
+                        Unix_Hardware_Spi_Bme280_LCD();
+                        break;
+                    case 30:
+                        RaspberryPi_Hardware_Spi_Bme280_LCD();
                         break;
 
                     default:
@@ -185,8 +192,8 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       21 -> {nameof(RaspberryPi_ButtonWait)}");
             Console.WriteLine();
-            Console.WriteLine($"       22 -> {nameof(Unix_LiquidCrystal)}");
-            Console.WriteLine($"       23 -> {nameof(RaspberryPi_LiquidCrystal)}");
+            Console.WriteLine($"       22 -> {nameof(Unix_LCD)}");
+            Console.WriteLine($"       23 -> {nameof(RaspberryPi_LCD)}");
             Console.WriteLine();
             Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
             Console.WriteLine();
@@ -195,6 +202,9 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       27 -> {nameof(RaspberryPi_Hardware_Spi_Bme280)}");
             Console.WriteLine($"       28 -> {nameof(RaspberryPi_Software_Spi_Bme280)}");
+            Console.WriteLine();
+            Console.WriteLine($"       29 -> {nameof(Unix_Hardware_Spi_Bme280_LCD)}");
+            Console.WriteLine($"       30 -> {nameof(RaspberryPi_Hardware_Spi_Bme280_LCD)}");
             Console.WriteLine();
         }
 
@@ -691,19 +701,19 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_LiquidCrystal()
+        private static void Unix_LCD()
         {
-            Console.WriteLine(nameof(Unix_LiquidCrystal));
-            LiquidCrystal(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_LCD));
+            LCD(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_LiquidCrystal()
+        private static void RaspberryPi_LCD()
         {
-            Console.WriteLine(nameof(RaspberryPi_LiquidCrystal));
-            LiquidCrystal(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_LCD));
+            LCD(new RaspberryPiDriver());
         }
 
-        private static void LiquidCrystal(GpioDriver driver)
+        private static void LCD(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -833,6 +843,72 @@ namespace System.Devices.Gpio.Samples
                     Console.WriteLine($"Error initializing sensor");
                 }
             }
+        }
+
+        private static void Unix_Hardware_Spi_Bme280_LCD()
+        {
+            Console.WriteLine(nameof(Unix_Hardware_Spi_Bme280_LCD));
+            Hardware_Spi_Bme280_LCD(new UnixDriver(RaspberryPiPinCount));
+        }
+
+        private static void RaspberryPi_Hardware_Spi_Bme280_LCD()
+        {
+            Console.WriteLine(nameof(RaspberryPi_Hardware_Spi_Bme280_LCD));
+            Hardware_Spi_Bme280_LCD(new RaspberryPiDriver());
+        }
+
+        private static void Hardware_Spi_Bme280_LCD(GpioDriver driver)
+        {
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            {
+                Pin rs = controller.OpenPin(0);
+                Pin enable = controller.OpenPin(5);
+                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+
+                var lcd = new LiquidCrystal(rs, enable, dbs);
+                lcd.Begin(16, 2);
+
+                Pin csPin = controller.OpenPin(8);
+
+                var settings = new SpiConnectionSettings(0, 0);
+                using (var bme280 = new Bme280(csPin, settings))
+                {
+                    bool ok = bme280.Begin();
+
+                    if (ok)
+                    {
+                        Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                        Console.WriteLine();
+
+                        for (var i = 0; i < 3; ++i)
+                        {
+                            bme280.ReadSensor();
+
+                            Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+
+                            ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
+                            ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
+                            ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error initializing sensor");
+                    }
+                }
+            }
+        }
+
+        private static void ShowInfo(LiquidCrystal lcd, string label, string value)
+        {
+            lcd.Clear();
+            lcd.SetCursor(0, 0);
+            lcd.Print(label);
+
+            lcd.SetCursor(0, 1);
+            lcd.Print(value);
+
+            Thread.Sleep(3 * 1000);
         }
     }
 }
