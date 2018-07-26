@@ -85,21 +85,21 @@ namespace System.Devices.Gpio.Samples
         /// <summary>
         /// Use this for hardware SPI.
         /// </summary>
-        public Bme280(Pin cs, SpiConnectionSettings spiSettings)
+        public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
-            _csPin = cs;
+            _csPin = chipSelectLine;
             _spiSettings = spiSettings;
         }
 
         /// <summary>
         /// Use this for software SPI.
         /// </summary>
-        public Bme280(Pin cs, Pin mosi, Pin miso, Pin sck)
+        public Bme280(Pin chipSelectLine, Pin masterOutSlaveIn, Pin masterInSlaveOut, Pin serialClock)
         {
-            _csPin = cs;
-            _mosiPin = mosi;
-            _misoPin = miso;
-            _sckPin = sck;
+            _csPin = chipSelectLine;
+            _mosiPin = masterOutSlaveIn;
+            _misoPin = masterInSlaveOut;
+            _sckPin = serialClock;
         }
 
         public void Dispose()
@@ -146,8 +146,7 @@ namespace System.Devices.Gpio.Samples
             {
                 // Hardware SPI
                 _spiSettings.Mode = SpiMode.Mode0;
-                _spiSettings.ClockFrequency = 500 * 1000;
-                _spiSettings.DataBitLength = 8;
+                _spiSettings.DataBitLength = 8; // 1 byte
 
                 _spiDevice = new UnixSpiDevice(_spiSettings);
             }
@@ -170,7 +169,9 @@ namespace System.Devices.Gpio.Samples
             ReadSensorCoefficients();
 
             // Set Humidity oversampling to 1
-            // Set before CONTROL (DS 5.4.3)
+            // Set before CONTROL (DS 5.4.3):
+            // "Changes to this register only became effective
+            // after a write operation to CONTROL register."
             Write8(BME280_REGISTER_CONTROLHUMID, 0x01);
             Write8(BME280_REGISTER_CONTROL, 0x3F);
             return true;

@@ -24,31 +24,31 @@ namespace System.Devices.Gpio.Samples
                 switch (option)
                 {
                     case 0:
-                        Unix_BlinkingLED();
+                        Unix_BlinkingLed();
                         break;
                     case 1:
-                        Unix_ButtonLED();
+                        Unix_ButtonLed();
                         break;
 
                     case 2:
-                        RaspberryPi_BlinkingLED();
+                        RaspberryPi_BlinkingLed();
                         break;
                     case 3:
-                        RaspberryPi_ButtonLED();
+                        RaspberryPi_ButtonLed();
                         break;
 
                     case 4:
-                        UnixDriver_BlinkingLED();
+                        UnixDriver_BlinkingLed();
                         break;
                     case 5:
-                        UnixDriver_ButtonLED();
+                        UnixDriver_ButtonLed();
                         break;
 
                     case 6:
-                        RaspberryPiDriver_BlinkingLED();
+                        RaspberryPiDriver_BlinkingLed();
                         break;
                     case 7:
-                        RaspberryPiDriver_ButtonLED();
+                        RaspberryPiDriver_ButtonLed();
                         break;
 
                     case 8:
@@ -59,14 +59,14 @@ namespace System.Devices.Gpio.Samples
                         UnixDriver_DetectButton();
                         break;
                     case 10:
-                        UnixDriver_DetectButtonLED();
+                        UnixDriver_DetectButtonLed();
                         break;
 
                     case 11:
                         RaspberryPiDriver_DetectButton();
                         break;
                     case 12:
-                        RaspberryPiDriver_DetectButtonLED();
+                        RaspberryPiDriver_DetectButtonLed();
                         break;
 
                     case 13:
@@ -84,14 +84,14 @@ namespace System.Devices.Gpio.Samples
                         Unix_DetectButton();
                         break;
                     case 17:
-                        Unix_DetectButtonLED();
+                        Unix_DetectButtonLed();
                         break;
 
                     case 18:
                         RaspberryPi_DetectButton();
                         break;
                     case 19:
-                        RaspberryPi_DetectButtonLED();
+                        RaspberryPi_DetectButtonLed();
                         break;
 
                     case 20:
@@ -102,10 +102,10 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 22:
-                        Unix_LCD();
+                        Unix_Lcd();
                         break;
                     case 23:
-                        RaspberryPi_LCD();
+                        RaspberryPi_Lcd();
                         break;
 
                     case 24:
@@ -120,10 +120,10 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 27:
-                        Unix_Spi_Bme280_LCD();
+                        Unix_Spi_Bme280_Lcd();
                         break;
                     case 28:
-                        RaspberryPi_Spi_Bme280_LCD();
+                        RaspberryPi_Spi_Bme280_Lcd();
                         break;
 
                     default:
@@ -146,25 +146,25 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"Usage: {assemblyName} <arg>");
             Console.WriteLine("       where <arg> can be any of the following options:");
             Console.WriteLine();
-            Console.WriteLine($"        0 -> {nameof(Unix_BlinkingLED)}");
-            Console.WriteLine($"        1 -> {nameof(Unix_ButtonLED)}");
+            Console.WriteLine($"        0 -> {nameof(Unix_BlinkingLed)}");
+            Console.WriteLine($"        1 -> {nameof(Unix_ButtonLed)}");
             Console.WriteLine();
-            Console.WriteLine($"        2 -> {nameof(RaspberryPi_BlinkingLED)}");
-            Console.WriteLine($"        3 -> {nameof(RaspberryPi_ButtonLED)}");
+            Console.WriteLine($"        2 -> {nameof(RaspberryPi_BlinkingLed)}");
+            Console.WriteLine($"        3 -> {nameof(RaspberryPi_ButtonLed)}");
             Console.WriteLine();
-            Console.WriteLine($"        4 -> {nameof(UnixDriver_BlinkingLED)}");
-            Console.WriteLine($"        5 -> {nameof(UnixDriver_ButtonLED)}");
+            Console.WriteLine($"        4 -> {nameof(UnixDriver_BlinkingLed)}");
+            Console.WriteLine($"        5 -> {nameof(UnixDriver_ButtonLed)}");
             Console.WriteLine();
-            Console.WriteLine($"        6 -> {nameof(RaspberryPiDriver_BlinkingLED)}");
-            Console.WriteLine($"        7 -> {nameof(RaspberryPiDriver_ButtonLED)}");
+            Console.WriteLine($"        6 -> {nameof(RaspberryPiDriver_BlinkingLed)}");
+            Console.WriteLine($"        7 -> {nameof(RaspberryPiDriver_ButtonLed)}");
             Console.WriteLine();
             Console.WriteLine($"        8 -> {nameof(RaspberryPiDriver_ButtonPullDown)}");
             Console.WriteLine();
             Console.WriteLine($"        9 -> {nameof(UnixDriver_DetectButton)}");
-            Console.WriteLine($"       10 -> {nameof(UnixDriver_DetectButtonLED)}");
+            Console.WriteLine($"       10 -> {nameof(UnixDriver_DetectButtonLed)}");
             Console.WriteLine();
             Console.WriteLine($"       11 -> {nameof(RaspberryPiDriver_DetectButton)}");
-            Console.WriteLine($"       12 -> {nameof(RaspberryPiDriver_DetectButtonLED)}");
+            Console.WriteLine($"       12 -> {nameof(RaspberryPiDriver_DetectButtonLed)}");
             Console.WriteLine();
             Console.WriteLine($"       13 -> {nameof(UnixDriver_ButtonWait)}");
             Console.WriteLine($"       14 -> {nameof(RaspberryPiDriver_ButtonWait)}");
@@ -172,52 +172,52 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       15 -> {nameof(RaspberryPi_ButtonPullDown)}");
             Console.WriteLine();
             Console.WriteLine($"       16 -> {nameof(Unix_DetectButton)}");
-            Console.WriteLine($"       17 -> {nameof(Unix_DetectButtonLED)}");
+            Console.WriteLine($"       17 -> {nameof(Unix_DetectButtonLed)}");
             Console.WriteLine();
             Console.WriteLine($"       18 -> {nameof(RaspberryPi_DetectButton)}");
-            Console.WriteLine($"       19 -> {nameof(RaspberryPi_DetectButtonLED)}");
+            Console.WriteLine($"       19 -> {nameof(RaspberryPi_DetectButtonLed)}");
             Console.WriteLine();
             Console.WriteLine($"       20 -> {nameof(Unix_ButtonWait)}");
             Console.WriteLine($"       21 -> {nameof(RaspberryPi_ButtonWait)}");
             Console.WriteLine();
-            Console.WriteLine($"       22 -> {nameof(Unix_LCD)}");
-            Console.WriteLine($"       23 -> {nameof(RaspberryPi_LCD)}");
+            Console.WriteLine($"       22 -> {nameof(Unix_Lcd)}");
+            Console.WriteLine($"       23 -> {nameof(RaspberryPi_Lcd)}");
             Console.WriteLine();
             Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
             Console.WriteLine();
             Console.WriteLine($"       25 -> {nameof(Unix_Spi_Bme280)}");
             Console.WriteLine($"       26 -> {nameof(RaspberryPi_Spi_Bme280)}");
             Console.WriteLine();
-            Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_LCD)}");
-            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_LCD)}");
+            Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_Lcd)}");
+            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_Lcd)}");
             Console.WriteLine();
         }
 
-        private static void Unix_BlinkingLED()
+        private static void Unix_BlinkingLed()
         {
-            Console.WriteLine(nameof(Unix_BlinkingLED));
-            BlinkingLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_BlinkingLed));
+            BlinkingLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void Unix_ButtonLED()
+        private static void Unix_ButtonLed()
         {
-            Console.WriteLine(nameof(Unix_ButtonLED));
-            ButtonLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_ButtonLed));
+            ButtonLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_BlinkingLED()
+        private static void RaspberryPi_BlinkingLed()
         {
-            Console.WriteLine(nameof(RaspberryPi_BlinkingLED));
-            BlinkingLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_BlinkingLed));
+            BlinkingLed(new RaspberryPiDriver());
         }
 
-        private static void RaspberryPi_ButtonLED()
+        private static void RaspberryPi_ButtonLed()
         {
-            Console.WriteLine(nameof(RaspberryPi_ButtonLED));
-            ButtonLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_ButtonLed));
+            ButtonLed(new RaspberryPiDriver());
         }
 
-        private static void BlinkingLED(GpioDriver driver)
+        private static void BlinkingLed(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -234,7 +234,7 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void ButtonLED(GpioDriver driver)
+        private static void ButtonLed(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -251,31 +251,31 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void UnixDriver_BlinkingLED()
+        private static void UnixDriver_BlinkingLed()
         {
-            Console.WriteLine(nameof(UnixDriver_BlinkingLED));
-            Driver_BlinkingLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(UnixDriver_BlinkingLed));
+            Driver_BlinkingLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void UnixDriver_ButtonLED()
+        private static void UnixDriver_ButtonLed()
         {
-            Console.WriteLine(nameof(UnixDriver_ButtonLED));
-            Driver_ButtonLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(UnixDriver_ButtonLed));
+            Driver_ButtonLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPiDriver_BlinkingLED()
+        private static void RaspberryPiDriver_BlinkingLed()
         {
-            Console.WriteLine(nameof(RaspberryPiDriver_BlinkingLED));
-            Driver_BlinkingLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPiDriver_BlinkingLed));
+            Driver_BlinkingLed(new RaspberryPiDriver());
         }
 
-        private static void RaspberryPiDriver_ButtonLED()
+        private static void RaspberryPiDriver_ButtonLed()
         {
-            Console.WriteLine(nameof(RaspberryPiDriver_ButtonLED));
-            Driver_ButtonLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPiDriver_ButtonLed));
+            Driver_ButtonLed(new RaspberryPiDriver());
         }
 
-        private static void Driver_BlinkingLED(GpioDriver driver)
+        private static void Driver_BlinkingLed(GpioDriver driver)
         {
             const int led = 26;
 
@@ -295,7 +295,7 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Driver_ButtonLED(GpioDriver driver)
+        private static void Driver_ButtonLed(GpioDriver driver)
         {
             const int button = 18;
             const int led = 26;
@@ -475,19 +475,19 @@ namespace System.Devices.Gpio.Samples
             s_buttonPressed = !s_buttonPressed;
         }
 
-        private static void UnixDriver_DetectButtonLED()
+        private static void UnixDriver_DetectButtonLed()
         {
-            Console.WriteLine(nameof(UnixDriver_DetectButtonLED));
-            Driver_DetectButtonLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(UnixDriver_DetectButtonLed));
+            Driver_DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPiDriver_DetectButtonLED()
+        private static void RaspberryPiDriver_DetectButtonLed()
         {
-            Console.WriteLine(nameof(RaspberryPiDriver_DetectButtonLED));
-            Driver_DetectButtonLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPiDriver_DetectButtonLed));
+            Driver_DetectButtonLed(new RaspberryPiDriver());
         }
 
-        private static void Driver_DetectButtonLED(GpioDriver driver)
+        private static void Driver_DetectButtonLed(GpioDriver driver)
         {
             const int button = 18;
             const int led = 26;
@@ -524,19 +524,19 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_DetectButtonLED()
+        private static void Unix_DetectButtonLed()
         {
-            Console.WriteLine(nameof(Unix_DetectButtonLED));
-            DetectButtonLED(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_DetectButtonLed));
+            DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_DetectButtonLED()
+        private static void RaspberryPi_DetectButtonLed()
         {
-            Console.WriteLine(nameof(RaspberryPi_DetectButtonLED));
-            DetectButtonLED(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_DetectButtonLed));
+            DetectButtonLed(new RaspberryPiDriver());
         }
 
-        private static void DetectButtonLED(GpioDriver driver)
+        private static void DetectButtonLed(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -573,7 +573,7 @@ namespace System.Devices.Gpio.Samples
             const int ledPinNumber = 26;
 
             s_currentLedValue = s_currentLedValue == PinValue.High ? PinValue.Low : PinValue.High;
-            Console.WriteLine($"Button pressed! LED value {s_currentLedValue}");
+            Console.WriteLine($"Button pressed! Led value {s_currentLedValue}");
 
             if (sender is GpioDriver)
             {
@@ -686,19 +686,19 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_LCD()
+        private static void Unix_Lcd()
         {
-            Console.WriteLine(nameof(Unix_LCD));
-            LCD(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_Lcd));
+            Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_LCD()
+        private static void RaspberryPi_Lcd()
         {
-            Console.WriteLine(nameof(RaspberryPi_LCD));
-            LCD(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_Lcd));
+            Lcd(new RaspberryPiDriver());
         }
 
-        private static void LCD(GpioDriver driver)
+        private static void Lcd(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -798,19 +798,19 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_Spi_Bme280_LCD()
+        private static void Unix_Spi_Bme280_Lcd()
         {
-            Console.WriteLine(nameof(Unix_Spi_Bme280_LCD));
-            Spi_Bme280_LCD(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_Spi_Bme280_Lcd));
+            Spi_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_Spi_Bme280_LCD()
+        private static void RaspberryPi_Spi_Bme280_Lcd()
         {
-            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_LCD));
-            Spi_Bme280_LCD(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_Lcd));
+            Spi_Bme280_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Spi_Bme280_LCD(GpioDriver driver)
+        private static void Spi_Bme280_Lcd(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {

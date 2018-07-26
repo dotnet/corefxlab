@@ -35,7 +35,7 @@ namespace System.Devices.Gpio
 
         private const SpiMode DefaultMode = SpiMode.Mode0;
         private const int DefaultDataBitLength = 8; // 1 byte
-        private const int DefaultClockFrequency = 500 * 1000; // 500 KHz
+        private const int DefaultClockFrequency = 500_000; // 500 KHz
 
         /// <summary>
         /// Initializes new instance of <see cref="SpiConnectionSettings"/>.

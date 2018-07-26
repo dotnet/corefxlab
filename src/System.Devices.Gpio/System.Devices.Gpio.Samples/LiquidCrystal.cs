@@ -428,7 +428,8 @@ namespace System.Devices.Gpio.Samples
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DigitalWrite(Pin pin, int value)
         {
-            PinValue state = HasFlag(value, 0x01) ? PinValue.High : PinValue.Low;
+            const int True = 1;
+            PinValue state = HasFlag(value, True) ? PinValue.High : PinValue.Low;
             DigitalWrite(pin, state);
         }
 
