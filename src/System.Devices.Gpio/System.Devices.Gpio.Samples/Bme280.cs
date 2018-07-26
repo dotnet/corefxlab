@@ -67,7 +67,7 @@ namespace System.Devices.Gpio.Samples
             public sbyte dig_H6;
         };
 
-        private Bme280_Calibration_Data _cal_data;
+        private Bme280_Calibration_Data _calibrationData;
 
         private float _temperature;
         private float _humidity;
@@ -78,28 +78,11 @@ namespace System.Devices.Gpio.Samples
         private SpiDevice _spiDevice;
 
         private Pin _csPin;
-        private Pin _mosiPin;
-        private Pin _misoPin;
-        private Pin _sckPin;
 
-        /// <summary>
-        /// Use this for hardware SPI.
-        /// </summary>
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
-            _csPin = chipSelectLine;
-            _spiSettings = spiSettings;
-        }
-
-        /// <summary>
-        /// Use this for software SPI.
-        /// </summary>
-        public Bme280(Pin chipSelectLine, Pin masterOutSlaveIn, Pin masterInSlaveOut, Pin serialClock)
-        {
-            _csPin = chipSelectLine;
-            _mosiPin = masterOutSlaveIn;
-            _misoPin = masterInSlaveOut;
-            _sckPin = serialClock;
+            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
+            _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
         }
 
         public void Dispose()
@@ -144,18 +127,10 @@ namespace System.Devices.Gpio.Samples
 
             if (_spiSettings != null)
             {
-                // Hardware SPI
                 _spiSettings.Mode = SpiMode.Mode0;
                 _spiSettings.DataBitLength = 8; // 1 byte
 
                 _spiDevice = new UnixSpiDevice(_spiSettings);
-            }
-            else
-            {
-                // Software SPI
-                _sckPin.Mode = PinMode.Output;
-                _mosiPin.Mode = PinMode.Output;
-                _misoPin.Mode = PinMode.Input;
             }
 
             byte chipId = Read8(BME280_REGISTER_CHIPID);
@@ -184,12 +159,12 @@ namespace System.Devices.Gpio.Samples
             uint adc_T = Read24(BME280_REGISTER_TEMPDATA);
             adc_T >>= 4;
 
-            var1 = (((int)((adc_T >> 3) - (_cal_data.dig_T1 << 1))) *
-                     _cal_data.dig_T2) >> 11;
+            var1 = (((int)((adc_T >> 3) - (_calibrationData.dig_T1 << 1))) *
+                     _calibrationData.dig_T2) >> 11;
 
-            var2 = ((((int)((adc_T >> 4) - ((int)_cal_data.dig_T1)) *
-                       (int)((adc_T >> 4) - ((int)_cal_data.dig_T1))) >> 12) *
-                     _cal_data.dig_T3) >> 14;
+            var2 = ((((int)((adc_T >> 4) - ((int)_calibrationData.dig_T1)) *
+                       (int)((adc_T >> 4) - ((int)_calibrationData.dig_T1))) >> 12) *
+                     _calibrationData.dig_T3) >> 14;
 
             _tFine = var1 + var2;
             _temperature = (_tFine * 5 + 128) >> 8;
@@ -204,13 +179,13 @@ namespace System.Devices.Gpio.Samples
             adc_P >>= 4;
 
             var1 = ((long)_tFine) - 128000;
-            var2 = var1 * var1 * _cal_data.dig_P6;
-            var2 = var2 + ((var1 * _cal_data.dig_P5) << 17);
-            var2 = var2 + (((long)_cal_data.dig_P4) << 35);
-            var1 = ((var1 * var1 * _cal_data.dig_P3) >> 8) +
-                   ((var1 * _cal_data.dig_P2) << 12);
+            var2 = var1 * var1 * _calibrationData.dig_P6;
+            var2 = var2 + ((var1 * _calibrationData.dig_P5) << 17);
+            var2 = var2 + (((long)_calibrationData.dig_P4) << 35);
+            var1 = ((var1 * var1 * _calibrationData.dig_P3) >> 8) +
+                   ((var1 * _calibrationData.dig_P2) << 12);
 
-            var1 = (((((long)1) << 47) + var1) * _cal_data.dig_P1) >> 33;
+            var1 = (((((long)1) << 47) + var1) * _calibrationData.dig_P1) >> 33;
 
             if (var1 == 0)
             {
@@ -222,10 +197,10 @@ namespace System.Devices.Gpio.Samples
                 p = 1048576 - adc_P;
                 p = (((p << 31) - var2) * 3125) / var1;
 
-                var1 = (_cal_data.dig_P9 * (p >> 13) * (p >> 13)) >> 25;
-                var2 = (_cal_data.dig_P8 * p) >> 19;
+                var1 = (_calibrationData.dig_P9 * (p >> 13) * (p >> 13)) >> 25;
+                var2 = (_calibrationData.dig_P8 * p) >> 19;
 
-                p = ((p + var1 + var2) >> 8) + (((long)_cal_data.dig_P7) << 4);
+                p = ((p + var1 + var2) >> 8) + (((long)_calibrationData.dig_P7) << 4);
                 _pressure = (float)p / 256;
             }
         }
@@ -237,14 +212,14 @@ namespace System.Devices.Gpio.Samples
 
             v_x1_u32r = _tFine - 76800;
 
-            v_x1_u32r = (((adc_H << 14) - (_cal_data.dig_H4 << 20) -
-                            (_cal_data.dig_H5 * v_x1_u32r) + 16384) >> 15) *
-                         (((((((v_x1_u32r * _cal_data.dig_H6) >> 10) *
-                              (((v_x1_u32r * _cal_data.dig_H3) >> 11) + 32768)) >> 10) +
-                            2097152) * _cal_data.dig_H2 + 8192) >> 14);
+            v_x1_u32r = (((adc_H << 14) - (_calibrationData.dig_H4 << 20) -
+                            (_calibrationData.dig_H5 * v_x1_u32r) + 16384) >> 15) *
+                         (((((((v_x1_u32r * _calibrationData.dig_H6) >> 10) *
+                              (((v_x1_u32r * _calibrationData.dig_H3) >> 11) + 32768)) >> 10) +
+                            2097152) * _calibrationData.dig_H2 + 8192) >> 14);
 
             v_x1_u32r = v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) *
-                                       _cal_data.dig_H1) >> 4);
+                                       _calibrationData.dig_H1) >> 4);
 
             v_x1_u32r = (v_x1_u32r < 0) ? 0 : v_x1_u32r;
             v_x1_u32r = (v_x1_u32r > 419430400) ? 419430400 : v_x1_u32r;
@@ -258,24 +233,24 @@ namespace System.Devices.Gpio.Samples
         /// </summary>
         private void ReadSensorCoefficients()
         {
-            _cal_data.dig_T1 = Read16LittleEndian(BME280_DIG_T1_REG);
-            _cal_data.dig_T2 = ReadS16LittleEndian(BME280_DIG_T2_REG);
-            _cal_data.dig_T3 = ReadS16LittleEndian(BME280_DIG_T3_REG);
-            _cal_data.dig_P1 = Read16LittleEndian(BME280_DIG_P1_REG);
-            _cal_data.dig_P2 = ReadS16LittleEndian(BME280_DIG_P2_REG);
-            _cal_data.dig_P3 = ReadS16LittleEndian(BME280_DIG_P3_REG);
-            _cal_data.dig_P4 = ReadS16LittleEndian(BME280_DIG_P4_REG);
-            _cal_data.dig_P5 = ReadS16LittleEndian(BME280_DIG_P5_REG);
-            _cal_data.dig_P6 = ReadS16LittleEndian(BME280_DIG_P6_REG);
-            _cal_data.dig_P7 = ReadS16LittleEndian(BME280_DIG_P7_REG);
-            _cal_data.dig_P8 = ReadS16LittleEndian(BME280_DIG_P8_REG);
-            _cal_data.dig_P9 = ReadS16LittleEndian(BME280_DIG_P9_REG);
-            _cal_data.dig_H1 = Read8(BME280_DIG_H1_REG);
-            _cal_data.dig_H2 = ReadS16LittleEndian(BME280_DIG_H2_REG);
-            _cal_data.dig_H3 = Read8(BME280_DIG_H3_REG);
-            _cal_data.dig_H4 = (short)((Read8(BME280_DIG_H4_REG) << 4) | (Read8(BME280_DIG_H4_REG + 1) & 0xF));
-            _cal_data.dig_H5 = (short)((Read8(BME280_DIG_H5_REG + 1) << 4) | (Read8(BME280_DIG_H5_REG) >> 4));
-            _cal_data.dig_H6 = (sbyte)Read8(BME280_DIG_H6_REG);
+            _calibrationData.dig_T1 = Read16LittleEndian(BME280_DIG_T1_REG);
+            _calibrationData.dig_T2 = ReadS16LittleEndian(BME280_DIG_T2_REG);
+            _calibrationData.dig_T3 = ReadS16LittleEndian(BME280_DIG_T3_REG);
+            _calibrationData.dig_P1 = Read16LittleEndian(BME280_DIG_P1_REG);
+            _calibrationData.dig_P2 = ReadS16LittleEndian(BME280_DIG_P2_REG);
+            _calibrationData.dig_P3 = ReadS16LittleEndian(BME280_DIG_P3_REG);
+            _calibrationData.dig_P4 = ReadS16LittleEndian(BME280_DIG_P4_REG);
+            _calibrationData.dig_P5 = ReadS16LittleEndian(BME280_DIG_P5_REG);
+            _calibrationData.dig_P6 = ReadS16LittleEndian(BME280_DIG_P6_REG);
+            _calibrationData.dig_P7 = ReadS16LittleEndian(BME280_DIG_P7_REG);
+            _calibrationData.dig_P8 = ReadS16LittleEndian(BME280_DIG_P8_REG);
+            _calibrationData.dig_P9 = ReadS16LittleEndian(BME280_DIG_P9_REG);
+            _calibrationData.dig_H1 = Read8(BME280_DIG_H1_REG);
+            _calibrationData.dig_H2 = ReadS16LittleEndian(BME280_DIG_H2_REG);
+            _calibrationData.dig_H3 = Read8(BME280_DIG_H3_REG);
+            _calibrationData.dig_H4 = (short)((Read8(BME280_DIG_H4_REG) << 4) | (Read8(BME280_DIG_H4_REG + 1) & 0xF));
+            _calibrationData.dig_H5 = (short)((Read8(BME280_DIG_H5_REG + 1) << 4) | (Read8(BME280_DIG_H5_REG) >> 4));
+            _calibrationData.dig_H6 = (sbyte)Read8(BME280_DIG_H6_REG);
         }
 
         /// <summary>
@@ -283,48 +258,20 @@ namespace System.Devices.Gpio.Samples
         /// </summary>
         private byte SpiTransfer(byte x = 0)
         {
-            byte result;
+            var readBuffer = new byte[1];
 
-            if (_spiSettings != null)
+            if (x == 0)
             {
-                // Hardware SPI
-                var readBuffer = new byte[1];
-
-                if (x == 0)
-                {
-                    _spiDevice.Read(readBuffer);
-                }
-                else
-                {
-                    var writeBuffer = new byte[] { x };
-
-                    _spiDevice.TransferFullDuplex(writeBuffer, readBuffer);
-                }
-
-                result = readBuffer[0];
+                _spiDevice.Read(readBuffer);
             }
             else
             {
-                // Software SPI
-                result = 0;
+                var writeBuffer = new byte[] { x };
 
-                for (int i = 7; i >= 0; i--)
-                {
-                    result <<= 1;
-
-                    DigitalWrite(_sckPin, PinValue.Low);
-                    DigitalWrite(_mosiPin, x & (1 << i));
-                    DigitalWrite(_sckPin, PinValue.High);
-
-                    PinValue value = _misoPin.Read();
-
-                    if (value == PinValue.High)
-                    {
-                        result |= 1;
-                    }
-                }
+                _spiDevice.TransferFullDuplex(writeBuffer, readBuffer);
             }
 
+            byte result = readBuffer[0];
             return result;
         }
 

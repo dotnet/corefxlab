@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio.Samples
@@ -76,33 +77,39 @@ namespace System.Devices.Gpio.Samples
         private byte _numLines;
         private byte[] _rowOffsets;
 
-        public LiquidCrystal(Pin rs, Pin enable, params Pin[] db4or8)
-            : this(rs, null, enable, db4or8)
+        public LiquidCrystal(Pin registerSelect, Pin enable, params Pin[] data)
+            : this(registerSelect, null, enable, data)
         {
             // Do nothing
         }
 
-        public LiquidCrystal(Pin rs, Pin rw, Pin enable, params Pin[] db)
+        public LiquidCrystal(Pin registerSelect, Pin readWrite, Pin enable, params Pin[] data)
         {
-            _rsPin = rs;
-            _rwPin = rw;
-            _enablePin = enable;
-            _dataPins = db;
+            _rwPin = readWrite;
+            _rsPin = registerSelect ?? throw new ArgumentNullException(nameof(registerSelect));
+            _enablePin = enable ?? throw new ArgumentNullException(nameof(enable));
+            _dataPins = data ?? throw new ArgumentNullException(nameof(data));
+
+            if (data.Any(pin => pin == null))
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             _rowOffsets = new byte[4];
 
             _displayFunction = LCD_1LINE | LCD_5x8DOTS;
 
-            if (db.Length == 4)
+            if (data.Length == 4)
             {
                 _displayFunction |= LCD_4BITMODE;
             }
-            else if (db.Length == 8)
+            else if (data.Length == 8)
             {
                 _displayFunction |= LCD_8BITMODE;
             }
             else
             {
-                throw new ArgumentException($"The length of the array given to parameter {nameof(db)} must be 4 or 8");
+                throw new ArgumentException($"The length of the array given to parameter {nameof(data)} must be 4 or 8");
             }
 
             Begin(16, 1);
