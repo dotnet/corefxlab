@@ -83,7 +83,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabEmptyLoop()
         {
-            JsonReader json = new JsonReader(_dataUtf8);
+            var json = new Utf8JsonReader(_dataUtf8);
             while (json.Read()) ;
         }
 
@@ -93,7 +93,7 @@ namespace System.Text.JsonLab.Benchmarks
             byte[] outputArray = new byte[_dataUtf8.Length * 2];
 
             Span<byte> destination = outputArray;
-            var json = new JsonReader(_dataUtf8);
+            var json = new Utf8JsonReader(_dataUtf8);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
