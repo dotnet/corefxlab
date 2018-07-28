@@ -29,7 +29,7 @@ namespace System.Text.JsonLab.Benchmarks
         Json400KB
     }
 
-    // Since there are 120 tests here (4 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
+    // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
     [SimpleJob(-1, 3, 5, 1024)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
