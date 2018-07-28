@@ -140,6 +140,11 @@ namespace System.Devices.Gpio
 
         public override unsafe void Read(byte[] buffer)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
             Initialize();
 
             fixed (byte* rxPtr = buffer)
@@ -164,6 +169,11 @@ namespace System.Devices.Gpio
 
         public override unsafe void Write(byte[] buffer)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
             Initialize();
 
             fixed (byte* txPtr = buffer)
@@ -188,6 +198,16 @@ namespace System.Devices.Gpio
 
         public override unsafe void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer)
         {
+            if (writeBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(writeBuffer));
+            }
+
+            if (readBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(readBuffer));
+            }
+
             if (writeBuffer.Length != readBuffer.Length)
             {
                 throw new ArgumentException($"Parameters '{nameof(writeBuffer)}' and '{nameof(readBuffer)}' must have the same length");

@@ -67,6 +67,12 @@ namespace System.Devices.Gpio.Samples
             public sbyte dig_H6;
         };
 
+        private enum ConnectionProtocol
+        {
+            Spi,
+            I2c
+        }
+
         private Bme280_Calibration_Data _calibrationData;
 
         private float _temperature;
@@ -77,12 +83,24 @@ namespace System.Devices.Gpio.Samples
         private SpiConnectionSettings _spiSettings;
         private SpiDevice _spiDevice;
 
+        private I2cConnectionSettings _i2cSettings;
+        private I2cDevice _i2cDevice;
+
+        private readonly ConnectionProtocol _protocol;
         private Pin _csPin;
 
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
             _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
+            _protocol = ConnectionProtocol.Spi;
+        }
+
+        public Bme280(Pin chipSelectLine, I2cConnectionSettings i2cSettings)
+        {
+            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
+            _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
+            _protocol = ConnectionProtocol.I2c;
         }
 
         public void Dispose()
@@ -91,6 +109,12 @@ namespace System.Devices.Gpio.Samples
             {
                 _spiDevice.Dispose();
                 _spiDevice = null;
+            }
+
+            if (_i2cDevice != null)
+            {
+                _i2cDevice.Dispose();
+                _i2cDevice = null;
             }
         }
 
@@ -125,12 +149,23 @@ namespace System.Devices.Gpio.Samples
             _csPin.Mode = PinMode.Output;
             DigitalWrite(_csPin, PinValue.High);
 
-            if (_spiSettings != null)
+            switch (_protocol)
             {
-                _spiSettings.Mode = SpiMode.Mode0;
-                _spiSettings.DataBitLength = 8; // 1 byte
+                case ConnectionProtocol.Spi:
+                    _spiSettings.Mode = SpiMode.Mode0;
+                    _spiSettings.DataBitLength = 8; // 1 byte
 
-                _spiDevice = new UnixSpiDevice(_spiSettings);
+                    _spiDevice = new UnixSpiDevice(_spiSettings);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    _i2cSettings.DeviceAddress = BME280_ADDRESS;
+
+                    _i2cDevice = new UnixI2cDevice(_i2cSettings);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
             byte chipId = Read8(BME280_REGISTER_CHIPID);
@@ -253,41 +288,62 @@ namespace System.Devices.Gpio.Samples
             _calibrationData.dig_H6 = (sbyte)Read8(BME280_DIG_H6_REG);
         }
 
-        /// <summary>
-        /// Transfers data over the SPI bus
-        /// </summary>
-        private byte SpiTransfer(byte x = 0)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte Read()
         {
-            var readBuffer = new byte[1];
+            var buffer = new byte[1];
 
-            if (x == 0)
+            switch (_protocol)
             {
-                _spiDevice.Read(readBuffer);
-            }
-            else
-            {
-                var writeBuffer = new byte[] { x };
+                case ConnectionProtocol.Spi:
+                    _spiDevice.Read(buffer);
+                    break;
 
-                _spiDevice.TransferFullDuplex(writeBuffer, readBuffer);
+                case ConnectionProtocol.I2c:
+                    _i2cDevice.Read(buffer);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
-            byte result = readBuffer[0];
+            byte result = buffer[0];
             return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Write(byte x)
+        {
+            var buffer = new byte[] { x };
+
+            switch (_protocol)
+            {
+                case ConnectionProtocol.Spi:
+                    _spiDevice.Write(buffer);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    _i2cDevice.Write(buffer);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
+            }
         }
 
         private void Write8(byte reg, byte value)
         {
             DigitalWrite(_csPin, PinValue.Low);
-            SpiTransfer((byte)(reg & ~0x80)); // write, bit 7 low
-            SpiTransfer(value);
+            Write((byte)(reg & ~0x80)); // write, bit 7 low
+            Write(value);
             DigitalWrite(_csPin, PinValue.High);
         }
 
         private byte Read8(byte reg)
         {
             DigitalWrite(_csPin, PinValue.Low);
-            SpiTransfer((byte)(reg | 0x80)); // read, bit 7 high
-            byte value = SpiTransfer();
+            Write((byte)(reg | 0x80)); // read, bit 7 high
+            byte value = Read();
             DigitalWrite(_csPin, PinValue.High);
             return value;
         }
@@ -297,11 +353,11 @@ namespace System.Devices.Gpio.Samples
             ushort result = 0;
 
             DigitalWrite(_csPin, PinValue.Low);
-            SpiTransfer((byte)(reg | 0x80)); // read, bit 7 high
+            Write((byte)(reg | 0x80)); // read, bit 7 high
 
             for (int i = 0; i < 2; ++i)
             {
-                byte value = SpiTransfer();
+                byte value = Read();
                 result = (ushort)((result << 8) | value);
             }
 
@@ -333,11 +389,11 @@ namespace System.Devices.Gpio.Samples
             uint result = 0;
 
             DigitalWrite(_csPin, PinValue.Low);
-            SpiTransfer((byte)(reg | 0x80)); // read, bit 7 high
+            Write((byte)(reg | 0x80)); // read, bit 7 high
 
             for (int i = 0; i < 3; ++i)
             {
-                byte value = SpiTransfer();
+                byte value = Read();
                 result = (result << 8) | value;
             }
 
@@ -348,7 +404,8 @@ namespace System.Devices.Gpio.Samples
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DigitalWrite(Pin pin, int value)
         {
-            PinValue state = HasFlag(value, 0x01) ? PinValue.High : PinValue.Low;
+            const int True = 1;
+            PinValue state = HasFlag(value, True) ? PinValue.High : PinValue.Low;
             DigitalWrite(pin, state);
         }
 

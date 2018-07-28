@@ -126,6 +126,20 @@ namespace System.Devices.Gpio.Samples
                         RaspberryPi_Spi_Bme280_Lcd();
                         break;
 
+                    case 29:
+                        Unix_I2c_Bme280();
+                        break;
+                    case 30:
+                        RaspberryPi_I2c_Bme280();
+                        break;
+
+                    case 31:
+                        Unix_I2c_Bme280_Lcd();
+                        break;
+                    case 32:
+                        RaspberryPi_I2c_Bme280_Lcd();
+                        break;
+
                     default:
                         ShowUsage();
                         break;
@@ -190,6 +204,12 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_Lcd)}");
             Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_Lcd)}");
+            Console.WriteLine();
+            Console.WriteLine($"       29 -> {nameof(Unix_I2c_Bme280)}");
+            Console.WriteLine($"       30 -> {nameof(RaspberryPi_I2c_Bme280)}");
+            Console.WriteLine();
+            Console.WriteLine($"       31 -> {nameof(Unix_I2c_Bme280_Lcd)}");
+            Console.WriteLine($"       32 -> {nameof(RaspberryPi_I2c_Bme280_Lcd)}");
             Console.WriteLine();
         }
 
@@ -754,26 +774,43 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
+        private enum ConnectionProtocol
+        {
+            Spi,
+            I2c
+        }
+
         private static void Unix_Spi_Bme280()
         {
             Console.WriteLine(nameof(Unix_Spi_Bme280));
-            Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
+            Bme280(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.Spi);
         }
 
         private static void RaspberryPi_Spi_Bme280()
         {
             Console.WriteLine(nameof(RaspberryPi_Spi_Bme280));
-            Spi_Bme280(new RaspberryPiDriver());
+            Bme280(new RaspberryPiDriver(), ConnectionProtocol.Spi);
         }
 
-        private static void Spi_Bme280(GpioDriver driver)
+        private static void Unix_I2c_Bme280()
+        {
+            Console.WriteLine(nameof(Unix_I2c_Bme280));
+            Bme280(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.I2c);
+        }
+
+        private static void RaspberryPi_I2c_Bme280()
+        {
+            Console.WriteLine(nameof(RaspberryPi_I2c_Bme280));
+            Bme280(new RaspberryPiDriver(), ConnectionProtocol.I2c);
+        }
+
+        private static void Bme280(GpioDriver driver, ConnectionProtocol protocol)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
                 Pin csPin = controller.OpenPin(8);
 
-                var settings = new SpiConnectionSettings(0, 0);
-                using (var bme280 = new Bme280(csPin, settings))
+                using (Bme280 bme280 = CreateBme280(csPin, protocol))
                 {
                     bool ok = bme280.Begin();
 
@@ -798,19 +835,54 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
+        private static Bme280 CreateBme280(Pin csPin, ConnectionProtocol protocol)
+        {
+            Bme280 result;
+
+            switch (protocol)
+            {
+                case ConnectionProtocol.Spi:
+                    var spiSettings = new SpiConnectionSettings(0, 0);
+                    result = new Bme280(csPin, spiSettings);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    var i2cSettings = new I2cConnectionSettings(1);
+                    result = new Bme280(csPin, i2cSettings);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{protocol}' not supported");
+            }
+
+            return result;
+        }
+
         private static void Unix_Spi_Bme280_Lcd()
         {
             Console.WriteLine(nameof(Unix_Spi_Bme280_Lcd));
-            Spi_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
+            Bme280_Lcd(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.Spi);
         }
 
         private static void RaspberryPi_Spi_Bme280_Lcd()
         {
             Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_Lcd));
-            Spi_Bme280_Lcd(new RaspberryPiDriver());
+            Bme280_Lcd(new RaspberryPiDriver(), ConnectionProtocol.Spi);
         }
 
-        private static void Spi_Bme280_Lcd(GpioDriver driver)
+        private static void Unix_I2c_Bme280_Lcd()
+        {
+            Console.WriteLine(nameof(Unix_I2c_Bme280_Lcd));
+            Bme280_Lcd(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.I2c);
+        }
+
+        private static void RaspberryPi_I2c_Bme280_Lcd()
+        {
+            Console.WriteLine(nameof(RaspberryPi_I2c_Bme280_Lcd));
+            Bme280_Lcd(new RaspberryPiDriver(), ConnectionProtocol.I2c);
+        }
+
+        private static void Bme280_Lcd(GpioDriver driver, ConnectionProtocol protocol)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -823,8 +895,7 @@ namespace System.Devices.Gpio.Samples
 
                 Pin csPin = controller.OpenPin(8);
 
-                var settings = new SpiConnectionSettings(0, 0);
-                using (var bme280 = new Bme280(csPin, settings))
+                using (Bme280 bme280 = CreateBme280(csPin, protocol))
                 {
                     bool ok = bme280.Begin();
 
