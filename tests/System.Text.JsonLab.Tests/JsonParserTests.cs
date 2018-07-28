@@ -4,7 +4,6 @@
 
 using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text.JsonLab.Tests.Resources;
 using Xunit;
 
@@ -299,7 +298,7 @@ namespace System.Text.JsonLab.Tests
             switch (value.Type)
             {
                 case Value.ValueType.String:
-                    value.StringValue = ReadString(ref jsonReader);
+                    value.StringValue = ReadUtf8String(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
                     CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed);
@@ -362,7 +361,7 @@ namespace System.Text.JsonLab.Tests
                         jsonObject.Pairs = jsonPairs;
                         return jsonObject;
                     case JsonTokenType.PropertyName:
-                        ReadOnlyMemory<byte> name = ReadString(ref jsonReader);
+                        ReadOnlyMemory<byte> name = ReadUtf8String(ref jsonReader);
                         jsonReader.Read(); // Move to value token
                         var pair = new Pair
                         {
@@ -407,26 +406,9 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json array was started but never ended.");
         }
 
-        private static byte[] ReadString(ref JsonReader jsonReader)
+        private static byte[] ReadUtf8String(ref JsonReader jsonReader)
         {
-            byte[] array = jsonReader.Value.ToArray();
-            return array;
-            /*var status = Encodings.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
-            Assert.Equal(Buffers.OperationStatus.Done, status);
-
-            var text = new string(' ', needed);
-            unsafe
-            {
-                fixed (char* pChars = text)
-                {
-                    var dst = new Span<byte>((byte*)pChars, needed);
-
-                    status = Encodings.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
-                    Assert.Equal(Buffers.OperationStatus.Done, status);
-                }
-            }
-
-            return text;*/
+            return jsonReader.Value.ToArray();
         }
     }
 }
