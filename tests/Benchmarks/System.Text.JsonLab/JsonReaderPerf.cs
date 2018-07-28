@@ -3,7 +3,6 @@
 
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 
@@ -36,12 +35,8 @@ namespace System.Text.JsonLab.Benchmarks
     {
         private string _jsonString;
         private byte[] _dataUtf8;
-        private byte[] _dataUtf16;
         private MemoryStream _stream;
         private StreamReader _reader;
-
-        [Params(true)]
-        public bool IsUTF8Encoded;
 
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
@@ -52,31 +47,16 @@ namespace System.Text.JsonLab.Benchmarks
         public void Setup()
         {
             _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
-            if (IsUTF8Encoded)
-            {
-                _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
-                _stream = new MemoryStream(_dataUtf8);
-                _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
-            }
-            else
-            {
-                _dataUtf16 = Encoding.Unicode.GetBytes(_jsonString);
-            }
+            _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
+            _stream = new MemoryStream(_dataUtf8);
+            _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
         [Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
-            TextReader reader;
-            if (IsUTF8Encoded)
-            {
-                _stream.Seek(0, SeekOrigin.Begin);
-                reader = _reader;
-            }
-            else
-            {
-                reader = new StringReader(_jsonString);
-            }
+            _stream.Seek(0, SeekOrigin.Begin);
+            TextReader reader = _reader;
             var json = new Newtonsoft.Json.JsonTextReader(reader);
             while (json.Read()) ;
         }
@@ -84,36 +64,89 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
-            TextReader reader;
-            if (IsUTF8Encoded)
+            _stream.Seek(0, SeekOrigin.Begin);
+            TextReader reader = _reader;
+
+            StringBuilder sb = new StringBuilder();
+            var json = new Newtonsoft.Json.JsonTextReader(reader);
+            while (json.Read())
             {
-                _stream.Seek(0, SeekOrigin.Begin);
-                reader = _reader;
-            }
-            else
-            {
-                reader = new StringReader(_jsonString);
+                if (json.Value != null)
+                {
+                    sb.Append(json.Value).Append(", ");
+                }
             }
 
-            return NewtonsoftReturnStringHelper(reader);
+            return sb.ToString();
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabEmptyLoop()
         {
-            JsonReader json = IsUTF8Encoded ?
-                new JsonReader(_dataUtf8, SymbolTable.InvariantUtf8) :
-                new JsonReader(_dataUtf16, SymbolTable.InvariantUtf16);
-
+            JsonReader json = new JsonReader(_dataUtf8);
             while (json.Read()) ;
         }
 
         [Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
-            return IsUTF8Encoded ?
-                    JsonLabReturnBytesHelper(_dataUtf8, SymbolTable.InvariantUtf8) :
-                    JsonLabReturnBytesHelper(_dataUtf16, SymbolTable.InvariantUtf16, 2);
+            byte[] outputArray = new byte[_dataUtf8.Length * 2];
+
+            Span<byte> destination = outputArray;
+            var json = new JsonReader(_dataUtf8);
+            while (json.Read())
+            {
+                JsonTokenType tokenType = json.TokenType;
+                ReadOnlySpan<byte> valueSpan = json.Value;
+                switch (tokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    case JsonTokenType.Value:
+                        var valueType = json.ValueType;
+
+                        switch (valueType)
+                        {
+                            case JsonValueType.True:
+                                destination[0] = (byte)'T';
+                                destination[1] = (byte)'r';
+                                destination[2] = (byte)'u';
+                                destination[3] = (byte)'e';
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
+                                break;
+                            case JsonValueType.False:
+                                destination[0] = (byte)'F';
+                                destination[1] = (byte)'a';
+                                destination[2] = (byte)'l';
+                                destination[3] = (byte)'s';
+                                destination[4] = (byte)'e';
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
+                                break;
+                            case JsonValueType.Number:
+                            case JsonValueType.String:
+                                valueSpan.CopyTo(destination);
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2);
+                                break;
+                            case JsonValueType.Null:
+                                // Special casing  Null so that it matches what JSON.NET does
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return outputArray;
         }
 
         [Benchmark]
@@ -159,73 +192,6 @@ namespace System.Text.JsonLab.Benchmarks
                 }
             }
 
-            return outputArray;
-        }
-
-        private string NewtonsoftReturnStringHelper(TextReader reader)
-        {
-            StringBuilder sb = new StringBuilder();
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
-            while (json.Read())
-            {
-                if (json.Value != null)
-                {
-                    sb.Append(json.Value).Append(", ");
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private byte[] JsonLabReturnBytesHelper(byte[] data, SymbolTable symbolTable, int utf16Multiplier = 1)
-        {
-            byte[] outputArray = new byte[data.Length * 2];
-
-            Span<byte> destination = outputArray;
-            var json = new JsonReader(data, symbolTable);
-            while (json.Read())
-            {
-                JsonTokenType tokenType = json.TokenType;
-                ReadOnlySpan<byte> valueSpan = json.Value;
-                switch (tokenType)
-                {
-                    case JsonTokenType.PropertyName:
-                        valueSpan.CopyTo(destination);
-                        destination[valueSpan.Length] = (byte)',';
-                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
-                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
-                        break;
-                    case JsonTokenType.Value:
-                        var valueType = json.ValueType;
-
-                        switch (valueType)
-                        {
-                            case JsonValueType.True:
-                                destination[0] = (byte)'T';
-                                destination[1 * utf16Multiplier] = (byte)'r';
-                                destination[2 * utf16Multiplier] = (byte)'u';
-                                destination[3 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(4 * utf16Multiplier);
-                                break;
-                            case JsonValueType.False:
-                                destination[0] = (byte)'F';
-                                destination[1 * utf16Multiplier] = (byte)'a';
-                                destination[2 * utf16Multiplier] = (byte)'l';
-                                destination[3 * utf16Multiplier] = (byte)'s';
-                                destination[4 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(5 * utf16Multiplier);
-                                break;
-                        }
-
-                        valueSpan.CopyTo(destination);
-                        destination[valueSpan.Length] = (byte)',';
-                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
-                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
-                        break;
-                    default:
-                        break;
-                }
-            }
             return outputArray;
         }
     }
