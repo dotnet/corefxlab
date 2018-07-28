@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
-using static System.Buffers.Binary.BinaryPrimitives;
 using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab

@@ -37,10 +37,6 @@ namespace System.Text.JsonLab
         public static readonly byte[] FalseValue = { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
         public static readonly byte[] NullValue = { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
 
-        public static readonly byte[] TrueValueUtf16 = { (byte)'t', 0, (byte)'r', 0, (byte)'u', 0, (byte)'e', 0 };
-        public static readonly byte[] FalseValueUtf16 = { (byte)'f', 0, (byte)'a', 0, (byte)'l', 0, (byte)'s', 0, (byte)'e', 0 };
-        public static readonly byte[] NullValueUtf16 = { (byte)'n', 0, (byte)'u', 0, (byte)'l', 0, (byte)'l', 0 };
-
         #endregion Common values
     }
 }

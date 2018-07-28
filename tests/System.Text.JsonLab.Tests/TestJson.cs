@@ -15,7 +15,7 @@ namespace System.Text.JsonLab.Tests
 
         public Value Value { get; set; }
 
-        public TestDom this[string index]
+        public TestDom this[ReadOnlyMemory<byte> index]
         {
             get
             {
@@ -25,7 +25,7 @@ namespace System.Text.JsonLab.Tests
                 var json = new TestDom();
                 foreach (var pair in Object.Pairs)
                 {
-                    if (pair.Name == index)
+                    if (pair.Name.Span.SequenceEqual(index.Span))
                     {
                         switch (pair.Value.Type)
                         {
@@ -94,7 +94,7 @@ namespace System.Text.JsonLab.Tests
 
             if (json.Value.Type == Value.ValueType.String)
             {
-                return json.Value.StringValue;
+                return Encoding.UTF8.GetString(json.Value.StringValue.Span);
             }
             else if (json.Value.Type == Value.ValueType.Null)
             {
@@ -182,7 +182,7 @@ namespace System.Text.JsonLab.Tests
                     }
                 }
 
-                if (new Utf8Span(pair.Name) == str)
+                if (new Utf8Span(pair.Name.Span) == str)
                 {
                     values.Add(pair.Value);
                 }
@@ -230,7 +230,7 @@ namespace System.Text.JsonLab.Tests
 
             if (pair == null) return str;
 
-            str += "\"" + pair.Name + "\":";
+            str += "\"" + Encoding.UTF8.GetString(pair.Name.Span) + "\":";
             str += OutputValue(pair.Value);
             return str;
         }
@@ -265,7 +265,7 @@ namespace System.Text.JsonLab.Tests
             switch (type)
             {
                 case Value.ValueType.String:
-                    str += "\"" + value.StringValue + "\"";
+                    str += "\"" + Encoding.UTF8.GetString(value.StringValue.Span) + "\"";
                     break;
                 case Value.ValueType.Number:
                     str += value.NumberValue;
@@ -299,7 +299,7 @@ namespace System.Text.JsonLab.Tests
 
     public class Pair
     {
-        public string Name { get; set; }
+        public ReadOnlyMemory<byte> Name { get; set; }
         public Value Value { get; set; }
     }
 
@@ -346,7 +346,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        public string StringValue
+        public ReadOnlyMemory<byte> StringValue
         {
             get
             {
@@ -458,7 +458,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        private string _string;
+        private ReadOnlyMemory<byte> _string;
         private double _number;
         private Object _object;
         private Array _array;
