@@ -589,7 +589,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNullUtf8(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.NullValue;
             ValueType = JsonValueType.Null;
 
             if (length < 4
@@ -607,7 +607,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeNullUtf16(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.NullValueUtf16;
             ValueType = JsonValueType.Null;
 
             ref char chars = ref Unsafe.As<byte, char>(ref src);
@@ -742,7 +742,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeFalseUtf8(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.FalseValue;
             ValueType = JsonValueType.False;
 
             if (length < 5
@@ -761,7 +761,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeFalseUtf16(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.FalseValueUtf16;
             ValueType = JsonValueType.False;
 
             ref char chars = ref Unsafe.As<byte, char>(ref src);
@@ -781,7 +781,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeTrueUtf8(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.TrueValue;
             ValueType = JsonValueType.True;
 
             if (length < 4
@@ -799,7 +799,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int ConsumeTrueUtf16(ref byte src, int length)
         {
-            Value = ReadOnlySpan<byte>.Empty;
+            Value = JsonConstants.TrueValueUtf16;
             ValueType = JsonValueType.True;
 
             ref char chars = ref Unsafe.As<byte, char>(ref src);

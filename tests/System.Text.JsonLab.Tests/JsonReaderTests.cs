@@ -22,8 +22,8 @@ namespace System.Text.JsonLab.Tests
                     new object[] { TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
                     new object[] { TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
                     new object[] { TestCaseType.DeepTree, TestJson.DeepTree},
-                    //new object[] { TestCaseType.FullSchema1, TestJson.FullJsonSchema1},   // Behavior of null values is different between Json.NET and JsonLab
-                    //new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of null values is different between Json.NET and JsonLab
+                    new object[] { TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { TestCaseType.HelloWorld, TestJson.HelloWorld},
                     new object[] { TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
                     new object[] { TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
@@ -181,12 +181,15 @@ namespace System.Text.JsonLab.Tests
 
                         switch (valueType)
                         {
+                            // Special casing True/False so that the casing matches with Json.NET
                             case JsonValueType.True:
                                 destination[0] = (byte)'T';
                                 destination[1 * utf16Multiplier] = (byte)'r';
                                 destination[2 * utf16Multiplier] = (byte)'u';
                                 destination[3 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(4 * utf16Multiplier);
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
                                 break;
                             case JsonValueType.False:
                                 destination[0] = (byte)'F';
@@ -194,14 +197,21 @@ namespace System.Text.JsonLab.Tests
                                 destination[2 * utf16Multiplier] = (byte)'l';
                                 destination[3 * utf16Multiplier] = (byte)'s';
                                 destination[4 * utf16Multiplier] = (byte)'e';
-                                destination = destination.Slice(5 * utf16Multiplier);
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
+                                break;
+                            case JsonValueType.Number:
+                            case JsonValueType.String:
+                                valueSpan.CopyTo(destination);
+                                destination[valueSpan.Length] = (byte)',';
+                                destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
+                                destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
+                                break;
+                            case JsonValueType.Null:
+                                // Special casing  Null so that it matches what JSON.NET does
                                 break;
                         }
-
-                        valueSpan.CopyTo(destination);
-                        destination[valueSpan.Length] = (byte)',';
-                        destination[valueSpan.Length + 1 * utf16Multiplier] = (byte)' ';
-                        destination = destination.Slice(valueSpan.Length + 2 * utf16Multiplier);
                         break;
                     default:
                         break;
