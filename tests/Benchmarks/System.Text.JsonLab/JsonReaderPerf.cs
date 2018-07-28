@@ -29,7 +29,7 @@ namespace System.Text.JsonLab.Benchmarks
         Json400KB
     }
 
-    // Since there are 120 tests here (4 * 2 * 15), setting low values for the warmupCount, targetCount, and invocationCount
+    // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
     [SimpleJob(-1, 3, 5, 1024)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
@@ -40,7 +40,7 @@ namespace System.Text.JsonLab.Benchmarks
         private MemoryStream _stream;
         private StreamReader _reader;
 
-        [Params(true, false)]
+        [Params(true)]
         public bool IsUTF8Encoded;
 
         [ParamsSource(nameof(TestCaseValues))]
@@ -116,6 +116,52 @@ namespace System.Text.JsonLab.Benchmarks
                     JsonLabReturnBytesHelper(_dataUtf16, SymbolTable.InvariantUtf16, 2);
         }
 
+        [Benchmark]
+        public void ReaderUtf8JsonEmptyLoop()
+        {
+            Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
+
+            while (json.GetCurrentJsonToken() != Utf8Json.JsonToken.None)
+            {
+                json.ReadNext();
+            }
+        }
+
+        [Benchmark]
+        public byte[] ReaderUtf8JsonReturnBytes()
+        {
+            Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
+
+            byte[] outputArray = new byte[_dataUtf8.Length * 2];
+            Span<byte> destination = outputArray;
+            
+            Utf8Json.JsonToken token = json.GetCurrentJsonToken();
+            while (token != Utf8Json.JsonToken.None)
+            {
+                json.ReadNext();
+                token = json.GetCurrentJsonToken();
+
+                switch (token)
+                {
+                    case Utf8Json.JsonToken.String:
+                    case Utf8Json.JsonToken.Number:
+                    case Utf8Json.JsonToken.True:
+                    case Utf8Json.JsonToken.False:
+                    case Utf8Json.JsonToken.Null:
+                        ReadOnlySpan<byte> valueSpan = json.ReadNextBlockSegment();
+                        valueSpan.CopyTo(destination);
+                        destination[valueSpan.Length] = (byte)',';
+                        destination[valueSpan.Length + 1] = (byte)' ';
+                        destination = destination.Slice(valueSpan.Length + 2);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return outputArray;
+        }
+
         private string NewtonsoftReturnStringHelper(TextReader reader)
         {
             StringBuilder sb = new StringBuilder();
@@ -133,7 +179,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private byte[] JsonLabReturnBytesHelper(byte[] data, SymbolTable symbolTable, int utf16Multiplier = 1)
         {
-            byte[] outputArray = new byte[data.Length];
+            byte[] outputArray = new byte[data.Length * 2];
 
             Span<byte> destination = outputArray;
             var json = new JsonReader(data, symbolTable);
