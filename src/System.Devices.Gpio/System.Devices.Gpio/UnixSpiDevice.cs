@@ -102,8 +102,7 @@ namespace System.Devices.Gpio
         {
             if (_deviceFileDescriptor >= 0) return;
 
-            SpiConnectionSettings settings = ConnectionSettings;
-            string devicePath = $"/dev/spidev0.{settings.ChipSelectLine}";
+            string devicePath = $"/dev/spidev{_settings.BusId}.{_settings.ChipSelectLine}";
             _deviceFileDescriptor = open(devicePath, FileOpenFlags.O_RDWR);
 
             if (_deviceFileDescriptor < 0)
@@ -111,38 +110,37 @@ namespace System.Devices.Gpio
                 throw new IOException($"Cannot open Spi device file '{devicePath}'");
             }
 
-            UnixSpiMode mode = SpiModeToUnixSpiMode(settings.Mode);
+            UnixSpiMode mode = SpiModeToUnixSpiMode(_settings.Mode);
             var ptr = new IntPtr(&mode);
 
             int ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MODE, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi mode to '{settings.Mode}'");
+                throw new GpioException($"Cannot set Spi mode to '{_settings.Mode}'");
             }
 
-            byte bits = (byte)settings.DataBitLength;
+            byte bits = (byte)_settings.DataBitLength;
             ptr = new IntPtr(&bits);
 
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_BITS_PER_WORD, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi data bit length to '{settings.DataBitLength}'");
+                throw new GpioException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
             }
 
-            uint speed = (uint)settings.ClockFrequency;
+            uint speed = (uint)_settings.ClockFrequency;
             ptr = new IntPtr(&speed);
 
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MAX_SPEED_HZ, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi clock frequency to '{settings.ClockFrequency}'");
+                throw new GpioException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'");
             }
         }
 
         public override unsafe void Read(byte[] buffer)
         {
             Initialize();
-            SpiConnectionSettings settings = ConnectionSettings;
 
             fixed (byte* rxPtr = buffer)
             {
@@ -151,8 +149,8 @@ namespace System.Devices.Gpio
                     tx_buf = 0,
                     rx_buf = (ulong)rxPtr,
                     len = (uint)buffer.Length,
-                    speed_hz = (uint)settings.ClockFrequency,
-                    bits_per_word = (byte)settings.DataBitLength,
+                    speed_hz = (uint)_settings.ClockFrequency,
+                    bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
 
@@ -167,7 +165,6 @@ namespace System.Devices.Gpio
         public override unsafe void Write(byte[] buffer)
         {
             Initialize();
-            SpiConnectionSettings settings = ConnectionSettings;
 
             fixed (byte* txPtr = buffer)
             {
@@ -176,8 +173,8 @@ namespace System.Devices.Gpio
                     tx_buf = (ulong)txPtr,
                     rx_buf = 0,
                     len = (uint)buffer.Length,
-                    speed_hz = (uint)settings.ClockFrequency,
-                    bits_per_word = (byte)settings.DataBitLength,
+                    speed_hz = (uint)_settings.ClockFrequency,
+                    bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
 
@@ -197,7 +194,6 @@ namespace System.Devices.Gpio
             }
 
             Initialize();
-            SpiConnectionSettings settings = ConnectionSettings;
 
             fixed (byte* txPtr = writeBuffer, rxPtr = readBuffer)
             {
@@ -206,8 +202,8 @@ namespace System.Devices.Gpio
                     tx_buf = (ulong)txPtr,
                     rx_buf = (ulong)rxPtr,
                     len = (uint)writeBuffer.Length,
-                    speed_hz = (uint)settings.ClockFrequency,
-                    bits_per_word = (byte)settings.DataBitLength,
+                    speed_hz = (uint)_settings.ClockFrequency,
+                    bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
 

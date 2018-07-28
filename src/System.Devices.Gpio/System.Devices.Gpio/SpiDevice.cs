@@ -5,14 +5,16 @@ namespace System.Devices.Gpio
 {
     public abstract class SpiDevice : IDisposable
     {
-        public SpiConnectionSettings ConnectionSettings { get; }
+        protected SpiConnectionSettings _settings;
 
         public SpiDevice(SpiConnectionSettings settings)
         {
-            ConnectionSettings = settings;
+            _settings = settings;
         }
 
         public abstract void Dispose();
+
+        public SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings(_settings);
 
         public abstract void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer);
         public abstract void Read(byte[] buffer);

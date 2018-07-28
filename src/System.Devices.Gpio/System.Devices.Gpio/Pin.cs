@@ -3,42 +3,6 @@
 
 namespace System.Devices.Gpio
 {
-    public enum PinMode
-    {
-        Input,
-        Output,
-        InputPullDown,
-        InputPullUp
-    }
-
-    public enum PinValue
-    {
-        Low = 0,
-        High = 1
-    }
-
-    [Flags]
-    public enum PinEvent
-    {
-        None = 0,
-        Low = 1,
-        High = 2,
-        SyncFallingEdge = 4,
-        SyncRisingEdge = 8,
-        AsyncFallingEdge = 16,
-        AsyncRisingEdge = 32,
-
-        Both = Low | High,
-        SyncBoth = SyncFallingEdge | SyncRisingEdge,
-        AsyncBoth = AsyncFallingEdge | AsyncRisingEdge,
-    }
-
-    public enum PinNumberingScheme
-    {
-        Board,
-        BCM
-    }
-
     public class Pin : IDisposable
     {
         internal Pin(GpioController controller, int bcmNumber)
