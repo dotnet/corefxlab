@@ -11,19 +11,19 @@ namespace System.Devices.Gpio
         /// <summary>
         /// Gets or sets the I2c bus id for this connection.
         /// </summary>
-        public int BusId { get; set; }
+        public uint BusId { get; set; }
 
         /// <summary>
         /// Gets or sets the I2c connection device address.
         /// </summary>
-        public int DeviceAddress { get; set; }
+        public uint DeviceAddress { get; set; }
 
         /// <summary>
         /// Initializes new instance of <see cref="I2cConnectionSettings"/>.
         /// </summary>
         /// <param name="busId">The I2c bus id on which the connection will be made.</param>
         /// <param name="deviceAddress">The I2c connection device address.</param>
-        public I2cConnectionSettings(int busId, int deviceAddress)
+        public I2cConnectionSettings(uint busId, uint deviceAddress)
         {
             BusId = busId;
             DeviceAddress = deviceAddress;
@@ -33,7 +33,7 @@ namespace System.Devices.Gpio
         /// Initializes new instance of <see cref="I2cConnectionSettings"/>.
         /// </summary>
         /// <param name="busId">The I2c bus id on which the connection will be made.</param>
-        public I2cConnectionSettings(int busId)
+        public I2cConnectionSettings(uint busId)
         {
             BusId = busId;
         }

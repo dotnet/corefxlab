@@ -11,12 +11,12 @@ namespace System.Devices.Gpio
         /// <summary>
         /// Gets or sets the Spi bus id for this connection.
         /// </summary>
-        public int BusId { get; set; }
+        public uint BusId { get; set; }
 
         /// <summary>
         /// Gets or sets the chip select line for this connection.
         /// </summary>
-        public int ChipSelectLine { get; set; }
+        public uint ChipSelectLine { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="SpiMode"/> for this connection.
@@ -26,23 +26,23 @@ namespace System.Devices.Gpio
         /// <summary>
         /// Gets or sets the bit length for data on this connection.
         /// </summary>
-        public int DataBitLength { get; set; }
+        public uint DataBitLength { get; set; }
 
         /// <summary>
         /// Gets or sets the clock frequency for the connection.
         /// </summary>
-        public int ClockFrequency { get; set; }
+        public uint ClockFrequency { get; set; }
 
         private const SpiMode DefaultMode = SpiMode.Mode0;
-        private const int DefaultDataBitLength = 8; // 1 byte
-        private const int DefaultClockFrequency = 500_000; // 500 KHz
+        private const uint DefaultDataBitLength = 8; // 1 byte
+        private const uint DefaultClockFrequency = 500_000; // 500 KHz
 
         /// <summary>
         /// Initializes new instance of <see cref="SpiConnectionSettings"/>.
         /// </summary>
         /// <param name="busId">The Spi bus id on which the connection will be made.</param>
         /// <param name="chipSelectLine">The chip select line on which the connection will be made.</param>
-        public SpiConnectionSettings(int busId, int chipSelectLine)
+        public SpiConnectionSettings(uint busId, uint chipSelectLine)
         {
             BusId = busId;
             ChipSelectLine = chipSelectLine;

@@ -82,11 +82,14 @@ namespace System.Devices.Gpio
 
         #endregion
 
+        private const string DefaultDevicePath = "/dev/spidev";
+
         private int _deviceFileDescriptor = -1;
 
         public UnixSpiDevice(SpiConnectionSettings settings)
             : base(settings)
         {
+            DevicePath = DefaultDevicePath;
         }
 
         public override void Dispose()
@@ -98,16 +101,18 @@ namespace System.Devices.Gpio
             }
         }
 
+        public string DevicePath { get; set; }
+
         private unsafe void Initialize()
         {
             if (_deviceFileDescriptor >= 0) return;
 
-            string devicePath = $"/dev/spidev{_settings.BusId}.{_settings.ChipSelectLine}";
-            _deviceFileDescriptor = open(devicePath, FileOpenFlags.O_RDWR);
+            string deviceFileName = $"{DevicePath}{_settings.BusId}.{_settings.ChipSelectLine}";
+            _deviceFileDescriptor = open(deviceFileName, FileOpenFlags.O_RDWR);
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new IOException($"Cannot open Spi device file '{devicePath}'");
+                throw new IOException($"Cannot open Spi device file '{deviceFileName}'");
             }
 
             UnixSpiMode mode = SpiModeToUnixSpiMode(_settings.Mode);

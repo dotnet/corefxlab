@@ -87,20 +87,27 @@ namespace System.Devices.Gpio.Samples
         private I2cDevice _i2cDevice;
 
         private readonly ConnectionProtocol _protocol;
-        private Pin _csPin;
+        private readonly Pin _csPin;
+        private readonly byte[] _buffer;
 
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
+            : this(chipSelectLine)
         {
-            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
         }
 
         public Bme280(Pin chipSelectLine, I2cConnectionSettings i2cSettings)
+            : this(chipSelectLine)
         {
-            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
+        }
+
+        private Bme280(Pin chipSelectLine)
+        {
+            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
+            _buffer = new byte[1];
         }
 
         public void Dispose()
@@ -291,39 +298,37 @@ namespace System.Devices.Gpio.Samples
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte Read()
         {
-            var buffer = new byte[1];
-
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
-                    _spiDevice.Read(buffer);
+                    _spiDevice.Read(_buffer);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cDevice.Read(buffer);
+                    _i2cDevice.Read(_buffer);
                     break;
 
                 default:
                     throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
-            byte result = buffer[0];
+            byte result = _buffer[0];
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Write(byte x)
         {
-            var buffer = new byte[] { x };
+            _buffer[0] = x;
 
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
-                    _spiDevice.Write(buffer);
+                    _spiDevice.Write(_buffer);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cDevice.Write(buffer);
+                    _i2cDevice.Write(_buffer);
                     break;
 
                 default:
