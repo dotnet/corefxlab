@@ -51,6 +51,8 @@ namespace System.Text.JsonLab
         /// </summary>
         public JsonValueType ValueType { get; private set; }
 
+        readonly bool _isSingleSegment;
+
         /// <summary>
         /// Constructs a new JsonReader instance. This is a stack-only type.
         /// </summary>
@@ -59,6 +61,7 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(ReadOnlySpan<byte> data)
         {
             _reader = default;
+            _isSingleSegment = true;
             _buffer = data;
             _depth = 0;
             _containerMask = 0;
@@ -71,6 +74,7 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
             _reader = BufferReader.Create(data);
+            _isSingleSegment = _reader.Sequence.IsSingleSegment;
             _buffer = data.First.Span;
             _depth = 0;
             _containerMask = 0;
@@ -86,7 +90,7 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            if (_reader.Sequence.IsSingleSegment)
+            if (_isSingleSegment)
             {
                 return ReadSingleSegment();
             }
