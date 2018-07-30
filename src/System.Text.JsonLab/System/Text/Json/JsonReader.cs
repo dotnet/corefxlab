@@ -68,7 +68,7 @@ namespace System.Text.JsonLab
             ValueType = JsonValueType.Unknown;
         }
 
-        public JsonReader(in ReadOnlySequence<byte> data)
+        public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
             _reader = BufferReader.Create(data);
             _buffer = data.First.Span;
