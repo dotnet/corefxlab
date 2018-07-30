@@ -71,44 +71,6 @@ namespace System.Devices.Gpio
             public uint nmsgs;
         };
 
-        private enum SmbusMessageFlags : byte
-        {
-            /// <summary>Write data to slave</summary>
-            I2C_SMBUS_WRITE = 0,
-            /// <summary>Read data from slave</summary>
-            I2C_SMBUS_READ = 1
-        }
-
-        private enum SmbusTransactionType : uint
-        {
-            I2C_SMBUS_BLOCK_DATA = 5
-        }
-
-        private unsafe struct i2c_smbus_ioctl_data
-        {
-            public SmbusMessageFlags read_write;
-            public SmbusTransactionType size;
-            public byte command;
-            public byte* data;
-        }
-
-        /// <summary>As specified in SMBus standard</summary>
-        private const int I2C_SMBUS_BLOCK_MAX = 32;
-
-        [StructLayout(LayoutKind.Explicit)]
-        private unsafe struct i2c_smbus_data
-        {
-            [FieldOffset(0)]
-            public byte u8;
-
-            [FieldOffset(0)]
-            public ushort word;
-
-            /// <summary>block[0] is used for length and one more for user-space compatibility</summary>
-            [FieldOffset(0)]
-            public fixed byte block[I2C_SMBUS_BLOCK_MAX + 2];
-        }
-
         [DllImport(LibraryName, SetLastError = true)]
         private static extern int ioctl(int fd, uint request, IntPtr argp);
 
@@ -221,91 +183,16 @@ namespace System.Devices.Gpio
 
             if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
             {
-                //Console.WriteLine("I2c functionality supported");
+                //Console.WriteLine("Using I2c RdWr interface");
 
                 I2cMessageFlags flags = TransferKindToI2cMessageFlags(kind);
-                I2cTransfer(buffer, flags);
+                RdWrInterfaceTransfer(buffer, flags);
             }
-            //else if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_SMBUS_BLOCK_DATA))
-            //{
-            //    //Console.WriteLine("Smbus functionality supported");
-
-            //    SmbusMessageFlags flags = TransferKindToSmbusMessageFlags(kind);
-            //    SmbusTransfer(buffer, flags);
-            //}
             else
             {
                 //Console.WriteLine("Using I2c file interface");
 
-                FileTransfer(buffer, kind);
-            }
-        }
-
-        //private SmbusMessageFlags TransferKindToSmbusMessageFlags(TrasnferKind kind)
-        //{
-        //    switch (kind)
-        //    {
-        //        case TrasnferKind.Read: return SmbusMessageFlags.I2C_SMBUS_WRITE;
-        //        case TrasnferKind.Write: return SmbusMessageFlags.I2C_SMBUS_READ;
-
-        //        default: throw new NotSupportedException();
-        //    }
-        //}
-
-        //private unsafe void SmbusTransfer(byte[] buffer, SmbusMessageFlags flags)
-        //{
-        //    int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
-        //    if (ret < 0)
-        //    {
-        //        throw new GpioException("Error performing I2c data transfer");
-        //    }
-
-        //    fixed (byte* txPtr = buffer)
-        //    {
-        //        var data = new i2c_smbus_ioctl_data
-        //        {
-        //            read_write = flags,
-        //            size = SmbusTransactionType.I2C_SMBUS_BLOCK_DATA,
-        //            command = regaddr,
-        //            data = txPtr,
-        //        };
-
-        //        ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SMBUS, new IntPtr(&data));
-        //        if (ret < 0)
-        //        {
-        //            throw new GpioException("Error performing I2c data transfer");
-        //        }
-        //    }
-        //}
-
-        private unsafe void FileTransfer(byte[] buffer, TrasnferKind kind)
-        {
-            int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
-            if (ret < 0)
-            {
-                throw new GpioException("Error performing I2c data transfer");
-            }
-
-            fixed (byte* txPtr = buffer)
-            {
-                switch (kind)
-                {
-                    case TrasnferKind.Read:
-                        ret = read(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
-                    break;
-
-                    case TrasnferKind.Write:
-                        ret = write(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
-                        break;
-
-                    default:
-                        throw new NotSupportedException();
-                }
-
-                if (ret < 0)
-                {
-                    throw new GpioException("Error performing I2c data transfer");
-                }
+                FileInterfaceTransfer(buffer, kind);
             }
         }
 
@@ -320,7 +207,7 @@ namespace System.Devices.Gpio
             }
         }
 
-        private unsafe void I2cTransfer(byte[] buffer, I2cMessageFlags flags)
+        private unsafe void RdWrInterfaceTransfer(byte[] buffer, I2cMessageFlags flags)
         {
             fixed (byte* txPtr = buffer)
             {
@@ -340,6 +227,37 @@ namespace System.Devices.Gpio
 
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
                 if (ret < 1)
+                {
+                    throw new GpioException("Error performing I2c data transfer");
+                }
+            }
+        }
+
+        private unsafe void FileInterfaceTransfer(byte[] buffer, TrasnferKind kind)
+        {
+            int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
+            if (ret < 0)
+            {
+                throw new GpioException("Error performing I2c data transfer");
+            }
+
+            fixed (byte* txPtr = buffer)
+            {
+                switch (kind)
+                {
+                    case TrasnferKind.Read:
+                        ret = read(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
+                        break;
+
+                    case TrasnferKind.Write:
+                        ret = write(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
+                        break;
+
+                    default:
+                        throw new NotSupportedException();
+                }
+
+                if (ret < 0)
                 {
                     throw new GpioException("Error performing I2c data transfer");
                 }
