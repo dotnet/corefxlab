@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref struct JsonReader
+    public ref struct Utf8JsonReader
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         private const int MaxDepth = sizeof(ulong) * 8;
@@ -56,7 +56,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="data">The <see cref="Span{byte}"/> value to consume. </param>
         /// <param name="encoder">An encoder used for decoding bytes from <paramref name="data"/> into characters.</param>
-        public JsonReader(ReadOnlySpan<byte> data)
+        public Utf8JsonReader(ReadOnlySpan<byte> data)
         {
             _reader = default;
             _buffer = data;

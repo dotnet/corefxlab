@@ -3,13 +3,6 @@
 
 namespace System.Devices.Gpio
 {
-    public class PinValueChangedEventArgs : EventArgs
-    {
-        public PinValueChangedEventArgs(int bcmPinNumber) => BcmPinNumber = bcmPinNumber;
-
-        public int BcmPinNumber { get; }
-    }
-
     public abstract class GpioDriver : IDisposable
     {
         public event EventHandler<PinValueChangedEventArgs> ValueChanged;

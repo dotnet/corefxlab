@@ -98,10 +98,10 @@ namespace System.Devices.Gpio
         private int[] _pinValueFileDescriptors;
 
         private int _pinsToDetectEventsCount;
-        private BitArray _pinsToDetectEvents;
+        private readonly BitArray _pinsToDetectEvents;
         private Thread _eventDetectionThread;
-        private TimeSpan[] _debounceTimeouts;
-        private DateTime[] _lastEvents;
+        private readonly TimeSpan[] _debounceTimeouts;
+        private readonly DateTime[] _lastEvents;
 
         public UnixDriver(int pinCount)
         {

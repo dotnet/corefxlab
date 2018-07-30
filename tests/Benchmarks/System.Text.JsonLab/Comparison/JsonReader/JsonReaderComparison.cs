@@ -47,7 +47,7 @@ namespace JsonBenchmarks
         [Benchmark]
         public void ReaderCorefxlab()
         {
-            var json = new JsonLab.JsonReader(_data);
+            var json = new JsonLab.Utf8JsonReader(_data);
             while (json.Read()) ;
         }
 

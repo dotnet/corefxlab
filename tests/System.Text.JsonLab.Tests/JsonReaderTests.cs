@@ -84,7 +84,7 @@ namespace System.Text.JsonLab.Tests
 
         private static void JsonLabEmptyLoopHelper(byte[] data)
         {
-            var json = new JsonReader(data);
+            var json = new Utf8JsonReader(data);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -151,13 +151,14 @@ namespace System.Text.JsonLab.Tests
 
             var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
 
-            return JsonLabReaderLoop(data, out length, new JsonReader(sequence));
+            return JsonLabReaderLoop(data, out length, new Utf8JsonReader(sequence));
         }
 
-        private static byte[] JsonLabReaderLoop(byte[] data, out int length, JsonReader json)
+        private static byte[] JsonLabReaderLoop(byte[] data, out int length, Utf8JsonReader json)
         {
             byte[] outputArray = new byte[data.Length];
             Span<byte> destination = outputArray;
+
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -217,7 +218,7 @@ namespace System.Text.JsonLab.Tests
 
         private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
         {
-            return JsonLabReaderLoop(data, out length, new JsonReader(data));
+            return JsonLabReaderLoop(data, out length, new Utf8JsonReader(data));
         }
 
         private static string NewtonsoftReturnStringHelper(TextReader reader)

@@ -17,55 +17,55 @@ namespace System.Devices.Gpio
         {
             ///<summary>GPIO Function Select, 6x32 bits, R/W</summary>
             [FieldOffset(0x00)]
-            public fixed UInt32 GPFSEL[6];
+            public fixed uint GPFSEL[6];
 
             ///<summary>GPIO Pin Output Set, 2x32 bits, W</summary>
             [FieldOffset(0x1C)]
-            public fixed UInt32 GPSET[2];
+            public fixed uint GPSET[2];
 
             ///<summary>GPIO Pin Output Clear, 2x32 bits, W</summary>
             [FieldOffset(0x28)]
-            public fixed UInt32 GPCLR[2];
+            public fixed uint GPCLR[2];
 
             ///<summary>GPIO Pin Level, 2x32 bits, R</summary>
             [FieldOffset(0x34)]
-            public fixed UInt32 GPLEV[2];
+            public fixed uint GPLEV[2];
 
             ///<summary>GPIO Pin Event Detect Status, 2x32 bits, R/W</summary>
             [FieldOffset(0x40)]
-            public fixed UInt32 GPEDS[2];
+            public fixed uint GPEDS[2];
 
             ///<summary>GPIO Pin Rising Edge Detect Enable, 2x32 bits, R/W</summary>
             [FieldOffset(0x4C)]
-            public fixed UInt32 GPREN[2];
+            public fixed uint GPREN[2];
 
             ///<summary>GPIO Pin Falling Edge Detect Enable, 2x32 bits, R/W</summary>
             [FieldOffset(0x58)]
-            public fixed UInt32 GPFEN[2];
+            public fixed uint GPFEN[2];
 
             ///<summary>GPIO Pin High Detect Enable, 2x32 bits, R/W</summary>
             [FieldOffset(0x64)]
-            public fixed UInt32 GPHEN[2];
+            public fixed uint GPHEN[2];
 
             ///<summary>GPIO Pin Low Detect Enable, 2x32 bits, R/W</summary>
             [FieldOffset(0x70)]
-            public fixed UInt32 GPLEN[2];
+            public fixed uint GPLEN[2];
 
             ///<summary>GPIO Pin Async. Rising Edge Detect, 2x32 bits, R/W</summary>
             [FieldOffset(0x7C)]
-            public fixed UInt32 GPAREN[2];
+            public fixed uint GPAREN[2];
 
             ///<summary>GPIO Pin Async. Falling Edge Detect, 2x32 bits, R/W</summary>
             [FieldOffset(0x88)]
-            public fixed UInt32 GPAFEN[2];
+            public fixed uint GPAFEN[2];
 
             ///<summary>GPIO Pin Pull-up/down Enable, 32 bits, R/W</summary>
             [FieldOffset(0x94)]
-            public UInt32 GPPUD;
+            public uint GPPUD;
 
             ///<summary>GPIO Pin Pull-up/down Enable Clock, 2x32 bits, R/W</summary>
             [FieldOffset(0x98)]
-            public fixed UInt32 GPPUDCLK[2];
+            public fixed uint GPPUDCLK[2];
         }
 
         #endregion

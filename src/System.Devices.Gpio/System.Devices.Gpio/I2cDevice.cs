@@ -3,20 +3,20 @@
 
 namespace System.Devices.Gpio
 {
-    public abstract class SpiDevice : IDisposable
+    public abstract class I2cDevice : IDisposable
     {
-        protected SpiConnectionSettings _settings;
+        protected I2cConnectionSettings _settings;
 
-        public SpiDevice(SpiConnectionSettings settings)
+        public I2cDevice(I2cConnectionSettings settings)
         {
             _settings = settings;
         }
 
         public abstract void Dispose();
 
-        public SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings(_settings);
+        public I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(_settings);
 
-        public abstract void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer);
+        public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
         public abstract void Read(byte[] buffer);
         public abstract void Write(byte[] buffer);
     }
