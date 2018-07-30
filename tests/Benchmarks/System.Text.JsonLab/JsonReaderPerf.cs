@@ -101,14 +101,14 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
-            JsonReader json = new JsonReader(_sequenceSingle);
+            var json = new Utf8JsonReader(_sequenceSingle);
             while (json.Read()) ;
         }
 
         [Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
-            JsonReader json = new JsonReader(_sequence);
+            var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
