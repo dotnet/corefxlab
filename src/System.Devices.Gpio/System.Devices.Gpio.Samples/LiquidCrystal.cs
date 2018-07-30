@@ -65,17 +65,17 @@ namespace System.Devices.Gpio.Samples
         // can't assume that its in that state when a sketch starts (and the
         // LiquidCrystal constructor is called).
 
-        private Pin _rsPin; // LOW: command.  HIGH: character.
-        private Pin _rwPin; // LOW: write to LCD.  HIGH: read from LCD.
-        private Pin _enablePin; // Activated by a HIGH pulse.
-        private Pin[] _dataPins;
+        private readonly Pin _rsPin; // LOW: command.  HIGH: character.
+        private readonly Pin _rwPin; // LOW: write to LCD.  HIGH: read from LCD.
+        private readonly Pin _enablePin; // Activated by a HIGH pulse.
+        private readonly Pin[] _dataPins;
 
         private byte _displayFunction;
         private byte _displayControl;
         private byte _displayMode;
 
         private byte _numLines;
-        private byte[] _rowOffsets;
+        private readonly byte[] _rowOffsets;
 
         public LiquidCrystal(Pin registerSelect, Pin enable, params Pin[] data)
             : this(registerSelect, null, enable, data)

@@ -91,12 +91,15 @@ namespace System.Devices.Gpio
             Write
         }
 
+        private const string DefaultDevicePath = "/dev/i2c";
+
         private int _deviceFileDescriptor = -1;
         private I2cFunctionalityFlags _functionalities;
 
         public UnixI2cDevice(I2cConnectionSettings settings)
             : base(settings)
         {
+            DevicePath = DefaultDevicePath;
         }
 
         public override void Dispose()
@@ -108,6 +111,8 @@ namespace System.Devices.Gpio
             }
         }
 
+        public string DevicePath { get; set; }
+
         private unsafe void Initialize()
         {
             if (_deviceFileDescriptor >= 0)
@@ -115,12 +120,12 @@ namespace System.Devices.Gpio
                 return;
             }
 
-            string devicePath = $"/dev/i2c-{_settings.BusId}";
-            _deviceFileDescriptor = open(devicePath, FileOpenFlags.O_RDWR);
+            string deviceFileName = $"{DevicePath}-{_settings.BusId}";
+            _deviceFileDescriptor = open(deviceFileName, FileOpenFlags.O_RDWR);
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new IOException($"Cannot open I2c device file '{devicePath}'");
+                throw new IOException($"Cannot open I2c device file '{deviceFileName}'");
             }
         }
 
