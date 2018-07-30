@@ -3,6 +3,7 @@
 
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,28 +14,29 @@ namespace System.Text.JsonLab.Benchmarks
     {
         HelloWorld,
         BasicJson,
-        BasicLargeNum,
-        SpecialNumForm,
-        ProjectLockJson,
-        FullSchema1,
-        FullSchema2,
-        DeepTree,
-        BroadTree,
-        LotsOfNumbers,
-        LotsOfStrings,
+        //BasicLargeNum,
+        //SpecialNumForm,
+        //ProjectLockJson,
+        //FullSchema1,
+        //FullSchema2,
+        //DeepTree,
+        //BroadTree,
+        //LotsOfNumbers,
+        //LotsOfStrings,
         Json400B,
         Json4KB,
-        Json40KB,
-        Json400KB
+        //Json40KB,
+        //Json400KB
     }
 
     // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    [SimpleJob(-1, 3, 5, 1024)]
+    //[SimpleJob(-1, 3, 5, 1024)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
         private string _jsonString;
         private byte[] _dataUtf8;
+        private ReadOnlySequence<byte> _sequence;
         private MemoryStream _stream;
         private StreamReader _reader;
 
@@ -48,11 +50,18 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
             _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
+
+            ReadOnlyMemory<byte> dataMemory = _dataUtf8;
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, _dataUtf8.Length / 2));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(_dataUtf8.Length / 2);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+            _sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
             _stream = new MemoryStream(_dataUtf8);
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -61,7 +70,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -83,7 +92,7 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ReaderSystemTextJsonLabEmptyLoop()
         {
-            JsonReader json = new JsonReader(_dataUtf8);
+            JsonReader json = new JsonReader(_sequence);
             while (json.Read()) ;
         }
 
@@ -93,7 +102,7 @@ namespace System.Text.JsonLab.Benchmarks
             byte[] outputArray = new byte[_dataUtf8.Length * 2];
 
             Span<byte> destination = outputArray;
-            var json = new JsonReader(_dataUtf8);
+            var json = new JsonReader(_sequence);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -193,6 +202,24 @@ namespace System.Text.JsonLab.Benchmarks
             }
 
             return outputArray;
+        }
+    }
+
+    internal class BufferSegment<T> : ReadOnlySequenceSegment<T>
+    {
+        public BufferSegment(ReadOnlyMemory<T> memory)
+        {
+            Memory = memory;
+        }
+
+        public BufferSegment<T> Append(ReadOnlyMemory<T> memory)
+        {
+            var segment = new BufferSegment<T>(memory)
+            {
+                RunningIndex = RunningIndex + Memory.Length
+            };
+            Next = segment;
+            return segment;
         }
     }
 }

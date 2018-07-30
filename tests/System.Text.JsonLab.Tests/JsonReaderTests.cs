@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.JsonLab.Tests.Resources;
@@ -64,13 +65,16 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
+            byte[] resultSequence = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+            string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
 
             Stream stream = new MemoryStream(dataUtf8);
             TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
             string expectedStr = NewtonsoftReturnStringHelper(reader);
 
-            Assert.Equal(actualStr, expectedStr);
+            Assert.Equal(expectedStr, actualStr);
+            Assert.Equal(expectedStr, actualStrSequence);
 
             long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
             JsonLabEmptyLoopHelper(dataUtf8);
@@ -137,12 +141,23 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
+        private static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length)
+        {
+            ReadOnlyMemory<byte> dataMemory = data;
+
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, data.Length / 2));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(data.Length / 2);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+
+            var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
+            return JsonLabReaderLoop(data, out length, new JsonReader(sequence));
+        }
+
+        private static byte[] JsonLabReaderLoop(byte[] data, out int length, JsonReader json)
         {
             byte[] outputArray = new byte[data.Length];
-
             Span<byte> destination = outputArray;
-            var json = new JsonReader(data);
             while (json.Read())
             {
                 JsonTokenType tokenType = json.TokenType;
@@ -200,6 +215,11 @@ namespace System.Text.JsonLab.Tests
             return outputArray;
         }
 
+        private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
+        {
+            return JsonLabReaderLoop(data, out length, new JsonReader(data));
+        }
+
         private static string NewtonsoftReturnStringHelper(TextReader reader)
         {
             StringBuilder sb = new StringBuilder();
@@ -213,6 +233,24 @@ namespace System.Text.JsonLab.Tests
             }
 
             return sb.ToString();
+        }
+    }
+
+    internal class BufferSegment<T> : ReadOnlySequenceSegment<T>
+    {
+        public BufferSegment(ReadOnlyMemory<T> memory)
+        {
+            Memory = memory;
+        }
+
+        public BufferSegment<T> Append(ReadOnlyMemory<T> memory)
+        {
+            var segment = new BufferSegment<T>(memory)
+            {
+                RunningIndex = RunningIndex + Memory.Length
+            };
+            Next = segment;
+            return segment;
         }
     }
 }
