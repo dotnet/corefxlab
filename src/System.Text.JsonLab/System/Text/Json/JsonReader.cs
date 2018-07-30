@@ -14,7 +14,7 @@ namespace System.Text.JsonLab
         private const int MaxDepth = sizeof(ulong) * 8;
 
         private ReadOnlySpan<byte> _buffer;
-        
+
         private BufferReader _reader;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
@@ -904,7 +904,7 @@ namespace System.Text.JsonLab
         }
 
         private int SkipWhiteSpaceUtf8(ref byte src, int length)
-        {            
+        {
             int idx = 0;
             while (idx < length)
             {
