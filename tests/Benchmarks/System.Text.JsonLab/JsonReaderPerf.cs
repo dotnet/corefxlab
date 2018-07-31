@@ -3,6 +3,7 @@
 
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 
@@ -35,6 +36,8 @@ namespace System.Text.JsonLab.Benchmarks
     {
         private string _jsonString;
         private byte[] _dataUtf8;
+        private ReadOnlySequence<byte> _sequence;
+        private ReadOnlySequence<byte> _sequenceSingle;
         private MemoryStream _stream;
         private StreamReader _reader;
 
@@ -48,6 +51,14 @@ namespace System.Text.JsonLab.Benchmarks
         {
             _jsonString = JsonStrings.ResourceManager.GetString(TestCase.ToString());
             _dataUtf8 = Encoding.UTF8.GetBytes(_jsonString);
+
+            ReadOnlyMemory<byte> dataMemory = _dataUtf8;
+            _sequenceSingle = new ReadOnlySequence<byte>(dataMemory);
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, _dataUtf8.Length / 2));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(_dataUtf8.Length / 2);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+            _sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+
             _stream = new MemoryStream(_dataUtf8);
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
@@ -81,9 +92,23 @@ namespace System.Text.JsonLab.Benchmarks
         }
 
         [Benchmark]
-        public void ReaderSystemTextJsonLabEmptyLoop()
+        public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
             var json = new Utf8JsonReader(_dataUtf8);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
+        {
+            var json = new Utf8JsonReader(_sequenceSingle);
+            while (json.Read()) ;
+        }
+
+        [Benchmark]
+        public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
+        {
+            var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
@@ -167,7 +192,7 @@ namespace System.Text.JsonLab.Benchmarks
 
             byte[] outputArray = new byte[_dataUtf8.Length * 2];
             Span<byte> destination = outputArray;
-            
+
             Utf8Json.JsonToken token = json.GetCurrentJsonToken();
             while (token != Utf8Json.JsonToken.None)
             {
@@ -193,6 +218,24 @@ namespace System.Text.JsonLab.Benchmarks
             }
 
             return outputArray;
+        }
+    }
+
+    internal class BufferSegment<T> : ReadOnlySequenceSegment<T>
+    {
+        public BufferSegment(ReadOnlyMemory<T> memory)
+        {
+            Memory = memory;
+        }
+
+        public BufferSegment<T> Append(ReadOnlyMemory<T> memory)
+        {
+            var segment = new BufferSegment<T>(memory)
+            {
+                RunningIndex = RunningIndex + Memory.Length
+            };
+            Next = segment;
+            return segment;
         }
     }
 }
