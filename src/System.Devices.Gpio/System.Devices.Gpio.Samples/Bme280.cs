@@ -88,21 +88,18 @@ namespace System.Devices.Gpio.Samples
 
         private readonly ConnectionProtocol _protocol;
         private readonly Pin _csPin;
-        private readonly byte[] _buffer;
 
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
             _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
-            _buffer = new byte[1];
         }
 
         public Bme280(I2cConnectionSettings i2cSettings)
         {
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
-            _buffer = new byte[1];
         }
 
         public void Dispose()
@@ -342,21 +339,15 @@ namespace System.Devices.Gpio.Samples
                     DigitalWrite(_csPin, PinValue.Low);
 
                     // write, bit 7 low
-                    _buffer[0] = (byte)(register & ~0x80);
-                    _spiDevice.Write(_buffer);
-
-                    _buffer[0] = value;
-                    _spiDevice.Write(_buffer);
+                    _spiDevice.Write((byte)(register & ~0x80));
+                    _spiDevice.Write(value);
 
                     DigitalWrite(_csPin, PinValue.High);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _buffer[0] = register;
-                    _i2cDevice.Write(_buffer);
-
-                    _buffer[0] = value;
-                    _i2cDevice.Write(_buffer);
+                    _i2cDevice.Write(register);
+                    _i2cDevice.Write(value);
                     break;
 
                 default:
@@ -367,36 +358,23 @@ namespace System.Devices.Gpio.Samples
         private uint ReadRegister(byte register, uint byteCount)
         {
             uint result = 0;
+            var buffer = new byte[byteCount];
 
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
                     DigitalWrite(_csPin, PinValue.Low);
-
+                    
                     // read, bit 7 high
-                    _buffer[0] = (byte)(register | 0x80);
-                    _spiDevice.Write(_buffer);
-
-                    for (int i = 0; i < byteCount; ++i)
-                    {
-                        _spiDevice.Read(_buffer);
-                        byte value = _buffer[0];
-                        result = (result << 8) | value;
-                    }
+                    _spiDevice.Write((byte)(register | 0x80));
+                    result = (uint)_spiDevice.Read(byteCount);
 
                     DigitalWrite(_csPin, PinValue.High);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _buffer[0] = register;
-                    _i2cDevice.Write(_buffer);
-
-                    for (int i = 0; i < byteCount; ++i)
-                    {
-                        _i2cDevice.Read(_buffer);
-                        byte value = _buffer[0];
-                        result = (result << 8) | value;
-                    }
+                    _i2cDevice.Write(register);
+                    result = (uint)_i2cDevice.Read(byteCount);
                     break;
 
                 default:
