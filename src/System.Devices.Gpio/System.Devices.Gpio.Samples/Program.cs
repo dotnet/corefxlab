@@ -127,16 +127,13 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 29:
-                        Unix_I2c_Bme280();
-                        break;
-                    case 30:
-                        RaspberryPi_I2c_Bme280();
+                        I2c_Bme280();
                         break;
 
-                    case 31:
+                    case 30:
                         Unix_I2c_Bme280_Lcd();
                         break;
-                    case 32:
+                    case 31:
                         RaspberryPi_I2c_Bme280_Lcd();
                         break;
 
@@ -205,11 +202,10 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_Lcd)}");
             Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_Lcd)}");
             Console.WriteLine();
-            Console.WriteLine($"       29 -> {nameof(Unix_I2c_Bme280)}");
-            Console.WriteLine($"       30 -> {nameof(RaspberryPi_I2c_Bme280)}");
+            Console.WriteLine($"       29 -> {nameof(I2c_Bme280)}");
             Console.WriteLine();
-            Console.WriteLine($"       31 -> {nameof(Unix_I2c_Bme280_Lcd)}");
-            Console.WriteLine($"       32 -> {nameof(RaspberryPi_I2c_Bme280_Lcd)}");
+            Console.WriteLine($"       30 -> {nameof(Unix_I2c_Bme280_Lcd)}");
+            Console.WriteLine($"       31 -> {nameof(RaspberryPi_I2c_Bme280_Lcd)}");
             Console.WriteLine();
         }
 
@@ -774,115 +770,89 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private enum ConnectionProtocol
-        {
-            Spi,
-            I2c
-        }
-
         private static void Unix_Spi_Bme280()
         {
             Console.WriteLine(nameof(Unix_Spi_Bme280));
-            Bme280(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.Spi);
+            Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPi_Spi_Bme280()
         {
             Console.WriteLine(nameof(RaspberryPi_Spi_Bme280));
-            Bme280(new RaspberryPiDriver(), ConnectionProtocol.Spi);
+            Spi_Bme280(new RaspberryPiDriver());
         }
 
-        private static void Unix_I2c_Bme280()
-        {
-            Console.WriteLine(nameof(Unix_I2c_Bme280));
-            Bme280(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.I2c);
-        }
-
-        private static void RaspberryPi_I2c_Bme280()
-        {
-            Console.WriteLine(nameof(RaspberryPi_I2c_Bme280));
-            Bme280(new RaspberryPiDriver(), ConnectionProtocol.I2c);
-        }
-
-        private static void Bme280(GpioDriver driver, ConnectionProtocol protocol)
+        private static void Spi_Bme280(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
                 Pin csPin = controller.OpenPin(8);
 
-                using (Bme280 bme280 = CreateBme280(csPin, protocol))
-                {
-                    bool ok = bme280.Begin();
-
-                    if (ok)
-                    {
-                        Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                        Console.WriteLine();
-
-                        for (var i = 0; i < 5; ++i)
-                        {
-                            bme280.ReadSensor();
-
-                            Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
-                            Thread.Sleep(1 * 1000);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error initializing sensor");
-                    }
-                }
+                var settings = new SpiConnectionSettings(0, 0);
+                var bme280 = new Bme280(csPin, settings);
+                Bme280(bme280);
             }
         }
 
-        private static Bme280 CreateBme280(Pin csPin, ConnectionProtocol protocol)
+        private static void I2c_Bme280()
         {
-            Bme280 result;
+            Console.WriteLine(nameof(I2c_Bme280));
+            var settings = new I2cConnectionSettings(1);
+            var bme280 = new Bme280(settings);
+            Bme280(bme280);
+        }
 
-            switch (protocol)
+        private static void Bme280(Bme280 bme280)
+        {
+            using (bme280)
             {
-                case ConnectionProtocol.Spi:
-                    var spiSettings = new SpiConnectionSettings(0, 0);
-                    result = new Bme280(csPin, spiSettings);
-                    break;
+                bool ok = bme280.Begin();
 
-                case ConnectionProtocol.I2c:
-                    var i2cSettings = new I2cConnectionSettings(1);
-                    result = new Bme280(csPin, i2cSettings);
-                    break;
+                if (ok)
+                {
+                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                    Console.WriteLine();
 
-                default:
-                    throw new NotSupportedException($"Connection protocol '{protocol}' not supported");
+                    for (var i = 0; i < 5; ++i)
+                    {
+                        bme280.ReadSensor();
+
+                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+                        Thread.Sleep(1 * 1000);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Error initializing sensor");
+                }
             }
-
-            return result;
         }
 
         private static void Unix_Spi_Bme280_Lcd()
         {
             Console.WriteLine(nameof(Unix_Spi_Bme280_Lcd));
-            Bme280_Lcd(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.Spi);
+            Spi_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPi_Spi_Bme280_Lcd()
         {
             Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_Lcd));
-            Bme280_Lcd(new RaspberryPiDriver(), ConnectionProtocol.Spi);
+            Spi_Bme280_Lcd(new RaspberryPiDriver());
         }
 
         private static void Unix_I2c_Bme280_Lcd()
         {
             Console.WriteLine(nameof(Unix_I2c_Bme280_Lcd));
-            Bme280_Lcd(new UnixDriver(RaspberryPiPinCount), ConnectionProtocol.I2c);
+            I2c_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPi_I2c_Bme280_Lcd()
         {
             Console.WriteLine(nameof(RaspberryPi_I2c_Bme280_Lcd));
-            Bme280_Lcd(new RaspberryPiDriver(), ConnectionProtocol.I2c);
+            I2c_Bme280_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Bme280_Lcd(GpioDriver driver, ConnectionProtocol protocol)
+        private static void Spi_Bme280_Lcd(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
             {
@@ -895,30 +865,56 @@ namespace System.Devices.Gpio.Samples
 
                 Pin csPin = controller.OpenPin(8);
 
-                using (Bme280 bme280 = CreateBme280(csPin, protocol))
+                var settings = new SpiConnectionSettings(0, 0);
+                var bme280 = new Bme280(csPin, settings);
+                Bme280_Lcd(lcd, bme280);
+            }
+        }
+
+        private static void I2c_Bme280_Lcd(GpioDriver driver)
+        {
+            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            {
+                Pin rs = controller.OpenPin(0);
+                Pin enable = controller.OpenPin(5);
+                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+
+                var lcd = new LiquidCrystal(rs, enable, dbs);
+                lcd.Begin(16, 2);
+
+                Pin csPin = controller.OpenPin(8);
+
+                var settings = new I2cConnectionSettings(1);
+                var bme280 = new Bme280(settings);
+                Bme280_Lcd(lcd, bme280);
+            }
+        }
+
+        private static void Bme280_Lcd(LiquidCrystal lcd, Bme280 bme280)
+        {
+            using (bme280)
+            {
+                bool ok = bme280.Begin();
+
+                if (ok)
                 {
-                    bool ok = bme280.Begin();
+                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                    Console.WriteLine();
 
-                    if (ok)
+                    for (var i = 0; i < 3; ++i)
                     {
-                        Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                        Console.WriteLine();
+                        bme280.ReadSensor();
 
-                        for (var i = 0; i < 3; ++i)
-                        {
-                            bme280.ReadSensor();
+                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
 
-                            Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
-
-                            ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
-                            ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
-                            ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
-                        }
+                        ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
+                        ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
+                        ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
                     }
-                    else
-                    {
-                        Console.WriteLine($"Error initializing sensor");
-                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Error initializing sensor");
                 }
             }
         }

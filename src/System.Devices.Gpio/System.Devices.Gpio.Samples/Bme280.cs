@@ -91,22 +91,17 @@ namespace System.Devices.Gpio.Samples
         private readonly byte[] _buffer;
 
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
-            : this(chipSelectLine)
         {
+            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
+            _buffer = new byte[1];
         }
 
-        public Bme280(Pin chipSelectLine, I2cConnectionSettings i2cSettings)
-            : this(chipSelectLine)
+        public Bme280(I2cConnectionSettings i2cSettings)
         {
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
-        }
-
-        private Bme280(Pin chipSelectLine)
-        {
-            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _buffer = new byte[1];
         }
 
@@ -153,12 +148,12 @@ namespace System.Devices.Gpio.Samples
         {
             Dispose();
 
-            _csPin.Mode = PinMode.Output;
-            DigitalWrite(_csPin, PinValue.High);
-
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
+                    _csPin.Mode = PinMode.Output;
+                    DigitalWrite(_csPin, PinValue.High);
+
                     _spiSettings.Mode = SpiMode.Mode0;
                     _spiSettings.DataBitLength = 8; // 1 byte
 
@@ -338,18 +333,47 @@ namespace System.Devices.Gpio.Samples
 
         private void Write8(byte reg, byte value)
         {
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg & ~0x80)); // write, bit 7 low
-            Write(value);
-            DigitalWrite(_csPin, PinValue.High);
+            switch (_protocol)
+            {
+                case ConnectionProtocol.Spi:
+                    DigitalWrite(_csPin, PinValue.Low);
+                    Write((byte)(reg & ~0x80)); // write, bit 7 low
+                    Write(value);
+                    DigitalWrite(_csPin, PinValue.High);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    Write(reg);
+                    Write(value);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
+            }
         }
 
         private byte Read8(byte reg)
         {
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-            byte value = Read();
-            DigitalWrite(_csPin, PinValue.High);
+            byte value;
+
+            switch (_protocol)
+            {
+                case ConnectionProtocol.Spi:
+                    DigitalWrite(_csPin, PinValue.Low);
+                    Write((byte)(reg | 0x80)); // read, bit 7 high
+                    value = Read();
+                    DigitalWrite(_csPin, PinValue.High);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    Write(reg);
+                    value = Read();
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
+            }
+
             return value;
         }
 
@@ -357,16 +381,35 @@ namespace System.Devices.Gpio.Samples
         {
             ushort result = 0;
 
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-
-            for (int i = 0; i < 2; ++i)
+            switch (_protocol)
             {
-                byte value = Read();
-                result = (ushort)((result << 8) | value);
+                case ConnectionProtocol.Spi:
+                    DigitalWrite(_csPin, PinValue.Low);
+                    Write((byte)(reg | 0x80)); // read, bit 7 high
+
+                    for (int i = 0; i < 2; ++i)
+                    {
+                        byte value = Read();
+                        result = (ushort)((result << 8) | value);
+                    }
+
+                    DigitalWrite(_csPin, PinValue.High);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    Write(reg);
+
+                    for (int i = 0; i < 2; ++i)
+                    {
+                        byte value = Read();
+                        result = (ushort)((result << 8) | value);
+                    }
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
-            DigitalWrite(_csPin, PinValue.High);
             return result;
         }
 
@@ -393,16 +436,35 @@ namespace System.Devices.Gpio.Samples
         {
             uint result = 0;
 
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-
-            for (int i = 0; i < 3; ++i)
+            switch (_protocol)
             {
-                byte value = Read();
-                result = (result << 8) | value;
+                case ConnectionProtocol.Spi:
+                    DigitalWrite(_csPin, PinValue.Low);
+                    Write((byte)(reg | 0x80)); // read, bit 7 high
+
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        byte value = Read();
+                        result = (result << 8) | value;
+                    }
+
+                    DigitalWrite(_csPin, PinValue.High);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    Write(reg);
+
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        byte value = Read();
+                        result = (result << 8) | value;
+                    }
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
-            DigitalWrite(_csPin, PinValue.High);
             return result;
         }
 
