@@ -9,16 +9,16 @@ namespace System.Buffers.Reader
     {
         public static bool TryReadUntill(ref BufferReader reader, out ReadOnlySequence<byte> bytes, byte delimiter)
         {
-            var copy = reader;
-            var start = reader.Position;
+            BufferReader copy = reader;
             while (!reader.End)
             {
-                SequencePosition end = reader.Position;
-                if (reader.Read() == delimiter)
+                if (reader.Peek() == delimiter)
                 {
-                    bytes = reader.Sequence.Slice(start, end);
+                    bytes = reader.Sequence.Slice(copy.Position, reader.Position);
+                    reader.Advance(1);
                     return true;
                 }
+                reader.Advance(1);
             }
             reader = copy;
             bytes = default;

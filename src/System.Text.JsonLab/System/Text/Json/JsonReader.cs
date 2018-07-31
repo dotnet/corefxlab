@@ -74,7 +74,7 @@ namespace System.Text.JsonLab
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
             _reader = BufferReader.Create(data);
-            _isSingleSegment = _reader.Sequence.IsSingleSegment;
+            _isSingleSegment = data.IsSingleSegment;
             _buffer = data.First.Span;
             _depth = 0;
             _containerMask = 0;
@@ -114,7 +114,7 @@ namespace System.Text.JsonLab
         private bool ReadMultiSegment()
         {
             SkipWhiteSpace();
-            if (_reader.UnreadSegment.Length < 1)
+            if (_reader.End)
             {
                 return false;
             }
@@ -499,15 +499,13 @@ namespace System.Text.JsonLab
         private bool TryReadUntill(ref BufferReader reader, out ReadOnlySequence<byte> bytes)
         {
             BufferReader copy = reader;
-            SequencePosition start = reader.Position;
             while (!reader.End)
             {
-                SequencePosition end = reader.Position;
                 int b = reader.Peek();
                 if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket || b == JsonConstants.CarriageReturn
                     || b == JsonConstants.LineFeed || b == JsonConstants.Space)
                 {
-                    bytes = reader.Sequence.Slice(start, end);
+                    bytes = reader.Sequence.Slice(copy.Position, reader.Position);
                     return true;
                 }
                 reader.Advance(1);
