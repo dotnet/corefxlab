@@ -153,7 +153,7 @@ namespace System.Buffers.Reader
 
             ConsumedBytes += byteCount;
 
-            if ((CurrentSegmentIndex + byteCount) < CurrentSegment.Length)
+            if (CurrentSegmentIndex < CurrentSegment.Length - byteCount)
             {
                 CurrentSegmentIndex += byteCount;
             }
@@ -169,7 +169,7 @@ namespace System.Buffers.Reader
         {
             while (!End && byteCount > 0)
             {
-                if ((CurrentSegmentIndex + byteCount) < CurrentSegment.Length)
+                if (CurrentSegmentIndex < CurrentSegment.Length - byteCount)
                 {
                     CurrentSegmentIndex += byteCount;
                     byteCount = 0;
