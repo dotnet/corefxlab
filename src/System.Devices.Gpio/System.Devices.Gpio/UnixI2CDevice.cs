@@ -127,6 +127,15 @@ namespace System.Devices.Gpio
             {
                 throw new IOException($"Cannot open I2c device file '{deviceFileName}'");
             }
+
+            fixed (I2cFunctionalityFlags* functionalitiesPtr = &_functionalities)
+            {
+                int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_FUNCS, new IntPtr(functionalitiesPtr));
+                if (ret < 0)
+                {
+                    _functionalities = 0;
+                }
+            }
         }
 
         public override void Read(byte[] buffer)
@@ -167,28 +176,14 @@ namespace System.Devices.Gpio
 
             Initialize();
 
-            Transfer(writeBuffer, TrasnferKind.Write);
-            Transfer(readBuffer, TrasnferKind.Read);
+            Transfer(writeBuffer, readBuffer);
         }
 
         private unsafe void Transfer(byte[] buffer, TrasnferKind kind)
         {
-            if (_functionalities == 0)
-            {
-                I2cFunctionalityFlags functionalities;
-
-                int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_FUNCS, new IntPtr(&functionalities));
-                if (ret < 0)
-                {
-                    throw new GpioException("Error performing I2c data transfer");
-                }
-
-                _functionalities = functionalities;
-            }
-
             if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
             {
-                //Console.WriteLine("Using I2c RdWr interface");
+                //Console.WriteLine("Using I2c rdwr interface");
 
                 I2cMessageFlags flags = TransferKindToI2cMessageFlags(kind);
                 RdWrInterfaceTransfer(buffer, flags);
@@ -198,6 +193,23 @@ namespace System.Devices.Gpio
                 //Console.WriteLine("Using I2c file interface");
 
                 FileInterfaceTransfer(buffer, kind);
+            }
+        }
+
+        private unsafe void Transfer(byte[] writeBuffer, byte[] readBuffer)
+        {
+            if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
+            {
+                //Console.WriteLine("Using I2c rdwr interface");
+
+                RdWrInterfaceTransfer(writeBuffer, readBuffer);
+            }
+            else
+            {
+                //Console.WriteLine("Using I2c file interface");
+
+                FileInterfaceTransfer(writeBuffer, TrasnferKind.Write);
+                FileInterfaceTransfer(readBuffer, TrasnferKind.Read);
             }
         }
 
@@ -218,16 +230,52 @@ namespace System.Devices.Gpio
             {
                 var message = new i2c_msg()
                 {
+                    flags = flags,
                     addr = (ushort)_settings.DeviceAddress,
                     len = (ushort)buffer.Length,
-                    buf = txPtr,
-                    flags = flags
+                    buf = txPtr
                 };
 
                 var tr = new i2c_rdwr_ioctl_data()
                 {
                     msgs = &message,
                     nmsgs = 1 // 1 message
+                };
+
+                int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
+                if (ret < 1)
+                {
+                    throw new GpioException("Error performing I2c data transfer");
+                }
+            }
+        }
+
+        private unsafe void RdWrInterfaceTransfer(byte[] writeBuffer, byte[] readBuffer)
+        {
+            fixed (byte* txPtr = writeBuffer, rxPtr = readBuffer)
+            {
+                i2c_msg* messagesPtr = stackalloc i2c_msg[2]
+                {
+                    new i2c_msg()
+                    {
+                        flags = I2cMessageFlags.I2C_M_WR,
+                        addr = (ushort)_settings.DeviceAddress,
+                        len = (ushort)writeBuffer.Length,
+                        buf = txPtr
+                    },
+                    new i2c_msg()
+                    {
+                        flags = I2cMessageFlags.I2C_M_RD,
+                        addr = (ushort)_settings.DeviceAddress,
+                        len = (ushort)readBuffer.Length,
+                        buf = rxPtr
+                    }
+                };
+
+                var tr = new i2c_rdwr_ioctl_data()
+                {
+                    msgs = messagesPtr,
+                    nmsgs = 2 // 2 messages
                 };
 
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));

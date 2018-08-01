@@ -61,14 +61,14 @@ namespace System.Devices.Gpio
             return device.Read(8);
         }
 
-        public static ulong Read(this I2cDevice device, uint bytes)
+        public static ulong Read(this I2cDevice device, uint bytesCount)
         {
-            if (bytes > sizeof(ulong))
+            if (bytesCount > sizeof(ulong))
             {
-                throw new ArgumentOutOfRangeException($"Value of {bytes} parameter cannot be greater than 8");
+                throw new ArgumentOutOfRangeException($"Value of {bytesCount} parameter cannot be greater than {sizeof(ulong)}");
             }
 
-            var buffer = new byte[bytes];
+            var buffer = new byte[bytesCount];
             device.Read(buffer);
             return Utils.ValueFromBuffer(buffer);
         }

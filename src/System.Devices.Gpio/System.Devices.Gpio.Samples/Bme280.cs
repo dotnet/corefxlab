@@ -339,15 +339,13 @@ namespace System.Devices.Gpio.Samples
                     DigitalWrite(_csPin, PinValue.Low);
 
                     // write, bit 7 low
-                    _spiDevice.Write((byte)(register & ~0x80));
-                    _spiDevice.Write(value);
+                    _spiDevice.Write((byte)(register & ~0x80), value);
 
                     DigitalWrite(_csPin, PinValue.High);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cDevice.Write(register);
-                    _i2cDevice.Write(value);
+                    _i2cDevice.Write(register, value);
                     break;
 
                 default:
@@ -358,13 +356,12 @@ namespace System.Devices.Gpio.Samples
         private uint ReadRegister(byte register, uint byteCount)
         {
             uint result = 0;
-            var buffer = new byte[byteCount];
 
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
                     DigitalWrite(_csPin, PinValue.Low);
-                    
+
                     // read, bit 7 high
                     _spiDevice.Write((byte)(register | 0x80));
                     result = (uint)_spiDevice.Read(byteCount);
