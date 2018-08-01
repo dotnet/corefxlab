@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.CompilerServices;
-
 namespace System.Buffers.Reader
 {
     // TODO: the TryReadUntil methods are very inneficient. We need to fix that.
@@ -36,36 +34,6 @@ namespace System.Buffers.Reader
 
         public static bool TryReadUntil(ref BufferReader reader, out ReadOnlySequence<byte> bytes, byte delimiter)
         {
-            // Option A
-            /*SequencePosition start = reader.Position;
-            int idx = reader.Sequence.Slice(start).PositionOf(delimiter);
-            if (idx != -1)
-            {
-                bytes = reader.Sequence.Slice(start, idx);
-                reader.Advance(idx + 1);
-                return true;
-            }
-            else
-            {
-                bytes = default;
-                return false;
-            }*/
-
-            // Option B
-            /*SequencePosition start = reader.Position;
-            SequencePosition? position = reader.Sequence.Slice(start).PositionOf(delimiter);
-            if (position != null)
-            {
-                bytes = reader.Sequence.Slice(start, (SequencePosition)position);
-                reader.Advance((int)bytes.Length + 1);
-                return true;
-            }
-            else
-            {
-                bytes = default;
-                return false;
-            }*/
-
             BufferReader copy = reader;
             while (!reader.End)
             {
@@ -125,46 +93,6 @@ namespace System.Buffers.Reader
             bytes = default;
             return false;
         }
-
-        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int PositionOf<T>(in this ReadOnlySequence<T> source, T value) where T : IEquatable<T>
-        {
-            if (source.IsSingleSegment)
-            {
-                return source.First.Span.IndexOf(value);
-            }
-            else
-            {
-                return PositionOfMultiSegment(source, value);
-            }
-        }
-
-        private static int PositionOfMultiSegment<T>(in ReadOnlySequence<T> source, T value) where T : IEquatable<T>
-        {
-            SequencePosition position = source.Start;
-            SequencePosition result = position;
-            int index = 0;
-            while (source.TryGet(ref position, out ReadOnlyMemory<T> memory))
-            {
-                int localIndex = memory.Span.IndexOf(value);
-                if (localIndex != -1)
-                {
-                    return index + localIndex;
-                }
-                else if (position.GetObject() == null)
-                {
-                    break;
-                }
-                else if (localIndex == -1)
-                {
-                    index += memory.Span.Length;
-                }
-
-                result = position;
-            }
-
-            return -1;
-        }*/
 
         public static bool TryReadUntil(ref BufferReader reader, out ReadOnlySequence<byte> bytes, ReadOnlySpan<byte> delimiter)
         {
