@@ -3,7 +3,7 @@
 
 namespace System.Devices.Gpio
 {
-    public static class Utils
+    internal static class Utils
     {
         internal static ulong ValueFromBuffer(byte[] buffer)
         {

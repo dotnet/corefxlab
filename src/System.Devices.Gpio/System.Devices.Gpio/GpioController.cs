@@ -47,7 +47,7 @@ namespace System.Devices.Gpio
         {
             get
             {
-                int bcmNumber = Driver.ConvertPinNumber(pinNumber, Numbering, PinNumberingScheme.BCM);
+                int bcmNumber = Driver.ConvertPinNumber(pinNumber, Numbering, PinNumberingScheme.Bcm);
                 Pin pin = _pins[bcmNumber];
 
                 if (pin == null)
@@ -61,7 +61,7 @@ namespace System.Devices.Gpio
 
         public Pin OpenPin(int number)
         {
-            int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.BCM);
+            int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.Bcm);
             Pin pin = _pins[bcmNumber];
 
             if (pin != null)
@@ -77,7 +77,7 @@ namespace System.Devices.Gpio
 
         public void ClosePin(int number)
         {
-            int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.BCM);
+            int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.Bcm);
             Pin pin = _pins[bcmNumber];
 
             if (pin != null)

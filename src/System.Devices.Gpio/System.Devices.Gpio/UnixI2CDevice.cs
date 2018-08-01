@@ -183,7 +183,7 @@ namespace System.Devices.Gpio
         {
             if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
             {
-                //Console.WriteLine("Using I2c rdwr interface");
+                //Console.WriteLine("Using I2c RdWr interface");
 
                 I2cMessageFlags flags = TransferKindToI2cMessageFlags(kind);
                 RdWrInterfaceTransfer(buffer, flags);
@@ -200,7 +200,7 @@ namespace System.Devices.Gpio
         {
             if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
             {
-                //Console.WriteLine("Using I2c rdwr interface");
+                //Console.WriteLine("Using I2c RdWr interface");
 
                 RdWrInterfaceTransfer(writeBuffer, readBuffer);
             }

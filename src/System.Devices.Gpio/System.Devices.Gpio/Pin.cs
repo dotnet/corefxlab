@@ -48,7 +48,7 @@ namespace System.Devices.Gpio
 
         public bool IsModeSupported(PinMode mode) => Controller.Driver.IsPinModeSupported(mode);
 
-        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.BCM, numbering);
+        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.Bcm, numbering);
 
         public PinValue Read() => Controller.Driver.Input(BcmNumber);
 

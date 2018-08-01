@@ -235,7 +235,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void BlinkingLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin led = controller.OpenPin(26, PinMode.Output);
 
@@ -252,7 +252,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin button = controller.OpenPin(18, PinMode.Input);
                 Pin led = controller.OpenPin(26, PinMode.Output);
@@ -371,7 +371,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonPullDown(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin button = controller.OpenPin(18, PinMode.InputPullDown);
                 Pin led = controller.OpenPin(26, PinMode.Output);
@@ -447,7 +447,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButton(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin button = controller.OpenPin(18, PinMode.Input);
 
@@ -554,7 +554,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin button = controller.OpenPin(18, PinMode.Input);
 
@@ -672,7 +672,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonWait(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin button = controller.OpenPin(18, PinMode.Input);
 
@@ -716,13 +716,17 @@ namespace System.Devices.Gpio.Samples
 
         private static void Lcd(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
-            {
-                Pin rs = controller.OpenPin(0);
-                Pin enable = controller.OpenPin(5);
-                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-                var lcd = new LiquidCrystal(rs, enable, dbs);
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            {
+                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                Pin enablePin = controller.OpenPin(enablePinNumber);
+                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
                 lcd.Print("hello, world!");
 
@@ -784,7 +788,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void Spi_Bme280(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
                 Pin csPin = controller.OpenPin(8);
 
@@ -808,22 +812,21 @@ namespace System.Devices.Gpio.Samples
             {
                 bool ok = bme280.Begin();
 
-                if (ok)
-                {
-                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                    Console.WriteLine();
-
-                    for (var i = 0; i < 5; ++i)
-                    {
-                        bme280.ReadSensor();
-
-                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
-                        Thread.Sleep(1 * 1000);
-                    }
-                }
-                else
+                if (!ok)
                 {
                     Console.WriteLine($"Error initializing sensor");
+                    return;
+                }
+
+                Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                Console.WriteLine();
+
+                for (var i = 0; i < 5; ++i)
+                {
+                    bme280.ReadSensor();
+
+                    Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+                    Thread.Sleep(1 * 1000);
                 }
             }
         }
@@ -854,35 +857,42 @@ namespace System.Devices.Gpio.Samples
 
         private static void Spi_Bme280_Lcd(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
-            {
-                Pin rs = controller.OpenPin(0);
-                Pin enable = controller.OpenPin(5);
-                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            const int chipSelectLinePinNumber = 8;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-                var lcd = new LiquidCrystal(rs, enable, dbs);
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            {
+                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                Pin enablePin = controller.OpenPin(enablePinNumber);
+                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                Pin csPin = controller.OpenPin(8);
+                Pin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
 
                 var settings = new SpiConnectionSettings(0, 0);
-                var bme280 = new Bme280(csPin, settings);
+                var bme280 = new Bme280(chipSelectLinePin, settings);
                 Bme280_Lcd(lcd, bme280);
             }
         }
 
         private static void I2c_Bme280_Lcd(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.BCM))
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
+
+            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
-                Pin rs = controller.OpenPin(0);
-                Pin enable = controller.OpenPin(5);
-                Pin[] dbs = controller.OpenPins(6, 16, 20, 21);
+                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                Pin enablePin = controller.OpenPin(enablePinNumber);
+                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
 
-                var lcd = new LiquidCrystal(rs, enable, dbs);
+                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
-
-                Pin csPin = controller.OpenPin(8);
 
                 var settings = new I2cConnectionSettings(1);
                 var bme280 = new Bme280(settings);
@@ -896,25 +906,24 @@ namespace System.Devices.Gpio.Samples
             {
                 bool ok = bme280.Begin();
 
-                if (ok)
-                {
-                    Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                    Console.WriteLine();
-
-                    for (var i = 0; i < 3; ++i)
-                    {
-                        bme280.ReadSensor();
-
-                        Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
-
-                        ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
-                        ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
-                        ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
-                    }
-                }
-                else
+                if (!ok)
                 {
                     Console.WriteLine($"Error initializing sensor");
+                    return;
+                }
+
+                Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
+                Console.WriteLine();
+
+                for (var i = 0; i < 3; ++i)
+                {
+                    bme280.ReadSensor();
+
+                    Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+
+                    ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
+                    ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
+                    ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
                 }
             }
         }
