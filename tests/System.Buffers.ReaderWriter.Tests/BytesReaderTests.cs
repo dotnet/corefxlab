@@ -15,13 +15,13 @@ namespace System.Buffers.Tests
             var bytes = new ReadOnlySequence<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
             var reader = BufferReader.Create(bytes);
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ab, 3));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out ReadOnlySequence<byte> ab, 3));
             Assert.True(ab.First.SequenceEqual(new byte[] { 1, 2 }));
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var cd, 6));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out ReadOnlySequence<byte> cd, 6));
             Assert.True(cd.First.SequenceEqual(new byte[] { 4, 5 }));
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var ef, new byte[] { 8, 9 }));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out ReadOnlySequence<byte> ef, new byte[] { 8, 9 }));
             Assert.True(ef.First.SequenceEqual(new byte[] { 7 }));
         }
 
@@ -42,17 +42,17 @@ namespace System.Buffers.Tests
 
             var reader = BufferReader.Create(bytes);
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out var bytesValue, 2));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out ReadOnlySequence<byte> bytesValue, 2));
             var span = bytesValue.ToSpan();
             Assert.Equal(0, span[0]);
             Assert.Equal(1, span[1]);
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out bytesValue, 5));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out bytesValue, 5));
             span = bytesValue.ToSpan();
             Assert.Equal(3, span[0]);
             Assert.Equal(4, span[1]);
 
-            Assert.True(BufferReaderExtensions.TryReadUntill(ref reader, out bytesValue, new byte[] { 8, 8 }));
+            Assert.True(BufferReaderExtensions.TryReadUntil(ref reader, out bytesValue, new byte[] { 8, 8 }));
             span = bytesValue.ToSpan();
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
@@ -69,7 +69,7 @@ namespace System.Buffers.Tests
         {
             var bytes = ReadOnlySequence<byte>.Empty;
             var reader = BufferReader.Create(bytes);
-            Assert.False(BufferReaderExtensions.TryReadUntill(ref reader, out var range, (byte)' '));
+            Assert.False(BufferReaderExtensions.TryReadUntil(ref reader, out ReadOnlySequence<byte> range, (byte)' '));
         }
 
         [Fact]
