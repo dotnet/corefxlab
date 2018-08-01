@@ -4,7 +4,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace System.Devices.Gpio
+namespace System.Devices.I2c
 {
     public class UnixI2cDevice : I2cDevice
     {
@@ -245,7 +245,7 @@ namespace System.Devices.Gpio
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new GpioException("Error performing I2c data transfer");
+                    throw new IOException("Error performing I2c data transfer");
                 }
             }
         }
@@ -281,7 +281,7 @@ namespace System.Devices.Gpio
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new GpioException("Error performing I2c data transfer");
+                    throw new IOException("Error performing I2c data transfer");
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace System.Devices.Gpio
             int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
             if (ret < 0)
             {
-                throw new GpioException("Error performing I2c data transfer");
+                throw new IOException("Error performing I2c data transfer");
             }
 
             fixed (byte* txPtr = buffer)
@@ -312,7 +312,7 @@ namespace System.Devices.Gpio
 
                 if (ret < 0)
                 {
-                    throw new GpioException("Error performing I2c data transfer");
+                    throw new IOException("Error performing I2c data transfer");
                 }
             }
         }

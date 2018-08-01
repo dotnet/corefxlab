@@ -1,13 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.I2c;
+using System.Devices.Spi;
 using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio.Samples
 {
-    public class Bme280 : IDisposable
+    /// <summary>
+    /// Supports BME280 Pressure, Temperature and Humidity sensor
+    /// </summary>
+    public class PressureTemperatureHumiditySensor : IDisposable
     {
-        private const byte BME280_ADDRESS = 0x77; // Default I2C address
+        private const byte DEVICE_ADDRESS = 0x77; // Default I2C address
 
         // Name of Registers used in the BME280
 
@@ -89,14 +94,14 @@ namespace System.Devices.Gpio.Samples
         private readonly ConnectionProtocol _protocol;
         private readonly Pin _csPin;
 
-        public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
+        public PressureTemperatureHumiditySensor(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
             _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
         }
 
-        public Bme280(I2cConnectionSettings i2cSettings)
+        public PressureTemperatureHumiditySensor(I2cConnectionSettings i2cSettings)
         {
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
@@ -158,7 +163,7 @@ namespace System.Devices.Gpio.Samples
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cSettings.DeviceAddress = BME280_ADDRESS;
+                    _i2cSettings.DeviceAddress = DEVICE_ADDRESS;
 
                     _i2cDevice = new UnixI2cDevice(_i2cSettings);
                     break;

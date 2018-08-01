@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.I2c;
+using System.Devices.Spi;
 using System.Diagnostics;
 using System.Threading;
 
@@ -113,28 +115,32 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 25:
-                        Unix_Spi_Bme280();
+                        Unix_Spi_Pressure();
                         break;
                     case 26:
-                        RaspberryPi_Spi_Bme280();
+                        RaspberryPi_Spi_Pressure();
                         break;
 
                     case 27:
-                        Unix_Spi_Bme280_Lcd();
+                        Unix_Spi_Pressure_Lcd();
                         break;
                     case 28:
-                        RaspberryPi_Spi_Bme280_Lcd();
+                        RaspberryPi_Spi_Pressure_Lcd();
                         break;
 
                     case 29:
-                        I2c_Bme280();
+                        I2c_Pressure();
                         break;
 
                     case 30:
-                        Unix_I2c_Bme280_Lcd();
+                        Unix_I2c_Pressure_Lcd();
                         break;
                     case 31:
-                        RaspberryPi_I2c_Bme280_Lcd();
+                        RaspberryPi_I2c_Pressure_Lcd();
+                        break;
+
+                    case 32:
+                        I2c_Color();
                         break;
 
                     default:
@@ -196,16 +202,18 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       24 -> {nameof(Spi_Roundtrip)}");
             Console.WriteLine();
-            Console.WriteLine($"       25 -> {nameof(Unix_Spi_Bme280)}");
-            Console.WriteLine($"       26 -> {nameof(RaspberryPi_Spi_Bme280)}");
+            Console.WriteLine($"       25 -> {nameof(Unix_Spi_Pressure)}");
+            Console.WriteLine($"       26 -> {nameof(RaspberryPi_Spi_Pressure)}");
             Console.WriteLine();
-            Console.WriteLine($"       27 -> {nameof(Unix_Spi_Bme280_Lcd)}");
-            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Bme280_Lcd)}");
+            Console.WriteLine($"       27 -> {nameof(Unix_Spi_Pressure_Lcd)}");
+            Console.WriteLine($"       28 -> {nameof(RaspberryPi_Spi_Pressure_Lcd)}");
             Console.WriteLine();
-            Console.WriteLine($"       29 -> {nameof(I2c_Bme280)}");
+            Console.WriteLine($"       29 -> {nameof(I2c_Pressure)}");
             Console.WriteLine();
-            Console.WriteLine($"       30 -> {nameof(Unix_I2c_Bme280_Lcd)}");
-            Console.WriteLine($"       31 -> {nameof(RaspberryPi_I2c_Bme280_Lcd)}");
+            Console.WriteLine($"       30 -> {nameof(Unix_I2c_Pressure_Lcd)}");
+            Console.WriteLine($"       31 -> {nameof(RaspberryPi_I2c_Pressure_Lcd)}");
+            Console.WriteLine();
+            Console.WriteLine($"       32 -> {nameof(I2c_Color)}");
             Console.WriteLine();
         }
 
@@ -726,7 +734,7 @@ namespace System.Devices.Gpio.Samples
                 Pin enablePin = controller.OpenPin(enablePinNumber);
                 Pin[] dataPins = controller.OpenPins(dataPinNumbers);
 
-                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
                 lcd.Print("hello, world!");
 
@@ -774,15 +782,15 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static void Unix_Spi_Bme280()
+        private static void Unix_Spi_Pressure()
         {
-            Console.WriteLine(nameof(Unix_Spi_Bme280));
+            Console.WriteLine(nameof(Unix_Spi_Pressure));
             Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_Spi_Bme280()
+        private static void RaspberryPi_Spi_Pressure()
         {
-            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280));
+            Console.WriteLine(nameof(RaspberryPi_Spi_Pressure));
             Spi_Bme280(new RaspberryPiDriver());
         }
 
@@ -793,24 +801,24 @@ namespace System.Devices.Gpio.Samples
                 Pin csPin = controller.OpenPin(8);
 
                 var settings = new SpiConnectionSettings(0, 0);
-                var bme280 = new Bme280(csPin, settings);
-                Bme280(bme280);
+                var sensor = new PressureTemperatureHumiditySensor(csPin, settings);
+                Bme280(sensor);
             }
         }
 
-        private static void I2c_Bme280()
+        private static void I2c_Pressure()
         {
-            Console.WriteLine(nameof(I2c_Bme280));
+            Console.WriteLine(nameof(I2c_Pressure));
             var settings = new I2cConnectionSettings(1);
-            var bme280 = new Bme280(settings);
-            Bme280(bme280);
+            var sensor = new PressureTemperatureHumiditySensor(settings);
+            Bme280(sensor);
         }
 
-        private static void Bme280(Bme280 bme280)
+        private static void Bme280(PressureTemperatureHumiditySensor sensor)
         {
-            using (bme280)
+            using (sensor)
             {
-                bool ok = bme280.Begin();
+                bool ok = sensor.Begin();
 
                 if (!ok)
                 {
@@ -823,39 +831,39 @@ namespace System.Devices.Gpio.Samples
 
                 for (var i = 0; i < 5; ++i)
                 {
-                    bme280.ReadSensor();
+                    sensor.ReadSensor();
 
-                    Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"{sensor.PressureInHectopascals:0.00} hPa\t\t{sensor.Humidity:0.00} %\t\t{sensor.TemperatureInCelsius:0.00} C\t\t{sensor.TemperatureInFahrenheit:0.00} F");
                     Thread.Sleep(1 * 1000);
                 }
             }
         }
 
-        private static void Unix_Spi_Bme280_Lcd()
+        private static void Unix_Spi_Pressure_Lcd()
         {
-            Console.WriteLine(nameof(Unix_Spi_Bme280_Lcd));
-            Spi_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_Spi_Pressure_Lcd));
+            Spi_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_Spi_Bme280_Lcd()
+        private static void RaspberryPi_Spi_Pressure_Lcd()
         {
-            Console.WriteLine(nameof(RaspberryPi_Spi_Bme280_Lcd));
-            Spi_Bme280_Lcd(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_Spi_Pressure_Lcd));
+            Spi_Pressure_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Unix_I2c_Bme280_Lcd()
+        private static void Unix_I2c_Pressure_Lcd()
         {
-            Console.WriteLine(nameof(Unix_I2c_Bme280_Lcd));
-            I2c_Bme280_Lcd(new UnixDriver(RaspberryPiPinCount));
+            Console.WriteLine(nameof(Unix_I2c_Pressure_Lcd));
+            I2c_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
         }
 
-        private static void RaspberryPi_I2c_Bme280_Lcd()
+        private static void RaspberryPi_I2c_Pressure_Lcd()
         {
-            Console.WriteLine(nameof(RaspberryPi_I2c_Bme280_Lcd));
-            I2c_Bme280_Lcd(new RaspberryPiDriver());
+            Console.WriteLine(nameof(RaspberryPi_I2c_Pressure_Lcd));
+            I2c_Pressure_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Spi_Bme280_Lcd(GpioDriver driver)
+        private static void Spi_Pressure_Lcd(GpioDriver driver)
         {
             const int registerSelectPinNumber = 0;
             const int enablePinNumber = 5;
@@ -868,18 +876,18 @@ namespace System.Devices.Gpio.Samples
                 Pin enablePin = controller.OpenPin(enablePinNumber);
                 Pin[] dataPins = controller.OpenPins(dataPinNumbers);
 
-                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
                 Pin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
 
                 var settings = new SpiConnectionSettings(0, 0);
-                var bme280 = new Bme280(chipSelectLinePin, settings);
-                Bme280_Lcd(lcd, bme280);
+                var sensor = new PressureTemperatureHumiditySensor(chipSelectLinePin, settings);
+                Pressure_Lcd(lcd, sensor);
             }
         }
 
-        private static void I2c_Bme280_Lcd(GpioDriver driver)
+        private static void I2c_Pressure_Lcd(GpioDriver driver)
         {
             const int registerSelectPinNumber = 0;
             const int enablePinNumber = 5;
@@ -891,20 +899,20 @@ namespace System.Devices.Gpio.Samples
                 Pin enablePin = controller.OpenPin(enablePinNumber);
                 Pin[] dataPins = controller.OpenPins(dataPinNumbers);
 
-                var lcd = new LiquidCrystal(registerSelectPin, enablePin, dataPins);
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
                 var settings = new I2cConnectionSettings(1);
-                var bme280 = new Bme280(settings);
-                Bme280_Lcd(lcd, bme280);
+                var sensor = new PressureTemperatureHumiditySensor(settings);
+                Pressure_Lcd(lcd, sensor);
             }
         }
 
-        private static void Bme280_Lcd(LiquidCrystal lcd, Bme280 bme280)
+        private static void Pressure_Lcd(LcdController lcd, PressureTemperatureHumiditySensor sensor)
         {
-            using (bme280)
+            using (sensor)
             {
-                bool ok = bme280.Begin();
+                bool ok = sensor.Begin();
 
                 if (!ok)
                 {
@@ -917,18 +925,18 @@ namespace System.Devices.Gpio.Samples
 
                 for (var i = 0; i < 3; ++i)
                 {
-                    bme280.ReadSensor();
+                    sensor.ReadSensor();
 
-                    Console.WriteLine($"{bme280.PressureInHectopascals:0.00} hPa\t\t{bme280.Humidity:0.00} %\t\t{bme280.TemperatureInCelsius:0.00} C\t\t{bme280.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"{sensor.PressureInHectopascals:0.00} hPa\t\t{sensor.Humidity:0.00} %\t\t{sensor.TemperatureInCelsius:0.00} C\t\t{sensor.TemperatureInFahrenheit:0.00} F");
 
-                    ShowInfo(lcd, "Pressure", $"{bme280.PressureInHectopascals:0.00} hPa/mb");
-                    ShowInfo(lcd, "Humdity", $"{bme280.Humidity:0.00} %");
-                    ShowInfo(lcd, "Temperature", $"{bme280.TemperatureInCelsius:0.00} C, {bme280.TemperatureInFahrenheit:0.00} F");
+                    ShowInfo(lcd, "Pressure", $"{sensor.PressureInHectopascals:0.00} hPa/mb");
+                    ShowInfo(lcd, "Humdity", $"{sensor.Humidity:0.00} %");
+                    ShowInfo(lcd, "Temperature", $"{sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
                 }
             }
         }
 
-        private static void ShowInfo(LiquidCrystal lcd, string label, string value)
+        private static void ShowInfo(LcdController lcd, string label, string value)
         {
             lcd.Clear();
             lcd.SetCursor(0, 0);
@@ -938,6 +946,32 @@ namespace System.Devices.Gpio.Samples
             lcd.Print(value);
 
             Thread.Sleep(3 * 1000);
+        }
+
+        private static void I2c_Color()
+        {
+            var settings = new I2cConnectionSettings(1);
+            using (var sensor = new RgbColorSensor(settings))
+            {
+                bool ok = sensor.Begin();
+
+                if (!ok)
+                {
+                    Console.WriteLine($"Error initializing sensor");
+                    return;
+                }
+
+                Console.WriteLine($"Color (rgb)\t\t\tTemperature (K)\tLuminosity (lux)");
+                Console.WriteLine();
+
+                for (var i = 0; i < 5; ++i)
+                {
+                    sensor.ReadSensor();
+
+                    Console.WriteLine($"{sensor.Color}\t{sensor.Temperature:0.00} K\t{sensor.Luminosity:0.00} lux");
+                    Thread.Sleep(1 * 1000);
+                }
+            }
         }
     }
 }

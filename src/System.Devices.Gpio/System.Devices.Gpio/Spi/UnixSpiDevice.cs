@@ -4,7 +4,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace System.Devices.Gpio
+namespace System.Devices.Spi
 {
     public class UnixSpiDevice : SpiDevice
     {
@@ -121,7 +121,7 @@ namespace System.Devices.Gpio
             int ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MODE, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi mode to '{_settings.Mode}'");
+                throw new IOException($"Cannot set Spi mode to '{_settings.Mode}'");
             }
 
             byte bits = (byte)_settings.DataBitLength;
@@ -130,7 +130,7 @@ namespace System.Devices.Gpio
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_BITS_PER_WORD, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
+                throw new IOException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
             }
 
             uint speed = _settings.ClockFrequency;
@@ -139,7 +139,7 @@ namespace System.Devices.Gpio
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MAX_SPEED_HZ, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'");
+                throw new IOException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'");
             }
         }
 
@@ -167,7 +167,7 @@ namespace System.Devices.Gpio
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new GpioException("Error performing Spi data transfer");
+                    throw new IOException("Error performing Spi data transfer");
                 }
             }
         }
@@ -196,7 +196,7 @@ namespace System.Devices.Gpio
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new GpioException("Error performing Spi data transfer");
+                    throw new IOException("Error performing Spi data transfer");
                 }
             }
         }
@@ -235,7 +235,7 @@ namespace System.Devices.Gpio
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new GpioException("Error performing Spi data transfer");
+                    throw new IOException("Error performing Spi data transfer");
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new GpioException($"Invalid Spi mode '{mode}'");
+                    throw new IOException($"Invalid Spi mode '{mode}'");
             }
 
             return result;
