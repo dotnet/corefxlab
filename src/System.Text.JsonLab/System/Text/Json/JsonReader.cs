@@ -160,20 +160,21 @@ namespace System.Text.JsonLab
 
         private bool ReadSingleSegment()
         {
+            ReadOnlySpan<byte> buffer = _buffer;
             if (TokenType != JsonTokenType.None)
-                SkipWhiteSpaceUtf8();
+                SkipWhiteSpaceUtf8(ref buffer);
 
-            if (_buffer.Length < 1)
+            if (buffer.Length < 1)
             {
                 return false;
             }
 
-            byte ch = _buffer[0];
+            byte ch = buffer[0];
 
             switch (TokenType)
             {
                 case JsonTokenType.None:
-                    _buffer = _buffer.Slice(1);
+                    buffer = buffer.Slice(1);
                     if (ch == JsonConstants.OpenBrace)
                         StartObject();
                     else if (ch == JsonConstants.OpenBracket)
@@ -183,36 +184,38 @@ namespace System.Text.JsonLab
                     break;
 
                 case JsonTokenType.StartObject:
-                    _buffer = _buffer.Slice(1);
+                    buffer = buffer.Slice(1);
                     if (ch == JsonConstants.CloseBrace)
                         EndObject();
                     else
                     {
                         if (ch != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
-                        ConsumePropertyNameUtf8();
+                        ConsumePropertyNameUtf8(ref buffer);
                     }
                     break;
 
                 case JsonTokenType.StartArray:
                     if (ch == JsonConstants.CloseBracket)
                     {
-                        _buffer = _buffer.Slice(1);
+                        buffer = buffer.Slice(1);
                         EndArray();
                     }
                     else
-                        ConsumeValueUtf8(ch);
+                        ConsumeValueUtf8(ref buffer, ch);
                     break;
 
                 case JsonTokenType.PropertyName:
-                    ConsumeValueUtf8(ch);
+                    ConsumeValueUtf8(ref buffer, ch);
                     break;
 
                 case JsonTokenType.EndArray:
                 case JsonTokenType.EndObject:
                 case JsonTokenType.Value:
-                    return ConsumeNextUtf8(ch);
+                    bool result = ConsumeNextUtf8(ref buffer, ch);
+                    _buffer = buffer;
+                    return result;
             }
-
+            _buffer = buffer;
             return true;
         }
 
@@ -298,31 +301,31 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        private bool ConsumeNextUtf8(byte marker)
+        private bool ConsumeNextUtf8(ref ReadOnlySpan<byte> buffer, byte marker)
         {
             switch (marker)
             {
                 case JsonConstants.ListSeperator:
                     {
-                        SkipWhiteSpaceUtf8(1);
+                        SkipWhiteSpaceUtf8(ref buffer, 1);
                         if (InObject)
                         {
-                            if (_buffer.Length < 1)
+                            if (buffer.Length < 1)
                             {
                                 return false;
                             }
-                            if (_buffer[0] != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
-                            _buffer = _buffer.Slice(1);
-                            ConsumePropertyNameUtf8();
+                            if (buffer[0] != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
+                            buffer = buffer.Slice(1);
+                            ConsumePropertyNameUtf8(ref buffer);
                         }
                         else if (InArray)
                         {
-                            if (_buffer.Length < 1)
+                            if (buffer.Length < 1)
                             {
                                 return false;
                             }
 
-                            ConsumeValueUtf8(_buffer[0]);
+                            ConsumeValueUtf8(ref buffer, buffer[0]);
                         }
                         else
                         {
@@ -332,12 +335,12 @@ namespace System.Text.JsonLab
                     break;
 
                 case JsonConstants.CloseBrace:
-                    _buffer = _buffer.Slice(1);
+                    buffer = buffer.Slice(1);
                     EndObject();
                     break;
 
                 case JsonConstants.CloseBracket:
-                    _buffer = _buffer.Slice(1);
+                    buffer = buffer.Slice(1);
                     EndArray();
                     break;
 
@@ -408,47 +411,47 @@ namespace System.Text.JsonLab
         /// This method contains the logic for processing the next value token and determining
         /// what type of data it is.
         /// </summary>
-        private void ConsumeValueUtf8(byte marker)
+        private void ConsumeValueUtf8(ref ReadOnlySpan<byte> buffer, byte marker)
         {
             TokenType = JsonTokenType.Value;
 
             if (marker == JsonConstants.Quote)
             {
-                _buffer = _buffer.Slice(1);
-                ConsumeStringUtf8();
+                buffer = buffer.Slice(1);
+                ConsumeStringUtf8(ref buffer);
             }
             else if (marker == JsonConstants.OpenBrace)
             {
-                _buffer = _buffer.Slice(1);
+                buffer = buffer.Slice(1);
                 StartObject();
                 ValueType = JsonValueType.Object;
             }
             else if (marker == JsonConstants.OpenBracket)
             {
-                _buffer = _buffer.Slice(1);
+                buffer = buffer.Slice(1);
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
             else if (marker - '0' <= '9' - '0')
             {
-                ConsumeNumberUtf8();
+                ConsumeNumberUtf8(ref buffer);
             }
             else if (marker == '-')
             {
-                if (_buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException();
-                ConsumeNumberUtf8();
+                if (buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException();
+                ConsumeNumberUtf8(ref buffer);
             }
             else if (marker == 'f')
             {
-                ConsumeFalseUtf8();
+                ConsumeFalseUtf8(ref buffer);
             }
             else if (marker == 't')
             {
-                ConsumeTrueUtf8();
+                ConsumeTrueUtf8(ref buffer);
             }
             else if (marker == 'n')
             {
-                ConsumeNullUtf8();
+                ConsumeNullUtf8(ref buffer);
             }
             else if (marker == '/')
             {
@@ -474,17 +477,17 @@ namespace System.Text.JsonLab
             return 1;
         }
 
-        private void ConsumeNumberUtf8()
+        private void ConsumeNumberUtf8(ref ReadOnlySpan<byte> buffer)
         {
-            int idx = _buffer.IndexOfAny(JsonConstants.Delimiters);
+            int idx = buffer.IndexOfAny(JsonConstants.Delimiters);
             if (idx == -1)
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
 
-            Value = _buffer.Slice(0, idx);
+            Value = buffer.Slice(0, idx);
             ValueType = JsonValueType.Number;
-            _buffer = _buffer.Slice(idx);
+            buffer = buffer.Slice(idx);
         }
 
         private int ConsumeNullUtf8MultiSegment()
@@ -500,20 +503,20 @@ namespace System.Text.JsonLab
             return 4;
         }
 
-        private void ConsumeNullUtf8()
+        private void ConsumeNullUtf8(ref ReadOnlySpan<byte> buffer)
         {
             Value = JsonConstants.NullValue;
             ValueType = JsonValueType.Null;
 
-            if (_buffer.Length < 4
-                || _buffer[0] != 'n'
-                || _buffer[1] != 'u'
-                || _buffer[2] != 'l'
-                || _buffer[3] != 'l')
+            if (buffer.Length < 4
+                || buffer[0] != 'n'
+                || buffer[1] != 'u'
+                || buffer[2] != 'l'
+                || buffer[3] != 'l')
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-            _buffer = _buffer.Slice(4);
+            buffer = buffer.Slice(4);
         }
 
         private int ConsumeFalseUtf8MultiSegment()
@@ -533,21 +536,21 @@ namespace System.Text.JsonLab
             return 5;
         }
 
-        private void ConsumeFalseUtf8()
+        private void ConsumeFalseUtf8(ref ReadOnlySpan<byte> buffer)
         {
             Value = JsonConstants.FalseValue;
             ValueType = JsonValueType.False;
 
-            if (_buffer.Length < 5
-                || _buffer[0] != 'f'
-                || _buffer[1] != 'a'
-                || _buffer[2] != 'l'
-                || _buffer[3] != 's'
-                || _buffer[4] != 'e')
+            if (buffer.Length < 5
+                || buffer[0] != 'f'
+                || buffer[1] != 'a'
+                || buffer[2] != 'l'
+                || buffer[3] != 's'
+                || buffer[4] != 'e')
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-            _buffer = _buffer.Slice(5);
+            buffer = buffer.Slice(5);
         }
 
         private int ConsumeTrueUtf8MultiSegment()
@@ -566,20 +569,20 @@ namespace System.Text.JsonLab
             return 4;
         }
 
-        private void ConsumeTrueUtf8()
+        private void ConsumeTrueUtf8(ref ReadOnlySpan<byte> buffer)
         {
             Value = JsonConstants.TrueValue;
             ValueType = JsonValueType.True;
 
-            if (_buffer.Length < 4
-                || _buffer[0] != 't'
-                || _buffer[1] != 'r'
-                || _buffer[2] != 'u'
-                || _buffer[3] != 'e')
+            if (buffer.Length < 4
+                || buffer[0] != 't'
+                || buffer[1] != 'r'
+                || buffer[2] != 'u'
+                || buffer[3] != 'e')
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-            _buffer = _buffer.Slice(4);
+            buffer = buffer.Slice(4);
         }
 
         private void ConsumePropertyNameUtf8MultiSegment()
@@ -603,25 +606,25 @@ namespace System.Text.JsonLab
             TokenType = JsonTokenType.PropertyName;
         }
 
-        private void ConsumePropertyNameUtf8()
+        private void ConsumePropertyNameUtf8(ref ReadOnlySpan<byte> buffer)
         {
-            int i = _buffer.IndexOf(JsonConstants.Quote);
+            int i = buffer.IndexOf(JsonConstants.Quote);
             if (i == -1)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            Value = _buffer.Slice(0, i);
+            Value = buffer.Slice(0, i);
             ValueType = JsonValueType.String;
 
-            SkipWhiteSpaceUtf8(i + 1);
-            if (_buffer.Length < 1)
+            SkipWhiteSpaceUtf8(ref buffer, i + 1);
+            if (buffer.Length < 1)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             // The next character must be a key / value seperator. Validate and skip.
-            if (_buffer[0] != JsonConstants.KeyValueSeperator)
+            if (buffer[0] != JsonConstants.KeyValueSeperator)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             TokenType = JsonTokenType.PropertyName;
-            _buffer = _buffer.Slice(1);
+            buffer = buffer.Slice(1);
         }
 
         private int ConsumeStringUtf8MultiSegment()
@@ -637,28 +640,28 @@ namespace System.Text.JsonLab
             return 1;
         }
 
-        private void ConsumeStringUtf8()
+        private void ConsumeStringUtf8(ref ReadOnlySpan<byte> buffer)
         {
-            int i = _buffer.IndexOf(JsonConstants.Quote);
+            int i = buffer.IndexOf(JsonConstants.Quote);
             if (i == -1)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            Value = _buffer.Slice(0, i);
+            Value = buffer.Slice(0, i);
             ValueType = JsonValueType.String;
-            _buffer = _buffer.Slice(i + 1);
+            buffer = buffer.Slice(i + 1);
         }
 
-        private void SkipWhiteSpaceUtf8(int i = 0)
+        private void SkipWhiteSpaceUtf8(ref ReadOnlySpan<byte> buffer, int i = 0)
         {
-            for (; i < _buffer.Length; i++)
+            for (; i < buffer.Length; i++)
             {
-                byte val = _buffer[i];
+                byte val = buffer[i];
                 if (val != JsonConstants.Space && val != JsonConstants.CarriageReturn && val != JsonConstants.LineFeed && val != JsonConstants.Tab)
                 {
                     break;
                 }
             }
-            _buffer = _buffer.Slice(i);
+            buffer = buffer.Slice(i);
         }
     }
 }
