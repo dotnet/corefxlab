@@ -485,7 +485,7 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            if (from != PinNumberingScheme.BCM || to != PinNumberingScheme.BCM)
+            if (from != PinNumberingScheme.Bcm || to != PinNumberingScheme.Bcm)
             {
                 throw new NotSupportedException("Only BCM numbering scheme is supported");
             }

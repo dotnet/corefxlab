@@ -847,10 +847,10 @@ namespace System.Devices.Gpio
 
             switch (from)
             {
-                case PinNumberingScheme.BCM:
+                case PinNumberingScheme.Bcm:
                     switch (to)
                     {
-                        case PinNumberingScheme.BCM:
+                        case PinNumberingScheme.Bcm:
                             result = pinNumber;
                             break;
 
@@ -870,7 +870,7 @@ namespace System.Devices.Gpio
                             result = pinNumber;
                             break;
 
-                        case PinNumberingScheme.BCM:
+                        case PinNumberingScheme.Bcm:
                             //throw new NotImplementedException();
                             break;
 

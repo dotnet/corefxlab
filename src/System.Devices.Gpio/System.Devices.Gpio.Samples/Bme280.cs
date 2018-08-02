@@ -88,26 +88,18 @@ namespace System.Devices.Gpio.Samples
 
         private readonly ConnectionProtocol _protocol;
         private readonly Pin _csPin;
-        private readonly byte[] _buffer;
 
         public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
-            : this(chipSelectLine)
         {
+            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
         }
 
-        public Bme280(Pin chipSelectLine, I2cConnectionSettings i2cSettings)
-            : this(chipSelectLine)
+        public Bme280(I2cConnectionSettings i2cSettings)
         {
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
-        }
-
-        private Bme280(Pin chipSelectLine)
-        {
-            _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
-            _buffer = new byte[1];
         }
 
         public void Dispose()
@@ -153,12 +145,12 @@ namespace System.Devices.Gpio.Samples
         {
             Dispose();
 
-            _csPin.Mode = PinMode.Output;
-            DigitalWrite(_csPin, PinValue.High);
-
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
+                    _csPin.Mode = PinMode.Output;
+                    DigitalWrite(_csPin, PinValue.High);
+
                     _spiSettings.Mode = SpiMode.Mode0;
                     _spiSettings.DataBitLength = 8; // 1 byte
 
@@ -296,113 +288,96 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte Read()
+        private void Write8(byte register, byte value)
+        {
+            WriteRegister(register, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte Read8(byte register)
+        {
+            return (byte)ReadRegister(register, 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ushort Read16(byte register)
+        {
+            return (ushort)ReadRegister(register, 2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ushort Read16LittleEndian(byte register)
+        {
+            ushort temp = Read16(register);
+            temp = (ushort)((temp >> 8) | (temp << 8));
+            return temp;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private short ReadS16(byte register)
+        {
+            return (short)Read16(register);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private short ReadS16LittleEndian(byte register)
+        {
+            return (short)Read16LittleEndian(register);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private uint Read24(byte register)
+        {
+            return ReadRegister(register, 3);
+        }
+
+        private void WriteRegister(byte register, byte value)
         {
             switch (_protocol)
             {
                 case ConnectionProtocol.Spi:
-                    _spiDevice.Read(_buffer);
+                    DigitalWrite(_csPin, PinValue.Low);
+
+                    // write, bit 7 low
+                    _spiDevice.Write((byte)(register & ~0x80), value);
+
+                    DigitalWrite(_csPin, PinValue.High);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cDevice.Read(_buffer);
+                    _i2cDevice.Write(register, value);
                     break;
 
                 default:
                     throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
-
-            byte result = _buffer[0];
-            return result;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Write(byte x)
-        {
-            _buffer[0] = x;
-
-            switch (_protocol)
-            {
-                case ConnectionProtocol.Spi:
-                    _spiDevice.Write(_buffer);
-                    break;
-
-                case ConnectionProtocol.I2c:
-                    _i2cDevice.Write(_buffer);
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
-            }
-        }
-
-        private void Write8(byte reg, byte value)
-        {
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg & ~0x80)); // write, bit 7 low
-            Write(value);
-            DigitalWrite(_csPin, PinValue.High);
-        }
-
-        private byte Read8(byte reg)
-        {
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-            byte value = Read();
-            DigitalWrite(_csPin, PinValue.High);
-            return value;
-        }
-
-        private ushort Read16(byte reg)
-        {
-            ushort result = 0;
-
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-
-            for (int i = 0; i < 2; ++i)
-            {
-                byte value = Read();
-                result = (ushort)((result << 8) | value);
-            }
-
-            DigitalWrite(_csPin, PinValue.High);
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ushort Read16LittleEndian(byte reg)
-        {
-            ushort temp = Read16(reg);
-            return (ushort)((temp >> 8) | (temp << 8));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private short ReadS16(byte reg)
-        {
-            return (short)Read16(reg);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private short ReadS16LittleEndian(byte reg)
-        {
-            return (short)Read16LittleEndian(reg);
-        }
-
-        private uint Read24(byte reg)
+        private uint ReadRegister(byte register, uint byteCount)
         {
             uint result = 0;
 
-            DigitalWrite(_csPin, PinValue.Low);
-            Write((byte)(reg | 0x80)); // read, bit 7 high
-
-            for (int i = 0; i < 3; ++i)
+            switch (_protocol)
             {
-                byte value = Read();
-                result = (result << 8) | value;
+                case ConnectionProtocol.Spi:
+                    DigitalWrite(_csPin, PinValue.Low);
+
+                    // read, bit 7 high
+                    _spiDevice.Write((byte)(register | 0x80));
+                    result = (uint)_spiDevice.Read(byteCount);
+
+                    DigitalWrite(_csPin, PinValue.High);
+                    break;
+
+                case ConnectionProtocol.I2c:
+                    _i2cDevice.Write(register);
+                    result = (uint)_i2cDevice.Read(byteCount);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Connection protocol '{_protocol}' not supported");
             }
 
-            DigitalWrite(_csPin, PinValue.High);
             return result;
         }
 

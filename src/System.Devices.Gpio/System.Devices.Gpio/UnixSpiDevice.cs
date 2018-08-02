@@ -133,7 +133,7 @@ namespace System.Devices.Gpio
                 throw new GpioException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
             }
 
-            uint speed = (uint)_settings.ClockFrequency;
+            uint speed = _settings.ClockFrequency;
             ptr = new IntPtr(&speed);
 
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MAX_SPEED_HZ, ptr);
@@ -159,7 +159,7 @@ namespace System.Devices.Gpio
                     tx_buf = 0,
                     rx_buf = (ulong)rxPtr,
                     len = (uint)buffer.Length,
-                    speed_hz = (uint)_settings.ClockFrequency,
+                    speed_hz = _settings.ClockFrequency,
                     bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
@@ -188,7 +188,7 @@ namespace System.Devices.Gpio
                     tx_buf = (ulong)txPtr,
                     rx_buf = 0,
                     len = (uint)buffer.Length,
-                    speed_hz = (uint)_settings.ClockFrequency,
+                    speed_hz = _settings.ClockFrequency,
                     bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
@@ -227,7 +227,7 @@ namespace System.Devices.Gpio
                     tx_buf = (ulong)txPtr,
                     rx_buf = (ulong)rxPtr,
                     len = (uint)writeBuffer.Length,
-                    speed_hz = (uint)_settings.ClockFrequency,
+                    speed_hz = _settings.ClockFrequency,
                     bits_per_word = (byte)_settings.DataBitLength,
                     delay_usecs = 0,
                 };
