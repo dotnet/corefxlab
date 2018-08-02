@@ -10,20 +10,20 @@ namespace System.Devices.Gpio.Samples
 {
     public enum RgbColorSensorIntegrationTime : byte
     {
-        Milliseconds_2_4 = 0xFF,  // 2.4ms -  1 cycle   - Max Count: 1024
-        Milliseconds_24 = 0xF6,   //  24ms - 10 cycles  - Max Count: 10240
-        Milliseconds_50 = 0xEB,   //  50ms - 20 cycles  - Max Count: 20480
-        Milliseconds_101 = 0xD5,  // 101ms - 42 cycles  - Max Count: 43008
-        Milliseconds_154 = 0xC0,  // 154ms - 64 cycles  - Max Count: 65535
-        Milliseconds_700 = 0x00   // 700ms - 256 cycles - Max Count: 65535
+        Milliseconds2_4 = 0xFF,  // 2.4ms -  1 cycle   - Max Count: 1024
+        Milliseconds24 = 0xF6,   //  24ms - 10 cycles  - Max Count: 10240
+        Milliseconds50 = 0xEB,   //  50ms - 20 cycles  - Max Count: 20480
+        Milliseconds101 = 0xD5,  // 101ms - 42 cycles  - Max Count: 43008
+        Milliseconds154 = 0xC0,  // 154ms - 64 cycles  - Max Count: 65535
+        Milliseconds700 = 0x00   // 700ms - 256 cycles - Max Count: 65535
     }
 
     public enum RgbColorSensorGain : byte
     {
-        Gain_1X = 0x00,   //  No gain
-        Gain_4X = 0x01,   //  2x gain
-        Gain_16X = 0x02,  //  16x gain
-        Gain_60X = 0x03   //  60x gain
+        Gain1X = 0x00,   //  No gain
+        Gain4X = 0x01,   //  2x gain
+        Gain16X = 0x02,  //  16x gain
+        Gain60X = 0x03   //  60x gain
     }
 
     /// <summary>
@@ -53,17 +53,6 @@ namespace System.Devices.Gpio.Samples
         private const byte ENABLE_PON = 0x01;
 
         private static readonly byte[] CYCLES = { 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
-
-        // Lookup table for integration time delays.
-        private static readonly (RgbColorSensorIntegrationTime IntegrationTime, int Delay)[] s_integrationTimeDelay =
-        {
-            (RgbColorSensorIntegrationTime.Milliseconds_2_4, 3),   // 2.4ms - 1 cycle    - Max Count: 1024
-            (RgbColorSensorIntegrationTime.Milliseconds_24 , 24),  // 24ms  - 10 cycles  - Max Count: 10240
-            (RgbColorSensorIntegrationTime.Milliseconds_50 , 50),  // 50ms  - 20 cycles  - Max Count: 20480
-            (RgbColorSensorIntegrationTime.Milliseconds_101, 101), // 101ms - 42 cycles  - Max Count: 43008
-            (RgbColorSensorIntegrationTime.Milliseconds_154, 154), // 154ms - 64 cycles  - Max Count: 65535
-            (RgbColorSensorIntegrationTime.Milliseconds_700, 700)  // 700ms - 256 cycles - Max Count: 65535
-        };
 
         private struct RawColor
         {
@@ -225,7 +214,7 @@ namespace System.Devices.Gpio.Samples
                 return false;
             }
 
-            SetIntegrationTime(RgbColorSensorIntegrationTime.Milliseconds_2_4);
+            SetIntegrationTime(RgbColorSensorIntegrationTime.Milliseconds2_4);
             return true;
         }
 
@@ -354,27 +343,27 @@ namespace System.Devices.Gpio.Samples
 
             switch (_integrationTime)
             {
-                case RgbColorSensorIntegrationTime.Milliseconds_2_4:
+                case RgbColorSensorIntegrationTime.Milliseconds2_4:
                     time = 3;
                     break;
 
-                case RgbColorSensorIntegrationTime.Milliseconds_24:
+                case RgbColorSensorIntegrationTime.Milliseconds24:
                     time = 24;
                     break;
 
-                case RgbColorSensorIntegrationTime.Milliseconds_50:
+                case RgbColorSensorIntegrationTime.Milliseconds50:
                     time = 50;
                     break;
 
-                case RgbColorSensorIntegrationTime.Milliseconds_101:
+                case RgbColorSensorIntegrationTime.Milliseconds101:
                     time = 101;
                     break;
 
-                case RgbColorSensorIntegrationTime.Milliseconds_154:
+                case RgbColorSensorIntegrationTime.Milliseconds154:
                     time = 154;
                     break;
 
-                case RgbColorSensorIntegrationTime.Milliseconds_700:
+                case RgbColorSensorIntegrationTime.Milliseconds700:
                     time = 700;
                     break;
             }
