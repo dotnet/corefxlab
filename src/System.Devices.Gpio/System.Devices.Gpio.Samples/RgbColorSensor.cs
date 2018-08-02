@@ -8,6 +8,24 @@ using System.Threading;
 
 namespace System.Devices.Gpio.Samples
 {
+    public enum RgbColorSensorIntegrationTime : byte
+    {
+        Milliseconds_2_4 = 0xFF,  // 2.4ms -  1 cycle   - Max Count: 1024
+        Milliseconds_24 = 0xF6,   //  24ms - 10 cycles  - Max Count: 10240
+        Milliseconds_50 = 0xEB,   //  50ms - 20 cycles  - Max Count: 20480
+        Milliseconds_101 = 0xD5,  // 101ms - 42 cycles  - Max Count: 43008
+        Milliseconds_154 = 0xC0,  // 154ms - 64 cycles  - Max Count: 65535
+        Milliseconds_700 = 0x00   // 700ms - 256 cycles - Max Count: 65535
+    }
+
+    public enum RgbColorSensorGain : byte
+    {
+        Gain_1X = 0x00,   //  No gain
+        Gain_4X = 0x01,   //  2x gain
+        Gain_16X = 0x02,  //  16x gain
+        Gain_60X = 0x03   //  60x gain
+    }
+
     /// <summary>
     /// Supports TCS34725 RGB Color sensor
     /// </summary>
@@ -33,8 +51,19 @@ namespace System.Devices.Gpio.Samples
         private const byte ENABLE_WEN = 0x08;
         private const byte ENABLE_AEN = 0x02;
         private const byte ENABLE_PON = 0x01;
-        private readonly byte[] GAINS = { 1, 4, 16, 60 };
-        private readonly byte[] CYCLES = { 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
+
+        private static readonly byte[] CYCLES = { 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
+
+        // Lookup table for integration time delays.
+        private static readonly (RgbColorSensorIntegrationTime IntegrationTime, int Delay)[] s_integrationTimeDelay =
+        {
+            (RgbColorSensorIntegrationTime.Milliseconds_2_4, 3),   // 2.4ms - 1 cycle    - Max Count: 1024
+            (RgbColorSensorIntegrationTime.Milliseconds_24 , 24),  // 24ms  - 10 cycles  - Max Count: 10240
+            (RgbColorSensorIntegrationTime.Milliseconds_50 , 50),  // 50ms  - 20 cycles  - Max Count: 20480
+            (RgbColorSensorIntegrationTime.Milliseconds_101, 101), // 101ms - 42 cycles  - Max Count: 43008
+            (RgbColorSensorIntegrationTime.Milliseconds_154, 154), // 154ms - 64 cycles  - Max Count: 65535
+            (RgbColorSensorIntegrationTime.Milliseconds_700, 700)  // 700ms - 256 cycles - Max Count: 65535
+        };
 
         private struct RawColor
         {
@@ -44,6 +73,7 @@ namespace System.Devices.Gpio.Samples
         private I2cConnectionSettings _i2cSettings;
         private I2cDevice _i2cDevice;
 
+        private RgbColorSensorIntegrationTime _integrationTime;
         private RawColor _rawColor;
 
         public RgbColorSensor(I2cConnectionSettings i2cSettings)
@@ -106,51 +136,40 @@ namespace System.Devices.Gpio.Samples
         }
 
         /// <summary>
-        /// Gets the integration time of the sensor in milliseconds.
+        /// Gets the integration time of the sensor.
         /// </summary>
-        public float IntegrationTime { get; private set; }
+        public RgbColorSensorIntegrationTime GetIntegrationTime()
+        {
+            byte control = Read8(REGISTER_ATIME);
+            RgbColorSensorIntegrationTime result = (RgbColorSensorIntegrationTime)control;
+            return result;
+        }
 
         /// <summary>
-        /// Sets the integration time of the sensor in milliseconds.
+        /// Sets the integration time of the sensor.
         /// </summary>
-        public void SetIntegrationTime(float value)
+        public void SetIntegrationTime(RgbColorSensorIntegrationTime value)
         {
-            if (2.4f > value || value > 614.4f)
-            {
-                throw new ArgumentOutOfRangeException($"The value of parameter {nameof(value)} must be between 2.4 and 614.4 milliseconds");
-            }
-
-            int cycles = (int)(value / 2.4f);
-            IntegrationTime = cycles * 2.4f;
-
-            Write8(REGISTER_ATIME, (byte)(256 - cycles));
+            _integrationTime = value;
+            Write8(REGISTER_ATIME, (byte)value);
         }
 
         /// <summary>
         /// Gets the gain of the sensor.
-        /// Should be 1, 4, 16 or 60.
         /// </summary>
-        public byte GetGain()
+        public RgbColorSensorGain GetGain()
         {
             byte control = Read8(REGISTER_CONTROL);
-            byte result = GAINS[control];
+            RgbColorSensorGain result = (RgbColorSensorGain)control;
             return result;
         }
 
         /// <summary>
         /// Sets the gain of the sensor.
-        /// <paramref name="value">Should be 1, 4, 16 or 60.</paramref>
         /// </summary>
-        public void SetGain(byte value)
+        public void SetGain(RgbColorSensorGain value)
         {
-            int index = Array.IndexOf(GAINS, value);
-
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException($"The value of parameter {nameof(value)} must be 1, 4, 16 or 60.");
-            }
-
-            Write8(REGISTER_CONTROL, (byte)index);
+            Write8(REGISTER_CONTROL, (byte)value);
         }
 
         /// <summary>
@@ -206,7 +225,7 @@ namespace System.Devices.Gpio.Samples
                 return false;
             }
 
-            SetIntegrationTime(2.4f);
+            SetIntegrationTime(RgbColorSensorIntegrationTime.Milliseconds_2_4);
             return true;
         }
 
@@ -316,17 +335,51 @@ namespace System.Devices.Gpio.Samples
 
             while (!IsValid())
             {
-                Thread.Sleep((int)(IntegrationTime + 0.9));
-
-                _rawColor.Red = Read16LittleEndian(REGISTER_RDATA);
-                _rawColor.Green = Read16LittleEndian(REGISTER_GDATA);
-                _rawColor.Blue = Read16LittleEndian(REGISTER_BDATA);
-                _rawColor.Clear = Read16LittleEndian(REGISTER_CDATA);
+                SleepIntegrationTime();
             }
+
+            _rawColor.Red = Read16LittleEndian(REGISTER_RDATA);
+            _rawColor.Green = Read16LittleEndian(REGISTER_GDATA);
+            _rawColor.Blue = Read16LittleEndian(REGISTER_BDATA);
+            _rawColor.Clear = Read16LittleEndian(REGISTER_CDATA);
 
             SetActive(wasActive);
 
-            Console.WriteLine($"R = {_rawColor.Red}, G = {_rawColor.Green}, B = {_rawColor.Blue}, C = {_rawColor.Clear}");
+            // Console.WriteLine($"R = {_rawColor.Red}, G = {_rawColor.Green}, B = {_rawColor.Blue}, C = {_rawColor.Clear}");
+        }
+
+        private void SleepIntegrationTime()
+        {
+            int time = 0;
+
+            switch (_integrationTime)
+            {
+                case RgbColorSensorIntegrationTime.Milliseconds_2_4:
+                    time = 3;
+                    break;
+
+                case RgbColorSensorIntegrationTime.Milliseconds_24:
+                    time = 24;
+                    break;
+
+                case RgbColorSensorIntegrationTime.Milliseconds_50:
+                    time = 50;
+                    break;
+
+                case RgbColorSensorIntegrationTime.Milliseconds_101:
+                    time = 101;
+                    break;
+
+                case RgbColorSensorIntegrationTime.Milliseconds_154:
+                    time = 154;
+                    break;
+
+                case RgbColorSensorIntegrationTime.Milliseconds_700:
+                    time = 700;
+                    break;
+            }
+
+            Thread.Sleep(time);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

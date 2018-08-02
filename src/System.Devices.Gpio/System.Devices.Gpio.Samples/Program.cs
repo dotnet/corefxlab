@@ -961,17 +961,22 @@ namespace System.Devices.Gpio.Samples
                     return;
                 }
 
-                Console.WriteLine($"Color (rgb)\t\t\tTemperature (K)\tLuminosity (lux)");
+                Console.WriteLine($"Color (rgb)\t\tTemperature (K)\tLuminosity (lux)");
                 Console.WriteLine();
 
                 for (var i = 0; i < 5; ++i)
                 {
                     sensor.ReadSensor();
 
-                    Console.WriteLine($"{sensor.Color}\t{sensor.Temperature:0.00} K\t{sensor.Luminosity:0.00} lux");
+                    Console.WriteLine($"{ToRgbString(sensor.Color)}\t{sensor.Temperature:0.00} K\t{sensor.Luminosity:0.00} lux");
                     Thread.Sleep(1 * 1000);
                 }
             }
+        }
+
+        private static string ToRgbString(Drawing.Color color)
+        {
+            return $"R: {color.R}, G: {color.G}, B: {color.B}";
         }
     }
 }
