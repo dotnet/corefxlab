@@ -89,7 +89,7 @@ namespace System.Text.JsonLab
         /// <returns>True if the token was read successfully, else false.</returns>
         public bool Read()
         {
-            return _isSingleSegment ? ReadSingleSegment() : ReadMultiSegment();
+            return _isSingleSegment ? ReadSingleSegment(ref _buffer) : ReadMultiSegment();
         }
 
         private void SkipWhiteSpace()
@@ -158,9 +158,8 @@ namespace System.Text.JsonLab
             return true;
         }
 
-        private bool ReadSingleSegment()
+        private bool ReadSingleSegment(ref ReadOnlySpan<byte> buffer)
         {
-            ReadOnlySpan<byte> buffer = _buffer;
             if (TokenType != JsonTokenType.None)
                 SkipWhiteSpaceUtf8(ref buffer);
 
@@ -211,11 +210,8 @@ namespace System.Text.JsonLab
                 case JsonTokenType.EndArray:
                 case JsonTokenType.EndObject:
                 case JsonTokenType.Value:
-                    bool result = ConsumeNextUtf8(ref buffer, ch);
-                    _buffer = buffer;
-                    return result;
+                    return ConsumeNextUtf8(ref buffer, ch);
             }
-            _buffer = buffer;
             return true;
         }
 
