@@ -13,9 +13,5 @@ namespace System.Text.JsonLab
         True,
         False,
         Null,
-        Undefined,
-        NaN,
-        Infinity,
-        NegativeInfinity,
     }
 }
