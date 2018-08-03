@@ -117,14 +117,6 @@ namespace System.Text.JsonLab.Tests
                                 break;
                             case JsonValueType.Null:
                                 break;
-                            case JsonValueType.Undefined:
-                                break;
-                            case JsonValueType.NaN:
-                                break;
-                            case JsonValueType.Infinity:
-                                break;
-                            case JsonValueType.NegativeInfinity:
-                                break;
                         }
                         break;
                     case JsonTokenType.None:
