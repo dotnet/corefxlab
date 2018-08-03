@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.Gpio;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -125,7 +126,7 @@ namespace System.Devices.I2c
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new IOException($"Cannot open I2c device file '{deviceFileName}'");
+                throw Utils.CreateIOException($"Cannot open I2c device file '{deviceFileName}'", _deviceFileDescriptor);
             }
 
             fixed (I2cFunctionalityFlags* functionalitiesPtr = &_functionalities)
@@ -245,7 +246,7 @@ namespace System.Devices.I2c
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new IOException("Error performing I2c data transfer");
+                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
                 }
             }
         }
@@ -281,7 +282,7 @@ namespace System.Devices.I2c
                 int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new IOException("Error performing I2c data transfer");
+                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
                 }
             }
         }
@@ -291,7 +292,7 @@ namespace System.Devices.I2c
             int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
             if (ret < 0)
             {
-                throw new IOException("Error performing I2c data transfer");
+                throw Utils.CreateIOException("Error performing I2c data transfer", ret);
             }
 
             fixed (byte* txPtr = buffer)
@@ -312,7 +313,7 @@ namespace System.Devices.I2c
 
                 if (ret < 0)
                 {
-                    throw new IOException("Error performing I2c data transfer");
+                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
                 }
             }
         }

@@ -53,14 +53,14 @@ namespace System.Devices.Gpio.Samples
         private const byte ENABLE_AEN = 0x02;
         private const byte ENABLE_PON = 0x01;
 
-        private static readonly byte[] CYCLES = { 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
+        private static readonly byte[] s_cycles = { 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60 };
 
         private struct RawColor
         {
             public ushort Red, Green, Blue, Clear;
         }
 
-        private I2cConnectionSettings _i2cSettings;
+        private readonly I2cConnectionSettings _i2cSettings;
         private I2cDevice _i2cDevice;
 
         private RgbColorSensorIntegrationTime _integrationTime;
@@ -239,7 +239,7 @@ namespace System.Devices.Gpio.Samples
             if ((enable & ENABLE_AIEN) > 0)
             {
                 byte apers = Read8(REGISTER_APERS);
-                result = CYCLES[apers & 0x0f];
+                result = s_cycles[apers & 0x0f];
             }
 
             return result;
@@ -258,7 +258,7 @@ namespace System.Devices.Gpio.Samples
             }
             else
             {
-                int index = Array.IndexOf(CYCLES, value);
+                int index = Array.IndexOf(s_cycles, value);
 
                 if (index < 0)
                 {

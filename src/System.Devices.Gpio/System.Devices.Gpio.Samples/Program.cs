@@ -785,16 +785,16 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Spi_Pressure()
         {
             Console.WriteLine(nameof(Unix_Spi_Pressure));
-            Spi_Bme280(new UnixDriver(RaspberryPiPinCount));
+            Spi_Pressure(new UnixDriver(RaspberryPiPinCount));
         }
 
         private static void RaspberryPi_Spi_Pressure()
         {
             Console.WriteLine(nameof(RaspberryPi_Spi_Pressure));
-            Spi_Bme280(new RaspberryPiDriver());
+            Spi_Pressure(new RaspberryPiDriver());
         }
 
-        private static void Spi_Bme280(GpioDriver driver)
+        private static void Spi_Pressure(GpioDriver driver)
         {
             using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
             {
@@ -802,7 +802,7 @@ namespace System.Devices.Gpio.Samples
 
                 var settings = new SpiConnectionSettings(0, 0);
                 var sensor = new PressureTemperatureHumiditySensor(csPin, settings);
-                Bme280(sensor);
+                Pressure(sensor);
             }
         }
 
@@ -811,13 +811,14 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine(nameof(I2c_Pressure));
             var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
             var sensor = new PressureTemperatureHumiditySensor(settings);
-            Bme280(sensor);
+            Pressure(sensor);
         }
 
-        private static void Bme280(PressureTemperatureHumiditySensor sensor)
+        private static void Pressure(PressureTemperatureHumiditySensor sensor)
         {
             using (sensor)
             {
+                sensor.SeaLevelPressureInHectopascals = 1013.25f;
                 bool ok = sensor.Begin();
 
                 if (!ok)
@@ -833,7 +834,7 @@ namespace System.Devices.Gpio.Samples
                     Console.WriteLine($"Pressure:    {sensor.PressureInHectopascals:0.00} hPa");
                     Console.WriteLine($"Humdity:     {sensor.Humidity:0.00} %");
                     Console.WriteLine($"Temperature: {sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
-                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m,     {sensor.AltitudInFeet:0.00} ft");
+                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m, {sensor.AltitudInFeet:0.00} ft");
                     Console.WriteLine();
 
                     Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -914,6 +915,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (sensor)
             {
+                sensor.SeaLevelPressureInHectopascals = 1013.25f;
                 bool ok = sensor.Begin();
 
                 if (!ok)
@@ -929,7 +931,7 @@ namespace System.Devices.Gpio.Samples
                     Console.WriteLine($"Pressure:    {sensor.PressureInHectopascals:0.00} hPa");
                     Console.WriteLine($"Humdity:     {sensor.Humidity:0.00} %");
                     Console.WriteLine($"Temperature: {sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
-                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m,     {sensor.AltitudInFeet:0.00} ft");
+                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m, {sensor.AltitudInFeet:0.00} ft");
                     Console.WriteLine();
 
                     ShowInfo(lcd, "Pressure", $"{sensor.PressureInHectopascals:0.00} hPa/mb");

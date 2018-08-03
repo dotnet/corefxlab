@@ -86,10 +86,10 @@ namespace System.Devices.Gpio.Samples
         private float _pressure;
         private int _tFine;
 
-        private SpiConnectionSettings _spiSettings;
+        private readonly SpiConnectionSettings _spiSettings;
         private SpiDevice _spiDevice;
 
-        private I2cConnectionSettings _i2cSettings;
+        private readonly I2cConnectionSettings _i2cSettings;
         private I2cDevice _i2cDevice;
 
         private readonly ConnectionProtocol _protocol;

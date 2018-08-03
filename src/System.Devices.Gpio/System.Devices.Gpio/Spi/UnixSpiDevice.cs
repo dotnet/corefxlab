@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.Gpio;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -112,7 +113,7 @@ namespace System.Devices.Spi
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new IOException($"Cannot open Spi device file '{deviceFileName}'");
+                throw Utils.CreateIOException($"Cannot open Spi device file '{deviceFileName}'", _deviceFileDescriptor);
             }
 
             UnixSpiMode mode = SpiModeToUnixSpiMode(_settings.Mode);
@@ -121,7 +122,7 @@ namespace System.Devices.Spi
             int ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MODE, ptr);
             if (ret == -1)
             {
-                throw new IOException($"Cannot set Spi mode to '{_settings.Mode}'");
+                throw Utils.CreateIOException($"Cannot set Spi mode to '{_settings.Mode}'", ret);
             }
 
             byte bits = (byte)_settings.DataBitLength;
@@ -130,7 +131,7 @@ namespace System.Devices.Spi
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_BITS_PER_WORD, ptr);
             if (ret == -1)
             {
-                throw new IOException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
+                throw Utils.CreateIOException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'", ret);
             }
 
             uint speed = _settings.ClockFrequency;
@@ -139,7 +140,7 @@ namespace System.Devices.Spi
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MAX_SPEED_HZ, ptr);
             if (ret == -1)
             {
-                throw new IOException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'");
+                throw Utils.CreateIOException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'", ret);
             }
         }
 
@@ -167,7 +168,7 @@ namespace System.Devices.Spi
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new IOException("Error performing Spi data transfer");
+                    throw Utils.CreateIOException("Error performing Spi data transfer", ret);
                 }
             }
         }
@@ -196,7 +197,7 @@ namespace System.Devices.Spi
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new IOException("Error performing Spi data transfer");
+                    throw Utils.CreateIOException("Error performing Spi data transfer", ret);
                 }
             }
         }
@@ -235,7 +236,7 @@ namespace System.Devices.Spi
                 int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
                 if (ret < 1)
                 {
-                    throw new IOException("Error performing Spi data transfer");
+                    throw Utils.CreateIOException("Error performing Spi data transfer", ret);
                 }
             }
         }
