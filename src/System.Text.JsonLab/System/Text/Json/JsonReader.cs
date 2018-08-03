@@ -185,9 +185,10 @@ namespace System.Text.JsonLab
                 return false;
             }
 
+            byte ch = buffer[0];
+
             if (TokenType == JsonTokenType.StartObject)
             {
-                byte ch = buffer[0];
                 buffer = buffer.Slice(1);
                 if (ch == JsonConstants.CloseBrace)
                     EndObject();
@@ -199,22 +200,21 @@ namespace System.Text.JsonLab
             }
             else if (TokenType == JsonTokenType.StartArray)
             {
-                byte ch = buffer[0];
                 if (ch == JsonConstants.CloseBracket)
                 {
                     buffer = buffer.Slice(1);
                     EndArray();
                 }
                 else
-                    ConsumeValueUtf8(ref buffer);
+                    ConsumeValueUtf8(ref buffer, ch);
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
-                ConsumeValueUtf8(ref buffer);
+                ConsumeValueUtf8(ref buffer, ch);
             }
             else
             {
-                return ConsumeNextUtf8(ref buffer);
+                return ConsumeNextUtf8(ref buffer, ch);
             }
             return true;
         }
@@ -301,9 +301,8 @@ namespace System.Text.JsonLab
         /// This method consumes the next token regardless of whether we are inside an object or an array.
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
-        private bool ConsumeNextUtf8(ref ReadOnlySpan<byte> buffer)
+        private bool ConsumeNextUtf8(ref ReadOnlySpan<byte> buffer, byte marker)
         {
-            byte marker = buffer[0];
             switch (marker)
             {
                 case JsonConstants.ListSeperator:
@@ -326,7 +325,7 @@ namespace System.Text.JsonLab
                                 return false;
                             }
 
-                            ConsumeValueUtf8(ref buffer);
+                            ConsumeValueUtf8(ref buffer, buffer[0]);
                         }
                         else
                         {
@@ -412,10 +411,10 @@ namespace System.Text.JsonLab
         /// This method contains the logic for processing the next value token and determining
         /// what type of data it is.
         /// </summary>
-        private void ConsumeValueUtf8(ref ReadOnlySpan<byte> buffer)
+        private void ConsumeValueUtf8(ref ReadOnlySpan<byte> buffer, byte marker)
         {
             TokenType = JsonTokenType.Value;
-            byte marker = buffer[0];
+
             if (marker == JsonConstants.Quote)
             {
                 buffer = buffer.Slice(1);
