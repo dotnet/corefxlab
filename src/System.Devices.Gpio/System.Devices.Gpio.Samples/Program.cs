@@ -250,10 +250,10 @@ namespace System.Devices.Gpio.Samples
                 for (var i = 0; i < 5; ++i)
                 {
                     led.Write(PinValue.High);
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
 
                     led.Write(PinValue.Low);
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -311,10 +311,10 @@ namespace System.Devices.Gpio.Samples
                 for (var i = 0; i < 5; ++i)
                 {
                     driver.Output(led, PinValue.High);
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
 
                     driver.Output(led, PinValue.Low);
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -543,7 +543,7 @@ namespace System.Devices.Gpio.Samples
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -585,7 +585,7 @@ namespace System.Devices.Gpio.Samples
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -809,7 +809,7 @@ namespace System.Devices.Gpio.Samples
         private static void I2c_Pressure()
         {
             Console.WriteLine(nameof(I2c_Pressure));
-            var settings = new I2cConnectionSettings(1);
+            var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
             var sensor = new PressureTemperatureHumiditySensor(settings);
             Bme280(sensor);
         }
@@ -834,7 +834,7 @@ namespace System.Devices.Gpio.Samples
                     sensor.ReadSensor();
 
                     Console.WriteLine($"{sensor.PressureInHectopascals:0.00} hPa\t\t{sensor.Humidity:0.00} %\t\t{sensor.TemperatureInCelsius:0.00} C\t\t{sensor.TemperatureInFahrenheit:0.00} F");
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }
@@ -902,7 +902,7 @@ namespace System.Devices.Gpio.Samples
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                var settings = new I2cConnectionSettings(1);
+                var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
                 var sensor = new PressureTemperatureHumiditySensor(settings);
                 Pressure_Lcd(lcd, sensor);
             }
@@ -945,12 +945,12 @@ namespace System.Devices.Gpio.Samples
             lcd.SetCursor(0, 1);
             lcd.Print(value);
 
-            Thread.Sleep(3 * 1000);
+            Thread.Sleep(TimeSpan.FromSeconds(3));
         }
 
         private static void I2c_Color()
         {
-            var settings = new I2cConnectionSettings(1);
+            var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
             using (var sensor = new RgbColorSensor(settings))
             {
                 bool ok = sensor.Begin();
@@ -969,7 +969,7 @@ namespace System.Devices.Gpio.Samples
                     sensor.ReadSensor();
 
                     Console.WriteLine($"{ToRgbString(sensor.Color)}\t{sensor.Temperature:0.00} K\t{sensor.Luminosity:0.00} lux");
-                    Thread.Sleep(1 * 1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
         }

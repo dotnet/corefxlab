@@ -12,7 +12,8 @@ namespace System.Devices.Gpio.Samples
     /// </summary>
     public class PressureTemperatureHumiditySensor : IDisposable
     {
-        private const byte DEVICE_ADDRESS = 0x77; // Default I2C address
+        public const byte DefaultI2cAddress = 0x77;
+        public const byte AlternativeI2cAddress = 0x76;
 
         // Name of Registers used in the BME280
 
@@ -134,6 +135,8 @@ namespace System.Devices.Gpio.Samples
             ReadPressure();
         }
 
+        public float SeaLevelPressureInHectopascals { get; set; }
+
         public float TemperatureInCelsius => _temperature + TemperatureCalibrationOffset;
 
         public float TemperatureInFahrenheit => TemperatureInCelsius * 1.8F + 32;
@@ -145,6 +148,8 @@ namespace System.Devices.Gpio.Samples
         public float PressureInHectopascals => _pressure / 100;
 
         public float PressureInMillibars => PressureInHectopascals;
+
+        public float AltitudInFeet => AltitudeInMeters / 0.3048f;
 
         public bool Begin()
         {
@@ -163,8 +168,6 @@ namespace System.Devices.Gpio.Samples
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cSettings.DeviceAddress = DEVICE_ADDRESS;
-
                     _i2cDevice = new UnixI2cDevice(_i2cSettings);
                     break;
 
@@ -189,6 +192,18 @@ namespace System.Devices.Gpio.Samples
             Write8(BME280_REGISTER_CONTROLHUMID, 0x01);
             Write8(BME280_REGISTER_CONTROL, 0x3F);
             return true;
+        }
+
+        public float AltitudeInMeters
+        {
+            get
+            {
+                // From BMP180 datasheet (page 16):
+                // http://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+
+                float result = 44330f * (1f - (float)Math.Pow(PressureInHectopascals / SeaLevelPressureInHectopascals, 0.1903));
+                return result;
+            }
         }
 
         private void ReadTemperature()

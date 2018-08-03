@@ -31,7 +31,8 @@ namespace System.Devices.Gpio.Samples
     /// </summary>
     public class RgbColorSensor : IDisposable
     {
-        private const byte DEVICE_ADDRESS = 0x29; // Default I2C address
+        public const byte DefaultI2cAddress = 0x29;
+        public const byte AlternativeI2cAddress = 0x39;
 
         private const byte COMMAND_BIT = 0x80;
         private const byte REGISTER_ENABLE = 0x00;
@@ -203,7 +204,6 @@ namespace System.Devices.Gpio.Samples
         {
             Dispose();
 
-            _i2cSettings.DeviceAddress = DEVICE_ADDRESS;
             _i2cDevice = new UnixI2cDevice(_i2cSettings);
 
             byte sensorId = Read8(REGISTER_SENSORID);
@@ -366,6 +366,9 @@ namespace System.Devices.Gpio.Samples
                 case RgbColorSensorIntegrationTime.Milliseconds700:
                     time = 700;
                     break;
+
+                default:
+                    throw new NotSupportedException($"Unknown integration time: '{_integrationTime}'");
             }
 
             Thread.Sleep(time);
