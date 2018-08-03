@@ -826,14 +826,16 @@ namespace System.Devices.Gpio.Samples
                     return;
                 }
 
-                Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                Console.WriteLine();
-
                 for (var i = 0; i < 5; ++i)
                 {
                     sensor.ReadSensor();
 
-                    Console.WriteLine($"{sensor.PressureInHectopascals:0.00} hPa\t\t{sensor.Humidity:0.00} %\t\t{sensor.TemperatureInCelsius:0.00} C\t\t{sensor.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"Pressure:    {sensor.PressureInHectopascals:0.00} hPa");
+                    Console.WriteLine($"Humdity:     {sensor.Humidity:0.00} %");
+                    Console.WriteLine($"Temperature: {sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m,     {sensor.AltitudInFeet:0.00} ft");
+                    Console.WriteLine();
+
                     Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
@@ -920,18 +922,20 @@ namespace System.Devices.Gpio.Samples
                     return;
                 }
 
-                Console.WriteLine($"Pressure (hPa/mb)\tHumdity (%)\tTemp (C)\tTemp (F)");
-                Console.WriteLine();
-
                 for (var i = 0; i < 3; ++i)
                 {
                     sensor.ReadSensor();
 
-                    Console.WriteLine($"{sensor.PressureInHectopascals:0.00} hPa\t\t{sensor.Humidity:0.00} %\t\t{sensor.TemperatureInCelsius:0.00} C\t\t{sensor.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"Pressure:    {sensor.PressureInHectopascals:0.00} hPa");
+                    Console.WriteLine($"Humdity:     {sensor.Humidity:0.00} %");
+                    Console.WriteLine($"Temperature: {sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
+                    Console.WriteLine($"Altitude:    {sensor.AltitudeInMeters:0.00} m,     {sensor.AltitudInFeet:0.00} ft");
+                    Console.WriteLine();
 
                     ShowInfo(lcd, "Pressure", $"{sensor.PressureInHectopascals:0.00} hPa/mb");
                     ShowInfo(lcd, "Humdity", $"{sensor.Humidity:0.00} %");
                     ShowInfo(lcd, "Temperature", $"{sensor.TemperatureInCelsius:0.00} C, {sensor.TemperatureInFahrenheit:0.00} F");
+                    ShowInfo(lcd, "Altitude", $"{sensor.AltitudeInMeters:0.00} m, {sensor.AltitudInFeet:0.00} ft");
                 }
             }
         }
@@ -961,14 +965,15 @@ namespace System.Devices.Gpio.Samples
                     return;
                 }
 
-                Console.WriteLine($"Color (rgb)\t\tTemperature (K)\tLuminosity (lux)");
-                Console.WriteLine();
-
                 for (var i = 0; i < 5; ++i)
                 {
                     sensor.ReadSensor();
 
-                    Console.WriteLine($"{ToRgbString(sensor.Color)}\t{sensor.Temperature:0.00} K\t{sensor.Luminosity:0.00} lux");
+                    Console.WriteLine($"Color:       {ToRgbString(sensor.Color)}");
+                    Console.WriteLine($"Temperature: {sensor.Temperature:0.00} K");
+                    Console.WriteLine($"Luminosity:  {sensor.Luminosity:0.00} lux");
+                    Console.WriteLine();
+
                     Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
