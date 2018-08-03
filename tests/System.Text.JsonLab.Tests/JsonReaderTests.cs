@@ -123,10 +123,6 @@ namespace System.Text.JsonLab.Tests
                         break;
                     case JsonTokenType.Comment:
                         break;
-                    case JsonTokenType.Null:
-                        break;
-                    case JsonTokenType.Undefined:
-                        break;
                     default:
                         throw new ArgumentException();
                 }
