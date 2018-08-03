@@ -61,32 +61,13 @@ namespace System.Text.JsonLab
         {
             _reader = default;
             _isSingleSegment = true;
+            _buffer = data;
             _depth = 1;
             _containerMask = 0;
 
-            TokenType = JsonTokenType.StartObject;
+            TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Unknown;
-
-            if (data.Length < 1)
-            {
-                JsonThrowHelper.ThrowJsonReaderException();
-            }
-
-            if (data[0] == JsonConstants.OpenBrace)
-            {
-                _containerMask = 1;
-            }
-            else if (data[0] == JsonConstants.OpenBracket)
-            {
-                TokenType = JsonTokenType.StartArray;
-            }
-            else
-            {
-                JsonThrowHelper.ThrowJsonReaderException();
-            }
-
-            _buffer = data.Slice(1);
         }
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
@@ -179,6 +160,30 @@ namespace System.Text.JsonLab
 
         private bool ReadSingleSegment(ref ReadOnlySpan<byte> buffer)
         {
+            if (TokenType == JsonTokenType.None)
+            {
+                if (buffer.Length < 1)
+                {
+                    return false;
+                }
+                if (buffer[0] == JsonConstants.OpenBrace)
+                {
+                    _containerMask = 1;
+                    TokenType = JsonTokenType.StartObject;
+                }
+                else if (buffer[0] == JsonConstants.OpenBracket)
+                {
+                    TokenType = JsonTokenType.StartArray;
+                }
+                else
+                {
+                    //TODO: A single JSON value not nested in an object or array is valid.
+                    JsonThrowHelper.ThrowJsonReaderException();
+                }
+                buffer = buffer.Slice(1);
+                return true;
+            }
+
             SkipWhiteSpaceUtf8(ref buffer);
             if (buffer.Length < 1)
             {

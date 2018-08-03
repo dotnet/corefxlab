@@ -29,6 +29,7 @@ namespace System.Text.JsonLab
         public const byte ListSeperator = (byte)',';
         public const byte KeyValueSeperator = (byte)':';
         public const byte Quote = (byte)'"';
+        public const byte ReverseSolidus = (byte)'\\';
 
         #endregion Control characters
 
