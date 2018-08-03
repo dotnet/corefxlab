@@ -273,7 +273,6 @@ namespace System.Text.JsonLab.Tests
             }
 
             var jsonReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonString));
-            jsonReader.Read();
             switch (jsonReader.TokenType)
             {
                 case JsonTokenType.StartArray:
