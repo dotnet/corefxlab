@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Buffers.Text;
 
-using static System.Buffers.Binary.BinaryPrimitives;
 using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.Http.Parser.Internal

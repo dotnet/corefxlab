@@ -33,6 +33,9 @@ Currently, this repo contains the following experimental components:
 * **System.Buffers.Primitives**
 A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
+* **System.Devices.Gpio**.
+This experimental package (will eventually) allow projects to access GPIO pins for the Raspberry Pi 3 (Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9). See more information about the features at [gpio.md](docs/specs/gpio.md).
+
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
 This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
@@ -54,9 +57,6 @@ over converting the buffer to a string, indexing into the string, and then parsi
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `Time`.
 These types will ultimately be submited for inclusion in `System.Runtime`.
-
-* **System.Devices.Gpio**.
-This GPIO library contains usefull APIs to support .NET development for IoT devices like Raspberry Pi and BeagleBone Black. See more information about the features at [Planning.md](src/System.Devices.Gpio/Planning.md).
 
 More libraries are coming soon. Stay tuned!
 
@@ -146,4 +146,4 @@ There are two main reasons for receiving this error:
 
 ## Measuring Performance
 
-All the performance tests live in the `tests\Benchmarks` directory. To run them via the command line, navigate to that folder and run `dotnet run -c Release`. This will give you the list of benchmarks that you can select to run. The results of the benchmark are displayed on the console and all the artifacts (including the results) are placed in the BenchmarkDotNet.Artifacts folder. For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).
+All the performance tests live in the `tests\Benchmarks` directory. To learn how run them please go to the corresponding [README](tests/Benchmarks/README.md). For details on BenchmarkDotNet, please refer to [its GitHub page](https://github.com/dotnet/BenchmarkDotNet).

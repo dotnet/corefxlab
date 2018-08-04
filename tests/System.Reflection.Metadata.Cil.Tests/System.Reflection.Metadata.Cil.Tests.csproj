@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -23,6 +23,12 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Reflection.Metadata.Cil\System.Reflection.Metadata.Cil.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="Assemblies\Demo1.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Demo1.exe</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

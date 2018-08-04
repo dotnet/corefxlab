@@ -10,7 +10,16 @@ using System.Runtime.InteropServices;
 
 namespace System.Text.JsonLab
 {
-    public ref struct JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
+    public static class Utf8JsonWriter
+    {
+        public static Utf8JsonWriter<TBufferWriter> Create<TBufferWriter>(TBufferWriter bufferWriter, bool prettyPrint = false)
+            where TBufferWriter : IBufferWriter<byte>
+        {
+            return new Utf8JsonWriter<TBufferWriter>(bufferWriter, prettyPrint);
+        }
+    }
+
+    public ref struct Utf8JsonWriter<TBufferWriter> where TBufferWriter : IBufferWriter<byte>
     {
         private readonly bool _prettyPrint;
         private BufferWriter<TBufferWriter> _bufferWriter;
@@ -27,7 +36,7 @@ namespace System.Text.JsonLab
         /// </summary>
         /// <param name="bufferWriter">An instance of <see cref="ITextBufferWriter" /> used for writing bytes to an output channel.</param>
         /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
-        public JsonWriter(TBufferWriter bufferWriter, bool prettyPrint = false)
+        public Utf8JsonWriter(TBufferWriter bufferWriter, bool prettyPrint = false)
         {
             _bufferWriter = BufferWriter.Create(bufferWriter);
             _prettyPrint = prettyPrint;
@@ -126,11 +135,11 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                WriteStartUtf8Pretty(nameSpan, JsonConstants.OpenBrace);
+                WriteStartUtf16Pretty(nameSpan, JsonConstants.OpenBrace);
             }
             else
             {
-                while (!TryWriteStartUtf8(nameSpan, JsonConstants.OpenBrace))
+                while (!TryWriteStartUtf16(nameSpan, JsonConstants.OpenBrace))
                     EnsureBuffer();
             }
 
@@ -140,6 +149,61 @@ namespace System.Text.JsonLab
         }
 
         private void WriteStartUtf8Pretty(ReadOnlySpan<byte> nameSpanByte, byte token)
+        {
+            // quote {name} quote colon open-brace, hence 4
+            int bytesNeeded = 4;
+            if (_indent < 0)
+            {
+                bytesNeeded++;
+            }
+
+            bytesNeeded += nameSpanByte.Length;
+
+            int indent = _indent & RemoveFlagsBitMask;
+
+            // For the new line, \r\n or \n, and the space after the colon
+            bytesNeeded += JsonWriterHelper.NewLineUtf8.Length + 1 + indent * 2;
+
+            Span<byte> byteBuffer = EnsureBuffer(bytesNeeded);
+            int idx = 0;
+
+            if (_indent < 0)
+            {
+                byteBuffer[idx++] = JsonConstants.ListSeperator;
+            }
+
+            // \r\n versus \n, depending on OS
+            if (JsonWriterHelper.NewLineUtf8.Length == 2)
+            {
+                byteBuffer[idx++] = JsonConstants.CarriageReturn;
+            }
+
+            byteBuffer[idx++] = JsonConstants.LineFeed;
+
+            while (indent-- > 0)
+            {
+                byteBuffer[idx++] = JsonConstants.Space;
+                byteBuffer[idx++] = JsonConstants.Space;
+            }
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            nameSpanByte.CopyTo(byteBuffer.Slice(idx));
+
+            idx += nameSpanByte.Length;
+
+            byteBuffer[idx++] = JsonConstants.Quote;
+
+            byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+            byteBuffer[idx++] = JsonConstants.Space;
+
+            byteBuffer[idx++] = token;
+
+            _bufferWriter.Advance(idx);
+        }
+
+        private void WriteStartUtf16Pretty(ReadOnlySpan<byte> nameSpanByte, byte token)
         {
             // quote {name} quote colon open-brace, hence 4
             int bytesNeeded = 4;
@@ -251,6 +315,40 @@ namespace System.Text.JsonLab
         }
 
         private bool TryWriteStartUtf8(ReadOnlySpan<byte> nameSpanByte, byte token)
+        {
+            int idx = 0;
+
+            try
+            {
+                Span<byte> byteBuffer = _bufferWriter.Buffer;
+                if (_indent < 0)
+                {
+                    byteBuffer[idx++] = JsonConstants.ListSeperator;
+                }
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                bool status = nameSpanByte.TryCopyTo(byteBuffer.Slice(idx));
+                if (!status) return false;
+
+                idx += nameSpanByte.Length;
+
+                byteBuffer[idx++] = JsonConstants.Quote;
+
+                byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
+
+                byteBuffer[idx++] = token;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+
+            _bufferWriter.Advance(idx);
+            return true;
+        }
+
+        private bool TryWriteStartUtf16(ReadOnlySpan<byte> nameSpanByte, byte token)
         {
             int idx = 0;
 
@@ -395,16 +493,95 @@ namespace System.Text.JsonLab
 
             if (_prettyPrint)
             {
-                WriteStartUtf8Pretty(nameSpan, JsonConstants.OpenBracket);
+                WriteStartUtf16Pretty(nameSpan, JsonConstants.OpenBracket);
             }
             else
             {
-                while (!TryWriteStartUtf8(nameSpan, JsonConstants.OpenBracket))
+                while (!TryWriteStartUtf16(nameSpan, JsonConstants.OpenBracket))
                     EnsureBuffer();
             }
 
             _indent &= RemoveFlagsBitMask;
             _indent++;
+        }
+
+        public void WriteArrayStart(ReadOnlySpan<byte> name)
+        {
+            if (_prettyPrint)
+            {
+                WriteStartUtf8Pretty(name, JsonConstants.OpenBracket);
+            }
+            else
+            {
+                while (!TryWriteStartUtf8(name, JsonConstants.OpenBracket))
+                    EnsureBuffer();
+            }
+
+            _indent &= RemoveFlagsBitMask;
+            _indent++;
+        }
+
+        public void WriteObjectStart(ReadOnlySpan<byte> name)
+        {
+            if (_prettyPrint)
+            {
+                WriteStartUtf8Pretty(name, JsonConstants.OpenBrace);
+            }
+            else
+            {
+                while (!TryWriteStartUtf8(name, JsonConstants.OpenBrace))
+                    EnsureBuffer();
+            }
+
+            _indent &= RemoveFlagsBitMask;
+            _indent++;
+        }
+
+        //TODO: Implement UTF-8 specific overloads
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, bool value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, DateTime value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, DateTimeOffset value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, Guid value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttribute(ReadOnlySpan<byte> name, ulong value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteAttributeNull(ReadOnlySpan<byte> name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteValue(ReadOnlySpan<byte> value)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -435,17 +612,24 @@ namespace System.Text.JsonLab
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteAttribute(string name, string value)
         {
-            ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
-            ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
-
-            if (_prettyPrint)
+            if (value == null)
             {
-                WriteAttributeUtf8Pretty(nameSpan, valueSpan);
+                WriteAttributeNull(name);
             }
             else
             {
-                while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
-                    EnsureBuffer();
+                ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
+                ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
+
+                if (_prettyPrint)
+                {
+                    WriteAttributeUtf8Pretty(nameSpan, valueSpan);
+                }
+                else
+                {
+                    while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
+                        EnsureBuffer();
+                }
             }
         }
 

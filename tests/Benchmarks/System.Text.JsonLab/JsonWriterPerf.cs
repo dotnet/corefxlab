@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using System.Buffers.Text;
 using System.IO;
@@ -26,7 +25,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(false)]
+        [Params(true, false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -121,7 +120,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonBasicUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("age", 42);
@@ -238,7 +237,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonHelloWorldUtf8(bool formatted, ArrayFormatterWrapper output)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteObjectStart();
             json.WriteAttribute("message", "Hello, World!");
@@ -271,7 +270,7 @@ namespace System.Text.JsonLab.Benchmarks
 
         private static void WriterSystemTextJsonArrayOnlyUtf8(bool formatted, ArrayFormatterWrapper output, ReadOnlySpan<int> data)
         {
-            var json = new JsonWriter<ArrayFormatterWrapper>(output, formatted);
+            Utf8JsonWriter<ArrayFormatterWrapper> json = Utf8JsonWriter.Create(output, formatted);
 
             json.WriteArrayStart("ExtraArray");
             for (var i = 0; i < data.Length; i++)

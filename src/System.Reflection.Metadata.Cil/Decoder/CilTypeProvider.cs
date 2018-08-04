@@ -4,7 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Reflection.Metadata.Decoding;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace System.Reflection.Metadata.Cil.Decoder
@@ -12,7 +12,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
     /* 
         TO DO: Change Signature decoder, to decode type with byte indicating whether should have the class or valutype prefix or not.
     */
-    public struct CilTypeProvider : ISignatureTypeProvider<CilType>
+    public struct CilTypeProvider : ISignatureTypeProvider<CilType, object>
     {
         private readonly MetadataReader _reader;
 
@@ -73,7 +73,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return type;
         }
 
-        public CilType GetGenericInstance(CilType genericType, ImmutableArray<CilType> typeArguments)
+        public CilType GetGenericInstantiation(CilType genericType, ImmutableArray<CilType> typeArguments)
         {
             genericType.Append("<");
             for(int i = 0; i < typeArguments.Length; i++)
@@ -89,7 +89,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return genericType;
         }
 
-        public CilType GetGenericMethodParameter(int index)
+        public CilType GetGenericMethodParameter(object genericContext, int index)
         {
             var type = new CilType("", false, false);
             type.Append("!!");
@@ -97,7 +97,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return type;
         }
 
-        public CilType GetGenericTypeParameter(int index)
+        public CilType GetGenericTypeParameter(object genericContext, int index)
         {
             var type = new CilType("", false, false);
             type.Append("!");
@@ -105,7 +105,7 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return type;
         }
 
-        public CilType GetModifiedType(MetadataReader reader, bool isRequired, CilType modifier, CilType unmodifiedType)
+        public CilType GetModifiedType(CilType modifier, CilType unmodifiedType, bool isRequired)
         {
             unmodifiedType.Append(isRequired ? " modreq(" : " modopt(");
             unmodifiedType.Append(modifier.ToString());
@@ -197,27 +197,31 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return elementType;
         }
 
-        public CilType GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, SignatureTypeHandleCode code)
+        public (bool isValueType, bool isClass) GetTypeKind(EntityHandle handle, byte rawTypeKind)
         {
-            bool _isValueType = (code == SignatureTypeHandleCode.Class);
-            bool _isClass = (code == SignatureTypeHandleCode.ValueType);
+            return (isValueType: Reader.ResolveSignatureTypeKind(handle, rawTypeKind) == SignatureTypeKind.ValueType,
+                    isClass: Reader.ResolveSignatureTypeKind(handle, rawTypeKind) == SignatureTypeKind.Class);
+        }
+
+        public CilType GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind)
+        {
+            (bool _isValueType, bool _isClass) = GetTypeKind(handle, rawTypeKind);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeDefinition(handle)), _isValueType, _isClass);
             return type;
         }
 
-        public CilType GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, SignatureTypeHandleCode code)
+        public CilType GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind)
         {
-            bool _isValueType = (code == SignatureTypeHandleCode.Class);
-            bool _isClass = (code == SignatureTypeHandleCode.ValueType);
+            (bool _isValueType, bool _isClass) = GetTypeKind(handle, rawTypeKind);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeReference(handle)), _isValueType, _isClass);
             return type;
         }
 
-        public CilType GetTypeFromSpecification(MetadataReader reader, TypeSpecificationHandle handle, SignatureTypeHandleCode code)
+        public CilType GetTypeFromSpecification(MetadataReader reader, object genericContext, TypeSpecificationHandle handle, byte rawTypeKind)
         {
-            return Reader.GetTypeSpecification(handle).DecodeSignature(this);
+            return Reader.GetTypeSpecification(handle).DecodeSignature(this, genericContext);
         }
 
         public string GetParameterList(MethodSignature<CilType> signature, ParameterHandleCollection? parameters = null)

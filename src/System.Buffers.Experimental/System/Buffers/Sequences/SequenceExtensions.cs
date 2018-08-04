@@ -17,8 +17,7 @@ namespace System.Buffers
             {
                 array.AddAll(buffer.Span);
             }
-            array.Resize(array.Count);
-            return array.Span.Slice(0, array.Count);
+            return array.Span;
         }
 
         public static ReadOnlySpan<byte> ToSpan<T>(this T sequence) where T : ISequence<ReadOnlyMemory<byte>>

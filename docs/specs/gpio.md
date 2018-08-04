@@ -1,4 +1,13 @@
-# Goals
+# `System.Devices.Gpio`
+
+## Introduction
+
+`System.Devices.Gpio` is an experimental package that allows projects to access General Purpose IO (GPIO) pins for the Raspberry Pi 3
+(Broadcom BCM2837), ODROID-XU4, and BeagleBone Black (AM3358/9).
+
+`System.Devices.Gpio` is currently a summer internship project being developed by @edgardozoppi.
+
+## Goals
 1. Research GPIO and gain a firm understanding of the practices and common use cases
 2. Plan out an API for a CoreFX implementation of basic GPIO methods and take it through API Review
 3. Functional (positive, negative) tests for 100% of Public APIs
@@ -6,7 +15,7 @@
 5. BenchmarkDotNet performance tests written for 100% of Public APIs
 6. Complete documentation for 100% of Public APIs, including usage examples
 
-# Research
+## Research
 - Understand the basic protocols and vocabulary
     - Analog vs Digital pin numbering
     - BCM vs Board numbering on a raspberry pi
@@ -39,7 +48,7 @@
             - When the moisture level is low/high, it sends the device a control signal to turn on/off a water supply
      - Connect to a smart home device and read its information e.g. temperature, open/closed, etc.
 
-# GPIO - Basic Implementation
+## GPIO - Basic Implementation
 Most GPIO implementations share a core set of functionality to allow basic on/off control
 of pins. At the very least, we should support these:
 - Open a object that is a representation of a pin with the given pin number
@@ -132,7 +141,7 @@ The best way to dip ones toes into GPIO and RaspberryPi development is to set up
 [Here's an example of a blinking guide written using node.js](https://www.w3schools.com/nodejs/nodejs_raspberrypi_blinking_led.asp)
 
 
-# GPIO - Intermediate Implementation
+## GPIO - Intermediate Implementation
 Beyond the basic set of functionality are a set of functions that are supported by *almost* every implementation out there. They are:
 - Waiters - Instead of manually polling a Read, a Waiter will handle the polling until the desired Read value is reached
 - Listeners - There should be some way to listen for a change and respond accordingly using callbacks.
@@ -180,7 +189,7 @@ With eventing set up we can start making more practical programs with .net core 
 [Here's a guide on setting up a temperature sensor program in Python that prints out the temperature every interval. We should be able to do the same thing using .net core and make a blog post with the instructions.](https://pimylifeup.com/raspberry-pi-temperature-sensor/)
 
 
-# GPIO - Advanced Implementation
+## GPIO - Advanced Implementation
 Though not available everywhere, these functions provide high value to raspberry pi users and add some quality of life additions to everyone:
 - Choose between BCM or BOARD pin numbering
 - Bit shifting - Add helpers to allow easily working with more usable data types
@@ -307,7 +316,7 @@ namespace System.Devices.Gpio
         // - Raspberry Pi Weather Station using Sensors
         // - Raspberry Pi Stock Market Orb (glow green or red based on stock market data)
         // - Raspberry Pi Google Voice Assistant / Cortana Voice Assistant / Amazon Echo
-        // - Raspberry Pi Vending Machine / Badge Reader (possible collaboration with Scott Wadsworth)
+        // - Raspberry Pi Vending Machine / Badge Reader
     }
 }
 ```
@@ -339,7 +348,7 @@ namespace System.Devices.Gpio
 }
 ```
 
-# Implementation Details
+## Implementation Details
 - We should aim to have an answer for GPIO cross-platform, so we will need to design our API and behavior to be sensible across platforms. We should consider leveraging the [WinRT API](https://docs.microsoft.com/en-us/uwp/api/windows.devices.gpio), either by recommending people use that on Windows or by building a Windows version of our API on top of it. For the parts of our API not supported by WinRT, we will need to investigate what win32 APIs are available to use.
 - Compare performance of using basic File apis vs using MemoryMappedFiles
 - We can hit /dev/gpiomem without root access if we want to allow some functions to run non-root.
@@ -394,10 +403,4 @@ Our goal should be to hit the ground running and check-in on the first day and e
 - Examples should be in a form that is easily recognizable for someone familiar with rpi developement, regardless of their current programming environment.
 - Documentation could include a blog post with examples of some cool stuff you can do with GPIO on .net core.
 
-# Contacts
-1. Edgardo Zoppi (summer intern)
-2. Ian Hays
-3. Paulo Janotti 
-4. Tomas Weinfurt 
-5. Levi Broderick (intern coach)
-6. Josh Free (intern manager)
+

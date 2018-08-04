@@ -4,7 +4,6 @@
 
 using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text.JsonLab.Tests.Resources;
 using Xunit;
 
@@ -17,16 +16,16 @@ namespace System.Text.JsonLab.Tests
         {
             var json = ReadJson(TestJson.ParseJson);
             var person = json[0];
-            var age = (double)person["age"];
-            var first = (string)person["first"];
-            var last = (string)person["last"];
-            var phoneNums = person["phoneNumbers"];
+            var age = (double)person[Encoding.UTF8.GetBytes("age")];
+            var first = (string)person[Encoding.UTF8.GetBytes("first")];
+            var last = (string)person[Encoding.UTF8.GetBytes("last")];
+            var phoneNums = person[Encoding.UTF8.GetBytes("phoneNumbers")];
             var phoneNum1 = (string)phoneNums[0];
             var phoneNum2 = (string)phoneNums[1];
-            var address = person["address"];
-            var street = (string)address["street"];
-            var city = (string)address["city"];
-            var zipCode = (double)address["zip"];
+            var address = person[Encoding.UTF8.GetBytes("address")];
+            var street = (string)address[Encoding.UTF8.GetBytes("street")];
+            var city = (string)address[Encoding.UTF8.GetBytes("city")];
+            var zipCode = (double)address[Encoding.UTF8.GetBytes("zip")];
 
             // Exceptional use case
             //var a = json[1];                          // IndexOutOfRangeException
@@ -151,31 +150,31 @@ namespace System.Text.JsonLab.Tests
 
             var pairAge = new Pair
             {
-                Name = "age",
+                Name = Encoding.UTF8.GetBytes("age"),
                 Value = valueAge
             };
 
             var valueFirst = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "John"
+                StringValue = Encoding.UTF8.GetBytes("John")
             };
 
             var pairFirst = new Pair
             {
-                Name = "first",
+                Name = Encoding.UTF8.GetBytes("first"),
                 Value = valueFirst
             };
 
             var valueLast = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "Smith"
+                StringValue = Encoding.UTF8.GetBytes("Smith")
             };
 
             var pairLast = new Pair
             {
-                Name = "last",
+                Name = Encoding.UTF8.GetBytes("last"),
                 Value = valueLast
             };
 
@@ -183,13 +182,13 @@ namespace System.Text.JsonLab.Tests
             var value1 = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "425-000-1212"
+                StringValue = Encoding.UTF8.GetBytes("425-000-1212")
             };
 
             var value2 = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "425-000-1213"
+                StringValue = Encoding.UTF8.GetBytes("425-000-1213")
             };
 
             var values = new List<Value> { value1, value2 };
@@ -203,31 +202,31 @@ namespace System.Text.JsonLab.Tests
 
             var pairPhone = new Pair
             {
-                Name = "phoneNumbers",
+                Name = Encoding.UTF8.GetBytes("phoneNumbers"),
                 Value = valuePhone
             };
 
             var valueStreet = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "1 Microsoft Way"
+                StringValue = Encoding.UTF8.GetBytes("1 Microsoft Way")
             };
 
             var pairStreet = new Pair
             {
-                Name = "street",
+                Name = Encoding.UTF8.GetBytes("street"),
                 Value = valueStreet
             };
 
             var valueCity = new Value
             {
                 Type = Value.ValueType.String,
-                StringValue = "Redmond"
+                StringValue = Encoding.UTF8.GetBytes("Redmond")
             };
 
             var pairCity = new Pair
             {
-                Name = "city",
+                Name = Encoding.UTF8.GetBytes("city"),
                 Value = valueCity
             };
 
@@ -239,7 +238,7 @@ namespace System.Text.JsonLab.Tests
 
             var pairZip = new Pair
             {
-                Name = "zip",
+                Name = Encoding.UTF8.GetBytes("zip"),
                 Value = valueZip
             };
 
@@ -254,7 +253,7 @@ namespace System.Text.JsonLab.Tests
 
             var pairAddress = new Pair
             {
-                Name = "address",
+                Name = Encoding.UTF8.GetBytes("address"),
                 Value = valueAddress
             };
 
@@ -273,7 +272,7 @@ namespace System.Text.JsonLab.Tests
                 return json;
             }
 
-            var jsonReader = new JsonReader(MemoryMarshal.AsBytes(jsonString.AsSpan()), SymbolTable.InvariantUtf16);
+            var jsonReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonString));
             jsonReader.Read();
             switch (jsonReader.TokenType)
             {
@@ -293,16 +292,16 @@ namespace System.Text.JsonLab.Tests
             return json;
         }
 
-        private static Value GetValue(ref JsonReader jsonReader)
+        private static Value GetValue(ref Utf8JsonReader jsonReader)
         {
             var value = new Value { Type = MapValueType(jsonReader.ValueType) };
             switch (value.Type)
             {
                 case Value.ValueType.String:
-                    value.StringValue = ReadString(ref jsonReader);
+                    value.StringValue = ReadUtf8String(ref jsonReader);
                     break;
                 case Value.ValueType.Number:
-                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed, jsonReader.SymbolTable);
+                    CustomParser.TryParseDecimal(jsonReader.Value, out decimal num, out int consumed);
                     value.NumberValue = Convert.ToDouble(num);
                     break;
                 case Value.ValueType.True:
@@ -346,7 +345,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        private static Object ReadObject(ref JsonReader jsonReader)
+        private static Object ReadObject(ref Utf8JsonReader jsonReader)
         {
             // NOTE: We should be sitting on a StartObject token.
             Assert.Equal(JsonTokenType.StartObject, jsonReader.TokenType);
@@ -362,7 +361,7 @@ namespace System.Text.JsonLab.Tests
                         jsonObject.Pairs = jsonPairs;
                         return jsonObject;
                     case JsonTokenType.PropertyName:
-                        string name = ReadString(ref jsonReader);
+                        ReadOnlyMemory<byte> name = ReadUtf8String(ref jsonReader);
                         jsonReader.Read(); // Move to value token
                         var pair = new Pair
                         {
@@ -379,7 +378,7 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json object was started but never ended.");
         }
 
-        private static Array ReadArray(ref JsonReader jsonReader)
+        private static Array ReadArray(ref Utf8JsonReader jsonReader)
         {
             // NOTE: We should be sitting on a StartArray token.
             Assert.Equal(JsonTokenType.StartArray, jsonReader.TokenType);
@@ -407,36 +406,9 @@ namespace System.Text.JsonLab.Tests
             throw new FormatException("Json array was started but never ended.");
         }
 
-        private static string ReadString(ref JsonReader jsonReader)
+        private static byte[] ReadUtf8String(ref Utf8JsonReader jsonReader)
         {
-            if (jsonReader.SymbolTable == SymbolTable.InvariantUtf8)
-            {
-                var status = Encodings.Utf8.ToUtf16Length(jsonReader.Value, out int needed);
-                Assert.Equal(Buffers.OperationStatus.Done, status);
-
-                var text = new string(' ', needed);
-                unsafe
-                {
-                    fixed (char* pChars = text)
-                    {
-                        var dst = new Span<byte>((byte*)pChars, needed);
-
-                        status = Encodings.Utf8.ToUtf16(jsonReader.Value, dst, out int consumed, out int written);
-                        Assert.Equal(Buffers.OperationStatus.Done, status);
-                    }
-                }
-
-                return text;
-            }
-            else if (jsonReader.SymbolTable == SymbolTable.InvariantUtf16)
-            {
-                var utf16 = MemoryMarshal.Cast<byte, char>(jsonReader.Value);
-                var chars = utf16.ToArray();
-
-                return new string(chars);
-            }
-            else
-                throw new NotImplementedException();
+            return jsonReader.Value.ToArray();
         }
     }
 }

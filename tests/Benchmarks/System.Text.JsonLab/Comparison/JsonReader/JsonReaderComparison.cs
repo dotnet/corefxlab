@@ -4,14 +4,11 @@
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
 using Jayrock.Json;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 using JsonLab = System.Text.JsonLab;
-
-using static System.Text.JsonLab.Benchmarks.Helper;
 
 namespace JsonBenchmarks
 {
@@ -20,12 +17,8 @@ namespace JsonBenchmarks
     {
         private string _str;
         private byte[] _data;
-        private SymbolTable _symbolTable;
         private MemoryStream _stream;
         private StreamReader _reader;
-
-        [Params(EncoderTarget.InvariantUtf8)]
-        public EncoderTarget Target;
 
         // Using the string name listed in the resource file instead of the json string directly
         // so that the benchmark output is cleaner
@@ -37,14 +30,10 @@ namespace JsonBenchmarks
         [GlobalSetup]
         public void Setup()
         {
-            _symbolTable = Target == EncoderTarget.InvariantUtf16 ? SymbolTable.InvariantUtf16 : SymbolTable.InvariantUtf8;
-            
             _str = JsonStrings.ResourceManager.GetString(JsonStringName);
-            _data = Target == EncoderTarget.InvariantUtf16 ? Encoding.Unicode.GetBytes(_str) : Encoding.UTF8.GetBytes(_str);
-
+            _data = Encoding.UTF8.GetBytes(_str);
             _stream = new MemoryStream(_data);
-            Encoding encoding = Target == EncoderTarget.InvariantUtf16 ? Encoding.Unicode : Encoding.UTF8;
-            _reader = new StreamReader(_stream, encoding, detectEncodingFromByteOrderMarks: false, bufferSize: 1024, leaveOpen: true);
+            _reader = new StreamReader(_stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, bufferSize: 1024, leaveOpen: true);
         }
 
         [Benchmark(Baseline = true)]
@@ -58,7 +47,7 @@ namespace JsonBenchmarks
         [Benchmark]
         public void ReaderCorefxlab()
         {
-            var json = new JsonLab.JsonReader(_data, _symbolTable);
+            var json = new JsonLab.Utf8JsonReader(_data);
             while (json.Read()) ;
         }
 

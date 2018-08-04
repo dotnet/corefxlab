@@ -3,19 +3,19 @@
 ## Span
 
 * [done] Remove Span<T> and ReadOnlySpan<T> from corefxlab
-* (pri 0) Find APIs that we added in `Span<T>` in CoreFxLab we haven't reviewed and/or
+* [done] Find APIs that we added in `Span<T>` in CoreFxLab we haven't reviewed and/or
   scrutinized.
-* (pri 0) Create adaptive package for System.Memory (i.e. fast and slow span)
-* (pri 0) support bulk copy
-* (pri 1) copyto should work for overlapping ranges
-* (pri 1) review SpanExtensions and move some to System.Memory
+* [done] Create adaptive package for System.Memory (i.e. fast and slow span)
+* [done] support bulk copy
+* [done] copyto should work for overlapping ranges
+* [done] review SpanExtensions and move some to System.Memory
 
 ## Parsing
 
-* (pri 0) performance tests and improvement
-* (pri 0) support fast lower case and upper case hexadecimal parsing
-* (pri 1) remove old APIs
-* (pri 1) remove `EncodingData(byte[][] symbols, TextEncoding encoding,
+* [done] performance tests and improvement
+* [done] support fast lower case and upper case hexadecimal parsing
+* [done] remove old APIs
+* [done] remove `EncodingData(byte[][] symbols, TextEncoding encoding,
   Tuple<byte, int>[] parsingTrie)`
 * (pri 1) add all primitive parser to PrimitiveParser (e.g. GUID, URI, date
   time, etc.)
@@ -65,41 +65,41 @@
 
 ## Memory
 
-* (pri 0) Finish design and prototype of `Memory<T>`
-* (pri 0) Unify buffer pooling abstractions
+* [done] Finish design and prototype of `Memory<T>`
+* [done] Unify buffer pooling abstractions
 
 ## Infrastructure
 
 * [done] (pri 0) Enable performance test runs
-* (pri 0) Remove IL rewriting from corefxlab
-* (pri 1) Enable allocation tests and gates
-* (pri 1) Enable C#7
+* [done] Remove IL rewriting from corefxlab
+* [done] Enable allocation tests and gates
+* [done] Enable C#7
 
 ## Architecture/Design/Other
 
-* Remove `System.IO.Pipeline.Text.Primitives`
-* Prototype `TextReader`-like APIs
+* [done] Remove `System.IO.Pipeline.Text.Primitives`
+* [done] Prototype `TextReader`-like APIs
 * Refactor `System.IO.Pipeline.File` into low level and pipleline-specific APIs
 * Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific
  APIs
 * Design proper Web.Encoding APIs
-* Drive language integration for spans
+* [done] Drive language integration for spans
 * Write programming guides/docs
-* Write solid set of benchmarks
+* [done] Write solid set of benchmarks
 * Explore consumedBytes to be passed by-ref
 * Can we return `Span<T>` from `IOutput` (and other APIs)
 * Make sure `EncodingData` supports currency and date time formatting
-* Decide what to do with Sequences
-* How does memory relate to MSR project
+* [done] Decide what to do with Sequences
+* [done] How does memory relate to MSR project
 * UTF8 string representation
 * UTF8 literals
 
 ## Other to think about
 
 * Refactor networking channels
-* Productize Base64 encoding
+* [done] Productize Base64 encoding
 * SLL
-* Non-allocating compression
+* [done] Non-allocating compression
 * Built-in cultures
 * UtcDateTime
 * SSL

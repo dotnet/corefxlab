@@ -6,6 +6,7 @@ using System.Buffers.Text;
 using System.Buffers.Writer;
 using System.Text;
 using Xunit;
+
 using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Buffers.Tests

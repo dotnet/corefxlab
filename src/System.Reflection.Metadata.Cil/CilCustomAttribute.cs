@@ -34,7 +34,7 @@ namespace System.Reflection.Metadata.Cil
             {
                 if(_parent == null)
                 {
-                    SignatureDecoder.DecodeType(_attribute.Parent, _readers.Provider, null).ToString();
+                    SignatureDecoder.DecodeType(_attribute.Parent, _readers.Provider, 0).ToString();
                 }
                 return _parent;
             }
