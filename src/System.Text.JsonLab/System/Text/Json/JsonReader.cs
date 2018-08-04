@@ -17,7 +17,7 @@ namespace System.Text.JsonLab
         private BufferReader _reader;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
-        private int _depth;
+        public int Depth { get; private set; }
 
         // This mask represents a tiny stack to track the state during nested transitions.
         // The first bit represents the state of the current level (1 == object, 0 == array).
@@ -26,8 +26,8 @@ namespace System.Text.JsonLab
         private ulong _containerMask;
 
         // These properties are helpers for determining the current state of the reader
-        private bool IsRoot => _depth == 1;
-        private bool InArray => (_containerMask & 1) == 0 && (_depth > 0);
+        private bool IsRoot => Depth == 1;
+        private bool InArray => (_containerMask & 1) == 0 && (Depth > 0);
         private bool InObject => (_containerMask & 1) == 1;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace System.Text.JsonLab
             _reader = default;
             _isSingleSegment = true;
             _buffer = data;
-            _depth = 1;
+            Depth = 1;
             _containerMask = 0;
 
             TokenType = JsonTokenType.None;
@@ -75,7 +75,7 @@ namespace System.Text.JsonLab
             _reader = BufferReader.Create(data);
             _isSingleSegment = data.IsSingleSegment; //true;
             _buffer = data.First.Span;  //data.ToArray();
-            _depth = 0;
+            Depth = 0;
             _containerMask = 0;
 
             TokenType = JsonTokenType.None;
@@ -224,42 +224,58 @@ namespace System.Text.JsonLab
             return true;
         }
 
+        public void Skip()
+        {
+            if (TokenType == JsonTokenType.PropertyName)
+            {
+                Read();
+            }
+
+            if (TokenType == JsonTokenType.StartObject || TokenType == JsonTokenType.StartArray)
+            {
+                int depth = Depth;
+                while (Read() && depth < Depth)
+                {
+                }
+            }
+        }
+
         private void StartObject()
         {
-            if (_depth > MaxDepth)
+            if (Depth > MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            _depth++;
+            Depth++;
             _containerMask = (_containerMask << 1) | 1;
             TokenType = JsonTokenType.StartObject;
         }
 
         private void EndObject()
         {
-            if (!InObject || _depth <= 0)
+            if (!InObject || Depth <= 0)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            _depth--;
+            Depth--;
             _containerMask >>= 1;
             TokenType = JsonTokenType.EndObject;
         }
 
         private void StartArray()
         {
-            if (_depth > MaxDepth)
+            if (Depth > MaxDepth)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            _depth++;
+            Depth++;
             _containerMask = (_containerMask << 1);
             TokenType = JsonTokenType.StartArray;
         }
 
         private void EndArray()
         {
-            if (!InArray || _depth <= 0)
+            if (!InArray || Depth <= 0)
                 JsonThrowHelper.ThrowJsonReaderException();
 
-            _depth--;
+            Depth--;
             _containerMask >>= 1;
             TokenType = JsonTokenType.EndArray;
         }
@@ -423,7 +439,8 @@ namespace System.Text.JsonLab
             if (marker == JsonConstants.Quote)
             {
                 buffer = buffer.Slice(1);
-                ConsumeStringUtf8(ref buffer);
+                int i = ConsumeStringUtf8(ref buffer);
+                buffer = buffer.Slice(i);
             }
             else if (marker == JsonConstants.OpenBrace)
             {
@@ -613,14 +630,9 @@ namespace System.Text.JsonLab
 
         private void ConsumePropertyNameUtf8(ref ReadOnlySpan<byte> buffer)
         {
-            int i = buffer.IndexOf(JsonConstants.Quote);
-            if (i == -1)
-                JsonThrowHelper.ThrowJsonReaderException();
+            int i = ConsumeStringUtf8(ref buffer);
 
-            Value = buffer.Slice(0, i);
-            ValueType = JsonValueType.String;
-
-            SkipWhiteSpaceUtf8(ref buffer, i + 1);
+            SkipWhiteSpaceUtf8(ref buffer, i);
 
             // The next character must be a key / value seperator. Validate and skip.
             if (buffer.Length < 1 || buffer[0] != JsonConstants.KeyValueSeperator)
@@ -643,15 +655,38 @@ namespace System.Text.JsonLab
             return 1;
         }
 
-        private void ConsumeStringUtf8(ref ReadOnlySpan<byte> buffer)
+        private int ConsumeStringUtf8(ref ReadOnlySpan<byte> buffer)
         {
-            int i = buffer.IndexOf(JsonConstants.Quote);
-            if (i == -1)
-                JsonThrowHelper.ThrowJsonReaderException();
+            //TODO: Optimize looking for nested quotes
+            int i = 0;
+            while (true)
+            {
+                int counter = 0;
+                i += buffer.Slice(i).IndexOf(JsonConstants.Quote);
+                if (i == -1)
+                    JsonThrowHelper.ThrowJsonReaderException();
+                if (i == 0)
+                {
+                    break;
+                }
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (buffer[j] != JsonConstants.ReverseSolidus)
+                    {
+                        if (counter % 2 == 0)
+                            goto Done;
+                        break;
+                    }
+                    else
+                        counter++;
+                }
+                i++;
+            }
 
+        Done:
             Value = buffer.Slice(0, i);
             ValueType = JsonValueType.String;
-            buffer = buffer.Slice(i + 1);
+            return i + 1;
         }
 
         private void SkipWhiteSpaceUtf8(ref ReadOnlySpan<byte> buffer, int i = 0)

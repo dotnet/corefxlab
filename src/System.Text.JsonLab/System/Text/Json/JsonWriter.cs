@@ -609,17 +609,24 @@ namespace System.Text.JsonLab
         /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteAttribute(string name, string value)
         {
-            ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
-            ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
-
-            if (_prettyPrint)
+            if (value == null)
             {
-                WriteAttributeUtf8Pretty(nameSpan, valueSpan);
+                WriteAttributeNull(name);
             }
             else
             {
-                while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
-                    EnsureBuffer();
+                ReadOnlySpan<byte> nameSpan = MemoryMarshal.AsBytes(name.AsSpan());
+                ReadOnlySpan<byte> valueSpan = MemoryMarshal.AsBytes(value.AsSpan());
+
+                if (_prettyPrint)
+                {
+                    WriteAttributeUtf8Pretty(nameSpan, valueSpan);
+                }
+                else
+                {
+                    while (!TryWriteAttributeUtf8(nameSpan, valueSpan))
+                        EnsureBuffer();
+                }
             }
         }
 
