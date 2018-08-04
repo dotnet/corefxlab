@@ -28,7 +28,7 @@ namespace System.Text.JsonLab.Tests
                     new object[] { TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
                     new object[] { TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
                     new object[] { TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
-                    //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // JsonLab doesn't support this yet.
+                    //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
                     //new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
                     new object[] { TestCaseType.Json400B, TestJson.Json400B},
                     new object[] { TestCaseType.Json4KB, TestJson.Json4KB},
@@ -80,6 +80,28 @@ namespace System.Text.JsonLab.Tests
             JsonLabEmptyLoopHelper(dataUtf8);
             long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
             Assert.Equal(0, memoryAfter - memoryBefore);
+        }
+
+        [Fact]
+        public static void TestJsonReaderUtf8SpecialString()
+        {
+            string jsonString = "{\"nam\\\"e\":\"ah\\\"son\"}";
+            string expectedStr = "nam\\\"e, ah\\\"son, ";
+            
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
+            string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+
+            Assert.Equal(expectedStr, actualStr);
+
+            jsonString = "{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}";
+            expectedStr = "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\r\n String\r\n, \tMul\r\ntiline String, \\\"somequote\\\"	Mu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ";
+
+            dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            result = JsonLabReturnBytesHelper(dataUtf8, out length);
+            actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+
+            Assert.Equal(expectedStr, actualStr);
         }
 
         private static void JsonLabEmptyLoopHelper(byte[] data)
