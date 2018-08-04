@@ -371,6 +371,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
 
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+
                 byteBuffer[idx++] = JsonConstants.Quote;
 
                 byteBuffer[idx++] = JsonConstants.KeyValueSeperator;
@@ -737,6 +740,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == valueSpanByte.Length);
                 idx += written;
 
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
+
                 byteBuffer[idx++] = JsonConstants.Quote;
             }
             catch (IndexOutOfRangeException)
@@ -747,6 +753,15 @@ namespace System.Text.JsonLab
             _bufferWriter.Advance(idx);
             _indent |= 1 << 31;
             return true;
+        }
+
+        //TODO: Implement escaping logic, assume buffer is large enough
+        private int EscapeString(Span<byte> buffer)
+        {
+            // Find characters that need escaping, add reverse solidus and shift data over
+
+            //return the amount of characters that were escaped (i.e. # of '\' added)
+            return 0;
         }
 
         /// <summary>
@@ -790,6 +805,9 @@ namespace System.Text.JsonLab
                 }
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
+
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
 
@@ -1073,6 +1091,9 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == valueSpanByte.Length);
 
                 idx += written;
+
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
+                    idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
             }
