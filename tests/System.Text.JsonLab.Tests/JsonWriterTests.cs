@@ -95,7 +95,7 @@ namespace System.Text.JsonLab.Tests
 
             jsonUtf8.WriteObjectStart();
             jsonUtf8.WriteAttribute("age", 42);
-            jsonUtf8.WriteAttribute("first", "John");
+            jsonUtf8.WriteAttribute("first", null);
             jsonUtf8.WriteAttribute("last", "Smith");
             jsonUtf8.WriteArrayStart("phoneNumbers");
             jsonUtf8.WriteValue("425-000-1212");
@@ -181,7 +181,7 @@ namespace System.Text.JsonLab.Tests
             json.WritePropertyName("age");
             json.WriteValue(42);
             json.WritePropertyName("first");
-            json.WriteValue("John");
+            json.WriteValue((string)null);
             json.WritePropertyName("last");
             json.WriteValue("Smith");
             json.WritePropertyName("phoneNumbers");
