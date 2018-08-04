@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.JsonLab.Tests.Resources;
 using Xunit;
 
@@ -102,6 +104,274 @@ namespace System.Text.JsonLab.Tests
             actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
 
             Assert.Equal(expectedStr, actualStr);
+        }
+
+        [Theory]
+        [InlineData("{\"protocol\":\"dummy\",\"version\":1}\u001e", "dummy", 1)]
+        [InlineData("{\"protocol\":\"\",\"version\":10}\u001e", "", 10)]
+        [InlineData("{\"protocol\":\"\",\"version\":10,\"unknown\":null}\u001e", "", 10)]
+        public void ParsingHandshakeRequestMessageSuccessForValidMessages(string json, string protocol, int version)
+        {
+            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(json));
+
+            Assert.True(TryParseRequestMessage(ref message));
+        }
+
+        [Theory]
+        [InlineData("42\u001e", "Unexpected JSON Token Type 'Integer'. Expected a JSON Object.")]
+        [InlineData("\"42\"\u001e", "Unexpected JSON Token Type 'String'. Expected a JSON Object.")]
+        [InlineData("null\u001e", "Unexpected JSON Token Type 'Null'. Expected a JSON Object.")]
+        [InlineData("{}\u001e", "Missing required property 'protocol'.")]
+        [InlineData("[]\u001e", "Unexpected JSON Token Type 'Array'. Expected a JSON Object.")]
+        [InlineData("{\"protocol\":\"json\"}\u001e", "Missing required property 'version'.")]
+        [InlineData("{\"version\":1}\u001e", "Missing required property 'protocol'.")]
+        [InlineData("{\"version\":\"123\"}\u001e", "Expected 'version' to be of type Integer.")]
+        [InlineData("{\"protocol\":null,\"version\":123}\u001e", "Expected 'protocol' to be of type String.")]
+        public void ParsingHandshakeRequestMessageThrowsForInvalidMessages(string payload, string expectedMessage)
+        {
+            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(payload));
+
+            var exception = Assert.Throws<InvalidDataException>(() =>
+                Assert.True(TryParseRequestMessage(ref message)));
+
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [Theory]
+        [InlineData("42\u001e", "Unexpected JSON Token Type 'Integer'. Expected a JSON Object.")]
+        [InlineData("\"42\"\u001e", "Unexpected JSON Token Type 'String'. Expected a JSON Object.")]
+        [InlineData("null\u001e", "Unexpected JSON Token Type 'Null'. Expected a JSON Object.")]
+        [InlineData("[]\u001e", "Unexpected JSON Token Type 'Array'. Expected a JSON Object.")]
+        [InlineData("{\"error\":null}\u001e", "Expected 'error' to be of type String.")]
+        public void ParsingHandshakeResponseMessageThrowsForInvalidMessages(string payload, string expectedMessage)
+        {
+            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(payload));
+
+            var exception = Assert.Throws<InvalidDataException>(() =>
+                TryParseResponseMessage(ref message));
+
+            Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        public static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
+        {
+            if (!TryParseMessage(ref buffer, out var payload))
+            {
+                return false;
+            }
+
+            var reader = new Utf8JsonReader(payload);
+
+            CheckRead(ref reader);
+            EnsureObjectStart(ref reader);
+
+            int? minorVersion = null;
+            string error = null;
+
+            var completed = false;
+            while (!completed && CheckRead(ref reader))
+            {
+                switch (reader.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        ReadOnlySpan<byte> memberName = reader.Value;
+
+                        if (memberName.SequenceEqual(TypePropertyNameUtf8))
+                        {
+
+                            // a handshake response does not have a type
+                            // check the incoming message was not any other type of message
+                            throw new InvalidDataException("Handshake response should not have a 'type' value.");
+                        }
+                        else if (memberName.SequenceEqual(ErrorPropertyNameUtf8))
+                        {
+                            error = ReadAsString(ref reader, ErrorPropertyName);
+                        }
+                        else if (memberName.SequenceEqual(MinorVersionPropertyNameUtf8))
+                        {
+                            minorVersion = ReadAsInt32(ref reader, MinorVersionPropertyName);
+                        }
+                        else
+                        {
+                            reader.Skip();
+                        }
+                        break;
+                    case JsonTokenType.EndObject:
+                        completed = true;
+                        break;
+                    default:
+                        throw new InvalidDataException($"Unexpected token '{reader.TokenType}' when reading handshake response JSON.");
+                }
+            };
+            
+            return true;
+        }
+
+        public static readonly byte RecordSeparator = 0x1e;
+
+        public static bool TryParseMessage(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> payload)
+        {
+            var position = buffer.PositionOf(RecordSeparator);
+            if (position == null)
+            {
+                payload = default;
+                return false;
+            }
+
+            payload = buffer.Slice(0, position.Value);
+
+            // Skip record separator
+            buffer = buffer.Slice(buffer.GetPosition(1, position.Value));
+
+            return true;
+        }
+
+        public static int? ReadAsInt32(ref Utf8JsonReader reader, string propertyName)
+        {
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.Number)
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
+            }
+
+            if (reader.Value.IsEmpty)
+            {
+                return null;
+            }
+            if (!Utf8Parser.TryParse(reader.Value, out int value, out _))
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type Integer.");
+            }
+            return value;
+        }
+
+        public static bool CheckRead(ref Utf8JsonReader reader)
+        {
+            if (!reader.Read())
+            {
+                throw new InvalidDataException("Unexpected end when reading JSON.");
+            }
+
+            return true;
+        }
+
+        public static string GetTokenString(JsonValueType valueType, JsonTokenType tokenType)
+        {
+            switch (valueType)
+            {
+                case JsonValueType.Number:
+                    return "Integer";
+                case JsonValueType.Unknown:
+                    if (tokenType == JsonTokenType.StartArray)
+                    {
+                        return JsonValueType.Array.ToString();
+                    }
+                    if (tokenType == JsonTokenType.StartObject)
+                    {
+                        return JsonValueType.Object.ToString();
+                    }
+                    return tokenType.ToString();
+                default:
+                    break;
+            }
+            return valueType.ToString();
+        }
+
+        public static void EnsureObjectStart(ref Utf8JsonReader reader)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new InvalidDataException($"Unexpected JSON Token Type '{GetTokenString(reader.ValueType, reader.TokenType)}'. Expected a JSON Object.");
+            }
+        }
+
+        private const string ProtocolPropertyName = "protocol";
+        private const string ProtocolVersionPropertyName = "version";
+        private const string MinorVersionPropertyName = "minorVersion";
+        private const string ErrorPropertyName = "error";
+        private const string TypePropertyName = "type";
+
+        private static readonly byte[] ProtocolPropertyNameUtf8 = Encoding.UTF8.GetBytes("protocol");
+        private static readonly byte[] ProtocolVersionPropertyNameUtf8 = Encoding.UTF8.GetBytes("version");
+        private static readonly byte[] MinorVersionPropertyNameUtf8 = Encoding.UTF8.GetBytes("minorVersion");
+        private static readonly byte[] ErrorPropertyNameUtf8 = Encoding.UTF8.GetBytes("error");
+        private static readonly byte[] TypePropertyNameUtf8 = Encoding.UTF8.GetBytes("type");
+
+        public static bool TryParseRequestMessage(ref ReadOnlySequence<byte> buffer)
+        {
+            if (!TryParseMessage(ref buffer, out var payload))
+            {
+                return false;
+            }
+
+            var reader = new Utf8JsonReader(payload);
+            CheckRead(ref reader);
+            EnsureObjectStart(ref reader);
+
+            string protocol = null;
+            int? protocolVersion = null;
+
+            var completed = false;
+            while (!completed && CheckRead(ref reader))
+            {
+                switch (reader.TokenType)
+                {
+                    case JsonTokenType.PropertyName:
+                        ReadOnlySpan<byte> memberName = reader.Value;
+
+                        if (memberName.SequenceEqual(ProtocolPropertyNameUtf8))
+                        {
+                            protocol = ReadAsString(ref reader, ProtocolPropertyName);
+                        }
+                        else if (memberName.SequenceEqual(ProtocolVersionPropertyNameUtf8))
+                        {
+                            protocolVersion = ReadAsInt32(ref reader, ProtocolVersionPropertyName);
+                        }
+                        else
+                        {
+                            reader.Skip();
+                        }
+                        break;
+                    case JsonTokenType.EndObject:
+                        completed = true;
+                        break;
+                    default:
+                        throw new InvalidDataException($"Unexpected token '{reader.TokenType}' when reading handshake request JSON.");
+                }
+            }
+
+            if (protocol == null)
+            {
+                throw new InvalidDataException($"Missing required property '{ProtocolPropertyName}'.");
+            }
+            if (protocolVersion == null)
+            {
+                throw new InvalidDataException($"Missing required property '{ProtocolVersionPropertyName}'.");
+            }
+
+            return true;
+        }
+
+        public static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
+        {
+            reader.Read();
+
+            if (reader.TokenType != JsonTokenType.Value || reader.ValueType != JsonValueType.String)
+            {
+                throw new InvalidDataException($"Expected '{propertyName}' to be of type String.");
+            }
+
+            if (reader.Value.IsEmpty) return "";
+
+#if NETCOREAPP2_2
+            return Encoding.UTF8.GetString(reader.Value);
+#else
+            fixed (byte* bytes = &MemoryMarshal.GetReference(reader.Value))
+            {
+                return Encoding.UTF8.GetString(bytes, reader.Value.Length);
+            }
+#endif
         }
 
         private static void JsonLabEmptyLoopHelper(byte[] data)

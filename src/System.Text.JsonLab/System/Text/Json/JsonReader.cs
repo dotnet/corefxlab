@@ -75,7 +75,7 @@ namespace System.Text.JsonLab
             _reader = BufferReader.Create(data);
             _isSingleSegment = data.IsSingleSegment; //true;
             _buffer = data.First.Span;  //data.ToArray();
-            Depth = 0;
+            Depth = 1;
             _containerMask = 0;
 
             TokenType = JsonTokenType.None;
@@ -170,17 +170,17 @@ namespace System.Text.JsonLab
                 {
                     _containerMask = 1;
                     TokenType = JsonTokenType.StartObject;
+                    buffer = buffer.Slice(1);
                 }
                 else if (buffer[0] == JsonConstants.OpenBracket)
                 {
                     TokenType = JsonTokenType.StartArray;
+                    buffer = buffer.Slice(1);
                 }
                 else
                 {
-                    //TODO: A single JSON value not nested in an object or array is valid.
-                    JsonThrowHelper.ThrowJsonReaderException();
+                    ConsumeSingleValue(ref buffer, buffer[0]);
                 }
-                buffer = buffer.Slice(1);
                 return true;
             }
 
@@ -462,6 +462,53 @@ namespace System.Text.JsonLab
             {
                 if (buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException();
                 ConsumeNumberUtf8(ref buffer);
+            }
+            else if (marker == 'f')
+            {
+                ConsumeFalseUtf8(ref buffer);
+            }
+            else if (marker == 't')
+            {
+                ConsumeTrueUtf8(ref buffer);
+            }
+            else if (marker == 'n')
+            {
+                ConsumeNullUtf8(ref buffer);
+            }
+            else if (marker == '/')
+            {
+                // TODO: Comments?
+                JsonThrowHelper.ThrowNotImplementedException();
+            }
+            else
+            {
+                JsonThrowHelper.ThrowJsonReaderException();
+            }
+        }
+
+        private void ConsumeSingleValue(ref ReadOnlySpan<byte> buffer, byte marker)
+        {
+            TokenType = JsonTokenType.Value;
+
+            if (marker == JsonConstants.Quote)
+            {
+                buffer = buffer.Slice(1);
+                int i = ConsumeStringUtf8(ref buffer);
+                buffer = buffer.Slice(i);
+            }
+            else if (marker - '0' <= '9' - '0')
+            {
+                //TODO: Validate number
+                Value = buffer;
+                ValueType = JsonValueType.Number;
+                buffer = buffer.Slice(buffer.Length);
+            }
+            else if (marker == '-')
+            {
+                if (buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException();
+                Value = buffer;
+                ValueType = JsonValueType.Number;
+                buffer = buffer.Slice(buffer.Length);
             }
             else if (marker == 'f')
             {
