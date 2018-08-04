@@ -371,7 +371,7 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
 
-                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
                     idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
@@ -740,7 +740,7 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == valueSpanByte.Length);
                 idx += written;
 
-                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
                     idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
@@ -806,7 +806,7 @@ namespace System.Text.JsonLab
                 Debug.Assert(consumed == nameSpanByte.Length);
                 idx += written;
 
-                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
                     idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
@@ -1092,7 +1092,7 @@ namespace System.Text.JsonLab
 
                 idx += written;
 
-                if (byteBuffer.Slice(0, idx).IndexOfAny(JsonWriterHelper.ValuesToEscape) != -1)
+                if (JsonWriterHelper.IndexOfAnyEscape(byteBuffer.Slice(0, idx)) != -1)
                     idx += EscapeString(byteBuffer);
 
                 byteBuffer[idx++] = JsonConstants.Quote;
