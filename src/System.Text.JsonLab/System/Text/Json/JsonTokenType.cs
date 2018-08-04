@@ -13,7 +13,5 @@ namespace System.Text.JsonLab
         PropertyName,
         Comment,
         Value,
-        Null,
-        Undefined,
     }
 }
