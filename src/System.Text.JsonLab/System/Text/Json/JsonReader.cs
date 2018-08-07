@@ -3,7 +3,8 @@
 
 using System.Buffers;
 using System.Buffers.Reader;
-using System.Runtime.CompilerServices;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace System.Text.JsonLab
 {
@@ -83,6 +84,19 @@ namespace System.Text.JsonLab
             ValueType = JsonValueType.Unknown;
         }
 
+        public Utf8JsonReader(Stream stream)
+        {
+            _reader = default;
+            _isSingleSegment = true;
+            _buffer = ReadFromStreamAsync(stream).GetAwaiter().GetResult();
+            Depth = 1;
+            _containerMask = 0;
+
+            TokenType = JsonTokenType.None;
+            Value = ReadOnlySpan<byte>.Empty;
+            ValueType = JsonValueType.Unknown;
+        }
+
         /// <summary>
         /// Read the next token from the data buffer.
         /// </summary>
@@ -90,6 +104,13 @@ namespace System.Text.JsonLab
         public bool Read()
         {
             return _isSingleSegment ? ReadSingleSegment(ref _buffer) : ReadMultiSegment();
+        }
+
+        private static async Task<byte[]> ReadFromStreamAsync(Stream stream)
+        {
+            var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
         }
 
         private void SkipWhiteSpace()
