@@ -10,7 +10,7 @@ namespace System.Buffers.Testing
     {
         public static ReadOnlySequence<byte> CreateSplitBuffer(byte[] buffer, int minSize, int maxSize)
         {
-            if (buffer == null || buffer.Length == 0 || minSize <= 0 || maxSize <= 0)
+            if (buffer == null || buffer.Length == 0 || minSize <= 0 || maxSize <= 0 || minSize > maxSize)
             {
                 throw new InvalidOperationException();
             }

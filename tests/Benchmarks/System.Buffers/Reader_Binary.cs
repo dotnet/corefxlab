@@ -9,14 +9,14 @@ namespace System.Buffers.Benchmarks
 {
     public class Reader_Binary
     {
-        static byte[] s_array;
-        static ReadOnlySequence<byte> s_ros;
-        static byte[] s_buffer;
+        private static byte[] s_array;
+        private static ReadOnlySequence<byte> s_ros;
+        private static byte[] s_buffer;
 
         [GlobalSetup]
         public void Setup()
         {
-            s_array = new byte[100000];
+            s_array = new byte[100_000];
             s_buffer = new byte[4096];
             Random r = new Random(42);
             r.NextBytes(s_array);
@@ -26,9 +26,29 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ReadInt32()
         {
-            var reader = BufferReader.Create(s_ros);
+            BufferReader reader = BufferReader.Create(s_ros);
 
             while (reader.TryRead(out int value))
+            {
+            }
+        }
+
+        [Benchmark]
+        public void ReadInt32_BigEndian()
+        {
+            BufferReader reader = BufferReader.Create(s_ros);
+
+            while (reader.TryReadInt32BigEndian(out int value))
+            {
+            }
+        }
+
+        [Benchmark]
+        public void ReadInt32_LittleEndian()
+        {
+            BufferReader reader = BufferReader.Create(s_ros);
+
+            while (reader.TryReadInt32LittleEndian(out int value))
             {
             }
         }
@@ -37,10 +57,10 @@ namespace System.Buffers.Benchmarks
         public void PeekSpan()
         {
             const int Count = 1000;
-            const int Iterations = 100000;
+            const int Iterations = 100_000;
             Span<byte> span = new Span<byte>(s_buffer, 0, Count);
 
-            var reader = BufferReader.Create(s_ros);
+            BufferReader reader = BufferReader.Create(s_ros);
             for (int i = 0; i < Iterations; i++)
                 reader.Peek(span);
         }

@@ -59,8 +59,8 @@ namespace System.Buffers.Tests
             Assert.True(reader.TryRead(out int value));
             Assert.Equal(BitConverter.ToInt32(new byte[] { 0, 1, 0, 2 }), value);
 
-            //Assert.True(reader.TryRead(out value, bigEndian: true));
-            //Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
+            Assert.True(reader.TryReadInt32BigEndian(out value));
+            Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
         }
 
         [Fact]

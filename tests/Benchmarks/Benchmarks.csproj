@@ -17,9 +17,9 @@
     <EmbeddedResource Include="System.Text.Primitives\SampleTexts\*.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\System.Buffers.Primitives.Tests\BufferSegment.cs" Link="BufferSegment.cs" />
+    <Compile Include="..\System.Buffers.Primitives.Tests\BufferSegment.cs" Link="System.Buffers\BufferSegment.cs" />
     <Compile Include="..\System.Buffers.Primitives.Tests\BufferUtilities.cs" Link="System.Buffers\BufferUtilities.cs" />
-    <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="SpanLiteralExtensions.cs" />
+    <Compile Include="..\System.Buffers.Primitives.Tests\SpanLiteralExtensions.cs" Link="System.Buffers\SpanLiteralExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetVersion)" />

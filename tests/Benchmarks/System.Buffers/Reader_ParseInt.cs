@@ -11,10 +11,10 @@ namespace System.Buffers.Benchmarks
 {
     public class Reader_ParseInt
     {
-        static byte[] s_array;
-        static ReadOnlySequence<byte> s_ros;
-        static ReadOnlySequence<byte> s_rosSplit;
-        static byte[] s_buffer;
+        private static byte[] s_array;
+        private static ReadOnlySequence<byte> s_ros;
+        private static ReadOnlySequence<byte> s_rosSplit;
+        private static byte[] s_buffer;
 
         [GlobalSetup]
         public void Setup()
@@ -41,7 +41,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32()
         {
-            var reader = BufferReader.Create(s_ros);
+            BufferReader reader = BufferReader.Create(s_ros);
 
             while (reader.TryParse(out int value))
             {
@@ -53,7 +53,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32_Split()
         {
-            var reader = BufferReader.Create(s_rosSplit);
+            BufferReader reader = BufferReader.Create(s_rosSplit);
 
             while (reader.TryParse(out int value))
             {
