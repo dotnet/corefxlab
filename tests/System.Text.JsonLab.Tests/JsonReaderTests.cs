@@ -78,6 +78,12 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
 
+            stream.Seek(0, SeekOrigin.Begin);
+            result = JsonLabReturnBytesHelper(stream, dataUtf8, out length);
+            actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+
+            Assert.Equal(expectedStr, actualStr);
+
             long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
             JsonLabEmptyLoopHelper(dataUtf8);
             long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
@@ -499,6 +505,11 @@ namespace System.Text.JsonLab.Tests
         private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
         {
             return JsonLabReaderLoop(data, out length, new Utf8JsonReader(data));
+        }
+
+        private static byte[] JsonLabReturnBytesHelper(Stream stream, byte[] data, out int length)
+        {
+            return JsonLabReaderLoop(data, out length, new Utf8JsonReader(stream));
         }
 
         private static string NewtonsoftReturnStringHelper(TextReader reader)
