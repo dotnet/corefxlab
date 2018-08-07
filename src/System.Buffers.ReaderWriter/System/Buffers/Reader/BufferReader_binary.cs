@@ -48,7 +48,11 @@ namespace System.Buffers.Reader
             return true;
         }
 
-        public unsafe bool TryReadInt32LittleEndian(out int value)
+        /// <summary>
+        /// Reads an <see cref="Int16"/> as little endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
+        public bool TryReadInt16LittleEndian(out short value)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -58,7 +62,11 @@ namespace System.Buffers.Reader
             return TryReadReverseEndianness(out value);
         }
 
-        public unsafe bool TryReadInt32BigEndian(out int value)
+        /// <summary>
+        /// Reads an <see cref="Int16"/> as big  endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
+        public bool TryReadInt16BigEndian(out short value)
         {
             if (!BitConverter.IsLittleEndian)
             {
@@ -68,7 +76,85 @@ namespace System.Buffers.Reader
             return TryReadReverseEndianness(out value);
         }
 
-        private unsafe bool TryReadReverseEndianness(out int value)
+        private bool TryReadReverseEndianness(out short value)
+        {
+            if (TryRead(out value))
+            {
+                value = BinaryPrimitives.ReverseEndianness(value);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Reads an <see cref="Int32"/> as little endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
+        public bool TryReadInt32LittleEndian(out int value)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                return TryRead(out value);
+            }
+
+            return TryReadReverseEndianness(out value);
+        }
+
+        /// <summary>
+        /// Reads an <see cref="Int32"/> as big  endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
+        public bool TryReadInt32BigEndian(out int value)
+        {
+            if (!BitConverter.IsLittleEndian)
+            {
+                return TryRead(out value);
+            }
+
+            return TryReadReverseEndianness(out value);
+        }
+
+        private bool TryReadReverseEndianness(out int value)
+        {
+            if (TryRead(out value))
+            {
+                value = BinaryPrimitives.ReverseEndianness(value);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Reads an <see cref="Int64"/> as little endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
+        public bool TryReadInt64LittleEndian(out long value)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                return TryRead(out value);
+            }
+
+            return TryReadReverseEndianness(out value);
+        }
+
+        /// <summary>
+        /// Reads an <see cref="Int64"/> as big  endian.
+        /// </summary>
+        /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
+        public bool TryReadInt64BigEndian(out long value)
+        {
+            if (!BitConverter.IsLittleEndian)
+            {
+                return TryRead(out value);
+            }
+
+            return TryReadReverseEndianness(out value);
+        }
+
+        private bool TryReadReverseEndianness(out long value)
         {
             if (TryRead(out value))
             {
