@@ -28,7 +28,6 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
-
             var bytes = BufferFactory.Create(new byte[][] {
                 new byte[] { 0          },
                 new byte[] { 1, 2       },
@@ -57,11 +56,11 @@ namespace System.Buffers.Tests
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
 
-            Assert.True(BufferReaderExtensions.TryRead(ref reader, out int value, true));
+            Assert.True(reader.TryRead(out int value));
             Assert.Equal(BitConverter.ToInt32(new byte[] { 0, 1, 0, 2 }), value);
 
-            Assert.True(BufferReaderExtensions.TryRead(ref reader, out value));
-            Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
+            //Assert.True(reader.TryRead(out value, bigEndian: true));
+            //Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
         }
 
         [Fact]
@@ -78,22 +77,22 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BufferReader.Create(bytes);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out ulong u64));
+            Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out bool b));
+            Assert.True(reader.TryParse(out bool b));
             Assert.Equal(true, b);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(456ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(true, b);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(789ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(false, b);
         }
 
@@ -116,7 +115,7 @@ namespace System.Buffers.Tests
             var robReader = BufferReader.Create(readOnlyBytes);
 
             long robSum = 0;
-            while (BufferReaderExtensions.TryParse(ref robReader, out int value))
+            while (robReader.TryParse(out int value))
             {
                 robSum += value;
                 robReader.Advance(1);
@@ -124,7 +123,7 @@ namespace System.Buffers.Tests
 
             var brReader = BufferReader.Create(bytesRange);
             long brSum = 0;
-            while (BufferReaderExtensions.TryParse(ref brReader, out int value))
+            while (brReader.TryParse(out int value))
             {
                 brSum += value;
                 brReader.Advance(1);

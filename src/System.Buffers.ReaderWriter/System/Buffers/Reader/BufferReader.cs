@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
 {
-    public ref struct BufferReader
+    public ref partial struct BufferReader
     {
         private SequencePosition _currentPosition;
         private SequencePosition _nextPosition;
@@ -190,40 +190,64 @@ namespace System.Buffers.Reader
             }
         }
 
-        internal static int Peek(in BufferReader buffer, Span<byte> destination)
+        /// <summary>
+        /// Peek forward the number of bytes specified by <paramref name="count"/>.
+        /// </summary>
+        /// <returns>Span over the peeked data.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<byte> Peek(int count)
         {
-            ReadOnlySpan<byte> firstSpan = buffer.UnreadSegment;
-            if (firstSpan.Length > destination.Length)
+            ReadOnlySpan<byte> firstSpan = UnreadSegment;
+            if (firstSpan.Length >= count)
             {
-                firstSpan.Slice(0, destination.Length).CopyTo(destination);
-                return destination.Length;
+                return firstSpan.Slice(0, count);
             }
-            else if (firstSpan.Length == destination.Length)
-            {
-                firstSpan.CopyTo(destination);
-                return destination.Length;
-            }
-            else
-            {
-                firstSpan.CopyTo(destination);
-                int copied = firstSpan.Length;
 
-                SequencePosition next = buffer._nextPosition;
-                while (buffer.Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+            return PeekSlow(new byte[count]);
+        }
+
+        /// <summary>
+        /// Peek forward the number of bytes in <paramref name="copyBuffer"/>, copying into
+        /// <paramref name="copyBuffer"/> if needed.
+        /// </summary>
+        /// <param name="copyBuffer">
+        /// Temporary buffer to copy into if there isn't a contiguous span within the existing data to return.
+        /// Also describes the count of bytes to peek.
+        /// </param>
+        /// <returns>Span over the peeked data.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<byte> Peek(Span<byte> copyBuffer)
+        {
+            ReadOnlySpan<byte> firstSpan = UnreadSegment;
+            if (firstSpan.Length >= copyBuffer.Length)
+            {
+                return firstSpan.Slice(0, copyBuffer.Length);
+            }
+
+            return PeekSlow(copyBuffer);
+        }
+
+        private ReadOnlySpan<byte> PeekSlow(Span<byte> destination)
+        {
+            ReadOnlySpan<byte> firstSpan = UnreadSegment;
+            firstSpan.CopyTo(destination);
+            int copied = firstSpan.Length;
+
+            SequencePosition next = _nextPosition;
+            while (Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+            {
+                ReadOnlySpan<byte> nextSpan = nextSegment.Span;
+                if (nextSpan.Length > 0)
                 {
-                    ReadOnlySpan<byte> nextSpan = nextSegment.Span;
-                    if (nextSpan.Length > 0)
-                    {
-                        int toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
-                        nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
-                        copied += toCopy;
-                        if (copied >= destination.Length)
-                            break;
-                    }
+                    int toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
+                    nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
+                    copied += toCopy;
+                    if (copied >= destination.Length)
+                        break;
                 }
-
-                return copied;
             }
+
+            return destination.Slice(0, copied);
         }
     }
 }

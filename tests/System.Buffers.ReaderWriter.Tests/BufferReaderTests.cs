@@ -30,7 +30,7 @@ namespace System.Buffers.Tests
         {
             var reader = BufferReader.Create(s_ros);
 
-            while (BufferReaderExtensions.TryParse(ref reader, out int value))
+            while (reader.TryParse(out int value))
             {
                 reader.Advance(1); // advance past the delimiter
                 Assert.Equal(1234, value);

@@ -2,74 +2,114 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
 {
-    public static partial class BufferReaderExtensions 
+    public ref partial struct BufferReader
     {
-        public static bool TryParse(ref BufferReader reader, out bool value) 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe bool TryParse(out bool value)
         {
-            var unread = reader.UnreadSegment;
-            if (Utf8Parser.TryParse(unread, out value, out int consumed))
+            var unread = UnreadSegment;
+            if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
-                if (unread.Length > consumed)
-                {
-                    reader.Advance(consumed);
-                    return true;
-                }
+                Advance(consumed);
+                return true;
             }
 
-            Span<byte> tempSpan = stackalloc byte[5];
-            var copied = Peek(reader, tempSpan);
-            if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
+            return TryParseSlow(out value);
+        }
+
+        private unsafe bool TryParseSlow(out bool value)
+        {
+            const int MaxLength = 5;
+            var unread = UnreadSegment;
+
+            if (unread.Length > MaxLength)
             {
-                reader.Advance(consumed);
+                // Fast path had enough space but couldn't find valid data
+                value = default;
+                return false;
+            }
+
+            byte* buffer = stackalloc byte[MaxLength];
+            Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
+            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            {
+                Advance(consumed);
                 return true;
             }
 
             return false;
         }
 
-        public static bool TryParse(ref BufferReader reader, out int value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe bool TryParse(out int value)
         {
-            var unread = reader.UnreadSegment;
-            if (Utf8Parser.TryParse(unread, out value, out int consumed))
+            var unread = UnreadSegment;
+            if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
-                if (unread.Length > consumed)
-                {
-                    reader.Advance(consumed);
-                    return true;
-                }
+                Advance(consumed);
+                return true;
             }
 
-            Span<byte> tempSpan = stackalloc byte[15];
-            var copied = Peek(reader, tempSpan);
-            if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
+            return TryParseSlow(out value);
+        }
+
+        private unsafe bool TryParseSlow(out int value)
+        {
+            const int MaxLength = 15;
+            var unread = UnreadSegment;
+
+            if (unread.Length > MaxLength)
             {
-                reader.Advance(consumed);
+                // Fast path had enough space but couldn't find valid data
+                value = default;
+                return false;
+            }
+
+            byte* buffer = stackalloc byte[MaxLength];
+            Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
+            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            {
+                Advance(consumed);
                 return true;
             }
 
             return false;
         }
 
-        public static bool TryParse(ref BufferReader reader, out ulong value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe bool TryParse(out ulong value)
         {
-            var unread = reader.UnreadSegment;
-            if (Utf8Parser.TryParse(unread, out value, out int consumed))
+            var unread = UnreadSegment;
+            if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
-                if (unread.Length > consumed)
-                {
-                    reader.Advance(consumed);
-                    return true;
-                }
+                Advance(consumed);
+                return true;
             }
 
-            Span<byte> tempSpan = stackalloc byte[30];
-            var copied = Peek(reader, tempSpan);
-            if (Utf8Parser.TryParse(tempSpan.Slice(0, copied), out value, out consumed))
+            return TryParseSlow(out value);
+        }
+
+        private unsafe bool TryParseSlow(out ulong value)
+        {
+            const int MaxLength = 30;
+            var unread = UnreadSegment;
+
+            if (unread.Length > MaxLength)
             {
-                reader.Advance(consumed);
+                // Fast path had enough space but couldn't find valid data
+                value = default;
+                return false;
+            }
+
+            byte* buffer = stackalloc byte[MaxLength];
+            Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
+            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            {
+                Advance(consumed);
                 return true;
             }
 

@@ -1,53 +1,47 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Reader
 {
-    public static partial class BufferReaderExtensions
+    public ref partial struct BufferReader
     {
-        public static bool TryRead(ref BufferReader reader, out int value, bool littleEndian = false)
+        /// <summary>
+        /// Try to read the given type out of the buffer if possible.
+        /// </summary>
+        /// <remarks>
+        /// The read is unaligned.
+        /// </remarks>
+        /// <returns>
+        /// True if successful. <paramref name="value"/> will be default if failed.
+        /// </returns>
+        public unsafe bool TryRead<T>(out T value) where T : unmanaged
         {
-            var unread = reader.UnreadSegment;
-            if (littleEndian)
-            {
-                if (BinaryPrimitives.TryReadInt32LittleEndian(unread, out value))
-                {
-                    reader.Advance(sizeof(int));
-                    return true;
-                }
-            }
-            else if (BinaryPrimitives.TryReadInt32BigEndian(unread, out value))
-            {
-                reader.Advance(sizeof(int));
-                return true;
-            }
+            ReadOnlySpan<byte> span = UnreadSegment;
+            if (span.Length < sizeof(T))
+                return TryReadSlow(out value);
 
-            Span<byte> tempSpan = stackalloc byte[4];
-            var copied = Peek(reader, tempSpan);
-            if (copied < 4)
+            value = MemoryMarshal.Read<T>(span);
+            Advance(sizeof(T));
+            return true;
+        }
+
+        private unsafe bool TryReadSlow<T>(out T value) where T : unmanaged
+        {
+            // Not enough data in the current segment, try to peek for the data we need.
+            byte* buffer = stackalloc byte[sizeof(T)];
+            Span<byte> tempSpan = new Span<byte>(buffer, sizeof(T));
+
+            if (Peek(tempSpan).Length < sizeof(T))
             {
                 value = default;
                 return false;
             }
 
-            if (littleEndian)
-            {
-                value = BinaryPrimitives.ReadInt32LittleEndian(tempSpan);
-            }
-            else
-            {
-                value = BinaryPrimitives.ReadInt32BigEndian(tempSpan);
-            }
-            reader.Advance(sizeof(int));
+            value = MemoryMarshal.Read<T>(tempSpan);
+            Advance(sizeof(T));
             return true;
         }
-    }
-
-    public static partial class BufferReaderExtensions
-    {
-        public static int Peek(BufferReader reader, Span<byte> destination)
-            => BufferReader.Peek(reader, destination);
     }
 }
