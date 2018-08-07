@@ -8,6 +8,43 @@ namespace System.Buffers.Testing
 {
     public class BufferUtilities
     {
+        public static ReadOnlySequence<byte> CreateSplitBuffer(byte[] buffer, int minSize, int maxSize)
+        {
+            if (buffer == null || buffer.Length == 0 || minSize <= 0 || maxSize <= 0 || minSize > maxSize)
+            {
+                throw new InvalidOperationException();
+            }
+
+            Random r = new Random(0xFEED);
+
+            BufferSegment last = null;
+            BufferSegment first = null;
+            var ownedBuffer = new OwnedArray<byte>(buffer);
+
+            int remaining = buffer.Length;
+            int position = 0;
+            while (remaining > 0)
+            {
+                int take = Math.Min(r.Next(minSize, maxSize), remaining);
+                BufferSegment current = new BufferSegment();
+                current.SetMemory(ownedBuffer, position, position + take);
+                if (first == null)
+                {
+                    first = current;
+                    last = current;
+                }
+                else
+                {
+                    last.SetNext(current);
+                    last = current;
+                }
+                remaining -= take;
+                position += take;
+            }
+
+            return new ReadOnlySequence<byte>(first, 0, last, last.Length);
+        }
+
         public static ReadOnlySequence<byte> CreateBuffer(params byte[][] inputs)
         {
             if (inputs == null || inputs.Length == 0)
@@ -15,21 +52,20 @@ namespace System.Buffers.Testing
                 throw new InvalidOperationException();
             }
 
-            var i = 0;
-
             BufferSegment last = null;
             BufferSegment first = null;
 
-            do
+            for (int i = 0; i < inputs.Length; i++)
             {
-                var s = inputs[i];
-                var length = s.Length;
-                var dataOffset = length;
-                var chars = new byte[length * 8];
+                byte[] source = inputs[i];
+                int length = source.Length;
+                int dataOffset = length;
 
+                // Shift the incoming data for testing
+                byte[] chars = new byte[length * 8];
                 for (int j = 0; j < length; j++)
                 {
-                    chars[dataOffset + j] = s[j];
+                    chars[dataOffset + j] = source[j];
                 }
 
                 // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
@@ -46,8 +82,7 @@ namespace System.Buffers.Testing
                     last.SetNext(current);
                     last = current;
                 }
-                i++;
-            } while (i < inputs.Length);
+            }
 
             return new ReadOnlySequence<byte>(first, 0, last, last.Length);
         }

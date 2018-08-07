@@ -11,15 +11,15 @@ namespace System.Buffers.Benchmarks
 {
     public class Reader
     {
-        static byte[] s_array;
-        static ReadOnlySequence<byte> s_ros;
+        private static byte[] s_array;
+        private static ReadOnlySequence<byte> s_ros;
 
         [GlobalSetup]
         public void Setup()
         {
-            var sections = 100000;
-            var section = "1234 ";
-            var builder = new StringBuilder(sections * section.Length);
+            int sections = 100000;
+            string section = "1234 ";
+            StringBuilder builder = new StringBuilder(sections * section.Length);
             for (int i = 0; i < sections; i++)
             {
                 builder.Append(section);
@@ -31,7 +31,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark(Baseline = true)]
         public void ParseInt32Utf8Parser()
         {
-            var span = new ReadOnlySpan<byte>(s_array);
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(s_array);
 
             int totalConsumed = 0;
             while (Utf8Parser.TryParse(span.Slice(totalConsumed), out int value, out int consumed))
@@ -43,9 +43,9 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32BufferReader()
         {
-            var reader = BufferReader.Create(s_ros);
+            BufferReader reader = BufferReader.Create(s_ros);
 
-            while (BufferReaderExtensions.TryParse(ref reader, out int value))
+            while (reader.TryParse(out int value))
             {
                 reader.Advance(1); // advance past the delimiter
             }
@@ -54,7 +54,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32BufferReaderRaw()
         {
-            var reader = BufferReader.Create(s_ros);
+            BufferReader reader = BufferReader.Create(s_ros);
 
             while (Utf8Parser.TryParse(reader.CurrentSegment.Slice(reader.ConsumedBytes), out int value, out int consumed))
             {

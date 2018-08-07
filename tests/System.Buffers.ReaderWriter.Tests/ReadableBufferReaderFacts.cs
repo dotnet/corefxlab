@@ -105,7 +105,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void PeekReturnsMinuOneByteInTheEnd()
+        public void PeekReturnsMinusOneByteInTheEnd()
         {
             var reader = BufferReader.Create(Factory.CreateWithContent(new byte[] { 1, 2 }));
             Assert.Equal(1, reader.Read());
@@ -311,7 +311,7 @@ namespace System.IO.Pipelines.Tests
             for (int i = 0; i < content.Length; i++)
             {
 
-                int copied = BufferReaderExtensions.Peek(reader, buffer);
+                int copied = reader.Peek(buffer).Length;
                 Assert.Equal(content.Length - i, copied);
                 Assert.True(buffer.Slice(0, copied).SequenceEqual(content.AsSpan(i)));
 
@@ -340,12 +340,12 @@ namespace System.IO.Pipelines.Tests
                 // this loop makes the destination buffer smaller and smaller
                 for (int j = 0; j < buffer.Length - i; j++)
                 {
-                    var bufferSlice = buffer.Slice(0, j);
+                    Span<byte> bufferSlice = buffer.Slice(0, j);
                     bufferSlice.Clear();
-                    int copied = BufferReaderExtensions.Peek(reader, bufferSlice);
-                    Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), copied);
+                    ReadOnlySpan<byte> peeked = reader.Peek(bufferSlice);
+                    Assert.Equal(Math.Min(bufferSlice.Length, content.Length - i), peeked.Length);
 
-                    Assert.True(bufferSlice.Slice(0, copied).SequenceEqual(content.AsSpan(i, j)));
+                    Assert.True(peeked.SequenceEqual(content.AsSpan(i, j)));
                 }
 
                 reader.Advance(1);

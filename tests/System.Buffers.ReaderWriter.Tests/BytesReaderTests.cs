@@ -28,7 +28,6 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
-
             var bytes = BufferFactory.Create(new byte[][] {
                 new byte[] { 0          },
                 new byte[] { 1, 2       },
@@ -38,6 +37,13 @@ namespace System.Buffers.Tests
                 new byte[] { 1,         },
                 new byte[] { 0, 2,      },
                 new byte[] { 1, 2, 3, 4 },
+                new byte[] { 5, 6       },
+                new byte[] { 7, 8, 9,   },
+                new byte[] { 0, 1, 2, 3 },
+                new byte[] { 4, 5       },
+                new byte[] { 6, 7, 8, 9 },
+                new byte[] { 0, 1, 2, 3 },
+                new byte[] { 4          },
             });
 
             var reader = BufferReader.Create(bytes);
@@ -57,11 +63,23 @@ namespace System.Buffers.Tests
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
 
-            Assert.True(BufferReaderExtensions.TryRead(ref reader, out int value, true));
-            Assert.Equal(BitConverter.ToInt32(new byte[] { 0, 1, 0, 2 }), value);
+            Assert.True(reader.TryRead(out int intValue));
+            Assert.Equal(BitConverter.ToInt32(new byte[] { 0, 1, 0, 2 }), intValue);
 
-            Assert.True(BufferReaderExtensions.TryRead(ref reader, out value));
-            Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), value);
+            Assert.True(reader.TryReadInt32BigEndian(out intValue));
+            Assert.Equal(BitConverter.ToInt32(new byte[] { 4, 3, 2, 1 }), intValue);
+
+            Assert.True(reader.TryReadInt64LittleEndian(out long longValue));
+            Assert.Equal(BitConverter.ToInt64(new byte[] { 5, 6, 7, 8, 9, 0, 1, 2 }), longValue);
+
+            Assert.True(reader.TryReadInt64BigEndian(out longValue));
+            Assert.Equal(BitConverter.ToInt64(new byte[] { 0, 9, 8, 7, 6, 5, 4, 3 }), longValue);
+
+            Assert.True(reader.TryReadInt16LittleEndian(out short shortValue));
+            Assert.Equal(BitConverter.ToInt16(new byte[] { 1, 2 }), shortValue);
+
+            Assert.True(reader.TryReadInt16BigEndian(out shortValue));
+            Assert.Equal(BitConverter.ToInt16(new byte[] { 4, 3 }), shortValue);
         }
 
         [Fact]
@@ -78,22 +96,22 @@ namespace System.Buffers.Tests
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
             var reader = BufferReader.Create(bytes);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out ulong u64));
+            Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out bool b));
+            Assert.True(reader.TryParse(out bool b));
             Assert.Equal(true, b);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(456ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(true, b);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out u64));
+            Assert.True(reader.TryParse(out u64));
             Assert.Equal(789ul, u64);
 
-            Assert.True(BufferReaderExtensions.TryParse(ref reader, out b));
+            Assert.True(reader.TryParse(out b));
             Assert.Equal(false, b);
         }
 
@@ -116,7 +134,7 @@ namespace System.Buffers.Tests
             var robReader = BufferReader.Create(readOnlyBytes);
 
             long robSum = 0;
-            while (BufferReaderExtensions.TryParse(ref robReader, out int value))
+            while (robReader.TryParse(out int value))
             {
                 robSum += value;
                 robReader.Advance(1);
@@ -124,7 +142,7 @@ namespace System.Buffers.Tests
 
             var brReader = BufferReader.Create(bytesRange);
             long brSum = 0;
-            while (BufferReaderExtensions.TryParse(ref brReader, out int value))
+            while (brReader.TryParse(out int value))
             {
                 brSum += value;
                 brReader.Advance(1);
