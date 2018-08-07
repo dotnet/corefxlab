@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.Gpio;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace System.Devices.Gpio
+namespace System.Devices.Spi
 {
     public class UnixSpiDevice : SpiDevice
     {
@@ -112,7 +113,7 @@ namespace System.Devices.Gpio
 
             if (_deviceFileDescriptor < 0)
             {
-                throw new IOException($"Cannot open Spi device file '{deviceFileName}'");
+                throw Utils.CreateIOException($"Cannot open Spi device file '{deviceFileName}'", _deviceFileDescriptor);
             }
 
             UnixSpiMode mode = SpiModeToUnixSpiMode(_settings.Mode);
@@ -121,7 +122,7 @@ namespace System.Devices.Gpio
             int ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MODE, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi mode to '{_settings.Mode}'");
+                throw Utils.CreateIOException($"Cannot set Spi mode to '{_settings.Mode}'", ret);
             }
 
             byte bits = (byte)_settings.DataBitLength;
@@ -130,7 +131,7 @@ namespace System.Devices.Gpio
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_BITS_PER_WORD, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'");
+                throw Utils.CreateIOException($"Cannot set Spi data bit length to '{_settings.DataBitLength}'", ret);
             }
 
             uint speed = _settings.ClockFrequency;
@@ -139,7 +140,7 @@ namespace System.Devices.Gpio
             ret = ioctl(_deviceFileDescriptor, (uint)SpiSettings.SPI_IOC_WR_MAX_SPEED_HZ, ptr);
             if (ret == -1)
             {
-                throw new GpioException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'");
+                throw Utils.CreateIOException($"Cannot set Spi clock frequency to '{_settings.ClockFrequency}'", ret);
             }
         }
 
@@ -154,25 +155,74 @@ namespace System.Devices.Gpio
 
             fixed (byte* rxPtr = buffer)
             {
-                var tr = new spi_ioc_transfer()
-                {
-                    tx_buf = 0,
-                    rx_buf = (ulong)rxPtr,
-                    len = (uint)buffer.Length,
-                    speed_hz = _settings.ClockFrequency,
-                    bits_per_word = (byte)_settings.DataBitLength,
-                    delay_usecs = 0,
-                };
-
-                int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
-                if (ret < 1)
-                {
-                    throw new GpioException("Error performing Spi data transfer");
-                }
+                Transfer(null, rxPtr, buffer.Length);
             }
         }
 
-        public override unsafe void Write(byte[] buffer)
+        public override unsafe byte Read8()
+        {
+            Initialize();
+
+            int length = sizeof(byte);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, length);
+            return *rxPtr;
+        }
+
+        public override unsafe ushort Read16()
+        {
+            Initialize();
+
+            int length = sizeof(ushort);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, length);
+
+            ushort result = *(ushort*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe uint Read24()
+        {
+            Initialize();
+
+            const int length = 3;
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, length);
+
+            uint result = *(uint*)rxPtr;
+            result = result << 8;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe uint Read32()
+        {
+            Initialize();
+
+            int length = sizeof(uint);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, length);
+
+            uint result = *(uint*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe ulong Read64()
+        {
+            Initialize();
+
+            int length = sizeof(ulong);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, length);
+
+            ulong result = *(ulong*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe void Write(params byte[] buffer)
         {
             if (buffer == null)
             {
@@ -183,22 +233,54 @@ namespace System.Devices.Gpio
 
             fixed (byte* txPtr = buffer)
             {
-                var tr = new spi_ioc_transfer()
-                {
-                    tx_buf = (ulong)txPtr,
-                    rx_buf = 0,
-                    len = (uint)buffer.Length,
-                    speed_hz = _settings.ClockFrequency,
-                    bits_per_word = (byte)_settings.DataBitLength,
-                    delay_usecs = 0,
-                };
-
-                int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
-                if (ret < 1)
-                {
-                    throw new GpioException("Error performing Spi data transfer");
-                }
+                Transfer(txPtr, null, buffer.Length);
             }
+        }
+
+        public override unsafe void Write8(byte value)
+        {
+            Initialize();
+
+            int length = sizeof(byte);
+            byte* txPtr = &value;
+            Transfer(txPtr, null, length);
+        }
+
+        public override unsafe void Write16(ushort value)
+        {
+            Initialize();
+
+            int length = sizeof(ushort);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length);
+        }
+
+        public override unsafe void Write24(uint value)
+        {
+            Initialize();
+
+            value = value & 0xFFFFFF;
+            const int length = 3;
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length);
+        }
+
+        public override unsafe void Write32(uint value)
+        {
+            Initialize();
+
+            int length = sizeof(uint);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length);
+        }
+
+        public override unsafe void Write64(ulong value)
+        {
+            Initialize();
+
+            int length = sizeof(ulong);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length);
         }
 
         public override unsafe void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer)
@@ -222,21 +304,26 @@ namespace System.Devices.Gpio
 
             fixed (byte* txPtr = writeBuffer, rxPtr = readBuffer)
             {
-                var tr = new spi_ioc_transfer()
-                {
-                    tx_buf = (ulong)txPtr,
-                    rx_buf = (ulong)rxPtr,
-                    len = (uint)writeBuffer.Length,
-                    speed_hz = _settings.ClockFrequency,
-                    bits_per_word = (byte)_settings.DataBitLength,
-                    delay_usecs = 0,
-                };
+                Transfer(txPtr, rxPtr, writeBuffer.Length);
+            }
+        }
 
-                int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
-                if (ret < 1)
-                {
-                    throw new GpioException("Error performing Spi data transfer");
-                }
+        private unsafe void Transfer(byte* writeBufferPtr, byte* readBufferPtr, int buffersLength)
+        {
+            var tr = new spi_ioc_transfer()
+            {
+                tx_buf = (ulong)writeBufferPtr,
+                rx_buf = (ulong)readBufferPtr,
+                len = (uint)buffersLength,
+                speed_hz = _settings.ClockFrequency,
+                bits_per_word = (byte)_settings.DataBitLength,
+                delay_usecs = 0,
+            };
+
+            int ret = ioctl(_deviceFileDescriptor, SPI_IOC_MESSAGE_1, new IntPtr(&tr));
+            if (ret < 1)
+            {
+                throw Utils.CreateIOException("Error performing Spi data transfer", ret);
             }
         }
 
@@ -263,7 +350,7 @@ namespace System.Devices.Gpio
                     break;
 
                 default:
-                    throw new GpioException($"Invalid Spi mode '{mode}'");
+                    throw new IOException($"Invalid Spi mode '{mode}'");
             }
 
             return result;

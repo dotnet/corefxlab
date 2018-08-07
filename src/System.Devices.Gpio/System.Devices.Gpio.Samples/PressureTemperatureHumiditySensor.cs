@@ -1,13 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Devices.I2c;
+using System.Devices.Spi;
 using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio.Samples
 {
-    public class Bme280 : IDisposable
+    /// <summary>
+    /// Supports BME280 Pressure, Temperature and Humidity sensor
+    /// </summary>
+    public class PressureTemperatureHumiditySensor : IDisposable
     {
-        private const byte BME280_ADDRESS = 0x77; // Default I2C address
+        public const byte DefaultI2cAddress = 0x77;
+        public const byte AlternativeI2cAddress = 0x76;
 
         // Name of Registers used in the BME280
 
@@ -80,23 +86,23 @@ namespace System.Devices.Gpio.Samples
         private float _pressure;
         private int _tFine;
 
-        private SpiConnectionSettings _spiSettings;
+        private readonly SpiConnectionSettings _spiSettings;
         private SpiDevice _spiDevice;
 
-        private I2cConnectionSettings _i2cSettings;
+        private readonly I2cConnectionSettings _i2cSettings;
         private I2cDevice _i2cDevice;
 
         private readonly ConnectionProtocol _protocol;
         private readonly Pin _csPin;
 
-        public Bme280(Pin chipSelectLine, SpiConnectionSettings spiSettings)
+        public PressureTemperatureHumiditySensor(Pin chipSelectLine, SpiConnectionSettings spiSettings)
         {
             _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
             _protocol = ConnectionProtocol.Spi;
         }
 
-        public Bme280(I2cConnectionSettings i2cSettings)
+        public PressureTemperatureHumiditySensor(I2cConnectionSettings i2cSettings)
         {
             _i2cSettings = i2cSettings ?? throw new ArgumentNullException(nameof(i2cSettings));
             _protocol = ConnectionProtocol.I2c;
@@ -129,6 +135,8 @@ namespace System.Devices.Gpio.Samples
             ReadPressure();
         }
 
+        public float SeaLevelPressureInHectopascals { get; set; }
+
         public float TemperatureInCelsius => _temperature + TemperatureCalibrationOffset;
 
         public float TemperatureInFahrenheit => TemperatureInCelsius * 1.8F + 32;
@@ -140,6 +148,8 @@ namespace System.Devices.Gpio.Samples
         public float PressureInHectopascals => _pressure / 100;
 
         public float PressureInMillibars => PressureInHectopascals;
+
+        public float AltitudInFeet => AltitudeInMeters / 0.3048f;
 
         public bool Begin()
         {
@@ -158,8 +168,6 @@ namespace System.Devices.Gpio.Samples
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cSettings.DeviceAddress = BME280_ADDRESS;
-
                     _i2cDevice = new UnixI2cDevice(_i2cSettings);
                     break;
 
@@ -184,6 +192,18 @@ namespace System.Devices.Gpio.Samples
             Write8(BME280_REGISTER_CONTROLHUMID, 0x01);
             Write8(BME280_REGISTER_CONTROL, 0x3F);
             return true;
+        }
+
+        public float AltitudeInMeters
+        {
+            get
+            {
+                // From BMP180 datasheet (page 16):
+                // http://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+
+                float result = 44330f * (1f - (float)Math.Pow(PressureInHectopascals / SeaLevelPressureInHectopascals, 0.1903));
+                return result;
+            }
         }
 
         private void ReadTemperature()
@@ -308,9 +328,9 @@ namespace System.Devices.Gpio.Samples
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort Read16LittleEndian(byte register)
         {
-            ushort temp = Read16(register);
-            temp = (ushort)((temp >> 8) | (temp << 8));
-            return temp;
+            ushort result = Read16(register);
+            result = Utils.SwapBytes(result);
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -135,7 +135,7 @@ namespace System.Devices.Gpio
 
             if (fileDescriptor < 0)
             {
-                throw new GpioException($"open error number: {Marshal.GetLastWin32Error()}");
+                throw Utils.CreateIOException("Error initializing Gpio driver", fileDescriptor);
             }
 
             //Console.WriteLine($"file descriptor = {fileDescriptor}");
@@ -144,7 +144,7 @@ namespace System.Devices.Gpio
 
             if (mapPointer.ToInt32() < 0)
             {
-                throw new GpioException($"mmap error number: {Marshal.GetLastWin32Error()}");
+                throw Utils.CreateIOException("Error initializing Gpio driver", mapPointer.ToInt32());
             }
 
             //Console.WriteLine($"mmap returned address = {mapPointer.ToInt32():X16}");

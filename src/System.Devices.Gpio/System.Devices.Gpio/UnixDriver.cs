@@ -297,7 +297,7 @@ namespace System.Devices.Gpio
 
                 if (pollFileDescriptor < 0)
                 {
-                    throw new GpioException($"epoll_create error number: {Marshal.GetLastWin32Error()}");
+                    throw Utils.CreateIOException("Error initializing pin interrupts", pollFileDescriptor);
                 }
             }
 
@@ -313,7 +313,7 @@ namespace System.Devices.Gpio
 
                 if (fd < 0)
                 {
-                    throw new GpioException($"open error number: {Marshal.GetLastWin32Error()}");
+                    throw Utils.CreateIOException("Error initializing pin interrupts", fd);
                 }
 
                 _pinValueFileDescriptors[bcmPinNumber] = fd;
@@ -336,7 +336,7 @@ namespace System.Devices.Gpio
 
             if (r == -1)
             {
-                throw new GpioException($"epoll_ctl error number: {Marshal.GetLastWin32Error()}");
+                throw Utils.CreateIOException("Error initializing pin interrupts", r);
             }
 
             // Ignore first time because it returns the current state
@@ -360,7 +360,7 @@ namespace System.Devices.Gpio
 
             if (r == -1)
             {
-                throw new GpioException($"epoll_ctl error number: {Marshal.GetLastWin32Error()}");
+                throw Utils.CreateIOException("Error initializing pin interrupts", r);
             }
 
             if (closePinValueFileDescriptor)
@@ -454,7 +454,7 @@ namespace System.Devices.Gpio
 
             if (n == -1)
             {
-                throw new GpioException($"epoll_wait error number: {Marshal.GetLastWin32Error()}");
+                throw Utils.CreateIOException("Error initializing pin interrupts", n);
             }
 
             if (n > 0)
@@ -467,7 +467,7 @@ namespace System.Devices.Gpio
 
                 if (r != 1)
                 {
-                    throw new GpioException($"read error number: {Marshal.GetLastWin32Error()}");
+                    throw Utils.CreateIOException("Error initializing pin interrupts", r);
                 }
 
                 result = true;

@@ -6,7 +6,11 @@ using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio.Samples
 {
-    public class LiquidCrystal
+    //
+    /// <summary>
+    /// Supports HD44780 LCD controller
+    /// </summary>
+    public class LcdController
     {
         // Commands
         private const byte LCD_CLEARDISPLAY = 0x01;
@@ -77,13 +81,13 @@ namespace System.Devices.Gpio.Samples
         private byte _numLines;
         private readonly byte[] _rowOffsets;
 
-        public LiquidCrystal(Pin registerSelect, Pin enable, params Pin[] data)
+        public LcdController(Pin registerSelect, Pin enable, params Pin[] data)
             : this(registerSelect, null, enable, data)
         {
             // Do nothing
         }
 
-        public LiquidCrystal(Pin registerSelect, Pin readWrite, Pin enable, params Pin[] data)
+        public LcdController(Pin registerSelect, Pin readWrite, Pin enable, params Pin[] data)
         {
             _rwPin = readWrite;
             _rsPin = registerSelect ?? throw new ArgumentNullException(nameof(registerSelect));
