@@ -401,9 +401,9 @@ namespace System.Devices.Gpio.Samples
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ushort Read16LittleEndian(byte register)
         {
-            ushort temp = Read16(register);
-            temp = (ushort)((temp >> 8) | (temp << 8));
-            return temp;
+            ushort result = Read16(register);
+            result = Utils.SwapBytes(result);
+            return result;
         }
 
         private void WriteRegister(byte register, byte value)

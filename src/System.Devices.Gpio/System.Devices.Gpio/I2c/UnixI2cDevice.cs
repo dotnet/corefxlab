@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Devices.Gpio;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace System.Devices.I2c
@@ -86,10 +85,12 @@ namespace System.Devices.I2c
 
         #endregion
 
+        [Flags]
         private enum TrasnferKind
         {
             Read,
-            Write
+            Write,
+            Both = Read | Write
         }
 
         private const string DefaultDevicePath = "/dev/i2c";
@@ -139,7 +140,7 @@ namespace System.Devices.I2c
             }
         }
 
-        public override void Read(byte[] buffer)
+        public override unsafe void Read(byte[] buffer)
         {
             if (buffer == null)
             {
@@ -148,10 +149,76 @@ namespace System.Devices.I2c
 
             Initialize();
 
-            Transfer(buffer, TrasnferKind.Read);
+            fixed (byte* rxPtr = buffer)
+            {
+                Transfer(null, rxPtr, 0, buffer.Length);
+            }
         }
 
-        public override void Write(byte[] buffer)
+        public override unsafe byte Read8()
+        {
+            Initialize();
+
+            int length = sizeof(byte);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, 0, length);
+            return *rxPtr;
+        }
+
+        public override unsafe ushort Read16()
+        {
+            Initialize();
+
+            int length = sizeof(ushort);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, 0, length);
+
+            ushort result = *(ushort*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe uint Read24()
+        {
+            Initialize();
+
+            const int length = 3;
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, 0, length);
+
+            uint result = *(uint*)rxPtr;
+            result = result << 8;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe uint Read32()
+        {
+            Initialize();
+
+            int length = sizeof(uint);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, 0, length);
+
+            uint result = *(uint*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe ulong Read64()
+        {
+            Initialize();
+
+            int length = sizeof(ulong);
+            byte* rxPtr = stackalloc byte[length];
+            Transfer(null, rxPtr, 0, length);
+
+            ulong result = *(ulong*)rxPtr;
+            result = Utils.SwapBytes(result);
+            return result;
+        }
+
+        public override unsafe void Write(params byte[] buffer)
         {
             if (buffer == null)
             {
@@ -160,7 +227,56 @@ namespace System.Devices.I2c
 
             Initialize();
 
-            Transfer(buffer, TrasnferKind.Write);
+            fixed (byte* txPtr = buffer)
+            {
+                Transfer(txPtr, null, buffer.Length, 0);
+            }
+        }
+
+        public override unsafe void Write8(byte value)
+        {
+            Initialize();
+
+            int length = sizeof(byte);
+            byte* txPtr = &value;
+            Transfer(txPtr, null, length, 0);
+        }
+
+        public override unsafe void Write16(ushort value)
+        {
+            Initialize();
+
+            int length = sizeof(ushort);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length, 0);
+        }
+
+        public override unsafe void Write24(uint value)
+        {
+            Initialize();
+
+            value = value & 0xFFFFFF;
+            const int length = 3;
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length, 0);
+        }
+
+        public override unsafe void Write32(uint value)
+        {
+            Initialize();
+
+            int length = sizeof(uint);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length, 0);
+        }
+
+        public override unsafe void Write64(ulong value)
+        {
+            Initialize();
+
+            int length = sizeof(ulong);
+            byte* txPtr = (byte*)&value;
+            Transfer(txPtr, null, length, 0);
         }
 
         public override unsafe void WriteRead(byte[] writeBuffer, byte[] readBuffer)
@@ -177,117 +293,81 @@ namespace System.Devices.I2c
 
             Initialize();
 
-            Transfer(writeBuffer, readBuffer);
-        }
-
-        private unsafe void Transfer(byte[] buffer, TrasnferKind kind)
-        {
-            if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
-            {
-                //Console.WriteLine("Using I2c RdWr interface");
-
-                I2cMessageFlags flags = TransferKindToI2cMessageFlags(kind);
-                RdWrInterfaceTransfer(buffer, flags);
-            }
-            else
-            {
-                //Console.WriteLine("Using I2c file interface");
-
-                FileInterfaceTransfer(buffer, kind);
-            }
-        }
-
-        private unsafe void Transfer(byte[] writeBuffer, byte[] readBuffer)
-        {
-            if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
-            {
-                //Console.WriteLine("Using I2c RdWr interface");
-
-                RdWrInterfaceTransfer(writeBuffer, readBuffer);
-            }
-            else
-            {
-                //Console.WriteLine("Using I2c file interface");
-
-                FileInterfaceTransfer(writeBuffer, TrasnferKind.Write);
-                FileInterfaceTransfer(readBuffer, TrasnferKind.Read);
-            }
-        }
-
-        private static I2cMessageFlags TransferKindToI2cMessageFlags(TrasnferKind kind)
-        {
-            switch (kind)
-            {
-                case TrasnferKind.Read: return I2cMessageFlags.I2C_M_RD;
-                case TrasnferKind.Write: return I2cMessageFlags.I2C_M_WR;
-
-                default: throw new NotSupportedException();
-            }
-        }
-
-        private unsafe void RdWrInterfaceTransfer(byte[] buffer, I2cMessageFlags flags)
-        {
-            fixed (byte* txPtr = buffer)
-            {
-                var message = new i2c_msg()
-                {
-                    flags = flags,
-                    addr = (ushort)_settings.DeviceAddress,
-                    len = (ushort)buffer.Length,
-                    buf = txPtr
-                };
-
-                var tr = new i2c_rdwr_ioctl_data()
-                {
-                    msgs = &message,
-                    nmsgs = 1 // 1 message
-                };
-
-                int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
-                if (ret < 1)
-                {
-                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
-                }
-            }
-        }
-
-        private unsafe void RdWrInterfaceTransfer(byte[] writeBuffer, byte[] readBuffer)
-        {
             fixed (byte* txPtr = writeBuffer, rxPtr = readBuffer)
             {
-                i2c_msg* messagesPtr = stackalloc i2c_msg[2]
-                {
-                    new i2c_msg()
-                    {
-                        flags = I2cMessageFlags.I2C_M_WR,
-                        addr = (ushort)_settings.DeviceAddress,
-                        len = (ushort)writeBuffer.Length,
-                        buf = txPtr
-                    },
-                    new i2c_msg()
-                    {
-                        flags = I2cMessageFlags.I2C_M_RD,
-                        addr = (ushort)_settings.DeviceAddress,
-                        len = (ushort)readBuffer.Length,
-                        buf = rxPtr
-                    }
-                };
-
-                var tr = new i2c_rdwr_ioctl_data()
-                {
-                    msgs = messagesPtr,
-                    nmsgs = 2 // 2 messages
-                };
-
-                int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
-                if (ret < 1)
-                {
-                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
-                }
+                Transfer(txPtr, rxPtr, writeBuffer.Length, readBuffer.Length);
             }
         }
 
-        private unsafe void FileInterfaceTransfer(byte[] buffer, TrasnferKind kind)
+        private unsafe void Transfer(byte* writeBuffer, byte* readBuffer, int writeBufferLength, int readBufferLength)
+        {
+            if (_functionalities.HasFlag(I2cFunctionalityFlags.I2C_FUNC_I2C))
+            {
+                //Console.WriteLine("Using I2c RdWr interface");
+
+                RdWrInterfaceTransfer(writeBuffer, readBuffer, writeBufferLength, readBufferLength);
+            }
+            else
+            {
+                //Console.WriteLine("Using I2c file interface");
+
+                FileInterfaceTransfer(writeBuffer, readBuffer, writeBufferLength, readBufferLength);
+            }
+        }
+
+        private unsafe void RdWrInterfaceTransfer(byte* writeBufferPtr, byte* readBufferPtr, int writeBufferLength, int readBufferLength)
+        {
+            int messageCount = 0;
+
+            if (writeBufferPtr != null)
+            {
+                messageCount++;
+            }
+
+            if (readBufferPtr != null)
+            {
+                messageCount++;
+            }
+
+            i2c_msg* messagesPtr = stackalloc i2c_msg[messageCount];
+            messageCount = 0;
+
+            if (writeBufferPtr != null)
+            {
+                messagesPtr[messageCount++] = new i2c_msg()
+                {
+                    flags = I2cMessageFlags.I2C_M_WR,
+                    addr = (ushort)_settings.DeviceAddress,
+                    len = (ushort)writeBufferLength,
+                    buf = writeBufferPtr
+                };
+            }
+
+            if (readBufferPtr != null)
+            {
+                messagesPtr[messageCount++] = new i2c_msg()
+                {
+                    flags = I2cMessageFlags.I2C_M_RD,
+                    addr = (ushort)_settings.DeviceAddress,
+                    len = (ushort)readBufferLength,
+                    buf = readBufferPtr
+                };
+            }
+
+            var tr = new i2c_rdwr_ioctl_data()
+            {
+                msgs = messagesPtr,
+                nmsgs = (uint)messageCount
+            };
+
+            int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
+            if (ret < 1)
+            {
+                throw Utils.CreateIOException("Error performing I2c data transfer", ret);
+            }
+        }
+
+        private unsafe void FileInterfaceTransfer(byte* writeBufferPtr, byte* readBufferPtr, int writeBufferLength, int readBufferLength)
         {
             int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
             if (ret < 0)
@@ -295,21 +375,19 @@ namespace System.Devices.I2c
                 throw Utils.CreateIOException("Error performing I2c data transfer", ret);
             }
 
-            fixed (byte* txPtr = buffer)
+            if (writeBufferPtr != null)
             {
-                switch (kind)
+                ret = write(_deviceFileDescriptor, new IntPtr(writeBufferPtr), writeBufferLength);
+
+                if (ret < 0)
                 {
-                    case TrasnferKind.Read:
-                        ret = read(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
-                        break;
-
-                    case TrasnferKind.Write:
-                        ret = write(_deviceFileDescriptor, new IntPtr(txPtr), buffer.Length);
-                        break;
-
-                    default:
-                        throw new NotSupportedException();
+                    throw Utils.CreateIOException("Error performing I2c data transfer", ret);
                 }
+            }
+
+            if (readBufferPtr != null)
+            {
+                ret = read(_deviceFileDescriptor, new IntPtr(readBufferPtr), readBufferLength);
 
                 if (ret < 0)
                 {

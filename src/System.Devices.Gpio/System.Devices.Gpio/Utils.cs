@@ -2,25 +2,34 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace System.Devices.Gpio
 {
     internal static class Utils
     {
-        internal static ulong ValueFromBuffer(byte[] buffer)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort SwapBytes(ushort x)
         {
-            ulong result = 0;
-
-            for (int i = 0; i < buffer.Length; ++i)
-            {
-                result = (result << 8) | buffer[i];
-            }
-
-            return result;
+            x = (ushort)((x << 8) | (x >> 8));
+            return x;
         }
 
-        internal static IOException CreateIOException(string message, int result)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint SwapBytes(uint x)
+        {
+            x = (uint)((SwapBytes((ushort)(x & ushort.MaxValue)) << 16) | SwapBytes((ushort)(x >> 16)));
+            return x;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong SwapBytes(ulong x)
+        {
+            x = (SwapBytes((uint)(x & uint.MaxValue)) << 32) | SwapBytes((uint)(x >> 32));
+            return x;
+        }
+
+        public static IOException CreateIOException(string message, int result)
         {
             Interop.ErrorInfo info = Interop.Sys.GetLastErrorInfo();
             message = $"{message}\nResult: {result} {info}";
