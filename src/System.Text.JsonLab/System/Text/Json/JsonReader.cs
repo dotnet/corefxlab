@@ -535,7 +535,7 @@ namespace System.Text.JsonLab
 
         private int ConsumeNumberUtf8MultiSegment()
         {
-            if (!_reader.TryReadUntilAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters))
+            if (!_reader.TryReadUntilAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters, movePastDelimiter: false))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
