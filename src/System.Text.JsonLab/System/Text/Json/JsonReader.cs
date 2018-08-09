@@ -591,7 +591,7 @@ namespace System.Text.JsonLab
             }
         }
 
-        private int ConsumeNumberUtf8MultiSegment()
+        private void ConsumeNumberUtf8MultiSegment()
         {
             if (!_reader.TryReadUntilAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters, movePastDelimiter: false))
             {
@@ -601,7 +601,6 @@ namespace System.Text.JsonLab
             Value = span;
 
             ValueType = JsonValueType.Number;
-            return 1;
         }
 
         private void ConsumeNumberUtf8(ref ReadOnlySpan<byte> buffer)
@@ -617,7 +616,7 @@ namespace System.Text.JsonLab
             buffer = buffer.Slice(idx);
         }
 
-        private int ConsumeNullUtf8MultiSegment()
+        private void ConsumeNullUtf8MultiSegment()
         {
             Value = JsonConstants.NullValue;
             ValueType = JsonValueType.Null;
@@ -626,8 +625,6 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-
-            return 4;
         }
 
         private void ConsumeNullUtf8(ref ReadOnlySpan<byte> buffer)
@@ -646,7 +643,7 @@ namespace System.Text.JsonLab
             buffer = buffer.Slice(4);
         }
 
-        private int ConsumeFalseUtf8MultiSegment()
+        private void ConsumeFalseUtf8MultiSegment()
         {
             Value = JsonConstants.FalseValue;
             ValueType = JsonValueType.False;
@@ -659,8 +656,6 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-
-            return 5;
         }
 
         private void ConsumeFalseUtf8(ref ReadOnlySpan<byte> buffer)
@@ -680,7 +675,7 @@ namespace System.Text.JsonLab
             buffer = buffer.Slice(5);
         }
 
-        private int ConsumeTrueUtf8MultiSegment()
+        private void ConsumeTrueUtf8MultiSegment()
         {
             Value = JsonConstants.TrueValue;
             ValueType = JsonValueType.True;
@@ -692,8 +687,6 @@ namespace System.Text.JsonLab
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
-
-            return 4;
         }
 
         private void ConsumeTrueUtf8(ref ReadOnlySpan<byte> buffer)
@@ -824,7 +817,7 @@ namespace System.Text.JsonLab
             return false;
         }
 
-        private int ConsumeStringUtf8MultiSegment()
+        private void ConsumeStringUtf8MultiSegment()
         {
             if (!TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
             {
@@ -834,7 +827,6 @@ namespace System.Text.JsonLab
             Value = span;
 
             ValueType = JsonValueType.String;
-            return 1;
         }
 
         private int ConsumeStringUtf8(ref ReadOnlySpan<byte> buffer)
