@@ -9,9 +9,9 @@ using System.Text.Formatting;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    [SimpleJob(-1, 5, 10, 32768)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [InliningDiagnoser()]
+    //[SimpleJob(-1, 5, 10, 32768)]
+    //[DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    //[InliningDiagnoser()]
     [MemoryDiagnoser]
     public class JsonWriterPerf
     {
@@ -25,7 +25,7 @@ namespace System.Text.JsonLab.Benchmarks
         private int[] _data;
         private byte[] _output;
 
-        [Params(true, false)]
+        [Params(false)]
         public bool Formatted;
 
         [GlobalSetup]
@@ -56,13 +56,13 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonBasicUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftBasic()
         {
             WriterNewtonsoftBasic(Formatted, GetWriter(), _data.AsSpan(0, 10));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterUtf8JsonBasic()
         {
             WriterUtf8JsonBasic(_data.AsSpan(0, 10));
@@ -75,19 +75,19 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonHelloWorldUtf8(Formatted, _arrayFormatterWrapper);
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterNewtonsoftHelloWorld()
         {
             WriterNewtonsoftHelloWorld(Formatted, GetWriter());
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void WriterUtf8JsonHelloWorld()
         {
             WriterUtf8JsonHelloWorldHelper(_output);
         }
 
-        [Benchmark]
+        //[Benchmark]
         [Arguments(1)]
         [Arguments(2)]
         [Arguments(5)]
@@ -100,7 +100,7 @@ namespace System.Text.JsonLab.Benchmarks
             WriterSystemTextJsonArrayOnlyUtf8(Formatted, _arrayFormatterWrapper, _data.AsSpan(0, size));
         }
 
-        [Benchmark]
+        //[Benchmark]
         [Arguments(1)]
         [Arguments(2)]
         [Arguments(5)]
