@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -92,40 +93,37 @@ namespace System.Devices.Gpio
 
         private const string GpioPath = "/sys/class/gpio";
 
-        private readonly BitArray _exportedPins;
+        private readonly IList<int> _exportedPins;
 
         private int _pollFileDescriptor = -1;
-        private int[] _pinValueFileDescriptors;
+        private IDictionary<int, int> _pinValueFileDescriptors;
 
         private int _pinsToDetectEventsCount;
-        private readonly BitArray _pinsToDetectEvents;
+        private readonly IList<int> _pinsToDetectEvents;
         private Thread _eventDetectionThread;
-        private readonly TimeSpan[] _debounceTimeouts;
-        private readonly DateTime[] _lastEvents;
+        private readonly IDictionary<int, TimeSpan> _debounceTimeouts;
+        private readonly IDictionary<int, DateTime> _lastEvents;
 
         public UnixDriver(int pinCount)
         {
             PinCount = pinCount;
-            _exportedPins = new BitArray(pinCount);
-            _pinsToDetectEvents = new BitArray(pinCount);
-            _debounceTimeouts = new TimeSpan[pinCount];
-            _lastEvents = new DateTime[pinCount];
-            _pinValueFileDescriptors = new int[pinCount];
+            _exportedPins = new List<int>(pinCount);
+            _pinsToDetectEvents = new List<int>(pinCount);
+            _debounceTimeouts = new Dictionary<int, TimeSpan>(pinCount);
+            _lastEvents = new Dictionary<int, DateTime>(pinCount);
+            _pinValueFileDescriptors = new Dictionary<int, int>(pinCount);
         }
 
         public override void Dispose()
         {
             _pinsToDetectEventsCount = 0;
 
-            for (int i = 0; i < _pinValueFileDescriptors.Length; ++i)
+            foreach (int fd in _pinValueFileDescriptors.Values)
             {
-                int fd = _pinValueFileDescriptors[i];
-
-                if (fd != -1)
-                {
-                    close(fd);
-                }
+                close(fd);
             }
+
+            _pinValueFileDescriptors.Clear();
 
             if (_pollFileDescriptor != -1)
             {
@@ -133,12 +131,10 @@ namespace System.Devices.Gpio
                 _pollFileDescriptor = -1;
             }
 
-            for (int i = 0; i < _exportedPins.Length; ++i)
+            while (_exportedPins.Count > 0)
             {
-                if (_exportedPins[i])
-                {
-                    UnexportPin(i);
-                }
+                int bcmPinNumber = _exportedPins[0];
+                UnexportPin(bcmPinNumber);
             }
         }
 
@@ -174,8 +170,8 @@ namespace System.Devices.Gpio
             ValidatePinNumber(bcmPinNumber);
 
             SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
-            _debounceTimeouts[bcmPinNumber] = default;
-            _lastEvents[bcmPinNumber] = default;
+            _debounceTimeouts.Remove(bcmPinNumber);
+            _lastEvents.Remove(bcmPinNumber);
             UnexportPin(bcmPinNumber);
         }
 
@@ -257,12 +253,12 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            bool wasEnabled = _pinsToDetectEvents[bcmPinNumber];
-            _pinsToDetectEvents[bcmPinNumber] = enable;
+            bool wasEnabled = _pinsToDetectEvents.Contains(bcmPinNumber);
 
             if (enable && !wasEnabled)
             {
                 // Enable pin events detection
+                _pinsToDetectEvents.Add(bcmPinNumber);
                 _pinsToDetectEventsCount++;
 
                 AddPinToPoll(bcmPinNumber, ref _pollFileDescriptor, out _);
@@ -280,6 +276,7 @@ namespace System.Devices.Gpio
             else if (!enable && wasEnabled)
             {
                 // Disable pin events detection
+                _pinsToDetectEvents.Remove(bcmPinNumber);
                 _pinsToDetectEventsCount--;
 
                 bool closePollFileDescriptor = (_pinsToDetectEventsCount == 0);
@@ -302,9 +299,9 @@ namespace System.Devices.Gpio
             }
 
             closePinValueFileDescriptor = false;
-            int fd = _pinValueFileDescriptors[bcmPinNumber];
+            bool ok = _pinValueFileDescriptors.TryGetValue(bcmPinNumber, out int fd);
 
-            if (fd <= 0)
+            if (!ok)
             {
                 string valuePath = $"{GpioPath}/gpio{bcmPinNumber}/value";
                 fd = open(valuePath, FileOpenFlags.O_RDONLY | FileOpenFlags.O_NONBLOCK);
@@ -366,7 +363,7 @@ namespace System.Devices.Gpio
             if (closePinValueFileDescriptor)
             {
                 close(fd);
-                _pinValueFileDescriptors[bcmPinNumber] = -1;
+                _pinValueFileDescriptors.Remove(bcmPinNumber);
             }
 
             if (closePollFileDescriptor)
@@ -380,7 +377,7 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
+            bool pinEventsEnabled = _pinsToDetectEvents.Contains(bcmPinNumber);
             return pinEventsEnabled;
         }
 
@@ -423,8 +420,20 @@ namespace System.Devices.Gpio
 
             if (result)
             {
-                TimeSpan debounce = _debounceTimeouts[bcmPinNumber];
-                DateTime last = _lastEvents[bcmPinNumber];
+                bool ok = _debounceTimeouts.TryGetValue(bcmPinNumber, out TimeSpan debounce);
+
+                if (!ok)
+                {
+                    debounce = TimeSpan.MinValue;
+                }
+
+                ok = _lastEvents.TryGetValue(bcmPinNumber, out DateTime last);
+
+                if (!ok)
+                {
+                    last = DateTime.MinValue;
+                }
+
                 DateTime now = DateTime.UtcNow;
 
                 if (now.Subtract(last) > debounce)
@@ -504,7 +513,7 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/export", Convert.ToString(bcmPinNumber));
             }
 
-            _exportedPins.Set(bcmPinNumber, true);
+            _exportedPins.Add(bcmPinNumber);
         }
 
         private void UnexportPin(int bcmPinNumber)
@@ -516,7 +525,7 @@ namespace System.Devices.Gpio
                 File.WriteAllText($"{GpioPath}/unexport", Convert.ToString(bcmPinNumber));
             }
 
-            _exportedPins.Set(bcmPinNumber, false);
+            _exportedPins.Remove(bcmPinNumber);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -548,7 +557,8 @@ namespace System.Devices.Gpio
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidatePinNumber(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            //if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            if (bcmPinNumber < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
