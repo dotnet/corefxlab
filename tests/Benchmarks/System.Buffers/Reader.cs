@@ -43,7 +43,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32BufferReader()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
             while (reader.TryParse(out int value))
             {
@@ -54,9 +54,9 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32BufferReaderRaw()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
-            while (Utf8Parser.TryParse(reader.CurrentSegment.Slice(reader.ConsumedBytes), out int value, out int consumed))
+            while (Utf8Parser.TryParse(reader.CurrentSpan.Slice(reader.ConsumedBytes), out int value, out int consumed))
             {
                 reader.Advance(consumed + 1);
             }

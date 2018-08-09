@@ -242,7 +242,7 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = BufferReader.Create(buffer);
+            var reader = new BufferReader(buffer);
             var start = default(BufferReader);
             var done = false;
 
@@ -250,14 +250,14 @@ namespace System.Text.Http.Parser
             {
                 while (!reader.End)
                 {
-                    var span = reader.CurrentSegment;
-                    var remaining = span.Length - reader.CurrentSegmentIndex;
+                    var span = reader.CurrentSpan;
+                    var remaining = span.Length - reader.CurrentSpanIndex;
 
                     fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))
                     {
                         while (remaining > 0)
                         {
-                            var index = reader.CurrentSegmentIndex;
+                            var index = reader.CurrentSpanIndex;
                             int ch1;
                             int ch2;
 
@@ -291,7 +291,7 @@ namespace System.Text.Http.Parser
                                 {
                                     // If we got 2 bytes from the span directly so skip ahead 2 so that
                                     // the reader's state matches what we expect
-                                    if (index == reader.CurrentSegmentIndex)
+                                    if (index == reader.CurrentSpanIndex)
                                     {
                                         reader.Advance(2);
                                     }
@@ -306,10 +306,10 @@ namespace System.Text.Http.Parser
 
                             // We moved the reader so look ahead 2 bytes so reset both the reader
                             // and the index
-                            if (index != reader.CurrentSegmentIndex)
+                            if (index != reader.CurrentSpanIndex)
                             {
                                 reader = start;
-                                index = reader.CurrentSegmentIndex;
+                                index = reader.CurrentSpanIndex;
                             }
 
                             var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);

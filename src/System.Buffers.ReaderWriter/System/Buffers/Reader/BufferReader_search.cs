@@ -14,7 +14,7 @@ namespace System.Buffers.Reader
         /// <returns>True if the data was found.</returns>
         public bool TryReadUntil(out ReadOnlySpan<byte> span, byte delimiter, bool movePastDelimiter = true)
         {
-            ReadOnlySpan<byte> remaining = CurrentSegmentIndex == 0 ? CurrentSegment : UnreadSegment;
+            ReadOnlySpan<byte> remaining = UnreadSpan;
             int index = remaining.IndexOf(delimiter);
             if (index != -1)
             {
@@ -55,7 +55,7 @@ namespace System.Buffers.Reader
             BufferReader copy = this;
             if (skip > 0)
                 Advance(skip);
-            ReadOnlySpan<byte> remaining = CurrentSegmentIndex == 0 ? CurrentSegment : UnreadSegment;
+            ReadOnlySpan<byte> remaining = UnreadSpan;
 
             while (!End)
             {
@@ -77,7 +77,7 @@ namespace System.Buffers.Reader
                 }
 
                 Advance(remaining.Length);
-                remaining = CurrentSegment;
+                remaining = CurrentSpan;
             }
 
             // Didn't find anything, reset our original state.
@@ -95,7 +95,7 @@ namespace System.Buffers.Reader
         /// <returns>True if the data was found.</returns>
         public bool TryReadUntilAny(out ReadOnlySpan<byte> span, ReadOnlySpan<byte> delimiters, bool movePastDelimiter = true)
         {
-            ReadOnlySpan<byte> remaining = UnreadSegment;
+            ReadOnlySpan<byte> remaining = UnreadSpan;
             int index = remaining.IndexOfAny(delimiters);
             if (index != -1)
             {
@@ -136,7 +136,7 @@ namespace System.Buffers.Reader
             BufferReader copy = this;
             if (skip > 0)
                 Advance(skip);
-            ReadOnlySpan<byte> remaining = CurrentSegmentIndex == 0 ? CurrentSegment : UnreadSegment;
+            ReadOnlySpan<byte> remaining = CurrentSpanIndex == 0 ? CurrentSpan : UnreadSpan;
 
             while (!End)
             {
@@ -158,7 +158,7 @@ namespace System.Buffers.Reader
                 }
 
                 Advance(remaining.Length);
-                remaining = CurrentSegment;
+                remaining = CurrentSpan;
             }
 
             // Didn't find anything, reset our original state.
