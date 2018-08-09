@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -118,10 +118,10 @@ namespace System.Devices.Gpio
         private RegisterView* _registerViewPointer = null;
 
         private int _pinsToDetectEventsCount;
-        private BitArray _pinsToDetectEvents;
+        private IList<int> _pinsToDetectEvents;
         private Thread _eventDetectionThread;
-        private TimeSpan[] _debounceTimeouts;
-        private DateTime[] _lastEvents;
+        private IDictionary<int, TimeSpan> _debounceTimeouts;
+        private IDictionary<int, DateTime> _lastEvents;
 
         public RaspberryPiDriver()
         {
@@ -129,7 +129,10 @@ namespace System.Devices.Gpio
 
         private void Initialize()
         {
-            if (_registerViewPointer != null) return;
+            if (_registerViewPointer != null)
+            {
+                return;
+            }
 
             int fileDescriptor = open(GpioMemoryFilePath, FileOpenFlags.O_RDWR | FileOpenFlags.O_SYNC);
 
@@ -153,9 +156,9 @@ namespace System.Devices.Gpio
 
             _registerViewPointer = (RegisterView*)mapPointer;
 
-            _pinsToDetectEvents = new BitArray(PinCount);
-            _debounceTimeouts = new TimeSpan[PinCount];
-            _lastEvents = new DateTime[PinCount];
+            _pinsToDetectEvents = new List<int>(PinCount);
+            _debounceTimeouts = new Dictionary<int, TimeSpan>(PinCount);
+            _lastEvents = new Dictionary<int, DateTime>(PinCount);
         }
 
         public override void Dispose()
@@ -203,8 +206,8 @@ namespace System.Devices.Gpio
             ValidatePinNumber(bcmPinNumber);
 
             SetPinEventsToDetect(bcmPinNumber, PinEvent.None);
-            _debounceTimeouts[bcmPinNumber] = default;
-            _lastEvents[bcmPinNumber] = default;
+            _debounceTimeouts.Remove(bcmPinNumber);
+            _lastEvents.Remove(bcmPinNumber);
         }
 
         protected internal override void SetPinMode(int bcmPinNumber, PinMode mode)
@@ -607,27 +610,45 @@ namespace System.Devices.Gpio
             PinEvent result = PinEvent.None;
             PinEvent kind = PinEvent.Low;
             bool enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             kind = PinEvent.High;
             enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             kind = PinEvent.SyncRisingEdge;
             enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             kind = PinEvent.SyncFallingEdge;
             enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             kind = PinEvent.AsyncRisingEdge;
             enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             kind = PinEvent.AsyncFallingEdge;
             enabled = GetEventDetection(bcmPinNumber, kind);
-            if (enabled) result |= kind;
+            if (enabled)
+            {
+                result |= kind;
+            }
 
             return result;
         }
@@ -708,12 +729,12 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            bool wasEnabled = _pinsToDetectEvents[bcmPinNumber];
-            _pinsToDetectEvents[bcmPinNumber] = enable;
+            bool wasEnabled = _pinsToDetectEvents.Contains(bcmPinNumber);
 
             if (enable && !wasEnabled)
             {
                 // Enable pin events detection
+                _pinsToDetectEvents.Add(bcmPinNumber);
                 _pinsToDetectEventsCount++;
 
                 if (_eventDetectionThread == null)
@@ -729,6 +750,7 @@ namespace System.Devices.Gpio
             else if (!enable && wasEnabled)
             {
                 // Disable pin events detection
+                _pinsToDetectEvents.Remove(bcmPinNumber);
                 _pinsToDetectEventsCount--;
             }
         }
@@ -737,7 +759,7 @@ namespace System.Devices.Gpio
         {
             ValidatePinNumber(bcmPinNumber);
 
-            bool pinEventsEnabled = _pinsToDetectEvents[bcmPinNumber];
+            bool pinEventsEnabled = _pinsToDetectEvents.Contains(bcmPinNumber);
             return pinEventsEnabled;
         }
 
@@ -745,19 +767,14 @@ namespace System.Devices.Gpio
         {
             while (_pinsToDetectEventsCount > 0)
             {
-                for (int i = 0; i < _pinsToDetectEvents.Length; ++i)
+                foreach (int bcmPinNumber in _pinsToDetectEvents)
                 {
-                    bool pinEventsEnabled = _pinsToDetectEvents[i];
+                    bool eventDetected = WasEventDetected(bcmPinNumber);
 
-                    if (pinEventsEnabled)
+                    if (eventDetected)
                     {
-                        bool eventDetected = WasEventDetected(i);
-
-                        if (eventDetected)
-                        {
-                            //Console.WriteLine($"Event detected for pin {i}");
-                            OnPinValueChanged(i);
-                        }
+                        //Console.WriteLine($"Event detected for pin {i}");
+                        OnPinValueChanged(bcmPinNumber);
                     }
                 }
             }
@@ -798,8 +815,20 @@ namespace System.Devices.Gpio
             {
                 ClearDetectedEvent(bcmPinNumber);
 
-                TimeSpan debounce = _debounceTimeouts[bcmPinNumber];
-                DateTime last = _lastEvents[bcmPinNumber];
+                bool ok = _debounceTimeouts.TryGetValue(bcmPinNumber, out TimeSpan debounce);
+
+                if (!ok)
+                {
+                    debounce = TimeSpan.MinValue;
+                }
+
+                ok = _lastEvents.TryGetValue(bcmPinNumber, out DateTime last);
+
+                if (!ok)
+                {
+                    last = DateTime.MinValue;
+                }
+
                 DateTime now = DateTime.UtcNow;
 
                 if (now.Subtract(last) > debounce)
@@ -915,7 +944,8 @@ namespace System.Devices.Gpio
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidatePinNumber(int bcmPinNumber)
         {
-            if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            //if (bcmPinNumber < 0 || bcmPinNumber >= PinCount)
+            if (bcmPinNumber < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(bcmPinNumber));
             }
