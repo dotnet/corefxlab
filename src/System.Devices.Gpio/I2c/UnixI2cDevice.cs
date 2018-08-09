@@ -85,14 +85,6 @@ namespace System.Devices.I2c
 
         #endregion
 
-        [Flags]
-        private enum TrasnferKind
-        {
-            Read,
-            Write,
-            Both = Read | Write
-        }
-
         private const string DefaultDevicePath = "/dev/i2c";
 
         private int _deviceFileDescriptor = -1;
