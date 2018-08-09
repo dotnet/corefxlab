@@ -11,7 +11,7 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryParse(out bool value)
         {
-            ReadOnlySpan<byte> unread = UnreadSegment;
+            ReadOnlySpan<byte> unread = UnreadSpan;
 
             // For other types (int, etc) we won't know if we've consumed all of the type
             // ("235612" can be split over segments, for example). For bool, Utf8Parser
@@ -28,7 +28,7 @@ namespace System.Buffers.Reader
         private unsafe bool TryParseSlow(out bool value)
         {
             const int MaxLength = 5;
-            ReadOnlySpan<byte> unread = UnreadSegment;
+            ReadOnlySpan<byte> unread = UnreadSpan;
 
             if (unread.Length > MaxLength)
             {
@@ -51,7 +51,7 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryParse(out int value)
         {
-            ReadOnlySpan<byte> unread = UnreadSegment;
+            ReadOnlySpan<byte> unread = UnreadSpan;
             if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
                 Advance(consumed);
@@ -64,7 +64,8 @@ namespace System.Buffers.Reader
         private unsafe bool TryParseSlow(out int value)
         {
             const int MaxLength = 15;
-            ReadOnlySpan<byte> unread = UnreadSegment;
+
+            ReadOnlySpan<byte> unread = UnreadSpan;
 
             if (unread.Length > MaxLength)
             {
@@ -87,7 +88,7 @@ namespace System.Buffers.Reader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryParse(out ulong value)
         {
-            ReadOnlySpan<byte> unread = UnreadSegment;
+            ReadOnlySpan<byte> unread = UnreadSpan;
             if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
                 Advance(consumed);
@@ -100,7 +101,7 @@ namespace System.Buffers.Reader
         private unsafe bool TryParseSlow(out ulong value)
         {
             const int MaxLength = 30;
-            ReadOnlySpan<byte> unread = UnreadSegment;
+            ReadOnlySpan<byte> unread = UnreadSpan;
 
             if (unread.Length > MaxLength)
             {

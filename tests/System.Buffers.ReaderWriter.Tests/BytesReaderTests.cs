@@ -13,7 +13,7 @@ namespace System.Buffers.Tests
         public void SingleSegmentBytesReader()
         {
             var bytes = new ReadOnlySequence<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            var reader = BufferReader.Create(bytes);
+            var reader = new BufferReader(bytes);
 
             Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> ab, 3));
             Assert.True(ab.First.SequenceEqual(new byte[] { 1, 2 }));
@@ -46,7 +46,7 @@ namespace System.Buffers.Tests
                 new byte[] { 4          },
             });
 
-            var reader = BufferReader.Create(bytes);
+            var reader = new BufferReader(bytes);
 
             Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> bytesValue, 2));
             var span = bytesValue.ToSpan();
@@ -86,7 +86,7 @@ namespace System.Buffers.Tests
         public void EmptyBytesReader()
         {
             var bytes = ReadOnlySequence<byte>.Empty;
-            var reader = BufferReader.Create(bytes);
+            var reader = new BufferReader(bytes);
             Assert.False(reader.TryReadUntil(out ReadOnlySequence<byte> range, (byte)' '));
         }
 
@@ -94,7 +94,7 @@ namespace System.Buffers.Tests
         public void BytesReaderParse()
         {
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
-            var reader = BufferReader.Create(bytes);
+            var reader = new BufferReader(bytes);
 
             Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
@@ -131,7 +131,7 @@ namespace System.Buffers.Tests
             var readOnlyBytes = new ReadOnlySequence<byte>(data);
             var bytesRange = new ReadOnlySequence<byte>(data);
 
-            var robReader = BufferReader.Create(readOnlyBytes);
+            var robReader = new BufferReader(readOnlyBytes);
 
             long robSum = 0;
             while (robReader.TryParse(out int value))
@@ -140,7 +140,7 @@ namespace System.Buffers.Tests
                 robReader.Advance(1);
             }
 
-            var brReader = BufferReader.Create(bytesRange);
+            var brReader = new BufferReader(bytesRange);
             long brSum = 0;
             while (brReader.TryParse(out int value))
             {
