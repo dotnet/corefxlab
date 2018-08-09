@@ -19,7 +19,12 @@ namespace System.Buffers.Reader
             _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
 
-            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, true))
+            if (buffer.IsSingleSegment)
+            {
+                CurrentSegment = buffer.First.Span;
+                End = CurrentSegment.Length == 0;
+            }
+            else if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, true))
             {
                 End = false;
                 CurrentSegment = memory.Span;
