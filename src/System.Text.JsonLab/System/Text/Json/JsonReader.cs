@@ -714,18 +714,7 @@ namespace System.Text.JsonLab
 
         private void ConsumePropertyNameUtf8MultiSegment()
         {
-<<<<<<< HEAD
             ConsumeStringUtf8MultiSegment();
-=======
-            if (!_reader.TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
-            {
-                JsonThrowHelper.ThrowJsonReaderException();
-            }
-
-            Value = span;
-
-            ValueType = JsonValueType.String;
->>>>>>> 098a7c299aa76f4e010eef43e72bb34abf8bdd50
 
             SkipWhiteSpace();
 
@@ -837,11 +826,7 @@ namespace System.Text.JsonLab
 
         private int ConsumeStringUtf8MultiSegment()
         {
-<<<<<<< HEAD
             if (!TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
-=======
-            if (!_reader.TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
->>>>>>> 098a7c299aa76f4e010eef43e72bb34abf8bdd50
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
