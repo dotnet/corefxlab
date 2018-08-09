@@ -43,6 +43,13 @@ namespace System.Devices.Gpio
 
         public IEnumerable<Pin> OpenPins => _pins.Where(p => p != null);
 
+        public bool IsPinOpen(int number)
+        {
+            int bcmNumber = Driver.ConvertPinNumber(number, Numbering, PinNumberingScheme.Bcm);
+            Pin pin = _pins[bcmNumber];
+            return pin != null;
+        }
+
         public Pin this[int pinNumber]
         {
             get
