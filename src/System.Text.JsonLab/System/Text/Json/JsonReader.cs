@@ -663,7 +663,6 @@ namespace System.Text.JsonLab
             }
         }
 
-
         public bool TryReadUntilAny(out ReadOnlySpan<byte> span, ReadOnlySpan<byte> delimiters)
         {
             ReadOnlySpan<byte> remaining = _buffer;
@@ -683,7 +682,7 @@ namespace System.Text.JsonLab
             ReadOnlySequence<byte> copy = _sequence;
             if (skip > 0)
                 Advance(skip);
-            
+
             while (_buffer.Length > 0)
             {
                 ReadOnlySpan<byte> remaining = _buffer;
@@ -893,7 +892,7 @@ namespace System.Text.JsonLab
             ReadOnlySequence<byte> copy = _sequence;
             if (skip > 0)
                 Advance(skip);
-            
+
             while (_buffer.Length > 0)
             {
                 ReadOnlySpan<byte> remaining = _buffer;
@@ -920,13 +919,13 @@ namespace System.Text.JsonLab
                         }
                     }
 
-                    Done:
+                Done:
                     ReadOnlySequence<byte> sequence = copy.Slice(copy.First.Span.Length - skip, index + skip);
                     span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
                     Advance(1);
                     return true;
                 }
-                KeepLooking:
+            KeepLooking:
                 Advance(remaining.Length);
             }
             span = default;
