@@ -72,7 +72,7 @@ namespace System.Text.JsonLab
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
-            _reader = BufferReader.Create(data);
+            _reader = new BufferReader(data);
             _isSingleSegment = data.IsSingleSegment; //true;
             _buffer = data.First.Span;  //data.ToArray();
             Depth = 1;

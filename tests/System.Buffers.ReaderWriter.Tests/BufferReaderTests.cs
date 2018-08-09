@@ -28,7 +28,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void TryParseRos()
         {
-            var reader = BufferReader.Create(s_ros);
+            var reader = new BufferReader(s_ros);
 
             while (reader.TryParse(out int value))
             {

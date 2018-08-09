@@ -41,7 +41,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
             while (reader.TryParse(out int value))
             {
@@ -53,7 +53,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ParseInt32_Split()
         {
-            BufferReader reader = BufferReader.Create(s_rosSplit);
+            BufferReader reader = new BufferReader(s_rosSplit);
 
             while (reader.TryParse(out int value))
             {
