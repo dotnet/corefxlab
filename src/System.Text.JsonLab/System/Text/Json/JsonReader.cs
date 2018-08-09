@@ -535,7 +535,7 @@ namespace System.Text.JsonLab
 
         private int ConsumeNumberUtf8MultiSegment()
         {
-            if (!BufferReaderExtensions.TryReadUntilAny(ref _reader, out ReadOnlySpan<byte> span, JsonConstants.Delimiters))
+            if (!_reader.TryReadUntilAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters, movePastDelimiter: false))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -656,7 +656,7 @@ namespace System.Text.JsonLab
 
         private void ConsumePropertyNameUtf8MultiSegment()
         {
-            if (!BufferReaderExtensions.TryReadUntil(ref _reader, out ReadOnlySpan<byte> span, JsonConstants.Quote))
+            if (!_reader.TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -691,7 +691,7 @@ namespace System.Text.JsonLab
 
         private int ConsumeStringUtf8MultiSegment()
         {
-            if (!BufferReaderExtensions.TryReadUntil(ref _reader, out ReadOnlySpan<byte> span, JsonConstants.Quote))
+            if (!_reader.TryReadUntil(out ReadOnlySpan<byte> span, JsonConstants.Quote))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
