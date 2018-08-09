@@ -67,8 +67,8 @@ namespace System.Text.JsonLab.Tests
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
-            byte[] resultSequence = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
+            byte[] resultSequence = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
             string actualStrSequence = Encoding.UTF8.GetString(resultSequence.AsSpan(0, length));
 
             Stream stream = new MemoryStream(dataUtf8);
@@ -84,23 +84,19 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(0, memoryAfter - memoryBefore);
         }
 
-        [Fact]
-        public static void TestJsonReaderUtf8SpecialString()
+        [Theory]
+        [InlineData("{\"nam\\\"e\":\"ah\\\"son\"}", "nam\\\"e, ah\\\"son, ")]
+        [InlineData("{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}",
+            "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\r\n String\r\n, \tMul\r\ntiline String, \\\"somequote\\\"	Mu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ")]
+        public static void TestJsonReaderUtf8SpecialString(string jsonString, string expectedStr)
         {
-            string jsonString = "{\"nam\\\"e\":\"ah\\\"son\"}";
-            string expectedStr = "nam\\\"e, ah\\\"son, ";
-            
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             byte[] result = JsonLabReturnBytesHelper(dataUtf8, out int length);
             string actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
 
             Assert.Equal(expectedStr, actualStr);
 
-            jsonString = "{\"Here is a string: \\\"\\\"\":\"Here is a\",\"Here is a back slash\\\\\":[\"Multiline\r\n String\r\n\",\"	Mul\r\ntiline String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}";
-            expectedStr = "Here is a string: \\\"\\\", Here is a, Here is a back slash\\\\, Multiline\r\n String\r\n, \tMul\r\ntiline String, \\\"somequote\\\"	Mu\\\"\\\"l\r\ntiline\\\"another\\\" String\\\\, str, \\\"\\\", ";
-
-            dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            result = JsonLabReturnBytesHelper(dataUtf8, out length);
+            result = JsonLabSequenceReturnBytesHelper(dataUtf8, out length);
             actualStr = Encoding.UTF8.GetString(result.AsSpan(0, length));
 
             Assert.Equal(expectedStr, actualStr);
@@ -112,8 +108,12 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"protocol\":\"\",\"version\":10,\"unknown\":null}\u001e", "", 10)]
         public void ParsingHandshakeRequestMessageSuccessForValidMessages(string json, string protocol, int version)
         {
-            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(json));
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(json);
+            var message = new ReadOnlySequence<byte>(dataUtf8);
 
+            Assert.True(TryParseRequestMessage(ref message));
+
+            message = CreateSegments(dataUtf8);
             Assert.True(TryParseRequestMessage(ref message));
         }
 
@@ -129,9 +129,17 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"protocol\":null,\"version\":123}\u001e", "Expected 'protocol' to be of type String.")]
         public void ParsingHandshakeRequestMessageThrowsForInvalidMessages(string payload, string expectedMessage)
         {
-            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(payload));
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(payload);
+            var message = new ReadOnlySequence<byte>(dataUtf8);
 
             var exception = Assert.Throws<InvalidDataException>(() =>
+                Assert.True(TryParseRequestMessage(ref message)));
+
+            Assert.Equal(expectedMessage, exception.Message);
+
+            message = CreateSegments(dataUtf8);
+
+            exception = Assert.Throws<InvalidDataException>(() =>
                 Assert.True(TryParseRequestMessage(ref message)));
 
             Assert.Equal(expectedMessage, exception.Message);
@@ -145,15 +153,23 @@ namespace System.Text.JsonLab.Tests
         [InlineData("{\"error\":null}\u001e", "Expected 'error' to be of type String.")]
         public void ParsingHandshakeResponseMessageThrowsForInvalidMessages(string payload, string expectedMessage)
         {
-            var message = new ReadOnlySequence<byte>(Encoding.UTF8.GetBytes(payload));
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(payload);
+            var message = new ReadOnlySequence<byte>(dataUtf8);
 
             var exception = Assert.Throws<InvalidDataException>(() =>
                 TryParseResponseMessage(ref message));
 
             Assert.Equal(expectedMessage, exception.Message);
+
+            message = CreateSegments(dataUtf8);
+
+            exception = Assert.Throws<InvalidDataException>(() =>
+                TryParseResponseMessage(ref message));
+
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
-        public static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
+        private static bool TryParseResponseMessage(ref ReadOnlySequence<byte> buffer)
         {
             if (!TryParseMessage(ref buffer, out var payload))
             {
@@ -207,9 +223,9 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static readonly byte RecordSeparator = 0x1e;
+        private static readonly byte RecordSeparator = 0x1e;
 
-        public static bool TryParseMessage(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> payload)
+        private static bool TryParseMessage(ref ReadOnlySequence<byte> buffer, out ReadOnlySequence<byte> payload)
         {
             var position = buffer.PositionOf(RecordSeparator);
             if (position == null)
@@ -226,7 +242,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static int? ReadAsInt32(ref Utf8JsonReader reader, string propertyName)
+        private static int? ReadAsInt32(ref Utf8JsonReader reader, string propertyName)
         {
             reader.Read();
 
@@ -246,7 +262,7 @@ namespace System.Text.JsonLab.Tests
             return value;
         }
 
-        public static bool CheckRead(ref Utf8JsonReader reader)
+        private static bool CheckRead(ref Utf8JsonReader reader)
         {
             if (!reader.Read())
             {
@@ -256,7 +272,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static string GetTokenString(JsonValueType valueType, JsonTokenType tokenType)
+        private static string GetTokenString(JsonValueType valueType, JsonTokenType tokenType)
         {
             switch (valueType)
             {
@@ -278,7 +294,7 @@ namespace System.Text.JsonLab.Tests
             return valueType.ToString();
         }
 
-        public static void EnsureObjectStart(ref Utf8JsonReader reader)
+        private static void EnsureObjectStart(ref Utf8JsonReader reader)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -298,7 +314,7 @@ namespace System.Text.JsonLab.Tests
         private static readonly byte[] ErrorPropertyNameUtf8 = Encoding.UTF8.GetBytes("error");
         private static readonly byte[] TypePropertyNameUtf8 = Encoding.UTF8.GetBytes("type");
 
-        public static bool TryParseRequestMessage(ref ReadOnlySequence<byte> buffer)
+        private static bool TryParseRequestMessage(ref ReadOnlySequence<byte> buffer)
         {
             if (!TryParseMessage(ref buffer, out var payload))
             {
@@ -353,7 +369,7 @@ namespace System.Text.JsonLab.Tests
             return true;
         }
 
-        public static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
+        private static unsafe string ReadAsString(ref Utf8JsonReader reader, string propertyName)
         {
             reader.Read();
 
@@ -421,7 +437,7 @@ namespace System.Text.JsonLab.Tests
             }
         }
 
-        private static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length)
+        private static ReadOnlySequence<byte> CreateSegments(byte[] data)
         {
             ReadOnlyMemory<byte> dataMemory = data;
 
@@ -429,8 +445,12 @@ namespace System.Text.JsonLab.Tests
             ReadOnlyMemory<byte> secondMem = dataMemory.Slice(data.Length / 2);
             BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
 
-            var sequence = new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+            return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+        }
 
+        private static byte[] JsonLabSequenceReturnBytesHelper(byte[] data, out int length)
+        {
+            ReadOnlySequence<byte> sequence = CreateSegments(data);
             return JsonLabReaderLoop(data, out length, new Utf8JsonReader(sequence));
         }
 
