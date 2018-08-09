@@ -74,7 +74,7 @@ namespace System.Text.JsonLab
         {
             _reader = new BufferReader(data);
             _isSingleSegment = data.IsSingleSegment; //true;
-            _buffer = _reader.CurrentSegment;  //data.ToArray();
+            _buffer = _reader.CurrentSpan;  //data.ToArray();
             Depth = 1;
             _containerMask = 0;
 
@@ -511,7 +511,7 @@ namespace System.Text.JsonLab
                 ReadOnlySequence<byte> sequence = _reader.Sequence.Slice(_reader.Position);
                 Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
                 ValueType = JsonValueType.Number;
-                _reader.Advance(_reader.UnreadSegment.Length);
+                _reader.Advance(_reader.UnreadSpan.Length);
             }
             else if (marker == '-')
             {
@@ -519,7 +519,7 @@ namespace System.Text.JsonLab
                 ReadOnlySequence<byte> sequence = _reader.Sequence.Slice(_reader.Position);
                 Value = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
                 ValueType = JsonValueType.Number;
-                _reader.Advance(_reader.UnreadSegment.Length);
+                _reader.Advance(_reader.UnreadSpan.Length);
             }
             else if (marker == 'f')
             {
@@ -741,7 +741,7 @@ namespace System.Text.JsonLab
 
         public bool TryReadUntil(out ReadOnlySpan<byte> span, byte delimiter)
         {
-            ReadOnlySpan<byte> remaining = _reader.CurrentSegmentIndex == 0 ? _reader.CurrentSegment : _reader.UnreadSegment;
+            ReadOnlySpan<byte> remaining = _reader.UnreadSpan;
 
             //TODO: Optimize looking for nested quotes
             int i = 0;
@@ -780,7 +780,7 @@ namespace System.Text.JsonLab
             BufferReader copy = _reader;
             if (skip > 0)
                 _reader.Advance(skip);
-            ReadOnlySpan<byte> remaining = _reader.CurrentSegmentIndex == 0 ? _reader.CurrentSegment : _reader.UnreadSegment;
+            ReadOnlySpan<byte> remaining = _reader.UnreadSpan;
 
             while (!_reader.End)
             {
@@ -815,7 +815,7 @@ namespace System.Text.JsonLab
                 }
                 KeepLooking:
                 _reader.Advance(remaining.Length);
-                remaining = _reader.CurrentSegment;
+                remaining = _reader.CurrentSpan;
             }
 
             // Didn't find anything, reset our original state.
