@@ -174,7 +174,7 @@ namespace System.Text.JsonLab.Benchmarks
             return outputArray;
         }
 
-        //[Benchmark]
+        [Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
             Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
@@ -185,7 +185,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
             Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);

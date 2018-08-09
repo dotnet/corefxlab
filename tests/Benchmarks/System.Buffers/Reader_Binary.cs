@@ -26,7 +26,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ReadInt32()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
             while (reader.TryRead(out int value))
             {
@@ -36,7 +36,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ReadInt32_BigEndian()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
             while (reader.TryReadInt32BigEndian(out int value))
             {
@@ -46,7 +46,7 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ReadInt32_LittleEndian()
         {
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
 
             while (reader.TryReadInt32LittleEndian(out int value))
             {
@@ -60,7 +60,7 @@ namespace System.Buffers.Benchmarks
             const int Iterations = 100_000;
             Span<byte> span = new Span<byte>(s_buffer, 0, Count);
 
-            BufferReader reader = BufferReader.Create(s_ros);
+            BufferReader reader = new BufferReader(s_ros);
             for (int i = 0; i < Iterations; i++)
                 reader.Peek(span);
         }

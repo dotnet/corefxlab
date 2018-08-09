@@ -20,7 +20,7 @@ namespace System.Buffers.Reader
         /// </returns>
         public unsafe bool TryRead<T>(out T value) where T : unmanaged
         {
-            ReadOnlySpan<byte> span = UnreadSegment;
+            ReadOnlySpan<byte> span = UnreadSpan;
             if (span.Length < sizeof(T))
                 return TryReadSlow(out value);
 
@@ -31,7 +31,7 @@ namespace System.Buffers.Reader
 
         private unsafe bool TryReadSlow<T>(out T value) where T : unmanaged
         {
-            Debug.Assert(UnreadSegment.Length < sizeof(T));
+            Debug.Assert(UnreadSpan.Length < sizeof(T));
 
             // Not enough data in the current segment, try to peek for the data we need.
             byte* buffer = stackalloc byte[sizeof(T)];
