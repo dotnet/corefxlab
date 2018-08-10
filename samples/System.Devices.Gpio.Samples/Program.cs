@@ -196,6 +196,10 @@ namespace System.Devices.Gpio.Samples
                         I2c_Color();
                         break;
 
+                    case 33:
+                        AzureIoT();
+                        break;
+
                     default:
                         Console.WriteLine("Unknown sample");
                         ShowUsage();
@@ -275,6 +279,8 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"       31 -> {nameof(RaspberryPi_I2c_Pressure_Lcd)}");
             Console.WriteLine();
             Console.WriteLine($"       32 -> {nameof(I2c_Color)}");
+            Console.WriteLine();
+            Console.WriteLine($"       33 -> {nameof(AzureIoT)}");
             Console.WriteLine();
         }
 
@@ -1025,9 +1031,15 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static string ToRgbString(Drawing.Color color)
+        internal static string ToRgbString(Drawing.Color color)
         {
             return $"R: {color.R}, G: {color.G}, B: {color.B}";
+        }
+
+        private static void AzureIoT()
+        {
+            var sample = new AzureIoTSample();
+            sample.Start();
         }
     }
 }
