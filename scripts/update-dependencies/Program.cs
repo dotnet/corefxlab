@@ -25,10 +25,11 @@ namespace Microsoft.Dotnet.Scripts
             if (!ParseArgs(args, out bool updateOnly))
                 return;
 
-            IEnumerable<IDependencyUpdater> updaters = GetUpdaters();
-            IEnumerable<DependencyBuildInfo> buildInfoDependencies = GetBuildInfoDependencies();
+            IEnumerable<IDependencyUpdater> updaters = GetUpdaters().ToArray();
+            IEnumerable<DependencyBuildInfo> buildInfoDependencies = GetBuildInfoDependencies().ToArray();
 
             DependencyUpdateResults updateResults = DependencyUpdateUtils.Update(updaters, buildInfoDependencies);
+            Console.WriteLine($"Suggested commit message: {updateResults.GetSuggestedCommitMessage()}");
 
             if (!updateOnly && updateResults.ChangesDetected())
             {
@@ -84,7 +85,7 @@ namespace Microsoft.Dotnet.Scripts
 
         private static IEnumerable<DependencyBuildInfo> GetBuildInfoDependencies()
         {
-            yield return GetBuildInfoDependency("Cli", "cli/master");
+            yield return GetBuildInfoDependency("CoreSDK", "core-sdk/master");
             yield return GetBuildInfoDependency("CoreFx", "corefx/master");
             yield return GetBuildInfoDependency("CoreSetup", "core-setup/master");
         }
@@ -102,7 +103,7 @@ namespace Microsoft.Dotnet.Scripts
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemNumericsVectorsVersion", "System.Numerics.Vectors");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemBuffersVersion", "System.Buffers");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemIOPipelinesVersion", "System.IO.Pipelines");
-            yield return CreateFileUpdater(config.CLIVersionFilePath, "Microsoft.DotNet.Cli.Utils");
+            yield return CreateFileUpdater(config.CLIVersionFilePath, "core-sdk");
         }
 
         private static IDependencyUpdater CreateFileUpdater(string path, string packageId)
