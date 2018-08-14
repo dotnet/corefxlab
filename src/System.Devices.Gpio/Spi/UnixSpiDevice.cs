@@ -164,9 +164,9 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(byte);
-            byte* rxPtr = stackalloc byte[length];
-            Transfer(null, rxPtr, length);
-            return *rxPtr;
+            byte result = 0;
+            Transfer(null, &result, length);
+            return result;
         }
 
         public override unsafe ushort Read16()
@@ -174,10 +174,9 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(ushort);
-            byte* rxPtr = stackalloc byte[length];
-            Transfer(null, rxPtr, length);
+            ushort result = 0;
+            Transfer(null, (byte*)&result, length);
 
-            ushort result = *(ushort*)rxPtr;
             result = Utils.SwapBytes(result);
             return result;
         }
@@ -187,10 +186,9 @@ namespace System.Devices.Spi
             Initialize();
 
             const int length = 3;
-            byte* rxPtr = stackalloc byte[length];
-            Transfer(null, rxPtr, length);
+            uint result = 0;
+            Transfer(null, (byte*)&result, length);
 
-            uint result = *(uint*)rxPtr;
             result = result << 8;
             result = Utils.SwapBytes(result);
             return result;
@@ -201,10 +199,9 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(uint);
-            byte* rxPtr = stackalloc byte[length];
-            Transfer(null, rxPtr, length);
+            uint result = 0;
+            Transfer(null, (byte*)&result, length);
 
-            uint result = *(uint*)rxPtr;
             result = Utils.SwapBytes(result);
             return result;
         }
@@ -214,10 +211,9 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(ulong);
-            byte* rxPtr = stackalloc byte[length];
-            Transfer(null, rxPtr, length);
+            ulong result = 0;
+            Transfer(null, (byte*)&result, length);
 
-            ulong result = *(ulong*)rxPtr;
             result = Utils.SwapBytes(result);
             return result;
         }
@@ -242,8 +238,7 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(byte);
-            byte* txPtr = &value;
-            Transfer(txPtr, null, length);
+            Transfer(&value, null, length);
         }
 
         public override unsafe void Write16(ushort value)
@@ -251,8 +246,7 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(ushort);
-            byte* txPtr = (byte*)&value;
-            Transfer(txPtr, null, length);
+            Transfer((byte*)&value, null, length);
         }
 
         public override unsafe void Write24(uint value)
@@ -261,8 +255,7 @@ namespace System.Devices.Spi
 
             value = value & 0xFFFFFF;
             const int length = 3;
-            byte* txPtr = (byte*)&value;
-            Transfer(txPtr, null, length);
+            Transfer((byte*)&value, null, length);
         }
 
         public override unsafe void Write32(uint value)
@@ -270,8 +263,7 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(uint);
-            byte* txPtr = (byte*)&value;
-            Transfer(txPtr, null, length);
+            Transfer((byte*)&value, null, length);
         }
 
         public override unsafe void Write64(ulong value)
@@ -279,8 +271,7 @@ namespace System.Devices.Spi
             Initialize();
 
             int length = sizeof(ulong);
-            byte* txPtr = (byte*)&value;
-            Transfer(txPtr, null, length);
+            Transfer((byte*)&value, null, length);
         }
 
         public override unsafe void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer)
