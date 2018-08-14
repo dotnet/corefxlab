@@ -480,7 +480,7 @@ namespace System.Devices.Gpio.Samples
                 driver.SetPinMode(s_buttonPinNumber, buttonMode);
 
                 driver.SetDebounce(s_buttonPinNumber, TimeSpan.FromMilliseconds(100));
-                driver.SetPinEventsToDetect(s_buttonPinNumber, PinEvent.SyncBoth);
+                driver.SetPinEventsToDetect(s_buttonPinNumber, PinEvent.SyncFallingRisingEdge);
                 driver.ValueChanged += OnPinValueChanged1;
                 driver.SetEnableRaisingPinEvents(s_buttonPinNumber, true);
 
@@ -522,7 +522,7 @@ namespace System.Devices.Gpio.Samples
                 }
 
                 button.DebounceTimeout = TimeSpan.FromMilliseconds(100);
-                button.NotifyEvents = PinEvent.SyncBoth;
+                button.NotifyEvents = PinEvent.SyncFallingRisingEdge;
                 button.ValueChanged += OnPinValueChanged1;
                 button.EnableRaisingEvents = true;
 
