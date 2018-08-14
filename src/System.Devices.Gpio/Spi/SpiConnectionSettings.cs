@@ -29,7 +29,7 @@ namespace System.Devices.Spi
         public uint DataBitLength { get; set; }
 
         /// <summary>
-        /// Gets or sets the clock frequency for the connection.
+        /// Gets or sets the clock frequency in Hz for the connection.
         /// </summary>
         public uint ClockFrequency { get; set; }
 
