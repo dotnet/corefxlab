@@ -14,8 +14,10 @@ namespace System.Devices.Gpio
         AsyncFallingEdge = 16,
         AsyncRisingEdge = 32,
 
-        Both = Low | High,
-        SyncBoth = SyncFallingEdge | SyncRisingEdge,
-        AsyncBoth = AsyncFallingEdge | AsyncRisingEdge,
+        LowHigh = Low | High,
+        SyncFallingRisingEdge = SyncFallingEdge | SyncRisingEdge,
+        AsyncFallingRisingEdge = AsyncFallingEdge | AsyncRisingEdge,
+
+        Any = LowHigh | SyncFallingRisingEdge | AsyncFallingRisingEdge
     }
 }

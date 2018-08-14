@@ -654,8 +654,8 @@ namespace System.Devices.Gpio
             {
                 result = "none";
             }
-            else if (kind.HasFlag(PinEvent.SyncBoth) ||
-                     kind.HasFlag(PinEvent.AsyncBoth))
+            else if (kind.HasFlag(PinEvent.SyncFallingRisingEdge) ||
+                     kind.HasFlag(PinEvent.AsyncFallingRisingEdge))
             {
                 result = "both";
             }
@@ -695,7 +695,7 @@ namespace System.Devices.Gpio
                     result = PinEvent.SyncFallingEdge | PinEvent.AsyncFallingEdge;
                     break;
                 case "both":
-                    result = PinEvent.SyncBoth | PinEvent.AsyncBoth;
+                    result = PinEvent.SyncFallingRisingEdge | PinEvent.AsyncFallingRisingEdge;
                     break;
                 default:
                     throw new NotSupportedException($"Not supported GPIO event kind '{kind}'");
