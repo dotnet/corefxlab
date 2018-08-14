@@ -6,6 +6,6 @@ namespace System.Devices.Gpio
     public enum PinNumberingScheme
     {
         Board,
-        Bcm
+        Gpio
     }
 }

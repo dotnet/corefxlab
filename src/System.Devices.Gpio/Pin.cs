@@ -5,10 +5,10 @@ namespace System.Devices.Gpio
 {
     public class Pin : IDisposable
     {
-        internal Pin(GpioController controller, int bcmNumber)
+        internal Pin(GpioController controller, int gpioNumber)
         {
             Controller = controller;
-            BcmNumber = bcmNumber;
+            GpioNumber = gpioNumber;
         }
 
         public void Dispose()
@@ -20,41 +20,41 @@ namespace System.Devices.Gpio
 
         public GpioController Controller { get; }
 
-        public int BcmNumber { get; }
+        public int GpioNumber { get; }
 
         public TimeSpan DebounceTimeout
         {
-            get => Controller.Driver.GetDebounce(BcmNumber);
-            set => Controller.Driver.SetDebounce(BcmNumber, value);
+            get => Controller.Driver.GetDebounce(GpioNumber);
+            set => Controller.Driver.SetDebounce(GpioNumber, value);
         }
 
         public PinMode Mode
         {
-            get => Controller.Driver.GetPinMode(BcmNumber);
-            set => Controller.Driver.SetPinMode(BcmNumber, value);
+            get => Controller.Driver.GetPinMode(GpioNumber);
+            set => Controller.Driver.SetPinMode(GpioNumber, value);
         }
 
         public PinEvent NotifyEvents
         {
-            get => Controller.Driver.GetPinEventsToDetect(BcmNumber);
-            set => Controller.Driver.SetPinEventsToDetect(BcmNumber, value);
+            get => Controller.Driver.GetPinEventsToDetect(GpioNumber);
+            set => Controller.Driver.SetPinEventsToDetect(GpioNumber, value);
         }
 
         public bool EnableRaisingEvents
         {
-            get => Controller.Driver.GetEnableRaisingPinEvents(BcmNumber);
-            set => Controller.Driver.SetEnableRaisingPinEvents(BcmNumber, value);
+            get => Controller.Driver.GetEnableRaisingPinEvents(GpioNumber);
+            set => Controller.Driver.SetEnableRaisingPinEvents(GpioNumber, value);
         }
 
         public bool IsModeSupported(PinMode mode) => Controller.Driver.IsPinModeSupported(mode);
 
-        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(BcmNumber, PinNumberingScheme.Bcm, numbering);
+        public int GetNumber(PinNumberingScheme numbering) => Controller.Driver.ConvertPinNumber(GpioNumber, PinNumberingScheme.Gpio, numbering);
 
-        public PinValue Read() => Controller.Driver.Input(BcmNumber);
+        public PinValue Read() => Controller.Driver.Input(GpioNumber);
 
-        public void Write(PinValue value) => Controller.Driver.Output(BcmNumber, value);
+        public void Write(PinValue value) => Controller.Driver.Output(GpioNumber, value);
 
-        public bool WaitForEvent(TimeSpan timeout) => Controller.Driver.WaitForPinEvent(BcmNumber, timeout);
+        public bool WaitForEvent(TimeSpan timeout) => Controller.Driver.WaitForPinEvent(GpioNumber, timeout);
 
         internal void OnValueChanged(PinValueChangedEventArgs e)
         {

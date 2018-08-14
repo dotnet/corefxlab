@@ -13,35 +13,35 @@ namespace System.Devices.Gpio
 
         protected internal abstract bool IsPinModeSupported(PinMode mode);
 
-        protected internal abstract void OpenPin(int bcmPinNumber);
+        protected internal abstract void OpenPin(int gpioPinNumber);
 
-        protected internal abstract void ClosePin(int bcmPinNumber);
+        protected internal abstract void ClosePin(int gpioPinNumber);
 
-        protected internal abstract void SetPinMode(int bcmPinNumber, PinMode mode);
+        protected internal abstract void SetPinMode(int gpioPinNumber, PinMode mode);
 
-        protected internal abstract PinMode GetPinMode(int bcmPinNumber);
+        protected internal abstract PinMode GetPinMode(int gpioPinNumber);
 
-        protected internal abstract void Output(int bcmPinNumber, PinValue value);
+        protected internal abstract void Output(int gpioPinNumber, PinValue value);
 
-        protected internal abstract PinValue Input(int bcmPinNumber);
+        protected internal abstract PinValue Input(int gpioPinNumber);
 
-        protected internal abstract void SetDebounce(int bcmPinNumber, TimeSpan timeout);
+        protected internal abstract void SetDebounce(int gpioPinNumber, TimeSpan timeout);
 
-        protected internal abstract TimeSpan GetDebounce(int bcmPinNumber);
+        protected internal abstract TimeSpan GetDebounce(int gpioPinNumber);
 
-        protected internal abstract void SetPinEventsToDetect(int bcmPinNumber, PinEvent events);
+        protected internal abstract void SetPinEventsToDetect(int gpioPinNumber, PinEvent events);
 
-        protected internal abstract PinEvent GetPinEventsToDetect(int bcmPinNumber);
+        protected internal abstract PinEvent GetPinEventsToDetect(int gpioPinNumber);
 
-        protected internal abstract void SetEnableRaisingPinEvents(int bcmPinNumber, bool enable);
+        protected internal abstract void SetEnableRaisingPinEvents(int gpioPinNumber, bool enable);
 
-        protected internal abstract bool GetEnableRaisingPinEvents(int bcmPinNumber);
+        protected internal abstract bool GetEnableRaisingPinEvents(int gpioPinNumber);
 
-        protected internal abstract bool WaitForPinEvent(int bcmPinNumber, TimeSpan timeout);
+        protected internal abstract bool WaitForPinEvent(int gpioPinNumber, TimeSpan timeout);
 
-        protected internal void OnPinValueChanged(int bcmPinNumber)
+        protected internal void OnPinValueChanged(int gpioPinNumber)
         {
-            var e = new PinValueChangedEventArgs(bcmPinNumber);
+            var e = new PinValueChangedEventArgs(gpioPinNumber);
             ValueChanged?.Invoke(this, e);
         }
 
