@@ -5,8 +5,8 @@ namespace System.Devices.Gpio
 {
     public class PinValueChangedEventArgs : EventArgs
     {
-        public PinValueChangedEventArgs(int bcmPinNumber) => BcmPinNumber = bcmPinNumber;
+        public PinValueChangedEventArgs(int gpioPinNumber) => GpioPinNumber = gpioPinNumber;
 
-        public int BcmPinNumber { get; }
+        public int GpioPinNumber { get; }
     }
 }

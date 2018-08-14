@@ -310,7 +310,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void BlinkingLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
@@ -327,7 +327,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
                 Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
@@ -438,7 +438,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonPullDown(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.InputPullDown);
                 Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
@@ -512,7 +512,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButton(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
@@ -616,7 +616,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
@@ -730,7 +730,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonWait(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
@@ -778,7 +778,7 @@ namespace System.Devices.Gpio.Samples
             const int enablePinNumber = 5;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
                 Pin enablePin = controller.OpenPin(enablePinNumber);
@@ -846,7 +846,7 @@ namespace System.Devices.Gpio.Samples
 
         private static void Spi_Pressure(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin csPin = controller.OpenPin(8);
 
@@ -923,7 +923,7 @@ namespace System.Devices.Gpio.Samples
             const int chipSelectLinePinNumber = 8;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
                 Pin enablePin = controller.OpenPin(enablePinNumber);
@@ -946,7 +946,7 @@ namespace System.Devices.Gpio.Samples
             const int enablePinNumber = 5;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
                 Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
                 Pin enablePin = controller.OpenPin(enablePinNumber);
