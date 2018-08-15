@@ -219,7 +219,7 @@ namespace System.Text.JsonLab.Tests
                         throw new InvalidDataException($"Unexpected token '{reader.TokenType}' when reading handshake response JSON.");
                 }
             };
-            
+
             return true;
         }
 

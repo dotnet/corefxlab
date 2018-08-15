@@ -12,7 +12,7 @@ namespace System.Text.JsonLab
 {
     public ref struct JsonObject
     {
-        private Span<byte> _db; 
+        private Span<byte> _db;
         private ReadOnlySpan<byte> _values;
 
         public string PrintDatabase()
@@ -128,22 +128,27 @@ namespace System.Text.JsonLab
         {
             DbRow record = Record;
 
-            if (record.Length == 0) {
+            if (record.Length == 0)
+            {
                 JsonThrowHelper.ThrowKeyNotFoundException();
             }
-            if (record.Type != JsonValueType.Object) {
+            if (record.Type != JsonValueType.Object)
+            {
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
-            for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
+            for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size)
+            {
                 record = Read<DbRow>(_db.Slice(i));
 
-                if (!record.IsSimpleValue) {
+                if (!record.IsSimpleValue)
+                {
                     i += record.Length * DbRow.Size;
                     continue;
                 }
 
-                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName) {
+                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName)
+                {
                     int newStart = i + DbRow.Size;
 
                     record = Read<DbRow>(_db.Slice(newStart));
@@ -155,7 +160,8 @@ namespace System.Text.JsonLab
                 }
 
                 JsonValueType valueType = Read<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
-                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
+                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array)
+                {
                     i += DbRow.Size;
                 }
             }
@@ -167,30 +173,36 @@ namespace System.Text.JsonLab
         public bool TryGetValue(string propertyName, out JsonObject value)
         {
             var record = Record;
-            
-            if (record.Length == 0) {
+
+            if (record.Length == 0)
+            {
                 JsonThrowHelper.ThrowKeyNotFoundException();
             }
 
-            if (record.Type != JsonValueType.Object) {
+            if (record.Type != JsonValueType.Object)
+            {
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
-            for (int i = DbRow.Size; i < _db.Length; i += DbRow.Size) {
+            for (int i = DbRow.Size; i < _db.Length; i += DbRow.Size)
+            {
                 record = Read<DbRow>(_db.Slice(i));
 
-                if (!record.IsSimpleValue) {
+                if (!record.IsSimpleValue)
+                {
                     i += record.Length * DbRow.Size;
                     continue;
                 }
 
-                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName) {
+                if (new Utf8Span(_values.Slice(record.Location, record.Length)) == propertyName)
+                {
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
                     record = Read<DbRow>(_db.Slice(newStart));
 
-                    if (!record.IsSimpleValue) {
+                    if (!record.IsSimpleValue)
+                    {
                         newEnd = newEnd + DbRow.Size * record.Length;
                     }
 
@@ -199,7 +211,8 @@ namespace System.Text.JsonLab
                 }
 
                 var valueType = Read<JsonValueType>(_db.Slice(i + DbRow.Size + 8));
-                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
+                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array)
+                {
                     i += DbRow.Size;
                 }
             }
@@ -210,7 +223,8 @@ namespace System.Text.JsonLab
 
         public JsonObject this[Utf8Span name]
         {
-            get {
+            get
+            {
                 if (TryGetValue(name, out JsonObject value))
                 {
                     return value;
@@ -220,8 +234,10 @@ namespace System.Text.JsonLab
             }
         }
 
-        public JsonObject this[string name] {
-            get {
+        public JsonObject this[string name]
+        {
+            get
+            {
                 if (TryGetValue(name, out JsonObject value))
                 {
                     return value;
@@ -231,35 +247,43 @@ namespace System.Text.JsonLab
             }
         }
 
-        public JsonObject this[int index] {
-            get {
+        public JsonObject this[int index]
+        {
+            get
+            {
                 DbRow record = Record;
 
-                if ((uint)index >= (uint)record.Length) {
+                if ((uint)index >= (uint)record.Length)
+                {
                     JsonThrowHelper.ThrowIndexOutOfRangeException();
                     return default;
                 }
 
-                if (record.Type != JsonValueType.Array) {
+                if (record.Type != JsonValueType.Array)
+                {
                     JsonThrowHelper.ThrowInvalidOperationException();
                     return default;
                 }
 
                 int counter = 0;
-                for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
+                for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size)
+                {
                     record = Read<DbRow>(_db.Slice(i));
 
-                    if (index == counter) {
+                    if (index == counter)
+                    {
                         int newStart = i;
                         int newEnd = i + DbRow.Size;
 
-                        if (!record.IsSimpleValue) {
+                        if (!record.IsSimpleValue)
+                        {
                             newEnd = newEnd + DbRow.Size * record.Length;
                         }
                         return new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
                     }
 
-                    if (!record.IsSimpleValue) {
+                    if (!record.IsSimpleValue)
+                    {
                         i += record.Length * DbRow.Size;
                     }
 
@@ -280,7 +304,7 @@ namespace System.Text.JsonLab
                 {
                     JsonThrowHelper.ThrowInvalidOperationException();
                 }
-                return record.Length; 
+                return record.Length;
             }
         }
 
@@ -292,7 +316,8 @@ namespace System.Text.JsonLab
         public static explicit operator Utf8Span(JsonObject json)
         {
             DbRow record = json.Record;
-            if (!record.IsSimpleValue) {
+            if (!record.IsSimpleValue)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
@@ -313,11 +338,13 @@ namespace System.Text.JsonLab
         public static explicit operator bool(JsonObject json)
         {
             var record = json.Record;
-            if (!record.IsSimpleValue) {
+            if (!record.IsSimpleValue)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
-            if (record.Length < 4 || record.Length > 5) {
+            if (record.Length < 4 || record.Length > 5)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
@@ -333,7 +360,8 @@ namespace System.Text.JsonLab
         public static explicit operator int(JsonObject json)
         {
             var record = json.Record;
-            if (!record.IsSimpleValue) {
+            if (!record.IsSimpleValue)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
@@ -349,25 +377,29 @@ namespace System.Text.JsonLab
         public static explicit operator double(JsonObject json)
         {
             var record = json.Record;
-            if (!record.IsSimpleValue) {
+            if (!record.IsSimpleValue)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
             int count = record.Location;
             bool isNegative = false;
             var nextByte = json._values[count];
-            if (nextByte == '-') {
+            if (nextByte == '-')
+            {
                 isNegative = true;
                 count++;
                 nextByte = json._values[count];
             }
 
-            if (nextByte < '0' || nextByte > '9' || count - record.Location >= record.Length) {
+            if (nextByte < '0' || nextByte > '9' || count - record.Location >= record.Length)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
             int integerPart = 0;
-            while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length) {
+            while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length)
+            {
                 int digit = nextByte - '0';
                 integerPart = integerPart * 10 + digit;
                 count++;
@@ -377,11 +409,13 @@ namespace System.Text.JsonLab
             double result = integerPart;
 
             int decimalPart = 0;
-            if (nextByte == '.') {
+            if (nextByte == '.')
+            {
                 count++;
                 int numberOfDigits = count;
                 nextByte = json._values[count];
-                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length) {
+                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Length)
+                {
                     int digit = nextByte - '0';
                     decimalPart = decimalPart * 10 + digit;
                     count++;
@@ -394,17 +428,21 @@ namespace System.Text.JsonLab
 
             int exponentPart = 0;
             bool isExpNegative = false;
-            if (nextByte == 'e' || nextByte == 'E') {
+            if (nextByte == 'e' || nextByte == 'E')
+            {
                 count++;
                 nextByte = json._values[count];
-                if (nextByte == '-' || nextByte == '+') {
-                    if (nextByte == '-') {
+                if (nextByte == '-' || nextByte == '+')
+                {
+                    if (nextByte == '-')
+                    {
                         isExpNegative = true;
                     }
                     count++;
                 }
                 nextByte = json._values[count];
-                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Location) {
+                while (nextByte >= '0' && nextByte <= '9' && count - record.Location < record.Location)
+                {
                     int digit = nextByte - '0';
                     exponentPart = exponentPart * 10 + digit;
                     count++;
@@ -414,7 +452,8 @@ namespace System.Text.JsonLab
                 result *= (Math.Pow(10, isExpNegative ? exponentPart * -1 : exponentPart));
             }
 
-            if (count - record.Location > record.Length) {
+            if (count - record.Location > record.Length)
+            {
                 JsonThrowHelper.ThrowInvalidCastException();
             }
 
@@ -440,19 +479,23 @@ namespace System.Text.JsonLab
             Array = 1,
             String = 2,
             Number = 3,
-            True   = 4,
-            False  = 5,
-            Null   = 6
+            True = 4,
+            False = 5,
+            Null = 6
         }
 
         public bool HasValue()
         {
             DbRow record = Record;
 
-            if (!record.IsSimpleValue) {
+            if (!record.IsSimpleValue)
+            {
                 return record.Length != 0;
-            } else {
-                if (_values[record.Location - 1] == '"' && _values[record.Location + 4] == '"') {
+            }
+            else
+            {
+                if (_values[record.Location - 1] == '"' && _values[record.Location + 4] == '"')
+                {
                     return true;
                 }
                 return (_values[record.Location] != 'n' || _values[record.Location + 1] != 'u' || _values[record.Location + 2] != 'l' || _values[record.Location + 3] != 'l');

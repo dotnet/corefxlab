@@ -31,7 +31,7 @@ namespace System.Text.JsonLab.Tests
             obj.Remove(child);
 
             string actual = obj.PrintJson();
-            
+
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
 
@@ -45,7 +45,8 @@ namespace System.Text.JsonLab.Tests
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
 
             var parsedObject = JsonObject.Parse(buffer.AsSpan());
-            try { 
+            try
+            {
                 Assert.Equal(2, parsedObject.ArrayLength);
 
                 var phoneNumber = (string)parsedObject[0];
@@ -137,7 +138,7 @@ namespace System.Text.JsonLab.Tests
                     var _ = phoneNums[2];
                     throw new Exception("Never get here");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Assert.IsType<IndexOutOfRangeException>(ex);
                 }
@@ -185,7 +186,7 @@ namespace System.Text.JsonLab.Tests
             utf8Bytes.CopyTo(buffer);
             return new ArraySegment<byte>(buffer, 0, utf8Bytes.Length);
         }
-        
+
         private static string ChangeEntryPointLibraryNameExpected()
         {
             JToken deps = JObject.Parse(TestJson.DepsJson);
