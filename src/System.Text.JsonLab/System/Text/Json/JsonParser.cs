@@ -11,6 +11,9 @@ using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab
 {
+    // Location - offset - 0 - size - 4
+    // Length - offset - 4 - size - 4
+    // Type - offset - 8 - size - 1
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct DbRow
     {
@@ -29,11 +32,11 @@ namespace System.Text.JsonLab
             Type = type;
         }
 
-        public bool IsSimpleValue => Type != JsonObject.JsonValueType.Object && Type != JsonObject.JsonValueType.Array;
+        public bool IsSimpleValue => Type > JsonObject.JsonValueType.Array;
 
-        static DbRow()
+        unsafe static DbRow()
         {
-            unsafe { Size = sizeof(DbRow); }
+            Size = sizeof(DbRow);
         }
     }
 
@@ -210,7 +213,7 @@ namespace System.Text.JsonLab
                 }
             }
 
-            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratchManager);
+            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex));
             _scratchManager.Dispose();
             _scratchManager = null;
             return result;

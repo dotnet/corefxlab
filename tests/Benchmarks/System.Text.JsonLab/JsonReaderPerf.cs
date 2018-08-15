@@ -3,9 +3,14 @@
 
 using BenchmarkDotNet.Attributes;
 using Benchmarks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Buffers;
+using System.Buffers.Reader;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab.Benchmarks
 {
@@ -30,12 +35,14 @@ namespace System.Text.JsonLab.Benchmarks
     }
 
     // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
-    [SimpleJob(-1, 3, 5, 1024)]
+    [SimpleJob(-1, 5, 10)]
+    //[DisassemblyDiagnoser(printAsm: true, printSource: true)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
         private string _jsonString;
         private byte[] _dataUtf8;
+        private byte[] _contentUtf8;
         private ReadOnlySequence<byte> _sequence;
         private ReadOnlySequence<byte> _sequenceSingle;
         private MemoryStream _stream;
@@ -45,6 +52,9 @@ namespace System.Text.JsonLab.Benchmarks
         public TestCaseType TestCase;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
+
+        [Params("Microsoft.AspNetCore.SignalR.Client.FunctionalTests.deps.json", /*"SocialWeather.deps.json", "WebSocketSample.deps.json",*/ "")]
+        public string Files { get; set; }
 
         [GlobalSetup]
         public void Setup()
@@ -61,9 +71,17 @@ namespace System.Text.JsonLab.Benchmarks
 
             _stream = new MemoryStream(_dataUtf8);
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
+
+            string helloWorld = "{ \"message\": \"Hello, World!\" }";
+            //string depsFile = @"E:\Other\trash\JsonDeps\Microsoft.AspNetCore.SignalR.Client.FunctionalTests.deps.json";
+            string content = Files == "" ? helloWorld : File.ReadAllText(@"E:\Other\trash\JsonDeps\" + Files);
+            _contentUtf8 = Encoding.UTF8.GetBytes(content);
+
+            _stream = new MemoryStream(_contentUtf8);
+            _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public void ReaderNewtonsoftReaderEmptyLoop()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -72,7 +90,7 @@ namespace System.Text.JsonLab.Benchmarks
             while (json.Read()) ;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public string ReaderNewtonsoftReaderReturnString()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -91,28 +109,86 @@ namespace System.Text.JsonLab.Benchmarks
             return sb.ToString();
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void ReaderSystemTextJsonLabSpanEmptyLoop()
         {
             var json = new Utf8JsonReader(_dataUtf8);
             while (json.Read()) ;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void ReaderSystemTextJsonLabSingleSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequenceSingle);
             while (json.Read()) ;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void ReaderSystemTextJsonLabMultiSpanSequenceEmptyLoop()
         {
             var json = new Utf8JsonReader(_sequence);
             while (json.Read()) ;
         }
 
+        //[Benchmark]
+        public void AdvanceOverheadComparison()
+        {
+            var test = new TypeA(_sequence);
+            for (int i = 0; i < 1_000_000; i++)
+            {
+                TypeA copy = test;
+                copy.Advance();
+            }
+        }
+
+        //[Benchmark(Baseline = true)]
+        public void ChangeEntryPointLibraryNameNewtonsoft()
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            TextReader reader = _reader;
+            JToken deps;
+            using (JsonTextReader jsonReader = new JsonTextReader(reader))
+            {
+                deps = JObject.ReadFrom(jsonReader);
+            }
+
+            if (_contentUtf8.Length < 100) return;
+
+            foreach (JProperty target in deps["targets"])
+            {
+                JProperty targetLibrary = target.Value.Children<JProperty>().FirstOrDefault();
+                if (targetLibrary == null)
+                {
+                    continue;
+                }
+
+                targetLibrary.Remove();
+            }
+
+            JProperty library = deps["libraries"].Children<JProperty>().First();
+            library.Remove();
+        }
+
         [Benchmark]
+        public void ChangeEntryPointLibraryNameJsonLab()
+        {
+            JsonObject obj = JsonObject.Parse(_contentUtf8);
+
+            if (_contentUtf8.Length < 100) return;
+
+            JsonObject targets = obj["targets"];
+            if (targets.TryGetChild(out JsonObject child))
+            {
+                if (child.TryGetChild(out child))
+                obj.Remove(child);
+            }
+
+            JsonObject libraries = obj["libraries"];
+            if (libraries.TryGetChild(out child))
+            obj.Remove(child);
+        }
+
+        //[Benchmark]
         public byte[] ReaderSystemTextJsonLabReturnBytes()
         {
             byte[] outputArray = new byte[_dataUtf8.Length * 2];
@@ -174,7 +250,7 @@ namespace System.Text.JsonLab.Benchmarks
             return outputArray;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void ReaderUtf8JsonEmptyLoop()
         {
             Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
@@ -185,7 +261,7 @@ namespace System.Text.JsonLab.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public byte[] ReaderUtf8JsonReturnBytes()
         {
             Utf8Json.JsonReader json = new Utf8Json.JsonReader(_dataUtf8);
@@ -238,4 +314,36 @@ namespace System.Text.JsonLab.Benchmarks
             return segment;
         }
     }
+
+    public ref struct TypeA
+    {
+        private BufferReader _reader;
+        private ReadOnlySpan<byte> _buffer;
+
+        public TypeA(in ReadOnlySequence<byte> data)
+        {
+            _reader = new BufferReader(data);
+            _buffer = data.First.Span;
+        }
+
+        public bool Advance()
+        {
+            for (int i = 0; i < _buffer.Length; i++)
+            {
+                //_reader.Advance(1);
+                AdvanceInternal(1);
+            }
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AdvanceInternal(int byteCount)
+        {
+            if (byteCount < _buffer.Length)
+            {
+                _buffer = _buffer.Slice(byteCount);
+            }
+        }
+    }
+
 }

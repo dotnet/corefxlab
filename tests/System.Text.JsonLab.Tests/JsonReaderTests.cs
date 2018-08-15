@@ -73,7 +73,7 @@ namespace System.Text.JsonLab.Tests
 
             Stream stream = new MemoryStream(dataUtf8);
             TextReader reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
-            string expectedStr = NewtonsoftReturnStringHelper(reader);
+            string expectedStr = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(expectedStr, actualStr);
             Assert.Equal(expectedStr, actualStrSequence);
@@ -519,21 +519,6 @@ namespace System.Text.JsonLab.Tests
         private static byte[] JsonLabReturnBytesHelper(byte[] data, out int length)
         {
             return JsonLabReaderLoop(data, out length, new Utf8JsonReader(data));
-        }
-
-        private static string NewtonsoftReturnStringHelper(TextReader reader)
-        {
-            StringBuilder sb = new StringBuilder();
-            var json = new Newtonsoft.Json.JsonTextReader(reader);
-            while (json.Read())
-            {
-                if (json.Value != null)
-                {
-                    sb.Append(json.Value).Append(", ");
-                }
-            }
-
-            return sb.ToString();
         }
     }
 
