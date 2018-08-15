@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Text.Utf8;
 
 using static System.Runtime.InteropServices.MemoryMarshal;
