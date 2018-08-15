@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Linq;
 using System.Text.JsonLab.Tests.Resources;
 using System.Text.Utf8;
 using Xunit;
@@ -11,12 +14,39 @@ namespace System.Text.JsonLab.Tests
     public class JsonObjectTests
     {
         [Fact]
+        public void ChangeEntryPointLibraryName()
+        {
+            string depsJson = TestJson.DepsJson;
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(depsJson);
+            JsonObject obj = JsonObject.Parse(dataUtf8);
+
+            JsonObject targets = obj["targets"];
+
+            Assert.True(targets.TryGetChild(out JsonObject child));
+            Assert.True(child.TryGetChild(out child));
+            obj.Remove(child);
+
+            JsonObject libraries = obj["libraries"];
+            Assert.True(libraries.TryGetChild(out child));
+            obj.Remove(child);
+
+            string actual = obj.PrintJson();
+
+            // Change casing to match what JSON.NET does.
+            actual = actual.Replace("true", "True").Replace("false", "False");
+
+            string expected = ChangeEntryPointLibraryNameExpected();
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void ParseArray()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
 
             var parsedObject = JsonObject.Parse(buffer.AsSpan());
-            try { 
+            try
+            {
                 Assert.Equal(2, parsedObject.ArrayLength);
 
                 var phoneNumber = (string)parsedObject[0];
@@ -108,7 +138,7 @@ namespace System.Text.JsonLab.Tests
                     var _ = phoneNums[2];
                     throw new Exception("Never get here");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Assert.IsType<IndexOutOfRangeException>(ex);
                 }
@@ -155,6 +185,30 @@ namespace System.Text.JsonLab.Tests
             var buffer = new byte[utf8Bytes.Length + emptySpaceSize];
             utf8Bytes.CopyTo(buffer);
             return new ArraySegment<byte>(buffer, 0, utf8Bytes.Length);
+        }
+
+        private static string ChangeEntryPointLibraryNameExpected()
+        {
+            JToken deps = JObject.Parse(TestJson.DepsJson);
+
+            foreach (JProperty target in deps["targets"])
+            {
+                JProperty targetLibrary = target.Value.Children<JProperty>().FirstOrDefault();
+                if (targetLibrary == null)
+                {
+                    continue;
+                }
+                targetLibrary.Remove();
+            }
+
+            JProperty library = deps["libraries"].Children<JProperty>().First();
+            library.Remove();
+
+            string json = deps.ToString(Newtonsoft.Json.Formatting.None);
+
+            TextReader reader = new StringReader(json);
+
+            return JsonTestHelper.NewtonsoftReturnStringHelper(reader);
         }
     }
 }

@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Buffers.Reader;
-using System.Runtime.CompilerServices;
 
 namespace System.Text.JsonLab
 {

@@ -11,6 +11,9 @@ using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab
 {
+    // Location - offset - 0 - size - 4
+    // Length - offset - 4 - size - 4
+    // Type - offset - 8 - size - 1
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct DbRow
     {
@@ -29,11 +32,11 @@ namespace System.Text.JsonLab
             Type = type;
         }
 
-        public bool IsSimpleValue => Type != JsonObject.JsonValueType.Object && Type != JsonObject.JsonValueType.Array;
+        public bool IsSimpleValue => Type > JsonObject.JsonValueType.Array;
 
-        static DbRow()
+        unsafe static DbRow()
         {
-            unsafe { Size = sizeof(DbRow); }
+            Size = sizeof(DbRow);
         }
     }
 
@@ -50,8 +53,10 @@ namespace System.Text.JsonLab
 
         public int ArrayStackCount => arrayStackCount;
 
-        public bool IsFull {
-            get {
+        public bool IsFull
+        {
+            get
+            {
                 return objectStackCount >= capacity || arrayStackCount >= capacity;
             }
         }
@@ -63,12 +68,13 @@ namespace System.Text.JsonLab
             topOfStackArr = _span.Length;
             objectStackCount = 0;
             arrayStackCount = 0;
-            capacity = _span.Length/8;
+            capacity = _span.Length / 8;
         }
 
         public bool TryPushObject(int value)
         {
-            if (!IsFull) {
+            if (!IsFull)
+            {
                 Write(_span.Slice(topOfStackObj - 8), ref value);
                 topOfStackObj -= 8;
                 objectStackCount++;
@@ -79,7 +85,8 @@ namespace System.Text.JsonLab
 
         public bool TryPushArray(int value)
         {
-            if (!IsFull) {
+            if (!IsFull)
+            {
                 Write(_span.Slice(topOfStackArr - 4), ref value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
@@ -169,12 +176,15 @@ namespace System.Text.JsonLab
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
 
-            while (Read()) {
+            while (Read())
+            {
                 var tokenType = _tokenType;
-                switch (tokenType) {
+                switch (tokenType)
+                {
                     case JsonTokenType.ObjectStart:
                         AppendDbRow(JsonObject.JsonValueType.Object, _valuesIndex);
-                        while(!_stack.TryPushObject(numberOfRowsForMembers)) {
+                        while (!_stack.TryPushObject(numberOfRowsForMembers))
+                        {
                             ResizeDb();
                         }
                         numberOfRowsForMembers = 0;
@@ -185,7 +195,8 @@ namespace System.Text.JsonLab
                         break;
                     case JsonTokenType.ArrayStart:
                         AppendDbRow(JsonObject.JsonValueType.Array, _valuesIndex);
-                        while (!_stack.TryPushArray(arrayItemsCount)) {
+                        while (!_stack.TryPushArray(arrayItemsCount))
+                        {
                             ResizeDb();
                         }
                         arrayItemsCount = 0;
@@ -210,7 +221,7 @@ namespace System.Text.JsonLab
                 }
             }
 
-            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratchManager);
+            var result = new JsonObject(_values, _db.Slice(0, _dbIndex));
             _scratchManager.Dispose();
             _scratchManager = null;
             return result;
@@ -237,20 +248,26 @@ namespace System.Text.JsonLab
             int rowNumber = 0;
             int numFound = 0;
 
-            while (true) {
+            while (true)
+            {
                 int rowStartOffset = rowNumber * DbRow.Size;
                 DbRow row = Read<DbRow>(_db.Slice(rowStartOffset));
 
                 int lengthOffset = rowStartOffset + 4;
-                
-                if (row.Length == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array)) {
+
+                if (row.Length == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array))
+                {
                     numFound++;
                 }
 
-                if (index == numFound - 1) {
+                if (index == numFound - 1)
+                {
                     return lengthOffset;
-                } else {
-                    if (row.Length > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array)) {
+                }
+                else
+                {
+                    if (row.Length > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array))
+                    {
                         rowNumber += row.Length;
                     }
                     rowNumber++;
@@ -272,31 +289,38 @@ namespace System.Text.JsonLab
 
             var nextByte = _values[_valuesIndex];
 
-            if (nextByte == '"') {
+            if (nextByte == '"')
+            {
                 return JsonObject.JsonValueType.String;
             }
 
-            if (nextByte == '{') {
+            if (nextByte == '{')
+            {
                 return JsonObject.JsonValueType.Object;
             }
 
-            if (nextByte == '[') {
+            if (nextByte == '[')
+            {
                 return JsonObject.JsonValueType.Array;
             }
 
-            if (nextByte == 't') {
+            if (nextByte == 't')
+            {
                 return JsonObject.JsonValueType.True;
             }
 
-            if (nextByte == 'f') {
+            if (nextByte == 'f')
+            {
                 return JsonObject.JsonValueType.False;
             }
 
-            if (nextByte == 'n') {
+            if (nextByte == 'n')
+            {
                 return JsonObject.JsonValueType.Null;
             }
 
-            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9')) {
+            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
+            {
                 return JsonObject.JsonValueType.Number;
             }
 
@@ -314,7 +338,8 @@ namespace System.Text.JsonLab
         private void ParseValue()
         {
             var type = PeekType();
-            switch (type) {
+            switch (type)
+            {
                 case JsonObject.JsonValueType.String:
                     ParseString();
                     break;
@@ -343,7 +368,8 @@ namespace System.Text.JsonLab
             _valuesIndex++; // eat quote
 
             var indexOfClosingQuote = _valuesIndex;
-            do {
+            do
+            {
                 indexOfClosingQuote = _values.Slice(indexOfClosingQuote).IndexOf((byte)'"');
             } while (AreNumOfBackSlashesAtEndOfStringOdd(_valuesIndex + indexOfClosingQuote - 2));
 
@@ -358,34 +384,41 @@ namespace System.Text.JsonLab
             var nextIndex = _valuesIndex;
 
             var nextByte = _values[nextIndex];
-            if (nextByte == '-') {
+            if (nextByte == '-')
+            {
                 nextIndex++;
             }
 
             nextByte = _values[nextIndex];
-            while (nextByte >= '0' && nextByte <= '9') {
+            while (nextByte >= '0' && nextByte <= '9')
+            {
                 nextIndex++;
                 nextByte = _values[nextIndex];
             }
 
-            if (nextByte == '.') {
+            if (nextByte == '.')
+            {
                 nextIndex++;
             }
 
             nextByte = _values[nextIndex];
-            while (nextByte >= '0' && nextByte <= '9') {
+            while (nextByte >= '0' && nextByte <= '9')
+            {
                 nextIndex++;
                 nextByte = _values[nextIndex];
             }
 
-            if (nextByte == 'e' || nextByte == 'E') {
+            if (nextByte == 'e' || nextByte == 'E')
+            {
                 nextIndex++;
                 nextByte = _values[nextIndex];
-                if (nextByte == '-' || nextByte == '+') {
+                if (nextByte == '-' || nextByte == '+')
+                {
                     nextIndex++;
                 }
                 nextByte = _values[nextIndex];
-                while (nextByte >= '0' && nextByte <= '9') {
+                while (nextByte >= '0' && nextByte <= '9')
+                {
                     nextIndex++;
                     nextByte = _values[nextIndex];
                 }
@@ -401,7 +434,8 @@ namespace System.Text.JsonLab
 
         private void ParseLiteral(JsonObject.JsonValueType literal, ReadOnlySpan<byte> expected)
         {
-            if (!_values.Slice(_valuesIndex).StartsWith(expected)) {
+            if (!_values.Slice(_valuesIndex).StartsWith(expected))
+            {
                 throw new FormatException("Invalid json, tried to read " + literal.ToString());
             }
             AppendDbRow(literal, _valuesIndex, expected.Length);
@@ -412,7 +446,8 @@ namespace System.Text.JsonLab
         private bool AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
             var newIndex = _dbIndex + DbRow.Size;
-            if (newIndex >= _db.Length) {
+            if (newIndex >= _db.Length)
+            {
                 ResizeDb();
             }
 
@@ -425,7 +460,8 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
-            while (Unicode.IsWhitespace(_values[_valuesIndex])) {
+            while (Unicode.IsWhitespace(_values[_valuesIndex]))
+            {
                 _valuesIndex++;
             }
         }
@@ -436,17 +472,21 @@ namespace System.Text.JsonLab
 
             var nextByte = _values[_valuesIndex];
 
-            switch (_tokenType) {
+            switch (_tokenType)
+            {
                 case JsonTokenType.ObjectStart:
-                    if (nextByte != '}') {
+                    if (nextByte != '}')
+                    {
                         _tokenType = JsonTokenType.Property;
                         return;
                     }
                     break;
                 case JsonTokenType.ObjectEnd:
-                    if (nextByte == ',') {
+                    if (nextByte == ',')
+                    {
                         _valuesIndex++;
-                        if (_insideObject == _insideArray) {
+                        if (_insideObject == _insideArray)
+                        {
                             _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
                             return;
                         }
@@ -455,15 +495,18 @@ namespace System.Text.JsonLab
                     }
                     break;
                 case JsonTokenType.ArrayStart:
-                    if (nextByte != ']') {
+                    if (nextByte != ']')
+                    {
                         _tokenType = JsonTokenType.Value;
                         return;
                     }
                     break;
                 case JsonTokenType.ArrayEnd:
-                    if (nextByte == ',') {
+                    if (nextByte == ',')
+                    {
                         _valuesIndex++;
-                        if (_insideObject == _insideArray) {
+                        if (_insideObject == _insideArray)
+                        {
                             _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
                             return;
                         }
@@ -472,13 +515,15 @@ namespace System.Text.JsonLab
                     }
                     break;
                 case JsonTokenType.Property:
-                    if (nextByte == ',') {
+                    if (nextByte == ',')
+                    {
                         _valuesIndex++;
                         return;
                     }
                     break;
                 case JsonTokenType.Value:
-                    if (nextByte == ',') {
+                    if (nextByte == ',')
+                    {
                         _valuesIndex++;
                         return;
                     }
@@ -486,7 +531,8 @@ namespace System.Text.JsonLab
             }
 
             _valuesIndex++;
-            switch (nextByte) {
+            switch (nextByte)
+            {
                 case (byte)'{':
                     _insideObject++;
                     _tokenType = JsonTokenType.ObjectStart;
@@ -515,7 +561,8 @@ namespace System.Text.JsonLab
             var nextByte = _values[count];
             if (nextByte != '\\') return false;
             var numOfBackSlashes = 0;
-            while (nextByte == '\\') {
+            while (nextByte == '\\')
+            {
                 numOfBackSlashes++;
                 if ((length - numOfBackSlashes) < 0) return numOfBackSlashes % 2 != 0;
                 nextByte = _values[count - numOfBackSlashes];
