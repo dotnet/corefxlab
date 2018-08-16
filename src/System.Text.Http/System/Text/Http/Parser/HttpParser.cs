@@ -276,8 +276,8 @@ namespace System.Text.Http.Parser
                                 start = reader;
 
                                 // Possibly split across spans
-                                reader.Read(out ch1);
-                                readSecond = reader.Read(out ch2);
+                                reader.TryRead(out ch1);
+                                readSecond = reader.TryRead(out ch2);
                             }
 
                             if (ch1 == ByteCR)

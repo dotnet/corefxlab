@@ -40,20 +40,20 @@ namespace System.Buffers.Tests
             var skipReader = new BufferReader<byte>(bytes);
             Assert.False(skipReader.TrySkipTo(10));
             Assert.True(skipReader.TrySkipTo(4, advancePastDelimiter: false));
-            Assert.True(skipReader.Read(out byte value));
+            Assert.True(skipReader.TryRead(out byte value));
             Assert.Equal(4, value);
 
             Assert.True(skipReader.TrySkipToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
-            Assert.True(skipReader.Read(out value));
+            Assert.True(skipReader.TryRead(out value));
             Assert.Equal(7, value);
             Assert.True(skipReader.SkipPast(8));
-            Assert.True(skipReader.Read(out value));
+            Assert.True(skipReader.TryRead(out value));
             Assert.Equal(9, value);
 
             skipReader = new BufferReader<byte>(bytes);
             Assert.False(skipReader.SkipPast(2));
             Assert.True(skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
-            Assert.True(skipReader.Read(out value));
+            Assert.True(skipReader.TryRead(out value));
             Assert.Equal(4, value);
         }
 

@@ -104,7 +104,7 @@ namespace System.Text.JsonLab
         {
             if (TokenType == JsonTokenType.None)
             {
-                if (!_reader.Peek(out byte val))
+                if (!_reader.TryPeek(out byte val))
                     return false;
 
                 if (val == JsonConstants.OpenBrace)
@@ -127,7 +127,7 @@ namespace System.Text.JsonLab
 
             SkipWhiteSpace();
 
-            if (!_reader.Peek(out byte ch))
+            if (!_reader.TryPeek(out byte ch))
                 return false;
 
             if (TokenType == JsonTokenType.StartObject)
@@ -293,13 +293,13 @@ namespace System.Text.JsonLab
                     SkipWhiteSpace();
                     if (InObject)
                     {
-                        if (!_reader.Read(out byte val)) return false;
+                        if (!_reader.TryRead(out byte val)) return false;
                         if (val != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
                         ConsumePropertyNameUtf8MultiSegment();
                     }
                     else if (InArray)
                     {
-                        if (!_reader.Peek(out byte val)) return false;
+                        if (!_reader.TryPeek(out byte val)) return false;
                         ConsumeValueUtf8MultiSegment(val);
                     }
                     else
@@ -697,7 +697,7 @@ namespace System.Text.JsonLab
             SkipWhiteSpace();
 
             // The next character must be a key / value seperator. Validate and skip.
-            if (!_reader.Read(out byte val) || val != JsonConstants.KeyValueSeperator)
+            if (!_reader.TryRead(out byte val) || val != JsonConstants.KeyValueSeperator)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             TokenType = JsonTokenType.PropertyName;

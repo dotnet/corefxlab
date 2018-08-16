@@ -85,7 +85,7 @@ namespace System.Buffers.Reader
         /// <param name="value">The next value or default if at the end.</param>
         /// <returns>False if at the end of the reader.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Peek(out T value)
+        public bool TryPeek(out T value)
         {
             if (End)
             {
@@ -105,7 +105,7 @@ namespace System.Buffers.Reader
         /// <param name="value">The next value or default if at the end.</param>
         /// <returns>False if at the end of the reader.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Read(out T value)
+        public bool TryRead(out T value)
         {
             if (End)
             {
