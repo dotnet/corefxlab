@@ -2,13 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Azure.EventHubs;
+using Microsoft.Azure.EventHubs.Processor;
 using Newtonsoft.Json;
 using System.Configuration;
 using System.Devices.I2c;
 using System.Diagnostics;
-using System.Drawing;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Devices.Gpio.Samples
 {
@@ -33,9 +34,9 @@ namespace System.Devices.Gpio.Samples
             public float ColorTemperature;
         }
 
-        public void Start()
+        public void StartSendingData()
         {
-            EventHubClient eventHubClient = CreateEventHubClient();
+            EventHubClient eventHubClient = CreateEventHubClient("DataEventHubConnectionString");
             Stopwatch watch = Stopwatch.StartNew();
 
             var pressureSettings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
@@ -88,7 +89,7 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private void CreateMessage(PressureTemperatureHumiditySensor pressureSensor, RgbColorSensor colorSensor, out Message message)
+        private static void CreateMessage(PressureTemperatureHumiditySensor pressureSensor, RgbColorSensor colorSensor, out Message message)
         {
             message = new Message()
             {
@@ -112,9 +113,9 @@ namespace System.Devices.Gpio.Samples
             };
         }
 
-        private void SendMessage(EventHubClient eventHubClient, ref Message message)
+        private static void SendMessage(EventHubClient eventHubClient, ref Message message)
         {
-            var serializedMessage = JsonConvert.SerializeObject(message);
+            string serializedMessage = JsonConvert.SerializeObject(message);
             var data = new EventData(Encoding.UTF8.GetBytes(serializedMessage));
 
             try
@@ -127,16 +128,109 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static EventHubClient CreateEventHubClient()
+        private static EventHubClient CreateEventHubClient(string eventHubConnectionStringKeyName)
         {
-            string connectionString = ConfigurationManager.AppSettings["EventHubConnectionString"];
+            string connectionString = ConfigurationManager.AppSettings[eventHubConnectionStringKeyName];
 
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new Exception("Did not find EventHubConnectionString key in appsettings (app.config)");
+                throw new Exception($"Did not find {eventHubConnectionStringKeyName} key in appsettings (app.config)");
             }
 
             return EventHubClient.CreateFromConnectionString(connectionString);
+        }
+
+        public void StartSendingCommands()
+        {
+            Console.WriteLine("Commands:");
+            Console.WriteLine("        - led");
+            Console.WriteLine("        - temp");
+            Console.WriteLine("        - color");
+            Console.WriteLine("        - lcd <text>");
+            Console.WriteLine();
+            Console.WriteLine("Write commands to send. Press ENTER to stop.");
+
+            EventHubClient eventHubClient = CreateEventHubClient("CommandEventHubConnectionString");
+            string command = Console.ReadLine();
+
+            while (!string.IsNullOrWhiteSpace(command))
+            {
+                SendCommand(eventHubClient, command);
+                command = Console.ReadLine();
+            }
+        }
+
+        private static void SendCommand(EventHubClient eventHubClient, string command)
+        {
+            var data = new EventData(Encoding.UTF8.GetBytes(command));
+
+            try
+            {
+                eventHubClient.SendAsync(data).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{DateTime.Now} > Exception: {ex.Message}");
+            }
+        }
+
+        public void StartReceivingCommands()
+        {
+            StartReceivingCommandsAsync().GetAwaiter().GetResult();
+        }
+
+        private static async Task StartReceivingCommandsAsync()
+        {
+            Console.WriteLine("Registering EventProcessor...");
+
+            EventProcessorHost eventProcessorHost = CreateEventProcessorHost();
+
+            // Registers the Event Processor Host and starts receiving messages
+            await eventProcessorHost.RegisterEventProcessorAsync<EventProcessor>();
+
+            Console.WriteLine("Receiving. Press ENTER to stop.");
+            Console.ReadLine();
+
+            // Disposes of the Event Processor Host
+            await eventProcessorHost.UnregisterEventProcessorAsync();
+        }
+
+        private static EventProcessorHost CreateEventProcessorHost()
+        {
+            string eventHubName = ConfigurationManager.AppSettings["CommandEventHubName"];
+
+            if (string.IsNullOrEmpty(eventHubName))
+            {
+                throw new Exception("Did not find CommandEventHubName key in appsettings (app.config)");
+            }
+
+            string eventHubConnectionString = ConfigurationManager.AppSettings["CommandEventHubConnectionString"];
+
+            if (string.IsNullOrEmpty(eventHubConnectionString))
+            {
+                throw new Exception("Did not find CommandEventHubConnectionString key in appsettings (app.config)");
+            }
+
+            string storageConnectionString = ConfigurationManager.AppSettings["CommandStorageConnectionString"];
+
+            if (string.IsNullOrEmpty(storageConnectionString))
+            {
+                throw new Exception("Did not find CommandStorageConnectionString key in appsettings (app.config)");
+            }
+
+            string storageContainerName = ConfigurationManager.AppSettings["CommandStorageContainerName"];
+
+            if (string.IsNullOrEmpty(storageContainerName))
+            {
+                throw new Exception("Did not find CommandStorageContainerName key in appsettings (app.config)");
+            }
+
+            return new EventProcessorHost(
+                eventHubName,
+                PartitionReceiver.DefaultConsumerGroupName,
+                eventHubConnectionString,
+                storageConnectionString,
+                storageContainerName);
         }
     }
 }

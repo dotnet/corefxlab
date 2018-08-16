@@ -197,7 +197,13 @@ namespace System.Devices.Gpio.Samples
                         break;
 
                     case 33:
-                        AzureIoT();
+                        AzureIoTSendData();
+                        break;
+                    case 34:
+                        AzureIoTSendCommands();
+                        break;
+                    case 35:
+                        AzureIoTReceiveCommands();
                         break;
 
                     default:
@@ -280,11 +286,13 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       32 -> {nameof(I2c_Color)}");
             Console.WriteLine();
-            Console.WriteLine($"       33 -> {nameof(AzureIoT)}");
+            Console.WriteLine($"       33 -> {nameof(AzureIoTSendData)}");
+            Console.WriteLine($"       34 -> {nameof(AzureIoTSendCommands)}");
+            Console.WriteLine($"       35 -> {nameof(AzureIoTReceiveCommands)}");
             Console.WriteLine();
         }
 
-        private static void Unix_BlinkingLed()
+        internal static void Unix_BlinkingLed()
         {
             Console.WriteLine(nameof(Unix_BlinkingLed));
             BlinkingLed(new UnixDriver(RaspberryPiPinCount));
@@ -798,8 +806,29 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
+        internal static void Lcd(string message)
+        {
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
+
+            using (var driver = new UnixDriver(RaspberryPiPinCount))
+            using (var controller = new GpioController(driver))
+            {
+                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                Pin enablePin = controller.OpenPin(enablePinNumber);
+                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
+                lcd.Begin(16, 2);
+                lcd.Print(message);
+            }
+        }
+
         private static void Spi_Roundtrip()
         {
+            Console.WriteLine(nameof(Spi_Roundtrip));
+
             // For this sample connect SPI0 MOSI with SPI0 MISO.
             var settings = new SpiConnectionSettings(s_spiBusId, 0);
             using (var device = new UnixSpiDevice(settings))
@@ -859,6 +888,7 @@ namespace System.Devices.Gpio.Samples
         private static void I2c_Pressure()
         {
             Console.WriteLine(nameof(I2c_Pressure));
+
             var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
             var sensor = new PressureTemperatureHumiditySensor(settings);
             Pressure(sensor);
@@ -904,7 +934,7 @@ namespace System.Devices.Gpio.Samples
             Spi_Pressure_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Unix_I2c_Pressure_Lcd()
+        internal static void Unix_I2c_Pressure_Lcd()
         {
             Console.WriteLine(nameof(Unix_I2c_Pressure_Lcd));
             I2c_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
@@ -1006,6 +1036,8 @@ namespace System.Devices.Gpio.Samples
 
         private static void I2c_Color()
         {
+            Console.WriteLine(nameof(I2c_Color));
+
             var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
             using (var sensor = new RgbColorSensor(settings))
             {
@@ -1033,13 +1065,92 @@ namespace System.Devices.Gpio.Samples
 
         internal static string ToRgbString(Drawing.Color color)
         {
-            return $"R: {color.R}, G: {color.G}, B: {color.B}";
+            return $"R {color.R} G {color.G} B {color.B}";
         }
 
-        private static void AzureIoT()
+        internal static void Unix_I2c_Color_Lcd()
         {
+            Console.WriteLine(nameof(Unix_I2c_Color_Lcd));
+            I2c_Color_Lcd(new UnixDriver(RaspberryPiPinCount));
+        }
+
+        private static void RaspberryPi_I2c_Color_Lcd()
+        {
+            Console.WriteLine(nameof(RaspberryPi_I2c_Color_Lcd));
+            I2c_Color_Lcd(new RaspberryPiDriver());
+        }
+
+        private static void I2c_Color_Lcd(GpioDriver driver)
+        {
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
+
+            using (var controller = new GpioController(driver))
+            {
+                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                Pin enablePin = controller.OpenPin(enablePinNumber);
+                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
+                lcd.Begin(16, 2);
+
+                var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
+                var sensor = new RgbColorSensor(settings);
+                Color_Lcd(lcd, sensor);
+            }
+        }
+
+        private static void Color_Lcd(LcdController lcd, RgbColorSensor sensor)
+        {
+            using (sensor)
+            {
+                bool ok = sensor.Begin();
+
+                if (!ok)
+                {
+                    Console.WriteLine($"Error initializing sensor");
+                    return;
+                }
+
+                for (var i = 0; i < 3; ++i)
+                {
+                    sensor.ReadSensor();
+
+                    Console.WriteLine($"Color:       {ToRgbString(sensor.Color)}");
+                    Console.WriteLine($"Temperature: {sensor.Temperature:0.00} K");
+                    Console.WriteLine($"Luminosity:  {sensor.Luminosity:0.00} lux");
+                    Console.WriteLine();
+
+                    ShowInfo(lcd, "Color", ToRgbString(sensor.Color));
+                    ShowInfo(lcd, "Temperature", $"{sensor.Temperature:0.00} K");
+                    ShowInfo(lcd, "Luminosity", $"{sensor.Luminosity:0.00} lux");
+                }
+            }
+        }
+
+        private static void AzureIoTSendData()
+        {
+            Console.WriteLine(nameof(AzureIoTSendData));
+
             var sample = new AzureIoTSample();
-            sample.Start();
+            sample.StartSendingData();
+        }
+
+        private static void AzureIoTSendCommands()
+        {
+            Console.WriteLine(nameof(AzureIoTSendCommands));
+
+            var sample = new AzureIoTSample();
+            sample.StartSendingCommands();
+        }
+
+        private static void AzureIoTReceiveCommands()
+        {
+            Console.WriteLine(nameof(AzureIoTReceiveCommands));
+
+            var sample = new AzureIoTSample();
+            sample.StartReceivingCommands();
         }
     }
 }
