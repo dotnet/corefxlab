@@ -288,5 +288,35 @@ namespace System.Buffers.Reader
 
             return start != ConsumedValues;
         }
+
+        /// <summary>
+        /// Check to see if the given <paramref name="next"/> values are next.
+        /// </summary>
+        /// <param name="advancePast">Move past the <paramref name="next"/> values if found.</param>
+        public unsafe bool IsNext(ReadOnlySpan<T> next, bool advancePast)
+        {
+            ReadOnlySpan<T> unread = UnreadSpan;
+            ReadOnlySpan<T> peek;
+            if (unread.Length >= next.Length)
+            {
+                peek = unread.Slice(0, next.Length);
+            }
+            else
+            {
+                T* t = stackalloc T[next.Length];
+                peek = Peek(new Span<T>(t, next.Length));
+            }
+
+            if (next.SequenceEqual(peek))
+            {
+                if (advancePast) 
+                {
+                    Advance(next.Length);
+                }
+                return true;
+            }
+
+            return false;
+        }
     }
 }

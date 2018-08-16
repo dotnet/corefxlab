@@ -80,28 +80,40 @@ namespace System.Buffers.Reader
         public int ConsumedValues { get; private set; }
 
         /// <summary>
-        /// Peeks at the next T value without advancing the reader.
+        /// Peeks at the next value without advancing the reader.
         /// </summary>
-        /// <returns>The next T or default if at the end of the buffer.</returns>
+        /// <param name="value">The next value or default if at the end.</param>
+        /// <returns>False if at the end of the reader.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Peek()
-        {
-            return End ? default : CurrentSpan[CurrentSpanIndex];
-        }
-
-        /// <summary>
-        /// Read the next T value.
-        /// </summary>
-        /// <returns>The next T or default if at the end of the buffer.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Read()
+        public bool Peek(out T value)
         {
             if (End)
             {
-                return default;
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = CurrentSpan[CurrentSpanIndex];
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Read the next value and advance the reader.
+        /// </summary>
+        /// <param name="value">The next value or default if at the end.</param>
+        /// <returns>False if at the end of the reader.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Read(out T value)
+        {
+            if (End)
+            {
+                value = default;
+                return false;
             }
 
-            T value = CurrentSpan[CurrentSpanIndex];
+            value = CurrentSpan[CurrentSpanIndex];
             CurrentSpanIndex++;
             ConsumedValues++;
 
@@ -110,7 +122,7 @@ namespace System.Buffers.Reader
                 GetNextSpan();
             }
 
-            return value;
+            return true;
         }
 
         /// <summary>

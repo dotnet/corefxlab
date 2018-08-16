@@ -51,9 +51,11 @@ namespace System.Buffers.Tests
             reader.Advance(2);
             Assert.Equal(2, reader.CurrentSpanIndex);
             Assert.Equal(InputData[2], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[2], reader.Peek());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[2], value);
             reader.Advance(2);
-            Assert.Equal(InputData[4], reader.Peek());
+            Assert.True(reader.Peek(out value));
+            Assert.Equal(InputData[4], value);
             Assert.Equal(4, reader.CurrentSpanIndex);
             Assert.Equal(InputData[4], reader.CurrentSpan[reader.CurrentSpanIndex]);
         }
@@ -64,11 +66,14 @@ namespace System.Buffers.Tests
             var reader = new BufferReader<T>(Factory.CreateWithContent(GetInputData(2)));
             Assert.Equal(0, reader.CurrentSpanIndex);
             Assert.Equal(InputData[0], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[0], reader.Read());
+            Assert.True(reader.Read(out T value));
+            Assert.Equal(InputData[0], value);
             Assert.Equal(1, reader.CurrentSpanIndex);
             Assert.Equal(InputData[1], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[1], reader.Read());
-            Assert.Equal(default, reader.Read());
+            Assert.True(reader.Read(out value));
+            Assert.Equal(InputData[1], value);
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
             Assert.True(reader.End);
         }
     }
@@ -104,16 +109,18 @@ namespace System.Buffers.Tests
         public void PeekReturnsWithoutMoving()
         {
             var reader = new BufferReader<T>(Factory.CreateWithContent(GetInputData(2)));
-            Assert.Equal(InputData[0], reader.Peek());
-            Assert.Equal(InputData[0], reader.Peek());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[0], value);
+            Assert.True(reader.Peek(out value));
+            Assert.Equal(InputData[0], value);
         }
 
         [Fact]
         public void CursorIsCorrectAtEnd()
         {
             var reader = new BufferReader<T>(Factory.CreateWithContent(GetInputData(2)));
-            reader.Read();
-            reader.Read();
+            reader.Read(out T _);
+            reader.Read(out T _);
             Assert.True(reader.End);
         }
 
@@ -128,9 +135,9 @@ namespace System.Buffers.Tests
             first.SetNext(last);
 
             var reader = new BufferReader<T>(new ReadOnlySequence<T>(first, first.Start, last, last.Start));
-            reader.Read();
-            reader.Read();
-            reader.Read();
+            reader.Read(out T _);
+            reader.Read(out T _);
+            reader.Read(out T _);
             Assert.Same(last, reader.Position.GetObject());
             Assert.Equal(0, reader.Position.GetInteger());
             Assert.True(reader.End);
@@ -140,9 +147,12 @@ namespace System.Buffers.Tests
         public void PeekReturnsDefaultInTheEnd()
         {
             var reader = new BufferReader<T>(Factory.CreateWithContent(GetInputData(2)));
-            Assert.Equal(InputData[0], reader.Read());
-            Assert.Equal(InputData[1], reader.Read());
-            Assert.Equal(default, reader.Peek());
+            Assert.True(reader.Read(out T value));
+            Assert.Equal(InputData[0], value);
+            Assert.True(reader.Read(out  value));
+            Assert.Equal(InputData[1], value);
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
         }
 
         [Fact]
@@ -151,7 +161,8 @@ namespace System.Buffers.Tests
             var reader = new BufferReader<T>(Factory.CreateWithContent(GetInputData(5)));
             reader.Advance(5);
             Assert.True(reader.End);
-            Assert.Equal(default, reader.Peek());
+            Assert.False(reader.Peek(out T value));
+            Assert.Equal(default, value);
         }
 
         [Fact]
@@ -175,7 +186,8 @@ namespace System.Buffers.Tests
             var buffer = Factory.CreateWithContent(GetInputData(1));
             var reader = new BufferReader<T>(buffer);
 
-            Assert.Equal(InputData[0], reader.Peek());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[0], value);
         }
 
         [Fact]
@@ -184,9 +196,11 @@ namespace System.Buffers.Tests
             var buffer = Factory.CreateWithContent(GetInputData(2));
             var reader = new BufferReader<T>(buffer);
 
-            Assert.Equal(InputData[0], reader.Peek());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[0], value);
             reader.Advance(1);
-            Assert.Equal(InputData[1], reader.Peek());
+            Assert.True(reader.Peek(out value));
+            Assert.Equal(InputData[1], value);
         }
 
         [Fact]
@@ -195,7 +209,8 @@ namespace System.Buffers.Tests
             var buffer = BufferUtilities.CreateBuffer(new[] { new T[] { }, new T[] { }, new T[] { }, new T[] { } });
             var reader = new BufferReader<T>(buffer);
 
-            Assert.Equal(default, reader.Peek());
+            Assert.False(reader.Peek(out T value));
+            Assert.Equal(default, value);
             Assert.True(reader.End);
         }
 
@@ -207,7 +222,8 @@ namespace System.Buffers.Tests
 
             reader.Advance(2);
             Assert.Equal(InputData[2], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[2], reader.Read());
+            Assert.True(reader.Read(out T value));
+            Assert.Equal(InputData[2], value);
         }
 
         [Fact]
@@ -233,10 +249,14 @@ namespace System.Buffers.Tests
             var buffer = Factory.CreateWithContent(GetInputData(3));
             var reader = new BufferReader<T>(buffer);
 
-            Assert.Equal(InputData[0], reader.Read());
-            Assert.Equal(InputData[1], reader.Read());
-            Assert.Equal(InputData[2], reader.Read());
-            Assert.Equal(default, reader.Read());
+            Assert.True(reader.Read(out T value));
+            Assert.Equal(InputData[0], value);
+            Assert.True(reader.Read(out value));
+            Assert.Equal(InputData[1], value);
+            Assert.True(reader.Read(out value));
+            Assert.Equal(InputData[2], value);
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
             Assert.True(reader.End);
         }
 
@@ -247,13 +267,18 @@ namespace System.Buffers.Tests
             var reader = new BufferReader<T>(buffer);
 
             Assert.Equal(InputData[0], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[0], reader.Read());
+            Assert.True(reader.Read(out T value));
+            Assert.Equal(InputData[0], value);
 
             Assert.Equal(InputData[1], reader.CurrentSpan[reader.CurrentSpanIndex]);
-            Assert.Equal(InputData[1], reader.Peek());
-            Assert.Equal(InputData[1], reader.Read());
-            Assert.Equal(default, reader.Peek());
-            Assert.Equal(default, reader.Read());
+            Assert.True(reader.Peek(out value));
+            Assert.Equal(InputData[1], value);
+            Assert.True(reader.Read(out value));
+            Assert.Equal(InputData[1], value);
+            Assert.False(reader.Peek(out value));
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
+            Assert.Equal(default, value);
         }
 
         [Fact]
@@ -264,10 +289,14 @@ namespace System.Buffers.Tests
 
             Assert.Equal(0, reader.CurrentSpanIndex);
             Assert.Equal(1, reader.CurrentSpan.Length);
-            Assert.Equal(InputData[0], reader.Peek());
-            Assert.Equal(InputData[0], reader.Read());
-            Assert.Equal(default, reader.Peek());
-            Assert.Equal(default, reader.Read());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[0], value);
+            Assert.True(reader.Read(out value));
+            Assert.Equal(InputData[0], value);
+            Assert.False(reader.Peek(out value));
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
+            Assert.Equal(default, value);
         }
 
         [Fact]
@@ -277,8 +306,10 @@ namespace System.Buffers.Tests
 
             Assert.Equal(0, reader.CurrentSpanIndex);
             Assert.Equal(0, reader.CurrentSpan.Length);
-            Assert.Equal(default, reader.Peek());
-            Assert.Equal(default, reader.Read());
+            Assert.False(reader.Peek(out T value));
+            Assert.Equal(default, value);
+            Assert.False(reader.Read(out value));
+            Assert.Equal(default, value);
             Assert.True(reader.End);
         }
 
@@ -295,7 +326,7 @@ namespace System.Buffers.Tests
             var reader = new BufferReader<T>(readableBuffer);
             for (int i = 0; i < takes; i++)
             {
-                reader.Read();
+                reader.Read(out _);
             }
 
             var expected = end ? new T[] { } : readableBuffer.Slice(takes).ToArray();
@@ -310,7 +341,8 @@ namespace System.Buffers.Tests
 
             var reader = new BufferReader<T>(sliced);
             Assert.Equal(sliced.ToArray(), buffer.Slice(reader.Position).ToArray());
-            Assert.Equal(InputData[2], reader.Peek());
+            Assert.True(reader.Peek(out T value));
+            Assert.Equal(InputData[2], value);
             Assert.Equal(0, reader.CurrentSpanIndex);
         }
 
