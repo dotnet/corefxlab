@@ -8,6 +8,11 @@ namespace System.Buffers.Reader
 {
     public static partial class ReaderExtensions
     {
+        /// <summary>
+        /// Try to parse a bool out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed bool value or default if failed.</param>
+        /// <returns>True if successfully parsed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool TryParse(ref this BufferReader<byte> reader, out bool value)
         {
@@ -48,6 +53,11 @@ namespace System.Buffers.Reader
             return false;
         }
 
+        /// <summary>
+        /// Try to parse an int out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed int value or default if failed.</param>
+        /// <returns>True if successfully parsed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool TryParse(ref this BufferReader<byte> reader, out int value)
         {
@@ -85,8 +95,13 @@ namespace System.Buffers.Reader
             return false;
         }
 
+        /// <summary>
+        /// Try to parse a long out of the reader (as UTF-8).
+        /// </summary>
+        /// <param name="value">The parsed long value or default if failed.</param>
+        /// <returns>True if successfully parsed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out ulong value)
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out long value)
         {
             ReadOnlySpan<byte> unread = reader.UnreadSpan;
             if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
@@ -98,7 +113,7 @@ namespace System.Buffers.Reader
             return TryParseSlow(ref reader, out value);
         }
 
-        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out ulong value)
+        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out long value)
         {
             const int MaxLength = 30;
             ReadOnlySpan<byte> unread = reader.UnreadSpan;

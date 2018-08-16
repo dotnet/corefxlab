@@ -10,12 +10,8 @@ namespace System.Text.JsonLab
     {
         // We are using a ulong to represent our nested state, so we can only go 64 levels deep.
         private const int MaxDepth = sizeof(ulong) * 8;
-        private static byte[] s_nullBytes = new byte[4] { (byte)'n', (byte)'u', (byte)'l', (byte)'l' };
-        private static byte[] s_falseBytes = new byte[5] { (byte)'f', (byte)'a', (byte)'l', (byte)'s', (byte)'e' };
-        private static byte[] s_trueBytes = new byte[4] { (byte)'t', (byte)'r', (byte)'u', (byte)'e' };
-        private static byte[] s_whiteSpaceBytes = new byte[4] { JsonConstants.Space, JsonConstants.CarriageReturn, JsonConstants.LineFeed, JsonConstants.Tab };
 
-    private ReadOnlySpan<byte> _buffer;
+        private ReadOnlySpan<byte> _buffer;
 
         private BufferReader<byte> _reader;
 
@@ -95,9 +91,9 @@ namespace System.Text.JsonLab
             return _isSingleSegment ? ReadSingleSegment(ref _buffer) : ReadMultiSegment();
         }
 
-        private unsafe void SkipWhiteSpace()
+        private void SkipWhiteSpace()
         {
-            _reader.SkipPastAny(s_whiteSpaceBytes);
+            _reader.SkipPastAny(JsonConstants.WhiteSpace);
         }
 
         private bool ReadMultiSegment()
@@ -608,12 +604,12 @@ namespace System.Text.JsonLab
             buffer = buffer.Slice(idx);
         }
 
-        private unsafe void ConsumeNullUtf8MultiSegment()
+        private void ConsumeNullUtf8MultiSegment()
         {
             Value = JsonConstants.NullValue;
             ValueType = JsonValueType.Null;
 
-            if (!_reader.IsNext(s_nullBytes, advancePast: true))
+            if (!_reader.IsNext(JsonConstants.NullValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -640,7 +636,7 @@ namespace System.Text.JsonLab
             Value = JsonConstants.FalseValue;
             ValueType = JsonValueType.False;
 
-            if (!_reader.IsNext(s_falseBytes, advancePast: true))
+            if (!_reader.IsNext(JsonConstants.FalseValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -668,7 +664,7 @@ namespace System.Text.JsonLab
             Value = JsonConstants.TrueValue;
             ValueType = JsonValueType.True;
 
-            if (!_reader.IsNext(s_trueBytes, advancePast: true))
+            if (!_reader.IsNext(JsonConstants.TrueValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }

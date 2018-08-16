@@ -187,8 +187,16 @@ namespace System.Buffers.Reader
 
             BufferReader<T> copy = this;
 
-            T* b = stackalloc T[delimiter.Length];
-            Span<T> peekBuffer = new Span<T>(b, delimiter.Length);
+            Span<T> peekBuffer;
+            if (delimiter.Length * sizeof(T) < 512)
+            {
+                T* t = stackalloc T[delimiter.Length];
+                peekBuffer = new Span<T>(t, delimiter.Length);
+            }
+            else
+            {
+                peekBuffer = new Span<T>(new T[delimiter.Length]);
+            }
 
             while (!End)
             {
