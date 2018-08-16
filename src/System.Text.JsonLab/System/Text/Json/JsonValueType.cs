@@ -3,15 +3,16 @@
 
 namespace System.Text.JsonLab
 {
-    public enum JsonValueType
+    // Do not change the order of the enum values, since IsSimpleValue relies on it.
+    public enum JsonValueType : byte
     {
-        Unknown,
-        Object,
-        Array,
-        Number,
-        String,
-        True,
-        False,
-        Null,
+        Object = 0,
+        Array = 1,
+        String = 2,
+        Number = 3,
+        True = 4,
+        False = 5,
+        Null = 6,
+        Unknown = 7
     }
 }

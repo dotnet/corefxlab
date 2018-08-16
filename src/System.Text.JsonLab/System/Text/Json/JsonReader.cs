@@ -13,6 +13,10 @@ namespace System.Text.JsonLab
 
         private ReadOnlySpan<byte> _buffer;
 
+        public int Index { get; private set; }
+
+        public int StartLocation { get; private set; }
+
         private BufferReader _reader;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
@@ -63,6 +67,8 @@ namespace System.Text.JsonLab
             _buffer = data;
             Depth = 1;
             _containerMask = 0;
+            Index = 0;
+            StartLocation = Index;
 
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
@@ -76,6 +82,8 @@ namespace System.Text.JsonLab
             _buffer = _reader.CurrentSpan;  //data.ToArray();
             Depth = 1;
             _containerMask = 0;
+            Index = 0;
+            StartLocation = Index;
 
             TokenType = JsonTokenType.None;
             Value = ReadOnlySpan<byte>.Empty;
@@ -167,8 +175,10 @@ namespace System.Text.JsonLab
 
         private bool ReadSingleSegment(ref ReadOnlySpan<byte> buffer)
         {
+            StartLocation = Index;
             if (TokenType == JsonTokenType.None)
             {
+                SkipWhiteSpaceUtf8UpdateLocation(ref buffer);
                 if (buffer.Length < 1)
                 {
                     return false;
@@ -178,11 +188,15 @@ namespace System.Text.JsonLab
                     _containerMask = 1;
                     TokenType = JsonTokenType.StartObject;
                     buffer = buffer.Slice(1);
+                    Index++;
+                    StartLocation++;
                 }
                 else if (buffer[0] == JsonConstants.OpenBracket)
                 {
                     TokenType = JsonTokenType.StartArray;
                     buffer = buffer.Slice(1);
+                    Index++;
+                    StartLocation++;
                 }
                 else
                 {
@@ -191,7 +205,7 @@ namespace System.Text.JsonLab
                 return true;
             }
 
-            SkipWhiteSpaceUtf8(ref buffer);
+            SkipWhiteSpaceUtf8UpdateLocation(ref buffer);
             if (buffer.Length < 1)
             {
                 return false;
@@ -202,11 +216,13 @@ namespace System.Text.JsonLab
             if (TokenType == JsonTokenType.StartObject)
             {
                 buffer = buffer.Slice(1);
+                Index++;
                 if (ch == JsonConstants.CloseBrace)
                     EndObject();
                 else
                 {
                     if (ch != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
+                    StartLocation++;
                     ConsumePropertyNameUtf8(ref buffer);
                 }
             }
@@ -215,6 +231,7 @@ namespace System.Text.JsonLab
                 if (ch == JsonConstants.CloseBracket)
                 {
                     buffer = buffer.Slice(1);
+                    Index++;
                     EndArray();
                 }
                 else
@@ -340,7 +357,7 @@ namespace System.Text.JsonLab
             {
                 case JsonConstants.ListSeperator:
                     {
-                        SkipWhiteSpaceUtf8(ref buffer, 1);
+                        SkipWhiteSpaceUtf8UpdateLocation(ref buffer, 1);
                         if (InObject)
                         {
                             if (buffer.Length < 1)
@@ -349,6 +366,8 @@ namespace System.Text.JsonLab
                             }
                             if (buffer[0] != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
                             buffer = buffer.Slice(1);
+                            Index++;
+                            StartLocation++;
                             ConsumePropertyNameUtf8(ref buffer);
                         }
                         else if (InArray)
@@ -369,11 +388,13 @@ namespace System.Text.JsonLab
 
                 case JsonConstants.CloseBrace:
                     buffer = buffer.Slice(1);
+                    Index++;
                     EndObject();
                     break;
 
                 case JsonConstants.CloseBracket:
                     buffer = buffer.Slice(1);
+                    Index++;
                     EndArray();
                     break;
 
@@ -448,18 +469,25 @@ namespace System.Text.JsonLab
             if (marker == JsonConstants.Quote)
             {
                 buffer = buffer.Slice(1);
+                Index++;
+                StartLocation++;
                 int i = ConsumeStringUtf8(ref buffer);
                 buffer = buffer.Slice(i);
+                Index += i;
             }
             else if (marker == JsonConstants.OpenBrace)
             {
                 buffer = buffer.Slice(1);
+                Index++;
+                StartLocation++;
                 StartObject();
                 ValueType = JsonValueType.Object;
             }
             else if (marker == JsonConstants.OpenBracket)
             {
                 buffer = buffer.Slice(1);
+                Index++;
+                StartLocation++;
                 StartArray();
                 ValueType = JsonValueType.Array;
             }
@@ -550,14 +578,18 @@ namespace System.Text.JsonLab
             if (marker == JsonConstants.Quote)
             {
                 buffer = buffer.Slice(1);
+                Index++;
+                StartLocation++;
                 int i = ConsumeStringUtf8(ref buffer);
                 buffer = buffer.Slice(i);
+                Index += i;
             }
             else if (marker - '0' <= '9' - '0')
             {
                 //TODO: Validate number
                 Value = buffer;
                 ValueType = JsonValueType.Number;
+                Index += buffer.Length;
                 buffer = buffer.Slice(buffer.Length);
             }
             else if (marker == '-')
@@ -565,6 +597,7 @@ namespace System.Text.JsonLab
                 if (buffer.Length < 2) JsonThrowHelper.ThrowJsonReaderException();
                 Value = buffer;
                 ValueType = JsonValueType.Number;
+                Index += buffer.Length;
                 buffer = buffer.Slice(buffer.Length);
             }
             else if (marker == 'f')
@@ -613,6 +646,7 @@ namespace System.Text.JsonLab
             Value = buffer.Slice(0, idx);
             ValueType = JsonValueType.Number;
             buffer = buffer.Slice(idx);
+            Index += idx;
         }
 
         private void ConsumeNullUtf8MultiSegment()
@@ -640,6 +674,7 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException();
             }
             buffer = buffer.Slice(4);
+            Index += 4;
         }
 
         private void ConsumeFalseUtf8MultiSegment()
@@ -672,6 +707,7 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException();
             }
             buffer = buffer.Slice(5);
+            Index += 5;
         }
 
         private void ConsumeTrueUtf8MultiSegment()
@@ -702,6 +738,7 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowJsonReaderException();
             }
             buffer = buffer.Slice(4);
+            Index += 4;
         }
 
         private void ConsumePropertyNameUtf8MultiSegment()
@@ -729,6 +766,7 @@ namespace System.Text.JsonLab
 
             TokenType = JsonTokenType.PropertyName;
             buffer = buffer.Slice(1);
+            Index++;
         }
 
         public bool TryReadUntil(out ReadOnlySpan<byte> span, byte delimiter)
@@ -799,13 +837,13 @@ namespace System.Text.JsonLab
                         }
                     }
 
-                    Done:
+                Done:
                     ReadOnlySequence<byte> sequence = _reader.Sequence.Slice(copy.Position, _reader.Position);
                     _reader.Advance(1);
                     span = sequence.IsSingleSegment ? sequence.First.Span : sequence.ToArray();
                     return true;
                 }
-                KeepLooking:
+            KeepLooking:
                 _reader.Advance(remaining.Length);
                 remaining = _reader.CurrentSpan;
             }
@@ -862,7 +900,12 @@ namespace System.Text.JsonLab
             return i + 1;
         }
 
-        private void SkipWhiteSpaceUtf8(ref ReadOnlySpan<byte> buffer, int i = 0)
+        private void SkipWhiteSpaceUtf8UpdateLocation(ref ReadOnlySpan<byte> buffer, int i = 0)
+        {
+            StartLocation += SkipWhiteSpaceUtf8(ref buffer, i);
+        }
+
+        private int SkipWhiteSpaceUtf8(ref ReadOnlySpan<byte> buffer, int i = 0)
         {
             for (; i < buffer.Length; i++)
             {
@@ -873,6 +916,8 @@ namespace System.Text.JsonLab
                 }
             }
             buffer = buffer.Slice(i);
+            Index += i;
+            return i;
         }
     }
 }

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.JsonLab.Tests.Resources;
@@ -13,6 +14,94 @@ namespace System.Text.JsonLab.Tests
 {
     public class JsonObjectTests
     {
+        public static IEnumerable<object[]> TestCases
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { TestCaseType.Basic, TestJson.BasicJson},
+                    new object[] { TestCaseType.BasicLargeNum, TestJson.BasicJsonWithLargeNum}, // Json.NET treats numbers starting with 0 as octal (0425 becomes 277)
+                    new object[] { TestCaseType.BroadTree, TestJson.BroadTree}, // \r\n behavior is different between Json.NET and JsonLab
+                    new object[] { TestCaseType.DeepTree, TestJson.DeepTree},
+                    new object[] { TestCaseType.FullSchema1, TestJson.FullJsonSchema1},
+                    //new object[] { TestCaseType.FullSchema2, TestJson.FullJsonSchema2},   // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { TestCaseType.HelloWorld, TestJson.HelloWorld},
+                    new object[] { TestCaseType.LotsOfNumbers, TestJson.LotsOfNumbers},
+                    new object[] { TestCaseType.LotsOfStrings, TestJson.LotsOfStrings},
+                    new object[] { TestCaseType.ProjectLockJson, TestJson.ProjectLockJson},
+                    //new object[] { TestCaseType.SpecialStrings, TestJson.JsonWithSpecialStrings},    // Behavior of escaping is different between Json.NET and JsonLab
+                    //new object[] { TestCaseType.SpecialNumForm, TestJson.JsonWithSpecialNumFormat},    // Behavior of E-notation is different between Json.NET and JsonLab
+                    new object[] { TestCaseType.Json400B, TestJson.Json400B},
+                    new object[] { TestCaseType.Json4KB, TestJson.Json4KB},
+                    new object[] { TestCaseType.Json40KB, TestJson.Json40KB},
+                    new object[] { TestCaseType.Json400KB, TestJson.Json400KB}
+                };
+            }
+        }
+
+        // TestCaseType is only used to give the json strings a descriptive name within the unit tests.
+        public enum TestCaseType
+        {
+            HelloWorld,
+            Basic,
+            BasicLargeNum,
+            SpecialNumForm,
+            SpecialStrings,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
+            Json400KB,
+        }
+
+        // TestCaseType is only used to give the json strings a descriptive name.
+        [Theory]
+        [MemberData(nameof(TestCases))]
+        public void ParseJson(TestCaseType type, string jsonString)
+        {
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            JsonObject obj = JsonObject.Parse(dataUtf8);
+
+            string actual = obj.PrintJson();
+
+            // Change casing to match what JSON.NET does.
+            actual = actual.Replace("true", "True").Replace("false", "False");
+
+            string database = obj.PrintDatabase();
+
+            TextReader reader = new StringReader(jsonString);
+            string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void CustomParseJson()
+        {
+            string jsonString = "[{\"arrayWithObjects\":[\"text\",14,[],null,false,{},{\"time\":24},[\"1\",\"2\",\"3\"]]}]";
+            byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
+            JsonObject obj = JsonObject.Parse(dataUtf8);
+
+            string actual = obj.PrintJson();
+
+            // Change casing to match what JSON.NET does.
+            actual = actual.Replace("true", "True").Replace("false", "False");
+
+            string database = obj.PrintDatabase();
+
+            TextReader reader = new StringReader(jsonString);
+            string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
+
+            Assert.Equal(expected, actual);
+        }
+
         [Fact]
         public void ChangeEntryPointLibraryName()
         {

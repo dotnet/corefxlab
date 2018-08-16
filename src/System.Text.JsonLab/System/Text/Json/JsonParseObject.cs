@@ -14,6 +14,7 @@ namespace System.Text.JsonLab
         private Span<byte> _db;
         private ReadOnlySpan<byte> _values;
 
+#if DEBUG
         public string PrintDatabase()
         {
             StringBuilder sb = new StringBuilder();
@@ -32,7 +33,8 @@ namespace System.Text.JsonLab
             for (int i = 0; i < _db.Length; i += DbRow.Size)
             {
                 DbRow record = Read<DbRow>(_db.Slice(i));
-                if (record.IsSimpleValue)
+                // Special casing Null so that it matches what JSON.NET does
+                if (record.IsSimpleValue && record.Type != JsonValueType.Null)
                 {
                     ReadOnlySpan<byte> value = _values.Slice(record.Location, record.Length);
                     sb.Append(Encoding.UTF8.GetString(value.ToArray())).Append(", ");
@@ -40,12 +42,12 @@ namespace System.Text.JsonLab
             }
             return sb.ToString();
         }
+#endif
 
         public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, MemoryPool<byte> pool = null)
         {
-            var parser = new JsonParser();
-            var result = parser.Parse(utf8Json, pool);
-            return result;
+            var parser = new JsonParser(utf8Json, pool);
+            return parser.Parse();
         }
 
         internal JsonObject(ReadOnlySpan<byte> values, Span<byte> db)
@@ -470,18 +472,6 @@ namespace System.Text.JsonLab
         private JsonValueType GetType(int index) => index == 0 ? Read<JsonValueType>(_db.Slice(8)) : Read<JsonValueType>(_db.Slice(index + 8));
 
         public JsonValueType Type => GetType(0);
-
-        // Do not change the order of the enum values, since IsSimpleValue relies on it.
-        public enum JsonValueType : byte
-        {
-            Object = 0,
-            Array = 1,
-            String = 2,
-            Number = 3,
-            True = 4,
-            False = 5,
-            Null = 6
-        }
 
         public bool HasValue()
         {

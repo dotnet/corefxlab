@@ -504,7 +504,7 @@ namespace System.Text.JsonLab.Tests
                                 destination = destination.Slice(valueSpan.Length + 2);
                                 break;
                             case JsonValueType.Null:
-                                // Special casing  Null so that it matches what JSON.NET does
+                                // Special casing Null so that it matches what JSON.NET does
                                 break;
                         }
                         break;
