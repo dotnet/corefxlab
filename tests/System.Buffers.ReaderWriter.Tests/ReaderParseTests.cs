@@ -7,12 +7,12 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public class BufferReaderTests
+    public class ReaderParseTests
     {
         private static readonly byte[] s_array;
         private static readonly ReadOnlySequence<byte> s_ros;
 
-        static BufferReaderTests()
+        static ReaderParseTests()
         {
             var sections = 100000;
             var section = "1234 ";
@@ -28,7 +28,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void TryParseRos()
         {
-            var reader = new BufferReader(s_ros);
+            var reader = new BufferReader<byte>(s_ros);
 
             while (reader.TryParse(out int value))
             {

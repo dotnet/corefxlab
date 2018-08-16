@@ -5,24 +5,24 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
 {
-    public ref partial struct BufferReader
+    public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
     {
         private SequencePosition _currentPosition;
         private SequencePosition _nextPosition;
 
         /// <summary>
-        /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{byte}"/>./>
+        /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BufferReader(in ReadOnlySequence<byte> buffer)
+        public BufferReader(in ReadOnlySequence<T> buffer)
         {
             CurrentSpanIndex = 0;
-            ConsumedBytes = 0;
+            Consumed = 0;
             Sequence = buffer;
             _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
 
-            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
+            if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
                 End = false;
                 CurrentSpan = memory.Span;
@@ -46,9 +46,9 @@ namespace System.Buffers.Reader
         public bool End { get; private set; }
 
         /// <summary>
-        /// The underlying <see cref="ReadOnlySequence{byte}"/> for the reader.
+        /// The underlying <see cref="ReadOnlySequence{T}"/> for the reader.
         /// </summary>
-        public ReadOnlySequence<byte> Sequence { get; }
+        public ReadOnlySequence<T> Sequence { get; }
 
         /// <summary>
         /// The current position in the <see cref="Sequence"/>.
@@ -58,7 +58,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The current segment in the <see cref="Sequence"/>.
         /// </summary>
-        public ReadOnlySpan<byte> CurrentSpan { get; private set; }
+        public ReadOnlySpan<T> CurrentSpan { get; private set; }
 
         /// <summary>
         /// The index in the <see cref="CurrentSpan"/>.
@@ -68,46 +68,61 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The unread portion of the <see cref="CurrentSpan"/>.
         /// </summary>
-        public ReadOnlySpan<byte> UnreadSpan
+        public ReadOnlySpan<T> UnreadSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => CurrentSpanIndex == 0 ? CurrentSpan : CurrentSpan.Slice(CurrentSpanIndex);
         }
 
         /// <summary>
-        /// The total number of bytes processed by the reader.
+        /// The total number of {T}s processed by the reader.
         /// </summary>
-        public int ConsumedBytes { get; private set; }
+        public int Consumed { get; private set; }
 
         /// <summary>
-        /// Peeks at the next byte value without advancing the reader.
+        /// Peeks at the next value without advancing the reader.
         /// </summary>
-        /// <returns>The next byte or -1 if at the end of the buffer.</returns>
+        /// <param name="value">The next value or default if at the end.</param>
+        /// <returns>False if at the end of the reader.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Peek() => End ? -1 : CurrentSpan[CurrentSpanIndex];
-
-        /// <summary>
-        /// Read the next byte value.
-        /// </summary>
-        /// <returns>The next byte or -1 if at the end of the buffer.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Read()
+        public bool TryPeek(out T value)
         {
             if (End)
             {
-                return -1;
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = CurrentSpan[CurrentSpanIndex];
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Read the next value and advance the reader.
+        /// </summary>
+        /// <param name="value">The next value or default if at the end.</param>
+        /// <returns>False if at the end of the reader.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryRead(out T value)
+        {
+            if (End)
+            {
+                value = default;
+                return false;
             }
 
-            byte value = CurrentSpan[CurrentSpanIndex];
+            value = CurrentSpan[CurrentSpanIndex];
             CurrentSpanIndex++;
-            ConsumedBytes++;
+            Consumed++;
 
             if (CurrentSpanIndex >= CurrentSpan.Length)
             {
                 GetNextSpan();
             }
 
-            return value;
+            return true;
         }
 
         /// <summary>
@@ -119,7 +134,7 @@ namespace System.Buffers.Reader
             if (!Sequence.IsSingleSegment)
             {
                 SequencePosition previousNextPosition = _nextPosition;
-                while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<byte> memory, advance: true))
+                while (Sequence.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
                 {
                     _currentPosition = previousNextPosition;
                     CurrentSpan = memory.Span;
@@ -134,90 +149,90 @@ namespace System.Buffers.Reader
         }
 
         /// <summary>
-        /// Move the reader ahead the specified number of bytes.
+        /// Move the reader ahead the specified number of positions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Advance(int byteCount)
+        public void Advance(int count)
         {
-            if (byteCount == 0)
+            if (count == 0)
             {
                 return;
             }
 
-            if (byteCount < 0 || End)
+            if (count < 0 || End)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            ConsumedBytes += byteCount;
+            Consumed += count;
 
-            if (CurrentSpanIndex < CurrentSpan.Length - byteCount)
+            if (CurrentSpanIndex < CurrentSpan.Length - count)
             {
-                CurrentSpanIndex += byteCount;
+                CurrentSpanIndex += count;
             }
             else
             {
                 // Current segment doesn't have enough space, scan forward through segments
-                AdvanceToNextSpan(byteCount);
+                AdvanceToNextSpan(count);
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void AdvanceToNextSpan(int byteCount)
+        private void AdvanceToNextSpan(int count)
         {
-            while (!End && byteCount > 0)
+            while (!End && count > 0)
             {
-                if (CurrentSpanIndex < CurrentSpan.Length - byteCount)
+                if (CurrentSpanIndex < CurrentSpan.Length - count)
                 {
-                    CurrentSpanIndex += byteCount;
-                    byteCount = 0;
+                    CurrentSpanIndex += count;
+                    count = 0;
                     break;
                 }
 
                 int remaining = (CurrentSpan.Length - CurrentSpanIndex);
 
                 CurrentSpanIndex += remaining;
-                byteCount -= remaining;
+                count -= remaining;
 
                 GetNextSpan();
             }
 
-            if (byteCount > 0)
+            if (count > 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
         }
 
         /// <summary>
-        /// Peek forward the number of bytes specified by <paramref name="count"/>.
+        /// Peek forward the number of positions specified by <paramref name="count"/>.
         /// </summary>
         /// <returns>Span over the peeked data.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<byte> Peek(int count)
+        public ReadOnlySpan<T> Peek(int count)
         {
-            ReadOnlySpan<byte> firstSpan = UnreadSpan;
+            ReadOnlySpan<T> firstSpan = UnreadSpan;
             if (firstSpan.Length >= count)
             {
                 return firstSpan.Slice(0, count);
             }
 
-            // Not enough contiguous bytes, allocate and copy what we can get
-            return PeekSlow(new byte[count]);
+            // Not enough contiguous Ts, allocate and copy what we can get
+            return PeekSlow(new T[count]);
         }
 
         /// <summary>
-        /// Peek forward the number of bytes in <paramref name="copyBuffer"/>, copying into
+        /// Peek forward the number of positions in <paramref name="copyBuffer"/>, copying into
         /// <paramref name="copyBuffer"/> if needed.
         /// </summary>
         /// <param name="copyBuffer">
         /// Temporary buffer to copy into if there isn't a contiguous span within the existing data to return.
-        /// Also describes the count of bytes to peek.
+        /// Also describes the count of positions to peek.
         /// </param>
         /// <returns>Span over the peeked data.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<byte> Peek(Span<byte> copyBuffer)
+        public ReadOnlySpan<T> Peek(Span<T> copyBuffer)
         {
-            ReadOnlySpan<byte> firstSpan = UnreadSpan;
+            ReadOnlySpan<T> firstSpan = UnreadSpan;
             if (firstSpan.Length >= copyBuffer.Length)
             {
                 return firstSpan.Slice(0, copyBuffer.Length);
@@ -226,16 +241,16 @@ namespace System.Buffers.Reader
             return PeekSlow(copyBuffer);
         }
 
-        private ReadOnlySpan<byte> PeekSlow(Span<byte> destination)
+        internal ReadOnlySpan<T> PeekSlow(Span<T> destination)
         {
-            ReadOnlySpan<byte> firstSpan = UnreadSpan;
+            ReadOnlySpan<T> firstSpan = UnreadSpan;
             firstSpan.CopyTo(destination);
             int copied = firstSpan.Length;
 
             SequencePosition next = _nextPosition;
-            while (Sequence.TryGet(ref next, out ReadOnlyMemory<byte> nextSegment, true))
+            while (Sequence.TryGet(ref next, out ReadOnlyMemory<T> nextSegment, true))
             {
-                ReadOnlySpan<byte> nextSpan = nextSegment.Span;
+                ReadOnlySpan<T> nextSpan = nextSegment.Span;
                 if (nextSpan.Length > 0)
                 {
                     int toCopy = Math.Min(nextSpan.Length, destination.Length - copied);

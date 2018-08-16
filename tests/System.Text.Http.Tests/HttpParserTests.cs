@@ -308,7 +308,7 @@ namespace System.Text.Http.Parser.Tests
         {
             HttpParser parser = new HttpParser();
 
-            ReadOnlySequence<byte> buffer = BufferUtilities.CreateBuffer("GET ", "/");
+            ReadOnlySequence<byte> buffer = BufferUtilities.CreateUtf8Buffer("GET ", "/");
             RequestHandler requestHandler = new RequestHandler();
 
             bool result = parser.ParseRequestLine(requestHandler, buffer, out SequencePosition consumed, out SequencePosition examined);
