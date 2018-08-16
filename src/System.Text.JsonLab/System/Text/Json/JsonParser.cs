@@ -142,9 +142,8 @@ namespace System.Text.JsonLab
             _span.CopyTo(newStackMemory.Slice(newStackMemory.Length - _span.Length));
             _span = newStackMemory;
         }
-
-#if DEBUG
-        public string PrintStacks()
+        
+        internal string PrintStacks()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Length" + "\t" + "Type" + "\r\n");
@@ -155,7 +154,6 @@ namespace System.Text.JsonLab
             }
             return sb.ToString();
         }
-#endif
     }
 
     internal ref struct JsonParser

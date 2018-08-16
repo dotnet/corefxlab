@@ -14,8 +14,7 @@ namespace System.Text.JsonLab
         private Span<byte> _db;
         private ReadOnlySpan<byte> _values;
 
-#if DEBUG
-        public string PrintDatabase()
+        internal string PrintDatabase()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nameof(Record.Location) + "\t" + nameof(Record.Length) + "\t" + nameof(Record.Type) + "\r\n");
@@ -42,7 +41,6 @@ namespace System.Text.JsonLab
             }
             return sb.ToString();
         }
-#endif
 
         public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, MemoryPool<byte> pool = null)
         {

@@ -74,8 +74,6 @@ namespace System.Text.JsonLab.Tests
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
 
-            string database = obj.PrintDatabase();
-
             TextReader reader = new StringReader(jsonString);
             string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
 
@@ -93,8 +91,6 @@ namespace System.Text.JsonLab.Tests
 
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
-
-            string database = obj.PrintDatabase();
 
             TextReader reader = new StringReader(jsonString);
             string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
