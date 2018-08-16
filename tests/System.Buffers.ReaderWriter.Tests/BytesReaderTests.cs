@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Reader;
+using System.Buffers.Testing;
 using System.Text;
 using Xunit;
 
@@ -12,17 +13,44 @@ namespace System.Buffers.Tests
         [Fact]
         public void SingleSegmentBytesReader()
         {
-            var bytes = new ReadOnlySequence<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            var reader = new BufferReader(bytes);
+            byte[] buffer = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var bytes = new ReadOnlySequence<byte>(buffer);
+            var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> ab, 3));
+            Assert.True(reader.TryReadTo(out ReadOnlySequence<byte> ab, 3));
             Assert.True(ab.First.SequenceEqual(new byte[] { 1, 2 }));
 
-            Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> cd, 6));
+            Assert.True(reader.TryReadTo(out ReadOnlySequence<byte> cd, 6));
             Assert.True(cd.First.SequenceEqual(new byte[] { 4, 5 }));
 
-            Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> ef, new byte[] { 8, 9 }));
+            Assert.True(reader.TryReadTo(out ReadOnlySequence<byte> ef, new byte[] { 8, 9 }));
             Assert.True(ef.First.SequenceEqual(new byte[] { 7 }));
+        }
+
+        [Theory,
+            InlineData(true),
+            InlineData(false)]
+        public void SkipTests(bool singleSegment)
+        {
+            byte[] buffer = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var bytes = singleSegment
+                ? new ReadOnlySequence<byte>(buffer)
+                : BufferUtilities.CreateSplitBuffer(buffer, 2, 4);
+
+            var skipReader = new BufferReader<byte>(bytes);
+            Assert.False(skipReader.TrySkipTo(10));
+            Assert.True(skipReader.TrySkipTo(4, advancePastDelimiter: false));
+            Assert.Equal(4, skipReader.Read());
+
+            Assert.True(skipReader.TrySkipToAny(new byte[] { 3, 12, 7 }, advancePastDelimiter: false));
+            Assert.Equal(7, skipReader.Read());
+            Assert.True(skipReader.SkipPast(8));
+            Assert.Equal(9, skipReader.Read());
+
+            skipReader = new BufferReader<byte>(bytes);
+            Assert.False(skipReader.SkipPast(2));
+            Assert.True(skipReader.SkipPastAny(new byte[] { 2, 3, 1 }));
+            Assert.Equal(4, skipReader.Read());
         }
 
         [Fact]
@@ -46,19 +74,19 @@ namespace System.Buffers.Tests
                 new byte[] { 4          },
             });
 
-            var reader = new BufferReader(bytes);
+            var reader = new BufferReader<byte>(bytes);
 
-            Assert.True(reader.TryReadUntil(out ReadOnlySequence<byte> bytesValue, 2));
+            Assert.True(reader.TryReadTo(out ReadOnlySequence<byte> bytesValue, 2));
             var span = bytesValue.ToSpan();
             Assert.Equal(0, span[0]);
             Assert.Equal(1, span[1]);
 
-            Assert.True(reader.TryReadUntil(out bytesValue, 5));
+            Assert.True(reader.TryReadTo(out bytesValue, 5));
             span = bytesValue.ToSpan();
             Assert.Equal(3, span[0]);
             Assert.Equal(4, span[1]);
 
-            Assert.True(reader.TryReadUntil(out bytesValue, new byte[] { 8, 8 }));
+            Assert.True(reader.TryReadTo(out bytesValue, new byte[] { 8, 8 }));
             span = bytesValue.ToSpan();
             Assert.Equal(6, span[0]);
             Assert.Equal(7, span[1]);
@@ -86,15 +114,15 @@ namespace System.Buffers.Tests
         public void EmptyBytesReader()
         {
             var bytes = ReadOnlySequence<byte>.Empty;
-            var reader = new BufferReader(bytes);
-            Assert.False(reader.TryReadUntil(out ReadOnlySequence<byte> range, (byte)' '));
+            var reader = new BufferReader<byte>(bytes);
+            Assert.False(reader.TryReadTo(out ReadOnlySequence<byte> range, (byte)' '));
         }
 
         [Fact]
         public void BytesReaderParse()
         {
             ReadOnlySequence<byte> bytes = BufferFactory.Parse("12|3Tr|ue|456Tr|ue7|89False|");
-            var reader = new BufferReader(bytes);
+            var reader = new BufferReader<byte>(bytes);
 
             Assert.True(reader.TryParse(out ulong u64));
             Assert.Equal(123ul, u64);
@@ -131,7 +159,7 @@ namespace System.Buffers.Tests
             var readOnlyBytes = new ReadOnlySequence<byte>(data);
             var bytesRange = new ReadOnlySequence<byte>(data);
 
-            var robReader = new BufferReader(readOnlyBytes);
+            var robReader = new BufferReader<byte>(readOnlyBytes);
 
             long robSum = 0;
             while (robReader.TryParse(out int value))
@@ -140,7 +168,7 @@ namespace System.Buffers.Tests
                 robReader.Advance(1);
             }
 
-            var brReader = new BufferReader(bytesRange);
+            var brReader = new BufferReader<byte>(bytesRange);
             long brSum = 0;
             while (brReader.TryParse(out int value))
             {

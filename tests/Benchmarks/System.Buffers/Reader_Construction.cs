@@ -27,14 +27,14 @@ namespace System.Buffers.Benchmarks
         [Benchmark]
         public void ConstructSingleSegment()
         {
-            new BufferReader(s_ros);
+            new BufferReader<byte>(s_ros);
         }
 
 
         [Benchmark]
         public void ConstructMultiSegment()
         {
-            new BufferReader(s_rosSplit);
+            new BufferReader<byte>(s_rosSplit);
         }
     }
 }

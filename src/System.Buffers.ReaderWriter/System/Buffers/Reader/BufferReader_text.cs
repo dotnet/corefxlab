@@ -6,29 +6,29 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers.Reader
 {
-    public ref partial struct BufferReader
+    public static partial class ReaderExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe bool TryParse(out bool value)
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out bool value)
         {
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             // For other types (int, etc) we won't know if we've consumed all of the type
             // ("235612" can be split over segments, for example). For bool, Utf8Parser
             // doesn't care what follows "True" or "False" and neither should we.
             if (Utf8Parser.TryParse(unread, out value, out int consumed))
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
-            return TryParseSlow(out value);
+            return TryParseSlow(ref reader, out value);
         }
 
-        private unsafe bool TryParseSlow(out bool value)
+        private unsafe static bool TryParseSlow(ref BufferReader<byte> reader, out bool value)
         {
             const int MaxLength = 5;
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (unread.Length > MaxLength)
             {
@@ -39,9 +39,9 @@ namespace System.Buffers.Reader
 
             byte* buffer = stackalloc byte[MaxLength];
             Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
-            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            if (Utf8Parser.TryParse(reader.PeekSlow(tempSpan), out value, out int consumed))
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
@@ -49,23 +49,23 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe bool TryParse(out int value)
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out int value)
         {
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
             if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
-            return TryParseSlow(out value);
+            return TryParseSlow(ref reader, out value);
         }
 
-        private unsafe bool TryParseSlow(out int value)
+        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out int value)
         {
             const int MaxLength = 15;
 
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (unread.Length > MaxLength)
             {
@@ -76,9 +76,9 @@ namespace System.Buffers.Reader
 
             byte* buffer = stackalloc byte[MaxLength];
             Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
-            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            if (Utf8Parser.TryParse(reader.PeekSlow(tempSpan), out value, out int consumed))
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
@@ -86,22 +86,22 @@ namespace System.Buffers.Reader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe bool TryParse(out ulong value)
+        public static unsafe bool TryParse(ref this BufferReader<byte> reader, out ulong value)
         {
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
             if (Utf8Parser.TryParse(unread, out value, out int consumed) && consumed < unread.Length)
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 
-            return TryParseSlow(out value);
+            return TryParseSlow(ref reader, out value);
         }
 
-        private unsafe bool TryParseSlow(out ulong value)
+        private static unsafe bool TryParseSlow(ref BufferReader<byte> reader, out ulong value)
         {
             const int MaxLength = 30;
-            ReadOnlySpan<byte> unread = UnreadSpan;
+            ReadOnlySpan<byte> unread = reader.UnreadSpan;
 
             if (unread.Length > MaxLength)
             {
@@ -112,9 +112,9 @@ namespace System.Buffers.Reader
 
             byte* buffer = stackalloc byte[MaxLength];
             Span<byte> tempSpan = new Span<byte>(buffer, MaxLength);
-            if (Utf8Parser.TryParse(PeekSlow(tempSpan), out value, out int consumed))
+            if (Utf8Parser.TryParse(reader.PeekSlow(tempSpan), out value, out int consumed))
             {
-                Advance(consumed);
+                reader.Advance(consumed);
                 return true;
             }
 

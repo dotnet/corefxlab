@@ -242,8 +242,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new BufferReader(buffer);
-            var start = default(BufferReader);
+            var reader = new BufferReader<byte>(buffer);
+            var start = default(BufferReader<byte>);
             var done = false;
 
             try
@@ -362,7 +362,7 @@ namespace System.Text.Http.Parser
             finally
             {
                 consumed = reader.Position;
-                consumedBytes = reader.ConsumedBytes;
+                consumedBytes = reader.ConsumedValues;
 
                 if (done)
                 {
