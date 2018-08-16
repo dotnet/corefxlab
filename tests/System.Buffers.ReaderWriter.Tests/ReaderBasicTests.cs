@@ -362,7 +362,7 @@ namespace System.Buffers.Tests
                 }
                 reader.Advance(span.Length);
             }
-            Assert.Equal(buffer.Length, reader.ConsumedValues);
+            Assert.Equal(buffer.Length, reader.Consumed);
         }
 
         [Fact]

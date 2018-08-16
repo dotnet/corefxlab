@@ -17,7 +17,7 @@ namespace System.Buffers.Reader
         public BufferReader(in ReadOnlySequence<T> buffer)
         {
             CurrentSpanIndex = 0;
-            ConsumedValues = 0;
+            Consumed = 0;
             Sequence = buffer;
             _currentPosition = Sequence.Start;
             _nextPosition = _currentPosition;
@@ -77,7 +77,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// The total number of {T}s processed by the reader.
         /// </summary>
-        public int ConsumedValues { get; private set; }
+        public int Consumed { get; private set; }
 
         /// <summary>
         /// Peeks at the next value without advancing the reader.
@@ -115,7 +115,7 @@ namespace System.Buffers.Reader
 
             value = CurrentSpan[CurrentSpanIndex];
             CurrentSpanIndex++;
-            ConsumedValues++;
+            Consumed++;
 
             if (CurrentSpanIndex >= CurrentSpan.Length)
             {
@@ -164,7 +164,7 @@ namespace System.Buffers.Reader
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            ConsumedValues += count;
+            Consumed += count;
 
             if (CurrentSpanIndex < CurrentSpan.Length - count)
             {

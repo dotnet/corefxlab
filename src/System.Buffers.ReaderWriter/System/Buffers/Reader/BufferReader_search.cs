@@ -273,13 +273,13 @@ namespace System.Buffers.Reader
         /// <returns>True if any Ts were skipped.</returns>
         public bool SkipPast(T value)
         {
-            int start = ConsumedValues;
+            int start = Consumed;
             while (!End && CurrentSpan[CurrentSpanIndex].Equals(value))
             {
                 Advance(1);
             }
 
-            return start != ConsumedValues;
+            return start != Consumed;
         }
 
         /// <summary>
@@ -288,13 +288,13 @@ namespace System.Buffers.Reader
         /// <returns>True if any Ts were skipped.</returns>
         public bool SkipPastAny(ReadOnlySpan<T> values)
         {
-            int start = ConsumedValues;
+            int start = Consumed;
             while (!End && values.IndexOf(CurrentSpan[CurrentSpanIndex]) != -1)
             {
                 Advance(1);
             }
 
-            return start != ConsumedValues;
+            return start != Consumed;
         }
 
         /// <summary>

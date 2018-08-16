@@ -56,7 +56,7 @@ namespace System.Buffers.Benchmarks
         {
             BufferReader<byte> reader = new BufferReader<byte>(s_ros);
 
-            while (Utf8Parser.TryParse(reader.CurrentSpan.Slice(reader.ConsumedValues), out int value, out int consumed))
+            while (Utf8Parser.TryParse(reader.CurrentSpan.Slice(reader.Consumed), out int value, out int consumed))
             {
                 reader.Advance(consumed + 1);
             }

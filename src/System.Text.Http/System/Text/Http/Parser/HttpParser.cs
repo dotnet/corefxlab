@@ -364,7 +364,7 @@ namespace System.Text.Http.Parser
             finally
             {
                 consumed = reader.Position;
-                consumedBytes = reader.ConsumedValues;
+                consumedBytes = reader.Consumed;
 
                 if (done)
                 {
