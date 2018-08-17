@@ -30,7 +30,6 @@ namespace System.Buffers.Benchmarks
             new BufferReader<byte>(s_ros);
         }
 
-
         [Benchmark]
         public void ConstructMultiSegment()
         {

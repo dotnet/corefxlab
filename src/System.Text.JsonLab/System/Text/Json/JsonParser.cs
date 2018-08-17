@@ -2,12 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
-using System.Buffers.Text;
-using System.Runtime.CompilerServices;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text.Utf8;
-
-using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab
 {
@@ -21,18 +17,18 @@ namespace System.Text.JsonLab
 
         public int Location;                // index in JSON payload
         public int Length;      // length of text in JSON payload
-        public JsonObject.JsonValueType Type; // type of JSON construct (e.g. Object, Array, Number)
+        public JsonValueType Type; // type of JSON construct (e.g. Object, Array, Number)
 
         public const int UnknownNumberOfRows = -1;
 
-        public DbRow(JsonObject.JsonValueType type, int valueIndex, int lengthOrNumberOfRows = UnknownNumberOfRows)
+        public DbRow(JsonValueType type, int valueIndex, int lengthOrNumberOfRows = UnknownNumberOfRows)
         {
             Location = valueIndex;
             Length = lengthOrNumberOfRows;
             Type = type;
         }
 
-        public bool IsSimpleValue => Type > JsonObject.JsonValueType.Array;
+        public bool IsSimpleValue => Type > JsonValueType.Array;
 
         unsafe static DbRow()
         {
@@ -40,534 +36,297 @@ namespace System.Text.JsonLab
         }
     }
 
-    internal ref struct TwoStacks
+    // IsArray - offset - 0 - size - 1
+    // Length - offset - 1 - size - 4
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    internal struct StackRow
     {
-        Span<byte> _span;
-        int topOfStackObj;
-        int topOfStackArr;
-        int capacity;
-        int objectStackCount;
-        int arrayStackCount;
+        public static int Size;
 
-        public int ObjectStackCount => objectStackCount;
+        public bool IsArray;
+        public int Length;
 
-        public int ArrayStackCount => arrayStackCount;
-
-        public bool IsFull
+        public StackRow(bool isArray, int lengthOrNumberOfRows)
         {
-            get
-            {
-                return objectStackCount >= capacity || arrayStackCount >= capacity;
-            }
+            IsArray = isArray;
+            Length = lengthOrNumberOfRows;
         }
 
-        public TwoStacks(Span<byte> db)
+        unsafe static StackRow()
         {
-            _span = db;
-            topOfStackObj = _span.Length;
-            topOfStackArr = _span.Length;
-            objectStackCount = 0;
-            arrayStackCount = 0;
-            capacity = _span.Length / 8;
-        }
-
-        public bool TryPushObject(int value)
-        {
-            if (!IsFull)
-            {
-                Write(_span.Slice(topOfStackObj - 8), ref value);
-                topOfStackObj -= 8;
-                objectStackCount++;
-                return true;
-            }
-            return false;
-        }
-
-        public bool TryPushArray(int value)
-        {
-            if (!IsFull)
-            {
-                Write(_span.Slice(topOfStackArr - 4), ref value);
-                topOfStackArr -= 8;
-                arrayStackCount++;
-                return true;
-            }
-            return false;
-        }
-
-        public int PopObject()
-        {
-            objectStackCount--;
-            int value = Read<int>(_span.Slice(topOfStackObj));
-            topOfStackObj += 8;
-            return value;
-        }
-
-        public int PopArray()
-        {
-            arrayStackCount--;
-            int value = Read<int>(_span.Slice(topOfStackArr + 4));
-            topOfStackArr += 8;
-            return value;
-        }
-
-        internal void Resize(Span<byte> newStackMemory)
-        {
-            _span.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
-            _span = newStackMemory;
+            Size = sizeof(StackRow);
         }
     }
 
-    internal ref struct JsonParser
+    internal ref struct CustomStack
     {
-        private Span<byte> _db;
-        private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
-        private Span<byte> _scratchSpan;
-        private IMemoryOwner<byte> _scratchManager;
-        MemoryPool<byte> _pool;
-        TwoStacks _stack;
+        private Span<byte> _stackSpace;
+        private int _topOfStack;
 
-        private int _valuesIndex;
+        public CustomStack(Span<byte> stackSpace)
+        {
+            _stackSpace = stackSpace;
+            _topOfStack = stackSpace.Length;
+        }
+
+        public bool TryPush(StackRow row)
+        {
+            if (_topOfStack >= StackRow.Size)
+            {
+                MemoryMarshal.Write(_stackSpace.Slice(_topOfStack - StackRow.Size), ref row);
+                _topOfStack -= StackRow.Size;
+                return true;
+            }
+            return false;
+        }
+
+        public StackRow Pop()
+        {
+            StackRow row = Peek();
+            _topOfStack += StackRow.Size;
+            return row;
+        }
+
+        public StackRow Peek()
+        {
+            if (_topOfStack > _stackSpace.Length - StackRow.Size)
+            {
+                JsonThrowHelper.ThrowInvalidOperationException();
+            }
+
+            return MemoryMarshal.Read<StackRow>(_stackSpace.Slice(_topOfStack));
+        }
+
+        public bool IsTopArray()
+        {
+            if (_topOfStack > _stackSpace.Length - StackRow.Size)
+            {
+                return false;
+            }
+            return _stackSpace[_topOfStack] == 1;
+        }
+
+        private void Reset()
+        {
+            _stackSpace.Slice(_topOfStack - StackRow.Size, StackRow.Size).Fill(255);
+        }
+
+        public void Resize(Span<byte> newStackMemory)
+        {
+            Debug.Assert(newStackMemory.Length > _stackSpace.Length);
+            int stackGrowth = newStackMemory.Length - _stackSpace.Length;
+            _stackSpace.CopyTo(newStackMemory.Slice(stackGrowth));
+            _topOfStack += stackGrowth;
+            _stackSpace = newStackMemory;
+        }
+
+        public string PrintStacks()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("IsArray" + "\t" + "Length" + "\r\n");
+            for (int i = _stackSpace.Length - StackRow.Size; i >= StackRow.Size; i -= StackRow.Size)
+            {
+                StackRow row = MemoryMarshal.Read<StackRow>(_stackSpace.Slice(i));
+                sb.Append(row.IsArray + "\t" + row.Length + "\r\n");
+            }
+            return sb.ToString();
+        }
+    }
+
+    public ref struct JsonParser
+    {
+        private readonly ReadOnlySpan<byte> _utf8Json; // TODO: this should be ReadOnlyMemory<byte>
+        private ArrayPool<byte> _pool;
+        private byte[] _rentedBuffer;
+        private Utf8JsonReader _reader;
+        private Span<byte> _db;
+        private CustomStack _stack;
         private int _dbIndex;
 
-        private int _insideObject;
-        private int _insideArray;
-        private JsonTokenType _tokenType;
-        private bool _jsonStartIsObject;
+        // Tunable paramters to minimize allocations but avoid resizing for the common cases.
+        private const double DatabaseStackSpaceRatio = 0.8;
+        private const double AllocationMultiplier = 1.5;
 
-        private enum JsonTokenType
+        public JsonParser(ReadOnlySpan<byte> utf8Json, ArrayPool<byte> pool = null)
         {
-            // Start = 0 state reserved for internal use
-            ObjectStart = 1,
-            ObjectEnd = 2,
-            ArrayStart = 3,
-            ArrayEnd = 4,
-            Property = 5,
-            Value = 6
-        };
+            _utf8Json = utf8Json;
+            _pool = pool ?? ArrayPool<byte>.Shared;
+            _rentedBuffer = _pool.Rent((int)(utf8Json.Length * AllocationMultiplier));
+            _reader = new Utf8JsonReader(utf8Json);
 
-        private static readonly byte[] s_false = new Utf8Span("false").Bytes.ToArray();
-        private static readonly byte[] s_true = new Utf8Span("true").Bytes.ToArray();
-        private static readonly byte[] s_null = new Utf8Span("null").Bytes.ToArray();
-
-        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, MemoryPool<byte> pool = null)
-        {
-            _pool = pool;
-            if (_pool == null) _pool = MemoryPool<byte>.Shared;
-            _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchSpan = _scratchManager.Memory.Span;
-
-            int dbLength = _scratchSpan.Length / 2;
-            _db = _scratchSpan.Slice(0, dbLength);
-            _stack = new TwoStacks(_scratchSpan.Slice(dbLength));
-
-            _values = utf8Json;
-            _insideObject = 0;
-            _insideArray = 0;
-            _tokenType = 0;
-            _valuesIndex = 0;
+            Span<byte> scratchSpan = _rentedBuffer;
+            int dbLength = (int)(scratchSpan.Length * DatabaseStackSpaceRatio);
+            _db = scratchSpan.Slice(0, dbLength);
+            _stack = new CustomStack(scratchSpan.Slice(dbLength));
             _dbIndex = 0;
-            _jsonStartIsObject = false;
+        }
 
-            SkipWhitespace();
+        public JsonObject Parse()
+        {
+            bool isArray = false;
+            JsonTokenType tokenType = default;
 
-            _jsonStartIsObject = _values[_valuesIndex] == '{';
+            if (_reader.Read())
+            {
+                tokenType = _reader.TokenType;
+
+                if (tokenType == JsonTokenType.StartObject)
+                {
+                    AppendDbRow(JsonValueType.Object);
+                    while (!_stack.TryPush(new StackRow(false, 0)))
+                    {
+                        ResizeDb();
+                    }
+                }
+                else if (tokenType == JsonTokenType.StartArray)
+                {
+                    isArray = true;
+                    AppendDbRow(JsonValueType.Array);
+                    while (!_stack.TryPush(new StackRow(true, 0)))
+                    {
+                        ResizeDb();
+                    }
+                }
+                else
+                {
+                    AppendDbRow(_reader.ValueType, _reader.Value.Length);
+                }
+            }
 
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
 
-            while (Read())
+            while (_reader.Read())
             {
-                var tokenType = _tokenType;
+                tokenType = _reader.TokenType;
+
                 switch (tokenType)
                 {
-                    case JsonTokenType.ObjectStart:
-                        AppendDbRow(JsonObject.JsonValueType.Object, _valuesIndex);
-                        while (!_stack.TryPushObject(numberOfRowsForMembers))
+                    case JsonTokenType.StartObject:
+                        if (isArray) arrayItemsCount++;
+                        AppendDbRow(JsonValueType.Object);
+                        StackRow row = new StackRow(false, numberOfRowsForMembers + 1);
+                        while (!_stack.TryPush(row))
                         {
                             ResizeDb();
                         }
                         numberOfRowsForMembers = 0;
                         break;
-                    case JsonTokenType.ObjectEnd:
-                        Write(_db.Slice(FindLocation(_stack.ObjectStackCount - 1, true)), ref numberOfRowsForMembers);
-                        numberOfRowsForMembers += _stack.PopObject();
+                    case JsonTokenType.EndObject:
+                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Object)), ref numberOfRowsForMembers);
+                        row = _stack.Pop();
+                        numberOfRowsForMembers += row.Length;
                         break;
-                    case JsonTokenType.ArrayStart:
-                        AppendDbRow(JsonObject.JsonValueType.Array, _valuesIndex);
-                        while (!_stack.TryPushArray(arrayItemsCount))
+                    case JsonTokenType.StartArray:
+                        if (isArray) arrayItemsCount++;
+                        numberOfRowsForMembers++;
+                        AppendDbRow(JsonValueType.Array);
+                        row = new StackRow(true, arrayItemsCount);
+                        while (!_stack.TryPush(row))
                         {
                             ResizeDb();
                         }
                         arrayItemsCount = 0;
                         break;
-                    case JsonTokenType.ArrayEnd:
-                        Write(_db.Slice(FindLocation(_stack.ArrayStackCount - 1, false)), ref arrayItemsCount);
-                        arrayItemsCount = _stack.PopArray();
+                    case JsonTokenType.EndArray:
+                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Array)), ref arrayItemsCount);
+                        row = _stack.Pop();
+                        arrayItemsCount = row.Length;
                         break;
-                    case JsonTokenType.Property:
-                        ParsePropertyName();
-                        ParseValue();
+                    case JsonTokenType.PropertyName:
                         numberOfRowsForMembers++;
-                        numberOfRowsForMembers++;
+                        AppendDbRow(JsonValueType.String, _reader.Value.Length);
                         break;
                     case JsonTokenType.Value:
-                        ParseValue();
-                        arrayItemsCount++;
+                        if (isArray) arrayItemsCount++;
                         numberOfRowsForMembers++;
+                        AppendDbRow(_reader.ValueType, _reader.Value.Length);
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
+                isArray = _stack.IsTopArray();
             }
-
-            var result = new JsonObject(_values, _db.Slice(0, _dbIndex));
-            _scratchManager.Dispose();
-            _scratchManager = null;
-            return result;
+            _pool.Return(_rentedBuffer);
+            return new JsonObject(_utf8Json, _db.Slice(0, _dbIndex));
         }
 
         private void ResizeDb()
         {
-            IMemoryOwner<byte> newScratch = _pool.Rent(_scratchSpan.Length * 2);
-            int dbLength = newScratch.Memory.Length / 2;
+            int newSize = _rentedBuffer.Length * 2;
+            byte[] newArray = _pool.Rent(newSize);
 
-            Span<byte> span = newScratch.Memory.Span;
-            Span<byte> sliceStart = span.Slice(0, dbLength);
-            _db.Slice(0, _valuesIndex).CopyTo(sliceStart);
+            Span<byte> scratchSpan = newArray;
+
+            int dbLength = (int)(scratchSpan.Length * DatabaseStackSpaceRatio);
+            Span<byte> sliceStart = scratchSpan.Slice(0, dbLength);
+
+            _db.Slice(0, _dbIndex).CopyTo(sliceStart);
             _db = sliceStart;
 
-            Span<byte> newStackMemory = span.Slice(dbLength);
+            Span<byte> newStackMemory = scratchSpan.Slice(dbLength);
             _stack.Resize(newStackMemory);
-            _scratchManager.Dispose();
-            _scratchManager = newScratch;
+
+            _pool.Return(_rentedBuffer);
+            _rentedBuffer = newArray;
         }
 
-        private int FindLocation(int index, bool lookingForObject)
+        private int ForwardPass(JsonValueType lookupType)
         {
-            int rowNumber = 0;
-            int numFound = 0;
-
+            int rowStartOffset = 0;
             while (true)
             {
-                int rowStartOffset = rowNumber * DbRow.Size;
-                DbRow row = Read<DbRow>(_db.Slice(rowStartOffset));
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
 
-                int lengthOffset = rowStartOffset + 4;
-
-                if (row.Length == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array))
+                if (row.Length == -1 && row.Type == lookupType)
                 {
-                    numFound++;
+                    return rowStartOffset + 4;
                 }
 
-                if (index == numFound - 1)
+                if (!row.IsSimpleValue && row.Length > 0)
                 {
-                    return lengthOffset;
+                    rowStartOffset += row.Length * DbRow.Size;
                 }
-                else
+                rowStartOffset += DbRow.Size;
+            }
+        }
+
+        private int BackwardPass(JsonValueType lookupType)
+        {
+            int rowStartOffset = _dbIndex - DbRow.Size;
+            while (true)
+            {
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
+
+                if (row.Length == -1 && row.Type == lookupType)
                 {
-                    if (row.Length > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array))
-                    {
-                        rowNumber += row.Length;
-                    }
-                    rowNumber++;
+                    return rowStartOffset + 4;
                 }
+
+                rowStartOffset -= DbRow.Size;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool Read()
+        private int FindLocation(JsonValueType lookupType)
         {
-            var canRead = _valuesIndex < _values.Length;
-            if (canRead) MoveToNextTokenType();
-            return canRead;
-        }
-
-        private JsonObject.JsonValueType PeekType()
-        {
-            SkipWhitespace();
-
-            var nextByte = _values[_valuesIndex];
-
-            if (nextByte == '"')
+            if (_reader.Index == _utf8Json.Length)
             {
-                return JsonObject.JsonValueType.String;
+                return ForwardPass(lookupType);
             }
-
-            if (nextByte == '{')
+            else
             {
-                return JsonObject.JsonValueType.Object;
-            }
-
-            if (nextByte == '[')
-            {
-                return JsonObject.JsonValueType.Array;
-            }
-
-            if (nextByte == 't')
-            {
-                return JsonObject.JsonValueType.True;
-            }
-
-            if (nextByte == 'f')
-            {
-                return JsonObject.JsonValueType.False;
-            }
-
-            if (nextByte == 'n')
-            {
-                return JsonObject.JsonValueType.Null;
-            }
-
-            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
-            {
-                return JsonObject.JsonValueType.Number;
-            }
-
-            throw new FormatException("Invalid json, tried to read char '" + nextByte + " at " + _valuesIndex + "'.");
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ParsePropertyName()
-        {
-            SkipWhitespace();
-            ParseString();
-            _valuesIndex++;
-        }
-
-        private void ParseValue()
-        {
-            var type = PeekType();
-            switch (type)
-            {
-                case JsonObject.JsonValueType.String:
-                    ParseString();
-                    break;
-                case JsonObject.JsonValueType.Number:
-                    ParseNumber();
-                    break;
-                case JsonObject.JsonValueType.True:
-                    ParseLiteral(JsonObject.JsonValueType.True, s_true);
-                    return;
-                case JsonObject.JsonValueType.False:
-                    ParseLiteral(JsonObject.JsonValueType.False, s_false);
-                    break;
-                case JsonObject.JsonValueType.Null:
-                    ParseLiteral(JsonObject.JsonValueType.Null, s_null);
-                    break;
-                case JsonObject.JsonValueType.Object:
-                case JsonObject.JsonValueType.Array:
-                    break;
-                default:
-                    throw new ArgumentException("Invalid json value type '" + type + "'.");
+                return BackwardPass(lookupType);
             }
         }
 
-        private void ParseString()
+        private void AppendDbRow(JsonValueType type, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
-            _valuesIndex++; // eat quote
-
-            var indexOfClosingQuote = _valuesIndex;
-            do
-            {
-                indexOfClosingQuote = _values.Slice(indexOfClosingQuote).IndexOf((byte)'"');
-            } while (AreNumOfBackSlashesAtEndOfStringOdd(_valuesIndex + indexOfClosingQuote - 2));
-
-            AppendDbRow(JsonObject.JsonValueType.String, _valuesIndex, indexOfClosingQuote);
-
-            _valuesIndex += indexOfClosingQuote + 1;
-            SkipWhitespace();
-        }
-
-        private void ParseNumber()
-        {
-            var nextIndex = _valuesIndex;
-
-            var nextByte = _values[nextIndex];
-            if (nextByte == '-')
-            {
-                nextIndex++;
-            }
-
-            nextByte = _values[nextIndex];
-            while (nextByte >= '0' && nextByte <= '9')
-            {
-                nextIndex++;
-                nextByte = _values[nextIndex];
-            }
-
-            if (nextByte == '.')
-            {
-                nextIndex++;
-            }
-
-            nextByte = _values[nextIndex];
-            while (nextByte >= '0' && nextByte <= '9')
-            {
-                nextIndex++;
-                nextByte = _values[nextIndex];
-            }
-
-            if (nextByte == 'e' || nextByte == 'E')
-            {
-                nextIndex++;
-                nextByte = _values[nextIndex];
-                if (nextByte == '-' || nextByte == '+')
-                {
-                    nextIndex++;
-                }
-                nextByte = _values[nextIndex];
-                while (nextByte >= '0' && nextByte <= '9')
-                {
-                    nextIndex++;
-                    nextByte = _values[nextIndex];
-                }
-            }
-
-            var length = nextIndex - _valuesIndex;
-
-            AppendDbRow(JsonObject.JsonValueType.Number, _valuesIndex, length);
-
-            _valuesIndex += length;
-            SkipWhitespace();
-        }
-
-        private void ParseLiteral(JsonObject.JsonValueType literal, ReadOnlySpan<byte> expected)
-        {
-            if (!_values.Slice(_valuesIndex).StartsWith(expected))
-            {
-                throw new FormatException("Invalid json, tried to read " + literal.ToString());
-            }
-            AppendDbRow(literal, _valuesIndex, expected.Length);
-            _valuesIndex += expected.Length;
-            SkipWhitespace();
-        }
-
-        private bool AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
-        {
-            var newIndex = _dbIndex + DbRow.Size;
-            if (newIndex >= _db.Length)
+            while (_dbIndex >= _db.Length - DbRow.Size)
             {
                 ResizeDb();
             }
 
-            var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
-            Write(_db.Slice(_dbIndex), ref dbRow);
-            _dbIndex = newIndex;
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void SkipWhitespace()
-        {
-            while (Unicode.IsWhitespace(_values[_valuesIndex]))
-            {
-                _valuesIndex++;
-            }
-        }
-
-        private void MoveToNextTokenType()
-        {
-            SkipWhitespace();
-
-            var nextByte = _values[_valuesIndex];
-
-            switch (_tokenType)
-            {
-                case JsonTokenType.ObjectStart:
-                    if (nextByte != '}')
-                    {
-                        _tokenType = JsonTokenType.Property;
-                        return;
-                    }
-                    break;
-                case JsonTokenType.ObjectEnd:
-                    if (nextByte == ',')
-                    {
-                        _valuesIndex++;
-                        if (_insideObject == _insideArray)
-                        {
-                            _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
-                            return;
-                        }
-                        _tokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
-                        return;
-                    }
-                    break;
-                case JsonTokenType.ArrayStart:
-                    if (nextByte != ']')
-                    {
-                        _tokenType = JsonTokenType.Value;
-                        return;
-                    }
-                    break;
-                case JsonTokenType.ArrayEnd:
-                    if (nextByte == ',')
-                    {
-                        _valuesIndex++;
-                        if (_insideObject == _insideArray)
-                        {
-                            _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
-                            return;
-                        }
-                        _tokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
-                        return;
-                    }
-                    break;
-                case JsonTokenType.Property:
-                    if (nextByte == ',')
-                    {
-                        _valuesIndex++;
-                        return;
-                    }
-                    break;
-                case JsonTokenType.Value:
-                    if (nextByte == ',')
-                    {
-                        _valuesIndex++;
-                        return;
-                    }
-                    break;
-            }
-
-            _valuesIndex++;
-            switch (nextByte)
-            {
-                case (byte)'{':
-                    _insideObject++;
-                    _tokenType = JsonTokenType.ObjectStart;
-                    return;
-                case (byte)'}':
-                    _insideObject--;
-                    _tokenType = JsonTokenType.ObjectEnd;
-                    return;
-                case (byte)'[':
-                    _insideArray++;
-                    _tokenType = JsonTokenType.ArrayStart;
-                    return;
-                case (byte)']':
-                    _insideArray--;
-                    _tokenType = JsonTokenType.ArrayEnd;
-                    return;
-                default:
-                    throw new FormatException("Unable to get next token type. Check json format.");
-            }
-        }
-
-        private bool AreNumOfBackSlashesAtEndOfStringOdd(int count)
-        {
-            var length = count - _valuesIndex;
-            if (length < 0) return false;
-            var nextByte = _values[count];
-            if (nextByte != '\\') return false;
-            var numOfBackSlashes = 0;
-            while (nextByte == '\\')
-            {
-                numOfBackSlashes++;
-                if ((length - numOfBackSlashes) < 0) return numOfBackSlashes % 2 != 0;
-                nextByte = _values[count - numOfBackSlashes];
-            }
-            return numOfBackSlashes % 2 != 0;
+            var dbRow = new DbRow(type, _reader.StartLocation, LengthOrNumberOfRows);
+            MemoryMarshal.Write(_db.Slice(_dbIndex), ref dbRow);
+            _dbIndex += DbRow.Size;
         }
     }
 }
