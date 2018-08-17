@@ -101,7 +101,15 @@ namespace System.Text.JsonLab
 
         private void SkipWhiteSpace()
         {
-            _reader.SkipPastAny(JsonConstants.WhiteSpace);
+            while (true)
+            {
+                _reader.TryPeek(out byte val);
+                if (val != JsonConstants.Space && val != JsonConstants.CarriageReturn && val != JsonConstants.LineFeed && val != JsonConstants.Tab)
+                {
+                    break;
+                }
+                _reader.Advance(1);
+            }
         }
 
         private bool ReadMultiSegment()

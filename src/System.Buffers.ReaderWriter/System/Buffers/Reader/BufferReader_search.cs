@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 namespace System.Buffers.Reader
 {
     public ref partial struct BufferReader<T> where T : unmanaged, IEquatable<T>
@@ -301,23 +304,37 @@ namespace System.Buffers.Reader
         /// Check to see if the given <paramref name="next"/> values are next.
         /// </summary>
         /// <param name="advancePast">Move past the <paramref name="next"/> values if found.</param>
-        public unsafe bool IsNext(ReadOnlySpan<T> next, bool advancePast)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNext(ReadOnlySpan<T> next, bool advancePast)
         {
             ReadOnlySpan<T> unread = UnreadSpan;
-            ReadOnlySpan<T> peek;
             if (unread.Length >= next.Length)
             {
-                peek = unread.Slice(0, next.Length);
+                if (unread.StartsWith(next))
+                {
+                    if (advancePast)
+                    {
+                        Advance(next.Length);
+                    }
+                    return true;
+                }
+                return false;
             }
-            else
-            {
-                T* t = stackalloc T[next.Length];
-                peek = Peek(new Span<T>(t, next.Length));
-            }
+            return IsNextSlow(next, advancePast);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private unsafe bool IsNextSlow(ReadOnlySpan<T> next, bool advancePast)
+        {
+            // Call PeekSlow directly since we know there isn't enough space.
+            Debug.Assert(UnreadSpan.Length < next.Length);
+
+            T* t = stackalloc T[next.Length];
+            ReadOnlySpan<T> peek = PeekSlow(new Span<T>(t, next.Length));
 
             if (next.SequenceEqual(peek))
             {
-                if (advancePast) 
+                if (advancePast)
                 {
                     Advance(next.Length);
                 }
