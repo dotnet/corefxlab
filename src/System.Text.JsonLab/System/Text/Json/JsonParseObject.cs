@@ -42,7 +42,7 @@ namespace System.Text.JsonLab
             return sb.ToString();
         }
 
-        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, MemoryPool<byte> pool = null)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, ArrayPool<byte> pool = null)
         {
             var parser = new JsonParser(utf8Json, pool);
             return parser.Parse();

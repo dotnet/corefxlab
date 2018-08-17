@@ -80,10 +80,15 @@ namespace System.Text.JsonLab.Tests
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
-        public void CustomParseJson()
+        [Theory]
+        [InlineData("[{\"arrayWithObjects\":[\"text\",14,[],null,false,{},{\"time\":24},[\"1\",\"2\",\"3\"]]}]")]
+        [InlineData("[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]")]
+        [InlineData("[{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}},{\"a\":{}}]")]
+        [InlineData("{\"a\":\"b\"}")]
+        [InlineData("{}")]
+        [InlineData("[]")]
+        public void CustomParseJson(string jsonString)
         {
-            string jsonString = "[{\"arrayWithObjects\":[\"text\",14,[],null,false,{},{\"time\":24},[\"1\",\"2\",\"3\"]]}]";
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
             JsonObject obj = JsonObject.Parse(dataUtf8);
 
