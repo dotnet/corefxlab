@@ -47,7 +47,8 @@ namespace System.Text.JsonLab.Benchmarks
         [Benchmark]
         public void ParseSystemTextJsonLab()
         {
-            JsonObject.Parse(_dataUtf8);
+            var parser = new JsonParser(_dataUtf8);
+            parser.Parse();
         }
     }
 }

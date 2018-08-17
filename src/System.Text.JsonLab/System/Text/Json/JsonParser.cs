@@ -5,8 +5,6 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-using static System.Runtime.InteropServices.MemoryMarshal;
-
 namespace System.Text.JsonLab
 {
     // Location - offset - 0 - size - 4
@@ -75,7 +73,7 @@ namespace System.Text.JsonLab
         {
             if (_topOfStack >= StackRow.Size)
             {
-                Write(_stackSpace.Slice(_topOfStack - StackRow.Size), ref row);
+                MemoryMarshal.Write(_stackSpace.Slice(_topOfStack - StackRow.Size), ref row);
                 _topOfStack -= StackRow.Size;
                 return true;
             }
@@ -96,7 +94,7 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
-            return Read<StackRow>(_stackSpace.Slice(_topOfStack));
+            return MemoryMarshal.Read<StackRow>(_stackSpace.Slice(_topOfStack));
         }
 
         public bool IsTopArray()
@@ -128,14 +126,14 @@ namespace System.Text.JsonLab
             sb.Append("IsArray" + "\t" + "Length" + "\r\n");
             for (int i = _stackSpace.Length - StackRow.Size; i >= StackRow.Size; i -= StackRow.Size)
             {
-                StackRow row = Read<StackRow>(_stackSpace.Slice(i));
+                StackRow row = MemoryMarshal.Read<StackRow>(_stackSpace.Slice(i));
                 sb.Append(row.IsArray + "\t" + row.Length + "\r\n");
             }
             return sb.ToString();
         }
     }
 
-    internal ref struct JsonParser
+    public ref struct JsonParser
     {
         private readonly ReadOnlySpan<byte> _utf8Json; // TODO: this should be ReadOnlyMemory<byte>
         private ArrayPool<byte> _pool;
@@ -215,7 +213,7 @@ namespace System.Text.JsonLab
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.EndObject:
-                        Write(_db.Slice(FindLocation(JsonValueType.Object)), ref numberOfRowsForMembers);
+                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Object)), ref numberOfRowsForMembers);
                         row = _stack.Pop();
                         numberOfRowsForMembers += row.Length;
                         break;
@@ -231,7 +229,7 @@ namespace System.Text.JsonLab
                         arrayItemsCount = 0;
                         break;
                     case JsonTokenType.EndArray:
-                        Write(_db.Slice(FindLocation(JsonValueType.Array)), ref arrayItemsCount);
+                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Array)), ref arrayItemsCount);
                         row = _stack.Pop();
                         arrayItemsCount = row.Length;
                         break;
@@ -276,7 +274,7 @@ namespace System.Text.JsonLab
             int rowStartOffset = 0;
             while (true)
             {
-                DbRow row = Read<DbRow>(_db.Slice(rowStartOffset));
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
 
                 if (row.Length == -1 && row.Type == lookupType)
                 {
@@ -296,7 +294,7 @@ namespace System.Text.JsonLab
             int rowStartOffset = _dbIndex - DbRow.Size;
             while (true)
             {
-                DbRow row = Read<DbRow>(_db.Slice(rowStartOffset));
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
 
                 if (row.Length == -1 && row.Type == lookupType)
                 {
@@ -327,7 +325,7 @@ namespace System.Text.JsonLab
             }
 
             var dbRow = new DbRow(type, _reader.StartLocation, LengthOrNumberOfRows);
-            Write(_db.Slice(_dbIndex), ref dbRow);
+            MemoryMarshal.Write(_db.Slice(_dbIndex), ref dbRow);
             _dbIndex += DbRow.Size;
         }
     }

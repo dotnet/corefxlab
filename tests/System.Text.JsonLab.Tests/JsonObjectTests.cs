@@ -67,7 +67,8 @@ namespace System.Text.JsonLab.Tests
         public void ParseJson(TestCaseType type, string jsonString)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            JsonObject obj = JsonObject.Parse(dataUtf8);
+            var parser = new JsonParser(dataUtf8);
+            JsonObject obj = parser.Parse();
 
             string actual = obj.PrintJson();
 
@@ -90,7 +91,8 @@ namespace System.Text.JsonLab.Tests
         public void CustomParseJson(string jsonString)
         {
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(jsonString);
-            JsonObject obj = JsonObject.Parse(dataUtf8);
+            var parser = new JsonParser(dataUtf8);
+            JsonObject obj = parser.Parse();
 
             string actual = obj.PrintJson();
 
@@ -108,7 +110,8 @@ namespace System.Text.JsonLab.Tests
         {
             string depsJson = TestJson.DepsJson;
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(depsJson);
-            JsonObject obj = JsonObject.Parse(dataUtf8);
+            var parser = new JsonParser(dataUtf8);
+            JsonObject obj = parser.Parse();
 
             JsonObject targets = obj["targets"];
 
@@ -134,7 +137,8 @@ namespace System.Text.JsonLab.Tests
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
 
-            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            var parser = new JsonParser(buffer);
+            JsonObject parsedObject = parser.Parse();
             try
             {
                 Assert.Equal(2, parsedObject.ArrayLength);
@@ -155,7 +159,8 @@ namespace System.Text.JsonLab.Tests
         public void ParseSimpleObject()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleObjectJson);
-            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            var parser = new JsonParser(buffer);
+            JsonObject parsedObject = parser.Parse();
             try
             {
                 var age = (int)parsedObject["age"];
@@ -189,7 +194,8 @@ namespace System.Text.JsonLab.Tests
         public void ParseNestedJson()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
-            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            var parser = new JsonParser(buffer);
+            JsonObject parsedObject = parser.Parse();
             try
             {
                 Assert.Equal(1, parsedObject.ArrayLength);
@@ -255,7 +261,8 @@ namespace System.Text.JsonLab.Tests
         public void ParseBoolean()
         {
             var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
-            var parsedObject = JsonObject.Parse(buffer.AsSpan());
+            var parser = new JsonParser(buffer);
+            JsonObject parsedObject = parser.Parse();
             try
             {
                 var first = (bool)parsedObject[0];
