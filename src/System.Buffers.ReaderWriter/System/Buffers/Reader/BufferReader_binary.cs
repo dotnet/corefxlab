@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers.Reader
 {
-    public ref partial struct BufferReader
+    public static partial class ReaderExtensions
     {
         /// <summary>
         /// Try to read the given type out of the buffer if possible.
@@ -18,33 +18,33 @@ namespace System.Buffers.Reader
         /// <returns>
         /// True if successful. <paramref name="value"/> will be default if failed.
         /// </returns>
-        public unsafe bool TryRead<T>(out T value) where T : unmanaged
+        public static unsafe bool TryRead<T>(ref this BufferReader<byte> reader, out T value) where T : unmanaged
         {
-            ReadOnlySpan<byte> span = UnreadSpan;
+            ReadOnlySpan<byte> span = reader.UnreadSpan;
             if (span.Length < sizeof(T))
-                return TryReadSlow(out value);
+                return TryReadSlow(ref reader, out value);
 
             value = MemoryMarshal.Read<T>(span);
-            Advance(sizeof(T));
+            reader.Advance(sizeof(T));
             return true;
         }
 
-        private unsafe bool TryReadSlow<T>(out T value) where T : unmanaged
+        private static unsafe bool TryReadSlow<T>(ref BufferReader<byte> reader, out T value) where T : unmanaged
         {
-            Debug.Assert(UnreadSpan.Length < sizeof(T));
+            Debug.Assert(reader.UnreadSpan.Length < sizeof(T));
 
             // Not enough data in the current segment, try to peek for the data we need.
             byte* buffer = stackalloc byte[sizeof(T)];
             Span<byte> tempSpan = new Span<byte>(buffer, sizeof(T));
 
-            if (Peek(tempSpan).Length < sizeof(T))
+            if (reader.Peek(tempSpan).Length < sizeof(T))
             {
                 value = default;
                 return false;
             }
 
             value = MemoryMarshal.Read<T>(tempSpan);
-            Advance(sizeof(T));
+            reader.Advance(sizeof(T));
             return true;
         }
 
@@ -52,33 +52,33 @@ namespace System.Buffers.Reader
         /// Reads an <see cref="Int16"/> as little endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
-        public bool TryReadInt16LittleEndian(out short value)
+        public static bool TryReadInt16LittleEndian(ref this BufferReader<byte> reader, out short value)
         {
             if (BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
         /// <summary>
         /// Reads an <see cref="Int16"/> as big  endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int16"/>.</returns>
-        public bool TryReadInt16BigEndian(out short value)
+        public static bool TryReadInt16BigEndian(ref this BufferReader<byte> reader, out short value)
         {
             if (!BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
-        private bool TryReadReverseEndianness(out short value)
+        private static bool TryReadReverseEndianness(ref BufferReader<byte> reader, out short value)
         {
-            if (TryRead(out value))
+            if (reader.TryRead(out value))
             {
                 value = BinaryPrimitives.ReverseEndianness(value);
                 return true;
@@ -91,33 +91,33 @@ namespace System.Buffers.Reader
         /// Reads an <see cref="Int32"/> as little endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
-        public bool TryReadInt32LittleEndian(out int value)
+        public static bool TryReadInt32LittleEndian(ref this BufferReader<byte> reader, out int value)
         {
             if (BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
         /// <summary>
         /// Reads an <see cref="Int32"/> as big  endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int32"/>.</returns>
-        public bool TryReadInt32BigEndian(out int value)
+        public static bool TryReadInt32BigEndian(ref this BufferReader<byte> reader, out int value)
         {
             if (!BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
-        private bool TryReadReverseEndianness(out int value)
+        private static bool TryReadReverseEndianness(ref BufferReader<byte> reader, out int value)
         {
-            if (TryRead(out value))
+            if (reader.TryRead(out value))
             {
                 value = BinaryPrimitives.ReverseEndianness(value);
                 return true;
@@ -130,33 +130,33 @@ namespace System.Buffers.Reader
         /// Reads an <see cref="Int64"/> as little endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
-        public bool TryReadInt64LittleEndian(out long value)
+        public static bool TryReadInt64LittleEndian(ref this BufferReader<byte> reader, out long value)
         {
             if (BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
         /// <summary>
         /// Reads an <see cref="Int64"/> as big  endian.
         /// </summary>
         /// <returns>False if there wasn't enough data for an <see cref="Int64"/>.</returns>
-        public bool TryReadInt64BigEndian(out long value)
+        public static bool TryReadInt64BigEndian(ref this BufferReader<byte> reader, out long value)
         {
             if (!BitConverter.IsLittleEndian)
             {
-                return TryRead(out value);
+                return reader.TryRead(out value);
             }
 
-            return TryReadReverseEndianness(out value);
+            return TryReadReverseEndianness(ref reader, out value);
         }
 
-        private bool TryReadReverseEndianness(out long value)
+        private static bool TryReadReverseEndianness(ref BufferReader<byte> reader, out long value)
         {
-            if (TryRead(out value))
+            if (reader.TryRead(out value))
             {
                 value = BinaryPrimitives.ReverseEndianness(value);
                 return true;

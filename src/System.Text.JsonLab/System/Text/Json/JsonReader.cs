@@ -17,7 +17,7 @@ namespace System.Text.JsonLab
 
         public int StartLocation { get; private set; }
 
-        private BufferReader _reader;
+        private BufferReader<byte> _reader;
 
         // Depth tracks the recursive depth of the nested objects / arrays within the JSON data.
         public int Depth { get; private set; }
@@ -77,7 +77,7 @@ namespace System.Text.JsonLab
 
         public Utf8JsonReader(in ReadOnlySequence<byte> data)
         {
-            _reader = new BufferReader(data);
+            _reader = new BufferReader<byte>(data);
             _isSingleSegment = data.IsSingleSegment; //true;
             _buffer = _reader.CurrentSpan;  //data.ToArray();
             Depth = 1;
@@ -101,23 +101,16 @@ namespace System.Text.JsonLab
 
         private void SkipWhiteSpace()
         {
-            while (true)
-            {
-                byte val = (byte)_reader.Peek();
-                if (val != JsonConstants.Space && val != JsonConstants.CarriageReturn && val != JsonConstants.LineFeed && val != JsonConstants.Tab)
-                {
-                    break;
-                }
-                _reader.Advance(1);
-            }
+            _reader.SkipPastAny(JsonConstants.WhiteSpace);
         }
 
         private bool ReadMultiSegment()
         {
             if (TokenType == JsonTokenType.None)
             {
-                int val = _reader.Peek();
-                if (val == -1) return false;
+                if (!_reader.TryPeek(out byte val))
+                    return false;
+
                 if (val == JsonConstants.OpenBrace)
                 {
                     _containerMask = 1;
@@ -131,15 +124,15 @@ namespace System.Text.JsonLab
                 }
                 else
                 {
-                    ConsumeSingleValue((byte)val);
+                    ConsumeSingleValue(val);
                 }
                 return true;
             }
 
             SkipWhiteSpace();
 
-            int ch = _reader.Peek();
-            if (ch == -1) return false;
+            if (!_reader.TryPeek(out byte ch))
+                return false;
 
             if (TokenType == JsonTokenType.StartObject)
             {
@@ -160,15 +153,15 @@ namespace System.Text.JsonLab
                     EndArray();
                 }
                 else
-                    ConsumeValueUtf8MultiSegment((byte)ch);
+                    ConsumeValueUtf8MultiSegment(ch);
             }
             else if (TokenType == JsonTokenType.PropertyName)
             {
-                ConsumeValueUtf8MultiSegment((byte)ch);
+                ConsumeValueUtf8MultiSegment(ch);
             }
             else
             {
-                return ConsumeNextUtf8MultiSegment((byte)ch);
+                return ConsumeNextUtf8MultiSegment(ch);
             }
             return true;
         }
@@ -313,18 +306,14 @@ namespace System.Text.JsonLab
                     SkipWhiteSpace();
                     if (InObject)
                     {
-                        if (_reader.End)
-                        {
-                            return false;
-                        }
-                        if (_reader.Read() != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
+                        if (!_reader.TryRead(out byte val)) return false;
+                        if (val != JsonConstants.Quote) JsonThrowHelper.ThrowJsonReaderException();
                         ConsumePropertyNameUtf8MultiSegment();
                     }
                     else if (InArray)
                     {
-                        int val = _reader.Peek();
-                        if (val == -1) return false;
-                        ConsumeValueUtf8MultiSegment((byte)val);
+                        if (!_reader.TryPeek(out byte val)) return false;
+                        ConsumeValueUtf8MultiSegment(val);
                     }
                     else
                     {
@@ -625,7 +614,7 @@ namespace System.Text.JsonLab
 
         private void ConsumeNumberUtf8MultiSegment()
         {
-            if (!_reader.TryReadUntilAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters, movePastDelimiter: false))
+            if (!_reader.TryReadToAny(out ReadOnlySpan<byte> span, JsonConstants.Delimiters, advancePastDelimiter: false))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -654,7 +643,7 @@ namespace System.Text.JsonLab
             Value = JsonConstants.NullValue;
             ValueType = JsonValueType.Null;
 
-            if (_reader.Read() != 'n' || _reader.Read() != 'u' || _reader.Read() != 'l' || _reader.Read() != 'l')
+            if (!_reader.IsNext(JsonConstants.NullValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -682,11 +671,7 @@ namespace System.Text.JsonLab
             Value = JsonConstants.FalseValue;
             ValueType = JsonValueType.False;
 
-            if (_reader.Read() != 'f'
-                || _reader.Read() != 'a'
-                || _reader.Read() != 'l'
-                || _reader.Read() != 's'
-                || _reader.Read() != 'e')
+            if (!_reader.IsNext(JsonConstants.FalseValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -715,10 +700,7 @@ namespace System.Text.JsonLab
             Value = JsonConstants.TrueValue;
             ValueType = JsonValueType.True;
 
-            if (_reader.Read() != 't'
-                || _reader.Read() != 'r'
-                || _reader.Read() != 'u'
-                || _reader.Read() != 'e')
+            if (!_reader.IsNext(JsonConstants.TrueValue, advancePast: true))
             {
                 JsonThrowHelper.ThrowJsonReaderException();
             }
@@ -748,7 +730,7 @@ namespace System.Text.JsonLab
             SkipWhiteSpace();
 
             // The next character must be a key / value seperator. Validate and skip.
-            if (_reader.Read() != JsonConstants.KeyValueSeperator)
+            if (!_reader.TryRead(out byte val) || val != JsonConstants.KeyValueSeperator)
                 JsonThrowHelper.ThrowJsonReaderException();
 
             TokenType = JsonTokenType.PropertyName;
@@ -807,7 +789,7 @@ namespace System.Text.JsonLab
 
         private bool TryReadUntilSlow(out ReadOnlySpan<byte> span, byte delimiter, int skip)
         {
-            BufferReader copy = _reader;
+            BufferReader<byte> copy = _reader;
             if (skip > 0)
                 _reader.Advance(skip);
             ReadOnlySpan<byte> remaining = _reader.UnreadSpan;

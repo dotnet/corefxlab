@@ -242,8 +242,8 @@ namespace System.Text.Http.Parser
 
             var bufferEnd = buffer.End;
 
-            var reader = new BufferReader(buffer);
-            var start = default(BufferReader);
+            var reader = new BufferReader<byte>(buffer);
+            var start = default(BufferReader<byte>);
             var done = false;
 
             try
@@ -258,14 +258,16 @@ namespace System.Text.Http.Parser
                         while (remaining > 0)
                         {
                             var index = reader.CurrentSpanIndex;
-                            int ch1;
-                            int ch2;
+                            byte ch1;
+                            byte ch2;
+                            bool readSecond;
 
                             // Fast path, we're still looking at the same span
                             if (remaining >= 2)
                             {
                                 ch1 = pBuffer[index];
                                 ch2 = pBuffer[index + 1];
+                                readSecond = true;
                             }
                             else
                             {
@@ -274,14 +276,14 @@ namespace System.Text.Http.Parser
                                 start = reader;
 
                                 // Possibly split across spans
-                                ch1 = reader.Read();
-                                ch2 = reader.Read();
+                                reader.TryRead(out ch1);
+                                readSecond = reader.TryRead(out ch2);
                             }
 
                             if (ch1 == ByteCR)
                             {
                                 // Check for final CRLF.
-                                if (ch2 == -1)
+                                if (!readSecond)
                                 {
                                     // Reset the reader so we don't consume anything
                                     reader = start;
@@ -362,7 +364,7 @@ namespace System.Text.Http.Parser
             finally
             {
                 consumed = reader.Position;
-                consumedBytes = reader.ConsumedBytes;
+                consumedBytes = reader.Consumed;
 
                 if (done)
                 {

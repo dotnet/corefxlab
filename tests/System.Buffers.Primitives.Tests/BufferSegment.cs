@@ -3,13 +3,14 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace System.Buffers.Testing
 {
-    internal class BufferSegment : ReadOnlySequenceSegment<byte>
+    internal class BufferSegment<T> : ReadOnlySequenceSegment<T> where T : struct
     {
-        private BufferSegment _next;
+        private BufferSegment<T> _next;
         
         public int Start { get; private set; }
 
@@ -31,7 +32,7 @@ namespace System.Buffers.Testing
         /// working memory. The "active" memory is grown when bytes are copied in, End is increased, and Next is assigned. The "active"
         /// memory is shrunk when bytes are consumed, Start is increased, and blocks are returned to the pool.
         /// </summary>
-        public BufferSegment NextSegment
+        public BufferSegment<T> NextSegment
         {
             get => _next;
             set
@@ -44,16 +45,16 @@ namespace System.Buffers.Testing
         /// <summary>
         /// The buffer being tracked if segment owns the memory
         /// </summary>
-        private IMemoryOwner<byte> _ownedMemory;
+        private IMemoryOwner<T> _ownedMemory;
 
         private int _end;
 
-        public void SetMemory(IMemoryOwner<byte> buffer)
+        public void SetMemory(IMemoryOwner<T> buffer)
         {
             SetMemory(buffer, 0, 0);
         }
 
-        public void SetMemory(IMemoryOwner<byte> ownedMemory, int start, int end, bool readOnly = false)
+        public void SetMemory(IMemoryOwner<T> ownedMemory, int start, int end, bool readOnly = false)
         {
             _ownedMemory = ownedMemory;
 
@@ -73,7 +74,7 @@ namespace System.Buffers.Testing
             AvailableMemory = default;
         }
 
-        public Memory<byte> AvailableMemory { get; private set; }
+        public Memory<T> AvailableMemory { get; private set; }
 
         public int Length => End - Start;
 
@@ -99,12 +100,17 @@ namespace System.Buffers.Testing
                 return "<EMPTY>";
             }
 
-            var builder = new StringBuilder();
-            SpanLiteralExtensions.AppendAsLiteral(Memory.Span, builder);
-            return builder.ToString();
+            if (typeof(T) == typeof(byte))
+            {
+                var builder = new StringBuilder();
+                SpanLiteralExtensions.AppendAsLiteral(MemoryMarshal.AsBytes(Memory.Span), builder);
+                return builder.ToString();
+            }
+
+            return Memory.Span.ToString();
         }
 
-        public void SetNext(BufferSegment segment)
+        public void SetNext(BufferSegment<T> segment)
         {
             Debug.Assert(segment != null);
             Debug.Assert(Next == null);
