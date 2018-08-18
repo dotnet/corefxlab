@@ -27,50 +27,71 @@ namespace System.Buffers.Text
 
             public static OperationStatus ToLowerInPlace(Span<byte> ascii, out int bytesChanged)
             {
-                for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+                int tempBytesChanged = 0;
+                for (tempBytesChanged = 0; tempBytesChanged < ascii.Length; tempBytesChanged++)
                 {
-                    byte next = ascii[bytesChanged];
+                    byte next = ascii[tempBytesChanged];
                     if (next > 127)
                     {
+                        bytesChanged = tempBytesChanged;
                         return OperationStatus.InvalidData;
                     }
-                    ascii[bytesChanged] = s_toLower[next];
+                    ascii[tempBytesChanged] = s_toLower[next];
                 }
+                bytesChanged = tempBytesChanged;
                 return OperationStatus.Done;
             }
 
             public static OperationStatus ToLower(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
             {
+                int tempProcessedBytes = 0;
                 int min = input.Length < output.Length ? input.Length : output.Length;
-                for (processedBytes = 0; processedBytes < min; processedBytes++)
+                for (tempProcessedBytes = 0; tempProcessedBytes < min; tempProcessedBytes++)
                 {
-                    byte next = input[processedBytes];
-                    if (next > 127) return OperationStatus.InvalidData;
-                    output[processedBytes] = s_toLower[next];
+                    byte next = input[tempProcessedBytes];
+                    if (next > 127)
+                    {
+                        processedBytes = tempProcessedBytes;
+                        return OperationStatus.InvalidData;
+                    }
+                    output[tempProcessedBytes] = s_toLower[next];
                 }
+                processedBytes = tempProcessedBytes;
                 return OperationStatus.Done;
             }
 
             public static OperationStatus ToUpperInPlace(Span<byte> ascii, out int bytesChanged)
             {
-                for (bytesChanged = 0; bytesChanged < ascii.Length; bytesChanged++)
+                int tempBytesChanged = 0;
+                for (tempBytesChanged = 0; tempBytesChanged < ascii.Length; tempBytesChanged++)
                 {
-                    byte next = ascii[bytesChanged];
-                    if (next > 127) return OperationStatus.InvalidData;
-                    ascii[bytesChanged] = s_toUpper[next];
+                    byte next = ascii[tempBytesChanged];
+                    if (next > 127)
+                    {
+                        bytesChanged = tempBytesChanged;
+                        return OperationStatus.InvalidData;
+                    }
+                    ascii[tempBytesChanged] = s_toUpper[next];
                 }
+                bytesChanged = tempBytesChanged;
                 return OperationStatus.Done;
             }
 
             public static OperationStatus ToUpper(ReadOnlySpan<byte> input, Span<byte> output, out int processedBytes)
             {
+                int tempProcessedBytes = 0;
                 int min = input.Length < output.Length ? input.Length : output.Length;
-                for (processedBytes = 0; processedBytes < min; processedBytes++)
+                for (tempProcessedBytes = 0; tempProcessedBytes < min; tempProcessedBytes++)
                 {
-                    byte next = input[processedBytes];
-                    if (next > 127) return OperationStatus.InvalidData;
-                    output[processedBytes] = s_toUpper[next];
+                    byte next = input[tempProcessedBytes];
+                    if (next > 127)
+                    {
+                        processedBytes = tempProcessedBytes;
+                        return OperationStatus.InvalidData;
+                    }
+                    output[tempProcessedBytes] = s_toUpper[next];
                 }
+                processedBytes = tempProcessedBytes;
                 return OperationStatus.Done;
             }
 
