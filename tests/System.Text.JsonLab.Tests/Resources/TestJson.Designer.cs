@@ -156,9 +156,9 @@ namespace System.Text.JsonLab.Tests.Resources {
         ///          &quot;Microsoft.AspNetCore.Authentication.JwtBearer&quot;: &quot;3.0.0-alpha1-10173&quot;,
         ///          &quot;Microsoft.AspNetCore.Diagnostics&quot;: &quot;3 [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string DepsJson {
+        internal static string DepsJsonSignalR {
             get {
-                return ResourceManager.GetString("DepsJson", resourceCulture);
+                return ResourceManager.GetString("DepsJsonSignalR", resourceCulture);
             }
         }
         

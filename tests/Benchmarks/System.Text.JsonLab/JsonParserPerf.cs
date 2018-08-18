@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Utf8;
 
 namespace System.Text.JsonLab.Benchmarks
 {
@@ -40,7 +41,26 @@ namespace System.Text.JsonLab.Benchmarks
             _stream.Seek(0, SeekOrigin.Begin);
             using (JsonTextReader jsonReader = new JsonTextReader(_reader))
             {
-                JToken.ReadFrom(jsonReader);
+                JToken obj = JToken.ReadFrom(jsonReader);
+
+                if (TestCase == TestCaseType.Json400KB)
+                {
+                    var lookup = "email";
+
+                    for (int i = 0; i < 10_000; i++)
+                    {
+                        string email = (string)obj[5][lookup];
+                    }
+                }
+                else if (TestCase == TestCaseType.HelloWorld)
+                {
+                    var lookup = "message";
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        string message = (string)obj[lookup];
+                    }
+                }
             }
         }
 
@@ -48,7 +68,26 @@ namespace System.Text.JsonLab.Benchmarks
         public void ParseSystemTextJsonLab()
         {
             var parser = new JsonParser(_dataUtf8);
-            parser.Parse();
+            JsonObject obj = parser.Parse();
+
+            if (TestCase == TestCaseType.Json400KB)
+            {
+                var lookup = new Utf8Span("email");
+
+                for (int i = 0; i < 10_000; i++)
+                {
+                    Utf8Span email = (Utf8Span)obj[5][lookup];
+                }
+            }
+            else if (TestCase == TestCaseType.HelloWorld)
+            {
+                var lookup = new Utf8Span("message");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Utf8Span message = (Utf8Span)obj[lookup];
+                }
+            }
         }
     }
 }
