@@ -108,18 +108,21 @@ namespace System.Text.JsonLab.Tests
         [Fact]
         public void ChangeEntryPointLibraryName()
         {
-            string depsJson = TestJson.DepsJson;
+            string depsJson = TestJson.DepsJsonSignalR;
             byte[] dataUtf8 = Encoding.UTF8.GetBytes(depsJson);
             var parser = new JsonParser(dataUtf8);
             JsonObject obj = parser.Parse();
 
-            JsonObject targets = obj["targets"];
+            var targetsString = new Utf8Span("targets");
+            var librariesString = new Utf8Span("libraries");
+
+            JsonObject targets = obj[targetsString];
 
             Assert.True(targets.TryGetChild(out JsonObject child));
             Assert.True(child.TryGetChild(out child));
             obj.Remove(child);
 
-            JsonObject libraries = obj["libraries"];
+            JsonObject libraries = obj[librariesString];
             Assert.True(libraries.TryGetChild(out child));
             obj.Remove(child);
 
@@ -286,7 +289,7 @@ namespace System.Text.JsonLab.Tests
 
         private static string ChangeEntryPointLibraryNameExpected()
         {
-            JToken deps = JObject.Parse(TestJson.DepsJson);
+            JToken deps = JObject.Parse(TestJson.DepsJsonSignalR);
 
             foreach (JProperty target in deps["targets"])
             {

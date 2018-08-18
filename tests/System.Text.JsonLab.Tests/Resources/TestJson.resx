@@ -15971,7 +15971,7 @@ tiline\"another\" String\\"],"str":"\"\""}</value>
   }
 ]</value>
   </data>
-  <data name="DepsJson" xml:space="preserve">
+  <data name="DepsJsonSignalR" xml:space="preserve">
     <value>{
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.2",

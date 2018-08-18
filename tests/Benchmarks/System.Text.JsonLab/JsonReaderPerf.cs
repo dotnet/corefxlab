@@ -9,31 +9,31 @@ using System.IO;
 
 namespace System.Text.JsonLab.Benchmarks
 {
-    // Keep the JsonStrings resource names in sync with TestCaseType enum values.
-    public enum TestCaseType
-    {
-        HelloWorld,
-        BasicJson,
-        BasicLargeNum,
-        SpecialNumForm,
-        ProjectLockJson,
-        FullSchema1,
-        FullSchema2,
-        DeepTree,
-        BroadTree,
-        LotsOfNumbers,
-        LotsOfStrings,
-        Json400B,
-        Json4KB,
-        Json40KB,
-        Json400KB
-    }
-
     // Since there are 90 tests here (6 * 15), setting low values for the warmupCount, targetCount, and invocationCount
     [SimpleJob(-1, 3, 5, 1024)]
     [MemoryDiagnoser]
     public class JsonReaderPerf
     {
+        // Keep the JsonStrings resource names in sync with TestCaseType enum values.
+        public enum TestCaseType
+        {
+            HelloWorld,
+            BasicJson,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
+            Json400KB
+        }
+
         private string _jsonString;
         private byte[] _dataUtf8;
         private ReadOnlySequence<byte> _sequence;

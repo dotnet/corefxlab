@@ -2,9 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers.Text;
+using System.Runtime.InteropServices;
 using System.Text.Utf8;
-
-using static System.Runtime.InteropServices.MemoryMarshal;
 
 namespace System.Text.JsonLab
 {
@@ -13,13 +12,13 @@ namespace System.Text.JsonLab
         private Span<byte> _database;
         private ReadOnlySpan<byte> _jsonData;
 
-        internal string PrintDatabase()
+        public string PrintDatabase()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(nameof(Record.Location) + "\t" + nameof(Record.Length) + "\t" + nameof(Record.Type) + "\r\n");
+            sb.Append(nameof(DbRow.Location) + "\t" + nameof(DbRow.Length) + "\t" + nameof(DbRow.Type) + "\r\n");
             for (int i = 0; i < _database.Length; i += DbRow.Size)
             {
-                DbRow record = Read<DbRow>(_database.Slice(i));
+                DbRow record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
                 sb.Append(record.Location + "\t" + record.Length + "\t" + record.Type + "\r\n");
             }
             return sb.ToString();
@@ -30,7 +29,7 @@ namespace System.Text.JsonLab
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < _database.Length; i += DbRow.Size)
             {
-                DbRow record = Read<DbRow>(_database.Slice(i));
+                DbRow record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
                 // Special casing Null so that it matches what JSON.NET does
                 if (record.IsSimpleValue && record.Type != JsonValueType.Null)
                 {
@@ -49,7 +48,7 @@ namespace System.Text.JsonLab
 
         public bool TryGetChild(out JsonObject value)
         {
-            DbRow record = Record;
+            DbRow record = GetRecord(0);
 
             if (record.Length == 0)
             {
@@ -61,12 +60,12 @@ namespace System.Text.JsonLab
                 JsonThrowHelper.ThrowInvalidOperationException();
             }
 
-            record = Read<DbRow>(_database.Slice(DbRow.Size));
+            record = MemoryMarshal.Read<DbRow>(_database.Slice(DbRow.Size));
 
             int newStart = DbRow.Size + DbRow.Size;
             int newEnd = newStart + DbRow.Size;
 
-            record = Read<DbRow>(_database.Slice(newStart));
+            record = MemoryMarshal.Read<DbRow>(_database.Slice(newStart));
 
             if (!record.IsSimpleValue)
             {
@@ -82,7 +81,7 @@ namespace System.Text.JsonLab
             ReadOnlySpan<byte> values = obj._jsonData;
             Span<byte> db = obj._database;
 
-            DbRow objRecord = Read<DbRow>(db);
+            DbRow objRecord = MemoryMarshal.Read<DbRow>(db);
             int reduce = objRecord.Length;
 
             int idx = _database.IndexOf(db);
@@ -100,14 +99,14 @@ namespace System.Text.JsonLab
 
             for (int i = 0; i < temp.Length; i += DbRow.Size)
             {
-                DbRow record = Read<DbRow>(temp.Slice(i));
+                DbRow record = MemoryMarshal.Read<DbRow>(temp.Slice(i));
                 if (!record.IsSimpleValue)
                 {
-                    DbRow myObj = Read<DbRow>(_database.Slice(i + record.Length * DbRow.Size));
+                    DbRow myObj = MemoryMarshal.Read<DbRow>(_database.Slice(i + record.Length * DbRow.Size));
                     if (myObj.Location > objRecord.Location)
                     {
                         DbRow fixup = new DbRow(record.Type, record.Location, record.Length - reduce);
-                        Write(temp.Slice(i), ref fixup);
+                        MemoryMarshal.Write(temp.Slice(i), ref fixup);
                     }
                 }
             }
@@ -118,7 +117,7 @@ namespace System.Text.JsonLab
 
         public bool TryGetValue(Utf8Span propertyName, out JsonObject value)
         {
-            DbRow record = Record;
+            DbRow record = GetRecord(0);
 
             if (record.Length == 0)
             {
@@ -131,7 +130,7 @@ namespace System.Text.JsonLab
 
             for (int i = DbRow.Size; i <= _database.Length; i += DbRow.Size)
             {
-                record = Read<DbRow>(_database.Slice(i));
+                record = GetRecord(i);
 
                 if (!record.IsSimpleValue)
                 {
@@ -139,11 +138,11 @@ namespace System.Text.JsonLab
                     continue;
                 }
 
-                if (new Utf8Span(_jsonData.Slice(record.Location, record.Length)) == propertyName)
+                if (_jsonData.Slice(record.Location, record.Length).SequenceEqual(propertyName.Bytes))
                 {
                     int newStart = i + DbRow.Size;
 
-                    record = Read<DbRow>(_database.Slice(newStart));
+                    record = GetRecord(newStart);
 
                     int newEnd = record.IsSimpleValue ? i + 2 * DbRow.Size : i + (record.Length + 2) * DbRow.Size;
 
@@ -151,8 +150,8 @@ namespace System.Text.JsonLab
                     return true;
                 }
 
-                JsonValueType valueType = Read<JsonValueType>(_database.Slice(i + DbRow.Size + 8));
-                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array)
+                JsonValueType valueType = GetType(i + DbRow.Size);
+                if (valueType > JsonValueType.Array)
                 {
                     i += DbRow.Size;
                 }
@@ -164,7 +163,7 @@ namespace System.Text.JsonLab
 
         public bool TryGetValue(string propertyName, out JsonObject value)
         {
-            var record = Record;
+            var record = GetRecord(0);
 
             if (record.Length == 0)
             {
@@ -178,7 +177,7 @@ namespace System.Text.JsonLab
 
             for (int i = DbRow.Size; i < _database.Length; i += DbRow.Size)
             {
-                record = Read<DbRow>(_database.Slice(i));
+                record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
 
                 if (!record.IsSimpleValue)
                 {
@@ -191,7 +190,7 @@ namespace System.Text.JsonLab
                     int newStart = i + DbRow.Size;
                     int newEnd = newStart + DbRow.Size;
 
-                    record = Read<DbRow>(_database.Slice(newStart));
+                    record = MemoryMarshal.Read<DbRow>(_database.Slice(newStart));
 
                     if (!record.IsSimpleValue)
                     {
@@ -202,7 +201,7 @@ namespace System.Text.JsonLab
                     return true;
                 }
 
-                var valueType = Read<JsonValueType>(_database.Slice(i + DbRow.Size + 8));
+                var valueType = MemoryMarshal.Read<JsonValueType>(_database.Slice(i + DbRow.Size + 8));
                 if (valueType != JsonValueType.Object && valueType != JsonValueType.Array)
                 {
                     i += DbRow.Size;
@@ -243,7 +242,7 @@ namespace System.Text.JsonLab
         {
             get
             {
-                DbRow record = Record;
+                DbRow record = GetRecord(0);
 
                 if ((uint)index >= (uint)record.Length)
                 {
@@ -260,7 +259,7 @@ namespace System.Text.JsonLab
                 int counter = 0;
                 for (int i = DbRow.Size; i <= _database.Length; i += DbRow.Size)
                 {
-                    record = Read<DbRow>(_database.Slice(i));
+                    record = MemoryMarshal.Read<DbRow>(_database.Slice(i));
 
                     if (index == counter)
                     {
@@ -291,7 +290,7 @@ namespace System.Text.JsonLab
         {
             get
             {
-                var record = Record;
+                var record = GetRecord(0);
                 if (record.Type != JsonValueType.Array)
                 {
                     JsonThrowHelper.ThrowInvalidOperationException();
@@ -307,7 +306,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator Utf8Span(JsonObject json)
         {
-            DbRow record = json.Record;
+            DbRow record = json.GetRecord(0);
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -318,7 +317,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator Utf8String(JsonObject json)
         {
-            DbRow record = json.Record;
+            DbRow record = json.GetRecord(0);
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -329,7 +328,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator bool(JsonObject json)
         {
-            var record = json.Record;
+            var record = json.GetRecord(0);
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -351,7 +350,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator int(JsonObject json)
         {
-            var record = json.Record;
+            var record = json.GetRecord(0);
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -368,7 +367,7 @@ namespace System.Text.JsonLab
 
         public static explicit operator double(JsonObject json)
         {
-            var record = json.Record;
+            var record = json.GetRecord(0);
             if (!record.IsSimpleValue)
             {
                 JsonThrowHelper.ThrowInvalidCastException();
@@ -453,20 +452,27 @@ namespace System.Text.JsonLab
 
         }
 
-        private DbRow Record => GetRecord(0);
-        private int Location => GetLocation(0);
-        private int Length => GetLength(0);
+        private DbRow GetRecord(int index) => index == 0
+            ? MemoryMarshal.Read<DbRow>(_database)
+            : MemoryMarshal.Read<DbRow>(_database.Slice(index));
 
-        private DbRow GetRecord(int index) => index == 0 ? Read<DbRow>(_database) : Read<DbRow>(_database.Slice(index));
-        private int GetLocation(int index) => index == 0 ? Read<int>(_database) : Read<int>(_database.Slice(index));
-        private int GetLength(int index) => index == 0 ? Read<int>(_database.Slice(4)) : Read<int>(_database.Slice(index + 4));
-        private JsonValueType GetType(int index) => index == 0 ? Read<JsonValueType>(_database.Slice(8)) : Read<JsonValueType>(_database.Slice(index + 8));
+        private int GetLocation(int index) => index == 0
+            ? MemoryMarshal.Read<int>(_database)
+            : MemoryMarshal.Read<int>(_database.Slice(index));
+
+        private int GetLength(int index) => index == 0
+            ? MemoryMarshal.Read<int>(_database.Slice(4))
+            : MemoryMarshal.Read<int>(_database.Slice(index + 4));
+
+        private JsonValueType GetType(int index) => index == 0
+            ? MemoryMarshal.Read<JsonValueType>(_database.Slice(8))
+            : MemoryMarshal.Read<JsonValueType>(_database.Slice(index + 8));
 
         public JsonValueType Type => GetType(0);
 
         public bool HasValue()
         {
-            DbRow record = Record;
+            DbRow record = GetRecord(0);
 
             if (!record.IsSimpleValue)
             {
