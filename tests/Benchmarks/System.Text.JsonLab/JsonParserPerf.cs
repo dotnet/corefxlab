@@ -16,6 +16,26 @@ namespace System.Text.JsonLab.Benchmarks
     [MemoryDiagnoser]
     public class JsonParserPerf
     {
+        // Keep the JsonStrings resource names in sync with TestCaseType enum values.
+        public enum TestCaseType
+        {
+            HelloWorld,
+            BasicJson,
+            BasicLargeNum,
+            SpecialNumForm,
+            ProjectLockJson,
+            FullSchema1,
+            FullSchema2,
+            DeepTree,
+            BroadTree,
+            LotsOfNumbers,
+            LotsOfStrings,
+            Json400B,
+            Json4KB,
+            Json40KB,
+            Json400KB
+        }
+
         private byte[] _dataUtf8;
         private MemoryStream _stream;
         private StreamReader _reader;

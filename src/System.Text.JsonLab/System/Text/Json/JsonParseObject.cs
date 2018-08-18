@@ -12,7 +12,7 @@ namespace System.Text.JsonLab
         private Span<byte> _database;
         private ReadOnlySpan<byte> _jsonData;
 
-        internal string PrintDatabase()
+        public string PrintDatabase()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nameof(DbRow.Location) + "\t" + nameof(DbRow.Length) + "\t" + nameof(DbRow.Type) + "\r\n");

@@ -22,14 +22,14 @@ namespace System.Text.JsonLab.Benchmarks
             DepsJsonWebSockets
         }
 
+        private byte[] _dataUtf8;
+        private MemoryStream _stream;
+        private StreamReader _reader;
+
         [ParamsSource(nameof(TestCaseValues))]
         public TestCaseType TestCase;
 
         public static IEnumerable<TestCaseType> TestCaseValues() => (IEnumerable<TestCaseType>)Enum.GetValues(typeof(TestCaseType));
-
-        private byte[] _dataUtf8;
-        private MemoryStream _stream;
-        private StreamReader _reader;
 
         [GlobalSetup]
         public void Setup()
