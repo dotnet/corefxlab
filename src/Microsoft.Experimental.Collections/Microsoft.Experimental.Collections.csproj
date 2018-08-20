@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup>
+    <Description>This package provides collections that are being considered for future versions of .NET Core.</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTags>collections, system, microsoft, fastdictionary, multivaluedictionary</PackageTags>
+  </PropertyGroup>
+</Project>
