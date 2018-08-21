@@ -14,7 +14,8 @@ namespace System.Devices.Gpio.Samples
         {
             Unknown,
             RaspberryPi = 1,
-            Odroid = 2
+            Odroid = 2,
+            Hummingboard = 3
         }
 
         private const int RaspberryPiPinCount = 54;
@@ -24,19 +25,30 @@ namespace System.Devices.Gpio.Samples
         {
             Led = 26,
             Button = 18,
-            SpiBusId = 0
+            SpiBusId = 0,
+            SpiChipSelectLine = 8
         }
 
         private enum OdroidSettings
         {
-            Led = 209,
-            Button = 210,
-            SpiBusId = 1
+            Led = 30,
+            Button = 29,
+            SpiBusId = 1,
+            SpiChipSelectLine = 24
+        }
+
+        private enum HummingboardSettings
+        {
+            Led = 73,
+            Button = 69,
+            SpiBusId = 1,
+            SpiChipSelectLine = 0
         }
 
         private static int s_ledPinNumber;
         private static int s_buttonPinNumber;
         private static uint s_spiBusId;
+        private static int s_chipSelectLinePinNumber;
 
         private static void Main(string[] args)
         {
@@ -62,12 +74,21 @@ namespace System.Devices.Gpio.Samples
                         s_ledPinNumber = (int)RaspberryPiSettings.Led;
                         s_buttonPinNumber = (int)RaspberryPiSettings.Button;
                         s_spiBusId = (uint)RaspberryPiSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)RaspberryPiSettings.SpiChipSelectLine;
                         break;
 
                     case DeviceKind.Odroid:
                         s_ledPinNumber = (int)OdroidSettings.Led;
                         s_buttonPinNumber = (int)OdroidSettings.Button;
                         s_spiBusId = (uint)OdroidSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)OdroidSettings.SpiChipSelectLine;
+                        break;
+
+                    case DeviceKind.Hummingboard:
+                        s_ledPinNumber = (int)HummingboardSettings.Led;
+                        s_buttonPinNumber = (int)HummingboardSettings.Button;
+                        s_spiBusId = (uint)HummingboardSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)HummingboardSettings.SpiChipSelectLine;
                         break;
 
                     default:
@@ -229,8 +250,9 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine($"Usage: {assemblyName} <device> <sample>");
             Console.WriteLine("       where <device> can be any of the following options:");
             Console.WriteLine();
-            Console.WriteLine($"        {(int)DeviceKind.RaspberryPi} -> {nameof(DeviceKind.RaspberryPi)}");
-            Console.WriteLine($"        {(int)DeviceKind.Odroid     } -> {nameof(DeviceKind.Odroid)}");
+            Console.WriteLine($"        {(int)DeviceKind.RaspberryPi } -> {nameof(DeviceKind.RaspberryPi)}");
+            Console.WriteLine($"        {(int)DeviceKind.Odroid      } -> {nameof(DeviceKind.Odroid)}");
+            Console.WriteLine($"        {(int)DeviceKind.Hummingboard} -> {nameof(DeviceKind.Hummingboard)}");
             Console.WriteLine();
             Console.WriteLine("       and <sample> can be any of the following options:");
             Console.WriteLine();
@@ -598,9 +620,6 @@ namespace System.Devices.Gpio.Samples
                 driver.ValueChanged += OnPinValueChanged2;
                 driver.SetEnableRaisingPinEvents(s_buttonPinNumber, true);
 
-                PinEvent events = driver.GetPinEventsToDetect(s_buttonPinNumber);
-                Console.WriteLine($"Events to detect: {events}");
-
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
@@ -639,9 +658,6 @@ namespace System.Devices.Gpio.Samples
                 button.NotifyEvents = PinEvent.SyncFallingEdge;
                 button.ValueChanged += OnPinValueChanged2;
                 button.EnableRaisingEvents = true;
-
-                PinEvent events = button.NotifyEvents;
-                Console.WriteLine($"Events to detect: {events}");
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -716,10 +732,6 @@ namespace System.Devices.Gpio.Samples
                     {
                         Console.WriteLine("Event detected!");
                     }
-                    else
-                    {
-                        Console.WriteLine("Timeout!");
-                    }
                 }
             }
         }
@@ -759,10 +771,6 @@ namespace System.Devices.Gpio.Samples
                     if (eventDetected)
                     {
                         Console.WriteLine("Event detected!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timeout!");
                     }
                 }
             }
@@ -877,10 +885,10 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin csPin = controller.OpenPin(8);
+                Pin chipSelectPin = controller.OpenPin(s_chipSelectLinePinNumber);
 
                 var settings = new SpiConnectionSettings(s_spiBusId, 0);
-                var sensor = new PressureTemperatureHumiditySensor(csPin, settings);
+                var sensor = new PressureTemperatureHumiditySensor(chipSelectPin, settings);
                 Pressure(sensor);
             }
         }

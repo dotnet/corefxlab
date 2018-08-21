@@ -383,14 +383,14 @@ namespace System.Devices.Gpio.Samples
                     DigitalWrite(_csPin, PinValue.Low);
 
                     // read, bit 7 high
-                    _spiDevice.Write((byte)(register | 0x80));
+                    _spiDevice.Write8((byte)(register | 0x80));
                     result = (uint)_spiDevice.Read(byteCount);
 
                     DigitalWrite(_csPin, PinValue.High);
                     break;
 
                 case ConnectionProtocol.I2c:
-                    _i2cDevice.Write(register);
+                    _i2cDevice.Write8(register);
                     result = (uint)_i2cDevice.Read(byteCount);
                     break;
 

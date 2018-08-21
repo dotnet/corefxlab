@@ -344,7 +344,7 @@ namespace System.Devices.I2c
             };
 
             int ret = ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_RDWR, new IntPtr(&tr));
-            if (ret < 1)
+            if (ret < 0)
             {
                 throw Utils.CreateIOException("Error performing I2c data transfer", ret);
             }
