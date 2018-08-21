@@ -1,14 +1,16 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace System.Collections.Tests
+namespace Microsoft.Collections.Extensions.Tests
 {
-    public class MVD_Tests : MVD_TestBase
+    public class MultiValueDictionaryTests : MultiValueDictionaryTestBase
     {
         #region Helper Methods
         /*======================================================================
