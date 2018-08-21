@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
@@ -14,11 +13,7 @@
     <PackageProjectUrl></PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Generic/**/*.cs" Exclude="Performance/**/*.cs" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
@@ -26,7 +21,7 @@
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Collections.Generic.MultiValueDictionary\System.Collections.Generic.MultiValueDictionary.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Experimental.Collections\Microsoft.Experimental.Collections.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>
