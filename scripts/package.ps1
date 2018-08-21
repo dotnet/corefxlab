@@ -10,6 +10,7 @@ $nugetPath = "$repoRoot\nuget\nuget.exe"
 $packagesPath = "$repoRoot\packages"
 
 $env:DOTNET_MULTILEVEL_LOOKUP = 0
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
 
 Function Ensure-Nuget-Exists {
     if (!(Test-Path "$nugetPath")) {
@@ -22,7 +23,13 @@ Function Ensure-Nuget-Exists {
 }
 
 Write-Host "** Building all NuGet packages. **"
-foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "System*.csproj", "AllDirectories")) {
+foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "*.csproj", "AllDirectories")) {
+
+    $projectName = [System.IO.Path]::GetFileName($file);
+    if (!($projectName.startswith("System.") -or $projectName.startswith("Microsoft."))) {
+        continue;
+    }
+
     Write-Host "Creating NuGet package for $file..."
     Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath --include-symbols --version-suffix $BuildVersion"
 
@@ -31,10 +38,10 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "System
     }
 }
 
-Ensure-Nuget-Exists
-
 if ($ApiKey)
 {
+    Ensure-Nuget-Exists
+
     foreach ($file in [System.IO.Directory]::EnumerateFiles("$packagesPath", "*.nupkg")) {
         try {
             Write-Host "Pushing package $file to MyGet..."
