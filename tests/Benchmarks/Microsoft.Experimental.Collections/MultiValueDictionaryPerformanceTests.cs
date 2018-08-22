@@ -3,174 +3,141 @@
 
 using System;
 using System.Collections.Generic;
-using Xunit;
 using BenchmarkDotNet.Attributes;
 
 namespace Microsoft.Collections.Extensions.Tests
 {
+    [MemoryDiagnoser]
     public class MultiValueDictionaryPerformanceTests
     {
-        [Params(1000, 10000, 10000)]
+        [Params(1000, 10_000, 100_000)]
         public int Size { get; set; }
 
-        public int RandomKey { get; set; }
+        private int _randomKey;
+        private List<int> _values;
+        private MultiValueDictionary<int, int> _dict;
+        private int _value;
 
-        public MultiValueDictionary<int, int> dict;
-        
-        [GlobalSetup(Targets = new[] { nameof(Add), nameof(Clear), nameof(GetItem), nameof(GetKeys), nameof(ContainsValue) })]
+        [GlobalSetup(Targets = new[] { nameof(Clear), nameof(GetKeys) })]
         public void CreateMultiValueDictionary_SingleValues()
         {
-            dict = new MultiValueDictionary<int, int>();
+            _dict = new MultiValueDictionary<int, int>();
             Random rand = new Random(11231992);
 
-            while (dict.Count < Size)
-                dict.Add(rand.Next(), rand.Next());
+            while (_dict.Count < Size)
+                _dict.Add(rand.Next(), rand.Next());
         }
 
-        [GlobalSetup(Targets = new[] { nameof(TryGetValue), nameof(ContainsKey) })]
+        [GlobalSetup(Targets = new[] { nameof(TryGetValue), nameof(ContainsKey), nameof(GetItem) })]
         public void CreateMultiValueDictionary_AddRandomKey()
         {
             CreateMultiValueDictionary_SingleValues();
-            RandomKey = new Random(837322).Next(0, 400000);
-            dict.Add(RandomKey, 12);
+            _randomKey = new Random(837322).Next(0, 400000);
+            _dict.Add(_randomKey, 12);
+        }
+
+        private void SetValue()
+        {
+            if (Size > 104)
+                _value = 1024;
+            if (Size > 4096)
+                _value = 4096;
+            if (Size > 16384)
+                _value = 16384;
+        }
+
+        [IterationSetup(Targets = new[] { nameof(Add), nameof(ContainsValue) })]
+        public void AddContainsSetup()
+        {
+            SetValue();
+            CreateMultiValueDictionary_SingleValues();
         }
 
         [Benchmark]
         public void Add()
         {
-            for (int i = 0; i <= 20000; i++)
-            {
-                dict.Add(i * 10 + 1, 0); dict.Add(i * 10 + 2, 0); dict.Add(i * 10 + 3, 0);
-                dict.Add(i * 10 + 4, 0); dict.Add(i * 10 + 5, 0); dict.Add(i * 10 + 6, 0);
-                dict.Add(i * 10 + 7, 0); dict.Add(i * 10 + 8, 0); dict.Add(i * 10 + 9, 0);
-            }
+            _dict.Add(_value, 0);
         }
 
-        public List<int> values;
-
-        [GlobalSetup(Target = nameof(AddRange))]
+        [IterationSetup(Target = nameof(AddRange))]
         public void AddRange_CreateListWithValues()
         {
-            values = new List<int>();
+            SetValue();
+            _values = new List<int>();
             for (int i = 0; i < Size; i++)
-                values.Add(i);
-            dict = new MultiValueDictionary<int, int>();
+                _values.Add(i);
+            _dict = new MultiValueDictionary<int, int>();
         }
 
         [Benchmark]
         public void AddRange()
         {
-            for (int i = 0; i <= 20000; i++)
-                dict.AddRange(i, values);
+            _dict.AddRange(_value, _values);
         }
 
         [GlobalSetup(Target = nameof(Remove))]
         public void Remove_CreateDictionaryMultipleRepeatedValues()
         {
-            dict = new MultiValueDictionary<int, int>();
+            SetValue();
+            _dict = new MultiValueDictionary<int, int>();
             for (int i = 0; i < Size; i++)
                 for (int j = 0; j < 100; j++)
-                    dict.Add(i, j);
+                    _dict.Add(i, j);
         }
 
         [Benchmark]
         public void Remove()
         {
-            for (int i = 0; i <= Size; i++)
-            {
-                dict.Remove(i);
-            }
+            _dict.Remove(_value);
         }
 
         [Benchmark]
         public void Clear()
         {
-            dict.Clear();
+            _dict.Clear();
         }
 
         [Benchmark]
         public void Ctor()
         {
-            for (int i = 0; i <= 20000; i++)
-            {
-                new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>();
-                new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>();
-                new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>(); new MultiValueDictionary<int, string>();
-            }
+            var _ = new MultiValueDictionary<int, string>();
         }
 
         [Benchmark]
-        [Arguments(0)]
-        [Arguments(1024)]
-        [Arguments(4096)]
-        [Arguments(16384)]
-        public void Ctor_Size(int size)
+        public void Ctor_Size()
         {
-            for (int i = 0; i <= 500; i++)
-            {
-                new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size);
-                new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size);
-                new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size); new MultiValueDictionary<int, string>(size);
-            }
+            var _ = new MultiValueDictionary<int, string>(Size);
         }
 
         [Benchmark]
         public void GetItem()
         {
-            IReadOnlyCollection<int> retrieved;
-            for (int i = 0; i <= 10000; i++)
-            {
-                retrieved = dict[1]; retrieved = dict[2]; retrieved = dict[3];
-                retrieved = dict[4]; retrieved = dict[5]; retrieved = dict[6];
-                retrieved = dict[7]; retrieved = dict[8]; retrieved = dict[9];
-            }
+            IReadOnlyCollection<int> retrieved = _dict[_randomKey];
         }
 
         [Benchmark]
         public void GetKeys()
         {
             IEnumerable<int> result;
-            for (int i = 0; i <= 20000; i++)
-            {
-                result = dict.Keys; result = dict.Keys; result = dict.Keys;
-                result = dict.Keys; result = dict.Keys; result = dict.Keys;
-                result = dict.Keys; result = dict.Keys; result = dict.Keys;
-            }
+            result = _dict.Keys;
         }
 
         [Benchmark]
         public void TryGetValue()
         {
-            for (int i = 0; i <= 1000; i++)
-            {
-                dict.TryGetValue(RandomKey, out var _); dict.TryGetValue(RandomKey, out var _);
-                dict.TryGetValue(RandomKey, out var _); dict.TryGetValue(RandomKey, out var _);
-                dict.TryGetValue(RandomKey, out var _); dict.TryGetValue(RandomKey, out var _);
-                dict.TryGetValue(RandomKey, out var _); dict.TryGetValue(RandomKey, out var _);
-            }
+            _dict.TryGetValue(_randomKey, out var _);
         }
 
         [Benchmark]
         public void ContainsKey()
         {
-            for (int i = 0; i <= 10000; i++)
-            {
-                dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey);
-                dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey);
-                dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey);
-                dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey); dict.ContainsKey(RandomKey);
-            }
+            _dict.ContainsKey(_randomKey);
         }
 
         [Benchmark]
         public void ContainsValue()
         {
-            for (int i = 0; i <= 20000; i++)
-            {
-                dict.ContainsValue(i); dict.ContainsValue(i); dict.ContainsValue(i);
-                dict.ContainsValue(i); dict.ContainsValue(i); dict.ContainsValue(i);
-                dict.ContainsValue(i); dict.ContainsValue(i); dict.ContainsValue(i);
-            }
+            _dict.ContainsValue(_value);
         }
     }
 }

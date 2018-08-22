@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>This package provides collections that are being considered for future versions of .NET Core.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageTags>collections, system, microsoft, fastdictionary, multivaluedictionary</PackageTags>
+    <PackageTags>collections system microsoft multivaluedictionary</PackageTags>
     <VersionPrefix>1.0.4</VersionPrefix>
   </PropertyGroup>
 
