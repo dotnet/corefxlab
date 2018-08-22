@@ -76,6 +76,21 @@ namespace System.Buffers.Tests
             Assert.Equal(default, value);
             Assert.True(reader.End);
         }
+
+        [Fact]
+        public void DefaultState()
+        {
+            BufferReader<T> reader = default;
+            Assert.True(reader.End);
+            Assert.False(reader.TryPeek(out T value));
+            Assert.Equal(default, value);
+            Assert.False(reader.TryRead(out value));
+            Assert.Equal(default, value);
+            Assert.Equal(0, reader.CurrentSpan.Length);
+            Assert.Equal(0, reader.UnreadSpan.Length);
+            Assert.Equal(0, reader.Consumed);
+            Assert.Equal(0, reader.CurrentSpanIndex);
+        }
     }
 
     public class SegmentPerByte : ReaderBasicTests<byte>
@@ -418,5 +433,4 @@ namespace System.Buffers.Tests
             }
         }
     }
-
 }
