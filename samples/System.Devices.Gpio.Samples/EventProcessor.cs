@@ -40,6 +40,8 @@ namespace System.Devices.Gpio.Samples
                 Console.WriteLine($"Command received: '{command}'");
 
                 ExecuteCommand(command);
+
+                Console.WriteLine("Done");
             }
 
             return context.CheckpointAsync();

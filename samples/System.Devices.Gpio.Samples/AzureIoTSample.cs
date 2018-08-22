@@ -39,8 +39,8 @@ namespace System.Devices.Gpio.Samples
             EventHubClient eventHubClient = CreateEventHubClient("DataEventHubConnectionString");
             Stopwatch watch = Stopwatch.StartNew();
 
-            var pressureSettings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
-            var colorSettings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
+            var pressureSettings = new I2cConnectionSettings(Program.I2cBusId, PressureTemperatureHumiditySensor.DefaultI2cAddress);
+            var colorSettings = new I2cConnectionSettings(Program.I2cBusId, RgbColorSensor.DefaultI2cAddress);
 
             using (var pressureSensor = new PressureTemperatureHumiditySensor(pressureSettings))
             using (var colorSensor = new RgbColorSensor(colorSettings))

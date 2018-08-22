@@ -20,13 +20,15 @@ namespace System.Devices.Gpio.Samples
 
         private const int RaspberryPiPinCount = 54;
         private const int OdroidPinCount = 40;
+        private const int HummingboardPinCount = 36;
 
         private enum RaspberryPiSettings
         {
             Led = 26,
             Button = 18,
             SpiBusId = 0,
-            SpiChipSelectLine = 8
+            SpiChipSelectLine = 8,
+            I2cBusId = 1
         }
 
         private enum OdroidSettings
@@ -34,7 +36,8 @@ namespace System.Devices.Gpio.Samples
             Led = 30,
             Button = 29,
             SpiBusId = 1,
-            SpiChipSelectLine = 24
+            SpiChipSelectLine = 31,
+            I2cBusId = 1
         }
 
         private enum HummingboardSettings
@@ -42,13 +45,17 @@ namespace System.Devices.Gpio.Samples
             Led = 73,
             Button = 69,
             SpiBusId = 1,
-            SpiChipSelectLine = 0
+            SpiChipSelectLine = 68,
+            I2cBusId = 2
         }
 
         private static int s_ledPinNumber;
         private static int s_buttonPinNumber;
         private static uint s_spiBusId;
         private static int s_chipSelectLinePinNumber;
+        private static uint s_i2cBusId;
+
+        internal static uint I2cBusId => s_i2cBusId;
 
         private static void Main(string[] args)
         {
@@ -75,6 +82,7 @@ namespace System.Devices.Gpio.Samples
                         s_buttonPinNumber = (int)RaspberryPiSettings.Button;
                         s_spiBusId = (uint)RaspberryPiSettings.SpiBusId;
                         s_chipSelectLinePinNumber = (int)RaspberryPiSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)RaspberryPiSettings.I2cBusId;
                         break;
 
                     case DeviceKind.Odroid:
@@ -82,6 +90,7 @@ namespace System.Devices.Gpio.Samples
                         s_buttonPinNumber = (int)OdroidSettings.Button;
                         s_spiBusId = (uint)OdroidSettings.SpiBusId;
                         s_chipSelectLinePinNumber = (int)OdroidSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)OdroidSettings.I2cBusId;
                         break;
 
                     case DeviceKind.Hummingboard:
@@ -89,6 +98,7 @@ namespace System.Devices.Gpio.Samples
                         s_buttonPinNumber = (int)HummingboardSettings.Button;
                         s_spiBusId = (uint)HummingboardSettings.SpiBusId;
                         s_chipSelectLinePinNumber = (int)HummingboardSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)HummingboardSettings.I2cBusId;
                         break;
 
                     default:
@@ -581,6 +591,7 @@ namespace System.Devices.Gpio.Samples
             else
             {
                 Console.WriteLine($"Button down!");
+                Console.WriteLine();
             }
 
             s_buttonPressed = !s_buttonPressed;
@@ -730,7 +741,7 @@ namespace System.Devices.Gpio.Samples
 
                     if (eventDetected)
                     {
-                        Console.WriteLine("Event detected!");
+                        Console.WriteLine("Button pressed!");
                     }
                 }
             }
@@ -770,7 +781,7 @@ namespace System.Devices.Gpio.Samples
 
                     if (eventDetected)
                     {
-                        Console.WriteLine("Event detected!");
+                        Console.WriteLine("Button pressed!");
                     }
                 }
             }
@@ -837,7 +848,7 @@ namespace System.Devices.Gpio.Samples
         {
             Console.WriteLine(nameof(Spi_Roundtrip));
 
-            // For this sample connect SPI0 MOSI with SPI0 MISO.
+            // For this sample connect SPI MOSI with SPI MISO.
             var settings = new SpiConnectionSettings(s_spiBusId, 0);
             using (var device = new UnixSpiDevice(settings))
             {
@@ -897,7 +908,7 @@ namespace System.Devices.Gpio.Samples
         {
             Console.WriteLine(nameof(I2c_Pressure));
 
-            var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
+            var settings = new I2cConnectionSettings(s_i2cBusId, PressureTemperatureHumiditySensor.DefaultI2cAddress);
             var sensor = new PressureTemperatureHumiditySensor(settings);
             Pressure(sensor);
         }
@@ -993,7 +1004,7 @@ namespace System.Devices.Gpio.Samples
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
+                var settings = new I2cConnectionSettings(s_i2cBusId, PressureTemperatureHumiditySensor.DefaultI2cAddress);
                 var sensor = new PressureTemperatureHumiditySensor(settings);
                 Pressure_Lcd(lcd, sensor);
             }
@@ -1046,7 +1057,7 @@ namespace System.Devices.Gpio.Samples
         {
             Console.WriteLine(nameof(I2c_Color));
 
-            var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
+            var settings = new I2cConnectionSettings(s_i2cBusId, RgbColorSensor.DefaultI2cAddress);
             using (var sensor = new RgbColorSensor(settings))
             {
                 bool ok = sensor.Begin();
@@ -1103,7 +1114,7 @@ namespace System.Devices.Gpio.Samples
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
+                var settings = new I2cConnectionSettings(s_i2cBusId, RgbColorSensor.DefaultI2cAddress);
                 var sensor = new RgbColorSensor(settings);
                 Color_Lcd(lcd, sensor);
             }
