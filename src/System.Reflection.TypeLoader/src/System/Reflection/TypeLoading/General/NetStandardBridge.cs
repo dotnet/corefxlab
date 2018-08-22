@@ -36,7 +36,7 @@ namespace System.Reflection.TypeLoading
         public static bool IsVariableBoundArray(this Type type) => type.IsVariableBoundArray;
         public static bool IsGenericMethodParameter(this Type type) => type.IsGenericMethodParameter;
 
-        // @TODO: This should be fixed assuming https://github.com/dotnet/corefx/issues/31798 gets approved.
+        // @TODO - https://github.com/dotnet/corefxlab/issues/2443: This should be fixed assuming https://github.com/dotnet/corefx/issues/31798 gets approved.
         public static Type MakeSignatureGenericType(this Type genericTypeDefinition, Type[] typeArguments) => throw new NotSupportedException(SR.NotSupported_MakeGenericType_SignatureTypes);
 #endif
     }
