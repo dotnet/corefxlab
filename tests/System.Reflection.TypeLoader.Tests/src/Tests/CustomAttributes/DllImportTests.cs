@@ -13,6 +13,8 @@ using SampleMetadata;
 
 using Xunit;
 
+#pragma warning disable 0618 // Obsolete
+
 namespace System.Reflection.Tests
 {
     public static partial class CustomAttributeTests
@@ -49,23 +51,191 @@ namespace System.Reflection.Tests
             Assert.Equal(d1.Value, d2.Value);
         }
 
-        //[Fact]  - [ActiveIssue("https://github.com/dotnet/corefxlab/issues/2441")] - Failing on Unix. It's likely a bug in
-        //          runtime Reflection on that platform as we're using runtime Reflection's results to validate TypeLoader's results.
-        public static void TestMarshalAsPseudoCustomAttribute()
+        [Theory]
+        [MemberData(nameof(MarshalAsTheoryData))]
+        public static void TestMarshalAsPseudoCustomAttribute(string fieldName, MarshalAsAttribute expected)
         {
-            TypeInfo runtimeType = typeof(MarshalAsHolders).GetTypeInfo();  // Intentionally not projected - using to get expected results.
-            FieldInfo[] runtimeFields = runtimeType.DeclaredFields.OrderBy(f => f.Name).ToArray();
+            TypeInfo ecmaType = typeof(MarshalAsHolders).Project().GetTypeInfo();
+            FieldInfo ecmaField = ecmaType.GetDeclaredField(fieldName);
+            Assert.NotNull(ecmaField);
+            CustomAttributeData cad = ecmaField.CustomAttributes.Single(c => c.AttributeType.Name == nameof(MarshalAsAttribute));
+            MarshalAsAttribute actual = cad.UnprojectAndInstantiate<MarshalAsAttribute>();
+            AssertEqual(expected, actual);
+        }
 
-            TypeInfo ecmaType = runtimeType.Project().GetTypeInfo();
-            FieldInfo[] ecmaFields = ecmaType.DeclaredFields.OrderBy(f => f.Name).ToArray();
-
-            Assert.Equal(runtimeFields.Length, ecmaFields.Length);
-            for (int i = 0; i < runtimeFields.Length; i++)
+        public static IEnumerable<object[]> MarshalAsTheoryData
+        {
+            get
             {
-                MarshalAsAttribute expected = runtimeFields[i].GetCustomAttribute<MarshalAsAttribute>();
-                CustomAttributeData cad = ecmaFields[i].CustomAttributes.Single(c => c.AttributeType.Name == nameof(MarshalAsAttribute));
-                MarshalAsAttribute actual = cad.UnprojectAndInstantiate<MarshalAsAttribute>();
-                AssertEqual(expected, actual);
+                yield return new object[]
+                {
+                     "F1",
+                    new MarshalAsAttribute(UnmanagedType.BStr)
+                    {
+                    },
+                };
+                yield return new object[]
+                {
+                     "F2",
+                    new MarshalAsAttribute(UnmanagedType.Currency)
+                    {
+                    },
+                };
+                yield return new object[]
+                {
+                     "F3",
+                    new MarshalAsAttribute(UnmanagedType.IDispatch)
+                    {
+                    },
+                };
+                yield return new object[]
+                {
+                     "F4",
+                    new MarshalAsAttribute(UnmanagedType.IDispatch)
+                    {
+                        IidParameterIndex = 42,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F5",
+                    new MarshalAsAttribute(UnmanagedType.ByValArray)
+                    {
+                        SizeConst = 1,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F6",
+                    new MarshalAsAttribute(UnmanagedType.ByValArray)
+                    {
+                        SizeConst = 5,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F7",
+                    new MarshalAsAttribute(UnmanagedType.ByValArray)
+                    {
+                        ArraySubType = UnmanagedType.FunctionPtr,
+                        SizeConst = 1,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F8",
+                    new MarshalAsAttribute(UnmanagedType.ByValArray)
+                    {
+                        ArraySubType = UnmanagedType.FunctionPtr,
+                        SizeConst = 87,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F9",
+                    new MarshalAsAttribute(UnmanagedType.SafeArray)
+                    {
+                    },
+                };
+                yield return new object[]
+                {
+                     "F10",
+                    new MarshalAsAttribute(UnmanagedType.SafeArray)
+                    {
+                        SafeArraySubType = VarEnum.VT_BSTR,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F11",
+                    new MarshalAsAttribute(UnmanagedType.SafeArray)
+                    {
+                        SafeArraySubType = VarEnum.VT_RECORD,
+                        SafeArrayUserDefinedSubType = typeof(MyUdt),
+                    },
+                };
+                yield return new object[]
+                {
+                     "F12",
+                    new MarshalAsAttribute(UnmanagedType.SafeArray)
+                    {
+                        SafeArraySubType = VarEnum.VT_RECORD,
+                        SafeArrayUserDefinedSubType = typeof(DateTime),
+                    },
+                };
+                yield return new object[]
+                {
+                     "F13",
+                    new MarshalAsAttribute(UnmanagedType.LPArray)
+                    {
+                        ArraySubType = (UnmanagedType)80,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F14",
+                    new MarshalAsAttribute(UnmanagedType.LPArray)
+                    {
+                        ArraySubType = UnmanagedType.LPWStr,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F15",
+                    new MarshalAsAttribute(UnmanagedType.LPArray)
+                    {
+                        ArraySubType = UnmanagedType.LPStruct,
+                        SizeParamIndex = 677,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F16",
+                    new MarshalAsAttribute(UnmanagedType.LPArray)
+                    {
+                        ArraySubType = UnmanagedType.LPStruct,
+                        SizeConst = 87,
+                        SizeParamIndex = 677,
+                    },
+                };
+                yield return new object[]
+                {
+                     "F17",
+                    new MarshalAsAttribute(UnmanagedType.CustomMarshaler)
+                    {
+                        MarshalCookie = "",
+                        MarshalType = "SampleMetadata.MyUdt",
+                        MarshalTypeRef = typeof(MyUdt),
+                    },
+                };
+                yield return new object[]
+                {
+                     "F18",
+                    new MarshalAsAttribute(UnmanagedType.CustomMarshaler)
+                    {
+                        MarshalCookie = "",
+                        MarshalType = "System.DateTime, System.Runtime, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+                        MarshalTypeRef = typeof(DateTime),
+                    },
+                };
+                yield return new object[]
+                {
+                     "F19",
+                    new MarshalAsAttribute(UnmanagedType.CustomMarshaler)
+                    {
+                        MarshalCookie = "",
+                        MarshalType = "Blah",
+                    },
+                };
+                yield return new object[]
+                {
+                     "F20",
+                    new MarshalAsAttribute(UnmanagedType.CustomMarshaler)
+                    {
+                        MarshalCookie = "YumYum",
+                        MarshalType = "Blah",
+                    },
+                };
             }
         }
 
