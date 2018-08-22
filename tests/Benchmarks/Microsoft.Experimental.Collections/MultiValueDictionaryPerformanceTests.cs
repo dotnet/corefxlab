@@ -38,11 +38,11 @@ namespace Microsoft.Collections.Extensions.Tests
 
         private void SetValue()
         {
-            if (Size > 104)
+            if (Size >= 1024)
                 _value = 1024;
-            if (Size > 4096)
+            if (Size >= 4096)
                 _value = 4096;
-            if (Size > 16384)
+            if (Size >= 16384)
                 _value = 16384;
         }
 
