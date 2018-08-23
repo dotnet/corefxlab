@@ -54,10 +54,16 @@ namespace System.Reflection.TypeLoading
     // causes us to waste an extra pointer-sized field per Type instance. It is also fragile as TypeDelegator could break us in the future
     // by overriding more methods.
     //
-    internal abstract class LeveledTypeInfo : TypeDelegator
+    internal abstract class LeveledTypeInfo :
+#if netstandard
+        TypeDelegator
+#else
+        TypeInfo
+#endif
     {
         protected LeveledTypeInfo() : base() { }
 
+#if netstandard
         // This is an api that TypeDelegator overrides that it needn't have. Since RoType expects to fall through to System.Type's method, we have to reimplement
         // System.Type's behavior here to avoid getting TypeDelegator's method.
         //
@@ -65,7 +71,6 @@ namespace System.Reflection.TypeLoading
         // This could be policed by an analyzer that searches RoType's method bodies for non-virtual calls to apis declared on TypeDelegator.
         public override EventInfo[] GetEvents() => GetEvents(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public);
 
-#if netstandard
         public abstract bool IsGenericTypeParameter { get; }
         public abstract bool IsGenericMethodParameter { get; }
         public abstract bool IsSZArray { get; }
