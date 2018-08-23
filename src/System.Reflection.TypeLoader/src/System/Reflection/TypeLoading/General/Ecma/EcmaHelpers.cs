@@ -83,7 +83,7 @@ namespace System.Reflection.TypeLoading.Ecma
         //
         //   System.Reflection.AssemblyHashAlgorithm is an enum defined by System.Reflection.Metadata.dll.
         //
-        //   System.Configuration.Assemblies.AssemblyHashAlgorithm.AssemblyHashAlgorthm is an identical enum defined
+        //   System.Configuration.Assemblies.AssemblyHashAlgorithm is an identical enum defined
         //     by System.Runtime.dll.
         //
         // The values line up exactly so it's safe to cast from one to the other but we'll encapsulate that 
