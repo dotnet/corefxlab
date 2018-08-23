@@ -71,15 +71,15 @@ namespace System
         internal const string NotAClause = "This ExceptionHandlingClause is not a clause.";
         internal const string NotAFilter = "This ExceptionHandlingClause is not a filter.";
 
-        internal static string Arg_MustBeType = "Type must be a type provided by the TypeLoader.";
-        internal static string Arg_EmptyArray = "Array may not be empty.";
+        internal const string Arg_MustBeType = "Type must be a type provided by the TypeLoader.";
+        internal const string Arg_EmptyArray = "Array may not be empty.";
 
-        internal static string TypeLoaderDisposed = "This object is no longer valid because the TypeLoader that created it has been disposed.";
+        internal const string TypeLoaderDisposed = "This object is no longer valid because the TypeLoader that created it has been disposed.";
 
-        internal static string GenericTypeParamIndexOutOfRange = "A type specification contained an out of range index for a generic type parameter: {0}";
-        internal static string GenericMethodParamIndexOutOfRange = "A type specification contained an out of range index for a generic method parameter: {0}";
+        internal const string GenericTypeParamIndexOutOfRange = "A type specification contained an out of range index for a generic type parameter: {0}";
+        internal const string GenericMethodParamIndexOutOfRange = "A type specification contained an out of range index for a generic method parameter: {0}";
 
-        internal static string Arg_HTCapacityOverflow => "Hashtable's capacity overflowed and went negative. Check load factor, capacity and the current size of the table.";
+        internal const string Arg_HTCapacityOverflow = "Hashtable's capacity overflowed and went negative. Check load factor, capacity and the current size of the table.";
 
         internal static string Format(string resourceFormat, params object[] args) => string.Format(resourceFormat, args);
     }
