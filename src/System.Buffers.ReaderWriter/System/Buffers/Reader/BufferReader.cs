@@ -9,6 +9,7 @@ namespace System.Buffers.Reader
     {
         private SequencePosition _currentPosition;
         private SequencePosition _nextPosition;
+        private bool _moreData;
 
         /// <summary>
         /// Create a <see cref="BufferReader" over the given <see cref="ReadOnlySequence{T}"/>./>
@@ -24,7 +25,7 @@ namespace System.Buffers.Reader
 
             if (buffer.TryGet(ref _nextPosition, out ReadOnlyMemory<T> memory, advance: true))
             {
-                End = false;
+                _moreData = true;
                 CurrentSpan = memory.Span;
                 if (CurrentSpan.Length == 0)
                 {
@@ -35,7 +36,7 @@ namespace System.Buffers.Reader
             else
             {
                 // No space in any spans and at end of sequence
-                End = true;
+                _moreData = false;
                 CurrentSpan = default;
             }
         }
@@ -43,7 +44,7 @@ namespace System.Buffers.Reader
         /// <summary>
         /// True when there is no more data in the <see cref="Sequence"/>.
         /// </summary>
-        public bool End { get; private set; }
+        public bool End => !_moreData;
 
         /// <summary>
         /// The underlying <see cref="ReadOnlySequence{T}"/> for the reader.
@@ -145,7 +146,7 @@ namespace System.Buffers.Reader
                     }
                 }
             }
-            End = true;
+            _moreData = false;
         }
 
         /// <summary>
