@@ -10,17 +10,97 @@ namespace System.Devices.Gpio.Samples
 {
     internal class Program
     {
-        private const int RaspberryPiPinCount = 54;
+        private enum DeviceKind
+        {
+            Unknown,
+            RaspberryPi = 1,
+            Odroid = 2,
+            Hummingboard = 3
+        }
+
+        private enum RaspberryPiSettings
+        {
+            Led = 26,
+            Button = 18,
+            SpiBusId = 0,
+            SpiChipSelectLine = 8,
+            I2cBusId = 1
+        }
+
+        private enum OdroidSettings
+        {
+            Led = 30,
+            Button = 29,
+            SpiBusId = 1,
+            SpiChipSelectLine = 31,
+            I2cBusId = 1
+        }
+
+        private enum HummingboardSettings
+        {
+            Led = 73,
+            Button = 69,
+            SpiBusId = 1,
+            SpiChipSelectLine = 68,
+            I2cBusId = 2
+        }
+
+        private static int s_ledPinNumber;
+        private static int s_buttonPinNumber;
+        private static uint s_spiBusId;
+        private static int s_chipSelectLinePinNumber;
+        private static uint s_i2cBusId;
+
+        internal static uint I2cBusId => s_i2cBusId;
 
         private static void Main(string[] args)
         {
             try
             {
+                DeviceKind device = DeviceKind.Unknown;
                 int option = -1;
 
-                if (args.Length > 0)
+                if (args.Length == 2)
                 {
-                    option = Convert.ToInt32(args[0]);
+                    Enum.TryParse(args[0], out device);
+                    option = Convert.ToInt32(args[1]);
+                }
+                else
+                {
+                    ShowUsage();
+                    return;
+                }
+
+                switch (device)
+                {
+                    case DeviceKind.RaspberryPi:
+                        s_ledPinNumber = (int)RaspberryPiSettings.Led;
+                        s_buttonPinNumber = (int)RaspberryPiSettings.Button;
+                        s_spiBusId = (uint)RaspberryPiSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)RaspberryPiSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)RaspberryPiSettings.I2cBusId;
+                        break;
+
+                    case DeviceKind.Odroid:
+                        s_ledPinNumber = (int)OdroidSettings.Led;
+                        s_buttonPinNumber = (int)OdroidSettings.Button;
+                        s_spiBusId = (uint)OdroidSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)OdroidSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)OdroidSettings.I2cBusId;
+                        break;
+
+                    case DeviceKind.Hummingboard:
+                        s_ledPinNumber = (int)HummingboardSettings.Led;
+                        s_buttonPinNumber = (int)HummingboardSettings.Button;
+                        s_spiBusId = (uint)HummingboardSettings.SpiBusId;
+                        s_chipSelectLinePinNumber = (int)HummingboardSettings.SpiChipSelectLine;
+                        s_i2cBusId = (uint)HummingboardSettings.I2cBusId;
+                        break;
+
+                    default:
+                        Console.WriteLine("Unknown device");
+                        ShowUsage();
+                        return;
                 }
 
                 switch (option)
@@ -143,25 +223,44 @@ namespace System.Devices.Gpio.Samples
                         I2c_Color();
                         break;
 
-                    default:
-                        ShowUsage();
+                    case 33:
+                        AzureIoTSendData();
                         break;
+                    case 34:
+                        AzureIoTSendCommands();
+                        break;
+                    case 35:
+                        AzureIoTReceiveCommands();
+                        break;
+
+                    default:
+                        Console.WriteLine("Unknown sample");
+                        ShowUsage();
+                        return;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-
-            Console.WriteLine("Done!");
+            finally
+            {
+                Console.WriteLine("Done!");
+            }
         }
 
         private static void ShowUsage()
         {
             string assemblyName = Reflection.Assembly.GetEntryAssembly().GetName().Name;
 
-            Console.WriteLine($"Usage: {assemblyName} <arg>");
-            Console.WriteLine("       where <arg> can be any of the following options:");
+            Console.WriteLine($"Usage: {assemblyName} <device> <sample>");
+            Console.WriteLine("       where <device> can be any of the following options:");
+            Console.WriteLine();
+            Console.WriteLine($"        {(int)DeviceKind.RaspberryPi } -> {nameof(DeviceKind.RaspberryPi)}");
+            Console.WriteLine($"        {(int)DeviceKind.Odroid      } -> {nameof(DeviceKind.Odroid)}");
+            Console.WriteLine($"        {(int)DeviceKind.Hummingboard} -> {nameof(DeviceKind.Hummingboard)}");
+            Console.WriteLine();
+            Console.WriteLine("       and <sample> can be any of the following options:");
             Console.WriteLine();
             Console.WriteLine($"        0 -> {nameof(Unix_BlinkingLed)}");
             Console.WriteLine($"        1 -> {nameof(Unix_ButtonLed)}");
@@ -215,18 +314,22 @@ namespace System.Devices.Gpio.Samples
             Console.WriteLine();
             Console.WriteLine($"       32 -> {nameof(I2c_Color)}");
             Console.WriteLine();
+            Console.WriteLine($"       33 -> {nameof(AzureIoTSendData)}");
+            Console.WriteLine($"       34 -> {nameof(AzureIoTSendCommands)}");
+            Console.WriteLine($"       35 -> {nameof(AzureIoTReceiveCommands)}");
+            Console.WriteLine();
         }
 
-        private static void Unix_BlinkingLed()
+        internal static void Unix_BlinkingLed()
         {
             Console.WriteLine(nameof(Unix_BlinkingLed));
-            BlinkingLed(new UnixDriver(RaspberryPiPinCount));
+            BlinkingLed(new UnixDriver());
         }
 
         private static void Unix_ButtonLed()
         {
             Console.WriteLine(nameof(Unix_ButtonLed));
-            ButtonLed(new UnixDriver(RaspberryPiPinCount));
+            ButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPi_BlinkingLed()
@@ -243,9 +346,9 @@ namespace System.Devices.Gpio.Samples
 
         private static void BlinkingLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin led = controller.OpenPin(26, PinMode.Output);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
@@ -260,10 +363,10 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(18, PinMode.Input);
-                Pin led = controller.OpenPin(26, PinMode.Output);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -278,13 +381,13 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_BlinkingLed()
         {
             Console.WriteLine(nameof(UnixDriver_BlinkingLed));
-            Driver_BlinkingLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_BlinkingLed(new UnixDriver());
         }
 
         private static void UnixDriver_ButtonLed()
         {
             Console.WriteLine(nameof(UnixDriver_ButtonLed));
-            Driver_ButtonLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_ButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_BlinkingLed()
@@ -301,19 +404,17 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_BlinkingLed(GpioDriver driver)
         {
-            const int led = 26;
-
             using (driver)
             {
-                driver.OpenPin(led);
-                driver.SetPinMode(led, PinMode.Output);
+                driver.OpenPin(s_ledPinNumber);
+                driver.SetPinMode(s_ledPinNumber, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
-                    driver.Output(led, PinValue.High);
+                    driver.Output(s_ledPinNumber, PinValue.High);
                     Thread.Sleep(TimeSpan.FromSeconds(1));
 
-                    driver.Output(led, PinValue.Low);
+                    driver.Output(s_ledPinNumber, PinValue.Low);
                     Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
@@ -321,23 +422,20 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_ButtonLed(GpioDriver driver)
         {
-            const int button = 18;
-            const int led = 26;
-
             using (driver)
             {
-                driver.OpenPin(button);
-                driver.SetPinMode(button, PinMode.Input);
+                driver.OpenPin(s_buttonPinNumber);
+                driver.SetPinMode(s_buttonPinNumber, PinMode.Input);
 
-                driver.OpenPin(led);
-                driver.SetPinMode(led, PinMode.Output);
+                driver.OpenPin(s_ledPinNumber);
+                driver.SetPinMode(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    PinValue value = driver.Input(button);
-                    driver.Output(led, value);
+                    PinValue value = driver.Input(s_buttonPinNumber);
+                    driver.Output(s_ledPinNumber, value);
                 }
             }
         }
@@ -350,23 +448,20 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_ButtonPullDown(GpioDriver driver)
         {
-            const int button = 18;
-            const int led = 26;
-
             using (driver)
             {
-                driver.OpenPin(button);
-                driver.SetPinMode(button, PinMode.InputPullDown);
+                driver.OpenPin(s_buttonPinNumber);
+                driver.SetPinMode(s_buttonPinNumber, PinMode.InputPullDown);
 
-                driver.OpenPin(led);
-                driver.SetPinMode(led, PinMode.Output);
+                driver.OpenPin(s_ledPinNumber);
+                driver.SetPinMode(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    PinValue value = driver.Input(button);
-                    driver.Output(led, value);
+                    PinValue value = driver.Input(s_buttonPinNumber);
+                    driver.Output(s_ledPinNumber, value);
                 }
             }
         }
@@ -379,10 +474,10 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonPullDown(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(18, PinMode.InputPullDown);
-                Pin led = controller.OpenPin(26, PinMode.Output);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.InputPullDown);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -397,7 +492,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_DetectButton()
         {
             Console.WriteLine(nameof(UnixDriver_DetectButton));
-            Driver_DetectButton(new UnixDriver(RaspberryPiPinCount));
+            Driver_DetectButton(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_DetectButton()
@@ -408,8 +503,6 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_DetectButton(GpioDriver driver)
         {
-            const int button = 18;
-
             using (driver)
             {
                 PinMode buttonMode = PinMode.Input;
@@ -419,13 +512,13 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
-                driver.OpenPin(button);
-                driver.SetPinMode(button, buttonMode);
+                driver.OpenPin(s_buttonPinNumber);
+                driver.SetPinMode(s_buttonPinNumber, buttonMode);
 
-                driver.SetDebounce(button, TimeSpan.FromMilliseconds(100));
-                driver.SetPinEventsToDetect(button, PinEvent.SyncBoth);
+                driver.SetDebounce(s_buttonPinNumber, TimeSpan.FromMilliseconds(100));
+                driver.SetPinEventsToDetect(s_buttonPinNumber, PinEvent.SyncFallingRisingEdge);
                 driver.ValueChanged += OnPinValueChanged1;
-                driver.SetEnableRaisingPinEvents(button, true);
+                driver.SetEnableRaisingPinEvents(s_buttonPinNumber, true);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -444,7 +537,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_DetectButton()
         {
             Console.WriteLine(nameof(Unix_DetectButton));
-            DetectButton(new UnixDriver(RaspberryPiPinCount));
+            DetectButton(new UnixDriver());
         }
 
         private static void RaspberryPi_DetectButton()
@@ -455,9 +548,9 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButton(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(18, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
@@ -465,7 +558,7 @@ namespace System.Devices.Gpio.Samples
                 }
 
                 button.DebounceTimeout = TimeSpan.FromMilliseconds(100);
-                button.NotifyEvents = PinEvent.SyncBoth;
+                button.NotifyEvents = PinEvent.SyncFallingRisingEdge;
                 button.ValueChanged += OnPinValueChanged1;
                 button.EnableRaisingEvents = true;
 
@@ -494,6 +587,7 @@ namespace System.Devices.Gpio.Samples
             else
             {
                 Console.WriteLine($"Button down!");
+                Console.WriteLine();
             }
 
             s_buttonPressed = !s_buttonPressed;
@@ -502,7 +596,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_DetectButtonLed()
         {
             Console.WriteLine(nameof(UnixDriver_DetectButtonLed));
-            Driver_DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_DetectButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_DetectButtonLed()
@@ -513,9 +607,6 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_DetectButtonLed(GpioDriver driver)
         {
-            const int button = 18;
-            const int led = 26;
-
             using (driver)
             {
                 PinMode buttonMode = PinMode.Input;
@@ -525,19 +616,16 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
-                driver.OpenPin(button);
-                driver.SetPinMode(button, buttonMode);
+                driver.OpenPin(s_buttonPinNumber);
+                driver.SetPinMode(s_buttonPinNumber, buttonMode);
 
-                driver.OpenPin(led);
-                driver.SetPinMode(led, PinMode.Output);
+                driver.OpenPin(s_ledPinNumber);
+                driver.SetPinMode(s_ledPinNumber, PinMode.Output);
 
-                driver.SetDebounce(button, TimeSpan.FromSeconds(1));
-                driver.SetPinEventsToDetect(button, PinEvent.SyncFallingEdge);
+                driver.SetDebounce(s_buttonPinNumber, TimeSpan.FromSeconds(1));
+                driver.SetPinEventsToDetect(s_buttonPinNumber, PinEvent.SyncFallingEdge);
                 driver.ValueChanged += OnPinValueChanged2;
-                driver.SetEnableRaisingPinEvents(button, true);
-
-                PinEvent events = driver.GetPinEventsToDetect(button);
-                Console.WriteLine($"Events to detect: {events}");
+                driver.SetEnableRaisingPinEvents(s_buttonPinNumber, true);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -551,7 +639,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_DetectButtonLed()
         {
             Console.WriteLine(nameof(Unix_DetectButtonLed));
-            DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
+            DetectButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPi_DetectButtonLed()
@@ -562,24 +650,21 @@ namespace System.Devices.Gpio.Samples
 
         private static void DetectButtonLed(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(18, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
                     button.Mode = PinMode.InputPullDown;
                 }
 
-                Pin led = controller.OpenPin(26, PinMode.Output);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 button.DebounceTimeout = TimeSpan.FromSeconds(1);
                 button.NotifyEvents = PinEvent.SyncFallingEdge;
                 button.ValueChanged += OnPinValueChanged2;
                 button.EnableRaisingEvents = true;
-
-                PinEvent events = button.NotifyEvents;
-                Console.WriteLine($"Events to detect: {events}");
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -594,21 +679,19 @@ namespace System.Devices.Gpio.Samples
 
         private static void OnPinValueChanged2(object sender, PinValueChangedEventArgs e)
         {
-            const int ledPinNumber = 26;
-
             s_currentLedValue = s_currentLedValue == PinValue.High ? PinValue.Low : PinValue.High;
             Console.WriteLine($"Button pressed! Led value {s_currentLedValue}");
 
             if (sender is GpioDriver)
             {
                 GpioDriver driver = sender as GpioDriver;
-                driver.Output(ledPinNumber, s_currentLedValue);
+                driver.Output(s_ledPinNumber, s_currentLedValue);
             }
-            else if (sender is Pin)
+            else if (sender is GpioPin)
             {
-                Pin button = sender as Pin;
+                GpioPin button = sender as GpioPin;
                 GpioController controller = button.Controller;
-                Pin led = controller[ledPinNumber];
+                GpioPin led = controller[s_ledPinNumber];
                 led.Write(s_currentLedValue);
             }
             else
@@ -620,7 +703,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_ButtonWait()
         {
             Console.WriteLine(nameof(UnixDriver_ButtonWait));
-            Driver_ButtonWait(new UnixDriver(RaspberryPiPinCount));
+            Driver_ButtonWait(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_ButtonWait()
@@ -631,8 +714,6 @@ namespace System.Devices.Gpio.Samples
 
         private static void Driver_ButtonWait(GpioDriver driver)
         {
-            const int button = 18;
-
             using (driver)
             {
                 PinMode buttonMode = PinMode.Input;
@@ -642,25 +723,21 @@ namespace System.Devices.Gpio.Samples
                     buttonMode = PinMode.InputPullDown;
                 }
 
-                driver.OpenPin(button);
-                driver.SetPinMode(button, buttonMode);
+                driver.OpenPin(s_buttonPinNumber);
+                driver.SetPinMode(s_buttonPinNumber, buttonMode);
 
-                driver.SetDebounce(button, TimeSpan.FromSeconds(1));
-                driver.SetPinEventsToDetect(button, PinEvent.SyncRisingEdge);
+                driver.SetDebounce(s_buttonPinNumber, TimeSpan.FromSeconds(1));
+                driver.SetPinEventsToDetect(s_buttonPinNumber, PinEvent.SyncRisingEdge);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
                 while (watch.Elapsed.TotalSeconds < 15)
                 {
-                    bool eventDetected = driver.WaitForPinEvent(button, TimeSpan.FromSeconds(1));
+                    bool eventDetected = driver.WaitForPinEvent(s_buttonPinNumber, TimeSpan.FromSeconds(1));
 
                     if (eventDetected)
                     {
-                        Console.WriteLine("Event detected!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timeout!");
+                        Console.WriteLine("Button pressed!");
                     }
                 }
             }
@@ -669,7 +746,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_ButtonWait()
         {
             Console.WriteLine(nameof(Unix_ButtonWait));
-            ButtonWait(new UnixDriver(RaspberryPiPinCount));
+            ButtonWait(new UnixDriver());
         }
 
         private static void RaspberryPi_ButtonWait()
@@ -680,9 +757,9 @@ namespace System.Devices.Gpio.Samples
 
         private static void ButtonWait(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(18, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
@@ -700,11 +777,7 @@ namespace System.Devices.Gpio.Samples
 
                     if (eventDetected)
                     {
-                        Console.WriteLine("Event detected!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timeout!");
+                        Console.WriteLine("Button pressed!");
                     }
                 }
             }
@@ -713,7 +786,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Lcd()
         {
             Console.WriteLine(nameof(Unix_Lcd));
-            Lcd(new UnixDriver(RaspberryPiPinCount));
+            Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_Lcd()
@@ -728,11 +801,11 @@ namespace System.Devices.Gpio.Samples
             const int enablePinNumber = 5;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
@@ -748,10 +821,31 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
+        internal static void Lcd(string message)
+        {
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
+
+            using (var driver = new UnixDriver())
+            using (var controller = new GpioController(driver))
+            {
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
+                lcd.Begin(16, 2);
+                lcd.Print(message);
+            }
+        }
+
         private static void Spi_Roundtrip()
         {
-            // For this sample connect SPI0 MOSI with SPI0 MISO.
-            var settings = new SpiConnectionSettings(0, 0);
+            Console.WriteLine(nameof(Spi_Roundtrip));
+
+            // For this sample connect SPI MOSI with SPI MISO.
+            var settings = new SpiConnectionSettings(s_spiBusId, 0);
             using (var device = new UnixSpiDevice(settings))
             {
                 var writeBuffer = new byte[]
@@ -785,7 +879,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Spi_Pressure()
         {
             Console.WriteLine(nameof(Unix_Spi_Pressure));
-            Spi_Pressure(new UnixDriver(RaspberryPiPinCount));
+            Spi_Pressure(new UnixDriver());
         }
 
         private static void RaspberryPi_Spi_Pressure()
@@ -796,12 +890,12 @@ namespace System.Devices.Gpio.Samples
 
         private static void Spi_Pressure(GpioDriver driver)
         {
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin csPin = controller.OpenPin(8);
+                GpioPin chipSelectPin = controller.OpenPin(s_chipSelectLinePinNumber);
 
-                var settings = new SpiConnectionSettings(0, 0);
-                var sensor = new PressureTemperatureHumiditySensor(csPin, settings);
+                var settings = new SpiConnectionSettings(s_spiBusId, 0);
+                var sensor = new PressureTemperatureHumiditySensor(chipSelectPin, settings);
                 Pressure(sensor);
             }
         }
@@ -809,7 +903,8 @@ namespace System.Devices.Gpio.Samples
         private static void I2c_Pressure()
         {
             Console.WriteLine(nameof(I2c_Pressure));
-            var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
+
+            var settings = new I2cConnectionSettings(s_i2cBusId, PressureTemperatureHumiditySensor.DefaultI2cAddress);
             var sensor = new PressureTemperatureHumiditySensor(settings);
             Pressure(sensor);
         }
@@ -845,7 +940,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Spi_Pressure_Lcd()
         {
             Console.WriteLine(nameof(Unix_Spi_Pressure_Lcd));
-            Spi_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
+            Spi_Pressure_Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_Spi_Pressure_Lcd()
@@ -854,10 +949,10 @@ namespace System.Devices.Gpio.Samples
             Spi_Pressure_Lcd(new RaspberryPiDriver());
         }
 
-        private static void Unix_I2c_Pressure_Lcd()
+        internal static void Unix_I2c_Pressure_Lcd()
         {
             Console.WriteLine(nameof(Unix_I2c_Pressure_Lcd));
-            I2c_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
+            I2c_Pressure_Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_I2c_Pressure_Lcd()
@@ -873,18 +968,18 @@ namespace System.Devices.Gpio.Samples
             const int chipSelectLinePinNumber = 8;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                Pin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
+                GpioPin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
 
-                var settings = new SpiConnectionSettings(0, 0);
+                var settings = new SpiConnectionSettings(s_spiBusId, 0);
                 var sensor = new PressureTemperatureHumiditySensor(chipSelectLinePin, settings);
                 Pressure_Lcd(lcd, sensor);
             }
@@ -896,16 +991,16 @@ namespace System.Devices.Gpio.Samples
             const int enablePinNumber = 5;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var controller = new GpioController(driver, PinNumberingScheme.Bcm))
+            using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                var settings = new I2cConnectionSettings(1, PressureTemperatureHumiditySensor.DefaultI2cAddress);
+                var settings = new I2cConnectionSettings(s_i2cBusId, PressureTemperatureHumiditySensor.DefaultI2cAddress);
                 var sensor = new PressureTemperatureHumiditySensor(settings);
                 Pressure_Lcd(lcd, sensor);
             }
@@ -956,7 +1051,9 @@ namespace System.Devices.Gpio.Samples
 
         private static void I2c_Color()
         {
-            var settings = new I2cConnectionSettings(1, RgbColorSensor.DefaultI2cAddress);
+            Console.WriteLine(nameof(I2c_Color));
+
+            var settings = new I2cConnectionSettings(s_i2cBusId, RgbColorSensor.DefaultI2cAddress);
             using (var sensor = new RgbColorSensor(settings))
             {
                 bool ok = sensor.Begin();
@@ -981,9 +1078,94 @@ namespace System.Devices.Gpio.Samples
             }
         }
 
-        private static string ToRgbString(Drawing.Color color)
+        internal static string ToRgbString(Drawing.Color color)
         {
-            return $"R: {color.R}, G: {color.G}, B: {color.B}";
+            return $"R {color.R} G {color.G} B {color.B}";
+        }
+
+        internal static void Unix_I2c_Color_Lcd()
+        {
+            Console.WriteLine(nameof(Unix_I2c_Color_Lcd));
+            I2c_Color_Lcd(new UnixDriver());
+        }
+
+        private static void RaspberryPi_I2c_Color_Lcd()
+        {
+            Console.WriteLine(nameof(RaspberryPi_I2c_Color_Lcd));
+            I2c_Color_Lcd(new RaspberryPiDriver());
+        }
+
+        private static void I2c_Color_Lcd(GpioDriver driver)
+        {
+            const int registerSelectPinNumber = 0;
+            const int enablePinNumber = 5;
+            int[] dataPinNumbers = { 6, 16, 20, 21 };
+
+            using (var controller = new GpioController(driver))
+            {
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
+
+                var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
+                lcd.Begin(16, 2);
+
+                var settings = new I2cConnectionSettings(s_i2cBusId, RgbColorSensor.DefaultI2cAddress);
+                var sensor = new RgbColorSensor(settings);
+                Color_Lcd(lcd, sensor);
+            }
+        }
+
+        private static void Color_Lcd(LcdController lcd, RgbColorSensor sensor)
+        {
+            using (sensor)
+            {
+                bool ok = sensor.Begin();
+
+                if (!ok)
+                {
+                    Console.WriteLine($"Error initializing sensor");
+                    return;
+                }
+
+                for (var i = 0; i < 3; ++i)
+                {
+                    sensor.ReadSensor();
+
+                    Console.WriteLine($"Color:       {ToRgbString(sensor.Color)}");
+                    Console.WriteLine($"Temperature: {sensor.Temperature:0.00} K");
+                    Console.WriteLine($"Luminosity:  {sensor.Luminosity:0.00} lux");
+                    Console.WriteLine();
+
+                    ShowInfo(lcd, "Color", ToRgbString(sensor.Color));
+                    ShowInfo(lcd, "Temperature", $"{sensor.Temperature:0.00} K");
+                    ShowInfo(lcd, "Luminosity", $"{sensor.Luminosity:0.00} lux");
+                }
+            }
+        }
+
+        private static void AzureIoTSendData()
+        {
+            Console.WriteLine(nameof(AzureIoTSendData));
+
+            var sample = new AzureIoTSample();
+            sample.StartSendingData();
+        }
+
+        private static void AzureIoTSendCommands()
+        {
+            Console.WriteLine(nameof(AzureIoTSendCommands));
+
+            var sample = new AzureIoTSample();
+            sample.StartSendingCommands();
+        }
+
+        private static void AzureIoTReceiveCommands()
+        {
+            Console.WriteLine(nameof(AzureIoTReceiveCommands));
+
+            var sample = new AzureIoTSample();
+            sample.StartReceivingCommands();
         }
     }
 }
