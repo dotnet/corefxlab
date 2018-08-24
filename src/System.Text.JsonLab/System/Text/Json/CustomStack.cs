@@ -22,6 +22,9 @@ namespace System.Text.JsonLab
             if (_topOfStack >= StackRow.Size)
             {
                 MemoryMarshal.Write(_stackSpace.Slice(_topOfStack - StackRow.Size), ref row);
+                bool hasChildren = true;
+                if (_topOfStack < _stackSpace.Length)
+                    MemoryMarshal.Write(_stackSpace.Slice(_topOfStack + 5), ref hasChildren);
                 _topOfStack -= StackRow.Size;
                 return true;
             }

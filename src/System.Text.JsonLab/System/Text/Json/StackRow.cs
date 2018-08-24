@@ -7,6 +7,8 @@ namespace System.Text.JsonLab
 {
     // IsArray - offset - 0 - size - 1
     // Length - offset - 1 - size - 4
+    // HasChildren - offset - 5 - size - 1
+    // ArrayLength - offset - 6 - size - 4
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct StackRow
     {
@@ -14,11 +16,15 @@ namespace System.Text.JsonLab
 
         public bool IsArray;
         public int Length;
+        public bool HasChildren;
+        public int ArrayLength;
 
-        public StackRow(bool isArray, int lengthOrNumberOfRows)
+        public StackRow(bool isArray, int lengthOrNumberOfRows, bool hasChildren, int arrayLength)
         {
             IsArray = isArray;
             Length = lengthOrNumberOfRows;
+            HasChildren = hasChildren;
+            ArrayLength = arrayLength;
         }
 
         unsafe static StackRow()

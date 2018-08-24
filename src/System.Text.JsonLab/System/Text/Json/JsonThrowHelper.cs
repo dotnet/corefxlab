@@ -61,7 +61,7 @@ namespace System.Text.JsonLab
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static NotImplementedException GetNotImplementedException()
         {
-            return new NotImplementedException();
+            return new NotImplementedException("Reading JSON containing comments is not yet supported.");
         }
 
         public static void ThrowJsonReaderException()

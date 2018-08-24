@@ -71,6 +71,7 @@ namespace System.Text.JsonLab.Tests
             JsonObject obj = parser.Parse();
 
             string actual = obj.PrintJson();
+            string database1 = obj.PrintDatabase();
 
             // Change casing to match what JSON.NET does.
             actual = actual.Replace("true", "True").Replace("false", "False");
@@ -79,6 +80,18 @@ namespace System.Text.JsonLab.Tests
             string expected = JsonTestHelper.NewtonsoftReturnStringHelper(reader);
 
             Assert.Equal(expected, actual);
+
+            if (type == TestCaseType.Json400KB)
+            {
+                string database = obj.PrintDatabase();
+                var lookup = new Utf8Span("email");
+                JsonObject withinArray = obj[5];
+                database = withinArray.PrintDatabase();
+                JsonObject withinObject = withinArray[lookup];
+                database = withinObject.PrintDatabase();
+                Utf8Span email = (Utf8Span)withinObject;
+                Assert.Equal("kentlester@solgan.com", email.ToString());
+            }
         }
 
         [Theory]

@@ -38,15 +38,14 @@ namespace System.Text.JsonLab
         {
             bool isArray = false;
             JsonTokenType tokenType = default;
-
             if (_reader.Read())
             {
                 tokenType = _reader.TokenType;
 
                 if (tokenType == JsonTokenType.StartObject)
                 {
-                    AppendDbRow(JsonValueType.Object);
-                    while (!_stack.TryPush(new StackRow(false, 0)))
+                    AppendDbRow(JsonType.Object);
+                    while (!_stack.TryPush(new StackRow(false, 0, false, -1)))
                     {
                         ResizeDb();
                     }
@@ -54,20 +53,21 @@ namespace System.Text.JsonLab
                 else if (tokenType == JsonTokenType.StartArray)
                 {
                     isArray = true;
-                    AppendDbRow(JsonValueType.Array);
-                    while (!_stack.TryPush(new StackRow(true, 0)))
+                    AppendDbRow(JsonType.Array);
+                    while (!_stack.TryPush(new StackRow(true, 0, false, -1)))
                     {
                         ResizeDb();
                     }
                 }
                 else
                 {
-                    AppendDbRow(_reader.ValueType, _reader.Value.Length);
+                    AppendDbRow((JsonType)_reader.ValueType, _reader.Value.Length);
                 }
             }
 
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
+            int numberOfRowsForValues = 0;
 
             while (_reader.Read())
             {
@@ -76,9 +76,13 @@ namespace System.Text.JsonLab
                 switch (tokenType)
                 {
                     case JsonTokenType.StartObject:
-                        if (isArray) arrayItemsCount++;
-                        AppendDbRow(JsonValueType.Object);
-                        StackRow row = new StackRow(false, numberOfRowsForMembers + 1);
+                        if (isArray)
+                        {
+                            arrayItemsCount++;
+                        }
+                        numberOfRowsForValues++;
+                        AppendDbRow(JsonType.Object);
+                        StackRow row = new StackRow(false, numberOfRowsForMembers + 1, false, -1);
                         while (!_stack.TryPush(row))
                         {
                             ResizeDb();
@@ -86,34 +90,49 @@ namespace System.Text.JsonLab
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.EndObject:
-                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Object)), ref numberOfRowsForMembers);
+                        int location = FindLocation(JsonType.Object);
+                        MemoryMarshal.Write(_db.Slice(location), ref numberOfRowsForMembers);
                         row = _stack.Pop();
+                        MemoryMarshal.Write(_db.Slice(location + 5), ref row.HasChildren);
                         numberOfRowsForMembers += row.Length;
                         break;
                     case JsonTokenType.StartArray:
-                        if (isArray) arrayItemsCount++;
+                        if (isArray)
+                        {
+                            arrayItemsCount++;
+                        }
                         numberOfRowsForMembers++;
-                        AppendDbRow(JsonValueType.Array);
-                        row = new StackRow(true, arrayItemsCount);
+                        AppendDbRow(JsonType.Array);
+                        row = new StackRow(true, arrayItemsCount, false, numberOfRowsForValues + 1);
                         while (!_stack.TryPush(row))
                         {
                             ResizeDb();
                         }
                         arrayItemsCount = 0;
+                        numberOfRowsForValues = 0;
                         break;
                     case JsonTokenType.EndArray:
-                        MemoryMarshal.Write(_db.Slice(FindLocation(JsonValueType.Array)), ref arrayItemsCount);
+                        location = FindLocation(JsonType.Array);
+                        MemoryMarshal.Write(_db.Slice(location), ref arrayItemsCount);
+                        MemoryMarshal.Write(_db.Slice(location + 6), ref numberOfRowsForValues);
                         row = _stack.Pop();
+                        MemoryMarshal.Write(_db.Slice(location + 5), ref row.HasChildren);
                         arrayItemsCount = row.Length;
+                        numberOfRowsForValues += row.ArrayLength;
                         break;
                     case JsonTokenType.PropertyName:
+                        numberOfRowsForValues++;
                         numberOfRowsForMembers++;
-                        AppendDbRow(JsonValueType.String, _reader.Value.Length);
+                        AppendDbRow(JsonType.PropertyName, _reader.Value.Length);
                         break;
                     case JsonTokenType.Value:
-                        if (isArray) arrayItemsCount++;
+                        if (isArray)
+                        {
+                            arrayItemsCount++;
+                        }
+                        numberOfRowsForValues++;
                         numberOfRowsForMembers++;
-                        AppendDbRow(_reader.ValueType, _reader.Value.Length);
+                        AppendDbRow((JsonType)_reader.ValueType, _reader.Value.Length);
                         break;
                 }
                 isArray = _stack.IsTopArray();
@@ -142,7 +161,7 @@ namespace System.Text.JsonLab
             _rentedBuffer = newArray;
         }
 
-        private int ForwardPass(JsonValueType lookupType)
+        private int ForwardPass(JsonType lookupType)
         {
             int rowStartOffset = 0;
             while (true)
@@ -162,7 +181,7 @@ namespace System.Text.JsonLab
             }
         }
 
-        private int BackwardPass(JsonValueType lookupType)
+        private int BackwardPass(JsonType lookupType)
         {
             int rowStartOffset = _dbIndex - DbRow.Size;
             while (true)
@@ -174,12 +193,15 @@ namespace System.Text.JsonLab
                     return rowStartOffset + 4;
                 }
 
+                // TODO: Investigate performance impact of adding "skip" logic similar to ForwardPass
                 rowStartOffset -= DbRow.Size;
             }
         }
 
-        private int FindLocation(JsonValueType lookupType)
+        private int FindLocation(JsonType lookupType)
         {
+            // No more JSON left to read, i.e. we are at the root node,
+            // so it will always be faster to search going forward
             if (_reader.Index == _utf8Json.Length)
             {
                 return ForwardPass(lookupType);
@@ -190,7 +212,61 @@ namespace System.Text.JsonLab
             }
         }
 
-        private void AppendDbRow(JsonValueType type, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
+        /*private (int, int) FindLocationArray()
+        {
+            // No more JSON left to read, i.e. we are at the root node,
+            // so it will always be faster to search going forward
+            if (_reader.Index == _utf8Json.Length)
+            {
+                return ForwardPassArray();
+            }
+            else
+            {
+                return BackwardPassArray();
+            }
+        }
+
+        private (int, int) ForwardPassArray()
+        {
+            int rowStartOffset = 0;
+            while (true)
+            {
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
+
+                if (row.Length == -1 && row.Type == JsonType.Array)
+                {
+                    return rowStartOffset + 4;
+                }
+
+                if (!row.IsSimpleValue && row.Length > 0)
+                {
+                    rowStartOffset += row.Length * DbRow.Size;
+                }
+                rowStartOffset += DbRow.Size;
+            }
+        }
+
+        private (int, int) BackwardPassArray()
+        {
+            int primitiveLength = 1;
+            int rowStartOffset = _dbIndex - DbRow.Size;
+            while (true)
+            {
+                DbRow row = MemoryMarshal.Read<DbRow>(_db.Slice(rowStartOffset));
+
+                if (row.Length == -1 && row.Type == JsonType.Array)
+                {
+                    return (primitiveLength, rowStartOffset + 4);
+                }
+                if (row.Type <= JsonType.Array)
+                    primitiveLength = -1;
+
+                // TODO: Investigate performance impact of adding "skip" logic similar to ForwardPass
+                rowStartOffset -= DbRow.Size;
+            }
+        }*/
+
+        private void AppendDbRow(JsonType type, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
             while (_dbIndex >= _db.Length - DbRow.Size)
             {

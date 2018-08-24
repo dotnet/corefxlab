@@ -12,27 +12,27 @@ using System.Text.Utf8;
 namespace System.Text.JsonLab.Benchmarks
 {
     // Since there are 30 tests here (2 * 15), setting low values for the warmupCount and targetCount
-    [SimpleJob(-1, 3, 5)]
+    //[SimpleJob(-1, 3, 5)]
     [MemoryDiagnoser]
     public class JsonParserPerf
     {
         // Keep the JsonStrings resource names in sync with TestCaseType enum values.
         public enum TestCaseType
         {
-            HelloWorld,
-            BasicJson,
-            BasicLargeNum,
-            SpecialNumForm,
-            ProjectLockJson,
-            FullSchema1,
-            FullSchema2,
-            DeepTree,
-            BroadTree,
-            LotsOfNumbers,
-            LotsOfStrings,
-            Json400B,
-            Json4KB,
-            Json40KB,
+            //HelloWorld,
+            //BasicJson,
+            //BasicLargeNum,
+            //SpecialNumForm,
+            //ProjectLockJson,
+            //FullSchema1,
+            //FullSchema2,
+            //DeepTree,
+            //BroadTree,
+            //LotsOfNumbers,
+            //LotsOfStrings,
+            //Json400B,
+            //Json4KB,
+            //Json40KB,
             Json400KB
         }
 
@@ -55,7 +55,7 @@ namespace System.Text.JsonLab.Benchmarks
             _reader = new StreamReader(_stream, Encoding.UTF8, false, 1024, true);
         }
 
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public void ParseNewtonsoft()
         {
             _stream.Seek(0, SeekOrigin.Begin);
@@ -72,7 +72,7 @@ namespace System.Text.JsonLab.Benchmarks
                         string email = (string)obj[5][lookup];
                     }
                 }
-                else if (TestCase == TestCaseType.HelloWorld)
+                /*else if (TestCase == TestCaseType.HelloWorld)
                 {
                     var lookup = "message";
 
@@ -80,17 +80,17 @@ namespace System.Text.JsonLab.Benchmarks
                     {
                         string message = (string)obj[lookup];
                     }
-                }
+                }*/
             }
         }
 
-        [Benchmark]
-        public void ParseSystemTextJsonLab()
+        //[Benchmark]
+        public void ParseSystemTextJsonLab1()
         {
             var parser = new JsonParser(_dataUtf8);
             JsonObject obj = parser.Parse();
 
-            if (TestCase == TestCaseType.Json400KB)
+            /*if (TestCase == TestCaseType.Json400KB)
             {
                 var lookup = new Utf8Span("email");
 
@@ -107,7 +107,85 @@ namespace System.Text.JsonLab.Benchmarks
                 {
                     Utf8Span message = (Utf8Span)obj[lookup];
                 }
+            }*/
+        }
+
+        //[Benchmark]
+        public void ParseSystemTextJsonLab3()
+        {
+            var parser = new JsonParser(_dataUtf8);
+            JsonObject obj = parser.Parse();
+
+            if (TestCase == TestCaseType.Json400KB)
+            {
+                var lookup = new Utf8Span("email");
+
+                for (int i = 0; i < 10_000; i++)
+                {
+                    JsonObject temp = obj[5];
+                }
             }
+            /*else if (TestCase == TestCaseType.HelloWorld)
+            {
+                var lookup = new Utf8Span("message");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Utf8Span message = (Utf8Span)obj[lookup];
+                }
+            }*/
+        }
+
+        //[Benchmark]
+        public void ParseSystemTextJsonLab4()
+        {
+            var parser = new JsonParser(_dataUtf8);
+            JsonObject obj = parser.Parse();
+
+            if (TestCase == TestCaseType.Json400KB)
+            {
+                var lookup = new Utf8Span("email");
+
+                for (int i = 0; i < 10_000; i++)
+                {
+                    JsonObject temp = obj[5][lookup];
+                }
+            }
+            /*else if (TestCase == TestCaseType.HelloWorld)
+            {
+                var lookup = new Utf8Span("message");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Utf8Span message = (Utf8Span)obj[lookup];
+                }
+            }*/
+        }
+
+        [Benchmark]
+        public void ParseSystemTextJsonLab5()
+        {
+            var parser = new JsonParser(_dataUtf8);
+            JsonObject obj = parser.Parse();
+
+            if (TestCase == TestCaseType.Json400KB)
+            {
+                var lookup = new Utf8Span("email");
+
+                for (int i = 0; i < 10_000; i++)
+                {
+                    Utf8Span message = (Utf8Span)obj[5][lookup];
+                }
+            }
+            /*else if (TestCase == TestCaseType.HelloWorld)
+            {
+                var lookup = new Utf8Span("message");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Utf8Span message = (Utf8Span)obj[lookup];
+                }
+            }*/
         }
     }
 }
