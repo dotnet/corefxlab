@@ -36,14 +36,14 @@ namespace Microsoft.Collections.Extensions.Tests
             _dict.Add(_randomKey, 12);
         }
 
-        private void SetValue()
+        [GlobalSetup(Target = nameof(Remove))]
+        public void Remove_CreateDictionaryMultipleRepeatedValues()
         {
-            if (Size >= 1024)
-                _value = 1024;
-            if (Size >= 4096)
-                _value = 4096;
-            if (Size >= 16384)
-                _value = 16384;
+            SetValue();
+            _dict = new MultiValueDictionary<int, int>();
+            for (int i = 0; i < Size; i++)
+                for (int j = 0; j < 100; j++)
+                    _dict.Add(i, j);
         }
 
         [IterationSetup(Targets = new[] { nameof(Add), nameof(ContainsValue) })]
@@ -51,12 +51,6 @@ namespace Microsoft.Collections.Extensions.Tests
         {
             SetValue();
             CreateMultiValueDictionary_SingleValues();
-        }
-
-        [Benchmark]
-        public void Add()
-        {
-            _dict.Add(_value, 0);
         }
 
         [IterationSetup(Target = nameof(AddRange))]
@@ -69,75 +63,47 @@ namespace Microsoft.Collections.Extensions.Tests
             _dict = new MultiValueDictionary<int, int>();
         }
 
-        [Benchmark]
-        public void AddRange()
+        private void SetValue()
         {
-            _dict.AddRange(_value, _values);
-        }
-
-        [GlobalSetup(Target = nameof(Remove))]
-        public void Remove_CreateDictionaryMultipleRepeatedValues()
-        {
-            SetValue();
-            _dict = new MultiValueDictionary<int, int>();
-            for (int i = 0; i < Size; i++)
-                for (int j = 0; j < 100; j++)
-                    _dict.Add(i, j);
+            if (Size >= 1024)
+                _value = 1024;
+            if (Size >= 4096)
+                _value = 4096;
+            if (Size >= 16384)
+                _value = 16384;
         }
 
         [Benchmark]
-        public void Remove()
-        {
-            _dict.Remove(_value);
-        }
+        public void Add() => _dict.Add(_value, 0);
 
         [Benchmark]
-        public void Clear()
-        {
-            _dict.Clear();
-        }
+        public void AddRange() => _dict.AddRange(_value, _values);
 
         [Benchmark]
-        public void Ctor()
-        {
-            var _ = new MultiValueDictionary<int, string>();
-        }
+        public bool Remove() => _dict.Remove(_value);
 
         [Benchmark]
-        public void Ctor_Size()
-        {
-            var _ = new MultiValueDictionary<int, string>(Size);
-        }
+        public void Clear() => _dict.Clear();
 
         [Benchmark]
-        public void GetItem()
-        {
-            IReadOnlyCollection<int> retrieved = _dict[_randomKey];
-        }
+        public MultiValueDictionary<int, string> Ctor() => new MultiValueDictionary<int, string>();
 
         [Benchmark]
-        public void GetKeys()
-        {
-            IEnumerable<int> result;
-            result = _dict.Keys;
-        }
+        public MultiValueDictionary<int, string> Ctor_Size() => new MultiValueDictionary<int, string>(Size);
 
         [Benchmark]
-        public void TryGetValue()
-        {
-            _dict.TryGetValue(_randomKey, out var _);
-        }
+        public IReadOnlyCollection<int> GetItem() => _dict[_randomKey];
 
         [Benchmark]
-        public void ContainsKey()
-        {
-            _dict.ContainsKey(_randomKey);
-        }
+        public IEnumerable<int> GetKeys() => _dict.Keys;
 
         [Benchmark]
-        public void ContainsValue()
-        {
-            _dict.ContainsValue(_value);
-        }
+        public bool TryGetValue() => _dict.TryGetValue(_randomKey, out var _);
+
+        [Benchmark]
+        public bool ContainsKey() =>  _dict.ContainsKey(_randomKey);
+
+        [Benchmark]
+        public bool ContainsValue() => _dict.ContainsValue(_value);
     }
 }
