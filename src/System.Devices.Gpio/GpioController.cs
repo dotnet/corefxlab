@@ -9,7 +9,7 @@ namespace System.Devices.Gpio
 {
     public class GpioController : IDisposable
     {
-        private IDictionary<int, Pin> _pins;
+        private IDictionary<int, GpioPin> _pins;
 
         public GpioController(PinNumberingScheme numbering = PinNumberingScheme.Gpio)
         {
@@ -37,7 +37,7 @@ namespace System.Devices.Gpio
         {
             Driver = driver;
             Numbering = numbering;
-            _pins = new Dictionary<int, Pin>();
+            _pins = new Dictionary<int, GpioPin>();
 
             driver.ValueChanged += OnPinValueChanged;
         }
@@ -46,7 +46,7 @@ namespace System.Devices.Gpio
         {
             while (_pins.Count > 0)
             {
-                Pin pin = _pins.Values.First();
+                GpioPin pin = _pins.Values.First();
                 pin.Dispose();
             }
 
@@ -59,7 +59,7 @@ namespace System.Devices.Gpio
 
         public int PinCount => Driver.PinCount;
 
-        public IEnumerable<Pin> OpenPins => _pins.Values;
+        public IEnumerable<GpioPin> OpenPins => _pins.Values;
 
         public bool IsPinOpen(int pinNumber)
         {
@@ -67,12 +67,12 @@ namespace System.Devices.Gpio
             return _pins.ContainsKey(gpioNumber);
         }
 
-        public Pin this[int pinNumber]
+        public GpioPin this[int pinNumber]
         {
             get
             {
                 int gpioNumber = Driver.ConvertPinNumber(pinNumber, Numbering, PinNumberingScheme.Gpio);
-                bool isOpen = _pins.TryGetValue(gpioNumber, out Pin pin);
+                bool isOpen = _pins.TryGetValue(gpioNumber, out GpioPin pin);
 
                 if (!isOpen)
                 {
@@ -83,10 +83,10 @@ namespace System.Devices.Gpio
             }
         }
 
-        public Pin OpenPin(int pinNumber)
+        public GpioPin OpenPin(int pinNumber)
         {
             int gpioNumber = Driver.ConvertPinNumber(pinNumber, Numbering, PinNumberingScheme.Gpio);
-            bool isOpen = _pins.TryGetValue(gpioNumber, out Pin pin);
+            bool isOpen = _pins.TryGetValue(gpioNumber, out GpioPin pin);
 
             if (isOpen)
             {
@@ -94,7 +94,7 @@ namespace System.Devices.Gpio
             }
 
             Driver.OpenPin(gpioNumber);
-            pin = new Pin(this, gpioNumber);
+            pin = new GpioPin(this, gpioNumber);
             _pins[gpioNumber] = pin;
             return pin;
         }
@@ -102,7 +102,7 @@ namespace System.Devices.Gpio
         public void ClosePin(int pinNumber)
         {
             int gpioNumber = Driver.ConvertPinNumber(pinNumber, Numbering, PinNumberingScheme.Gpio);
-            bool isOpen = _pins.TryGetValue(gpioNumber, out Pin pin);
+            bool isOpen = _pins.TryGetValue(gpioNumber, out GpioPin pin);
 
             if (isOpen)
             {
@@ -110,7 +110,7 @@ namespace System.Devices.Gpio
             }
         }
 
-        public void ClosePin(Pin pin)
+        public void ClosePin(GpioPin pin)
         {
             if (pin == null)
             {
@@ -125,7 +125,7 @@ namespace System.Devices.Gpio
             InternalClosePin(pin);
         }
 
-        private void InternalClosePin(Pin pin)
+        private void InternalClosePin(GpioPin pin)
         {
             int gpioNumber = pin.GpioNumber;
             _pins.Remove(gpioNumber);
@@ -134,7 +134,7 @@ namespace System.Devices.Gpio
 
         private void OnPinValueChanged(object sender, PinValueChangedEventArgs e)
         {
-            Pin pin = _pins[e.GpioPinNumber];
+            GpioPin pin = _pins[e.GpioPinNumber];
             pin?.OnValueChanged(e);
         }
     }

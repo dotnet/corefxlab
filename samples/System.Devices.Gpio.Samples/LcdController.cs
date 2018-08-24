@@ -69,10 +69,10 @@ namespace System.Devices.Gpio.Samples
         // can't assume that its in that state when a sketch starts (and the
         // LiquidCrystal constructor is called).
 
-        private readonly Pin _rsPin; // LOW: command.  HIGH: character.
-        private readonly Pin _rwPin; // LOW: write to LCD.  HIGH: read from LCD.
-        private readonly Pin _enablePin; // Activated by a HIGH pulse.
-        private readonly Pin[] _dataPins;
+        private readonly GpioPin _rsPin; // LOW: command.  HIGH: character.
+        private readonly GpioPin _rwPin; // LOW: write to LCD.  HIGH: read from LCD.
+        private readonly GpioPin _enablePin; // Activated by a HIGH pulse.
+        private readonly GpioPin[] _dataPins;
 
         private byte _displayFunction;
         private byte _displayControl;
@@ -81,13 +81,13 @@ namespace System.Devices.Gpio.Samples
         private byte _numLines;
         private readonly byte[] _rowOffsets;
 
-        public LcdController(Pin registerSelect, Pin enable, params Pin[] data)
+        public LcdController(GpioPin registerSelect, GpioPin enable, params GpioPin[] data)
             : this(registerSelect, null, enable, data)
         {
             // Do nothing
         }
 
-        public LcdController(Pin registerSelect, Pin readWrite, Pin enable, params Pin[] data)
+        public LcdController(GpioPin registerSelect, GpioPin readWrite, GpioPin enable, params GpioPin[] data)
         {
             _rwPin = readWrite;
             _rsPin = registerSelect ?? throw new ArgumentNullException(nameof(registerSelect));
@@ -437,7 +437,7 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DigitalWrite(Pin pin, int value)
+        private static void DigitalWrite(GpioPin pin, int value)
         {
             const int True = 1;
             PinValue state = HasFlag(value, True) ? PinValue.High : PinValue.Low;
@@ -445,7 +445,7 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DigitalWrite(Pin pin, PinValue state)
+        private static void DigitalWrite(GpioPin pin, PinValue state)
         {
             pin.Write(state);
         }

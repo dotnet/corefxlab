@@ -348,7 +348,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 for (var i = 0; i < 5; ++i)
                 {
@@ -365,8 +365,8 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
-                Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -476,8 +476,8 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.InputPullDown);
-                Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.InputPullDown);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 Stopwatch watch = Stopwatch.StartNew();
 
@@ -550,7 +550,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
@@ -652,14 +652,14 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
                     button.Mode = PinMode.InputPullDown;
                 }
 
-                Pin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
+                GpioPin led = controller.OpenPin(s_ledPinNumber, PinMode.Output);
 
                 button.DebounceTimeout = TimeSpan.FromSeconds(1);
                 button.NotifyEvents = PinEvent.SyncFallingEdge;
@@ -687,11 +687,11 @@ namespace System.Devices.Gpio.Samples
                 GpioDriver driver = sender as GpioDriver;
                 driver.Output(s_ledPinNumber, s_currentLedValue);
             }
-            else if (sender is Pin)
+            else if (sender is GpioPin)
             {
-                Pin button = sender as Pin;
+                GpioPin button = sender as GpioPin;
                 GpioController controller = button.Controller;
-                Pin led = controller[s_ledPinNumber];
+                GpioPin led = controller[s_ledPinNumber];
                 led.Write(s_currentLedValue);
             }
             else
@@ -759,7 +759,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
+                GpioPin button = controller.OpenPin(s_buttonPinNumber, PinMode.Input);
 
                 if (button.IsModeSupported(PinMode.InputPullDown))
                 {
@@ -803,9 +803,9 @@ namespace System.Devices.Gpio.Samples
 
             using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
@@ -830,9 +830,9 @@ namespace System.Devices.Gpio.Samples
             using (var driver = new UnixDriver())
             using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
@@ -892,7 +892,7 @@ namespace System.Devices.Gpio.Samples
         {
             using (var controller = new GpioController(driver))
             {
-                Pin chipSelectPin = controller.OpenPin(s_chipSelectLinePinNumber);
+                GpioPin chipSelectPin = controller.OpenPin(s_chipSelectLinePinNumber);
 
                 var settings = new SpiConnectionSettings(s_spiBusId, 0);
                 var sensor = new PressureTemperatureHumiditySensor(chipSelectPin, settings);
@@ -970,14 +970,14 @@ namespace System.Devices.Gpio.Samples
 
             using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
 
-                Pin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
+                GpioPin chipSelectLinePin = controller.OpenPin(chipSelectLinePinNumber);
 
                 var settings = new SpiConnectionSettings(s_spiBusId, 0);
                 var sensor = new PressureTemperatureHumiditySensor(chipSelectLinePin, settings);
@@ -993,9 +993,9 @@ namespace System.Devices.Gpio.Samples
 
             using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);
@@ -1103,9 +1103,9 @@ namespace System.Devices.Gpio.Samples
 
             using (var controller = new GpioController(driver))
             {
-                Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
-                Pin enablePin = controller.OpenPin(enablePinNumber);
-                Pin[] dataPins = controller.OpenPins(dataPinNumbers);
+                GpioPin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
+                GpioPin enablePin = controller.OpenPin(enablePinNumber);
+                GpioPin[] dataPins = controller.OpenPins(dataPinNumbers);
 
                 var lcd = new LcdController(registerSelectPin, enablePin, dataPins);
                 lcd.Begin(16, 2);

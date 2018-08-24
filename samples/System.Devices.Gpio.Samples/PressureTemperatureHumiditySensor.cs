@@ -93,9 +93,9 @@ namespace System.Devices.Gpio.Samples
         private I2cDevice _i2cDevice;
 
         private readonly ConnectionProtocol _protocol;
-        private readonly Pin _csPin;
+        private readonly GpioPin _csPin;
 
-        public PressureTemperatureHumiditySensor(Pin chipSelectLine, SpiConnectionSettings spiSettings)
+        public PressureTemperatureHumiditySensor(GpioPin chipSelectLine, SpiConnectionSettings spiSettings)
         {
             _csPin = chipSelectLine ?? throw new ArgumentNullException(nameof(chipSelectLine));
             _spiSettings = spiSettings ?? throw new ArgumentNullException(nameof(spiSettings));
@@ -402,7 +402,7 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DigitalWrite(Pin pin, int value)
+        private static void DigitalWrite(GpioPin pin, int value)
         {
             const int True = 1;
             PinValue state = HasFlag(value, True) ? PinValue.High : PinValue.Low;
@@ -410,7 +410,7 @@ namespace System.Devices.Gpio.Samples
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DigitalWrite(Pin pin, PinValue state)
+        private static void DigitalWrite(GpioPin pin, PinValue state)
         {
             pin.Write(state);
         }

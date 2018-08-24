@@ -3,9 +3,9 @@
 
 namespace System.Devices.Gpio
 {
-    public class Pin : IDisposable
+    public class GpioPin : IDisposable
     {
-        internal Pin(GpioController controller, int gpioNumber)
+        internal GpioPin(GpioController controller, int gpioNumber)
         {
             Controller = controller;
             GpioNumber = gpioNumber;
