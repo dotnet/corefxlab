@@ -3,18 +3,41 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace System.Devices.Gpio
 {
     public class GpioController : IDisposable
     {
-        private readonly IDictionary<int, Pin> _pins;
+        private IDictionary<int, Pin> _pins;
+
+        public GpioController(PinNumberingScheme numbering = PinNumberingScheme.Gpio)
+        {
+            GpioDriver driver;
+            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
+            if (isLinux)
+            {
+                driver = new UnixDriver();
+            }
+            else
+            {
+                throw new NotSupportedException($"Platform '{RuntimeInformation.OSDescription}' not supported");
+            }
+
+            Initialize(driver, numbering);
+        }
 
         public GpioController(GpioDriver driver, PinNumberingScheme numbering = PinNumberingScheme.Gpio)
         {
+            Initialize(driver, numbering);
+        }
+
+        private void Initialize(GpioDriver driver, PinNumberingScheme numbering)
+        {
             Driver = driver;
             Numbering = numbering;
-            _pins = new Dictionary<int, Pin>(driver.PinCount);
+            _pins = new Dictionary<int, Pin>();
 
             driver.ValueChanged += OnPinValueChanged;
         }
@@ -30,7 +53,7 @@ namespace System.Devices.Gpio
             Driver.Dispose();
         }
 
-        internal GpioDriver Driver { get; }
+        internal GpioDriver Driver { get; private set; }
 
         public PinNumberingScheme Numbering { get; set; }
 

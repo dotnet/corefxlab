@@ -18,10 +18,6 @@ namespace System.Devices.Gpio.Samples
             Hummingboard = 3
         }
 
-        private const int RaspberryPiPinCount = 54;
-        private const int OdroidPinCount = 40;
-        private const int HummingboardPinCount = 36;
-
         private enum RaspberryPiSettings
         {
             Led = 26,
@@ -327,13 +323,13 @@ namespace System.Devices.Gpio.Samples
         internal static void Unix_BlinkingLed()
         {
             Console.WriteLine(nameof(Unix_BlinkingLed));
-            BlinkingLed(new UnixDriver(RaspberryPiPinCount));
+            BlinkingLed(new UnixDriver());
         }
 
         private static void Unix_ButtonLed()
         {
             Console.WriteLine(nameof(Unix_ButtonLed));
-            ButtonLed(new UnixDriver(RaspberryPiPinCount));
+            ButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPi_BlinkingLed()
@@ -385,13 +381,13 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_BlinkingLed()
         {
             Console.WriteLine(nameof(UnixDriver_BlinkingLed));
-            Driver_BlinkingLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_BlinkingLed(new UnixDriver());
         }
 
         private static void UnixDriver_ButtonLed()
         {
             Console.WriteLine(nameof(UnixDriver_ButtonLed));
-            Driver_ButtonLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_ButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_BlinkingLed()
@@ -496,7 +492,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_DetectButton()
         {
             Console.WriteLine(nameof(UnixDriver_DetectButton));
-            Driver_DetectButton(new UnixDriver(RaspberryPiPinCount));
+            Driver_DetectButton(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_DetectButton()
@@ -541,7 +537,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_DetectButton()
         {
             Console.WriteLine(nameof(Unix_DetectButton));
-            DetectButton(new UnixDriver(RaspberryPiPinCount));
+            DetectButton(new UnixDriver());
         }
 
         private static void RaspberryPi_DetectButton()
@@ -600,7 +596,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_DetectButtonLed()
         {
             Console.WriteLine(nameof(UnixDriver_DetectButtonLed));
-            Driver_DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
+            Driver_DetectButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_DetectButtonLed()
@@ -643,7 +639,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_DetectButtonLed()
         {
             Console.WriteLine(nameof(Unix_DetectButtonLed));
-            DetectButtonLed(new UnixDriver(RaspberryPiPinCount));
+            DetectButtonLed(new UnixDriver());
         }
 
         private static void RaspberryPi_DetectButtonLed()
@@ -707,7 +703,7 @@ namespace System.Devices.Gpio.Samples
         private static void UnixDriver_ButtonWait()
         {
             Console.WriteLine(nameof(UnixDriver_ButtonWait));
-            Driver_ButtonWait(new UnixDriver(RaspberryPiPinCount));
+            Driver_ButtonWait(new UnixDriver());
         }
 
         private static void RaspberryPiDriver_ButtonWait()
@@ -750,7 +746,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_ButtonWait()
         {
             Console.WriteLine(nameof(Unix_ButtonWait));
-            ButtonWait(new UnixDriver(RaspberryPiPinCount));
+            ButtonWait(new UnixDriver());
         }
 
         private static void RaspberryPi_ButtonWait()
@@ -790,7 +786,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Lcd()
         {
             Console.WriteLine(nameof(Unix_Lcd));
-            Lcd(new UnixDriver(RaspberryPiPinCount));
+            Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_Lcd()
@@ -831,7 +827,7 @@ namespace System.Devices.Gpio.Samples
             const int enablePinNumber = 5;
             int[] dataPinNumbers = { 6, 16, 20, 21 };
 
-            using (var driver = new UnixDriver(RaspberryPiPinCount))
+            using (var driver = new UnixDriver())
             using (var controller = new GpioController(driver))
             {
                 Pin registerSelectPin = controller.OpenPin(registerSelectPinNumber);
@@ -883,7 +879,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Spi_Pressure()
         {
             Console.WriteLine(nameof(Unix_Spi_Pressure));
-            Spi_Pressure(new UnixDriver(RaspberryPiPinCount));
+            Spi_Pressure(new UnixDriver());
         }
 
         private static void RaspberryPi_Spi_Pressure()
@@ -944,7 +940,7 @@ namespace System.Devices.Gpio.Samples
         private static void Unix_Spi_Pressure_Lcd()
         {
             Console.WriteLine(nameof(Unix_Spi_Pressure_Lcd));
-            Spi_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
+            Spi_Pressure_Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_Spi_Pressure_Lcd()
@@ -956,7 +952,7 @@ namespace System.Devices.Gpio.Samples
         internal static void Unix_I2c_Pressure_Lcd()
         {
             Console.WriteLine(nameof(Unix_I2c_Pressure_Lcd));
-            I2c_Pressure_Lcd(new UnixDriver(RaspberryPiPinCount));
+            I2c_Pressure_Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_I2c_Pressure_Lcd()
@@ -1090,7 +1086,7 @@ namespace System.Devices.Gpio.Samples
         internal static void Unix_I2c_Color_Lcd()
         {
             Console.WriteLine(nameof(Unix_I2c_Color_Lcd));
-            I2c_Color_Lcd(new UnixDriver(RaspberryPiPinCount));
+            I2c_Color_Lcd(new UnixDriver());
         }
 
         private static void RaspberryPi_I2c_Color_Lcd()

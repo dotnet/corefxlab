@@ -93,6 +93,7 @@ namespace System.Devices.Gpio
 
         private const string GpioPath = "/sys/class/gpio";
 
+        private readonly int _pinCount;
         private readonly IList<int> _exportedPins;
 
         private int _pollFileDescriptor = -1;
@@ -104,14 +105,20 @@ namespace System.Devices.Gpio
         private readonly IDictionary<int, TimeSpan> _debounceTimeouts;
         private readonly IDictionary<int, DateTime> _lastEvents;
 
+        public UnixDriver()
+            : this(-1)
+        {
+            // Nothing
+        }
+
         public UnixDriver(int pinCount)
         {
-            PinCount = pinCount;
-            _exportedPins = new List<int>(pinCount);
-            _pinsToDetectEvents = new List<int>(pinCount);
-            _debounceTimeouts = new Dictionary<int, TimeSpan>(pinCount);
-            _lastEvents = new Dictionary<int, DateTime>(pinCount);
-            _pinValueFileDescriptors = new Dictionary<int, int>(pinCount);
+            _pinCount = pinCount;
+            _exportedPins = new List<int>();
+            _pinsToDetectEvents = new List<int>();
+            _debounceTimeouts = new Dictionary<int, TimeSpan>();
+            _lastEvents = new Dictionary<int, DateTime>();
+            _pinValueFileDescriptors = new Dictionary<int, int>();
         }
 
         public override void Dispose()
@@ -138,7 +145,18 @@ namespace System.Devices.Gpio
             }
         }
 
-        protected internal override int PinCount { get; }
+        protected internal override int PinCount
+        {
+            get
+            {
+                if (_pinCount == -1)
+                {
+                    throw new NotSupportedException("Unknown pin count");
+                }
+
+                return _pinCount;
+            }
+        }
 
         protected internal override bool IsPinModeSupported(PinMode mode)
         {
