@@ -2,18 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Linq;
-using System.Threading;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
     // Low level support for the BindingFlag-driven enumerator apis. These return members declared (not inherited) on the current
     // type, possibly doing case-sensitive/case-insensitive filtering on a supplied name. 
-    internal sealed partial class EcmaDefinitionType : RoDefinitionType
+    internal sealed partial class EcmaDefinitionType
     {
         //
         // - It may sound odd to get a non-null name filter for a constructor search, but Type.GetMember() is an api that does this.

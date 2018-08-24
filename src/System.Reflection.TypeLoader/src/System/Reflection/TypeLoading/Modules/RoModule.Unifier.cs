@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace System.Reflection.TypeLoading
 {
-    internal abstract partial class RoModule : Module
+    internal abstract partial class RoModule
     {
         //
         // SzArrays

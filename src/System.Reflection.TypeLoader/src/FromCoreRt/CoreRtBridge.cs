@@ -74,6 +74,8 @@ namespace System.Reflection.TypeLoading
 
         internal static int GetGenericParameterCount(this MethodInfo m)
         {
+            if (m is RoMethod roMethod)
+                return roMethod.GetGenericArgumentsOrParametersNoCopy().Length;
             return m.GetGenericArguments().Length;
         }
     }

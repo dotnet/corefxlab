@@ -9,7 +9,7 @@ using System.Reflection.TypeLoading;
 
 namespace System.Reflection
 {
-    public sealed partial class TypeLoader : IDisposable
+    public sealed partial class TypeLoader
     {
         //
         // Cache loaded coreAssembly and core types.

@@ -2,13 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Linq;
-using System.Threading;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Runtime.InteropServices;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
@@ -56,10 +52,10 @@ namespace System.Reflection.TypeLoading.Ecma
 
         internal sealed override RoType SpecializeBaseType(RoType[] instantiation)
         {
-            EntityHandle baseType = TypeDefinition.BaseType;
-            if (baseType.IsNil)
+            EntityHandle baseTypeHandle = TypeDefinition.BaseType;
+            if (baseTypeHandle.IsNil)
                 return null;
-            return baseType.ResolveTypeDefRefOrSpec(GetEcmaModule(), instantiation.ToTypeContext());
+            return baseTypeHandle.ResolveTypeDefRefOrSpec(GetEcmaModule(), instantiation.ToTypeContext());
         }
 
         internal sealed override IEnumerable<RoType> SpecializeInterfaces(RoType[] instantiation)
@@ -133,7 +129,7 @@ namespace System.Reflection.TypeLoading.Ecma
         {
             TypeLayout layout = TypeDefinition.GetLayout();
             packSize = layout.PackingSize;
-            size = unchecked((int)(layout.Size));
+            size = layout.Size;
         }
 
         internal sealed override bool IsTypeNameEqual(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name)

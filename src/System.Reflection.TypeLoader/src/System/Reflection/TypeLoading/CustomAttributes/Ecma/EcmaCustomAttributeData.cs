@@ -25,8 +25,6 @@ namespace System.Reflection.TypeLoading.Ecma
             _neverAccessThisExceptThroughCustomAttributeProperty = handle.GetCustomAttribute(Reader);
         }
 
-        private RoType GetRoAttributeType() => (RoType)AttributeType;
-
         public sealed override IList<CustomAttributeTypedArgument> ConstructorArguments
         {
             get
@@ -34,13 +32,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 if (_lazyFixedArguments == null)
                     LoadArguments();
 
-                int count = _lazyFixedArguments.Count;
-                CustomAttributeTypedArgument[] ctas = new CustomAttributeTypedArgument[count];
-                for (int i = 0; i < count; i++)
-                {
-                    ctas[i] = _lazyFixedArguments[i].ToApiForm();
-                }
-                return ctas.ToReadOnlyCollection();
+                return _lazyFixedArguments.ToApiForm();
             }
         }
 
@@ -51,14 +43,7 @@ namespace System.Reflection.TypeLoading.Ecma
                 if (_lazyNamedArguments == null)
                     LoadArguments();
 
-                RoType attributeType = GetRoAttributeType();
-                int count = _lazyNamedArguments.Count;
-                CustomAttributeNamedArgument[] cnas = new CustomAttributeNamedArgument[count];
-                for (int i = 0; i < count; i++)
-                {
-                    cnas[i] = _lazyNamedArguments[i].ToApiForm(attributeType);
-                }
-                return cnas.ToReadOnlyCollection();
+                return _lazyNamedArguments.ToApiForm(AttributeType);
             }
         }
 
@@ -76,7 +61,7 @@ namespace System.Reflection.TypeLoading.Ecma
 
                 case HandleKind.MemberReference:
                 {
-                    TypeContext typeContext = default(TypeContext);
+                    TypeContext typeContext = default;
                     MemberReference mr = ((MemberReferenceHandle)ctorHandle).GetMemberReference(Reader);
                     MethodSignature<RoType> sig = mr.DecodeMethodSignature(_module, typeContext);
                     Type[] parameterTypes = sig.ParameterTypes.ToArray();

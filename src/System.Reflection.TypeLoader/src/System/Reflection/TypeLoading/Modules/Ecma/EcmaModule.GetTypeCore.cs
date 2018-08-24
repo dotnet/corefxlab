@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace System.Reflection.TypeLoading.Ecma
 {
-    internal sealed partial class EcmaModule : RoModule
+    internal sealed partial class EcmaModule
     {
 
         /// <summary>

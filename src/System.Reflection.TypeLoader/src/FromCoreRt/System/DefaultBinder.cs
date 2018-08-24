@@ -13,6 +13,7 @@ namespace System
     internal sealed partial class DefaultBinder : Binder
     {
         private readonly TypeLoader _loader;
+        private readonly Type _objectType;
 
         internal DefaultBinder(TypeLoader loader)
         {
@@ -21,8 +22,6 @@ namespace System
         }
 
         private bool IsImplementedByTypeLoader(Type type) => type is RoType roType && roType.Loader == _loader;
-
-        private readonly Type _objectType;
 
         // This method is passed a set of methods and must choose the best
         // fit.  The methods all have the same number of arguments and the object

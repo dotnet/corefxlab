@@ -3,12 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Reflection.TypeLoading;
 using System.Collections.Generic;
+using System.Reflection.TypeLoading;
 
 namespace System.Reflection
 {
-    public sealed partial class TypeLoader : IDisposable
+    public sealed partial class TypeLoader
     {
         private readonly struct LoadedAssemblyEntry
         {

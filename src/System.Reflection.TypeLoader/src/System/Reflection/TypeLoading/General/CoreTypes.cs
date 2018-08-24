@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace System.Reflection.TypeLoading
 {
     /// <summary>
-    /// A convenience class that holds the pallette of core types that were successfully loaded (or the reason they were not.)
+    /// A convenience class that holds the palette of core types that were successfully loaded (or the reason they were not.)
     /// </summary>
     internal sealed class CoreTypes
     {

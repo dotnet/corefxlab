@@ -17,7 +17,6 @@ namespace System.Reflection.TypeLoading
         private readonly RoDefinitionType _genericTypeDefinition;
         private readonly RoType[] _genericTypeArguments;
 
-        // Note: Though the genericTypeDefinition is guaranteed to be RoType, the generic type arguments are not.
         internal RoConstructedGenericType(RoDefinitionType genericTypeDefinition, RoType[] genericTypeArguments)
             : base()
         {

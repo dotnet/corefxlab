@@ -45,11 +45,12 @@ namespace System.Reflection.TypeLoading.Ecma
             if (count == 0)
                 return Array.Empty<RoType>();
 
+            TypeContext typeContext = TypeContext;
             RoType[] constraints = new RoType[count];
             int index = 0;
             foreach (GenericParameterConstraintHandle h in handles)
             {
-                RoType constraint = h.GetGenericParameterConstraint(reader).Type.ResolveTypeDefRefOrSpec(GetEcmaModule(), TypeContext);
+                RoType constraint = h.GetGenericParameterConstraint(reader).Type.ResolveTypeDefRefOrSpec(GetEcmaModule(), typeContext);
                 constraints[index++] = constraint;
             }
             return constraints;

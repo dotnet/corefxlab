@@ -19,15 +19,13 @@ namespace System.Reflection.TypeLoading
             _container = new Container(this);
         }
 
-        public bool TryGet(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, out RoDefinitionType type)
+        public bool TryGet(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, int hashCode, out RoDefinitionType type)
         {
-            int hashCode = ComputeHashCode(ns, name);
             return _container.TryGetValue(ns, name, hashCode, out type);
         }
 
-        public RoDefinitionType GetOrAdd(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, RoDefinitionType type)
+        public RoDefinitionType GetOrAdd(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, int hashCode, RoDefinitionType type)
         {
-            int hashCode = ComputeHashCode(ns, name);
             bool found = _container.TryGetValue(ns, name, hashCode, out RoDefinitionType prior);
             if (found)
                 return prior;
@@ -48,7 +46,7 @@ namespace System.Reflection.TypeLoading
             }
         }
 
-        private static int ComputeHashCode(ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name)
+        public static int ComputeHashCode(ReadOnlySpan<byte> name)
         {
             int hashCode = 0x38723781;
             for (int i = 0; i < name.Length; i++)

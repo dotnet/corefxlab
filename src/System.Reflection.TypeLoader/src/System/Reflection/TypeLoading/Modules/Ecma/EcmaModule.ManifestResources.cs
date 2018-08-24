@@ -13,7 +13,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Module objects created by a TypeLoader and get its metadata from a PEReader.
     /// </summary>
-    internal sealed partial class EcmaModule : RoModule
+    internal sealed partial class EcmaModule
     {
         internal unsafe InternalManifestResourceInfo GetInternalManifestResourceInfo(string resourceName)
         {
