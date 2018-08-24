@@ -11,13 +11,10 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Assembly objects created by a TypeLoader and get its metadata from a PEReader.
     /// </summary>
-    internal sealed partial class EcmaAssembly : RoAssembly
+    internal sealed partial class EcmaAssembly
     {
         protected sealed override AssemblyNameData ComputeNameData()
         {
-            // Don't call AssemblyDefinition.GetAssemblyName() - the fields need some fixing up to be compatible 
-            // with Assembly.GetName()
-
             MetadataReader reader = Reader;
             AssemblyDefinition ad = AssemblyDefinition;
             AssemblyNameData data = new AssemblyNameData();

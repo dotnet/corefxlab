@@ -10,7 +10,7 @@ using System.Reflection.TypeLoading;
 
 namespace System.Reflection
 {
-    public sealed partial class TypeLoader : IDisposable
+    public sealed partial class TypeLoader
     {
         //
         // List of ref AssemblyNames to successfully bound assemblies. This is not the same as _loadedAssemblies.

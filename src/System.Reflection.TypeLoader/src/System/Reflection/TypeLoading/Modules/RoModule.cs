@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
-using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -108,10 +107,11 @@ namespace System.Reflection.TypeLoading
             if (ignoreCase)
                 throw new NotSupportedException(SR.NotSupported_CaseInsensitive);
 
-            if (!_getTypeCoreCache.TryGet(ns, name, out RoDefinitionType type))
+            int hashCode = GetTypeCoreCache.ComputeHashCode(name);
+            if (!_getTypeCoreCache.TryGet(ns, name, hashCode, out RoDefinitionType type))
             {
                 type = GetTypeCoreNoCache(ns, name, out e) ?? new RoExceptionType(ns, name, e);
-                _getTypeCoreCache.GetOrAdd(ns, name, type); // Type objects are unified independently of this cache so no need to compare return value.
+                _getTypeCoreCache.GetOrAdd(ns, name, hashCode, type); // Type objects are unified independently of this cache so no need to check if we won the race to cache this Type
             }
 
             if (type is RoExceptionType exceptionType)

@@ -28,7 +28,7 @@ namespace System.Reflection.TypeLoading
         public AssemblyHashAlgorithm HashAlgorithm;
         public ProcessorArchitecture ProcessorArchitecture;
 
-        // This must create newly allocated AssemblyName safe to return to out of an api.
+        // Creates a newly allocated AssemblyName that is safe to return out of an api.
         public AssemblyName CreateAssemblyName()
         {
             AssemblyName an = new AssemblyName();

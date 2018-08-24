@@ -8,7 +8,8 @@ using System.Collections.Generic;
 namespace System.Reflection.TypeLoading
 {
     /// <summary>
-    /// Base class for all RoMethod objects created by a TypeLoader for which IsConstructedGenericMethod returns false.
+    /// Base class for all RoMethod objects created by a TypeLoader that has a MethodDef token associated with it
+    /// and for which IsConstructedGenericMethod returns false.
     /// </summary>
     internal abstract class RoDefinitionMethod : RoMethod
     {
@@ -25,7 +26,8 @@ namespace System.Reflection.TypeLoading
     }
 
     /// <summary>
-    /// Class for all RoMethod objects created by a TypeLoader for which IsConstructedGenericMethod returns false.
+    /// Class for all RoMethod objects created by a TypeLoader that has a MethodDef token associated with it
+    /// and for which IsConstructedGenericMethod returns false.
     /// </summary>
     internal sealed partial class RoDefinitionMethod<TMethodDecoder> : RoDefinitionMethod where TMethodDecoder : IMethodDecoder
     {

@@ -50,9 +50,9 @@ namespace System.Reflection.TypeLoading.Ecma
         public CallingConventions ComputeCallingConvention()
         {
             BlobReader signatureBlob = MethodDefinition.Signature.GetBlobReader(Reader);
-            CallingConventions result;
             SignatureHeader sigHeader = signatureBlob.ReadSignatureHeader();
 
+            CallingConventions result;
             if (sigHeader.CallingConvention == SignatureCallingConvention.VarArgs)
                 result = CallingConventions.VarArgs;
             else

@@ -10,7 +10,7 @@ using System.Reflection.TypeLoading;
 
 namespace System.Reflection
 {
-    public sealed partial class TypeLoader : IDisposable
+    public sealed partial class TypeLoader
     {
         // Objects (e.g. PEReaders) to dispose when this TypeLoader is disposed.
         private ConcurrentBag<IDisposable> _disposables = new ConcurrentBag<IDisposable>();

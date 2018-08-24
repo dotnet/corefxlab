@@ -13,7 +13,7 @@ using System.Reflection.PortableExecutable;
 
 namespace System.Reflection
 {
-    public sealed partial class TypeLoader : IDisposable
+    public sealed partial class TypeLoader
     {
         //
         // This maintains the canonical list of Assembly instances for a given def name. Each defname can only appear

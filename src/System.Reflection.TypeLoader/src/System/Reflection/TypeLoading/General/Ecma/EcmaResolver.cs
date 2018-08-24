@@ -171,7 +171,7 @@ namespace System.Reflection.TypeLoading.Ecma
         public static RoAssembly TryResolveAssembly(this AssemblyReferenceHandle handle, EcmaModule module, out Exception e)
         {
             e = null;
-            RoAssembly assembly = handle.ResolveToAssemblyOrFailedBindAssembly(module);
+            RoAssembly assembly = handle.ResolveToAssemblyOrExceptionAssembly(module);
             if (assembly is RoExceptionAssembly exceptionAssembly)
             {
                 e = exceptionAssembly.Exception;
@@ -180,7 +180,7 @@ namespace System.Reflection.TypeLoading.Ecma
             return assembly;
         }
 
-        public static RoAssembly ResolveToAssemblyOrFailedBindAssembly(this AssemblyReferenceHandle handle, EcmaModule module)
+        public static RoAssembly ResolveToAssemblyOrExceptionAssembly(this AssemblyReferenceHandle handle, EcmaModule module)
         {
             return module.AssemblyRefTable.GetOrAdd(handle, module, s_resolveAssembly);
         }

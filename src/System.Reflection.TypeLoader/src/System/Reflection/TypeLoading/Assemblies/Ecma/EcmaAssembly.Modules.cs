@@ -15,7 +15,7 @@ namespace System.Reflection.TypeLoading.Ecma
     /// <summary>
     /// Base class for all Assembly objects created by a TypeLoader and get its metadata from a PEReader.
     /// </summary>
-    internal sealed partial class EcmaAssembly : RoAssembly
+    internal sealed partial class EcmaAssembly
     {
         public sealed override event ModuleResolveEventHandler ModuleResolve;
 

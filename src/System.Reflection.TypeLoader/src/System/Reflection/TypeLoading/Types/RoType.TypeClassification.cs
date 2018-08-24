@@ -45,12 +45,10 @@ namespace System.Reflection.TypeLoading
 
             return classification;
         }
-
         private volatile TypeClassification _lazyClassification;
 
-        private BaseTypeClassification GetBaseTypeClassification() => (_lazyBaseTypeClassification != 0) ? _lazyBaseTypeClassification : (_lazyBaseTypeClassification = ComputeBaseDependentClassification());
-
-        private BaseTypeClassification ComputeBaseDependentClassification()
+        private BaseTypeClassification GetBaseTypeClassification() => (_lazyBaseTypeClassification != 0) ? _lazyBaseTypeClassification : (_lazyBaseTypeClassification = ComputeBaseTypeClassification());
+        private BaseTypeClassification ComputeBaseTypeClassification()
         {
             BaseTypeClassification classification = BaseTypeClassification.Computed;
 
@@ -73,7 +71,6 @@ namespace System.Reflection.TypeLoading
 
             return classification;
         }
-
         private volatile BaseTypeClassification _lazyBaseTypeClassification;
 
         // Keep this separate from the other TypeClassification computations as it locks in the core assembly name.

@@ -76,9 +76,9 @@ namespace System.Reflection.TypeLoading
         /// <summary>
         /// Clones a cached CustomAttributeNamedArgument into a freshly allocated one suitable for direct return through an api.
         /// </summary>
-        private static CustomAttributeNamedArgument CloneForApiReturn(this CustomAttributeNamedArgument cang)
+        private static CustomAttributeNamedArgument CloneForApiReturn(this CustomAttributeNamedArgument can)
         {
-            return new CustomAttributeNamedArgument(cang.MemberInfo, cang.TypedValue.CloneForApiReturn());
+            return new CustomAttributeNamedArgument(can.MemberInfo, can.TypedValue.CloneForApiReturn());
         }
 
         /// <summary>

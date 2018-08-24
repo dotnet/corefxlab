@@ -2,13 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
@@ -42,7 +37,7 @@ namespace System.Reflection.TypeLoading.Ecma
             CustomAttributeHandle handle = handles.FindCustomAttributeByName(ns, name, module);
             if (handle.IsNil)
                 return null;
-            return new EcmaCustomAttributeData(handle, module);
+            return handle.ToCustomAttributeData(module);
         }
 
         private static CustomAttributeHandle FindCustomAttributeByName(this CustomAttributeHandleCollection handles, ReadOnlySpan<byte> ns, ReadOnlySpan<byte> name, EcmaModule module)
@@ -57,8 +52,8 @@ namespace System.Reflection.TypeLoading.Ecma
                     case HandleKind.MethodDefinition:
                         {
                             MethodDefinitionHandle mh = (MethodDefinitionHandle)ctorHandle;
-                            EntityHandle declaringType = mh.GetMethodDefinition(reader).GetDeclaringType();
-                            if (declaringType.TypeMatchesNameAndNamespace(ns, name, reader))
+                            EntityHandle declaringTypeHandle = mh.GetMethodDefinition(reader).GetDeclaringType();
+                            if (declaringTypeHandle.TypeMatchesNameAndNamespace(ns, name, reader))
                                 return handle;
                             break;
                         }
@@ -66,8 +61,8 @@ namespace System.Reflection.TypeLoading.Ecma
                     case HandleKind.MemberReference:
                         {
                             MemberReference mr = ((MemberReferenceHandle)ctorHandle).GetMemberReference(reader);
-                            EntityHandle declaringType = mr.Parent;
-                            if (declaringType.TypeMatchesNameAndNamespace(ns, name, reader))
+                            EntityHandle declaringTypeHandle = mr.Parent;
+                            if (declaringTypeHandle.TypeMatchesNameAndNamespace(ns, name, reader))
                                 return handle;
                             break;
                         }
@@ -102,6 +97,21 @@ namespace System.Reflection.TypeLoading.Ecma
         }
 
         /// <summary>
+        /// Converts a list of System.Reflection.Metadata CustomAttributeTypedArgument&lt;&gt; into a freshly allocated CustomAttributeTypedArgument 
+        /// list suitable for direct return from the CustomAttributes api.
+        /// </summary>
+        public static IList<CustomAttributeTypedArgument> ToApiForm(this IList<CustomAttributeTypedArgument<RoType>> catgs)
+        {
+            int count = catgs.Count;
+            CustomAttributeTypedArgument[] cats = new CustomAttributeTypedArgument[count];
+            for (int i = 0; i < count; i++)
+            {
+                cats[i] = catgs[i].ToApiForm();
+            }
+            return cats.ToReadOnlyCollection();
+        }
+
+        /// <summary>
         /// Converts a System.Reflection.Metadata CustomAttributeTypedArgument&lt;&gt; into a freshly allocated CustomAttributeTypedArgument 
         /// object suitable for direct return from the CustomAttributes api.
         /// </summary>
@@ -114,20 +124,29 @@ namespace System.Reflection.TypeLoading.Ecma
                 return new CustomAttributeTypedArgument(type, value);
             }
 
-            int count = catgs.Count;
-            CustomAttributeTypedArgument[] cats = new CustomAttributeTypedArgument[count];
+            return new CustomAttributeTypedArgument(type, catgs.ToApiForm());
+        }
+
+        /// <summary>
+        /// Converts a list of System.Reflection.Metadata CustomAttributeNamedArgument&lt;&gt; into a freshly allocated CustomAttributeNamedArgument 
+        /// list suitable for direct return from the CustomAttributes api.
+        /// </summary>
+        public static IList<CustomAttributeNamedArgument> ToApiForm(this IList<CustomAttributeNamedArgument<RoType>> cangs, Type attributeType)
+        {
+            int count = cangs.Count;
+            CustomAttributeNamedArgument[] cans = new CustomAttributeNamedArgument[count];
             for (int i = 0; i < count; i++)
             {
-                cats[i] = catgs[i].ToApiForm();
+                cans[i] = cangs[i].ToApiForm(attributeType);
             }
-            return new CustomAttributeTypedArgument(type, cats.ToReadOnlyCollection());
+            return cans.ToReadOnlyCollection();
         }
 
         /// <summary>
         /// Converts a System.Reflection.Metadata CustomAttributeNamedArgument&lt;&gt; into a freshly allocated CustomAttributeNamedArgument 
         /// object suitable for direct return from the CustomAttributes api.
         /// </summary>
-        public static CustomAttributeNamedArgument ToApiForm(this CustomAttributeNamedArgument<RoType> cang, RoType attributeType)
+        public static CustomAttributeNamedArgument ToApiForm(this CustomAttributeNamedArgument<RoType> cang, Type attributeType)
         {
             MemberInfo member;
             switch (cang.Kind)
