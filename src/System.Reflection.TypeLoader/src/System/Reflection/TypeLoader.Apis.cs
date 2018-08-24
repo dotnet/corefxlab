@@ -131,7 +131,7 @@ namespace System.Reflection
         /// Loads an assembly from a specific path on the disk and binds its assembly name to it in the TypeLoader. If a prior
         /// assembly with the same name was already loaded into the TypeLoader, the prior assembly will be returned. If the 
         /// two assemblies do not have the same MVID, this method throws a FileLoadException.
-        /// <summary>
+        /// </summary>
         public Assembly LoadFromAssemblyPath(string assemblyPath)
         {
             if (IsDisposed)
@@ -147,7 +147,7 @@ namespace System.Reflection
         /// Loads an assembly from a byte array and binds its assembly name to it in the TypeLoader. If a prior
         /// assembly with the same name was already loaded into the TypeLoader, the prior assembly will be returned. If the 
         /// two assemblies do not have the same MVID, this method throws a FileLoadException.
-        /// <summary>
+        /// </summary>
         public Assembly LoadFromByteArray(byte[] assembly)
         {
             if (IsDisposed)
@@ -166,7 +166,7 @@ namespace System.Reflection
         /// 
         /// The TypeLoader takes ownership of the Stream passed into this method. The original owner must not mutate its position, dispose the Stream or 
         /// assume that its position will stay unchanged.
-        /// <summary>
+        /// </summary>
         public Assembly LoadFromStream(Stream assembly)
         {
             if (IsDisposed)

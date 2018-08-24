@@ -51,6 +51,7 @@ namespace System.Reflection
         /// Returns a lazily created and cached Type instance corresponding to the indicated core type. This method returns null
         /// if the core assembly name wasn't supplied, the core assembly could not be loaded for some reason or if the specified
         /// type does not exist in the core assembly.
+        /// </summary>
         internal RoType TryGetCoreType(CoreType coreType)
         {
             CoreTypes coreTypes = GetAllFoundCoreTypes();
